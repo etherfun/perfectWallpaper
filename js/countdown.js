@@ -1,4 +1,4 @@
-var countdown_text = document.querySelector("#countdown .text");
+var countdown_webtext = document.querySelector("#countdown .text");
 var countdown = document.querySelector("#countdown");
 
 
@@ -15,7 +15,7 @@ function setcountdown(){
     var minutes = Math.ceil((distance % (1000 * 60 * 60)) / (1000 * 60));  
     var seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
-    countdown_text.innerHTML = countdown_txt + (days - 1) + ":" + add0(hours - 1) + ":" + add0(minutes - 1) + ":" + add0(seconds) + countdown_txt1;
+    countdown_webtext.innerHTML = countdown_txt + (days - 1) + ":" + add0(hours - 1) + ":" + add0(minutes - 1) + ":" + add0(seconds) + countdown_txt1;
 
     
 }

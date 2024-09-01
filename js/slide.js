@@ -5,6 +5,12 @@
 // 幻灯片实现代码
 
 var RGBuse = document.querySelector("#RGBuse")
+var pictrues = {
+	title : document.querySelector("#picture_info .title"),
+	anthor : document.querySelector("#picture_info .anthor"),
+	where : document.querySelector("#picture_info .where"),
+	text : document.querySelector("#picture_info .text")
+}
 
 var t
 
@@ -259,9 +265,14 @@ function shouldShow(){
 						if(get.media_type == "video"){
 							url = get.thumbnail_url
 						}else{
-							url = get.url
+							url = get.hdurl
 						}
 						use(url)
+
+						pictrues.title.innerHTML = get.title
+						pictrues.anthor.innerHTML = get.copyright
+						pictrues.where.innerHTML = ""
+						//pictrues.text.innerHTML = get.explanation
 					})
 				break;
 			}
@@ -272,7 +283,7 @@ function shouldShow(){
 				img.onload = function () {
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
-				setBackgroundStyle();
+					setBackgroundStyle();
 				};
 			}
 			

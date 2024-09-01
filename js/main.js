@@ -212,6 +212,7 @@ var player_control_samealbumTitle = false
 
 var countdown_txt
 var countdown_txt1
+var FristLoadcountdown = true
 
 //音频圈
 var wallpaper = $('body').particles({}).audiovisualizer({});
@@ -648,28 +649,6 @@ window.wallpaperPropertyListener={
             oClock.style.color = TimeColor = 'rgb('+c+')';
 			//oDate.style.color = TimeColor = 'rgb('+c+')';
         }
-        if(properties.countdownY){
-            var y = properties.countdownY.value
-            countdown.style.top = y + "%"
-        }
-        if(properties.countdownX){
-            var x = properties.countdownX.value
-            countdown.style.left = x + "%"
-        }
-        if(properties.countdownsize){
-            var s = properties.countdownsize.value;
-			countdown.style.fontSize = Math.floor(h/300*s) + 'px';
-            countdown.style.lineHeight = Math.floor(h/570*s) + 'px';
-        }
-        if(properties.countdown_txt){
-            countdown_txt = properties.countdown_txt.value
-        }
-        if(properties.countdown_txt1){
-            countdown_txt1 = properties.countdown_txt1.value
-        }
-        if(properties.countdownkaiguan){
-            countdown.style.display = properties.countdownkaiguan.value ? 'flex' : 'none'
-        }
         // 时间模糊颜色
         if(properties.TimeBlurColor){
             var c = properties.TimeBlurColor.value.split(' ').map(function(c){return Math.ceil(c*255)});
@@ -829,15 +808,6 @@ window.wallpaperPropertyListener={
                 oClock_block.style.background = null
                 oClock_block.style.backdropFilter = null
             }
-        }
-        if(properties.countdown_year){
-            countdown_year = properties.countdown_year.value
-        }
-        if(properties.countdown_month){
-            countdown_month = properties.countdown_month.value
-        }
-        if(properties.countdown_day){
-            countdown_day = properties.countdown_day.value
         }
 		//天气
         //获取key 和风天气api
@@ -2154,13 +2124,120 @@ window.wallpaperPropertyListener={
                         playertitle()
                     }
                 }
+                if(properties.countdownY){
+                    var y = properties.countdownY.value
+                    countdown.style.top = y + "%"
+                }
+                if(properties.countdownX){
+                    var x = properties.countdownX.value
+                    countdown.style.left = x + "%"
+                }
+                if(properties.countdown_size){
+                    var s = properties.countdown_size.value;
+			        countdown.style.fontSize = Math.floor(h/300*s) + 'px';
+                    countdown.style.lineHeight = Math.floor(h/570*s) + 'px';
+                }
+                if(properties.countdown_txt){
+                    countdown_txt = properties.countdown_txt.value
+                }
+                if(properties.countdown_txt1){
+                    countdown_txt1 = properties.countdown_txt1.value
+                }
+                if(properties.countdown_show){
+                    countdown.style.display = properties.countdown_show.value ? 'flex' : 'none'
+                }
+                if(properties.countdown_year){
+                    countdown_year = properties.countdown_year.value
+                }
+                if(properties.countdown_month){
+                    countdown_month = properties.countdown_month.value
+                }
+                if(properties.countdown_day){
+                    countdown_day = properties.countdown_day.value
+                }
+                if(properties.countdown_color){
+                    countdown_color = properties.countdown_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                    if(FristLoadcountdown == false){
+                        countdownappearance()
+                    }
+                }
+                if(properties.countdown_blurcolor_show){
+                    countdown_blurcolor_show = properties.countdown_blurcolor_show.value
+                    if(FristLoadcountdown == false){
+                    countdownappearance()
+                    }
+                }
+                if(properties.countdown_blurcolor){
+                    countdown_blurcolor = properties.countdown_blurcolor.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                    if(FristLoadcountdown == false){
+                    countdownappearance()
+                    }
+                }
+                if(properties.countdown_yakeli_show){
+                    countdown_yakeli_show = properties.countdown_yakeli_show.value
+                    if(FristLoadcountdown == false){
+                    countdownappearance()
+                    }
+                }
+                if(properties.countdown_yakelicolor){
+                    countdown_yakelicolor = properties.countdown_yakelicolor.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                    if(FristLoadcountdown == false){
+                    countdownappearance()
+                    }
+                }
+                if(properties.countdown_yakeli){
+                    countdown_yakeli = properties.countdown_yakeli.value/100
+                    if(FristLoadcountdown == false){
+                    countdownappearance()
+                    }
+                }
+                if(properties.countdown_bluryakeli){
+                    countdown_bluryakeli = properties.countdown_bluryakeli.value
+                    countdownappearance()
+        
+                    FristLoadcountdown = false
+                }
+                function countdownappearance(){
+        
+                    countdown.style.color = 'rgb('+countdown_color+')';
+        
+                    if(countdown_blurcolor_show){
+                        countdown_webtext.style.textShadow = '0 0 20px rgb('+countdown_blurcolor+')';
+                    }else{
+                        countdown_webtext.style.textShadow = null
+                    }
+        
+                    if(countdown_yakeli_show){
+                        countdown_webtext.style.background = "rgba("+countdown_yakelicolor+","+countdown_yakeli+")"
+                        countdown_webtext.style.backdropFilter = "blur("+countdown_bluryakeli+"px)"
+                    }else{
+                        countdown_webtext.style.background = null
+                        countdown_webtext.style.backdropFilter = null
+                    }
+                }
+                if(properties.countdown_timetransparency){
+                    var t = properties.countdown_timetransparency.value/100;
+                    countdown.style.opacity = t;
+                }
+                if(properties.countdown_roundedcorners){
+                    var Roundedcorners = properties.countdown_roundedcorners.value
+                    if(FristLoad == true){
+                        setTimeout(function(){
+                            var height =  window.getComputedStyle(countdown).height
+                            countdown_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                            countdown_webtext.style.padding = null
+                            countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                        },2000)}else{
+                            var height =  window.getComputedStyle(countdown).height
+                            countdown_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                            countdown_webtext.style.padding = null
+                            countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                        }
+                }
                 if(FristLoad == true){console.log("main.js load success")}
                 setTimeout(function(){
                     FristLoad = false;
                 },10000)
-				
-                
-		
     },
     userDirectoryFilesAddedOrChanged: function(propertyName, changedFiles) {
         if (!files.hasOwnProperty(propertyName)) {

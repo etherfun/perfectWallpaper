@@ -228,6 +228,18 @@ video {
 	transform: translateY(-10240px);
 	overflow: hidden;
 }
+#picture_info {
+	position:absolute;
+	top:0;
+	left:0;
+	text-align:center;
+	color:#fff;
+	font-family:"等线 Light","Microsoft Yahei Light";
+	font-size:200px;
+	justify-content: space-around;
+	transform: translate(-50%, -50%);
+}
+
 #RGBuse{
 	display: none;
 	height: 20;

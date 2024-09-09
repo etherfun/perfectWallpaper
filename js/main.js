@@ -32,11 +32,22 @@ var VideoModelNow = 1;
 
 //图片相关
 var galaxyapi = 1
-var chiyuanapi = 1
+var chiyuanapi = "https://t.alcy.cc/ycy/?json"
 var bgy = "512px"
 var bgx = "512px"
 var bgs = "100%"
 var bgxy = "512px 512px "
+var Fristpicturesinfo = true
+var picturesinfo_language = 1
+var picturesinfo_showRorL
+var picturesinfo_color
+var picturesinfo_blurcolor_show
+var picturesinfo_blurcolor
+var picturesinfo_yakeli_show
+var picturesinfo_yakeli
+var picturesinfo_yakelicolor
+var picturesinfo_bluryakeli
+var picturesinfo_show
 
 // 音频相关
 var myAudio = document.getElementById("myAudio");
@@ -91,6 +102,13 @@ var TimeBlurColor;
 var countdown_year
 var countdown_month
 var countdown_day
+var countdown_color
+var countdown_blurcolor_show
+var countdown_blurcolor
+var countdown_yakeli_show
+var countdown_yakeli
+var countdown_yakelicolor
+var countdown_bluryakeli
 
 var datetransparency
 var DateFormatTest = 1;
@@ -338,7 +356,7 @@ window.wallpaperPropertyListener={
 			//clearT();
             custom = properties.image.value;
 			
-            if(FristLoad == false){}else{shouldShow();}
+            if(FristLoad == true){}else{shouldShow();}
         }
         //星河图片api选择
         if(properties.galaxyapi){
@@ -348,7 +366,7 @@ window.wallpaperPropertyListener={
             }else{
                 galaxyapi = "https://api.asxe.vip/scenery.php?"//二次元风景图
             }
-            if(FristLoad == false){}else{shouldShow();}*/
+            if(FristLoad == true){}else{shouldShow();}*/
             
             galaxyapi = properties.galaxyapi.value
         }
@@ -372,7 +390,7 @@ window.wallpaperPropertyListener={
                     chiyuanapi = "https://t.alcy.cc/fj/?json"//二次元风景图
                     break
             }
-            if(FristLoad == false){}else{shouldShow();}
+            if(FristLoad == true){}else{shouldShow();}
         }
 		//
 		if(properties.customdirectory){
@@ -388,7 +406,13 @@ window.wallpaperPropertyListener={
 			clearT();
             wallpapermode = properties.wallpapermode.value;
 			//changeBackground();
-            if(FristLoad == true){}else{shouldShow();}
+            if(FristLoad){
+                setTimeout(function(){
+                changeBackground()
+            },5000) 
+            }else{
+                changeBackground()
+            }
         }
 		//幻灯片特效
 		if (properties.TransitionMode) {
@@ -397,7 +421,7 @@ window.wallpaperPropertyListener={
 		/*默认壁纸
 		if (properties.DefaultWallpaper) {
 			backgroundRoute = "url('imgs/"+ properties.DefaultWallpaper.value +".jpg')"
-			if(FristLoad == false){}else{shouldShow();}
+			if(FristLoad == true){}else{shouldShow();}
         }*/
 		//自定义视频
 		if(properties.selectvideo){
@@ -476,7 +500,7 @@ window.wallpaperPropertyListener={
         // 更改幻灯切换时间
         if(properties.imageswitchtimes){
             speed = properties.imageswitchtimes.value;
-            changeBackground();
+            if(FristLoad == true){}else{changeBackground()};
         }
         //自由变换
         if(properties.bgy){
@@ -2233,6 +2257,142 @@ window.wallpaperPropertyListener={
                             countdown_webtext.style.padding = null
                             countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
                         }
+                }
+
+                if(properties.picturesinfo_language){
+                    picturesinfo_language = properties.picturesinfo_language.value
+                }
+                if(properties.picturesinfoY){
+                    var y = properties.picturesinfoY.value
+                    pictures.picture_info.style.top = y + "%"
+                }
+                if(properties.picturesinfoX){
+                    var x = properties.picturesinfoX.value
+                    pictures.picture_info.style.left = x + "%"
+                }
+                if(properties.picturesinfo_size){
+                    var s = properties.picturesinfo_size.value;
+			        pictures.picture_info.style.fontSize = Math.floor(h/600*s) + 'px';
+                    pictures.picture_info.style.lineHeight = Math.floor(h/1140*s) + 'px';
+                }
+                if(properties.picturesinfo_show){
+                    picturesinfo_show = properties.picturesinfo_show.value
+                    if(properties.picturesinfo_show.value){
+                        pictures.picture_info.style.display = "flex"
+                    }else{
+                        pictures.picture_info.style.display = "none"
+                    }
+                }
+                if(properties.picturesinfo_color){
+                    picturesinfo_color = properties.picturesinfo_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                    if(Fristpicturesinfo == false){
+                        picturesinfoappearance()
+                    }
+                }
+                if(properties.picturesinfo_blurcolor_show){
+                    picturesinfo_blurcolor_show = properties.picturesinfo_blurcolor_show.value
+                    if(Fristpicturesinfo == false){
+                    picturesinfoappearance()
+                    }
+                }
+                if(properties.picturesinfo_blurcolor){
+                    picturesinfo_blurcolor = properties.picturesinfo_blurcolor.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                    if(Fristpicturesinfo == false){
+                    picturesinfoappearance()
+                    }
+                }
+                if(properties.picturesinfo_yakeli_show){
+                    picturesinfo_yakeli_show = properties.picturesinfo_yakeli_show.value
+                    if(Fristpicturesinfo == false){
+                    picturesinfoappearance()
+                    }
+                }
+                if(properties.picturesinfo_yakelicolor){
+                    picturesinfo_yakelicolor = properties.picturesinfo_yakelicolor.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                    if(Fristpicturesinfo == false){
+                    picturesinfoappearance()
+                    }
+                }
+                if(properties.picturesinfo_yakeli){
+                    picturesinfo_yakeli = properties.picturesinfo_yakeli.value/100
+                    if(Fristpicturesinfo == false){
+                    picturesinfoappearance()
+                    }
+                }
+                if(properties.picturesinfo_bluryakeli){
+                    picturesinfo_bluryakeli = properties.picturesinfo_bluryakeli.value
+                    picturesinfoappearance()
+        
+                    Fristpicturesinfo = false
+                }
+                function picturesinfoappearance(){
+        
+                    pictures.picture_info.style.color = 'rgb('+picturesinfo_color+')';
+                    var titleicon =  document.querySelector("#picture_info .titleicon")
+                    var authoricon =  document.querySelector("#picture_info .authoricon")
+                    var locationicon = document.querySelector("#picture_info .locationicon")
+                    var filter = 'drop-shadow(0 10240px ' + 'rgb(' + picturesinfo_color + '))'
+                    titleicon.style.filter = filter;
+                    authoricon.style.filter = filter;
+                    locationicon.style.filter = filter;
+                    
+        
+                    if(picturesinfo_blurcolor_show){
+                        pictures.info.style.textShadow = '0 0 20px rgb('+picturesinfo_blurcolor+')';
+                    }else{
+                        pictures.info.style.textShadow = null
+                    }
+        
+                    if(picturesinfo_yakeli_show){
+                        pictures.info.style.background = "rgba("+picturesinfo_yakelicolor+","+picturesinfo_yakeli+")"
+                        pictures.info.style.backdropFilter = "blur("+picturesinfo_bluryakeli+"px)"
+                    }else{
+                        pictures.info.style.background = null
+                        pictures.info.style.backdropFilter = null
+                    }
+                }
+                if(properties.picturesinfo_timetransparency){
+                    var t = properties.picturesinfo_timetransparency.value/100;
+                    pictures.picture_info.style.opacity = t;
+                }
+                if(properties.picturesinfo_roundedcorners){
+                    var Roundedcorners = properties.picturesinfo_roundedcorners.value
+                    if(FristLoad == true){
+                        setTimeout(function(){
+                            var height =  window.getComputedStyle(picture_info).height
+                            pictures.info.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                            pictures.info.style.padding = null
+                            pictures.info.style.padding = ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + "0";
+                        },2000)}else{
+                            var height =  window.getComputedStyle(picture_info).height
+                            pictures.info.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                            pictures.info.style.padding = null
+                            pictures.info.style.padding = ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + "0";
+                        }
+                }
+                if(properties.picturesinfo_showaway){
+                    if(properties.picturesinfo_showaway.value == true){
+                        pictures.picture_info.style.transform = 'translate(-100%, 0)';
+                    }else{
+                        pictures.picture_info.style.transform = 'translate(0, 0)';
+                    }
+                }
+                if(properties.picturesinfo_showRorL){
+                    picturesinfo_showRorL = properties.picturesinfo_showRorL.value
+                    if(properties.picturesinfo_showRorL.value){
+                        pictures.picture_info.style.textAlign = "right"
+                    }else{
+                        pictures.picture_info.style.textAlign = "left"
+                    }
+                }
+                if(properties.picturesinfo_showwidth){
+                    if(properties.picturesinfo_showwidth.value == 0){
+                        pictures.info.style.width = 'auto'
+                    }else{
+                    var s = properties.picturesinfo_showwidth.value/100
+                    //var w = window.innerWidth
+                    pictures.info.style.width = w*s + 'px'    
+                    }
                 }
                 if(FristLoad == true){console.log("main.js load success")}
                 setTimeout(function(){

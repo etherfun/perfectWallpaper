@@ -5,11 +5,13 @@
 // 幻灯片实现代码
 
 var RGBuse = document.querySelector("#RGBuse")
-var pictrues = {
+var pictures = {
+	picture_info : document.querySelector("#picture_info"),
+	info : document.querySelector("#picture_info .info"),
 	title : document.querySelector("#picture_info .title"),
-	anthor : document.querySelector("#picture_info .anthor"),
-	where : document.querySelector("#picture_info .where"),
-	text : document.querySelector("#picture_info .text")
+	author : document.querySelector("#picture_info .author"),
+	where : document.querySelector("#picture_info .location"),
+	text : document.querySelector("#picture_info .description")
 }
 
 var t
@@ -28,6 +30,9 @@ function updateFileList(currentFiles) {
 var calculate = function(t){
     var res = 1;
     switch (t){
+		case 0.5:
+			res = 30
+			break
         case 1:
             // 1min
             res = 60;
@@ -80,19 +85,24 @@ function changeBackground(){
 			break;
 		case 4://Bing壁纸
 			shouldShow();
-			t = setTimeout(shouldShow,10800000);
+			t = setTimeout(changeBackground,10800000);
 			break;
 		case 5://Lorem Picsum
 			shouldShow();
-			t = setTimeout(shouldShow,calculate(speed));
+			t = setTimeout(changeBackground,calculate(speed));
 			break;
-		case 6://星河图片
+		case 6://NASA
 			shouldShow();
-			t = setTimeout(shouldShow,calculate(speed));
+			t = setTimeout(changeBackground,10800000);
 			break;
 		case 7://次元api
 			shouldShow();
-			t = setTimeout(shouldShow,calculate(speed));
+			t = setTimeout(changeBackground,calculate(speed));
+			break;
+		case 8://Windows聚焦
+			shouldShow();
+			t = setTimeout(changeBackground,calculate(speed));
+			break
         default:
     }
 	//setInterval("changeBackground()",5000);
@@ -152,6 +162,8 @@ function shouldShow(){
 			}
 			//设置但壁纸样式
 			setBackgroundStyle();
+			clearpicturesinfo()
+			pictures.picture_info.style.display = "none"
             break;
         case 2://随机模式
 			//关闭视频
@@ -165,22 +177,57 @@ function shouldShow(){
 				document.body.style.backgroundImage = backgroundRoute
 				//RGBuse.style.backgroundImage = backgroundRoute
 			}
+			clearpicturesinfo()
+			pictures.picture_info.style.display = "none"
             break;
 		case 3://视频模式
 			//关闭幻灯片特效
 			$.backstretch("destroy", false);
 			ChangeVideoModel();
+			clearpicturesinfo()
+			pictures.picture_info.style.display = "none"
 			break;
 		case 4: // Bing壁纸
+			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
+				pictures.picture_info.style.display = "flex"
+			}
 			// 关闭幻灯片特效
 			$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
-			$.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=zh-CN", function (getbing) {
-				console.log(JSON.stringify(getbing));
-				var bingurl = 'https://cn.bing.com' + getbing.images[0].urlbase;
-	
+			switch(picturesinfo_language){
+				case 1:
+					var lga = "zh-CN"
+					break
+				case 2:
+					var lga = "zh-TW"
+					break
+				case 3:
+					var lga = "en-US"
+					break
+				case 4:
+					var lga = "ja-JP"
+					break
+				case 5:
+					var lga = "Ko_KR"
+			}
+
+			$.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + lga, function (get) {
+				console.log(JSON.stringify(get));
+
+				var title = get.images[0].title
+				var text = ""
+				var copyright = ""
+				var where = ""
+				const match = get.images[0].copyright.match(/\(([^)]+)\)/);  
+				if (match) {   
+			    	copyright = match[1];  
+			    	where = get.images[0].copyright.replace(/\(([^)]+)\)/, '').trim();  
+				}  
+				picturesinfo_showrl(title,copyright,where,text)
+
+				var bingurl = 'https://cn.bing.com' + get.images[0].urlbase;
 				var img = new Image();
 				img.src = bingurl + "_UHD.jpg";
 	
@@ -203,9 +250,11 @@ function shouldShow(){
 			
 			img.onload = function() {  
 				
-				document.body.style.backgroundImage = "url('https://picsum.photos/3840/2160?random=" + timestamp + "')";
+				document.body.style.backgroundImage = "url(" + img.src + ")";
 				setBackgroundStyle();  
 			};  
+			clearpicturesinfo()
+			pictures.picture_info.style.display = "none"
 			break;
 		/*case 6://星河图片api
 			// 关闭幻灯片特效
@@ -230,27 +279,31 @@ function shouldShow(){
 			myvideo.src = null;  
 			 
 			$.get(chiyuanapi, function (getchiyuan) {  
-				var json = JSON.parse(getchiyuan)
+				var url = JSON.parse(getchiyuan).url
 
 				var img = new Image();  
-				img.src = json.url;
+				img.src = url;
 			
 				img.onload = function() {  
 					  
-					document.body.style.backgroundImage = "url('" + json.url + "')";  
+					document.body.style.backgroundImage = "url('" + img.src + "')";  
 					setBackgroundStyle();  
 
 				};  
 			});  
+			clearpicturesinfo()
+			pictures.picture_info.style.display = "none"
 			break;
-			case 6: // NASA星空
+		case 6: // NASA星空
+			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
+				pictures.picture_info.style.display = "flex"
+			}
 			// 关闭幻灯片特效
 			$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
-			var test1111 = 1
 			
-			switch(test1111){
+			switch(galaxyapi){
 				case 0:
 					$.get("https://apod.nasa.gov/", function (get) {
 				
@@ -269,10 +322,10 @@ function shouldShow(){
 						}
 						use(url)
 
-						pictrues.title.innerHTML = get.title
-						pictrues.anthor.innerHTML = get.copyright
-						pictrues.where.innerHTML = ""
-						//pictrues.text.innerHTML = get.explanation
+						var copyright
+						if(get.copyright == undefined){copyright = ""}else{copyright = get.copyright}
+						picturesinfo_showrl(get.title,copyright,"",get.explanation)
+					
 					})
 				break;
 			}
@@ -282,11 +335,57 @@ function shouldShow(){
 				img.src = url
 				img.onload = function () {
 					document.body.style.backgroundImage = "url('" + img.src + "')";
-				
+					
 					setBackgroundStyle();
 				};
 			}
-			
+		break;
+		case 8:
+			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
+				pictures.picture_info.style.display = "flex"
+			}
+			// 关闭幻灯片特效
+			$.backstretch("destroy", false);
+			// 关闭视频
+			myvideo.src = null;
+
+			switch(picturesinfo_language){
+				case 1:
+					var lga = "zh-CN"
+					break
+				case 2:
+					var lga = "zh-TW"
+					break
+				case 3:
+					var lga = "en-US"
+					break
+				case 4:
+					var lga = "ja-JP"
+					break
+				case 5:
+					var lga = "Ko_KR"
+			}
+			var ctry = lga.slice(3)
+
+			$.get("https://arc.msn.com/v3/Delivery/Placement?pid=209567&fmt=json&cdm=1&pl=" + lga + "&lc=" + lga +"&ctry=" + ctry, function (get) {
+				var rawjson = JSON.parse(get.batchrsp.items[0].item.replace("\\",""))
+
+				var url = rawjson.ad.image_fullscreen_001_landscape.u
+				var img = new Image();
+				img.src = url;
+				
+				var title = rawjson.ad.hs1_cta_text.tx
+				var text = rawjson.ad.hs2_title_text.tx
+				var copyright = rawjson.ad.copyright_text.tx
+				var where = rawjson.ad.title_text.tx
+				picturesinfo_showrl(title,copyright,where,text)
+				
+				img.onload = function () {
+					document.body.style.backgroundImage = "url('" + img.src + "')";
+				
+					setBackgroundStyle();
+				};
+			});
 			break;
     };
 
@@ -380,3 +479,32 @@ var TransitionSwith = function(){
 		default:
 	}
 };
+
+function picturesinfo_showrl(title,author,where,text){
+	clearpicturesinfo()
+	var text_w = document.querySelector("#picture_info .description")
+	if(picturesinfo_showRorL){
+		var title_w = document.querySelector("#picture_info .title .right")
+		var author_w = document.querySelector("#picture_info .author .right")
+		var where_w = document.querySelector("#picture_info .location .right")
+	}else{
+		var title_w = document.querySelector("#picture_info .title .left")
+		var author_w = document.querySelector("#picture_info .author .left")
+		var where_w = document.querySelector("#picture_info .location .left")
+	}
+	title_w.innerHTML = title
+	author_w.innerHTML = author
+	where_w.innerHTML = where
+	text_w.innerHTML = text
+
+}
+
+function clearpicturesinfo(){
+	document.querySelector("#picture_info .title .left").innerHTML = null
+	document.querySelector("#picture_info .author .left").innerHTML = null
+	document.querySelector("#picture_info .location .left").innerHTML = null
+	document.querySelector("#picture_info .title .right").innerHTML = null
+	document.querySelector("#picture_info .author .right").innerHTML = null
+	document.querySelector("#picture_info .location .right").innerHTML = null
+}
+		

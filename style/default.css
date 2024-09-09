@@ -75,8 +75,6 @@ video {
 	transform: translate(-50%, -50%);
 }
 #countdown .text{
-	background: rgba(0, 0, 0, 0.1);
-    backdrop-filter: blur(10px);
 	white-space: nowrap;
 	top:0;
 	border-radius: 10px;
@@ -228,18 +226,49 @@ video {
 	transform: translateY(-10240px);
 	overflow: hidden;
 }
-#picture_info {
-	position:absolute;
-	top:0;
-	left:0;
-	text-align:center;
-	color:#fff;
-	font-family:"等线 Light","Microsoft Yahei Light";
-	font-size:200px;
-	justify-content: space-around;
-	transform: translate(-50%, -50%);
+
+#picture_info .titleicon{
+	width: 1em;
+    height: 1em;
+    vertical-align: middle;
+	transform: translateY(-10240px);
+	overflow: hidden;
+}
+#picture_info .authoricon, 
+#picture_info .locationicon {
+	width: 1em;
+    height: 1em;
+    vertical-align: middle;
+	transform: translateY(-10240px);
+	overflow: hidden;
 }
 
+#picture_info {
+    display: flex;
+    align-items: flex-start;
+	position:absolute;
+	text-align:left;
+	color:#fff;
+	font-family:"等线 Light","Microsoft Yahei Light";
+	font-size:20px;
+	justify-content: space-around;
+    white-space: nowrap;
+}
+
+#picture_info .title .right,
+#picture_info .title .left{
+	font-size: 1.5em;
+    font-weight: 1000;
+}
+#picture_info .info {
+	font-size:0.5em;
+    display: flex;
+    flex-direction: column;
+}
+
+#picture_info .description {
+    line-height: 1.6;
+}
 #RGBuse{
 	display: none;
 	height: 20;

@@ -18,7 +18,7 @@ window.wallpaperPluginListener = {
 
 function getEncodedCanvasImageData(canvas) {
     var context = canvas.getContext('2d');
-    var imageData = context.getImageData(0, 0, canvas.width, canvas.height);
+    var imageData = context.getImageData(0, 0, 100, 20);
     var colorArray = [];
 
     for (var d = 0; d < imageData.data.length; d += 4) {
@@ -31,24 +31,75 @@ function getEncodedCanvasImageData(canvas) {
 }
 
 // Only execute this logic if the LED plugin has actually been loaded
-if (wallpaperSettings.ledPlugin) {
-    const canvas = document.getElementById('RGBCanvas');
+function startRGB() {
+    const canvas = document.getElementById('RGBuse');
     var encodedImageData = getEncodedCanvasImageData(canvas);
     window.wpPlugins.led.setAllDevicesByImageData(encodedImageData, canvas.width, canvas.height);
 }
 
 
+let videoIntervalId
+  
+function background2canvas(src, videoORimages) {  
+    var rgbbg = document.querySelector('#RGBuse')
+    var ctx = rgbbg.getContext('2d')
+    
+  
+    if (!videoORimages) {  
+        clearInterval(videoIntervalId)
+        videoIntervalId = null
+    }  
+  
+    if (videoORimages) {  
+        var video = document.getElementById('myvideo')
+        videoIntervalId = setInterval(function() {  
+            if (!video.paused && !video.ended) {  
+                ctx.clearRect(0,0,100,20)
+                ctx.drawImage(video,0,0,100,20)
+                startRGB()
+            }  
+        }, RGBRefreshTiming());
+    } else {  
+        var img = new Image() 
+        img.src = src
+        img.onload = function(){
+            setTimeout(function(){
+                ctx.drawImage(img,0,0,100,20)
+            startRGB()
+            },200)
+        }
+    }  
+}  
 
+function RGBRefreshTiming(){
+    switch(RGBRefresh){
+        case 24:
+            return 41
+            
+        case 30:
+            return 33
 
-function background2canvas(){
-    let rgbbg = document.querySelector('#RGBuse');
-    let background = document.body.style.background;
-    let ctx = rgbbg.getContext('2d')
+        case 45:
+            return 22
 
-    background.addEventListener("load", (e) => {
-        ctx.drawImage(image,0,0,100,20);
-      });
-
-
-
+        case 60:
+            return 16
+    }
 }
+
+let sakuraIntervalId
+
+function sakuraccanvas(){
+    var sakura = document.getElementById('sakura')
+    var gl = sakura.getContext("webgl")
+    var rgbbg = document.querySelector('#RGBuse').getContext('2d')
+
+    
+    sakuraIntervalId = setInterval(function(){
+        if((sakura.width == window.screen.width) && (sakura.height == window.screen.height)){
+            rgbbg.drawImage(sakura,0,0,sakura.width,sakura.height,0,0,100,20)
+        }
+    },RGBRefreshTiming())
+    
+}
+setTimeout(sakuraccanvas,10000)

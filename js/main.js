@@ -48,6 +48,7 @@ var picturesinfo_yakeli
 var picturesinfo_yakelicolor
 var picturesinfo_bluryakeli
 var picturesinfo_show
+var RGBRefresh = 24
 
 // 音频相关
 var myAudio = document.getElementById("myAudio");
@@ -2332,7 +2333,8 @@ window.wallpaperPropertyListener={
                     var authoricon =  document.querySelector("#picture_info .authoricon")
                     var locationicon = document.querySelector("#picture_info .locationicon")
                     var filter = 'drop-shadow(0 10240px ' + 'rgb(' + picturesinfo_color + '))'
-                    titleicon.style.filter = filter;
+                    var filter1 = 'drop-shadow(0 10237px ' + 'rgb(' + picturesinfo_color + '))'
+                    titleicon.style.filter = filter1;
                     authoricon.style.filter = filter;
                     locationicon.style.filter = filter;
                     
@@ -2393,6 +2395,9 @@ window.wallpaperPropertyListener={
                     //var w = window.innerWidth
                     pictures.info.style.width = w*s + 'px'    
                     }
+                }
+                if(properties.RGBRefresh){
+                    RGBRefresh = properties.RGBRefresh.value
                 }
                 if(FristLoad == true){console.log("main.js load success")}
                 setTimeout(function(){

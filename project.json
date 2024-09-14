@@ -128,8 +128,8 @@
 			"AuthorInformation" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 333,
-				"order" : 433,
+				"index" : 335,
+				"order" : 435,
 				"text" : "<br/><h4>●  作者信息 </h4><small>作者：老陈（ZYM），毕业于 西安邮电大学 2010届<br/>QQ：394011315<br/>QQ交流群1：552188051<br/>QQ交流群2：673748076<br/>QQ交流群3：1036775823<br/>QQ交流群4：776830214<br />优先加序号靠后的QQ群，群内可以获取作者编写的无损webm格式视频转换工具，各种视频模板资源，还可以体验全新的完美壁纸测试版，也欢迎有编程能力的大佬来交流，各种答疑，兴趣交流等等<br /></small>",
 				"type" : "text"
 			},
@@ -180,7 +180,7 @@
 			"DateFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 174,
+				"index" : 176,
 				"options" : 
 				[
 					{
@@ -316,7 +316,7 @@
 						"value" : 33
 					}
 				],
-				"order" : 274,
+				"order" : 276,
 				"text" : "<br />日期格式<br />Date Format<br />",
 				"type" : "combo",
 				"value" : 15
@@ -324,10 +324,10 @@
 			"DateSize" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 186,
+				"index" : 188,
 				"max" : 50,
 				"min" : 10,
-				"order" : 286,
+				"order" : 288,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 19
@@ -335,10 +335,10 @@
 			"DateX" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 184,
+				"index" : 186,
 				"max" : 100,
 				"min" : 0,
-				"order" : 284,
+				"order" : 286,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -346,10 +346,10 @@
 			"DateY" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 185,
+				"index" : 187,
 				"max" : 100,
 				"min" : 0,
-				"order" : 285,
+				"order" : 287,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 54
@@ -673,16 +673,16 @@
 			},
 			"Test_Author" : 
 			{
-				"index" : 332,
-				"order" : 432,
+				"index" : 334,
+				"order" : 434,
 				"text" : "<br /><h4>●  原作者信息</h4><br />(Author Information)",
 				"type" : "bool",
 				"value" : false
 			},
 			"Test_ModAuthor" : 
 			{
-				"index" : 339,
-				"order" : 439,
+				"index" : 341,
+				"order" : 441,
 				"text" : "<br /><h4>●  修改者</h4><br />",
 				"type" : "bool",
 				"value" : false
@@ -703,8 +703,8 @@
 			},
 			"Text_Hitokoto" : 
 			{
-				"index" : 257,
-				"order" : 357,
+				"index" : 259,
+				"order" : 359,
 				"text" : "●  一言  Hitokoto",
 				"type" : "group"
 			},
@@ -724,23 +724,23 @@
 			},
 			"Text_Visual_Time" : 
 			{
-				"index" : 154,
-				"order" : 254,
+				"index" : 156,
+				"order" : 256,
 				"text" : "●  时间&日期  Time&Date",
 				"type" : "group"
 			},
 			"Text_Weather" : 
 			{
-				"index" : 189,
-				"order" : 289,
+				"index" : 191,
+				"order" : 291,
 				"text" : "●  天气  Weather",
 				"type" : "group"
 			},
 			"Text_Weather_2" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 203,
-				"order" : 303,
+				"index" : 205,
+				"order" : 305,
 				"text" : "<small>★输入城市名称即可手动定位,例如：北京<br/>在中国使用Visual Crossing请使用中文拼音来作为城市</small>",
 				"type" : "text"
 			},
@@ -761,46 +761,46 @@
 			},
 			"Text_line10" : 
 			{
-				"index" : 188,
-				"order" : 288,
+				"index" : 190,
+				"order" : 290,
 				"text" : "<br/>__________________________________________<br/>",
 				"type" : "text"
 			},
 			"Text_line155" : 
 			{
 				"condition" : "",
-				"index" : 156,
-				"order" : 256,
+				"index" : 158,
+				"order" : 258,
 				"text" : "<br/>时间相关(Time Correlation)<br/>",
 				"type" : "text"
 			},
 			"Text_line160" : 
 			{
 				"condition" : "",
-				"index" : 172,
-				"order" : 272,
+				"index" : 174,
+				"order" : 274,
 				"text" : "<br/>日期相关(Date Correlation)<br/>",
 				"type" : "text"
 			},
 			"Text_line194" : 
 			{
-				"index" : 256,
-				"order" : 356,
+				"index" : 258,
+				"order" : 358,
 				"text" : "<br/>__________________________________________<br/>",
 				"type" : "text"
 			},
 			"Text_line195" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 351,
-				"order" : 451,
+				"index" : 353,
+				"order" : 453,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
 			"Text_line196" : 
 			{
-				"index" : 341,
-				"order" : 441,
+				"index" : 343,
+				"order" : 443,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
@@ -813,8 +813,8 @@
 			},
 			"Text_line203" : 
 			{
-				"index" : 290,
-				"order" : 390,
+				"index" : 292,
+				"order" : 392,
 				"text" : "__________________________________________<br/>",
 				"type" : "text"
 			},
@@ -880,16 +880,16 @@
 			},
 			"Text_line99" : 
 			{
-				"index" : 153,
-				"order" : 253,
+				"index" : 155,
+				"order" : 255,
 				"text" : "<br/>__________________________________________<br/>",
 				"type" : "text"
 			},
 			"TimeColor" : 
 			{
 				"condition" : "(showTime.value == true || showDate.value == true) && TimeColorRhythm.value != true",
-				"index" : 160,
-				"order" : 260,
+				"index" : 162,
+				"order" : 262,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -897,8 +897,8 @@
 			"TimeColorRhythm" : 
 			{
 				"condition" : "showTime.value == true || showDate.value == true",
-				"index" : 155,
-				"order" : 255,
+				"index" : 157,
+				"order" : 257,
 				"text" : "<br />颜色律动<br />Color Rhythm<br />",
 				"type" : "bool",
 				"value" : false
@@ -978,8 +978,8 @@
 			"air" : 
 			{
 				"condition" : "weather_show.value == true && tianqiapi.value == true && weather_diy.value == true",
-				"index" : 235,
-				"order" : 335,
+				"index" : 237,
+				"order" : 337,
 				"text" : "<br/>空气质量<br />Air quality<br/>",
 				"type" : "bool",
 				"value" : true
@@ -995,8 +995,8 @@
 			"audio_BallText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 148,
-				"order" : 248,
+				"index" : 150,
+				"order" : 250,
 				"text" : "<br/><small>●  设置小球相关的参数</small><br/>",
 				"type" : "text"
 			},
@@ -1030,10 +1030,10 @@
 			"audio_ballRotation" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 152,
+				"index" : 154,
 				"max" : 60,
 				"min" : -60,
-				"order" : 252,
+				"order" : 254,
 				"text" : "<br/>旋转小球<br/>Rotating Ball<br/>",
 				"type" : "slider",
 				"value" : 0
@@ -1041,10 +1041,10 @@
 			"audio_ballSize" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 151,
+				"index" : 153,
 				"max" : 10,
 				"min" : 1,
-				"order" : 251,
+				"order" : 253,
 				"text" : "<br/>小球大小<br/>Ball Size<br/>",
 				"type" : "slider",
 				"value" : 3
@@ -1052,10 +1052,10 @@
 			"audio_ballSpacer" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 150,
+				"index" : 152,
 				"max" : 10,
 				"min" : 1,
-				"order" : 250,
+				"order" : 252,
 				"text" : "<br/>小球间隔<br/>Ball Spacer<br/>",
 				"type" : "slider",
 				"value" : 4
@@ -1083,10 +1083,10 @@
 			"audio_distance" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 146,
+				"index" : 148,
 				"max" : 100,
 				"min" : 0,
-				"order" : 246,
+				"order" : 248,
 				"text" : "<br/>内外环距离<br/>Distance<br/>",
 				"type" : "slider",
 				"value" : 0
@@ -1118,8 +1118,8 @@
 			"audio_isBall" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 149,
-				"order" : 249,
+				"index" : 151,
+				"order" : 251,
 				"text" : "<br/>显示小球<br/>Show Ball?<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1181,10 +1181,10 @@
 			"audio_lineWidth" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 147,
+				"index" : 149,
 				"max" : 10,
 				"min" : 1,
-				"order" : 247,
+				"order" : 249,
 				"text" : "<br/>线条粗细<br/>Line Width<br/>",
 				"type" : "slider",
 				"value" : 5
@@ -1225,10 +1225,10 @@
 			"audio_pointNum" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 145,
+				"index" : 147,
 				"max" : 120,
 				"min" : 3,
-				"order" : 245,
+				"order" : 247,
 				"text" : "<br/>点的数量<br/>Point Number<br/>",
 				"type" : "slider",
 				"value" : 120
@@ -1301,8 +1301,8 @@
 			},
 			"authorinfo" : 
 			{
-				"index" : 331,
-				"order" : 431,
+				"index" : 333,
+				"order" : 433,
 				"text" : "●  作者信息  Author Info",
 				"type" : "group",
 				"value" : ""
@@ -1406,8 +1406,8 @@
 			"cityname" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == true || qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 211,
-				"order" : 311,
+				"index" : 213,
+				"order" : 313,
 				"text" : "<br/>城市<br />city<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1415,8 +1415,8 @@
 			"cloud" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 228,
-				"order" : 328,
+				"index" : 230,
+				"order" : 330,
 				"text" : "<br/>云<br />cloud<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1434,10 +1434,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 307,
+				"index" : 309,
 				"max" : 100,
 				"min" : 0,
-				"order" : 407,
+				"order" : 409,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -1446,10 +1446,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 306,
+				"index" : 308,
 				"max" : 100,
 				"min" : 0,
-				"order" : 406,
+				"order" : 408,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 57
@@ -1457,8 +1457,8 @@
 			"countdown_blurcolor" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_blurcolor_show.value == true",
-				"index" : 302,
-				"order" : 402,
+				"index" : 304,
+				"order" : 404,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -1466,8 +1466,8 @@
 			"countdown_blurcolor_show" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 301,
-				"order" : 401,
+				"index" : 303,
+				"order" : 403,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -1476,10 +1476,10 @@
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 303,
+				"index" : 305,
 				"max" : 50,
 				"min" : 0,
-				"order" : 403,
+				"order" : 405,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 10
@@ -1487,8 +1487,8 @@
 			"countdown_color" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_fontusetb.value == 5",
-				"index" : 298,
-				"order" : 398,
+				"index" : 300,
+				"order" : 400,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1496,16 +1496,16 @@
 			"countdown_day" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 295,
-				"order" : 395,
+				"index" : 297,
+				"order" : 397,
 				"text" : "ui_countdown_day",
 				"type" : "textinput",
 				"value" : "180"
 			},
 			"countdown_group" : 
 			{
-				"index" : 291,
-				"order" : 391,
+				"index" : 293,
+				"order" : 393,
 				"text" : "●  倒计时  Countdown",
 				"type" : "group",
 				"value" : ""
@@ -1513,8 +1513,8 @@
 			"countdown_month" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 294,
-				"order" : 394,
+				"index" : 296,
+				"order" : 396,
 				"text" : "ui_countdown_month",
 				"type" : "textinput",
 				"value" : "1919"
@@ -1522,18 +1522,18 @@
 			"countdown_roundedcorners" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
-				"index" : 305,
+				"index" : 307,
 				"max" : 100,
 				"min" : 0,
-				"order" : 405,
+				"order" : 407,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
 			},
 			"countdown_show" : 
 			{
-				"index" : 292,
-				"order" : 392,
+				"index" : 294,
+				"order" : 394,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -1542,10 +1542,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 308,
+				"index" : 310,
 				"max" : 100,
 				"min" : 0,
-				"order" : 408,
+				"order" : 410,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -1554,10 +1554,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 309,
+				"index" : 311,
 				"max" : 50,
 				"min" : 10,
-				"order" : 409,
+				"order" : 411,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
@@ -1566,10 +1566,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 310,
+				"index" : 312,
 				"max" : 100,
 				"min" : 1,
-				"order" : 410,
+				"order" : 412,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -1577,8 +1577,8 @@
 			"countdown_txt" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 296,
-				"order" : 396,
+				"index" : 298,
+				"order" : 398,
 				"text" : "ui_countdown_txt_befor",
 				"type" : "textinput",
 				"value" : ""
@@ -1586,8 +1586,8 @@
 			"countdown_txt1" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 297,
-				"order" : 397,
+				"index" : 299,
+				"order" : 399,
 				"text" : "ui_countdown_txt_after",
 				"type" : "textinput",
 				"value" : ""
@@ -1596,10 +1596,10 @@
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 304,
+				"index" : 306,
 				"max" : 100,
 				"min" : 0,
-				"order" : 404,
+				"order" : 406,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 10
@@ -1607,8 +1607,8 @@
 			"countdown_yakeli_show" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 299,
-				"order" : 399,
+				"index" : 301,
+				"order" : 401,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -1616,8 +1616,8 @@
 			"countdown_yakelicolor" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
-				"index" : 300,
-				"order" : 400,
+				"index" : 302,
+				"order" : 402,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -1625,8 +1625,8 @@
 			"countdown_year" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 293,
-				"order" : 393,
+				"index" : 295,
+				"order" : 395,
 				"text" : "ui_countdown_year",
 				"type" : "textinput",
 				"value" : "114514"
@@ -1644,10 +1644,10 @@
 			{
 				"condition" : "showDate.value == true",
 				"fraction" : false,
-				"index" : 182,
+				"index" : 184,
 				"max" : 100,
 				"min" : 0,
-				"order" : 282,
+				"order" : 284,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -1655,10 +1655,10 @@
 			"datetransparency" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 187,
+				"index" : 189,
 				"max" : 100,
 				"min" : 0,
-				"order" : 287,
+				"order" : 289,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -1666,8 +1666,8 @@
 			"dewtemperature" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 216,
-				"order" : 316,
+				"index" : 218,
+				"order" : 318,
 				"text" : "<br/>露点温度<br />Dew point temperature<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1699,17 +1699,32 @@
 			"feelstemperature" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 215,
-				"order" : 315,
+				"index" : 217,
+				"order" : 317,
 				"text" : "<br/>体感<br />feels<br/>",
 				"type" : "bool",
 				"value" : true
 			},
+			"fps" : 
+			{
+				"index" : 146,
+				"options" : 
+				[
+					{
+						"label" : "1",
+						"value" : "1"
+					}
+				],
+				"order" : 246,
+				"text" : "fps",
+				"type" : "combo",
+				"value" : "1"
+			},
 			"freeapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false) || (weather_show.value == true && freeapi.value == true)",
-				"index" : 194,
-				"order" : 294,
+				"index" : 196,
+				"order" : 296,
 				"text" : "<br/>免费API (SteamUser@Guooo)",
 				"type" : "bool",
 				"value" : false
@@ -1717,8 +1732,8 @@
 			"friendlylinks" : 
 			{
 				"condition" : "",
-				"index" : 342,
-				"order" : 442,
+				"index" : 344,
+				"order" : 444,
 				"text" : "●  友情链接  Friend Links",
 				"type" : "group",
 				"value" : true
@@ -1746,8 +1761,8 @@
 			"getcityappid_tianqiapi" : 
 			{
 				"condition" : "weather_show.value == true && tianqiapi.value == true",
-				"index" : 205,
-				"order" : 305,
+				"index" : 207,
+				"order" : 307,
 				"text" : "<br/>获得的AppId<br />The AppId obtained<br/>",
 				"type" : "textinput",
 				"value" : ""
@@ -1755,8 +1770,8 @@
 			"getcityappsecret_tianqiapi" : 
 			{
 				"condition" : "weather_show.value == true && tianqiapi.value == true",
-				"index" : 207,
-				"order" : 307,
+				"index" : 209,
+				"order" : 309,
 				"text" : "<br/>获得的AppSecret<br />The AppSecret obtained<br/>",
 				"type" : "textinput",
 				"value" : ""
@@ -1764,8 +1779,8 @@
 			"getcitykey_qweather" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 204,
-				"order" : 304,
+				"index" : 206,
+				"order" : 306,
 				"text" : "<br/>获得的Key<br />The Key obtained<br/>",
 				"type" : "textinput",
 				"value" : ""
@@ -1773,8 +1788,8 @@
 			"getcitykey_visualcrossing" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true",
-				"index" : 206,
-				"order" : 306,
+				"index" : 208,
+				"order" : 308,
 				"text" : "<br/>获得的Key<br />The Key obtained<br/>",
 				"type" : "textinput",
 				"value" : ""
@@ -1782,40 +1797,40 @@
 			"help" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 336,
-				"order" : 436,
+				"index" : 338,
+				"order" : 438,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1759199212007589774/D084C90AD44D6BC3480A4046F0C1703A858A5673/' width='100%'  />",
 				"type" : "text"
 			},
 			"helpBZ" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 338,
-				"order" : 438,
+				"index" : 340,
+				"order" : 440,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529045343/C16164193E685A485B287C50E156F837DA1B2BB1/' width='100%'  />",
 				"type" : "text"
 			},
 			"helpDY" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 337,
-				"order" : 437,
+				"index" : 339,
+				"order" : 439,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529042529/ABB6DE28206C09CA53C1FD0651408433F648B16A/' width='100%' />",
 				"type" : "text"
 			},
 			"helpEnd" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 334,
-				"order" : 434,
+				"index" : 336,
+				"order" : 436,
 				"text" : "<small><br/>完美壁纸完全免费，需要您的支持<br/>支付宝394011315@qq.com 陈振原<br />欢迎赞助鼓励！感谢大家支持！</small>",
 				"type" : "text"
 			},
 			"helpUp" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 335,
-				"order" : 435,
+				"index" : 337,
+				"order" : 437,
 				"text" : "<small><br/>老陈已经开通了抖音和B站<br/>完美壁纸教程，桌面改造教程，桌搭好物推荐<br />数码开箱，创意礼物，出租屋改造等等<br />最接地气数码博主，有问必答，爱你们！<br />关注老陈，监督老陈完成全新版本的完美壁纸！</small>",
 				"type" : "text"
 			},
@@ -1823,10 +1838,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 287,
+				"index" : 289,
 				"max" : 100,
 				"min" : 0,
-				"order" : 387,
+				"order" : 389,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 26
@@ -1835,10 +1850,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 286,
+				"index" : 288,
 				"max" : 100,
 				"min" : 0,
-				"order" : 386,
+				"order" : 388,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 78
@@ -1846,8 +1861,8 @@
 			"hitokoto_a" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 263,
-				"order" : 363,
+				"index" : 265,
+				"order" : 365,
 				"text" : "<br/>动画<br />animation<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1855,8 +1870,8 @@
 			"hitokoto_auth" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 259,
-				"order" : 359,
+				"index" : 261,
+				"order" : 361,
 				"text" : "<br/>显示作者<br />Show author<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1864,8 +1879,8 @@
 			"hitokoto_b" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 264,
-				"order" : 364,
+				"index" : 266,
+				"order" : 366,
 				"text" : "<br/>漫画<br />caricature<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1873,8 +1888,8 @@
 			"hitokoto_blurcolor" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_blurcolor_show.value == true",
-				"index" : 279,
-				"order" : 379,
+				"index" : 281,
+				"order" : 381,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -1882,8 +1897,8 @@
 			"hitokoto_blurcolor_show" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 278,
-				"order" : 378,
+				"index" : 280,
+				"order" : 380,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -1892,10 +1907,10 @@
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 283,
+				"index" : 285,
 				"max" : 50,
 				"min" : 0,
-				"order" : 383,
+				"order" : 385,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 10
@@ -1903,8 +1918,8 @@
 			"hitokoto_c" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 265,
-				"order" : 365,
+				"index" : 267,
+				"order" : 367,
 				"text" : "<br/>游戏<br />game<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1912,8 +1927,8 @@
 			"hitokoto_color" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 277,
-				"order" : 377,
+				"index" : 279,
+				"order" : 379,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1921,8 +1936,8 @@
 			"hitokoto_d" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 266,
-				"order" : 366,
+				"index" : 268,
+				"order" : 368,
 				"text" : "<br/>文学<br />literature<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1930,8 +1945,8 @@
 			"hitokoto_diy" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 262,
-				"order" : 362,
+				"index" : 264,
+				"order" : 364,
 				"text" : "<br/>自定义一言类型<br />Customize the type of Hitokoto<br/>",
 				"type" : "bool",
 				"value" : false
@@ -1939,8 +1954,8 @@
 			"hitokoto_e" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 267,
-				"order" : 367,
+				"index" : 269,
+				"order" : 369,
 				"text" : "<br/>原创<br />original<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1948,8 +1963,8 @@
 			"hitokoto_f" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 268,
-				"order" : 368,
+				"index" : 270,
+				"order" : 370,
 				"text" : "<br/>来自网络<br />From the web<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1957,8 +1972,8 @@
 			"hitokoto_g" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 269,
-				"order" : 369,
+				"index" : 271,
+				"order" : 371,
 				"text" : "<br/>其他<br />other<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1966,8 +1981,8 @@
 			"hitokoto_h" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 270,
-				"order" : 370,
+				"index" : 272,
+				"order" : 372,
 				"text" : "<br/>影视<br />showbiz<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1975,8 +1990,8 @@
 			"hitokoto_i" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 271,
-				"order" : 371,
+				"index" : 273,
+				"order" : 373,
 				"text" : "<br/>诗词<br />poetry<br/>",
 				"type" : "bool",
 				"value" : true
@@ -1984,8 +1999,8 @@
 			"hitokoto_j" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 272,
-				"order" : 372,
+				"index" : 274,
+				"order" : 374,
 				"text" : "<br/>网易云<br /><i>NetEase Cloud</i><br/>",
 				"type" : "bool",
 				"value" : true
@@ -1993,8 +2008,8 @@
 			"hitokoto_k" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 273,
-				"order" : 373,
+				"index" : 275,
+				"order" : 375,
 				"text" : "<br/>哲学<br />philosophy<br/>",
 				"type" : "bool",
 				"value" : true
@@ -2002,8 +2017,8 @@
 			"hitokoto_l" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 274,
-				"order" : 374,
+				"index" : 276,
+				"order" : 376,
 				"text" : "<br/>抖机灵<br />jitterbug<br/>",
 				"type" : "bool",
 				"value" : true
@@ -2011,18 +2026,18 @@
 			"hitokoto_null" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 275,
-				"order" : 375,
+				"index" : 277,
+				"order" : 377,
 				"text" : "<br/>未定义类型按动画处理<br/><small>设置好后可以取消勾选⌈ 自定义一言类型 ⌋</small><br/>",
 				"type" : "text"
 			},
 			"hitokoto_roundedcorners" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"index" : 285,
+				"index" : 287,
 				"max" : 100,
 				"min" : 0,
-				"order" : 385,
+				"order" : 387,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -2030,8 +2045,8 @@
 			"hitokoto_show" : 
 			{
 				"condition" : "",
-				"index" : 258,
-				"order" : 358,
+				"index" : 260,
+				"order" : 360,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -2040,10 +2055,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 284,
+				"index" : 286,
 				"max" : 100,
 				"min" : 0,
-				"order" : 384,
+				"order" : 386,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -2052,10 +2067,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 288,
+				"index" : 290,
 				"max" : 50,
 				"min" : 10,
-				"order" : 388,
+				"order" : 390,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 10
@@ -2064,10 +2079,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 289,
+				"index" : 291,
 				"max" : 100,
 				"min" : 1,
-				"order" : 389,
+				"order" : 391,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -2075,7 +2090,7 @@
 			"hitokoto_updata" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 260,
+				"index" : 262,
 				"options" : 
 				[
 					{
@@ -2099,7 +2114,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 360,
+				"order" : 362,
 				"text" : "<br/>一言更新时间<br />Hitokoto update time<br/>",
 				"type" : "combo",
 				"value" : 5
@@ -2108,10 +2123,10 @@
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 282,
+				"index" : 284,
 				"max" : 100,
 				"min" : 0,
-				"order" : 382,
+				"order" : 384,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 10
@@ -2119,8 +2134,8 @@
 			"hitokoto_yakeli_show" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 280,
-				"order" : 380,
+				"index" : 282,
+				"order" : 382,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -2128,8 +2143,8 @@
 			"hitokoto_yakelicolor" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"index" : 281,
-				"order" : 381,
+				"index" : 283,
+				"order" : 383,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -2137,8 +2152,8 @@
 			"humidity" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 233,
-				"order" : 333,
+				"index" : 235,
+				"order" : 335,
 				"text" : "<br/>湿度<br />humidity<br/>",
 				"type" : "bool",
 				"value" : true
@@ -2237,8 +2252,8 @@
 			"moonphase" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 238,
-				"order" : 338,
+				"index" : 240,
+				"order" : 340,
 				"text" : "<br/>月相<br />moon phase<br/>",
 				"type" : "bool",
 				"value" : true
@@ -2246,8 +2261,8 @@
 			"newproperty" : 
 			{
 				"condition" : "aidafhjiuhufia",
-				"index" : 224,
-				"order" : 324,
+				"index" : 226,
+				"order" : 326,
 				"text" : "<br/>我自己分割用的( •̀ ω •́ )✧",
 				"type" : "bool",
 				"value" : false
@@ -2255,8 +2270,8 @@
 			"obstime" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 212,
-				"order" : 312,
+				"index" : 214,
+				"order" : 314,
 				"text" : "<br/>观测时间<br />Observation time<br/>",
 				"type" : "bool",
 				"value" : true
@@ -2264,8 +2279,8 @@
 			"oclock_blurcolor" : 
 			{
 				"condition" : "showTime.value == true && oclock_blurcolor_show.value == true",
-				"index" : 162,
-				"order" : 262,
+				"index" : 164,
+				"order" : 264,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -2273,8 +2288,8 @@
 			"oclock_blurcolor_show" : 
 			{
 				"condition" : "showTime.value == true || oclock_blurcolor_show == true",
-				"index" : 161,
-				"order" : 261,
+				"index" : 163,
+				"order" : 263,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -2283,10 +2298,10 @@
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 166,
+				"index" : 168,
 				"max" : 50,
 				"min" : 0,
-				"order" : 266,
+				"order" : 268,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 10
@@ -2295,10 +2310,10 @@
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 167,
+				"index" : 169,
 				"max" : 100,
 				"min" : 0,
-				"order" : 267,
+				"order" : 269,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -2307,10 +2322,10 @@
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 165,
+				"index" : 167,
 				"max" : 100,
 				"min" : 0,
-				"order" : 265,
+				"order" : 267,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 10
@@ -2318,8 +2333,8 @@
 			"oclock_yakeli_show" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 163,
-				"order" : 263,
+				"index" : 165,
+				"order" : 265,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -2327,8 +2342,8 @@
 			"oclock_yakelicolor" : 
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
-				"index" : 164,
-				"order" : 264,
+				"index" : 166,
+				"order" : 266,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -2336,8 +2351,8 @@
 			"odate_blurcolor" : 
 			{
 				"condition" : "showDate.value == true && odate_blurcolor_show.value == true",
-				"index" : 177,
-				"order" : 277,
+				"index" : 179,
+				"order" : 279,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -2345,8 +2360,8 @@
 			"odate_blurcolor_show" : 
 			{
 				"condition" : "showDate.value == true || oDate_blurcolor_show == true",
-				"index" : 176,
-				"order" : 276,
+				"index" : 178,
+				"order" : 278,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -2355,10 +2370,10 @@
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 181,
+				"index" : 183,
 				"max" : 50,
 				"min" : 0,
-				"order" : 281,
+				"order" : 283,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 10
@@ -2366,8 +2381,8 @@
 			"odate_color" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 175,
-				"order" : 275,
+				"index" : 177,
+				"order" : 277,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -2375,10 +2390,10 @@
 			"odate_roundedcorners" : 
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"index" : 183,
+				"index" : 185,
 				"max" : 100,
 				"min" : 0,
-				"order" : 283,
+				"order" : 285,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -2387,10 +2402,10 @@
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 180,
+				"index" : 182,
 				"max" : 100,
 				"min" : 0,
-				"order" : 280,
+				"order" : 282,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 10
@@ -2398,8 +2413,8 @@
 			"odate_yakeli_show" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 178,
-				"order" : 278,
+				"index" : 180,
+				"order" : 280,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -2407,8 +2422,8 @@
 			"odate_yakelicolor" : 
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"index" : 179,
-				"order" : 279,
+				"index" : 181,
+				"order" : 281,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3019,8 +3034,8 @@
 			},
 			"player_control" : 
 			{
-				"index" : 311,
-				"order" : 411,
+				"index" : 313,
+				"order" : 413,
 				"text" : "●  媒体集成  Media Integration",
 				"type" : "group",
 				"value" : ""
@@ -3028,8 +3043,8 @@
 			"player_control_blurcolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_blurcolor_show.value == true",
-				"index" : 318,
-				"order" : 418,
+				"index" : 320,
+				"order" : 420,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3037,8 +3052,8 @@
 			"player_control_blurcolor_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 317,
-				"order" : 417,
+				"index" : 319,
+				"order" : 419,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -3047,10 +3062,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 323,
+				"index" : 325,
 				"max" : 50,
 				"min" : 0,
-				"order" : 423,
+				"order" : 425,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 10
@@ -3058,8 +3073,8 @@
 			"player_control_color" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_fontusetb.value == 5",
-				"index" : 316,
-				"order" : 416,
+				"index" : 318,
+				"order" : 418,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3067,7 +3082,7 @@
 			"player_control_fontusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 315,
+				"index" : 317,
 				"options" : 
 				[
 					{
@@ -3091,7 +3106,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 415,
+				"order" : 417,
 				"text" : "ui_color_color",
 				"type" : "combo",
 				"value" : 2
@@ -3099,10 +3114,10 @@
 			"player_control_roundedcorners" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
-				"index" : 324,
+				"index" : 326,
 				"max" : 100,
 				"min" : 0,
-				"order" : 424,
+				"order" : 426,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3110,8 +3125,8 @@
 			"player_control_samealbumtitle" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 330,
-				"order" : 430,
+				"index" : 332,
+				"order" : 432,
 				"text" : "ui_player_control_samealbumTitle",
 				"type" : "bool",
 				"value" : false
@@ -3119,8 +3134,8 @@
 			"player_control_show" : 
 			{
 				"condition" : "",
-				"index" : 312,
-				"order" : 412,
+				"index" : 314,
+				"order" : 414,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : true
@@ -3128,8 +3143,8 @@
 			"player_control_showaway" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 329,
-				"order" : 429,
+				"index" : 331,
+				"order" : 431,
 				"text" : "ui_setting_showaway",
 				"type" : "bool",
 				"value" : false
@@ -3138,10 +3153,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 325,
+				"index" : 327,
 				"max" : 100,
 				"min" : 0,
-				"order" : 425,
+				"order" : 427,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -3150,10 +3165,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 326,
+				"index" : 328,
 				"max" : 50,
 				"min" : 10,
-				"order" : 426,
+				"order" : 428,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
@@ -3161,8 +3176,8 @@
 			"player_control_thumbnailrorl" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 328,
-				"order" : 428,
+				"index" : 330,
+				"order" : 430,
 				"text" : "ui_player_control_thumbnailrorl",
 				"type" : "bool",
 				"value" : false
@@ -3171,10 +3186,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 327,
+				"index" : 329,
 				"max" : 100,
 				"min" : 1,
-				"order" : 427,
+				"order" : 429,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -3183,10 +3198,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 322,
+				"index" : 324,
 				"max" : 100,
 				"min" : 0,
-				"order" : 422,
+				"order" : 424,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 10
@@ -3194,8 +3209,8 @@
 			"player_control_yakeli_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 319,
-				"order" : 419,
+				"index" : 321,
+				"order" : 421,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3203,7 +3218,7 @@
 			"player_control_yakelibgusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 320,
+				"index" : 322,
 				"options" : 
 				[
 					{
@@ -3227,7 +3242,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 420,
+				"order" : 422,
 				"text" : "ui_color_yakelicolor",
 				"type" : "combo",
 				"value" : 4
@@ -3235,8 +3250,8 @@
 			"player_control_yakelicolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true && player_control_yakelibgusetb.value == 5",
-				"index" : 321,
-				"order" : 421,
+				"index" : 323,
+				"order" : 423,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3245,10 +3260,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 314,
+				"index" : 316,
 				"max" : 100,
 				"min" : 0,
-				"order" : 414,
+				"order" : 416,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 0
@@ -3257,10 +3272,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 313,
+				"index" : 315,
 				"max" : 100,
 				"min" : 0,
-				"order" : 413,
+				"order" : 415,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 83
@@ -3268,8 +3283,8 @@
 			"precip" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 226,
-				"order" : 326,
+				"index" : 228,
+				"order" : 328,
 				"text" : "<br/>降水<br />precipitation<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3277,8 +3292,8 @@
 			"precipcover" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 217,
-				"order" : 317,
+				"index" : 219,
+				"order" : 319,
 				"text" : "<br/>降水小时<br />Hour of precipitation<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3286,8 +3301,8 @@
 			"precipprob" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 218,
-				"order" : 318,
+				"index" : 220,
+				"order" : 320,
 				"text" : "<br/>降水率<br />precipitation rate<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3295,8 +3310,8 @@
 			"pressure" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 227,
-				"order" : 327,
+				"index" : 229,
+				"order" : 329,
 				"text" : "<br/>大气压强<br />Atmospheric pressure<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3304,8 +3319,8 @@
 			"qweatherapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false) || (weather_show.value == true && qweatherapi.value == true)",
-				"index" : 195,
-				"order" : 295,
+				"index" : 197,
+				"order" : 297,
 				"text" : "<br/>和风天气API (<a href='https://www.qweather.com'>qweather.com</a>)",
 				"type" : "bool",
 				"value" : false
@@ -3344,8 +3359,8 @@
 			"rangefeelstemperature" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 219,
-				"order" : 319,
+				"index" : 221,
+				"order" : 321,
 				"text" : "<br/>体感范围<br />feels range<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3353,11 +3368,19 @@
 			"rangetemperature" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 220,
-				"order" : 320,
+				"index" : 222,
+				"order" : 322,
 				"text" : "<br/>气温范围<br />Temperature range<br/>",
 				"type" : "bool",
 				"value" : true
+			},
+			"rbg" : 
+			{
+				"index" : 145,
+				"order" : 245,
+				"text" : "RGB",
+				"type" : "group",
+				"value" : ""
 			},
 			"rotation" : 
 			{
@@ -3373,8 +3396,8 @@
 			"rsfgsfgersgerg" : 
 			{
 				"condition" : "gesgregesg",
-				"index" : 232,
-				"order" : 332,
+				"index" : 234,
+				"order" : 334,
 				"text" : "<br/>我自己分割用的( •̀ ω •́ )✧",
 				"type" : "bool",
 				"value" : false
@@ -3476,8 +3499,8 @@
 			},
 			"showDate" : 
 			{
-				"index" : 173,
-				"order" : 273,
+				"index" : 175,
+				"order" : 275,
 				"text" : "<br />显示日期<br />Visual Time<br />",
 				"type" : "bool",
 				"value" : true
@@ -3501,8 +3524,8 @@
 			},
 			"showTime" : 
 			{
-				"index" : 157,
-				"order" : 257,
+				"index" : 159,
+				"order" : 259,
 				"text" : "<br />显示时间<br />Visual Time<br />",
 				"type" : "bool",
 				"value" : true
@@ -3510,8 +3533,8 @@
 			"snow" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 229,
-				"order" : 329,
+				"index" : 231,
+				"order" : 331,
 				"text" : "<br/>降雪<br />snowfall<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3519,8 +3542,8 @@
 			"snowdepth" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 230,
-				"order" : 330,
+				"index" : 232,
+				"order" : 332,
 				"text" : "<br/>积雪深度<br />snow depth<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3528,8 +3551,8 @@
 			"solarradiation" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 237,
-				"order" : 337,
+				"index" : 239,
+				"order" : 339,
 				"text" : "<br/>太阳辐射功率<br />solar radiation power<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3561,8 +3584,8 @@
 			"sunriseset" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 236,
-				"order" : 336,
+				"index" : 238,
+				"order" : 338,
 				"text" : "<br/>日出<br />sunrise and sunset times<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3570,8 +3593,8 @@
 			"tShowSencends" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 159,
-				"order" : 259,
+				"index" : 161,
+				"order" : 261,
 				"text" : "<br />显示秒<br />Display seconds<br />",
 				"type" : "bool",
 				"value" : true
@@ -3579,10 +3602,10 @@
 			"tSize" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 170,
+				"index" : 172,
 				"max" : 50,
 				"min" : 10,
-				"order" : 270,
+				"order" : 272,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 18
@@ -3590,8 +3613,8 @@
 			"tStyle" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 158,
-				"order" : 258,
+				"index" : 160,
+				"order" : 260,
 				"text" : "<br />24小时制<br />24-Hour<br />",
 				"type" : "bool",
 				"value" : true
@@ -3599,10 +3622,10 @@
 			"tX" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 168,
+				"index" : 170,
 				"max" : 100,
 				"min" : 0,
-				"order" : 268,
+				"order" : 270,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -3610,10 +3633,10 @@
 			"tY" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 169,
+				"index" : 171,
 				"max" : 100,
 				"min" : 0,
-				"order" : 269,
+				"order" : 271,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 50
@@ -3621,8 +3644,8 @@
 			"temperature" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == true || qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 214,
-				"order" : 314,
+				"index" : 216,
+				"order" : 316,
 				"text" : "<br/>气温<br />temperature<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3630,68 +3653,60 @@
 			"test_modauthor1" : 
 			{
 				"condition" : "Test_ModAuthor.value == true",
-				"index" : 340,
-				"order" : 440,
+				"index" : 342,
+				"order" : 442,
 				"text" : "<br /><small>就一个高三生 你指望我会有原作者那样的成就？<small/><br/><h5>后面可能会自己加点功能 目前计划添加一言 反正都是给自己用的<h5/><br/><h4>希望原作者看到这个会去更新吧<h4/>",
 				"type" : "text"
 			},
 			"text_line40" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 276,
-				"order" : 376,
+				"index" : 278,
+				"order" : 378,
 				"text" : "<br/>- - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_line41" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 261,
-				"order" : 361,
+				"index" : 263,
+				"order" : 363,
 				"text" : "<br/>- - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_line42" : 
 			{
 				"condition" : "weather_show.value == true && weather_diy.value == true",
-				"index" : 209,
-				"order" : 309,
+				"index" : 211,
+				"order" : 311,
 				"text" : "<br/>- - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_line43" : 
 			{
 				"condition" : "weather_show.value == true && weather_diy.value == true",
-				"index" : 239,
-				"order" : 339,
+				"index" : 241,
+				"order" : 341,
 				"text" : "<br/><small>设置好后可以取消勾选⌈ 天气自定义 ⌋</small><br/><br/>- - - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_line44" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 199,
-				"order" : 299,
+				"index" : 201,
+				"order" : 301,
 				"text" : "<br/><small>★如需更换API请取消勾选已选API 再重新勾选<br/>后续有好的API会加入进来</small><br/>- - - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_line45" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 191,
-				"order" : 291,
+				"index" : 193,
+				"order" : 293,
 				"text" : "<br/>- - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_line46" : 
-			{
-				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 345,
-				"order" : 445,
-				"text" : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ",
-				"type" : "text"
-			},
-			"text_line47" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
 				"index" : 347,
@@ -3699,7 +3714,7 @@
 				"text" : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ",
 				"type" : "text"
 			},
-			"text_line48" : 
+			"text_line47" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
 				"index" : 349,
@@ -3707,19 +3722,27 @@
 				"text" : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ",
 				"type" : "text"
 			},
+			"text_line48" : 
+			{
+				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
+				"index" : 351,
+				"order" : 451,
+				"text" : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ",
+				"type" : "text"
+			},
 			"text_line49" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 354,
-				"order" : 454,
+				"index" : 356,
+				"order" : 456,
 				"text" : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ",
 				"type" : "text"
 			},
 			"text_line50" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 356,
-				"order" : 456,
+				"index" : 358,
+				"order" : 458,
 				"text" : "~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ~ ",
 				"type" : "text"
 			},
@@ -3734,8 +3757,8 @@
 			"text_onlychina" : 
 			{
 				"condition" : "(weather_show.value == true) && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false)",
-				"index" : 193,
-				"order" : 293,
+				"index" : 195,
+				"order" : 295,
 				"text" : "ui_text_onlychina",
 				"type" : "text",
 				"value" : 1
@@ -3750,16 +3773,16 @@
 			"text_weather_3" : 
 			{
 				"condition" : "weather_show.value == true && freeapi.value == true",
-				"index" : 201,
-				"order" : 301,
+				"index" : 203,
+				"order" : 303,
 				"text" : "<small>★有条件可以去申请API会比免费的好用(虽然免费的也后够用了)</small>",
 				"type" : "text"
 			},
 			"text_worldwidesupport" : 
 			{
 				"condition" : "(weather_show.value == true) && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false)",
-				"index" : 197,
-				"order" : 297,
+				"index" : 199,
+				"order" : 299,
 				"text" : "ui_text_worldwidesupport",
 				"type" : "text",
 				"value" : 1
@@ -3767,8 +3790,8 @@
 			"thankapi" : 
 			{
 				"condition" : "weather_show.value == true && freeapi.value == true",
-				"index" : 200,
-				"order" : 300,
+				"index" : 202,
+				"order" : 302,
 				"text" : "<small>★感谢Steam用户@Guooo提供的API</small>",
 				"type" : "text",
 				"value" : ""
@@ -3776,8 +3799,8 @@
 			"tianqiapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false) || (weather_show.value == true && tianqiapi.value == true)",
-				"index" : 196,
-				"order" : 296,
+				"index" : 198,
+				"order" : 298,
 				"text" : "<br/>天气API (<a href='https://www.tianqiapi.com'>tianqiapi.com</a>)",
 				"type" : "bool",
 				"value" : false
@@ -3785,10 +3808,10 @@
 			"timetransparency" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 171,
+				"index" : 173,
 				"max" : 100,
 				"min" : 0,
-				"order" : 271,
+				"order" : 273,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -3804,8 +3827,8 @@
 			"uvindex" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 234,
-				"order" : 334,
+				"index" : 236,
+				"order" : 336,
 				"text" : "<br/>紫外线<br />UV<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3813,8 +3836,8 @@
 			"vis" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 231,
-				"order" : 331,
+				"index" : 233,
+				"order" : 333,
 				"text" : "<br/>能见度<br />visibility<br/>",
 				"type" : "bool",
 				"value" : true
@@ -3854,8 +3877,8 @@
 			"visualcrossingapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false) || (weather_show.value == true && visualcrossingapi.value == true)",
-				"index" : 198,
-				"order" : 298,
+				"index" : 200,
+				"order" : 300,
 				"text" : "<br/>Visual Crossing api (<a href='https://www.visualcrossing.com'>visualcrossing.com</a>)",
 				"type" : "bool",
 				"value" : false
@@ -3872,8 +3895,8 @@
 			"wallpapercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 343,
-				"order" : 443,
+				"index" : 345,
+				"order" : 445,
 				"text" : "壁纸类<br />Wallpapers",
 				"type" : "bool",
 				"value" : false
@@ -3881,32 +3904,32 @@
 			"wallpapercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 344,
-				"order" : 444,
+				"index" : 346,
+				"order" : 446,
 				"text" : "ui_friendlink_wallpaper_0",
 				"type" : "text"
 			},
 			"wallpapercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 346,
-				"order" : 446,
+				"index" : 348,
+				"order" : 448,
 				"text" : "ui_friendlink_wallpaper_1",
 				"type" : "text"
 			},
 			"wallpapercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 348,
-				"order" : 448,
+				"index" : 350,
+				"order" : 450,
 				"text" : "ui_friendlink_wallpaper_2",
 				"type" : "text"
 			},
 			"wallpapercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 350,
-				"order" : 450,
+				"index" : 352,
+				"order" : 452,
 				"text" : "ui_friendlink_wallpaper_3",
 				"type" : "text"
 			},
@@ -3967,10 +3990,10 @@
 			"weatherX" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 252,
+				"index" : 254,
 				"max" : 100,
 				"min" : 0,
-				"order" : 352,
+				"order" : 354,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 26
@@ -3978,10 +4001,10 @@
 			"weatherY" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 253,
+				"index" : 255,
 				"max" : 100,
 				"min" : 0,
-				"order" : 353,
+				"order" : 355,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 81
@@ -3989,16 +4012,16 @@
 			"weather_CityText" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 202,
-				"order" : 302,
+				"index" : 204,
+				"order" : 304,
 				"text" : "<br />定位城市<br />City Weather<br />",
 				"type" : "textinput"
 			},
 			"weather_Color" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 241,
-				"order" : 341,
+				"index" : 243,
+				"order" : 343,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -4006,8 +4029,8 @@
 			"weather_blurcolor" : 
 			{
 				"condition" : "weather_show.value == true && weather_blurcolor_show.value == true",
-				"index" : 245,
-				"order" : 345,
+				"index" : 247,
+				"order" : 347,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -4015,8 +4038,8 @@
 			"weather_blurcolor_show" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 244,
-				"order" : 344,
+				"index" : 246,
+				"order" : 346,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -4025,10 +4048,10 @@
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 249,
+				"index" : 251,
 				"max" : 50,
 				"min" : 0,
-				"order" : 349,
+				"order" : 351,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 10
@@ -4036,8 +4059,8 @@
 			"weather_diy" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 210,
-				"order" : 310,
+				"index" : 212,
+				"order" : 312,
 				"text" : "<br/>天气自定义<br/>Weather customization<br/>",
 				"type" : "bool",
 				"value" : false
@@ -4045,7 +4068,7 @@
 			"weather_lang" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true",
-				"index" : 242,
+				"index" : 244,
 				"options" : 
 				[
 					{
@@ -4061,7 +4084,7 @@
 						"value" : "en"
 					}
 				],
-				"order" : 342,
+				"order" : 344,
 				"text" : "<br />显示语言<br />Display Language<br />",
 				"type" : "combo",
 				"value" : "zh"
@@ -4069,18 +4092,18 @@
 			"weather_roundedcorners" : 
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
-				"index" : 251,
+				"index" : 253,
 				"max" : 100,
 				"min" : 0,
-				"order" : 351,
+				"order" : 353,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
 			},
 			"weather_show" : 
 			{
-				"index" : 190,
-				"order" : 290,
+				"index" : 192,
+				"order" : 292,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -4089,10 +4112,10 @@
 			{
 				"condition" : "weather_show.value == true",
 				"fraction" : false,
-				"index" : 250,
+				"index" : 252,
 				"max" : 100,
 				"min" : 0,
-				"order" : 350,
+				"order" : 352,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -4100,10 +4123,10 @@
 			"weather_size" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 254,
+				"index" : 256,
 				"max" : 50,
 				"min" : 10,
-				"order" : 354,
+				"order" : 356,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 12
@@ -4111,10 +4134,10 @@
 			"weather_timetransparency" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 255,
+				"index" : 257,
 				"max" : 100,
 				"min" : 0,
-				"order" : 355,
+				"order" : 357,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -4122,7 +4145,7 @@
 			"weather_unit" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true",
-				"index" : 243,
+				"index" : 245,
 				"options" : 
 				[
 					{
@@ -4142,7 +4165,7 @@
 						"value" : "base"
 					}
 				],
-				"order" : 343,
+				"order" : 345,
 				"text" : "<br />显示单位<br />unit of measure<br />",
 				"type" : "combo",
 				"value" : "metric"
@@ -4150,7 +4173,7 @@
 			"weather_updata" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 240,
+				"index" : 242,
 				"options" : 
 				[
 					{
@@ -4174,7 +4197,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 340,
+				"order" : 342,
 				"text" : "<br/>天气更新时间<br/>Weather update time<br/>",
 				"type" : "combo",
 				"value" : 3
@@ -4183,10 +4206,10 @@
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 248,
+				"index" : 250,
 				"max" : 100,
 				"min" : 0,
-				"order" : 348,
+				"order" : 350,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 10
@@ -4194,8 +4217,8 @@
 			"weather_yakeli_show" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 246,
-				"order" : 346,
+				"index" : 248,
+				"order" : 348,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -4203,8 +4226,8 @@
 			"weather_yakelicolor" : 
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
-				"index" : 247,
-				"order" : 347,
+				"index" : 249,
+				"order" : 349,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -4212,24 +4235,24 @@
 			"weatherapitext" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 192,
-				"order" : 292,
+				"index" : 194,
+				"order" : 294,
 				"text" : "<br/>天气API选择<br/>Weather API selection",
 				"type" : "text"
 			},
 			"weatherapitiptext" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 208,
-				"order" : 308,
+				"index" : 210,
+				"order" : 310,
 				"text" : "<small><br/>★如果你未拥有APIkey 可以在搜索引擎搜索xxAPIkey申请<br/><br/>本壁纸使用的API均可免费申请使用<br/><small/>",
 				"type" : "text"
 			},
 			"weathercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 352,
-				"order" : 452,
+				"index" : 354,
+				"order" : 454,
 				"text" : "天气类<br />Weathers",
 				"type" : "bool",
 				"value" : false
@@ -4237,40 +4260,40 @@
 			"weathercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 353,
-				"order" : 453,
+				"index" : 355,
+				"order" : 455,
 				"text" : "ui_friendlink_weathercategory_0",
 				"type" : "text"
 			},
 			"weathercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 355,
-				"order" : 455,
+				"index" : 357,
+				"order" : 457,
 				"text" : "ui_friendlink_weathercategory_1",
 				"type" : "text"
 			},
 			"weathercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 357,
-				"order" : 457,
+				"index" : 359,
+				"order" : 459,
 				"text" : "ui_friendlink_weathercategory_2",
 				"type" : "text"
 			},
 			"weathercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 358,
-				"order" : 458,
+				"index" : 360,
+				"order" : 460,
 				"text" : "ui_friendlink_weathercategory_3",
 				"type" : "text"
 			},
 			"weathernow" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == true || qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 213,
-				"order" : 313,
+				"index" : 215,
+				"order" : 315,
 				"text" : "<br/>天气<br />weather<br/>",
 				"type" : "bool",
 				"value" : true
@@ -4278,8 +4301,8 @@
 			"wind" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == true || qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 221,
-				"order" : 321,
+				"index" : 223,
+				"order" : 323,
 				"text" : "<br/>风向<br />wind<br/>",
 				"type" : "bool",
 				"value" : true
@@ -4287,8 +4310,8 @@
 			"windgust" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true && weather_diy.value == true",
-				"index" : 225,
-				"order" : 325,
+				"index" : 227,
+				"order" : 327,
 				"text" : "<br/>最大风速<br />Maximum wind speed<br/>",
 				"type" : "bool",
 				"value" : true
@@ -4296,8 +4319,8 @@
 			"windlv" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == true || qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 222,
-				"order" : 322,
+				"index" : 224,
+				"order" : 324,
 				"text" : "<br/>风级<br />wind level<br/>",
 				"type" : "bool",
 				"value" : true
@@ -4305,8 +4328,8 @@
 			"windspeed" : 
 			{
 				"condition" : "weather_show.value == true && (qweatherapi.value == true || tianqiapi.value == true || visualcrossingapi.value == true) && weather_diy.value == true",
-				"index" : 223,
-				"order" : 323,
+				"index" : 225,
+				"order" : 325,
 				"text" : "<br/>风速<br />wind speed<br/>",
 				"type" : "bool",
 				"value" : true

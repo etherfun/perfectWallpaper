@@ -164,6 +164,7 @@ function shouldShow(){
 			setBackgroundStyle();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
+			background2canvas(custom,false)
             break;
         case 2://随机模式
 			//关闭视频
@@ -179,6 +180,7 @@ function shouldShow(){
 			}
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
+			background2canvas(currentImg,false)
             break;
 		case 3://视频模式
 			//关闭幻灯片特效
@@ -186,6 +188,7 @@ function shouldShow(){
 			ChangeVideoModel();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
+			background2canvas(null,true)
 			break;
 		case 4: // Bing壁纸
 			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
@@ -234,6 +237,7 @@ function shouldShow(){
 				img.onload = function () {
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
+					background2canvas(img.src,false)
 					setBackgroundStyle();
 				};
 			});
@@ -251,6 +255,8 @@ function shouldShow(){
 			img.onload = function() {  
 				
 				document.body.style.backgroundImage = "url(" + img.src + ")";
+
+				background2canvas(img.src,false)
 				setBackgroundStyle();  
 			};  
 			clearpicturesinfo()
@@ -287,8 +293,9 @@ function shouldShow(){
 				img.onload = function() {  
 					  
 					document.body.style.backgroundImage = "url('" + img.src + "')";  
-					setBackgroundStyle();  
 
+					background2canvas(img.src,false)
+					setBackgroundStyle();  
 				};  
 			});  
 			clearpicturesinfo()
@@ -336,6 +343,7 @@ function shouldShow(){
 				img.onload = function () {
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 					
+					background2canvas(img.src,false)
 					setBackgroundStyle();
 				};
 			}
@@ -384,6 +392,7 @@ function shouldShow(){
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
 					setBackgroundStyle();
+					background2canvas(img.src,false)
 				};
 			});
 			break;

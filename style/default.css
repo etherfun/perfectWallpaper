@@ -267,10 +267,10 @@ video {
 }
 
 #picture_info .description {
-    line-height: 1.6;
+    white-space: normal;
 }
 #RGBuse{
-	display: none;
+	visibility: hidden;
 	height: 20;
 	width: 100;
 }

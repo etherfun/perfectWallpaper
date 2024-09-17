@@ -3,6 +3,7 @@ var countdown = document.querySelector("#countdown");
 
 
 var examDate
+var dt
 
 
 function setcountdown(){
@@ -22,7 +23,6 @@ function setcountdown(){
 
 //setInterval(setcountdown, 1000);  
 function setcountdown_a(){
-    setcountdown()
+    dt = setcountdown()
     setTimeout(setcountdown_a,1000);
 }
-setcountdown_a()

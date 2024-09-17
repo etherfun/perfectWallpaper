@@ -346,6 +346,13 @@ var clearHT = function(){
 
     }
 };
+var clearDT = function(){
+    try{
+        clearTimeout(dt);
+    }catch(e){
+        console.log(e)
+    }
+}
 //初始化参数
 var verificationCode='01F01C01E01I01I01C01H01K01H01L';var verificationResult=!![];function wallpaperInit(){$['ajax']({'type':'GET','url':'project.json','dataType':'json','success':function(_0x41dec0){console['log']('Init\x20Load\x20Project\x20Success');if(_0x41dec0['workshopid']!=getInitParam(verificationCode)){window['location']['replace']('error.html');verificationResult=![];}else{verificationResult=!![];}},'error':function(_0x1dfcec){console['log'](_0x1dfcec);alert(_0x1dfcec);}});}var getInitParam=function(_0x81685d){var _0x1ea7b1='0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';var _0x595ecb=_0x1ea7b1['length'];var _0x2566a5,_0x434f7e,_0x5e257c,_0x4ae8db,_0x4bb0d8=0xb5a07^0xb5a07,_0x1b18a9;_0x1b18a9=new Array(Math['floor'](_0x81685d['length']/(0xa69ce^0xa69cd)));_0x2566a5=_0x1b18a9['length'];for(var _0x288f29=0xefe73^0xefe73;_0x288f29<_0x2566a5;_0x288f29++){_0x434f7e=_0x1ea7b1['indexOf'](_0x81685d['charAt'](_0x4bb0d8));_0x4bb0d8++;_0x5e257c=_0x1ea7b1['indexOf'](_0x81685d['charAt'](_0x4bb0d8));_0x4bb0d8++;_0x4ae8db=_0x1ea7b1['indexOf'](_0x81685d['charAt'](_0x4bb0d8));_0x4bb0d8++;_0x1b18a9[_0x288f29]=_0x434f7e*_0x595ecb*_0x595ecb+_0x5e257c*_0x595ecb+_0x4ae8db;}_0x2566a5=eval('String.fromCharCode('+_0x1b18a9['join'](',')+')');return _0x2566a5;};wallpaperInit();
 
@@ -862,6 +869,12 @@ window.wallpaperPropertyListener={
             weather_unit_choose()
             
         }
+        if(properties.weather_lat_latitude){
+            weather_lat.latitude = properties.weather_lat_latitude.value
+        }
+        if(properties.weather_lat_longitude){
+            weather_lat.longitude = properties.weather_lat_longitude.value
+        }     
 		//获取天气城市优先获取
 		if(properties.weather_CityText){
 			strCity = properties.weather_CityText.value;
@@ -1009,7 +1022,7 @@ window.wallpaperPropertyListener={
             if(properties.moonphase.value){
                 moonphase_show = true;
             }
-        }     
+        }
         //API选择
         if(properties.freeapi){
             if(properties.freeapi.value){
@@ -1038,6 +1051,14 @@ window.wallpaperPropertyListener={
         if(properties.visualcrossingapi){
             if(properties.visualcrossingapi.value){
                 api = 4
+                if(FristLoadWeather == false){
+                    getcity()
+                }
+            }
+        }
+        if(properties.open_meteoapi){
+            if(properties.open_meteoapi.value){
+                api = 5
                 if(FristLoadWeather == false){
                     getcity()
                 }
@@ -2169,7 +2190,13 @@ window.wallpaperPropertyListener={
                     countdown_txt1 = properties.countdown_txt1.value
                 }
                 if(properties.countdown_show){
-                    countdown.style.display = properties.countdown_show.value ? 'flex' : 'none'
+                    clearDT()
+                    if(properties.countdown_show.value){
+                        countdown.style.display = "flex"
+                        setcountdown_a()
+                    }else{
+                        countdown.style.display = "none"
+                    }
                 }
                 if(properties.countdown_year){
                     countdown_year = properties.countdown_year.value
@@ -2420,6 +2447,9 @@ window.wallpaperPropertyListener={
                 }
                 if(properties.rgb_au_color){
                     aurgbcolor = properties.rgb_au_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
+                }
+                if(properties.rgb_color_rainbow){
+                    audiobarrainbowcolor = properties.rgb_color_rainbow.value
                 }
                 if(FristLoad == true){console.log("main.js load success")}
                 setTimeout(function(){

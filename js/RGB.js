@@ -14,6 +14,7 @@ var opacity_saRGb
 var audioArray
 var aurgbcolor
 var aurgbhigh
+var audiobarrainbowcolor
 
 window.wallpaperPluginListener = {
     onPluginLoaded: function (name, version) {
@@ -66,28 +67,56 @@ function background2canvas(src, videoORimages){
 
         rgbbg.globalAlpha = 1
         if(particlesRGB){rgbbg.drawImage(particles,0,0,particles.width,particles.height,0,0,100,20)}
+        if(audiobarrainbowcolor){
+            if(audiobarRGB && audioArray){
 
-        if(audiobarRGB && audioArray){
-            
-            var barWidth = (bg.width / 128);
-            var scaleFactor = aurgbhigh;
-        
-            rgbbg.fillStyle = 'rgb('+ aurgbcolor +')';
-      
-            for (var i = 0; i < audioArray.length; ++i) {  
-                var channelIndex = i % 64;
-                if (i >= 64) {  
-                    channelIndex += 64;
-                }
-                var height = bg.height * Math.min(audioArray[i], 1) * scaleFactor;  
-                var actualHeight = Math.min(height, bg.height);  
-                rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);  
+                var barWidth = (bg.width / 128);  
+                var scaleFactor = aurgbhigh;
+  
+                var hueStep = 360 / 128;
+  
+                for (var i = 0; i < audioArray.length; ++i) {  
+                    var hue = i * hueStep;
+                    var saturation = '100%';
+                    var lightness = '50%';  
+                    var rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;  
+  
+                    var channelIndex = i % 64;  
+                    if (i >= 64) {  
+                        channelIndex += 64;  
+                    }  
+  
+                    var height = bg.height * Math.min(audioArray[i], 1) * scaleFactor;  
+                    var actualHeight = Math.min(height, bg.height);  
+   
+                    rgbbg.fillStyle = rgbColor;  
+                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);  
+                }  
             }
-        }  
+        }else{
+            if(audiobarRGB && audioArray){
+            
+                var barWidth = (bg.width / 128);
+                var scaleFactor = aurgbhigh;
+        
+                rgbbg.fillStyle = 'rgb('+ aurgbcolor +')';
+      
+                for (var i = 0; i < audioArray.length; ++i) {  
+                    var channelIndex = i % 64;
+                    if (i >= 64) {  
+                        channelIndex += 64;
+                    }
+                    var height = bg.height * Math.min(audioArray[i], 1) * scaleFactor;  
+                    var actualHeight = Math.min(height, bg.height);  
+                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);  
+                }
+            }     
+        }
+        
         
         rgbbg.restore()
         startRGB()
-        if(!nextphoto && !Paused && RGB_show && (videoORimages || (sakurause || particlesRGB || audiobarRGB))){
+        if(wallpaperSettings.ledPlugin && !nextphoto && !Paused && RGB_show && (videoORimages || (sakurause || particlesRGB || audiobarRGB))){
             if(RGBRefresh != "free"){
                 setTimeout(function(){
                     requestAnimationFrame(drawLayers);  

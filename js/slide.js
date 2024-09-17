@@ -164,7 +164,10 @@ function shouldShow(){
 			setBackgroundStyle();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
-			if(RGB_show){background2canvas(custom,false)}
+			if(RGB_show){
+				var src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1')
+				background2canvas(src,false)
+			}
             break;
         case 2://随机模式
 			//关闭视频
@@ -182,10 +185,10 @@ function shouldShow(){
 			pictures.picture_info.style.display = "none"
 			if(RGB_show){
 				nextphoto = true
-						setTimeout(function(){
-							background2canvas(currentImg,false)
+				setTimeout(function(){
+					background2canvas(currentImg,false)
 							nextphoto =false
-						},100) 
+				},100) 
 			}
             break;
 		case 3://视频模式
@@ -194,7 +197,13 @@ function shouldShow(){
 			ChangeVideoModel();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
-			if(RGB_show){background2canvas(null,true)}
+			if(RGB_show){
+				nextphoto = true
+				setTimeout(function(){
+					background2canvas(null,true)
+					nextphoto = false
+				},100)
+			}
 			break;
 		case 4: // Bing壁纸
 			if(picturesinfo_show && pictures.picture_info.style.display == "none"){

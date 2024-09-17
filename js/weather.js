@@ -5,6 +5,10 @@ var checkcity
 var wt
 var wunit = {}
 var wlang = {}
+var weather_lat = {
+    latitude : "",
+    longitude: ""
+}
 
 var  temperature = "未获取";
 var  feels = "未获取";
@@ -76,7 +80,10 @@ function weather_unit_choose(){
                 wind : "km/h",
                 vis : "km",
                 pressure : "hPa",
-                solarradiation : "w/m²"
+                solarradiation : "w/m²",
+                temperature_code : "celsius",
+                wind_speed_code : "kmh",
+                precipitation_code : "mm"
             }
         break
         case "us":
@@ -89,7 +96,10 @@ function weather_unit_choose(){
                 wind : "mi/h",
                 vis : "mi",
                 pressure : "mb",
-                solarradiation : "w/m²"
+                solarradiation : "w/m²",
+                temperature_code : "fahrenheit",
+                wind_speed_code : "mph",
+                precipitation_code : "inch"
             }
         break
         case "uk":
@@ -102,7 +112,10 @@ function weather_unit_choose(){
                 wind : "mi/h",
                 vis : "mi",
                 pressure : "mb",
-                solarradiation : "w/m²"
+                solarradiation : "w/m²",
+                temperature_code : "celsius",
+                wind_speed_code : "kmh",
+                precipitation_code : "mm"
             }
         break
         case "base":
@@ -234,6 +247,10 @@ function apiuse(){
             break
         case 4:
             getWeather_input_VisualCrossingAPI()
+            FristLoadWeather = false
+            break
+        case 5:
+            getWeather_input_open_meteo()
             FristLoadWeather = false
             break
     }
@@ -687,10 +704,195 @@ function getWeather_input_VisualCrossingAPI(){
 });
 }
 
+
+function getWeather_input_open_meteo(){
+    $.get("https://api.open-meteo.com/v1/forecast?latitude=" + weather_lat.latitude + "&longitude=" + weather_lat.longitude + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&forecast_days=1" + "&temperature_unit=" + wunit.temperature_code + "&wind_speed_unit=" + wunit.wind_speed_code + "&precipitation_code" + wunit.precipitation_code, function(res){
+        console.log(res)
+
+        //now
+        if(obstime_show){
+            obstime = wlang.datetime.replace("%1",res.current.time.replace("T"," "))
+        }else{
+            obstime =nullweather
+        }
+        if(windspeed_show){
+            windSpeed = wlang.windSpeed.replace("%1",res.current.wind_speed_10m).replace("%2",wunit.wind)
+        }else{
+            windSpeed = nullweather
+        }
+        if(humidity_show){
+            humidity = wlang.humidity.replace("%1",res.current.relative_humidity_2m)
+        }else{
+            humidity = nullweather
+        }
+        if(temperature_show){
+            temperature = res.current.temperature_2m + wunit.temp
+        }else{
+            temperature = nullweather
+        }
+        if(feelstemperature_show){
+            feels = wlang.feelstemperature.replace("%1",res.current.apparent_temperature).replace("%2",wunit.temp)
+        }else{
+            feels = nullweather
+        }
+        if(rangetemperature_show){
+            rangetemperature = wlang.rangetemperature.replace("%1",res.daily.temperature_2m_min[0]).replace("%2",res.daily.temperature_2m_min[0]).replace("%3",wunit.temp).replace("%3",wunit.temp)
+        }else{
+            rangetemperature = nullweather
+        }
+        if(weathernow_show){
+            if(weather_lang == "zh"){
+                const weatherCodes = {  
+                    0: "万里无云",  
+                    1: "多云",  
+                    2: "多云",  
+                    3: "阴天",  
+                    45: "雾",  
+                    48: "浓雾",  
+                    51: "毛毛雨",  
+                    53: "毛毛雨",  
+                    55: "毛毛雨",  
+                    56: "冰冻毛毛雨",  
+                    57: "冰冻毛毛雨",
+                    61: "小雨",  
+                    63: "中雨",  
+                    65: "大雨",  
+                    67: "冻雨", 
+                    71: "小雪",  
+                    73: "中雪",  
+                    75: "大雪",  
+                    77: "冰雹",  
+                    80: "小阵雨",  
+                    81: "中阵雨",  
+                    82: "大阵雨",  
+                    85: "小阵雪",  
+                    86: "阵雪",  
+                    95: "雷暴",  
+                    96: "雷暴携冰雹",  
+                    99: "雷暴携大量冰雹"  
+                };  
+                weathernow = weatherCodes[res.current.weather_code]
+            }else{
+                const weatherCodes = {  
+                    0: "Clear sky",  
+                    1: "Cloudy",  
+                    2: "Cloudy",  
+                    3: "Overcast",  
+                    45: "Fog",  
+                    48: "Thick fog",  
+                    51: "Slight Drizzle",  
+                    53: "Moderate Drizzle",  
+                    55: "Heavy intensity Drizzle",  
+                    56: "Freezing Rain",  
+                    57: "Freezing Rain",
+                    61: "Slight rain",  
+                    63: "Moderate rain",  
+                    65: "Heavy intensity rain",  
+                    67: "Freezing Rain", 
+                    71: "Slight Snow fall",  
+                    73: "Moderate Snow fall",  
+                    75: "Heavy intensity Snow fall",  
+                    77: "Snow grains",  
+                    80: "Slight Rain showers",  
+                    81: "Moderate Rain showers",  
+                    82: "Heavy intensity Rain showers",  
+                    85: "Slight Snow showers",  
+                    86: "Heavy Snow showers",  
+                    95: "Thunderstorm",  
+                    96: "Thunderstorm with slight hail",  
+                    99: "Thunderstorm with heavy hail"  
+                };  
+                weathernow = weatherCodes[res.current.weather_code]
+            }
+        }else{
+            weathernow = nullweather
+        }
+        if(precip_show){
+            if(weather_lang =="zh"){
+                precip = "降水" + res.current.precipitation + wunit.precip_1
+            }else{
+                precip = "Precipitation" + res.current.precipitation + wunit.precip_1
+            }
+        }else{
+            precip = nullweather
+        }
+        if(windgust_show){
+            windgust = wlang.windgust.replace("%1",res.current.wind_gusts_10m).replace("%2",wunit.wind)
+        }else{
+            windgust = nullweather
+        }
+        if(sunriseset_show){
+            sunriseset = wlang.sunriseset.replace("%1",res.daily.sunrise[0].slice(-5)).replace("%2",res.daily.sunset[0].slice(-5))//sunrise = resd.sunrise;sunset = resd.sunset
+        }else{
+            sunriseset = nullweather
+        }
+        if(cloud_show){
+            cloud = wlang.cloud.replace("%1",res.current.cloud_cover)
+        }else{
+            cloud = nullweather
+        }
+        if(pressure_show){
+            pressure = wlang.pressure.replace("%1",res.current.pressure_msl).replace("%2",wunit.pressure)
+        }else{
+            pressure = nullweather
+        }
+        
+        if(wind_show){
+            switch(weather_lang){//wind
+            case "zh":
+                if ((res.current.wind_direction_10m >= 337.5 && res.current.wind_direction_10m < 360) || (res.current.wind_direction_10m >= 0 && res.current.wind_direction_10m < 22.5)) {
+                    wind = "北风"
+                } else if (res.current.wind_direction_10m >= 22.5 && res.current.wind_direction_10m < 67.5) {
+                    wind = "东北风"
+                } else if (res.current.wind_direction_10m >= 67.5 && res.current.wind_direction_10m < 112.5) {
+                    wind = "东风"
+                } else if (res.current.wind_direction_10m >= 112.5 && res.current.wind_direction_10m < 157.5) {
+                    wind = "东南风"
+                } else if (res.current.wind_direction_10m >= 157.5 && res.current.wind_direction_10m < 202.5) {
+                    wind = "南风"
+                } else if (res.current.wind_direction_10m >= 202.5 && res.current.wind_direction_10m < 247.5) {
+                    wind = "西南风"
+                } else if (res.current.wind_direction_10m >= 247.5 && res.current.wind_direction_10m < 292.5) {
+                    wind = "西风"
+                } else if (res.current.wind_direction_10m >= 292.5 && res.current.wind_direction_10m < 337.5) {
+                    wind = "西北风"
+                } else {
+                    wind = "未知风向"
+                }
+            break
+            case "en":
+                if ((res.current.wind_direction_10m >= 337.5 && res.current.wind_direction_10m < 360) || (res.current.wind_direction_10m >= 0 && res.current.wind_direction_10m < 22.5)) {
+                    wind = "north wind"
+                } else if (res.current.wind_direction_10m >= 22.5 && res.current.wind_direction_10m < 67.5) {
+                    wind = "north-easterly wind"
+                } else if (res.current.wind_direction_10m >= 67.5 && res.current.wind_direction_10m < 112.5) {
+                    wind = "east wind"
+                } else if (res.current.wind_direction_10m >= 112.5 && res.current.wind_direction_10m < 157.5) {
+                    wind = "south-easterly wind"
+                } else if (res.current.wind_direction_10m >= 157.5 && res.current.wind_direction_10m < 202.5) {
+                    wind = "south wind"
+                } else if (res.current.wind_direction_10m >= 202.5 && res.current.wind_direction_10m < 247.5) {
+                    wind = "southwest wind"
+                } else if (res.current.wind_direction_10m >= 247.5 && res.current.wind_direction_10m < 292.5) {
+                    wind = "westwind"
+                } else if (res.current.wind_direction_10m >= 292.5 && res.current.wind_direction_10m < 337.5) {
+                    wind = "northwest wind"
+                } else {
+                    wind = "uncharted wind"
+                }
+            break
+            }
+        }else{
+            wind = nullweather
+        }
+        weather_webtext.innerHTML = obstime + " " + weathernow +" "+ temperature +" "+ feels +" "+ rangetemperature + " "+ wind + windSpeed + windgust +" "+ precip +" "+ humidity +" "+ cloud +" "+ pressure +" "+ sunriseset
+    })
+}
+
+
 var weather_graph_top = document.querySelector("#weather_graph .text_top")
 var weather_graph_bottom = document.querySelector("#weather_graph .text_bottom")
 var weather_graph_graph = document.querySelector("#weather_graph .graph")
-
 //天气图表  
 function weather_graph() {  
 

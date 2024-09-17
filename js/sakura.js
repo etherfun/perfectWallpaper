@@ -747,7 +747,7 @@ function renderScene() {
 
 /////
 function onResize(e) {
-    makeCanvasFullScreen(document.getElementById("sakura"));
+    makeCanvasFullScreen(document.getElementById("sakura"),document.getElementById("sakurashow"));
     setViewports();
     if(sceneStandBy) {
         initScene();
@@ -795,12 +795,13 @@ function animate() {
     timeInfo.delta = (curdate - timeInfo.prev) / 1000.0;
     timeInfo.prev = curdate;
 
-    if(animating) requestAnimationFrame(animate);
+    if(animating){requestAnimationFrame(animate);
     render();
+    }
 }
 
 /** 绘制全屏樱花 */
-function makeCanvasFullScreen(canvas) {
+function makeCanvasFullScreen(canvas,canvasshow) {
     //var b = document.body;
     //var d = document.documentElement;
     //fullw = Math.max(b.clientWidth , b.scrollWidth, d.scrollWidth, d.clientWidth);
@@ -809,12 +810,16 @@ function makeCanvasFullScreen(canvas) {
     //canvas.height = fullh;
 	canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
+    canvasshow.width = window.innerWidth;
+    canvasshow.height = window.innerHeight;
 }
 
 /** 隐藏樱花 */
-function makeCanvasHide(canvas) {
+function makeCanvasHide(canvas,canvasshow) {
     canvas.width = 0;
     canvas.height = 0;
+    canvasshow.width = 0;
+    canvasshow.height = 0;
 }
 
 var sakuraReLoadEffect = function(e){
@@ -830,10 +835,10 @@ var sakuraResize= function(){
 }
 
 var sakuraLoad = function(e) {
-
+    var canvasshow = document.getElementById("sakurashow");
     var canvas = document.getElementById("sakura");
     try {
-        makeCanvasFullScreen(canvas);
+        makeCanvasFullScreen(canvas,canvasshow);
         gl = canvas.getContext('webgl');
     } catch(e) {
         alert("WebGL not supported." + e);
@@ -852,8 +857,29 @@ var sakuraLoad = function(e) {
 
     animate();
     
+    
+    removesakura()
 } 
 
 
 window.addEventListener('load', sakuraLoad);
+
+
+
+function removesakura(){
+    var raw = document.getElementById('sakura')
+    var now = document.querySelector('#sakurashow').getContext('2d')
+    var width = window.innerWidth
+    var height = window.innerHeight
+
+    function draw(){
+        if(raw.width > 0){
+            now.drawImage(raw,0,0,width,height,0,0,width,height)
+            requestAnimationFrame(draw)
+        }
+    }
+    if(showSakura == true){
+        requestAnimationFrame(draw)
+    }
+}
 

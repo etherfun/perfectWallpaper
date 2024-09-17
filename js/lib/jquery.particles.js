@@ -659,7 +659,7 @@
         this.moveOutMode = options.moveOutMode;    // 离屏模式
 
         // 创建并初始化canvas
-        canvas = document.createElement('canvas');
+        canvas = document.getElementById('canvas-particles');
         canvas.id = 'canvas-particles'; // canvas ID
         $(canvas).css({
             'position': 'absolute',

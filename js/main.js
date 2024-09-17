@@ -17,10 +17,12 @@ var mapRoute = "map/1.png";//粒子贴图路径
 var cusmapRoute = {}; //自定义贴图路径
 
 var FristLoad = true;
+var Paused = false
 
 
 // 樱花对象
 var sakura = document.getElementById("sakura");
+var sakurashow = document.getElementById("sakurashow");
 
 // 视频相关
 var myvideo = document.getElementById("myvideo");
@@ -48,7 +50,7 @@ var picturesinfo_yakeli
 var picturesinfo_yakelicolor
 var picturesinfo_bluryakeli
 var picturesinfo_show
-var RGBRefresh = 24
+
 
 // 音频相关
 var myAudio = document.getElementById("myAudio");
@@ -426,24 +428,18 @@ window.wallpaperPropertyListener={
         }*/
 		//自定义视频
 		if(properties.selectvideo){
-
-			if(wallpapermode == 3)
-			{
-				// 获取自定义视频地址
-				selectvideo = properties.selectvideo.value;
-				if(selectvideo)
-				{
-					//myvideo.src = "url('"+'file:///' + selectvideo + "')";
-					cusvideoRoute = 'file:///' + selectvideo;
-					//myvideo.src = 'file:///' + selectvideo;
-					//myvideo.type = "video/webm";
-					//myvideo.play();
-					//SetCustomVideo();
-				}
-				else
-				{
-					cusvideoRoute = "";
-				}
+			selectvideo = properties.selectvideo.value;
+			if(selectvideo){
+				//myvideo.src = "url('"+'file:///' + selectvideo + "')";
+				cusvideoRoute = 'file:///' + selectvideo;
+				//myvideo.src = 'file:///' + selectvideo;
+				//myvideo.type = "video/webm";
+				//myvideo.play();
+                //SetCustomVideo();
+			}else{
+				cusvideoRoute = "";
+			}
+            if(wallpapermode == 3){
 				ChangeVideoModel();
 			}
         }
@@ -1413,8 +1409,8 @@ window.wallpaperPropertyListener={
         //樱花透明度
         if(properties.sakuratransparency){
             sakuratransparency = properties.sakuratransparency.value/100;
-            sakura.getContext('webgl').canvas.style.opacity = sakuratransparency;
-            
+            //sakura.getContext('webgl').canvas.style.opacity = sakuratransparency;
+            sakurashow.getContext('2d').canvas.style.opacity = sakuratransparency;
         }          
         //樱花背景
         if(properties.sakurabackground){
@@ -1438,6 +1434,21 @@ window.wallpaperPropertyListener={
             // sakura.getContext('webgl').canvas.style.opacity = sakuratransparency;
             sakuraBackLight = parseFloat(properties.sakurabacklight.value/100.0);
             sakuraReLoadEffect();
+        }
+        //樱花特效
+        if(properties.showSakura){
+            showSakura = properties.showSakura.value;
+            if(showSakura){
+                // 开启樱花，全屏樱花
+                makeCanvasFullScreen(sakura,sakurashow);
+                animating = true
+                animate()
+                removesakura()
+            }else{
+                // 关闭樱花，隐藏樱花
+                makeCanvasHide(sakura,sakurashow);
+                animating = false
+            }
         }                      
         //可视化音频透明度
         if(properties.wavetransparency){
@@ -1459,17 +1470,6 @@ window.wallpaperPropertyListener={
         //显示为半圆
         if(properties.SemiCircledirection){
             param.SemiCircledirection = properties.SemiCircledirection.value;
-        }
-        //樱花特效
-        if(properties.showSakura){
-            showSakura = properties.showSakura.value;
-            if(showSakura){
-                // 开启樱花，全屏樱花
-                makeCanvasFullScreen(sakura);
-            }else{
-                // 关闭樱花，隐藏樱花
-                makeCanvasHide(sakura);
-            }
         }
 		//显示直线
 		if(properties.PWLineShow){
@@ -2338,20 +2338,18 @@ window.wallpaperPropertyListener={
                     authoricon.style.filter = filter;
                     locationicon.style.filter = filter;
                     
-        
-                    if(picturesinfo_blurcolor_show){
-                        pictures.info.style.textShadow = '0 0 20px rgb('+picturesinfo_blurcolor+')';
-                    }else{
-                        pictures.info.style.textShadow = null
-                    }
-        
-                    if(picturesinfo_yakeli_show){
-                        pictures.info.style.background = "rgba("+picturesinfo_yakelicolor+","+picturesinfo_yakeli+")"
-                        pictures.info.style.backdropFilter = "blur("+picturesinfo_bluryakeli+"px)"
-                    }else{
-                        pictures.info.style.background = null
-                        pictures.info.style.backdropFilter = null
-                    }
+                }
+                if(picturesinfo_blurcolor_show){
+                    pictures.info.style.textShadow = '0 0 20px rgb('+picturesinfo_blurcolor+')';
+                }else{
+                    pictures.info.style.textShadow = null
+                }        
+                if(picturesinfo_yakeli_show){
+                    pictures.info.style.background = "rgba("+picturesinfo_yakelicolor+","+picturesinfo_yakeli+")"
+                    pictures.info.style.backdropFilter = "blur("+picturesinfo_bluryakeli+"px)"
+                }else{
+                    pictures.info.style.background = null                
+                    pictures.info.style.backdropFilter = null
                 }
                 if(properties.picturesinfo_timetransparency){
                     var t = properties.picturesinfo_timetransparency.value/100;
@@ -2396,8 +2394,32 @@ window.wallpaperPropertyListener={
                     pictures.info.style.width = w*s + 'px'    
                     }
                 }
-                if(properties.RGBRefresh){
-                    RGBRefresh = properties.RGBRefresh.value
+                if(properties.rgb_fps){
+                    RGBRefresh = properties.rgb_fps.value
+                }
+                if(properties.rgb_show){
+                    RGB_show = properties.rgb_show.value
+                }
+                if(properties.rgb_bg){
+                    backgroundRGB = properties.rgb_bg.value
+                }
+                if(properties.rgb_sa){
+                    sakuraRGB = properties.rgb_sa.value
+                }
+                if(properties.rgb_pa){
+                    particlesRGB = properties.rgb_pa.value
+                }
+                if(properties.rgb_au){
+                    audiobarRGB = properties.rgb_au.value
+                }
+                if(properties.rgb_sa_op){
+                    opacity_saRGb = properties.rgb_sa_op.value/100
+                }
+                if(properties.rgb_au_high){
+                    aurgbhigh = properties.rgb_au_high.value
+                }
+                if(properties.rgb_au_color){
+                    aurgbcolor = properties.rgb_au_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
                 }
                 if(FristLoad == true){console.log("main.js load success")}
                 setTimeout(function(){
@@ -2432,16 +2454,31 @@ window.wallpaperPropertyListener={
     },
 	setPaused: function( isPaused ) {
 		if (isPaused){
+            Paused = true
 			myvideo.pause();
 			myAudio.pause();
-		}
-		else{
-			if (myvideo.paused) {
+		}else{
+            Paused = false
+			if (!(myvideo.paused && (myvideo.src.slice(-10) === 'twall/null' || myvideo.src.slice(-10) === 'index.html'))
+            ) {
 				myvideo.play();
+
 			}
-			if (myAudio.paused) {
+			if (!(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))
+            ) {
 				myAudio.play();
 			}
+            if(RGB_show == true){
+                if(wallpapermode != 3){
+                    var src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1')
+                    background2canvas(src, false)
+                }else{    
+			        background2canvas(null,true)
+                }
+            }
+            if(showSakura == true){
+                removesakura()
+            }
 		}
 	}
 };
@@ -2510,4 +2547,3 @@ var shouldShowMap = function(){
 		wallpaper.particles('particlesImage', mapRoute,'true');
 	}
 };
-

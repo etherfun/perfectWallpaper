@@ -164,7 +164,7 @@ function shouldShow(){
 			setBackgroundStyle();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
-			background2canvas(custom,false)
+			if(RGB_show){background2canvas(custom,false)}
             break;
         case 2://随机模式
 			//关闭视频
@@ -180,7 +180,13 @@ function shouldShow(){
 			}
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
-			background2canvas(currentImg,false)
+			if(RGB_show){
+				nextphoto = true
+						setTimeout(function(){
+							background2canvas(currentImg,false)
+							nextphoto =false
+						},100) 
+			}
             break;
 		case 3://视频模式
 			//关闭幻灯片特效
@@ -188,7 +194,7 @@ function shouldShow(){
 			ChangeVideoModel();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
-			background2canvas(null,true)
+			if(RGB_show){background2canvas(null,true)}
 			break;
 		case 4: // Bing壁纸
 			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
@@ -230,14 +236,20 @@ function shouldShow(){
 				}  
 				picturesinfo_showrl(title,copyright,where,text)
 
-				var bingurl = 'https://cn.bing.com' + get.images[0].urlbase;
+				var bingurl = 'https://www.bing.com' + get.images[0].urlbase;
 				var img = new Image();
 				img.src = bingurl + "_UHD.jpg";
 	
 				img.onload = function () {
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
-					background2canvas(img.src,false)
+					if(RGB_show){
+						nextphoto = true
+						setTimeout(function(){
+							background2canvas(img.src,false)
+							nextphoto =false
+						},100) 
+					}
 					setBackgroundStyle();
 				};
 			});
@@ -256,7 +268,13 @@ function shouldShow(){
 				
 				document.body.style.backgroundImage = "url(" + img.src + ")";
 
-				background2canvas(img.src,false)
+				if(RGB_show){
+					nextphoto = true
+						setTimeout(function(){
+							background2canvas(img.src,false)
+							nextphoto =false
+						},100) 
+				}
 				setBackgroundStyle();  
 			};  
 			clearpicturesinfo()
@@ -294,7 +312,13 @@ function shouldShow(){
 					  
 					document.body.style.backgroundImage = "url('" + img.src + "')";  
 
-					background2canvas(img.src,false)
+					if(RGB_show){
+						nextphoto = true
+						setTimeout(function(){
+							background2canvas(img.src,false)
+							nextphoto =false
+						},100) 
+					}
 					setBackgroundStyle();  
 				};  
 			});  
@@ -343,7 +367,12 @@ function shouldShow(){
 				img.onload = function () {
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 					
-					background2canvas(img.src,false)
+					if(RGB_show){
+						nextphoto = true
+						setTimeout(function(){
+							background2canvas(img.src,false)
+							nextphoto =false
+						},100) }
 					setBackgroundStyle();
 				};
 			}
@@ -392,7 +421,13 @@ function shouldShow(){
 					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
 					setBackgroundStyle();
-					background2canvas(img.src,false)
+					if(RGB_show){
+						nextphoto = true
+						setTimeout(function(){
+							background2canvas(img.src,false)
+							nextphoto =false
+						},100) 
+					}
 				};
 			});
 			break;

@@ -250,6 +250,7 @@ window.wallpaperRegisterAudioListener && window.wallpaperRegisterAudioListener(w
 
 
 function wallpaperAudioListener(arr){
+    audioArray = arr
 	wallpaper.audiovisualizer('clearCanvas');
 	CTXLine.clearRect(0,0,w,h);
 	ctx.clearRect(0,0,w,h);

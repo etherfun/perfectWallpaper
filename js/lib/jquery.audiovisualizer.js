@@ -404,7 +404,7 @@
         this.ballRotation = options.ballRotation;    // 小球旋转
 
         // 创建并初始化canvas
-        canvas = document.createElement('canvas');
+        canvas = document.getElementById('canvas-audio');
         canvas.id = 'canvas-audio'; // canvas ID
         $(canvas).css({
             'position': 'absolute',

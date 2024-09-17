@@ -2,6 +2,7 @@ var weather = document.querySelector("#weather");
 var weather_webtext = document.querySelector("#weather .text");
 
 var checkcity
+var wt
 var wunit = {}
 var wlang = {}
 

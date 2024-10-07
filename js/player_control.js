@@ -1,19 +1,24 @@
+
 //msct
 
 
-let Color_pickup_method = 1
+let Color_pickup_method
 let thumbnail
 let thumbnailcolor
-let thumbnailsecondColor
-let thumbnailtextColor
-let thumbnailthirdcolor
-let thumbnailhighContrastColor
+let fontcolor
 let duration = 0
 let position = 0
+
 
 let singtitle
 let singartist
 let singalbumTitle
+let aubarstop
+
+var player_control_barline
+var player_control_scalefactor
+var player_control_visualaudiobar
+var player_control_hdong = 0.1
 
 var player_control = document.querySelector("#player_control")
 var player_control_background = document.querySelector("#player_control .background")
@@ -23,19 +28,103 @@ var player_control_title = document.querySelector("#player_control .title")
 var player_control_artist = document.querySelector("#player_control .artist")
 var player_control_albumTitle = document.querySelector("#player_control .albumTitle")
 var player_control_timeline = document.querySelector("#player_control .progress-bar")
+var player_control_aubar = document.querySelector("#player_control .aubar")
 
 /*msct封面*/
 window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener)
 function wallpaperMediaThumbnailListener(event){
-    thumbnail = event.thumbnail
+    player_control_thumbnail.src = event.thumbnail
 
-    thumbnailcolor = hexToRgb(event.primaryColor)
-    thumbnailsecondColor = hexToRgb(event.secondaryColor)
-    thumbnailthirdcolor = hexToRgb(event.tertiaryColor)
-    thumbnailtextColor = hexToRgb(event.textColor)
-    thumbnailhighContrastColor = hexToRgb(event.highContrastColor)
-
-    if(player_control_show == true){thumbnailsue()}
+    switch(Color_pickup_method){
+        case 1:
+            switch(player_control_yakelibgusetb){
+                case 1:
+                    thumbnailcolor = hexToRgb(event.primaryColor)
+                    break;
+                case 2:
+                    thumbnailcolor = hexToRgb(event.secondaryColor)
+                    break;
+                case 3:
+                    thumbnailcolor = hexToRgb(event.tertiaryColor)
+                    break
+                case 4:
+                    thumbnailcolor = hexToRgb(event.highContrastColor)
+                   break
+                case 5:
+                    thumbnailcolor = player_control_yakelicolor
+                    break
+            }
+            switch(player_control_fontusetb){
+                case 1:
+                    fontcolor = hexToRgb(event.primaryColor)
+                    break;
+                case 2:
+                    fontcolor = hexToRgb(event.secondaryColor)
+                    break;
+                case 3:
+                    fontcolor = hexToRgb(event.tertiaryColor)
+                    break
+                case 4:
+                    fontcolor = hexToRgb(event.highContrastColor)
+                   break
+                case 5:
+                    fontcolor = player_control_color
+                break
+            }
+            break
+        case 2:
+            var img = document.querySelector("#player_control .thumbnail")
+            img.onload = function(){
+                const colorThief = new ColorThief();
+            
+                switch(player_control_yakelibgusetb){
+                    case 1:
+                        thumbnailcolor = colorThief.getColor(img)
+                        break;
+                    case 2:
+                        thumbnailcolor = colorThief.getPalette(img,3)[0]
+                        break;
+                    case 3:
+                        thumbnailcolor = colorThief.getPalette(img,3)[1]
+                        break
+                    case 4:
+                        thumbnailcolor = colorThief.getPalette(img,3)[2]
+                       break
+                    case 5:
+                        thumbnailcolor = player_control_yakelicolor
+                        break
+                }
+                switch(player_control_fontusetb){
+                    case 1:
+                        fontcolor = colorThief.getColor(img)
+                        break;
+                    case 2:
+                        fontcolor = colorThief.getPalette(img,3)[0]
+                        break;
+                    case 3:
+                        fontcolor = colorThief.getPalette(img,3)[1]
+                        break
+                    case 4:
+                        fontcolor = colorThief.getPalette(img,3)[2]
+                       break
+                    case 5:
+                        fontcolor = player_control_yakelicolor
+                        break
+                }
+            }
+            break
+        case 3:
+            
+        
+    }
+        
+    if(player_control_show == true){
+        setTimeout(function(){
+            player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
+            player_control_info.style.color = "rgb("+fontcolor+")"
+            player_iconcolor(fontcolor)
+        },100)
+    }
 }
 
 
@@ -76,7 +165,12 @@ function wallpaperMediaPropertiesListener(event){
     singtitle = event.title
     singartist = event.artist
     singalbumTitle = event.albumTitle
+    aubarstop = true
     playertitle()
+    player_control_aubar.width = 0
+    player_control_aubar.height = 0
+    pc_aubar()
+    //setTimeout(pc_aubar,100)
 }
 
 function playertitle(){
@@ -121,104 +215,14 @@ function wallpaperMediaPlaybackListener(event){
 
 function thumbnailsue(){
 
-    player_control_thumbnail.style.backgroundImage = "url(" + thumbnail + ")"
+    //player_control_thumbnail.style.backgroundImage = "url(" + thumbnail + ")"
 
-    switch(Color_pickup_method){
-        case 1 :
-            switch (player_control_yakelibgusetb) {
-                case 1:
-                    player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
-                    break;
-                case 2:
-                    player_control_background.style.background = "rgba("+thumbnailsecondColor+","+player_control_yakeli+")"
-                    break;
-                case 3:
-                    player_control_background.style.background = "rgba("+thumbnailthirdcolor+","+player_control_yakeli+")"
-                    break
-                case 4:
-                    player_control_background.style.background = "rgba("+thumbnailtextColor+","+player_control_yakeli+")"
-                   break
-                case 5:
-                    player_control_background.style.background = "rgba("+player_control_yakelicolor+","+player_control_yakeli+")"
-                    break
-            }
     
-            switch (player_control_fontusetb) {
-                case 1:
-                    player_control_info.style.color = "rgb("+thumbnailcolor+")"
-
-                    player_iconcolor(thumbnailcolor)
-                    break;
-                case 2:
-                    player_control_info.style.color = "rgb("+thumbnailsecondColor+")"
-                    player_iconcolor(thumbnailsecondColor)
-                    break;
-                case 3:
-                    player_control_info.style.color = "rgb("+thumbnailthirdcolor+")"
-                    player_iconcolor(thumbnailthirdcolor)
-                    break
-                case 4:
-                    player_control_info.style.color = "rgb("+thumbnailtextColor+")"
-                    player_iconcolor(thumbnailtextColor)
-                    break
-                case 5:
-                    player_control_info.style.color = 'rgb('+player_control_color+')'
-                    player_iconcolor(player_control_color)
-                    break
-            }
-            break;
-        case 2 :
-            const colorThief = new ColorThief();
-            let img = player_control_thumbnail
-
-            thumbnailcolor = hexToRgb(colorThief.getColor(img))
-            thumbnailsecondColor = hexToRgb(colorThief.getPalette(img)[0])
-            thumbnailthirdcolor = hexToRgb(colorThief.getPalette(img)[1])
-
-            switch (player_control_yakelibgusetb) {
-                case 1:
-                    player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
-                    break;
-                case 2:
-                    player_control_background.style.background = "rgba("+thumbnailsecondColor+","+player_control_yakeli+")"
-                    break;
-                case 3:
-                    player_control_background.style.background = "rgba("+thumbnailthirdcolor+","+player_control_yakeli+")"
-                    break
-                case 4:
-                    player_control_background.style.background = "rgba("+thumbnailtextColor+","+player_control_yakeli+")"
-                   break
-                case 5:
-                    player_control_background.style.background = "rgba("+player_control_yakelicolor+","+player_control_yakeli+")"
-                    break
-            }
+            player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
+            player_control_info.style.color = "rgb("+fontcolor+")"
+            player_iconcolor(fontcolor)
+           
     
-            switch (player_control_fontusetb) {
-                case 1:
-                    player_control_info.style.color = "rgb("+thumbnailcolor+")"
-
-                    player_iconcolor(thumbnailcolor)
-                    break;
-                case 2:
-                    player_control_info.style.color = "rgb("+thumbnailsecondColor+")"
-                    player_iconcolor(thumbnailsecondColor)
-                    break;
-                case 3:
-                    player_control_info.style.color = "rgb("+thumbnailthirdcolor+")"
-                    player_iconcolor(thumbnailthirdcolor)
-                    break
-                case 4:
-                    player_control_info.style.color = "rgb("+thumbnailtextColor+")"
-                    player_iconcolor(thumbnailtextColor)
-                    break
-                case 5:
-                    player_control_info.style.color = 'rgb('+player_control_color+')'
-                    player_iconcolor(player_control_color)
-                    break
-            }
-            break;
-
-    }
 }
 
 /*
@@ -252,5 +256,114 @@ function player_iconcolor(rgb) {
     player_control_titleicon.style.filter = filter;
     player_control_artisticon.style.filter = filter;
     player_control_albumTitleicon.style.filter = filter;
+}
+
+function pc_aubar() {
+    var full = document.querySelector("#player_control .info-container");
+    var usage = document.querySelector("#player_control .info");
+    var bar = document.querySelector(".aubar");
+
+    var aubar = document.querySelector(".aubar");
+    var rgbbg = document.querySelector(".aubar").getContext('2d');
+
+    var height = full.clientHeight - usage.clientHeight;
+    var width = full.clientWidth;
+
+    bar.width = width;
+    bar.height = height;
+
+    aubarstop = false;
+    
+    var previousHeights = new Array(64).fill(aubar.height);
+    var barHeights = new Array(64).fill(0);
+
+    function lerp(start, end, amount) {
+        return (1 - amount) * start + amount * end;
+    }
+
+    function draw() {
+        rgbbg.clearRect(0, 0, aubar.width, aubar.height);
+        var barWidth = aubar.width / 64;
+        rgbbg.fillStyle = 'rgb(' + fontcolor + ')';
+
+        for (var i = 0, l = 64; i < 64; ++i, ++l) {
+            var bar = (audioArray[i] + audioArray[l]) / 2;
+            var targetHeight = aubar.height * Math.min(bar, 1) * player_control_scalefactor;
+            var actualHeight = Math.min(targetHeight, aubar.height);
+
+            barHeights[i] = lerp(barHeights[i], actualHeight, player_control_hdong);
+
+            rgbbg.fillRect(barWidth * i, aubar.height - barHeights[i], barWidth, barHeights[i]);
+        }
+
+        if (!aubarstop && player_control_visualaudiobar) {
+            requestAnimationFrame(draw);
+        }else{
+            rgbbg.clearRect(0, 0, aubar.width, aubar.height);
+        }
+    }
+
+    function drawline() {
+        rgbbg.clearRect(0, 0, aubar.width, aubar.height);
+        rgbbg.lineWidth = 2;
+        rgbbg.strokeStyle = 'rgb(' + fontcolor + ')';
+        var spacing = aubar.width / 64;
+
+        rgbbg.beginPath();
+
+        var x, y, prevX, prevY;
+        var cornerRadius = 2;
+        for (var i = 0, l = 64; i < 64; ++i, ++l) {
+            var amplitude = (audioArray[i] + audioArray[l]) / 2;
+            var targetHeight = aubar.height - aubar.height * Math.min(amplitude, 1) * player_control_scalefactor;
+
+            previousHeights[i] = lerp(previousHeights[i], targetHeight, player_control_hdong);
+
+            x = spacing * i;
+            y = previousHeights[i];
+
+            if (i === 0) {
+                rgbbg.moveTo(x, y);
+            } else {
+
+                prevX = spacing * (i - 1);
+                prevY = previousHeights[i - 1];
+
+                var dx = x - prevX;
+                var dy = y - prevY;
+                var distance = Math.sqrt(dx * dx + dy * dy);
+
+                if (distance > cornerRadius * 2) {
+                    var angle = Math.atan2(dy, dx);
+
+                    var startX = prevX + cornerRadius * Math.cos(angle);
+                    var startY = prevY + cornerRadius * Math.sin(angle);
+                    var endX = x - cornerRadius * Math.cos(angle);
+                    var endY = y - cornerRadius * Math.sin(angle);
+
+                    rgbbg.lineTo(startX, startY);
+
+                    rgbbg.arcTo(prevX, prevY, x, y, cornerRadius);
+
+                    rgbbg.lineTo(endX, endY);
+                } else {
+                    rgbbg.lineTo(x, y);
+                }
+            }
+        }
+        rgbbg.stroke();
+        if (!aubarstop && player_control_visualaudiobar) {
+            requestAnimationFrame(drawline);
+        }else{
+            rgbbg.clearRect(0, 0, aubar.width, aubar.height);
+        }
+    }
+    if(player_control_visualaudiobar && player_control_barline == 2){
+        drawline()
+    }else if(player_control_visualaudiobar && player_control_barline == 1){
+        draw();
+    }else{
+
+    }
 }
 

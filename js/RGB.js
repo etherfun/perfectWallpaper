@@ -15,6 +15,9 @@ var audioArray
 var aurgbcolor
 var aurgbhigh
 var audiobarrainbowcolor
+var rainbowmove
+var rainbowmovespeed
+let time = 0
 
 window.wallpaperPluginListener = {
     onPluginLoaded: function (name, version) {
@@ -58,7 +61,7 @@ function background2canvas(src, videoORimages){
     var bg = document.getElementById('RGBuse')
     var rgbbg = document.getElementById('RGBuse').getContext('2d')
 
-    function drawLayer(){
+    function drawLayers(){
         var sakurause = (sakuraRGB && ((sakura.width == window.screen.width) && (sakura.height == window.screen.height)))
         
         rgbbg.save()
@@ -71,34 +74,35 @@ function background2canvas(src, videoORimages){
             if(audiobarRGB && audioArray){
 
                 var barWidth = (bg.width / 128);  
-                var scaleFactor = aurgbhigh;
-  
-                var hueStep = 360 / 128;
-  
+                var scaleFactor = aurgbhigh;  
+                var hueStep = 360 / 128;  
+
                 for (var i = 0; i < audioArray.length; ++i) {  
-                    var hue = i * hueStep;
-                    var saturation = '100%';
+                    var hue = (i * hueStep + time) % 360;
+                    var saturation = '100%';  
                     var lightness = '50%';  
                     var rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;  
-  
+
                     var channelIndex = i % 64;  
                     if (i >= 64) {  
                         channelIndex += 64;  
                     }  
-  
+
                     var height = bg.height * Math.min(audioArray[i], 1) * scaleFactor;  
                     var actualHeight = Math.min(height, bg.height);  
-   
+
                     rgbbg.fillStyle = rgbColor;  
-                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);  
-                }  
+                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
+                }
+                if(rainbowmove){
+                    time += rainbowmovespeed
+                };  
             }
         }else{
             if(audiobarRGB && audioArray){
             
                 var barWidth = (bg.width / 128);
                 var scaleFactor = aurgbhigh;
-        
                 rgbbg.fillStyle = 'rgb('+ aurgbcolor +')';
       
                 for (var i = 0; i < audioArray.length; ++i) {  
@@ -119,15 +123,15 @@ function background2canvas(src, videoORimages){
         if(wallpaperSettings.ledPlugin && !nextphoto && !Paused && RGB_show && (videoORimages || (sakurause || particlesRGB || audiobarRGB))){
             if(RGBRefresh != "free"){
                 setTimeout(function(){
-                    requestAnimationFrame(drawLayers);  
-                },RGBRefreshTiming())
+                    requestAnimationFrame(drawbackground);  
+                },RGBRefresh)
             }else{
-                requestAnimationFrame(drawLayers)
+                requestAnimationFrame(drawbackground)
             }
         }
     }  
       
-    function drawLayers() {  
+    function drawbackground() {  
         
         if(backgroundRGB){
             if(videoORimages){
@@ -144,37 +148,21 @@ function background2canvas(src, videoORimages){
                     if(Frist == true){
                         setTimeout(function(){
                             rgbbg.drawImage(img,0,0,100,20)
-                            drawLayer()
+                            drawLayers()
                             Frist =false
                         },500)
                     }else{
                         rgbbg.drawImage(img,0,0,100,20)
-                        drawLayer()
+                        drawLayers()
                         Frist =false
                     }
                 }
             }
         }else{
             rgbbg.clearRect(0,0,100,20)
-            drawLayer();
+            drawLayers();
         }
     }
     //drawLayers()
-    requestAnimationFrame(drawLayers)
-}
-
-function RGBRefreshTiming(){
-    switch(RGBRefresh){
-        case 24:
-            return 41
-            
-        case 30:
-            return 33
-
-        case 45:
-            return 22
-
-        case 60:
-            return 16
-    }
+    requestAnimationFrame(drawbackground)
 }

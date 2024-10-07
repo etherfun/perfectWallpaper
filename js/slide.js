@@ -166,7 +166,13 @@ function shouldShow(){
 			pictures.picture_info.style.display = "none"
 			if(RGB_show){
 				var src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1')
-				background2canvas(src,false)
+				if(RGB_show){
+					nextphoto = true
+					setTimeout(function(){
+						background2canvas(src,false)
+						nextphoto =false
+					},100) 
+				}
 			}
             break;
         case 2://随机模式
@@ -187,7 +193,7 @@ function shouldShow(){
 				nextphoto = true
 				setTimeout(function(){
 					background2canvas(currentImg,false)
-							nextphoto =false
+					nextphoto =false
 				},100) 
 			}
             break;
@@ -279,10 +285,10 @@ function shouldShow(){
 
 				if(RGB_show){
 					nextphoto = true
-						setTimeout(function(){
-							background2canvas(img.src,false)
-							nextphoto =false
-						},100) 
+					setTimeout(function(){
+						background2canvas(img.src,false)
+						nextphoto =false
+					},100) 
 				}
 				setBackgroundStyle();  
 			};  
@@ -318,7 +324,6 @@ function shouldShow(){
 				img.src = url;
 			
 				img.onload = function() {  
-					  
 					document.body.style.backgroundImage = "url('" + img.src + "')";  
 
 					if(RGB_show){
@@ -342,13 +347,14 @@ function shouldShow(){
 			$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
+
+			var url
 			
 			switch(galaxyapi){
-				case 0:
+				case 2:
 					$.get("https://apod.nasa.gov/", function (get) {
 				
 					url = "https://apod.nasa.gov/apod/" + $(get).find("img").attr("src")
-					use(url)
 				})
 				break;
 				case 1:
@@ -360,7 +366,6 @@ function shouldShow(){
 						}else{
 							url = get.hdurl
 						}
-						use(url)
 
 						var copyright
 						if(get.copyright == undefined){copyright = ""}else{copyright = get.copyright}
@@ -370,21 +375,21 @@ function shouldShow(){
 				break;
 			}
 			
-			function use(url){
-				var img = new Image();
-				img.src = url
-				img.onload = function () {
-					document.body.style.backgroundImage = "url('" + img.src + "')";
-					
-					if(RGB_show){
-						nextphoto = true
-						setTimeout(function(){
-							background2canvas(img.src,false)
-							nextphoto =false
-						},100) }
-					setBackgroundStyle();
-				};
-			}
+			
+			var img = new Image();
+			img.src = url
+			img.onload = function () {
+				document.body.style.backgroundImage = "url('" + img.src + "')";
+				
+				if(RGB_show){
+					nextphoto = true
+					setTimeout(function(){
+						background2canvas(img.src,false)
+						nextphoto =false
+					},100) }
+				setBackgroundStyle();
+			};
+			
 		break;
 		case 8:
 			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
@@ -536,6 +541,7 @@ var TransitionSwith = function(){
 function picturesinfo_showrl(title,author,where,text){
 	clearpicturesinfo()
 	var text_w = document.querySelector("#picture_info .description")
+
 	if(picturesinfo_showRorL){
 		var title_w = document.querySelector("#picture_info .title .right")
 		var author_w = document.querySelector("#picture_info .author .right")
@@ -545,11 +551,11 @@ function picturesinfo_showrl(title,author,where,text){
 		var author_w = document.querySelector("#picture_info .author .left")
 		var where_w = document.querySelector("#picture_info .location .left")
 	}
+
 	title_w.innerHTML = title
 	author_w.innerHTML = author
 	where_w.innerHTML = where
 	text_w.innerHTML = text
-
 }
 
 function clearpicturesinfo(){
@@ -559,5 +565,6 @@ function clearpicturesinfo(){
 	document.querySelector("#picture_info .title .right").innerHTML = null
 	document.querySelector("#picture_info .author .right").innerHTML = null
 	document.querySelector("#picture_info .location .right").innerHTML = null
+	document.querySelector("#picture_info .description").innerHTML = null
 }
 		

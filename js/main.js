@@ -1419,10 +1419,10 @@ window.wallpaperPropertyListener={
             ctx.lineWidth = param.lineWidth = properties.lineWidth.value;
         }
         // 是否显示圆
-        if(properties.showCircle){
+        /*if(properties.showCircle){
             param.showCircle = properties.showCircle.value;
 			PWCircle_show_bool = param.showCircle;
-        }
+        }*/
         // 方向
         if(properties.direction){
             param.direction = properties.direction.value;
@@ -1493,10 +1493,10 @@ window.wallpaperPropertyListener={
             param.SemiCircledirection = properties.SemiCircledirection.value;
         }
 		//显示直线
-		if(properties.PWLineShow){
+		/*if(properties.PWLineShow){
             PWLineParam.showLine = properties.PWLineShow.value;
 			PWLine_show_bool = PWLineParam.showLine;
-        }//直线位置
+        }*///直线位置
 		if(properties.PWLinePosition){
             PWLineParam.LinePosition = properties.PWLinePosition.value;
         }
@@ -2170,6 +2170,28 @@ window.wallpaperPropertyListener={
                         playertitle()
                     }
                 }
+                if(properties.player_control_visualaudiobar){
+                    player_control_visualaudiobar = properties.player_control_visualaudiobar.value
+                    if(FristLoad == false){
+                        pc_aubar()
+                    }
+                }
+                if(properties.player_control_barline){
+                    player_control_barline = properties.player_control_barline.value
+                    if(FristLoad == false){
+                        aubarstop = true
+                        pc_aubar()
+                    }
+                }
+                if(properties.player_control_getcolor){
+                    Color_pickup_method = properties.player_control_getcolor.value
+                }
+                if(properties.player_control_scalefactor){
+                    player_control_scalefactor = properties.player_control_scalefactor.value
+                }
+                if(properties.player_control_hdong){
+                    player_control_hdong = properties.player_control_hdong.value
+                }
                 if(properties.countdownY){
                     var y = properties.countdownY.value
                     countdown.style.top = y + "%"
@@ -2421,8 +2443,23 @@ window.wallpaperPropertyListener={
                     pictures.info.style.width = w*s + 'px'    
                     }
                 }
+                if(properties.picturesinfo_description){
+                    document.querySelector('.description').style.display = properties.picturesinfo_description.value ? "block" : "none"
+                }
                 if(properties.rgb_fps){
-                    RGBRefresh = properties.rgb_fps.value
+                    switch(properties.rgb_fps.value){
+                        case 24:
+                            RGBRefresh = 41
+                            
+                        case 30:
+                            RGBRefresh = 33
+                
+                        case 45:
+                            RGBRefresh = 22
+                
+                        case 60:
+                            RGBRefresh = 16
+                    }
                 }
                 if(properties.rgb_show){
                     RGB_show = properties.rgb_show.value
@@ -2450,6 +2487,12 @@ window.wallpaperPropertyListener={
                 }
                 if(properties.rgb_color_rainbow){
                     audiobarrainbowcolor = properties.rgb_color_rainbow.value
+                }
+                if(properties.rgb_color_rainbow_move){
+                    rainbowmove = properties.rgb_color_rainbow_move.value
+                }
+                if(properties.rgb_color_rainbow_movespeed){
+                    rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value
                 }
                 if(FristLoad == true){console.log("main.js load success")}
                 setTimeout(function(){

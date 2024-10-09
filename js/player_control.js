@@ -8,6 +8,7 @@ let thumbnailcolor
 let fontcolor
 let duration = 0
 let position = 0
+let player_now
 
 
 let singtitle
@@ -123,7 +124,7 @@ function wallpaperMediaThumbnailListener(event){
             player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
             player_control_info.style.color = "rgb("+fontcolor+")"
             player_iconcolor(fontcolor)
-        },100)
+        },50)
     }
 }
 
@@ -131,15 +132,13 @@ function wallpaperMediaThumbnailListener(event){
 /*msct进度*/
 /*window.wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener)
 function wallpaperMediaTimelineListener(event) {  
-    let position = event.position;
-    let duration = event.duration;
-    let currentPosition = position;
+    var position = event.position;
+    var duration = event.duration;
+    var currentPosition = position;
 
-    console.log("当前" + position + "共" + duration);
-  
     function updateTimeline() {  
-        if (player_playback == 2 || 
-            player_playback == 0 ) {  
+        if(player_now == window.wallpaperMediaIntegration.PLAYBACK_STOPPED || player_now == window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {  
+
         } else {  
             currentPosition += 0.1; 
         }
@@ -154,7 +153,8 @@ function wallpaperMediaTimelineListener(event) {
         }
         console.log(currentPosition)
     }  
-  
+    
+    console.log("当前" + position + "共" + duration);
     updateTimeline(); 
 }*/
 
@@ -206,11 +206,15 @@ function playertitle(){
 /*msct状态*/
 window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener)
 function wallpaperMediaPlaybackListener(event){
+    player_now = event.state
     if((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))){
         player_control.style.display = "flex"
     }else{
         player_control.style.display = "none"
     }
+    /*if(player_now == window.wallpaperMediaIntegration.PLAYBACK_PLAYING){
+        wallpaperMediaTimelineListener(null)
+    }*/
 }
 
 function thumbnailsue(){

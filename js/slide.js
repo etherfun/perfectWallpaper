@@ -180,7 +180,7 @@ function shouldShow(){
 			myvideo.src = null;
 			if(myList.length){
 				//$.backstretch('file:///' + currentImg, {fade: 1000});
-				TransitionSwith();
+				TransitionSwith('file:///' + currentImg);
 			}else{
 				$.backstretch("destroy", false);
 				//document.body.style.backgroundImage = "url('imgs/1.jpg')";
@@ -216,7 +216,7 @@ function shouldShow(){
 				pictures.picture_info.style.display = "flex"
 			}
 			// 关闭幻灯片特效
-			$.backstretch("destroy", false);
+			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
@@ -256,7 +256,8 @@ function shouldShow(){
 				img.src = bingurl + "_UHD.jpg";
 	
 				img.onload = function () {
-					document.body.style.backgroundImage = "url('" + img.src + "')";
+					TransitionSwith(img.src);
+					//document.body.style.backgroundImage = "url('" + img.src + "')";
 				
 					if(RGB_show){
 						nextphoto = true
@@ -271,7 +272,7 @@ function shouldShow(){
 			break;
 		case 5: // Lorem Picsum
 			// 关闭幻灯片特效
-			$.backstretch("destroy", false);
+			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 			var timestamp = new Date().getTime();
@@ -280,8 +281,9 @@ function shouldShow(){
 			img.src = "https://picsum.photos/3840/2160?random=" + timestamp;    
 			
 			img.onload = function() {  
+				TransitionSwith(img.src);
 				
-				document.body.style.backgroundImage = "url(" + img.src + ")";
+				//document.body.style.backgroundImage = "url(" + img.src + ")";
 
 				if(RGB_show){
 					nextphoto = true
@@ -313,18 +315,18 @@ function shouldShow(){
 			break*/
 		case 7: // 次元api  
 			// 关闭幻灯片特效  
-			$.backstretch("destroy", false);  
+			//$.backstretch("destroy", false);  
 			// 关闭视频  
 			myvideo.src = null;  
 			 
 			$.get(chiyuanapi, function (getchiyuan) {  
-				var url = JSON.parse(getchiyuan).url
 
 				var img = new Image();  
-				img.src = url;
+				img.src = getchiyuan;
 			
 				img.onload = function() {  
-					document.body.style.backgroundImage = "url('" + img.src + "')";  
+					TransitionSwith(img.src);
+					//document.body.style.backgroundImage = "url('" + img.src + "')";  
 
 					if(RGB_show){
 						nextphoto = true
@@ -344,17 +346,22 @@ function shouldShow(){
 				pictures.picture_info.style.display = "flex"
 			}
 			// 关闭幻灯片特效
-			$.backstretch("destroy", false);
+			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
-			var url
-			
 			switch(galaxyapi){
 				case 2:
 					$.get("https://apod.nasa.gov/", function (get) {
 				
-					url = "https://apod.nasa.gov/apod/" + $(get).find("img").attr("src")
+						var url = "https://apod.nasa.gov/apod/" + $(get).find("img").attr("src")
+						
+						var $html = $('<div>').html(get);
+						var title = $html.find('b').first().text();
+						var author = $html.find('a').eq(2).text();
+						var explanation = $html.find('p').eq(2).text();
+						picturesinfo_showrl(title,author,"",explanation)
+						do1(url)
 				})
 				break;
 				case 1:
@@ -362,41 +369,45 @@ function shouldShow(){
 						console.log(JSON.stringify(get));
 
 						if(get.media_type == "video"){
-							url = get.thumbnail_url
+							var url = get.thumbnail_url
 						}else{
-							url = get.hdurl
+							var url = get.hdurl
 						}
 
 						var copyright
 						if(get.copyright == undefined){copyright = ""}else{copyright = get.copyright}
 						picturesinfo_showrl(get.title,copyright,"",get.explanation)
 					
+						do1(url)
 					})
 				break;
 			}
 			
-			
-			var img = new Image();
-			img.src = url
-			img.onload = function () {
-				document.body.style.backgroundImage = "url('" + img.src + "')";
-				
-				if(RGB_show){
-					nextphoto = true
-					setTimeout(function(){
-						background2canvas(img.src,false)
-						nextphoto =false
-					},100) }
-				setBackgroundStyle();
+			function do1(url){
+				var img = new Image();
+				img.src = url
+				img.onload = function () {
+					TransitionSwith(img.src);
+					//document.body.style.backgroundImage = "url('" + img.src + "')";
+					
+					if(RGB_show){
+						nextphoto = true
+						setTimeout(function(){
+							background2canvas(img.src,false)
+							nextphoto =false
+						},100) }
+					setBackgroundStyle();
 			};
+			}
+			
 			
 		break;
-		case 8:
+		case 8://windows聚焦
 			if(picturesinfo_show && pictures.picture_info.style.display == "none"){
 				pictures.picture_info.style.display = "flex"
 			}
 			// 关闭幻灯片特效
-			$.backstretch("destroy", false);
+			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
@@ -432,7 +443,8 @@ function shouldShow(){
 				picturesinfo_showrl(title,copyright,where,text)
 				
 				img.onload = function () {
-					document.body.style.backgroundImage = "url('" + img.src + "')";
+					TransitionSwith(img.src);
+					//document.body.style.backgroundImage = "url('" + img.src + "')";
 				
 					setBackgroundStyle();
 					if(RGB_show){
@@ -502,37 +514,37 @@ var setBackgroundStyle = function(){
 };
 
 
-var TransitionSwith = function(){
+function TransitionSwith(src){
 	switch (TransitionMode){
 		case 1:
-			$.backstretch('file:///' + currentImg, {fade: 1000})
+			$.backstretch(src, {fade: 1000})
 			break;
 		case 2:
-			$.backstretch('file:///' + currentImg, {fadeInOut:1000})
+			$.backstretch(src, {fadeInOut:1000})
 			break;
 		case 3:
-			$.backstretch('file:///' + currentImg, {pushLeft: 1000})
+			$.backstretch(src, {pushLeft: 1000})
 			break;
 		case 4:
-			$.backstretch('file:///' + currentImg, {pushRight: 1000})
+			$.backstretch(src, {pushRight: 1000})
 			break;
 		case 5:
-			$.backstretch('file:///' + currentImg, {pushUp: 1000})
+			$.backstretch(src, {pushUp: 1000})
 			break;
 		case 6:
-			$.backstretch('file:///' + currentImg, {pushDown: 1000})
+			$.backstretch(src, {pushDown: 1000})
 			break;
 		case 7:
-			$.backstretch('file:///' + currentImg, {coverLeft: 1000})
+			$.backstretch(src, {coverLeft: 1000})
 			break;
 		case 8:
-			$.backstretch('file:///' + currentImg, {coverRight: 1000})
+			$.backstretch(src, {coverRight: 1000})
 			break;
 		case 9:
-			$.backstretch('file:///' + currentImg, {coverUp: 1000})
+			$.backstretch(src, {coverUp: 1000})
 			break;
 		case 10:
-			$.backstretch('file:///' + currentImg, {coverDown: 1000})
+			$.backstretch(src, {coverDown: 1000})
 			break;
 		default:
 	}

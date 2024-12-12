@@ -155,7 +155,7 @@
 				"ui_setting_y-asis" : "Y-Asis site",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
-				"ui_wallpaper_updata" : "<small>* Fix request issues with background APIs (NASA Daily Galaxy, ChiYuan)<br/>+ Add Friendly Links<br/>+ Add some tips</small>",
+				"ui_wallpaper_updata" : "<small>* Fixed the weather and countdown could not change the color<br/> + Removed the weather API: Free API (reason: Invalid data returned by suspected service stopping).</small>",
 				"ui_weather_freeapi" : "Free API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "The Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "The Appsecret",
@@ -326,7 +326,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 修复背景API的请求问题(NASA每日星空,栗次元)<br/>+ 增加部分提示<br/>+ 增加友情链接</small>",
+				"ui_wallpaper_updata" : "<small>* 修复天气与倒计时无法更改颜色<br/>+ 移除天气API:免费API(原因:疑似停止服务返回数据无效)</small>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -496,7 +496,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 修复背景API的请求问题(NASA每日星空,栗次元)<br/>+ 增加部分提示<br/>+ 增加友情链接</small>",
+				"ui_wallpaper_updata" : "<small>* 修复天气与倒计时无法更改颜色<br/>+ 移除天气API:免费API(原因:疑似停止服务返回数据无效)</small>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -1814,7 +1814,7 @@
 			},
 			"countdown_color" : 
 			{
-				"condition" : "countdown_show.value == true && countdown_fontusetb.value == 5",
+				"condition" : "countdown_show.value == true",
 				"index" : 304,
 				"order" : 404,
 				"text" : "ui_color_color",
@@ -2035,7 +2035,7 @@
 			},
 			"freeapi" : 
 			{
-				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && freeapi.value == true)",
+				"condition" : "false && (weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && freeapi.value == true)",
 				"index" : 200,
 				"order" : 300,
 				"text" : "ui_weather_freeapi",
@@ -3621,6 +3621,7 @@
 			},
 			"player_control_visualaudiobar" : 
 			{
+				"condition" : "player_control_show.value == true",
 				"index" : 319,
 				"order" : 419,
 				"text" : "ui_player_control_VisualAudioBar",
@@ -3845,7 +3846,7 @@
 				"step" : 0.1,
 				"text" : "ui_rgb_au_high",
 				"type" : "slider",
-				"value" : 3
+				"value" : 2
 			},
 			"rgb_bg" : 
 			{
@@ -4303,11 +4304,11 @@
 				"type" : "slider",
 				"value" : 100
 			},
-			"updata_logv162" : 
+			"updata_logv163" : 
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.2(10) 2024-10-7<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.3(11) 2024-12-12<br/>",
 				"type" : "bool",
 				"value" : true
 			},
@@ -4372,7 +4373,7 @@
 			},
 			"wallpaper_updata" : 
 			{
-				"condition" : "updata_logv162.value == true",
+				"condition" : "updata_logv163.value == true",
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_wallpaper_updata",
@@ -4796,7 +4797,7 @@
 			},
 			"weathercategory_0" : 
 			{
-				"condition" : "friendlylinks.value == true && weathercategory.value == true",
+				"condition" : "false && friendlylinks.value == true && weathercategory.value == true",
 				"index" : 360,
 				"order" : 460,
 				"text" : "ui_friendlink_weathercategory_0",
@@ -4888,7 +4889,7 @@
 	"tags" : [ "Relaxing" ],
 	"title" : "Perfect Wallpaper -  Weather Fix | Media Integration | Daily Web Wallpaper | RGB Lighting",
 	"type" : "web",
-	"version" : 17,
+	"version" : 18,
 	"visibility" : "public",
 	"workshopid" : "3026605859",
 	"workshopurl" : "steam://url/CommunityFilePage/3026605859"

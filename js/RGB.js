@@ -70,52 +70,71 @@ function background2canvas(src, videoORimages){
 
         rgbbg.globalAlpha = 1
         if(particlesRGB){rgbbg.drawImage(particles,0,0,particles.width,particles.height,0,0,100,20)}
-        if(audiobarrainbowcolor){
-            if(audiobarRGB && audioArray){
-
-                var barWidth = (bg.width / 128);  
-                var scaleFactor = aurgbhigh;  
-                var hueStep = 360 / 128;  
-
-                for (var i = 0; i < audioArray.length; ++i) {  
-                    var hue = (i * hueStep + time) % 360;
-                    var saturation = '100%';  
-                    var lightness = '50%';  
-                    var rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;  
-
-                    var channelIndex = i % 64;  
-                    if (i >= 64) {  
-                        channelIndex += 64;  
-                    }  
-
-                    var height = bg.height * Math.min(audioArray[i], 1) * scaleFactor;  
-                    var actualHeight = Math.min(height, bg.height);  
-
-                    rgbbg.fillStyle = rgbColor;  
-                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
-                }
-                if(rainbowmove){
-                    time += rainbowmovespeed
-                };  
-            }
-        }else{
-            if(audiobarRGB && audioArray){
-            
-                var barWidth = (bg.width / 128);
+        if (audiobarrainbowcolor) {
+            if (audiobarRGB && audioArray) {
+                var barWidth = bg.width / 128;
                 var scaleFactor = aurgbhigh;
-                rgbbg.fillStyle = 'rgb('+ aurgbcolor +')';
-      
-                for (var i = 0; i < audioArray.length; ++i) {  
+                var hueStep = 360 / 128;
+        
+                // 初始化 smoothedAudioArray，如果不存在
+                if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
+                    window.smoothedAudioArray = new Array(audioArray.length).fill(0);
+                }
+        
+                // 更新 smoothedAudioArray 值，逐渐靠近 audioArray
+                for (var i = 0; i < audioArray.length; ++i) {
+                    window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1; // 平滑系数为 0.1
+                }
+        
+                for (var i = 0; i < audioArray.length; ++i) {
+                    var hue = (i * hueStep + time) % 360;
+                    var saturation = '100%';
+                    var lightness = '50%';
+                    var rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;
+        
                     var channelIndex = i % 64;
-                    if (i >= 64) {  
+                    if (i >= 64) {
                         channelIndex += 64;
                     }
-                    var height = bg.height * Math.min(audioArray[i], 1) * scaleFactor;  
-                    var actualHeight = Math.min(height, bg.height);  
-                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);  
+        
+                    var height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                    var actualHeight = Math.min(height, bg.height);
+        
+                    rgbbg.fillStyle = rgbColor;
+                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
                 }
-            }     
+                if (rainbowmove) {
+                    time += rainbowmovespeed;
+                }
+            }
+        } else {
+            if (audiobarRGB && audioArray) {
+                var barWidth = bg.width / 128;
+                var scaleFactor = aurgbhigh;
+                rgbbg.fillStyle = 'rgb(' + aurgbcolor + ')';
+        
+                // 初始化 smoothedAudioArray，如果不存在
+                if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
+                    window.smoothedAudioArray = new Array(audioArray.length).fill(0);
+                }
+        
+                // 更新 smoothedAudioArray 值
+                for (var i = 0; i < audioArray.length; ++i) {
+                    window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1; // 平滑系数为 0.1
+                }
+        
+                for (var i = 0; i < audioArray.length; ++i) {
+                    var channelIndex = i % 64;
+                    if (i >= 64) {
+                        channelIndex += 64;
+                    }
+                    var height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                    var actualHeight = Math.min(height, bg.height);
+                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
+                }
+            }
         }
+        
         
         
         rgbbg.restore()

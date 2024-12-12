@@ -178,7 +178,7 @@ var moonphase_show = false
 var obstime_show = false
 
 var FristLoadweather = true
-var weather_color
+var weather_Color
 var weather_blurcolor_show
 var weather_blurcolor
 var weather_yakeli_show
@@ -1082,8 +1082,8 @@ window.wallpaperPropertyListener={
                 apiuse();
         }*/            
 		// 天气颜色
-        if(properties.weather_color){
-            weather_color = properties.weather_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
+        if(properties.weather_Color){
+            weather_Color = properties.weather_Color.value.split(' ').map(function(c){return Math.ceil(c*255)});
             if(FristLoadweather == false){
                 weatherappearance()
             }
@@ -1126,7 +1126,7 @@ window.wallpaperPropertyListener={
         }
         function weatherappearance(){
 
-            weather.style.color = 'rgb('+weather_color+')';
+            weather.style.color = 'rgb('+weather_Color+')';
 
             if(weather_blurcolor_show){
                 weather_webtext.style.textShadow = '0 0 20px rgb('+weather_blurcolor+')';

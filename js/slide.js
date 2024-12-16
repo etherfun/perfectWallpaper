@@ -180,11 +180,11 @@ function shouldShow(){
 			myvideo.src = null;
 			if(myList.length){
 				//$.backstretch('file:///' + currentImg, {fade: 1000});
-				TransitionSwith('file:///' + currentImg);
+				document.body.style.backgroundImage = "url('"+'file:///' + currentImg + "')";
+				//TransitionSwith('file:///' + currentImg);
 			}else{
 				$.backstretch("destroy", false);
-				//document.body.style.backgroundImage = "url('imgs/1.jpg')";
-				document.body.style.backgroundImage = backgroundRoute
+				document.body.style.backgroundImage = "url('imgs/1.jpg')";
 				//RGBuse.style.backgroundImage = backgroundRoute
 			}
 			clearpicturesinfo()
@@ -256,8 +256,8 @@ function shouldShow(){
 				img.src = bingurl + "_UHD.jpg";
 	
 				img.onload = function () {
-					TransitionSwith(img.src);
-					//document.body.style.backgroundImage = "url('" + img.src + "')";
+					//TransitionSwith(img.src);
+					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
 					if(RGB_show){
 						nextphoto = true
@@ -281,9 +281,8 @@ function shouldShow(){
 			img.src = "https://picsum.photos/3840/2160?random=" + timestamp;    
 			
 			img.onload = function() {  
-				TransitionSwith(img.src);
-				
-				//document.body.style.backgroundImage = "url(" + img.src + ")";
+				//TransitionSwith(img.src);
+				document.body.style.backgroundImage = "url(" + img.src + ")";
 
 				if(RGB_show){
 					nextphoto = true
@@ -325,8 +324,8 @@ function shouldShow(){
 				img.src = getchiyuan;
 			
 				img.onload = function() {  
-					TransitionSwith(img.src);
-					//document.body.style.backgroundImage = "url('" + img.src + "')";  
+					//TransitionSwith(img.src);
+					document.body.style.backgroundImage = "url('" + img.src + "')";  
 
 					if(RGB_show){
 						nextphoto = true
@@ -387,8 +386,8 @@ function shouldShow(){
 				var img = new Image();
 				img.src = url
 				img.onload = function () {
-					TransitionSwith(img.src);
-					//document.body.style.backgroundImage = "url('" + img.src + "')";
+					//TransitionSwith(img.src);
+					document.body.style.backgroundImage = "url('" + img.src + "')";
 					
 					if(RGB_show){
 						nextphoto = true
@@ -443,8 +442,8 @@ function shouldShow(){
 				picturesinfo_showrl(title,copyright,where,text)
 				
 				img.onload = function () {
-					TransitionSwith(img.src);
-					//document.body.style.backgroundImage = "url('" + img.src + "')";
+					//TransitionSwith(img.src);
+					document.body.style.backgroundImage = "url('" + img.src + "')";
 				
 					setBackgroundStyle();
 					if(RGB_show){
@@ -514,39 +513,31 @@ var setBackgroundStyle = function(){
 };
 
 
-function TransitionSwith(src){
+function TransitionSwith(){
 	switch (TransitionMode){
+		case 0:
+			switch (TransitionMode_choose_0){
+			    case 0: document.body.style.transition = "background-image 1s linear 0s"; break;
+				case 1: document.body.style.transition = "background-image 1s linear(0 0%, 0.22 2.1%, 0.86 6.5%, 1.11 8.6%, 1.3 10.7%, 1.35 11.8%, 1.37 12.9%, 1.37 13.7%, 1.36 14.5%, 1.32 16.2%, 1.03 21.8%, 0.94 24%, 0.89 25.9%, 0.88 26.85%, 0.87 27.8%, 0.87 29.25%, 0.88 30.7%, 0.91 32.4%, 0.98 36.4%, 1.01 38.3%, 1.04 40.5%, 1.05 42.7%, 1.05 44.1%, 1.04 45.7%, 1 53.3%, 0.99 55.4%, 0.98 57.5%, 0.99 60.7%, 1 68.1%, 1.01 72.2%, 1 86.7%, 1 100%) 0s"; break;
+				case 2: document.body.style.transition = "background-image 1s linear(0 0%, 0 2.27%, 0.02 4.53%, 0.04 6.8%, 0.06 9.07%, 0.1 11.33%, 0.14 13.6%, 0.25 18.15%, 0.39 22.7%, 0.56 27.25%, 0.77 31.8%, 1 36.35%, 0.89 40.9%, 0.85 43.18%, 0.81 45.45%, 0.79 47.72%, 0.77 50%, 0.75 52.27%, 0.75 54.55%, 0.75 56.82%, 0.77 59.1%, 0.79 61.38%, 0.81 63.65%, 0.85 65.93%, 0.89 68.2%, 1 72.7%, 0.97 74.98%, 0.95 77.25%, 0.94 79.53%, 0.94 81.8%, 0.94 84.08%, 0.95 86.35%, 0.97 88.63%, 1 90.9%, 0.99 93.18%, 0.98 95.45%, 0.99 97.73%, 1 100%) 0s"; break;
+				case 3: document.body.style.transition = "background-image 1s linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%) 0s"; break;
+			}
+			break;
 		case 1:
-			$.backstretch(src, {fade: 1000})
+			switch (TransitionMode_choose_1) {
+			    case 0: document.body.style.transition = "background-image 1s ease-in-out 0s"; break;
+				case 1: document.body.style.transition = "background-image 1s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s"; break;
+				case 2: document.body.style.transition = "background-image 1s cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s"; break;
+				case 3: document.body.style.transition = "background-image 1s cubic-bezier(0.65, 0.05, 0.36, 1) 0s"; break;
+				case 4: document.body.style.transition = "background-image 1s cubic-bezier(0.4, 0, 0.2, 1) 0s"; break;
+			}
 			break;
 		case 2:
-			$.backstretch(src, {fadeInOut:1000})
-			break;
+			document.body.style.transition = "background-image 1s ease-in 0s"; break;
 		case 3:
-			$.backstretch(src, {pushLeft: 1000})
-			break;
+			document.body.style.transition = "background-image 1s ease-out 0s"; break;
 		case 4:
-			$.backstretch(src, {pushRight: 1000})
-			break;
-		case 5:
-			$.backstretch(src, {pushUp: 1000})
-			break;
-		case 6:
-			$.backstretch(src, {pushDown: 1000})
-			break;
-		case 7:
-			$.backstretch(src, {coverLeft: 1000})
-			break;
-		case 8:
-			$.backstretch(src, {coverRight: 1000})
-			break;
-		case 9:
-			$.backstretch(src, {coverUp: 1000})
-			break;
-		case 10:
-			$.backstretch(src, {coverDown: 1000})
-			break;
-		default:
+			document.body.style.transition = TransitionMode_choose_4; break;
 	}
 };
 

@@ -68,7 +68,9 @@ var SlideNow = false;
 var wallpapermode = 1;
 //幻灯片特效
 var TransitionMode = 1;
-var TransitionRandom = false;
+var TransitionMode_choose_0 = 0
+var TransitionMode_choose_1 = 0
+var TransitionMode_choose_4 = ""
 // 开启随机播放
 var random = false;
 // 当前壁纸
@@ -427,6 +429,19 @@ window.wallpaperPropertyListener={
 		//幻灯片特效
 		if (properties.TransitionMode) {
 			TransitionMode = properties.TransitionMode.value;
+            TransitionSwith()
+        }
+		if (properties.TransitionMode_choose_0) {
+			TransitionMode_choose_0 = properties.TransitionMode_choose_0.value;
+            TransitionSwith()
+        }
+		if (properties.TransitionMode_choose_1) {
+			TransitionMode_choose_1 = properties.TransitionMode_choose_1.value;
+            TransitionSwith()
+        }
+		if (properties.TransitionMode_choose_4) {
+			TransitionMode_choose_4 = properties.TransitionMode_choose_4.value;
+            TransitionSwith()
         }
 		/*默认壁纸
 		if (properties.DefaultWallpaper) {

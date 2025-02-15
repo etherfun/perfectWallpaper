@@ -50,6 +50,7 @@ var picturesinfo_yakeli
 var picturesinfo_yakelicolor
 var picturesinfo_bluryakeli
 var picturesinfo_show
+var pictures_URL
 
 
 // 音频相关
@@ -448,6 +449,12 @@ window.wallpaperPropertyListener={
 			backgroundRoute = "url('imgs/"+ properties.DefaultWallpaper.value +".jpg')"
 			if(FristLoad == true){}else{shouldShow();}
         }*/
+        if (properties.background_wallpapermode_9_URL) {
+            pictures_URL = properties.background_wallpapermode_9_URL.value;
+            if (wallpapermode == 9) {
+                changeBackground()
+            }
+        }
 		//自定义视频
 		if(properties.selectvideo){
 			selectvideo = properties.selectvideo.value;
@@ -2205,7 +2212,7 @@ window.wallpaperPropertyListener={
                     player_control_scalefactor = properties.player_control_scalefactor.value
                 }
                 if(properties.player_control_hdong){
-                    player_control_hdong = properties.player_control_hdong.value
+                    player_control_hdong = properties.player_control_hdong.value/500
                 }
                 if(properties.countdownY){
                     var y = properties.countdownY.value

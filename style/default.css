@@ -21,6 +21,7 @@ video {
 	display:none;
 }
 #clock {
+	z-index: 10;
 	position:absolute;
 	top:0;
 	left:0;
@@ -64,6 +65,7 @@ video {
 	line-height:1;
 }
 #countdown {
+	z-index: 10;
 	position:absolute;
 	top:0;
 	left:0;
@@ -71,7 +73,6 @@ video {
 	color: rgb(255 255 255);
 	font-family:"等线 Light","Microsoft Yahei Light";
 	font-size:100px;
-	z-index:90;
 	justify-content: space-around;
 	transform: translate(-50%, -50%);
 }
@@ -82,6 +83,7 @@ video {
 	font-size:0.5em;
 }
 #oDate {
+	z-index: 10;
 	position:absolute;
 	top:0;
 	left:0;
@@ -89,7 +91,6 @@ video {
 	color:#fff;
 	font-family:"等线 Light","Microsoft Yahei Light";
 	font-size:200px;
-	z-index:90;
 	justify-content: space-around;
 	transform: translate(-50%, -50%);
 }
@@ -98,6 +99,7 @@ video {
 }
 
 #weather {
+	z-index: 10;
 	position:absolute;
 	top:0;
 	left:0;
@@ -114,6 +116,7 @@ video {
 	z-index:90;	
 }
 #weather_graph {
+	z-index: 10;
 	position: absolute;
 	color:#fff;
 	display: none;
@@ -125,7 +128,6 @@ video {
 	width: 1000px;
 	height:1000px;
 	backdrop-filter: blur(10px);
-	z-index:90;	
 }
 
 #weather_graph .text_top {
@@ -141,23 +143,23 @@ video {
 }
 
 #hitokoto {
+	z-index: 10;
 	position:absolute;
 	text-align:center;
 	color:#fff;
 	font-family:"等线 Light","Microsoft Yahei Light";
 	font-size:200px;
-	z-index:89;
     justify-content: space-around;
 	transform: translate(-50%, -50%);
 }
 #hitokoto .text{
 	font-size:0.5em;
-	z-index:90;
 }
 #hitokoto .text .text2{
 	text-align-last:right;
 }
 #player_control{
+	z-index: 10;
 	position:absolute;
 	top:50%;
 	left:50%;
@@ -165,7 +167,6 @@ video {
 	color:#fff;
 	font-family:"等线 Light","Microsoft Yahei Light";
 	font-size:100px;
-	z-index:90;
 	justify-content: space-around;
 	/*transform: translate(-50%, -50%);*/
 }
@@ -247,6 +248,7 @@ video {
 }
 
 #picture_info {
+	z-index: 10;
     display: flex;
     align-items: flex-start;
 	position:absolute;
@@ -256,7 +258,6 @@ video {
 	font-size:20px;
 	justify-content: space-around;
     white-space: nowrap;
-	z-index: 2;
 }
 
 #picture_info .title .right,

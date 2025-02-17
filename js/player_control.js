@@ -33,12 +33,12 @@ var player_control_aubar = document.querySelector("#player_control .aubar")
 
 /*msct封面*/
 window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener)
-function wallpaperMediaThumbnailListener(event){
+function wallpaperMediaThumbnailListener(event) {
     player_control_thumbnail.src = event.thumbnail
 
-    switch(Color_pickup_method){
+    switch (Color_pickup_method) {
         case 1:
-            switch(player_control_yakelibgusetb){
+            switch (player_control_yakelibgusetb) {
                 case 1:
                     thumbnailcolor = hexToRgb(event.primaryColor)
                     break;
@@ -50,12 +50,12 @@ function wallpaperMediaThumbnailListener(event){
                     break
                 case 4:
                     thumbnailcolor = hexToRgb(event.highContrastColor)
-                   break
+                    break
                 case 5:
                     thumbnailcolor = player_control_yakelicolor
                     break
             }
-            switch(player_control_fontusetb){
+            switch (player_control_fontusetb) {
                 case 1:
                     fontcolor = hexToRgb(event.primaryColor)
                     break;
@@ -67,47 +67,47 @@ function wallpaperMediaThumbnailListener(event){
                     break
                 case 4:
                     fontcolor = hexToRgb(event.highContrastColor)
-                   break
+                    break
                 case 5:
                     fontcolor = player_control_color
-                break
+                    break
             }
             break
         case 2:
             var img = document.querySelector("#player_control .thumbnail")
-            img.onload = function(){
+            img.onload = function () {
                 const colorThief = new ColorThief();
-            
-                switch(player_control_yakelibgusetb){
+
+                switch (player_control_yakelibgusetb) {
                     case 1:
                         thumbnailcolor = colorThief.getColor(img)
                         break;
                     case 2:
-                        thumbnailcolor = colorThief.getPalette(img,3)[0]
+                        thumbnailcolor = colorThief.getPalette(img, 3)[0]
                         break;
                     case 3:
-                        thumbnailcolor = colorThief.getPalette(img,3)[1]
+                        thumbnailcolor = colorThief.getPalette(img, 3)[1]
                         break
                     case 4:
-                        thumbnailcolor = colorThief.getPalette(img,3)[2]
-                       break
+                        thumbnailcolor = colorThief.getPalette(img, 3)[2]
+                        break
                     case 5:
                         thumbnailcolor = player_control_yakelicolor
                         break
                 }
-                switch(player_control_fontusetb){
+                switch (player_control_fontusetb) {
                     case 1:
                         fontcolor = colorThief.getColor(img)
                         break;
                     case 2:
-                        fontcolor = colorThief.getPalette(img,3)[0]
+                        fontcolor = colorThief.getPalette(img, 3)[0]
                         break;
                     case 3:
-                        fontcolor = colorThief.getPalette(img,3)[1]
+                        fontcolor = colorThief.getPalette(img, 3)[1]
                         break
                     case 4:
-                        fontcolor = colorThief.getPalette(img,3)[2]
-                       break
+                        fontcolor = colorThief.getPalette(img, 3)[2]
+                        break
                     case 5:
                         fontcolor = player_control_yakelicolor
                         break
@@ -115,16 +115,16 @@ function wallpaperMediaThumbnailListener(event){
             }
             break
         case 3:
-            
-        
+
+
     }
-        
-    if(player_control_show == true){
-        setTimeout(function(){
-            player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
-            player_control_info.style.color = "rgb("+fontcolor+")"
+
+    if (player_control_show == true) {
+        setTimeout(function () {
+            player_control_background.style.background = "rgba(" + thumbnailcolor + "," + player_control_yakeli + ")"
+            player_control_info.style.color = "rgb(" + fontcolor + ")"
             player_iconcolor(fontcolor)
-        },50)
+        }, 50)
     }
 }
 
@@ -160,7 +160,7 @@ function wallpaperMediaTimelineListener(event) {
 
 /*msct监听*/
 window.wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener)
-function wallpaperMediaPropertiesListener(event){
+function wallpaperMediaPropertiesListener(event) {
 
     singtitle = event.title
     singartist = event.artist
@@ -173,16 +173,16 @@ function wallpaperMediaPropertiesListener(event){
     //setTimeout(pc_aubar,100)
 }
 
-function playertitle(){
-    if(player_control_thumbnailrorl == false){
+function playertitle() {
+    if (player_control_thumbnailrorl == false) {
         var player_control_title = document.querySelector("#player_control .title .left")
         var player_control_artist = document.querySelector("#player_control .artist .left")
         var player_control_albumTitle = document.querySelector("#player_control .albumTitle .left")
-        var elements = document.querySelectorAll("#player_control .right");  
-        for (var i = 0; i < elements.length; i++) {  
-            elements[i].innerHTML = '';  
+        var elements = document.querySelectorAll("#player_control .right");
+        for (var i = 0; i < elements.length; i++) {
+            elements[i].innerHTML = '';
         }
-    }else{
+    } else {
         var player_control_title = document.querySelector("#player_control .title .right")
         var player_control_artist = document.querySelector("#player_control .artist .right")
         var player_control_albumTitle = document.querySelector("#player_control .albumTitle .right")
@@ -195,9 +195,9 @@ function playertitle(){
     player_control_title.innerHTML = singtitle
     player_control_artist.innerHTML = singartist
     player_control_albumTitle.innerHTML = singalbumTitle
-    if(singalbumTitle != singtitle || player_control_samealbumTitle == true){
+    if (singalbumTitle != singtitle || player_control_samealbumTitle == true) {
         document.querySelector("#player_control .albumTitle").style.display = ''
-    }else{
+    } else {
         document.querySelector("#player_control .albumTitle").style.display = 'none'
     }
 }
@@ -205,11 +205,11 @@ function playertitle(){
 
 /*msct状态*/
 window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener)
-function wallpaperMediaPlaybackListener(event){
+function wallpaperMediaPlaybackListener(event) {
     player_now = event.state
-    if((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))){
+    if ((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))) {
         player_control.style.display = "flex"
-    }else{
+    } else {
         player_control.style.display = "none"
     }
     /*if(player_now == window.wallpaperMediaIntegration.PLAYBACK_PLAYING){
@@ -217,16 +217,16 @@ function wallpaperMediaPlaybackListener(event){
     }*/
 }
 
-function thumbnailsue(){
+function thumbnailsue() {
 
     //player_control_thumbnail.style.backgroundImage = "url(" + thumbnail + ")"
 
-    
-            player_control_background.style.background = "rgba("+thumbnailcolor+","+player_control_yakeli+")"
-            player_control_info.style.color = "rgb("+fontcolor+")"
-            player_iconcolor(fontcolor)
-           
-    
+
+    player_control_background.style.background = "rgba(" + thumbnailcolor + "," + player_control_yakeli + ")"
+    player_control_info.style.color = "rgb(" + fontcolor + ")"
+    player_iconcolor(fontcolor)
+
+
 }
 
 /*
@@ -277,7 +277,7 @@ function pc_aubar() {
     bar.height = height;
 
     aubarstop = false;
-    
+
     var previousHeights = new Array(64).fill(aubar.height);
     var barHeights = new Array(64).fill(0);
 
@@ -302,7 +302,7 @@ function pc_aubar() {
 
         if (!aubarstop && player_control_visualaudiobar) {
             requestAnimationFrame(draw);
-        }else{
+        } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         }
     }
@@ -316,10 +316,12 @@ function pc_aubar() {
         rgbbg.beginPath();
 
         var x, y, prevX, prevY;
-        var cornerRadius = 2;
+        var cornerRadius = 4;
         for (var i = 0, l = 64; i < 64; ++i, ++l) {
             var amplitude = (audioArray[i] + audioArray[l]) / 2;
             var targetHeight = aubar.height - aubar.height * Math.min(amplitude, 1) * player_control_scalefactor;
+
+            targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
 
             previousHeights[i] = lerp(previousHeights[i], targetHeight, player_control_hdong);
 
@@ -329,7 +331,6 @@ function pc_aubar() {
             if (i === 0) {
                 rgbbg.moveTo(x, y);
             } else {
-
                 prevX = spacing * (i - 1);
                 prevY = previousHeights[i - 1];
 
@@ -338,18 +339,11 @@ function pc_aubar() {
                 var distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance > cornerRadius * 2) {
-                    var angle = Math.atan2(dy, dx);
+                    var controlX = prevX + (x - prevX) / 2;
+                    var controlY = prevY + (y - prevY) / 2;
 
-                    var startX = prevX + cornerRadius * Math.cos(angle);
-                    var startY = prevY + cornerRadius * Math.sin(angle);
-                    var endX = x - cornerRadius * Math.cos(angle);
-                    var endY = y - cornerRadius * Math.sin(angle);
-
-                    rgbbg.lineTo(startX, startY);
-
-                    rgbbg.arcTo(prevX, prevY, x, y, cornerRadius);
-
-                    rgbbg.lineTo(endX, endY);
+                    rgbbg.quadraticCurveTo(prevX, prevY, controlX, controlY);
+                    rgbbg.quadraticCurveTo(controlX, controlY, x, y);
                 } else {
                     rgbbg.lineTo(x, y);
                 }
@@ -358,15 +352,16 @@ function pc_aubar() {
         rgbbg.stroke();
         if (!aubarstop && player_control_visualaudiobar) {
             requestAnimationFrame(drawline);
-        }else{
+        } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         }
     }
-    if(player_control_visualaudiobar && player_control_barline == 2){
+
+    if (player_control_visualaudiobar && player_control_barline == 2) {
         drawline()
-    }else if(player_control_visualaudiobar && player_control_barline == 1){
+    } else if (player_control_visualaudiobar && player_control_barline == 1) {
         draw();
-    }else{
+    } else {
 
     }
 }

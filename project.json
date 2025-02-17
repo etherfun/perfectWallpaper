@@ -174,7 +174,7 @@
 				"ui_setting_y-asis" : "Y-Asis site",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
-				"ui_wallpaper_updata" : "<small>* Fixed component display layer issues on some devices<br/>* Free weather API returned (it was invalid due to last year's quota)<br/>+ Wallpapers now support custom URLs for more display options</small>",
+				"ui_wallpaper_updata" : "<small>* Fixed the issue where the date did not update at midnight(0AM) <br/>* Fine-tuned the maximum and minimum values of the media integration -> Magnitude of change (default effect remains unchanged) <br/>* Fixed the issue where the audio line would exceed the range in the visual audio style -> audio line</small>",
 				"ui_weather_freeapi" : "Free API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "The Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "The Appsecret",
@@ -364,7 +364,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 修复部分设备的组件显示层级问题<br/>* 免费天气API回归(原来是去年用限额导致失效了)<br/>+ 壁纸新增自定义网址,方便更多壁纸显示</small>",
+				"ui_wallpaper_updata" : "<small>* 修复0点时日期不更新 <br/>* 微调媒体集成->变化幅度 最大最小值(默认值效果不变) <br/>* 修复媒体集成->可视化音频样式->音频线 会超出范围问题</small>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -553,7 +553,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 修复部分设备的组件显示层级问题<br/>* 免费天气API回归(原来是去年用限额导致失效了)<br/>+ 壁纸新增自定义网址,方便更多壁纸显示</small>",
+				"ui_wallpaper_updata" : "<small>* 修复0点时日期不更新 <br/>* 微调媒体集成->变化幅度 最大最小值(默认值效果不变) <br/>* 修复媒体集成->可视化音频样式->音频线 会超出范围问题</small>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -1732,6 +1732,24 @@
 				"type" : "txt",
 				"value" : 0
 			},
+			"background_wallpapermode_9_TIP" : 
+			{
+				"condition" : "wallpapermode.value == 9",
+				"index" : 7,
+				"order" : 107,
+				"text" : "ui_background_wallpapermode_9_TIP",
+				"type" : "text",
+				"value" : "1 0 0"
+			},
+			"background_wallpapermode_9_URL" : 
+			{
+				"condition" : "wallpapermode.value == 9",
+				"index" : 6,
+				"order" : 106,
+				"text" : "ui_background_wallpapermode_9_URL",
+				"type" : "textinput",
+				"value" : ""
+			},
 			"bgs" : 
 			{
 				"condition" : "imagedisplaystlye.value == 6",
@@ -2701,24 +2719,6 @@
 				"text" : "<br/>我自己分割用的( •̀ ω •́ )✧",
 				"type" : "bool",
 				"value" : false
-			},
-			"background_wallpapermode_9_URL" : 
-			{
-				"condition" : "wallpapermode.value == 9",
-				"index" : 6,
-				"order" : 106,
-				"text" : "ui_background_wallpapermode_9_URL",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"background_wallpapermode_9_TIP" : 
-			{
-				"condition" : "wallpapermode.value == 9",
-				"index" : 7,
-				"order" : 107,
-				"text" : "ui_background_wallpapermode_9_TIP",
-				"type" : "text",
-				"value" : "1 0 0"
 			},
 			"obstime" : 
 			{
@@ -4346,7 +4346,7 @@
 				"condition" : "Test_ModAuthor.value == true",
 				"index" : 356,
 				"order" : 456,
-				"text" : "<br /><small>就一个高三生 你指望我会有原作者那样的成就？<small/><br/><h5>后面可能会自己加点功能 目前计划添加一言 反正都是给自己用的<h5/><br/><h4>希望原作者看到这个会去更新吧<h4/>",
+				"text" : "<small>就一个普通大学生<small/><br/><h5>后面可能会自己加点功能 反正都是给自己用的 也可以去创意工坊提出一些功能加入进来或者提出BUG和不合理之处 我都会回复的<h5/>",
 				"type" : "text"
 			},
 			"text_line41" : 
@@ -4428,11 +4428,11 @@
 				"type" : "text",
 				"value" : ""
 			},
-			"updata_logv165" : 
+			"updata_logv166" : 
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.5(13) 2025-2-16<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.6(14) 2025-2-17<br/>",
 				"type" : "bool",
 				"value" : true
 			},
@@ -4497,7 +4497,7 @@
 			},
 			"wallpaper_updata" : 
 			{
-				"condition" : "updata_logv165.value == true",
+				"condition" : "updata_logv166.value == true",
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_wallpaper_updata",
@@ -5015,9 +5015,9 @@
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
 	"tags" : [ "Relaxing" ],
-	"title" : "Perfect Wallpaper-完美壁纸 天气完美修复版 | 多API更自由的天气格式 多彩一言 每日壁纸 RGB设备支持",
+	"title" : "Perfect Wallpaper -  Weather Fix | Media Integration | Daily Web Wallpaper | RGB Lighting",
 	"type" : "web",
-	"version" : 19,
+	"version" : 21,
 	"visibility" : "public",
 	"workshopid" : "3026605859",
 	"workshopurl" : "steam://url/CommunityFilePage/3026605859"

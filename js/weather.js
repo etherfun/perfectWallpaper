@@ -310,10 +310,25 @@ function FormatWeather_freeapi(strHtml){
 
 //和风天气api
 function getcity_qweatherapi(strHtml){
+    let APIHost = window.APIHost === "" ? "geoapi.qweather.com" : `${window.APIHost}/geo`;
     if(citynumber == "" || strCity != checkcity){
         checkcity = strCity
-        $.get("https://geoapi.qweather.com/v2/city/lookup?location="+strCity+"&key="+CityKey, function(data){
-    	    console.log(JSON.stringify(data));
+        fetch(`https://${APIHost}/v2/city/lookup?location=${strCity}`,
+            {
+                method: 'GET',
+                headers: {
+                    'X-QW-Api-Key': `${CityKey}`,
+                  }
+            }
+        )
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+          return response.json();
+        })
+        .then(data => {
+            console.log(JSON.stringify(data));
             citynumber = data.location[0].id
             cityname = data.location[0].name
         	getWeather_input_qweatherapi(citynumber,strHtml);
@@ -323,26 +338,40 @@ function getcity_qweatherapi(strHtml){
     }
 }
 function getWeather_input_qweatherapi(citynumber, strHtml){
-    $.get("https://devapi.qweather.com/v7/weather/now?key="+CityKey+"&location="+citynumber, function(res){
-       
-            console.log(JSON.stringify(res));
-            times = res.updateTime;
-        
-            windSpeed = res.now.windSpeed
-            humidity = res.now.humidity
-            temperature = res.now.temp;
-            feels = res.now.feelsLike;
-            weathernow = res.now.text;
-            wind = res.now.windDir;
-            windLv = res.now.windScale;
-            precip = res.now.precip;
-            cloud = res.now.cloud;
-            vis = res.now.vis;
-            dew = res.now.dew;
-            pressure = res.now.pressure
-            weather_webtext.innerHTML = FormatWeather_qweatherapi(strHtml);
-        });
+    let APIHost = window.APIHost === "" ? "devapi.qweather.com" : window.APIHost;
+    fetch(`https://${APIHost}/v7/weather/now?location=${citynumber}`,
+      {
+        method: 'GET',
+        headers: {
+          'X-QW-Api-Key': `${CityKey}`,
+        }
+      }
+    )
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  })
+  .then(res => {
+    console.log(JSON.stringify(res));
+    times = res.updateTime;
     
+    windSpeed = res.now.windSpeed;
+    humidity = res.now.humidity;
+    temperature = res.now.temp;
+    feels = res.now.feelsLike;
+    weathernow = res.now.text;
+    wind = res.now.windDir;
+    windLv = res.now.windScale;
+    precip = res.now.precip;
+    cloud = res.now.cloud;
+    vis = res.now.vis;
+    dew = res.now.dew;
+    pressure = res.now.pressure;
+    
+    weather_webtext.innerHTML = FormatWeather_qweatherapi(strHtml);
+  })
 }
 function FormatWeather_qweatherapi(strHtml){
     if(temperature_show){

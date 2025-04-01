@@ -141,6 +141,7 @@ var weatherInit = false;
 var api
 var citynumber = ""
 var CityKey
+var APIHost
 var VisualCrossing_Key
 var weather_updata = 3
 var appid
@@ -863,6 +864,10 @@ window.wallpaperPropertyListener={
         //获取key 和风天气api
         if(properties.getcitykey_qweather){
             CityKey = properties.getcitykey_qweather.value
+        }
+        //获取API host 和风天气api
+        if(properties.getAPIHOST_qweather){
+            APIHost = properties.getAPIHOST_qweather.value
         }
         //获取appid&appsecret 天气api
         if(properties.getcityappid_tianqiapi){

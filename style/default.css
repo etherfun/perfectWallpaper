@@ -159,6 +159,7 @@ video {
 	text-align-last:right;
 }
 #player_control{
+	visibility: hidden;
 	z-index: 10;
 	position:absolute;
 	top:50%;

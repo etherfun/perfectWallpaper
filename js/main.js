@@ -149,6 +149,7 @@ var appsecret
 var FristLoadWeather = true
 var weather_unit = "metric"
 var weather_lang = "en"
+var qweatherapi_paymode = false
 
 
 var rangetemperature_show = false
@@ -1065,6 +1066,10 @@ window.wallpaperPropertyListener={
                 if(FristLoadWeather == false){
                     getcity()
                 }
+            }
+        }if(properties.qweatherapi_paymode){
+            if(properties.qweatherapi_paymode.value){
+                qweatherapi_paymode = properties.qweatherapi_paymode.value
             }
         }
         if(properties.tianqiapi){
@@ -2025,19 +2030,26 @@ window.wallpaperPropertyListener={
                 if(properties.player_control_show){
                     player_control_show = properties.player_control_show.value
                     if(FristLoad == false){
-                        player_control.style.display = player_control_show ? 'flex' : 'none'
-                        if(properties.player_control_show.value){
-                            thumbnailsue()
+                        player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
+                        player_control.style.display = player_control_show ? 'flex' : 'none';
+                        if(player_control_show){
+                            wallpaperMediaThumbnailListener(null);
+                            wallpaperMediaPropertiesListener(null);
+                            wallpaperMediaPlaybackListener(null);
+
+                            thumbnailsue();
+                            player_controlappearance();
                         }
                     }else{
                         player_control.style.display = "flex"
+                        player_control.style.visibility = player_control_show ? 'visible' : 'hidden'
 
                         setTimeout(function(){
-                            if((document.querySelector("#player_control .title .left").innerText == "loading...") || (document.querySelector("#player_control .title .right").innerText == "loading...") ){player_control.style.display = "none"}
-                        }, 10000);
-                        
+                            if(!player_control_show){
+                                player_control.style.display = "none"
+                            }
+                        }, 5000);
                     }
-                    
                 }
                 if(properties.playery){
                     var y = properties.playery.value
@@ -2086,48 +2098,8 @@ window.wallpaperPropertyListener={
                }
                 if(properties.player_control_bluryakeli){
                     player_control_bluryakeli = properties.player_control_bluryakeli.value
-                    player_controlappearance()
-                }
-                function player_controlappearance(){
-
-                    player_control.style.color = 'rgb('+player_control_color+')';
-
-                    if(player_control_blurcolor_show){
-                        player_control_background.style.textShadow = '0 0 20px rgb('+player_control_blurcolor+')';
-                    }else{
-                        player_control_background.style.textShadow = null
-                    }
-
-                    if(player_control_yakeli_show){
-                        player_control_background.style.background = "rgba("+player_control_yakelicolor+","+player_control_yakeli+")"
-                        player_control_background.style.backdropFilter = "blur("+player_control_bluryakeli+"px)"
-                    }else{
-                        player_control_background.style.background = null
-                        player_control_background.style.backdropFilter = null
-                    }
-                }
-		        //透明度
-                if(properties.player_control_timetransparency){
-                    var t = properties.player_control_timetransparency.value/100;
-                    player_control.style.opacity = t;
-                }
-                //圆角
-                if(properties.player_control_roundedcorners){
-                    player_control_roundedcorners = properties.player_control_roundedcorners.value
-                    if(FristLoad == true){
-                        setTimeout(function(){
-                        var height =  window.getComputedStyle(player_control).height
-                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_background.style.paddingRight = null
-                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
-                        },2000)
-                    }else{
-                        var height =  window.getComputedStyle(player_control).height
-                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_background.style.paddingRight = null
-                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
+                    if(FristLoad == false){
+                        player_controlappearance()
                     }
                 }
 		        // 大小
@@ -2141,6 +2113,50 @@ window.wallpaperPropertyListener={
                     player_control_thumbnail.style.width = ss + 'px';
                     player_control_thumbnail.style.height = ss + 'px';
                 } 
+                //圆角
+                if(properties.player_control_roundedcorners){
+                    player_control_roundedcorners = properties.player_control_roundedcorners.value
+                    player_controlappearance()
+                }
+                function player_controlappearance(){
+
+                    player_control.style.color = 'rgb(' + player_control_color + ')';
+                    if(player_control_blurcolor_show){
+                        player_control_background.style.textShadow = '0 0 20px rgb('+player_control_blurcolor+')';
+                    }else{
+                        player_control_background.style.textShadow = null
+                    }
+
+                    if(player_control_yakeli_show){
+                        player_control_background.style.background = "rgba("+player_control_yakelicolor+","+player_control_yakeli+")"
+                        player_control_background.style.backdropFilter = "blur("+player_control_bluryakeli+"px)"
+                    }else{
+                        player_control_background.style.background = null
+                        player_control_background.style.backdropFilter = null
+                    }
+
+                    if(FristLoad == true){
+                        setTimeout(function(){
+                        var height =  window.getComputedStyle(player_control_thumbnail).height
+                        console.log(height)
+                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                        player_control_background.style.paddingRight = null
+                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
+                        },5000)
+                    }else{
+                        var height =  window.getComputedStyle(player_control_thumbnail).height
+                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                        player_control_background.style.paddingRight = null
+                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
+                    }
+                }
+		        //透明度
+                if(properties.player_control_timetransparency){
+                    var t = properties.player_control_timetransparency.value/100;
+                    player_control.style.opacity = t;
+                }
                 if(properties.player_control_showwidth){
                     if(properties.player_control_showwidth.value == 0){
                         player_control_background.style.width = 'auto'

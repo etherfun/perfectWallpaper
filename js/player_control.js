@@ -34,62 +34,23 @@ var player_control_aubar = document.querySelector("#player_control .aubar")
 /*msct封面*/
 window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener)
 function wallpaperMediaThumbnailListener(event) {
-    player_control_thumbnail.src = event.thumbnail
+    if (event) {
+        player_control_thumbnail.src = event.thumbnail
 
-    switch (Color_pickup_method) {
-        case 1:
-            switch (player_control_yakelibgusetb) {
-                case 1:
-                    thumbnailcolor = hexToRgb(event.primaryColor)
-                    break;
-                case 2:
-                    thumbnailcolor = hexToRgb(event.secondaryColor)
-                    break;
-                case 3:
-                    thumbnailcolor = hexToRgb(event.tertiaryColor)
-                    break
-                case 4:
-                    thumbnailcolor = hexToRgb(event.highContrastColor)
-                    break
-                case 5:
-                    thumbnailcolor = player_control_yakelicolor
-                    break
-            }
-            switch (player_control_fontusetb) {
-                case 1:
-                    fontcolor = hexToRgb(event.primaryColor)
-                    break;
-                case 2:
-                    fontcolor = hexToRgb(event.secondaryColor)
-                    break;
-                case 3:
-                    fontcolor = hexToRgb(event.tertiaryColor)
-                    break
-                case 4:
-                    fontcolor = hexToRgb(event.highContrastColor)
-                    break
-                case 5:
-                    fontcolor = player_control_color
-                    break
-            }
-            break
-        case 2:
-            var img = document.querySelector("#player_control .thumbnail")
-            img.onload = function () {
-                const colorThief = new ColorThief();
-
+        switch (Color_pickup_method) {
+            case 1:
                 switch (player_control_yakelibgusetb) {
                     case 1:
-                        thumbnailcolor = colorThief.getColor(img)
+                        thumbnailcolor = hexToRgb(event.primaryColor)
                         break;
                     case 2:
-                        thumbnailcolor = colorThief.getPalette(img, 3)[0]
+                        thumbnailcolor = hexToRgb(event.secondaryColor)
                         break;
                     case 3:
-                        thumbnailcolor = colorThief.getPalette(img, 3)[1]
+                        thumbnailcolor = hexToRgb(event.tertiaryColor)
                         break
                     case 4:
-                        thumbnailcolor = colorThief.getPalette(img, 3)[2]
+                        thumbnailcolor = hexToRgb(event.highContrastColor)
                         break
                     case 5:
                         thumbnailcolor = player_control_yakelicolor
@@ -97,27 +58,67 @@ function wallpaperMediaThumbnailListener(event) {
                 }
                 switch (player_control_fontusetb) {
                     case 1:
-                        fontcolor = colorThief.getColor(img)
+                        fontcolor = hexToRgb(event.primaryColor)
                         break;
                     case 2:
-                        fontcolor = colorThief.getPalette(img, 3)[0]
+                        fontcolor = hexToRgb(event.secondaryColor)
                         break;
                     case 3:
-                        fontcolor = colorThief.getPalette(img, 3)[1]
+                        fontcolor = hexToRgb(event.tertiaryColor)
                         break
                     case 4:
-                        fontcolor = colorThief.getPalette(img, 3)[2]
+                        fontcolor = hexToRgb(event.highContrastColor)
                         break
                     case 5:
-                        fontcolor = player_control_yakelicolor
+                        fontcolor = player_control_color
                         break
                 }
-            }
-            break
-        case 3:
+                break
+            case 2:
+                var img = document.querySelector("#player_control .thumbnail")
+                img.onload = function () {
+                    const colorThief = new ColorThief();
 
-
+                    switch (player_control_yakelibgusetb) {
+                        case 1:
+                            thumbnailcolor = colorThief.getColor(img)
+                            break;
+                        case 2:
+                            thumbnailcolor = colorThief.getPalette(img, 3)[0]
+                            break;
+                        case 3:
+                            thumbnailcolor = colorThief.getPalette(img, 3)[1]
+                            break
+                        case 4:
+                            thumbnailcolor = colorThief.getPalette(img, 3)[2]
+                            break
+                        case 5:
+                            thumbnailcolor = player_control_yakelicolor
+                            break
+                    }
+                    switch (player_control_fontusetb) {
+                        case 1:
+                            fontcolor = colorThief.getColor(img)
+                            break;
+                        case 2:
+                            fontcolor = colorThief.getPalette(img, 3)[0]
+                            break;
+                        case 3:
+                            fontcolor = colorThief.getPalette(img, 3)[1]
+                            break
+                        case 4:
+                            fontcolor = colorThief.getPalette(img, 3)[2]
+                            break
+                        case 5:
+                            fontcolor = player_control_yakelicolor
+                            break
+                    }
+                }
+                break
+            case 3:
+        }
     }
+    if (!player_control_show) return
 
     if (player_control_show == true) {
         setTimeout(function () {
@@ -161,15 +162,21 @@ function wallpaperMediaTimelineListener(event) {
 /*msct监听*/
 window.wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener)
 function wallpaperMediaPropertiesListener(event) {
+    if (event) {
+        singtitle = event.title
+        singartist = event.artist
+        singalbumTitle = event.albumTitle
+        aubarstop = true
+        
+        player_control_aubar.width = 0
+        player_control_aubar.height = 0
+        if (player_control_show == true) player_control.style.display = 'flex'
+    }
+    console.log("event", event)
+    if (!player_control_show) return
 
-    singtitle = event.title
-    singartist = event.artist
-    singalbumTitle = event.albumTitle
-    aubarstop = true
     playertitle()
-    player_control_aubar.width = 0
-    player_control_aubar.height = 0
-    pc_aubar()
+    if (player_control_visualaudiobar) pc_aubar()
     //setTimeout(pc_aubar,100)
 }
 
@@ -205,16 +212,21 @@ function playertitle() {
 
 /*msct状态*/
 window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener)
+let = player_now
 function wallpaperMediaPlaybackListener(event) {
-    player_now = event.state
-    if ((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))) {
-        player_control.style.display = "flex"
-    } else {
-        player_control.style.display = "none"
+    if (event) player_now = event.state
+    if (!player_control_show) return
+    
+    if (player_control_show) {
+        if ((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))) {
+            player_control.style.display = "flex"
+        } else {
+            player_control.style.display = "none"
+        }
+        /*if(player_now == window.wallpaperMediaIntegration.PLAYBACK_PLAYING){
+            wallpaperMediaTimelineListener(null)
+        }*/
     }
-    /*if(player_now == window.wallpaperMediaIntegration.PLAYBACK_PLAYING){
-        wallpaperMediaTimelineListener(null)
-    }*/
 }
 
 function thumbnailsue() {

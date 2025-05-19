@@ -429,19 +429,20 @@ function shouldShow() {
 				case 5:
 					var lga = "Ko_KR"
 			}
-			var ctry = lga.slice(3)
+			var city = lga.slice(3)
 
-			$.get("https://arc.msn.com/v3/Delivery/Placement?pid=209567&fmt=json&cdm=1&pl=" + lga + "&lc=" + lga + "&ctry=" + ctry, function (get) {
-				var rawjson = JSON.parse(get.batchrsp.items[0].item.replace("\\", ""))
+			$.get(`https://fd.api.iris.microsoft.com/v4/api/selection?&placement=88000820&bcnt=1&country=${city}&locale=${lga}&fmt=json`, function (get) {
+				var rawjson = JSON.parse(get.batchrsp.items[0].item)
+				console.log(rawjson)
 
-				var url = rawjson.ad.image_fullscreen_001_landscape.u
+				var url = rawjson.ad.landscapeImage.asset
 				var img = new Image();
 				img.src = url;
 
-				var title = rawjson.ad.hs1_cta_text.tx
-				var text = rawjson.ad.hs2_title_text.tx
-				var copyright = rawjson.ad.copyright_text.tx
-				var where = rawjson.ad.title_text.tx
+				var title = rawjson.ad.title
+				var text = rawjson.ad.description
+				var copyright = rawjson.ad.copyright
+				var where = rawjson.ad.iconHoverText.split(/\r?\n/)[0].trim();
 				picturesinfo_showrl(title, copyright, where, text)
 
 				img.onload = function () {

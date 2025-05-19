@@ -310,8 +310,17 @@ function FormatWeather_freeapi(strHtml){
 
 //和风天气api
 function getcity_qweatherapi(strHtml){
+    if (!qweatherapi_paymode) {
+        if (localStorage.getItem('UseNumber') == null) {
+            localStorage.setItem('UseNumber', "0");
+        }
+
+        if (parseInt(localStorage.getItem('UseNumber')) + 1 > 50000) return;
+        if (new Date().day === 1) localStorage.setItem('UseNumber', "0")
+    }
     let APIHost = window.APIHost === "" ? "geoapi.qweather.com" : `${window.APIHost}/geo`;
     if(citynumber == "" || strCity != checkcity){
+        if (!qweatherapi_paymode) localStorage.setItem('UseNumber', parseInt(localStorage.getItem('UseNumber')) + 1);
         checkcity = strCity
         fetch(`https://${APIHost}/v2/city/lookup?location=${strCity}`,
             {
@@ -338,6 +347,11 @@ function getcity_qweatherapi(strHtml){
     }
 }
 function getWeather_input_qweatherapi(citynumber, strHtml){
+    if (!qweatherapi_paymode) {
+        if (parseInt(localStorage.getItem('UseNumber')) + 1 > 50000) return;
+    }
+    localStorage.setItem('UseNumber', parseInt(localStorage.getItem('UseNumber')) + 1);
+
     let APIHost = window.APIHost === "" ? "devapi.qweather.com" : window.APIHost;
     fetch(`https://${APIHost}/v7/weather/now?location=${citynumber}`,
       {

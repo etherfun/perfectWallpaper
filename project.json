@@ -176,7 +176,7 @@
 				"ui_setting_y-asis" : "Y-Asis site",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
-				"ui_wallpaper_updata" : "<small>* Fix wallpaper focus on Window <br/>+ Add detection for the number of QWeather API requests. The free QWeather API request limit is 50,000 per month. Please enable the pay mode if the limit is exceeded. <br/>* Remove media integration loading wait time</small>",
+				"ui_wallpaper_updata" : "<small>* Optimize code<br/>V1.6.8(16) 2025-5-19 Updata log<br/>* Fix wallpaper focus on Window <br/>+ Add detection for the number of QWeather API requests. The free QWeather API request limit is 50,000 per month. Please enable the pay mode if the limit is exceeded. <br/>* Remove media integration loading wait time</small>",
 				"ui_weather_freeapi" : "Free API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "The Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "The Appsecret",
@@ -369,7 +369,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月 超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
+				"ui_wallpaper_updata" : "<small>* 优化代码<br/>V1.6.8(16) 2025-5-19 更新日志<br/>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月 超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -561,7 +561,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
+				"ui_wallpaper_updata" : "<small>* 优化代码<br/>V1.6.8(16) 2025-5-19 更新日志<br/>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -4454,11 +4454,11 @@
 				"type" : "text",
 				"value" : ""
 			},
-			"updata_logv168" : 
+			"updata_logv1681" : 
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.8(16) 2025-5-19(Y-M-D)<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.8.1(17) 2025-5-21(Y-M-D)<br/>",
 				"type" : "bool",
 				"value" : true
 			},
@@ -4523,7 +4523,7 @@
 			},
 			"wallpaper_updata" : 
 			{
-				"condition" : "updata_logv168.value == true",
+				"condition" : "updata_logv1681.value == true",
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_wallpaper_updata",

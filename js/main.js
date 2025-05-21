@@ -631,6 +631,15 @@ window.wallpaperPropertyListener={
         if(properties.oclock_roundedcorners){
             var Roundedcorners = properties.oclock_roundedcorners.value
             if(FristLoad == true){
+                while (true) {
+                var height = window.getComputedStyle(oClock).height
+                if (height != '0px') {
+                oClock_block.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                oClock_block.style.padding = null
+                oClock_block.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                    break;
+                }
+                }
                 setTimeout(function(){
                 var height = window.getComputedStyle(oClock).height
                 oClock_block.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
@@ -729,12 +738,17 @@ window.wallpaperPropertyListener={
         //日期圆角
         if(properties.odate_roundedcorners){
             var Roundedcorners = properties.odate_roundedcorners.value
-            if(FristLoad == true){setTimeout(function(){
+            if(FristLoad == true){
+                while (true) {
+                    
                 var height =  window.getComputedStyle(oDate).height
+                if (height != "0px"){
                 oDate_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
                 oDate_webtext.style.padding = null
                 oDate_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
-                },2000)
+                break;
+                }
+                }
             }else{
                 var height =  window.getComputedStyle(oDate).height
                 oDate_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
@@ -1183,12 +1197,16 @@ window.wallpaperPropertyListener={
         if(properties.weather_roundedcorners){
             var Roundedcorners = properties.weather_roundedcorners.value
             if(FristLoad == true){
-                setTimeout(function(){
+                while (condition) {
                     var height =  window.getComputedStyle(weather).height
+                    if (height != "0px") {
                     weather_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
                     weather_webtext.style.padding = null
                     weather_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
-                },2000)}else{
+                    break;
+                    }
+                }
+            }else{
                     var height =  window.getComputedStyle(weather).height
                     weather_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
                     weather_webtext.style.padding = null
@@ -1403,18 +1421,20 @@ window.wallpaperPropertyListener={
         if(properties.hitokoto_roundedcorners){
             var Roundedcorners = properties.hitokoto_roundedcorners.value
             if(FristLoad == true){
-                setTimeout(function(){
-                var height =  window.getComputedStyle(hitokoto).height
-                hitokoto_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
-                hitokoto_webtext.style.padding = null
-                hitokoto_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
-            },2000)
+                while (true) {
+                    var height =  window.getComputedStyle(hitokoto).height
+                    if (height != '0px'){
+                        hitokoto_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                        hitokoto_webtext.style.padding = null
+                        hitokoto_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                        break;
+                    }
+                }
             }else{
                 var height =  window.getComputedStyle(hitokoto).height
                 hitokoto_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
                 hitokoto_webtext.style.padding = null
                 hitokoto_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
-                
             }
         }
 		// 一言大小
@@ -2045,7 +2065,7 @@ window.wallpaperPropertyListener={
                         player_control.style.visibility = player_control_show ? 'visible' : 'hidden'
 
                         setTimeout(function(){
-                            if(!player_control_show){
+                            if(!player_control_show || (document.querySelector("#player_control .title .left").innerText == "loading...") || (document.querySelector("#player_control .title .right").innerText == "loading...")){
                                 player_control.style.display = "none"
                             }
                         }, 5000);
@@ -2116,7 +2136,24 @@ window.wallpaperPropertyListener={
                 //圆角
                 if(properties.player_control_roundedcorners){
                     player_control_roundedcorners = properties.player_control_roundedcorners.value
-                    player_controlappearance()
+                    if(FristLoad == true){
+                        while (true) {
+                            var height =  window.getComputedStyle(player_control_thumbnail).height
+                            if (height !== '0px') {
+                                player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                                player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                                player_control_background.style.paddingRight = null
+                                player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
+                                break;
+                            }
+                        }
+                    }else{
+                        var height =  window.getComputedStyle(player_control_thumbnail).height
+                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
+                        player_control_background.style.paddingRight = null
+                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
+                    }
                 }
                 function player_controlappearance(){
 
@@ -2135,22 +2172,6 @@ window.wallpaperPropertyListener={
                         player_control_background.style.backdropFilter = null
                     }
 
-                    if(FristLoad == true){
-                        setTimeout(function(){
-                        var height =  window.getComputedStyle(player_control_thumbnail).height
-                        console.log(height)
-                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_background.style.paddingRight = null
-                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
-                        },5000)
-                    }else{
-                        var height =  window.getComputedStyle(player_control_thumbnail).height
-                        player_control_background.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_thumbnail.style.borderRadius = (height.slice(0,-2)/2)*(player_control_roundedcorners/100) + 'px';
-                        player_control_background.style.paddingRight = null
-                        player_control_background.style.paddingRight = (height.slice(0,-2)/2)*(player_control_roundedcorners/200) + 'px';
-                    }
                 }
 		        //透明度
                 if(properties.player_control_timetransparency){
@@ -2339,17 +2360,21 @@ window.wallpaperPropertyListener={
                 if(properties.countdown_roundedcorners){
                     var Roundedcorners = properties.countdown_roundedcorners.value
                     if(FristLoad == true){
-                        setTimeout(function(){
+                        while (true) {
                             var height =  window.getComputedStyle(countdown).height
-                            countdown_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
-                            countdown_webtext.style.padding = null
-                            countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
-                        },2000)}else{
-                            var height =  window.getComputedStyle(countdown).height
-                            countdown_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
-                            countdown_webtext.style.padding = null
-                            countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                            if (height != "0px"){
+                                countdown_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                                countdown_webtext.style.padding = null
+                                countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                                break;
+                            }
                         }
+                    }else{
+                        var height =  window.getComputedStyle(countdown).height
+                        countdown_webtext.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                        countdown_webtext.style.padding = null
+                        countdown_webtext.style.padding = "0 " + (height.slice(0,-2)/2)*(Roundedcorners/200) + 'px';
+                    }
                 }
 
                 if(properties.picturesinfo_language){
@@ -2450,17 +2475,21 @@ window.wallpaperPropertyListener={
                 if(properties.picturesinfo_roundedcorners){
                     var Roundedcorners = properties.picturesinfo_roundedcorners.value
                     if(FristLoad == true){
-                        setTimeout(function(){
+                        while (true) {
                             var height =  window.getComputedStyle(picture_info).height
+                            if (height != '0px') {
                             pictures.info.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
                             pictures.info.style.padding = null
                             pictures.info.style.padding = ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + "0";
-                        },2000)}else{
-                            var height =  window.getComputedStyle(picture_info).height
-                            pictures.info.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
-                            pictures.info.style.padding = null
-                            pictures.info.style.padding = ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + "0";
+                            break;
+                            }
                         }
+                    }else{
+                        var height =  window.getComputedStyle(picture_info).height
+                        pictures.info.style.borderRadius = (height.slice(0,-2)/2)*(Roundedcorners/100) + 'px';
+                        pictures.info.style.padding = null
+                        pictures.info.style.padding = ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + ((height.slice(0,-2)/2)*(Roundedcorners/200) + 'px ') + "0";
+                    }
                 }
                 if(properties.picturesinfo_showaway){
                     if(properties.picturesinfo_showaway.value == true){

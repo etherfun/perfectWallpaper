@@ -167,7 +167,7 @@ function wallpaperMediaPropertiesListener(event) {
         singartist = event.artist
         singalbumTitle = event.albumTitle
         aubarstop = true
-        
+
         player_control_aubar.width = 0
         player_control_aubar.height = 0
         if (player_control_show == true) player_control.style.display = 'flex'
@@ -216,7 +216,7 @@ let = player_now
 function wallpaperMediaPlaybackListener(event) {
     if (event) player_now = event.state
     if (!player_control_show) return
-    
+
     if (player_control_show) {
         if ((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))) {
             player_control.style.display = "flex"

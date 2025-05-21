@@ -575,11 +575,37 @@ window.wallpaperPropertyListener = {
         }
         // 是否显示时间
         if (properties.showTime) {
-            oClock.style.display = properties.showTime.value ? 'flex' : 'none';
+            let oClock_show = properties.showTime.value
+            if (FristLoad == false) {
+                oClock.style.visibility = oClock_show ? 'visible' : 'hidden';
+                oClock.style.display = oClock_show ? 'flex' : 'none';
+            } else {
+                oClock.style.display = "flex"
+                oClock.style.visibility = oClock_show ? 'visible' : 'hidden'
+
+                setTimeout(function () {
+                    if (!oClock_show) {
+                        oClock.style.display = "none"
+                    }
+                }, 3000);
+            }
         }
         // 是否显示日期
         if (properties.showDate) {
-            oDate.style.display = properties.showDate.value ? 'flex' : 'none';
+            let oDate_show = properties.showDate.value
+            if (FristLoad == false) {
+                oDate.style.visibility = oDate_show ? 'visible' : 'hidden';
+                oDate.style.display = oDate_show ? 'flex' : 'none';
+            } else {
+                oDate.style.display = "flex"
+                oDate.style.visibility = oDate_show ? 'visible' : 'hidden'
+
+                setTimeout(function () {
+                    if (!oDate_show) {
+                        oDate.style.display = "none"
+                    }
+                }, 3000);
+            }
         }
         // 是否显示秒
         if (properties.tShowSencends) {
@@ -624,21 +650,19 @@ window.wallpaperPropertyListener = {
         if (properties.oclock_roundedcorners) {
             var Roundedcorners = properties.oclock_roundedcorners.value
             if (FristLoad == true) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
                 while (true) {
                     var height = window.getComputedStyle(oClock).height
-                    if (height != '0px') {
+                    if (height != '0px' || timeout == true) {
                         oClock_block.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
                         oClock_block.style.padding = null
                         oClock_block.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
                         break;
                     }
                 }
-                setTimeout(function () {
-                    var height = window.getComputedStyle(oClock).height
-                    oClock_block.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                    oClock_block.style.padding = null
-                    oClock_block.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-                }, 2000)
             } else {
                 var height = window.getComputedStyle(oClock).height
                 oClock_block.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
@@ -732,10 +756,13 @@ window.wallpaperPropertyListener = {
         if (properties.odate_roundedcorners) {
             var Roundedcorners = properties.odate_roundedcorners.value
             if (FristLoad == true) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
                 while (true) {
-
                     var height = window.getComputedStyle(oDate).height
-                    if (height != "0px") {
+                    if (height != "0px" || timeout == true) {
                         oDate_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
                         oDate_webtext.style.padding = null
                         oDate_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
@@ -1105,13 +1132,23 @@ window.wallpaperPropertyListener = {
         }
         // 是否天气
         if (properties.weather_show) {
+            let weather_show = properties.weather_show.value;
             clearWT();
-            if (properties.weather_show.value) {
-                weather.style.display = 'flex';
-                weatherInit = false;
-                autoWeather();
+            if (FristLoad == false) {
+                weather.style.visibility = weather_show ? 'visible' : 'hidden';
+                weather.style.display = weather_show ? 'flex' : 'none';
+                weather_show ? weatherInit = false : null;
+                weather_show ? autoWeather() : null;
             } else {
-                weather.style.display = 'none';
+                weather.style.display = "flex"
+                weather.style.visibility = weather_show ? 'visible' : 'hidden'
+                weather_show ? autoWeather() : null;
+
+                setTimeout(function () {
+                    if (!weather_show) {
+                        weather.style.display = "none"
+                    }
+                }, 3000);
             }
         }
         //天气api选择
@@ -1189,9 +1226,13 @@ window.wallpaperPropertyListener = {
         if (properties.weather_roundedcorners) {
             var Roundedcorners = properties.weather_roundedcorners.value
             if (FristLoad == true) {
-                while (condition) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
+                while (true) {
                     var height = window.getComputedStyle(weather).height
-                    if (height != "0px") {
+                    if (height != "0px" || timeout == true) {
                         weather_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
                         weather_webtext.style.padding = null
                         weather_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
@@ -1330,18 +1371,23 @@ window.wallpaperPropertyListener = {
         }
         // 是否一言
         if (properties.hitokoto_show) {
+            let hitokoto_show = properties.hitokoto_show.value;
             clearHT();
-            if (properties.hitokoto_show.value) {
-                hitokoto.style.display = 'flex';
-                hitokotoInit = false;
-
-                autoHitokto();
+            if (FristLoad == false) {
+                hitokoto.style.visibility = hitokoto_show ? 'visible' : 'hidden';
+                hitokoto.style.display = hitokoto_show ? 'flex' : 'none';
+                hitokoto_show ? hitokotoInit = false : null;
+                hitokoto_show ? autoHitokto() : null;
             } else {
-                hitokoto.style.display = 'none';
+                hitokoto.style.display = "flex"
+                hitokoto.style.visibility = hitokoto_show ? 'visible' : 'hidden'
+                hitokoto_show ? autoHitokto() : null;
 
                 setTimeout(function () {
-                    if (hitokoto_webtext.innerText == "一言") { hitokoto.style.display = "none" }
-                }, 10000);
+                    if (!hitokoto_show) {
+                        hitokoto.style.display = "none"
+                    }
+                }, 3000);
             }
         }
         // 一言外观
@@ -1412,9 +1458,13 @@ window.wallpaperPropertyListener = {
         if (properties.hitokoto_roundedcorners) {
             var Roundedcorners = properties.hitokoto_roundedcorners.value
             if (FristLoad == true) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
                 while (true) {
                     var height = window.getComputedStyle(hitokoto).height
-                    if (height != '0px') {
+                    if (height != '0px' || timeout) {
                         hitokoto_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
                         hitokoto_webtext.style.padding = null
                         hitokoto_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
@@ -2056,6 +2106,7 @@ window.wallpaperPropertyListener = {
                 setTimeout(function () {
                     if (!player_control_show || (document.querySelector("#player_control .title .left").innerText == "loading...") || (document.querySelector("#player_control .title .right").innerText == "loading...")) {
                         player_control.style.display = "none"
+                        console.log("none")
                     }
                 }, 5000);
             }
@@ -2107,9 +2158,7 @@ window.wallpaperPropertyListener = {
         }
         if (properties.player_control_bluryakeli) {
             player_control_bluryakeli = properties.player_control_bluryakeli.value
-            if (FristLoad == false) {
-                player_controlappearance()
-            }
+            player_controlappearance()
         }
         // 大小
         if (properties.player_control_size) {
@@ -2126,9 +2175,13 @@ window.wallpaperPropertyListener = {
         if (properties.player_control_roundedcorners) {
             player_control_roundedcorners = properties.player_control_roundedcorners.value
             if (FristLoad == true) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
                 while (true) {
                     var height = window.getComputedStyle(player_control_thumbnail).height
-                    if (height !== '0px') {
+                    if (height !== '0px' || timeout) {
                         player_control_background.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
                         player_control_thumbnail.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
                         player_control_background.style.paddingRight = null
@@ -2349,9 +2402,13 @@ window.wallpaperPropertyListener = {
         if (properties.countdown_roundedcorners) {
             var Roundedcorners = properties.countdown_roundedcorners.value
             if (FristLoad == true) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
                 while (true) {
                     var height = window.getComputedStyle(countdown).height
-                    if (height != "0px") {
+                    if (height != "0px" || timeout == true) {
                         countdown_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
                         countdown_webtext.style.padding = null
                         countdown_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
@@ -2384,10 +2441,18 @@ window.wallpaperPropertyListener = {
         }
         if (properties.picturesinfo_show) {
             picturesinfo_show = properties.picturesinfo_show.value
-            if (properties.picturesinfo_show.value) {
-                pictures.picture_info.style.display = "flex"
+            if (FristLoad == false) {
+                pictures.picture_info.style.visibility = picturesinfo_show ? 'visible' : 'hidden';
+                pictures.picture_info.style.display = picturesinfo_show ? 'flex' : 'none';
             } else {
-                pictures.picture_info.style.display = "none"
+                pictures.picture_info.style.display = "flex"
+                pictures.picture_info.style.visibility = picturesinfo_show ? 'visible' : 'hidden'
+
+                setTimeout(function () {
+                    if (!picturesinfo_show || document.querySelector("#picture_info .title .left").innerText == "UNKNOW") {
+                        pictures.picture_info.style.display = "none"
+                    }
+                }, 3000);
             }
         }
         if (properties.picturesinfo_color) {
@@ -2464,9 +2529,13 @@ window.wallpaperPropertyListener = {
         if (properties.picturesinfo_roundedcorners) {
             var Roundedcorners = properties.picturesinfo_roundedcorners.value
             if (FristLoad == true) {
+                let timeout = false
+                setTimeout(() => {
+                    timeout = true
+                },5000)
                 while (true) {
                     var height = window.getComputedStyle(picture_info).height
-                    if (height != '0px') {
+                    if (height != '0px' || timeout == true) {
                         pictures.info.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
                         pictures.info.style.padding = null
                         pictures.info.style.padding = ((height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px ') + ((height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px ') + "0";
@@ -2555,10 +2624,10 @@ window.wallpaperPropertyListener = {
         if (properties.rgb_color_rainbow_movespeed) {
             rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value
         }
-        if (FristLoad == true) { console.log("main.js load success") }
-        setTimeout(function () {
+        if (FristLoad == true) { 
+            console.log("main.js load success")
             FristLoad = false;
-        }, 10000)
+        }
     },
     userDirectoryFilesAddedOrChanged: function (propertyName, changedFiles) {
         if (!files.hasOwnProperty(propertyName)) {

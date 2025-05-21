@@ -170,10 +170,9 @@ function wallpaperMediaPropertiesListener(event) {
 
         player_control_aubar.width = 0
         player_control_aubar.height = 0
-        if (player_control_show == true) player_control.style.display = 'flex'
+        if (player_control_show == true && (singtitle && singtitle !== '')) player_control.style.display = 'flex'
     }
-    console.log("event", event)
-    if (!player_control_show) return
+    if (!player_control_show || singtitle == undefined || singtitle == '') return
 
     playertitle()
     if (player_control_visualaudiobar) pc_aubar()
@@ -215,13 +214,14 @@ window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener)
 let = player_now
 function wallpaperMediaPlaybackListener(event) {
     if (event) player_now = event.state
-    if (!player_control_show) return
 
     if (player_control_show) {
-        if ((player_control_show == true) && ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED))) {
-            player_control.style.display = "flex"
+        if ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED)) {
+            player_control.style.display = "flex";
+            console.log("player_control_show");
         } else {
-            player_control.style.display = "none"
+            player_control.style.display = "none";
+            console.log("player_control_hide");
         }
         /*if(player_now == window.wallpaperMediaIntegration.PLAYBACK_PLAYING){
             wallpaperMediaTimelineListener(null)
@@ -312,7 +312,7 @@ function pc_aubar() {
             rgbbg.fillRect(barWidth * i, aubar.height - barHeights[i], barWidth, barHeights[i]);
         }
 
-        if (!aubarstop && player_control_visualaudiobar) {
+        if (!aubarstop && player_control_visualaudiobar && player_now.state !== 0) {
             requestAnimationFrame(draw);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
@@ -362,7 +362,7 @@ function pc_aubar() {
             }
         }
         rgbbg.stroke();
-        if (!aubarstop && player_control_visualaudiobar) {
+        if (!aubarstop && player_control_visualaudiobar && player_now.state !== 0) {
             requestAnimationFrame(drawline);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);

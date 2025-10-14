@@ -2624,6 +2624,13 @@ window.wallpaperPropertyListener = {
         if (properties.rgb_color_rainbow_movespeed) {
             rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value
         }
+        if (properties.fontSetting) {
+            fontSetting = properties.fontSetting.value
+            if (fontSetting !== "") {
+                fontGroup = fontSetting.split(';').join(',')
+                document.body.style.fontFamily = fontGroup
+            }
+        }
         if (FristLoad == true) { 
             console.log("main.js load success")
             FristLoad = false;

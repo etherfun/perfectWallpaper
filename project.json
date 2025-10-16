@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "有bug欢迎上报 尽可能会在一周内修复\r\n(如果可以请使用上方的 \" 讨论 \" 板块反馈问题或者提问 方便管理以及回复)\r\n这个壁纸也有可能会更新我自己的功能 \r\n也可以提出一些功能 有空就会加入进来\r\n\r\n如果原作者认为这个壁纸侵犯了你的权利 留言后会在一周内删除",
+	"description" : "🐞 Bug Reports Welcome!\nPlease feel free to report any issues or bugs. We'll try our best to fix them within a week.\n(If possible, use the \"Discussions\" section above to submit feedback or questions for better organization and faster responses.)\n\n🛠️ Feature Updates & Customization\nThis wallpaper may receive updates with new personal features/functions I develop.\nFeel free to suggest features—I'll add them when time allows!\n\n⚠️ Copyright Notice\nIf the original creator believes this wallpaper infringes your rights, leave a comment below and it will be removed within one week.",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -116,6 +116,8 @@
 				"ui_effect_sakura_sakuratransparency" : "Sakura Transparency",
 				"ui_effect_sakura_showSakura" : "Sakura Effect",
 				"ui_effect_sakuratxt" : "Sakura ----------",
+				"ui_fontSetting" : "Custom Font",
+				"ui_fontSetting_tip" : "<small>★You can set multiple fonts as fallback fonts separated by ‘;’<br/>Please ensure that your computer has this font installed<br/>Example: HYWenHei 75W;MIsana<br/><small/>",
 				"ui_friendlink_functioncategory" : "Functions",
 				"ui_friendlink_functioncategory_1" : "<h6>Color Thief || lokeshdhakar.com/projects/color-thief/</h6>",
 				"ui_friendlink_wallpaper_0" : "<h6>Bing Wallpaper</h6><small>Originally a feature in Microsoft's  Bing Search,The background of the homepage of Bing Search is a different wallpaper every day, the best in terms of aesthetics among the search engines.A separate app went live around March 2020 Bing Wallpaper</small>",
@@ -152,6 +154,10 @@
 				"ui_player_control_hdong" : "Magnitude of change",
 				"ui_player_control_samealbumTitle" : "Display the album title that is the same as the song title",
 				"ui_player_control_scaleFactor" : "Height Threshold",
+				"ui_player_control_thumbnail_rotation" : "Thumbnail Rotation Effect",
+				"ui_player_control_thumbnail_rotation_speed" : "Rotation speed",
+				"ui_player_control_thumbnail_size" : "Reduce Thumbnail Size",
+				"ui_player_control_thumbnail_size_value" : "Relative Thumbnail Size",
 				"ui_player_control_thumbnailrorl" : "Cover in right",
 				"ui_qweatherapi_paymode" : "Pay Mode",
 				"ui_rgb_au" : "Show Visual Audio",
@@ -176,7 +182,7 @@
 				"ui_setting_y-asis" : "Y-Asis site",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
-				"ui_wallpaper_updata" : "<small>* Optimize code<br/>V1.6.8(16) 2025-5-19 Updata log<br/>* Fix wallpaper focus on Window <br/>+ Add detection for the number of QWeather API requests. The free QWeather API request limit is 50,000 per month. Please enable the pay mode if the limit is exceeded. <br/>* Remove media integration loading wait time</small>",
+				"ui_wallpaper_updata" : "<small>* Optimized media integration related code<br/>+ Media integration covers now support independent size settings<br/>+ Media integration covers now support rotation<br/>+ Added support for custom fonts (requested by Steam users)<br/>+ Media integration now supports playback progress bars<br/>V1.6.8.1(17) 2025-5-21 Update Log<br/>* Optimize code<br/>V1.6.8(16) 2025-5-19 Updata log<br/>* Fix wallpaper focus on Window <br/>+ Add detection for the number of QWeather API requests. The free QWeather API request limit is 50,000 per month. Please enable the pay mode if the limit is exceeded. <br/>* Remove media integration loading wait time</small>",
 				"ui_weather_freeapi" : "Free API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "The Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "The Appsecret",
@@ -310,6 +316,8 @@
 				"ui_effect_sakura_sakuratransparency" : "樱花透明度",
 				"ui_effect_sakura_showSakura" : "樱花特效",
 				"ui_effect_sakuratxt" : "樱花特效 ----------",
+				"ui_fontSetting" : "自定义字体",
+				"ui_fontSetting_tip" : "<small>★可以设置多个字体作为备用字体使用\";\"符号分隔'<br/>请确保您的电脑已安装此字体<br/>比如: HYWenHei 75W;MIsana<br/><small/>",
 				"ui_friendlink_functioncategory" : "功能类",
 				"ui_friendlink_functioncategory_1" : "<h6>Color Thief || lokeshdhakar.com/projects/color-thief/</h6>",
 				"ui_friendlink_wallpaper_0" : "<h6>Bing壁纸</h6><small>原是微软旗下的Bing搜索中的一个特色,在Bing搜索主页的背景是每日不同的一张壁纸,在一众搜索引擎的美观上是最好的.在20年3月左右上线了单独的APPBing壁纸</small>",
@@ -345,6 +353,10 @@
 				"ui_player_control_hdong" : "变化幅度",
 				"ui_player_control_samealbumTitle" : "显示与歌曲名相同的专辑名",
 				"ui_player_control_scaleFactor" : "高度阈值",
+				"ui_player_control_thumbnail_rotation" : "封面旋转效果",
+				"ui_player_control_thumbnail_rotation_speed" : "旋转速度",
+				"ui_player_control_thumbnail_size" : "缩小封面大小",
+				"ui_player_control_thumbnail_size_value" : "封面相对大小",
 				"ui_player_control_thumbnailrorl" : "封面右侧显示",
 				"ui_qweatherapi_paymode" : "付费模式<br/><small>★ 超过5W次免费请求后仍然请求, 服务商将会收取费用<small/>",
 				"ui_rgb_au" : "显示可视化音频",
@@ -369,7 +381,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 优化代码<br/>V1.6.8(16) 2025-5-19 更新日志<br/>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月 超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
+				"ui_wallpaper_updata" : "<small>* 优化媒体集成相关代码<br/>+ 媒体集成封面支持独立大小设置<br/>+ 媒体集成封面支持旋转<br/>+ 支持自定义字体(来自Steam用户请求)<br/>+ 媒体集成支持播放进度条<br/>V1.6.8.1(17) 2025-5-21 更新日志<br/>* 优化代码<br/>V1.6.8(16) 2025-5-19 更新日志<br/>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月 超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -502,6 +514,8 @@
 				"ui_effect_sakura_sakuratransparency" : "樱花透明度",
 				"ui_effect_sakura_showSakura" : "樱花特效",
 				"ui_effect_sakuratxt" : "樱花特效 ----------",
+				"ui_fontSetting" : "自定义字体",
+				"ui_fontSetting_tip" : "<small>★可以设置多个字体作为备用字体使用\";\"符号分隔<br/>请确保您的电脑已安装此字体<br/>比如: HYWenHei 75W;MIsana<br/><small/>",
 				"ui_friendlink_functioncategory" : "功能类",
 				"ui_friendlink_functioncategory_1" : "<h6>Color Thief || lokeshdhakar.com/projects/color-thief/</h6>",
 				"ui_friendlink_wallpaper_0" : "<h6>Bing壁纸</h6><small>原是微软旗下的Bing搜索中的一个特色,在Bing搜索主页的背景是每日不同的一张壁纸,在一众搜索引擎的美观上是最好的.在20年3月左右上线了单独的APPBing壁纸</small>",
@@ -537,6 +551,10 @@
 				"ui_player_control_hdong" : "变化幅度",
 				"ui_player_control_samealbumTitle" : "显示与歌曲名相同的专辑名",
 				"ui_player_control_scaleFactor" : "高度阈值",
+				"ui_player_control_thumbnail_rotation" : "封面旋转效果",
+				"ui_player_control_thumbnail_rotation_speed" : "旋转速度",
+				"ui_player_control_thumbnail_size" : "缩小封面大小",
+				"ui_player_control_thumbnail_size_value" : "封面相对大小",
 				"ui_player_control_thumbnailrorl" : "封面右侧显示",
 				"ui_qweatherapi_paymode" : "付费模式<br/><small>★ 超过5W次免费请求后仍然请求, 服务商将会收取费用<small/>",
 				"ui_rgb_au" : "显示可视化音频",
@@ -561,7 +579,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "<small>* 优化代码<br/>V1.6.8(16) 2025-5-19 更新日志<br/>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
+				"ui_wallpaper_updata" : "<small>* 优化媒体集成相关代码<br/>+ 媒体集成封面支持独立大小设置<br/>+ 媒体集成封面支持旋转<br/>+ 支持自定义字体(来自Steam用户请求)<br/>+ 媒体集成支持播放进度条<br/>V1.6.8.1(17) 2025-5-21 更新日志<br/>* 优化代码<br/>V1.6.8(16) 2025-5-19 更新日志<br/>* 修复Window聚焦壁纸 <br/>+ 加入和风天气请求次数检测 和风天气免费请求次数为5W/每月超出范围请启用付费模式 <br/>* 移除媒体集成加载等待时间<small/>",
 				"ui_weather_freeapi" : "免费API(Steam user@Guooo)",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -591,8 +609,8 @@
 			"AuthorInformation" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 354,
-				"order" : 454,
+				"index" : 358,
+				"order" : 458,
 				"text" : "<br/><h4>●  作者信息 </h4><small>作者：老陈（ZYM），毕业于 西安邮电大学 2010届<br/>QQ：394011315<br/>QQ交流群1：552188051<br/>QQ交流群2：673748076<br/>QQ交流群3：1036775823<br/>QQ交流群4：776830214<br />优先加序号靠后的QQ群，群内可以获取作者编写的无损webm格式视频转换工具，各种视频模板资源，还可以体验全新的完美壁纸测试版，也欢迎有编程能力的大佬来交流，各种答疑，兴趣交流等等<br /></small>",
 				"type" : "text"
 			},
@@ -1127,16 +1145,16 @@
 			},
 			"Test_Author" : 
 			{
-				"index" : 353,
-				"order" : 453,
+				"index" : 357,
+				"order" : 457,
 				"text" : "<br /><h4>●  原作者信息</h4><br />(Author Information)",
 				"type" : "bool",
 				"value" : false
 			},
 			"Test_ModAuthor" : 
 			{
-				"index" : 360,
-				"order" : 460,
+				"index" : 364,
+				"order" : 464,
 				"text" : "<br /><h4>●  修改者</h4><br />",
 				"type" : "bool",
 				"value" : false
@@ -1202,16 +1220,16 @@
 			"Text_line195" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 368,
-				"order" : 468,
+				"index" : 372,
+				"order" : 472,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
 			"Text_line196" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 375,
-				"order" : 475,
+				"index" : 379,
+				"order" : 479,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
@@ -1717,8 +1735,8 @@
 			},
 			"authorinfo" : 
 			{
-				"index" : 352,
-				"order" : 452,
+				"index" : 356,
+				"order" : 456,
 				"text" : "●  作者信息  Author Info",
 				"type" : "group",
 				"value" : ""
@@ -2156,6 +2174,22 @@
 				"type" : "bool",
 				"value" : true
 			},
+			"fontSetting" : 
+			{
+				"index" : 3,
+				"order" : 103,
+				"text" : "ui_fontSetting",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"fontSetting_tip" : 
+			{
+				"index" : 4,
+				"order" : 104,
+				"text" : "ui_fontSetting_tip",
+				"type" : "txt",
+				"value" : ""
+			},
 			"freeapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && freeapi.value == true)",
@@ -2168,8 +2202,8 @@
 			"friendlylinks" : 
 			{
 				"condition" : "",
-				"index" : 362,
-				"order" : 462,
+				"index" : 366,
+				"order" : 466,
 				"text" : "●  友情链接  Friend Links",
 				"type" : "group",
 				"value" : true
@@ -2177,8 +2211,8 @@
 			"functioncategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 376,
-				"order" : 476,
+				"index" : 380,
+				"order" : 480,
 				"text" : "ui_friendlink_functioncategory",
 				"type" : "bool",
 				"value" : false
@@ -2186,8 +2220,8 @@
 			"functioncategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && functioncategory.value == true",
-				"index" : 377,
-				"order" : 477,
+				"index" : 381,
+				"order" : 481,
 				"text" : "ui_friendlink_functioncategory_1",
 				"type" : "txt",
 				"value" : false
@@ -2260,40 +2294,40 @@
 			"help" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 357,
-				"order" : 457,
+				"index" : 361,
+				"order" : 461,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1759199212007589774/D084C90AD44D6BC3480A4046F0C1703A858A5673/' width='100%'  />",
 				"type" : "text"
 			},
 			"helpBZ" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 359,
-				"order" : 459,
+				"index" : 363,
+				"order" : 463,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529045343/C16164193E685A485B287C50E156F837DA1B2BB1/' width='100%'  />",
 				"type" : "text"
 			},
 			"helpDY" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 358,
-				"order" : 458,
+				"index" : 362,
+				"order" : 462,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529042529/ABB6DE28206C09CA53C1FD0651408433F648B16A/' width='100%' />",
 				"type" : "text"
 			},
 			"helpEnd" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 355,
-				"order" : 455,
+				"index" : 359,
+				"order" : 459,
 				"text" : "<small><br/>完美壁纸完全免费，需要您的支持<br/>支付宝394011315@qq.com 陈振原<br />欢迎赞助鼓励！感谢大家支持！</small>",
 				"type" : "text"
 			},
 			"helpUp" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 356,
-				"order" : 456,
+				"index" : 360,
+				"order" : 460,
 				"text" : "<small><br/>老陈已经开通了抖音和B站<br/>完美壁纸教程，桌面改造教程，桌搭好物推荐<br />数码开箱，创意礼物，出租屋改造等等<br />最接地气数码博主，有问必答，爱你们！<br />关注老陈，监督老陈完成全新版本的完美壁纸！</small>",
 				"type" : "text"
 			},
@@ -2736,22 +2770,6 @@
 				"text" : "<br/>我自己分割用的( •̀ ω •́ )✧",
 				"type" : "bool",
 				"value" : false
-			},
-			"newproperty1" : 
-			{
-				"index" : 3,
-				"order" : 103,
-				"text" : "字体设置",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"newproperty2" : 
-			{
-				"index" : 4,
-				"order" : 104,
-				"text" : "New Property",
-				"type" : "textinput",
-				"value" : ""
 			},
 			"obstime" : 
 			{
@@ -3568,8 +3586,8 @@
 			"player_control_blurcolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_blurcolor_show.value == true",
-				"index" : 336,
-				"order" : 436,
+				"index" : 340,
+				"order" : 440,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3577,8 +3595,8 @@
 			"player_control_blurcolor_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 335,
-				"order" : 435,
+				"index" : 339,
+				"order" : 439,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -3587,10 +3605,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 344,
+				"index" : 348,
 				"max" : 50,
 				"min" : 0,
-				"order" : 444,
+				"order" : 448,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -3598,8 +3616,8 @@
 			"player_control_color" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_fontusetb.value == 5",
-				"index" : 339,
-				"order" : 439,
+				"index" : 343,
+				"order" : 443,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3607,7 +3625,7 @@
 			"player_control_fontusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 338,
+				"index" : 342,
 				"options" : 
 				[
 					{
@@ -3631,7 +3649,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 438,
+				"order" : 442,
 				"text" : "ui_color_color",
 				"type" : "combo",
 				"value" : 2
@@ -3639,7 +3657,7 @@
 			"player_control_getcolor" : 
 			{
 				"condition" : "player_control_show.value == true && (player_control_yakelibgusetb.value != 5 ||player_control_fontusetb.value != 5)",
-				"index" : 337,
+				"index" : 341,
 				"options" : 
 				[
 					{
@@ -3651,7 +3669,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 437,
+				"order" : 441,
 				"text" : "ui_player_control_getcolor",
 				"type" : "combo",
 				"value" : 1
@@ -3673,10 +3691,10 @@
 			"player_control_roundedcorners" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
-				"index" : 345,
+				"index" : 349,
 				"max" : 100,
 				"min" : 0,
-				"order" : 445,
+				"order" : 449,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3684,8 +3702,8 @@
 			"player_control_samealbumtitle" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 351,
-				"order" : 451,
+				"index" : 355,
+				"order" : 455,
 				"text" : "ui_player_control_samealbumTitle",
 				"type" : "bool",
 				"value" : false
@@ -3716,8 +3734,8 @@
 			"player_control_showaway" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 350,
-				"order" : 450,
+				"index" : 354,
+				"order" : 454,
 				"text" : "ui_setting_showaway",
 				"type" : "bool",
 				"value" : false
@@ -3726,10 +3744,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 346,
+				"index" : 350,
 				"max" : 100,
 				"min" : 0,
-				"order" : 446,
+				"order" : 450,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -3738,19 +3756,65 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 347,
+				"index" : 351,
 				"max" : 50,
 				"min" : 10,
-				"order" : 447,
+				"order" : 451,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
 			},
+			"player_control_thumbnail_rotation" : 
+			{
+				"condition" : "player_control_show.value == true",
+				"index" : 333,
+				"order" : 433,
+				"text" : "ui_player_control_thumbnail_rotation",
+				"type" : "bool",
+				"value" : false
+			},
+			"player_control_thumbnail_rotation_speed" : 
+			{
+				"condition" : "player_control_show.value == true && player_control_thumbnail_rotation.value == true",
+				"fraction" : true,
+				"index" : 334,
+				"max" : 9.9,
+				"min" : 0.1,
+				"order" : 434,
+				"precision" : 2,
+				"step" : 0.1,
+				"text" : "ui_player_control_thumbnail_rotation_speed",
+				"type" : "slider",
+				"value" : 2
+			},
+			"player_control_thumbnail_size" : 
+			{
+				"condition" : "player_control_show.value == true",
+				"index" : 335,
+				"order" : 435,
+				"text" : "ui_player_control_thumbnail_size",
+				"type" : "bool",
+				"value" : false
+			},
+			"player_control_thumbnail_size_value" : 
+			{
+				"condition" : "player_control_show.value == true && player_control_thumbnail_size.value == true",
+				"fraction" : true,
+				"index" : 336,
+				"max" : 100,
+				"min" : 0,
+				"order" : 436,
+				"precision" : 2,
+				"step" : 1,
+				"text" : "ui_player_control_thumbnail_size_value",
+				"type" : "slider",
+				"value" : 100
+			},
 			"player_control_thumbnailrorl" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 349,
-				"order" : 449,
+				"index" : 353,
+				"order" : 453,
 				"text" : "ui_player_control_thumbnailrorl",
 				"type" : "bool",
 				"value" : false
@@ -3759,10 +3823,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 348,
+				"index" : 352,
 				"max" : 100,
 				"min" : 1,
-				"order" : 448,
+				"order" : 452,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -3780,10 +3844,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 343,
+				"index" : 347,
 				"max" : 100,
 				"min" : 0,
-				"order" : 443,
+				"order" : 447,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -3791,8 +3855,8 @@
 			"player_control_yakeli_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 340,
-				"order" : 440,
+				"index" : 344,
+				"order" : 444,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3800,7 +3864,7 @@
 			"player_control_yakelibgusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 341,
+				"index" : 345,
 				"options" : 
 				[
 					{
@@ -3824,7 +3888,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 441,
+				"order" : 445,
 				"text" : "ui_color_yakelicolor",
 				"type" : "combo",
 				"value" : 4
@@ -3832,8 +3896,8 @@
 			"player_control_yakelicolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true && player_control_yakelibgusetb.value == 5",
-				"index" : 342,
-				"order" : 442,
+				"index" : 346,
+				"order" : 446,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3842,10 +3906,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 334,
+				"index" : 338,
 				"max" : 100,
 				"min" : 0,
-				"order" : 434,
+				"order" : 438,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 0
@@ -3854,10 +3918,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 333,
+				"index" : 337,
 				"max" : 100,
 				"min" : 0,
-				"order" : 433,
+				"order" : 437,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 83
@@ -4234,7 +4298,7 @@
 			{
 				"index" : 2,
 				"order" : 102,
-				"text" : "Setting 全局设置",
+				"text" : "●  Global Settings 全局设置",
 				"type" : "group",
 				"value" : ""
 			},
@@ -4394,8 +4458,8 @@
 			"test_modauthor1" : 
 			{
 				"condition" : "Test_ModAuthor.value == true",
-				"index" : 361,
-				"order" : 461,
+				"index" : 365,
+				"order" : 465,
 				"text" : "<small>就一个普通大学生<small/><br/><h5>后面可能会自己加点功能 反正都是给自己用的 也可以去创意工坊提出一些功能加入进来或者提出BUG和不合理之处 我都会回复的<h5/>",
 				"type" : "text"
 			},
@@ -4478,11 +4542,11 @@
 				"type" : "text",
 				"value" : ""
 			},
-			"updata_logv1681" : 
+			"updata_logv169" : 
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.8.1(17) 2025-5-21(Y-M-D)<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.6.9(18) 2025-10-16(Y-M-D)<br/>",
 				"type" : "bool",
 				"value" : true
 			},
@@ -4547,7 +4611,7 @@
 			},
 			"wallpaper_updata" : 
 			{
-				"condition" : "updata_logv1681.value == true",
+				"condition" : "updata_logv169.value == true",
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_wallpaper_updata",
@@ -4557,8 +4621,8 @@
 			"wallpapercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 363,
-				"order" : 463,
+				"index" : 367,
+				"order" : 467,
 				"text" : "ui_friendlink_wallpapercategory",
 				"type" : "bool",
 				"value" : false
@@ -4566,32 +4630,32 @@
 			"wallpapercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 364,
-				"order" : 464,
+				"index" : 368,
+				"order" : 468,
 				"text" : "ui_friendlink_wallpaper_0",
 				"type" : "text"
 			},
 			"wallpapercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 365,
-				"order" : 465,
+				"index" : 369,
+				"order" : 469,
 				"text" : "ui_friendlink_wallpaper_1",
 				"type" : "text"
 			},
 			"wallpapercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 366,
-				"order" : 466,
+				"index" : 370,
+				"order" : 470,
 				"text" : "ui_friendlink_wallpaper_2",
 				"type" : "text"
 			},
 			"wallpapercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 367,
-				"order" : 467,
+				"index" : 371,
+				"order" : 471,
 				"text" : "ui_friendlink_wallpaper_3",
 				"type" : "text"
 			},
@@ -4967,8 +5031,8 @@
 			"weathercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 369,
-				"order" : 469,
+				"index" : 373,
+				"order" : 473,
 				"text" : "ui_friendlink_weathercategory",
 				"type" : "bool",
 				"value" : false
@@ -4976,40 +5040,40 @@
 			"weathercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 370,
-				"order" : 470,
+				"index" : 374,
+				"order" : 474,
 				"text" : "ui_friendlink_weathercategory_0",
 				"type" : "text"
 			},
 			"weathercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 371,
-				"order" : 471,
+				"index" : 375,
+				"order" : 475,
 				"text" : "ui_friendlink_weathercategory_1",
 				"type" : "text"
 			},
 			"weathercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 372,
-				"order" : 472,
+				"index" : 376,
+				"order" : 476,
 				"text" : "ui_friendlink_weathercategory_2",
 				"type" : "text"
 			},
 			"weathercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 373,
-				"order" : 473,
+				"index" : 377,
+				"order" : 477,
 				"text" : "ui_friendlink_weathercategory_3",
 				"type" : "text"
 			},
 			"weathercategory_4" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 374,
-				"order" : 474,
+				"index" : 378,
+				"order" : 478,
 				"text" : "ui_friendlink_weathercategory_4",
 				"type" : "text"
 			},
@@ -5065,9 +5129,9 @@
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
 	"tags" : [ "Relaxing" ],
-	"title" : "Perfect Wallpaper-完美壁纸 天气完美修复版 | 多API更自由的天气格式 多彩一言 每日壁纸 RGB设备支持",
+	"title" : "Perfect Wallpaper -  Weather Fix | Media Integration | Daily Web Wallpaper | RGB Lighting",
 	"type" : "web",
-	"version" : 23,
+	"version" : 24,
 	"visibility" : "public",
 	"workshopid" : "3026605859",
 	"workshopurl" : "steam://url/CommunityFilePage/3026605859"

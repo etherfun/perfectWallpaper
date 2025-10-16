@@ -227,9 +227,8 @@ video {
 }
 
 #player_control .progress-bar {
-    height: 20px;
+    height: 5px;
     width: 0%;
-    background-color: #4CAF50;
 }
 
 #player_control .info-container {
@@ -381,4 +380,9 @@ div.btnbg {
     position: fixed;
     left: 0;
     top: 0;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }

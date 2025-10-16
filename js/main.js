@@ -220,22 +220,6 @@ var hitokoto_yakelicolor
 var hitokoto_bluryakeli
 var hitokoto_sizeX_show
 
-
-var player_control_color
-var player_control_blurcolor_show
-var player_control_blurcolor
-var player_control_yakeli_show
-var player_control_yakeli
-var player_control_yakelicolor
-var player_control_bluryakeli
-var player_control_sizeX_show
-var player_control_show = false
-var player_control_yakelibgusetb = 1
-var player_control_fontusetb = 5
-var player_control_roundedcorners
-var player_control_thumbnailrorl = false
-var player_control_samealbumTitle = false
-
 var countdown_txt
 var countdown_txt1
 var FristLoadcountdown = true
@@ -653,7 +637,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(oClock).height
                     if (height != '0px' || timeout == true) {
@@ -759,7 +743,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(oDate).height
                     if (height != "0px" || timeout == true) {
@@ -1229,7 +1213,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(weather).height
                     if (height != "0px" || timeout == true) {
@@ -1461,7 +1445,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(hitokoto).height
                     if (height != '0px' || timeout) {
@@ -2096,7 +2080,9 @@ window.wallpaperPropertyListener = {
                     wallpaperMediaPropertiesListener(null);
                     wallpaperMediaPlaybackListener(null);
 
-                    thumbnailsue();
+                    if (FristLoad == false) {
+                        thumbnailsue()
+                    }
                     player_controlappearance();
                 }
             } else {
@@ -2110,6 +2096,9 @@ window.wallpaperPropertyListener = {
                     }
                 }, 5000);
             }
+        }
+        if (properties.player_control_scalefactor) {
+            player_control_scalefactor = properties.player_control_scalefactor.value
         }
         if (properties.playery) {
             var y = properties.playery.value
@@ -2160,16 +2149,48 @@ window.wallpaperPropertyListener = {
             player_control_bluryakeli = properties.player_control_bluryakeli.value
             player_controlappearance()
         }
-        // 大小
+        // 封面相对大小
+        if (properties.player_control_thumbnail_size) {
+            player_control_thumbnail_size = properties.player_control_thumbnail_size.value;
+            if (player_control_thumbnail_size) {
+                player_control_thumbnailWrap.style.display = 'flex';
+                player_control_thumbnailWrap.style.alignItems = 'center';
+                player_control_thumbnailWrap.style.justifyContent = 'center';
+            } else {
+                player_control_thumbnail.style.width = player_control_size_value + 'px';
+                player_control_thumbnail.style.height = player_control_size_value + 'px';
+            }
+        }
+        //大小
         if (properties.player_control_size) {
             var s = properties.player_control_size.value;
-            var ss = Math.floor(h / 150 * s);
+            player_control_size_value = Math.floor(h / 150 * s);
             player_control.style.fontSize = Math.floor(h / 300 * s) + 'px';
             player_control.style.lineHeight = Math.floor(h / 700 * s) + 'px';
             player_control_artist.style.lineHeight = Math.floor(h / 1000 * s) + 'px';
             player_control_albumTitle.style.lineHeight = Math.floor(h / 1000 * s) + 'px';
-            player_control_thumbnail.style.width = ss + 'px';
-            player_control_thumbnail.style.height = ss + 'px';
+            if (player_control_thumbnail_size) {
+                player_control_thumbnailWrap.style.width = player_control_size_value + 'px';
+                player_control_thumbnailWrap.style.height = player_control_size_value + 'px';
+                if (FristLoad == false) {
+                    var ss = (player_control_size_value * (player_control_thumbnail_size_value / 100));
+                    player_control_thumbnail.style.width = ss + 'px';
+                    player_control_thumbnail.style.height = ss + 'px';
+                }
+            } else {
+                player_control_thumbnail.style.width = player_control_size_value + 'px';
+                player_control_thumbnail.style.height = player_control_size_value + 'px';
+            }
+        }
+        // 封面相对大小
+        if (properties.player_control_thumbnail_size_value) {
+            var s = player_control_size_value
+            player_control_thumbnail_size_value = properties.player_control_thumbnail_size_value.value;
+            var ss = (s * (player_control_thumbnail_size_value / 100));
+            if (player_control_thumbnail_size) {
+                player_control_thumbnail.style.width = ss + 'px';
+                player_control_thumbnail.style.height = ss + 'px';
+            }
         }
         //圆角
         if (properties.player_control_roundedcorners) {
@@ -2178,7 +2199,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(player_control_thumbnail).height
                     if (height !== '0px' || timeout) {
@@ -2195,6 +2216,23 @@ window.wallpaperPropertyListener = {
                 player_control_thumbnail.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
                 player_control_background.style.paddingRight = null
                 player_control_background.style.paddingRight = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 200) + 'px';
+            }
+        }
+        //封面旋转
+        if (properties.player_control_thumbnail_rotation) {
+            player_control_thumbnail_rotation = properties.player_control_thumbnail_rotation.value;
+            if (player_control_thumbnail_rotation == false) {
+                player_control_thumbnail.style.animation = null;
+            } else {
+                player_control_thumbnail.style.animation = `spin ${player_control_thumbnail_rotation_speed}s linear infinite`;
+                player_control_thumbnail.style.borderRadius = '50%';
+
+            }
+        }
+        if (properties.player_control_thumbnail_rotation_speed) {
+            player_control_thumbnail_rotation_speed = 10 - properties.player_control_thumbnail_rotation_speed.value;
+            if (player_control_thumbnail.style.animation) {
+                player_control_thumbnail.style.animationDuration = player_control_thumbnail_rotation_speed + 's';
             }
         }
         function player_controlappearance() {
@@ -2231,11 +2269,15 @@ window.wallpaperPropertyListener = {
         }
         if (properties.player_control_yakelibgusetb) {
             player_control_yakelibgusetb = properties.player_control_yakelibgusetb.value;
-            thumbnailsue()
+            if (FristLoad == false) {
+                thumbnailsue()
+            }
         }
         if (properties.player_control_fontusetb) {
             player_control_fontusetb = properties.player_control_fontusetb.value;
-            thumbnailsue()
+            if (FristLoad == false) {
+                thumbnailsue()
+            }
         }
         if (properties.player_control_thumbnailrorl) {
             player_control_thumbnailrorl = properties.player_control_thumbnailrorl.value
@@ -2291,9 +2333,9 @@ window.wallpaperPropertyListener = {
         }
         if (properties.player_control_getcolor) {
             Color_pickup_method = properties.player_control_getcolor.value
-        }
-        if (properties.player_control_scalefactor) {
-            player_control_scalefactor = properties.player_control_scalefactor.value
+            if (FristLoad == false) {
+                thumbnailsue()
+            }
         }
         if (properties.player_control_hdong) {
             player_control_hdong = properties.player_control_hdong.value / 500
@@ -2405,7 +2447,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(countdown).height
                     if (height != "0px" || timeout == true) {
@@ -2532,7 +2574,7 @@ window.wallpaperPropertyListener = {
                 let timeout = false
                 setTimeout(() => {
                     timeout = true
-                },5000)
+                }, 5000)
                 while (true) {
                     var height = window.getComputedStyle(picture_info).height
                     if (height != '0px' || timeout == true) {
@@ -2625,13 +2667,21 @@ window.wallpaperPropertyListener = {
             rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value
         }
         if (properties.fontSetting) {
-            fontSetting = properties.fontSetting.value
-            if (fontSetting !== "") {
-                fontGroup = fontSetting.split(';').join(',')
-                document.body.style.fontFamily = fontGroup
-            }
+            const fontSetting = properties.fontSetting.value.trim()
+            const fontGroup = fontSetting
+                .split(';')
+                .map(font => {
+                    const trimmedFont = font.trim();
+                    if (trimmedFont.includes(' ') && !trimmedFont.startsWith('"') && !trimmedFont.startsWith("'")) {
+                        return `"${trimmedFont}"`;
+                    }
+                    return trimmedFont;
+                })
+                .filter(font => font !== '')
+                .join(', ');
+            document.body.style.fontFamily = fontGroup;
         }
-        if (FristLoad == true) { 
+        if (FristLoad == true) {
             console.log("main.js load success")
             FristLoad = false;
         }

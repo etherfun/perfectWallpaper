@@ -1,6 +1,4 @@
-
 //msct
-
 
 let Color_pickup_method
 let thumbnail
@@ -15,15 +13,38 @@ let singtitle
 let singartist
 let singalbumTitle
 let aubarstop
+var colorGroup
+
+var player_control_color;
+var player_control_blurcolor_show;
+var player_control_blurcolor;
+var player_control_yakeli_show;
+var player_control_yakeli;
+var player_control_yakelicolor;
+var player_control_bluryakeli;
+var player_control_sizeX_show;
+var player_control_show = false;
+var player_control_yakelibgusetb = 1;
+var player_control_fontusetb = 5;
+var player_control_roundedcorners;
+var player_control_thumbnailrorl = false;
+var player_control_samealbumTitle = false;
+var player_control_thumbnail_size = true;
+var player_control_thumbnail_size_value = 100;
+var player_control_size_value;
+var player_control_thumbnail_size_value
 
 var player_control_barline
 var player_control_scalefactor
 var player_control_visualaudiobar
 var player_control_hdong = 0.1
+var player_control_thumbnail_rotation
+var player_control_thumbnail_rotation_speed
 
 var player_control = document.querySelector("#player_control")
 var player_control_background = document.querySelector("#player_control .background")
 var player_control_thumbnail = document.querySelector("#player_control .thumbnail")
+var player_control_thumbnailWrap = document.querySelector("#player_control .thumbnail-wrap")
 var player_control_info = document.querySelector("#player_control .info")
 var player_control_title = document.querySelector("#player_control .title")
 var player_control_artist = document.querySelector("#player_control .artist")
@@ -34,130 +55,87 @@ var player_control_aubar = document.querySelector("#player_control .aubar")
 /*msct封面*/
 window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener)
 function wallpaperMediaThumbnailListener(event) {
-    if (event) {
-        player_control_thumbnail.src = event.thumbnail
+    if (event && player_control_show) {
+        player_control_thumbnail.src = event.thumbnail;
 
-        switch (Color_pickup_method) {
-            case 1:
-                switch (player_control_yakelibgusetb) {
-                    case 1:
-                        thumbnailcolor = hexToRgb(event.primaryColor)
-                        break;
-                    case 2:
-                        thumbnailcolor = hexToRgb(event.secondaryColor)
-                        break;
-                    case 3:
-                        thumbnailcolor = hexToRgb(event.tertiaryColor)
-                        break
-                    case 4:
-                        thumbnailcolor = hexToRgb(event.highContrastColor)
-                        break
-                    case 5:
-                        thumbnailcolor = player_control_yakelicolor
-                        break
-                }
-                switch (player_control_fontusetb) {
-                    case 1:
-                        fontcolor = hexToRgb(event.primaryColor)
-                        break;
-                    case 2:
-                        fontcolor = hexToRgb(event.secondaryColor)
-                        break;
-                    case 3:
-                        fontcolor = hexToRgb(event.tertiaryColor)
-                        break
-                    case 4:
-                        fontcolor = hexToRgb(event.highContrastColor)
-                        break
-                    case 5:
-                        fontcolor = player_control_color
-                        break
-                }
-                break
-            case 2:
-                var img = document.querySelector("#player_control .thumbnail")
-                img.onload = function () {
-                    const colorThief = new ColorThief();
+        const img = document.querySelector("#player_control .thumbnail")
+        img.onload = function () {
+            const colorThief = new ColorThief();
+            const palette = colorThief.getPalette(player_control_thumbnail, 3);
 
-                    switch (player_control_yakelibgusetb) {
-                        case 1:
-                            thumbnailcolor = colorThief.getColor(img)
-                            break;
-                        case 2:
-                            thumbnailcolor = colorThief.getPalette(img, 3)[0]
-                            break;
-                        case 3:
-                            thumbnailcolor = colorThief.getPalette(img, 3)[1]
-                            break
-                        case 4:
-                            thumbnailcolor = colorThief.getPalette(img, 3)[2]
-                            break
-                        case 5:
-                            thumbnailcolor = player_control_yakelicolor
-                            break
-                    }
-                    switch (player_control_fontusetb) {
-                        case 1:
-                            fontcolor = colorThief.getColor(img)
-                            break;
-                        case 2:
-                            fontcolor = colorThief.getPalette(img, 3)[0]
-                            break;
-                        case 3:
-                            fontcolor = colorThief.getPalette(img, 3)[1]
-                            break
-                        case 4:
-                            fontcolor = colorThief.getPalette(img, 3)[2]
-                            break
-                        case 5:
-                            fontcolor = player_control_yakelicolor
-                            break
-                    }
-                }
-                break
-            case 3:
+            colorGroup = [
+                [
+                    hexToRgb(event.primaryColor),
+                    hexToRgb(event.secondaryColor),
+                    hexToRgb(event.tertiaryColor),
+                    hexToRgb(event.highContrastColor),
+                ],
+                [
+                    colorThief.getColor(player_control_thumbnail),
+                    palette[0],
+                    palette[1],
+                    palette[2]
+                ],
+                player_control_yakelicolor,
+                player_control_color
+            ];
+
+            setTimeout(function () {
+                thumbnailsue()
+            }, 50)
         }
-    }
-    if (!player_control_show) return
-
-    if (player_control_show == true) {
-        setTimeout(function () {
-            player_control_background.style.background = "rgba(" + thumbnailcolor + "," + player_control_yakeli + ")"
-            player_control_info.style.color = "rgb(" + fontcolor + ")"
-            player_iconcolor(fontcolor)
-        }, 50)
     }
 }
 
 
 /*msct进度*/
-/*window.wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener)
-function wallpaperMediaTimelineListener(event) {  
-    var position = event.position;
-    var duration = event.duration;
-    var currentPosition = position;
+window.wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener);
+let timelineTimer = null;
+let currentPosition = 0;
+let waitingForData = false;
 
-    function updateTimeline() {  
-        if(player_now == window.wallpaperMediaIntegration.PLAYBACK_STOPPED || player_now == window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {  
+function wallpaperMediaTimelineListener(event) {
+    const { position, duration } = event;
 
-        } else {  
-            currentPosition += 0.1; 
+    waitingForData = false;
+
+    currentPosition = position;
+
+    if (timelineTimer) {
+        clearTimeout(timelineTimer);
+        timelineTimer = null;
+    }
+
+    function updateTimeline() {
+        if (waitingForData) return;
+
+        if (
+            player_now === window.wallpaperMediaIntegration.PLAYBACK_STOPPED ||
+            player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED
+        ) {
+            timelineTimer = setTimeout(updateTimeline, 500);
+            return;
         }
 
-        let progressPercent = (currentPosition / duration) * 100;
-        player_control_timeline.style.width = progressPercent + '%';
+        currentPosition += 0.1;
+        if (currentPosition >= duration) {
+            currentPosition = duration;
+            waitingForData = true;
+        }
 
-        if (currentPosition < duration) {
-            timer = setTimeout(updateTimeline, 100);
+        const progressPercent = (currentPosition / duration) * 100;
+        player_control_timeline.style.width = progressPercent + "%";
+
+        if (!waitingForData) {
+            timelineTimer = setTimeout(updateTimeline, 100);
         } else {
-            currentPosition = 0;
+            timelineTimer = null;
         }
-        console.log(currentPosition)
-    }  
-    
-    console.log("当前" + position + "共" + duration);
-    updateTimeline(); 
-}*/
+    }
+
+    updateTimeline();
+}
+
 
 /*msct监听*/
 window.wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener)
@@ -218,50 +196,46 @@ function wallpaperMediaPlaybackListener(event) {
     if (player_control_show) {
         if ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED)) {
             player_control.style.display = "flex";
-            console.log("player_control_show");
         } else {
             player_control.style.display = "none";
-            console.log("player_control_hide");
         }
-        /*if(player_now == window.wallpaperMediaIntegration.PLAYBACK_PLAYING){
-            wallpaperMediaTimelineListener(null)
-        }*/
+    }
+
+    if (!player_control_thumbnail_rotation) return;
+
+    if (event.state == window.wallpaperMediaIntegration.PLAYBACK_STOPPED || event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
+        // 暂停动画但保持当前位置
+        player_control_thumbnail.style.animationPlayState = 'paused';
+    } else {
+        player_control_thumbnail.style.borderRadius = '50%';
+        // 确保动画定义存在
+        if (!player_control_thumbnail.style.animation.includes('spin')) {
+            player_control_thumbnail.style.animation = `spin ${player_control_thumbnail_rotation_speed}s linear infinite`;
+        }
+        // 继续动画
+        player_control_thumbnail.style.animationPlayState = 'running';
     }
 }
 
 function thumbnailsue() {
+    if (player_control_yakelibgusetb !== 5) {
+        thumbnailcolor = colorGroup[Color_pickup_method - 1][player_control_yakelibgusetb - 1];
+    } else {
+        thumbnailcolor = player_control_yakelicolor
+    }
 
-    //player_control_thumbnail.style.backgroundImage = "url(" + thumbnail + ")"
-
+    if (player_control_fontusetb !== 5) {
+        fontcolor = colorGroup[Color_pickup_method - 1][player_control_fontusetb - 1];
+    } else {
+        fontcolor = player_control_color
+    }
 
     player_control_background.style.background = "rgba(" + thumbnailcolor + "," + player_control_yakeli + ")"
     player_control_info.style.color = "rgb(" + fontcolor + ")"
     player_iconcolor(fontcolor)
-
-
+    player_control_timeline.style.backgroundColor = "rgb(" + fontcolor + ")"
+    document.querySelector('.timeline').style.backgroundColor = "rgba(" + [255,255,255] + "," + (player_control_yakeli + 0.4) + ")"
 }
-
-/*
-function playericon(){
-    if(player_control_thumbnailrorl == false){
-        player_control_artist.innerHTML = "<img class='artisticon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgNTEyJz48IS0tIEZvbnQgQXdlc29tZSBQcm8gNi4wLjAtYWxwaGEyIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIC0tPjxwYXRoIGQ9J00zODkuNDE4IDM0Ny42NjRDMzU4LjgzNCAzMjAuNTc4IDMxOC43MzIgMzA0IDI3NC42NjQgMzA0SDE3My4zMzZDNzcuNjA5IDMwNCAwIDM4MS42MDIgMCA0NzcuMzMyQzAgNDk2LjQ3NyAxNS41MjMgNTEyIDM0LjY2NCA1MTJIMzU1LjE5M0MzMzMuNCA0OTMuNDMyIDMyMCA0NjguMjcgMzIwIDQ0MEMzMjAgMzk5LjA0NSAzNDguMDQxIDM2NC43MDkgMzg5LjQxOCAzNDcuNjY0Wk0yMjQgMjU2QzI5NC42OTUgMjU2IDM1MiAxOTguNjkxIDM1MiAxMjhTMjk0LjY5NSAwIDIyNCAwQzE1My4zMTIgMCA5NiA1Ny4zMDkgOTYgMTI4UzE1My4zMTIgMjU2IDIyNCAyNTZaTTYwMS43MjUgMTYwLjYzMUw1MDUuNzI1IDE3OS44MzJDNDkwLjc2OCAxODIuODI0IDQ4MCAxOTUuOTU3IDQ4MCAyMTEuMjExVjM3Mi40MDhDNDY5Ljk0NSAzNjkuNzI3IDQ1OS4yODEgMzY4IDQ0OCAzNjhDMzk0Ljk4IDM2OCAzNTIgNDAwLjIzNCAzNTIgNDQwQzM1MiA0NzkuNzY0IDM5NC45OCA1MTIgNDQ4IDUxMlM1NDQgNDc5Ljc2NCA1NDQgNDQwVjMwMC4xNzZMNjE0LjI3NSAyODYuMTIxQzYyOS4yMzIgMjgzLjEzMSA2NDAgMjY5Ljk5NiA2NDAgMjU0Ljc0MlYxOTIuMDFDNjQwIDE3MS44MTYgNjIxLjUyNSAxNTYuNjcyIDYwMS43MjUgMTYwLjYzMVonLz48L3N2Zz4='></img>" +  " " +singartist
-    if(singalbumTitle != ""){
-        player_control_albumTitle.innerHTML = "<img class='albumTitleicon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJz48IS0tIEZvbnQgQXdlc29tZSBQcm8gNi4wLjAtYWxwaGEyIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIC0tPjxwYXRoIGQ9J00yNTYgMTZDMTIzLjQ2MSAxNiAxNiAxMjMuNDE5IDE2IDI1NlMxMjMuNDYxIDQ5NiAyNTYgNDk2UzQ5NiAzODguNTgxIDQ5NiAyNTZTMzg4LjUzOSAxNiAyNTYgMTZaTTgwLjcxNSAyNTZINzkuNjI3QzcwLjU0OSAyNTYgNjMuMjI5IDI0Ny45OSA2NC4wNjUgMjM4LjY1OEM3Mi4zNjQgMTQ2LjAxNyAxNDYuNDkgNzIuMDYgMjM5LjI3NCA2NC4wNTVDMjQ4LjI5MSA2My4yNzggMjU2IDcwLjc5MSAyNTYgODAuMTMyVjgwLjEzMkMyNTYgODguNDgyIDI0OS43ODYgOTUuMzYzIDI0MS43MjcgOTYuMDc3QzE2NC43NDUgMTAyLjg5OCAxMDMuMTQ4IDE2NC4zNDcgOTYuMTUzIDI0MS4zNTRDOTUuNDAxIDI0OS42MzQgODguNzcxIDI1NiA4MC43MTUgMjU2Wk0yNTYgMzUyQzIwMi45NzYgMzUyIDE2MCAzMDkgMTYwIDI1NlMyMDIuOTc2IDE2MCAyNTYgMTYwUzM1MiAyMDMgMzUyIDI1NlMzMDkuMDI0IDM1MiAyNTYgMzUyWk0yNTYgMjI0QzIzOC4zMDMgMjI0IDIyNCAyMzguMjUgMjI0IDI1NlMyMzguMzAzIDI4OCAyNTYgMjg4QzI3My42OTcgMjg4IDI4OCAyNzMuNzUgMjg4IDI1NlMyNzMuNjk3IDIyNCAyNTYgMjI0WicvPjwvc3ZnPg=='></img>" +  " " +singalbumTitle
-    }else{
-        player_control_albumTitle.innerHTML = ""
-    }
-        player_control_title.innerHTML = "<img class='titleicon' src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB0PSIxNzIxNTQwMzA2MzU0IiBjbGFzcz0iaWNvbiIgdmVyc2lvbj0iMS4xIiBwLWlkPSIxNDA1Ij4KIDxnPgogIDx0aXRsZT5MYXllciAxPC90aXRsZT4KICA8cGF0aCBzdHJva2U9Im51bGwiIGQ9Im00OTkuMDk0MDIsNTkuMjUxODVsMC40OTk3Nyw0Ljg1NTRsMC4xODE3Myw0LjkwMTQzbDAsMjkyLjEwNjYzYTkwLjg2Njg4LDkyLjA0NTU3IDAgMSAxIC00NS40MTA3MiwtNzkuNzExNDdsLTAuMDIyNzIsLTEyMy44NzAzM2wtMjcyLjYwMDY0LDM5LjQ0MTUzbDAsMjEwLjE2MzA1YTkwLjg2Njg4LDkyLjA0NTU3IDAgMCAxIC04Ni4zMjM1NCw5MS45MzA1MmwtNC41NDMzNCwwLjExNTA2YTkwLjg2Njg4LDkyLjA0NTU3IDAgMSAxIDQ1LjQ1NjE2LC0xNzEuNzU3MDRsLTAuMDIyNzIsLTIyNS41MzQ2N2E2OC4xNTAxNiw2OS4wMzQxOCAwIDAgMSA1NC41MjAxMywtNjcuNjUzNWwzLjk5ODE0LC0wLjY5MDM0bDIyNy4xNjcyLC0zMi44ODMyOGE2OC4xNTAxNiw2OS4wMzQxOCAwIDAgMSA3Ny4xMDA1NSw1OC41ODcwMXptLTQwOC4yMTk0NiwzMDEuODYzNDZhNDUuNDMzNDQsNDYuMDIyNzkgMCAxIDAgMCw5Mi4wNDU1N2E0NS40MzM0NCw0Ni4wMjI3OSAwIDAgMCAwLC05Mi4wNDU1N3ptMzE4LjAzNDA4LC00Ni4wMjI3OWE0NS40MzM0NCw0Ni4wMjI3OSAwIDEgMCAwLDkyLjA0NTU3YTQ1LjQzMzQ0LDQ2LjAyMjc5IDAgMCAwIDAsLTkyLjA0NTU3em0yMi4xNDg4LC0yNjkuMDk1MjNsLTIuNjM1MTQsMC4yMzAxMWwtMjI3LjE2NzIsMzIuODgzMjhhMjIuNzE2NzIsMjMuMDExMzkgMCAwIDAgLTE5LjM3NzM2LDIwLjE1Nzk4bC0wLjEzNjMsMi42MjMzbDAsNDguNjAwMDZsMjcyLjYwMDY0LC0zOS40NDE1M2wwLC00Mi4wNDE4MmEyMi43MTY3MiwyMy4wMTEzOSAwIDAgMCAtMjMuMjg0NjQsLTIzLjAxMTM5eiIgZmlsbD0iIzAwMDAwMCIgcC1pZD0iMTQwNiIgaWQ9InN2Z18xIi8+CiAgPGxpbmUgZmlsbD0ibm9uZSIgeDE9IjM3IiB5MT0iODciIHgyPSI3NSIgeTI9IjE2MiIgaWQ9InN2Z18yIi8+CiA8L2c+Cgo8L3N2Zz4='></img>" + " " +singtitle
-    }else{
-        player_control_artist.innerHTML = singartist + " " + "<img class='artisticon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgNTEyJz48IS0tIEZvbnQgQXdlc29tZSBQcm8gNi4wLjAtYWxwaGEyIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIC0tPjxwYXRoIGQ9J00zODkuNDE4IDM0Ny42NjRDMzU4LjgzNCAzMjAuNTc4IDMxOC43MzIgMzA0IDI3NC42NjQgMzA0SDE3My4zMzZDNzcuNjA5IDMwNCAwIDM4MS42MDIgMCA0NzcuMzMyQzAgNDk2LjQ3NyAxNS41MjMgNTEyIDM0LjY2NCA1MTJIMzU1LjE5M0MzMzMuNCA0OTMuNDMyIDMyMCA0NjguMjcgMzIwIDQ0MEMzMjAgMzk5LjA0NSAzNDguMDQxIDM2NC43MDkgMzg5LjQxOCAzNDcuNjY0Wk0yMjQgMjU2QzI5NC42OTUgMjU2IDM1MiAxOTguNjkxIDM1MiAxMjhTMjk0LjY5NSAwIDIyNCAwQzE1My4zMTIgMCA5NiA1Ny4zMDkgOTYgMTI4UzE1My4zMTIgMjU2IDIyNCAyNTZaTTYwMS43MjUgMTYwLjYzMUw1MDUuNzI1IDE3OS44MzJDNDkwLjc2OCAxODIuODI0IDQ4MCAxOTUuOTU3IDQ4MCAyMTEuMjExVjM3Mi40MDhDNDY5Ljk0NSAzNjkuNzI3IDQ1OS4yODEgMzY4IDQ0OCAzNjhDMzk0Ljk4IDM2OCAzNTIgNDAwLjIzNCAzNTIgNDQwQzM1MiA0NzkuNzY0IDM5NC45OCA1MTIgNDQ4IDUxMlM1NDQgNDc5Ljc2NCA1NDQgNDQwVjMwMC4xNzZMNjE0LjI3NSAyODYuMTIxQzYyOS4yMzIgMjgzLjEzMSA2NDAgMjY5Ljk5NiA2NDAgMjU0Ljc0MlYxOTIuMDFDNjQwIDE3MS44MTYgNjIxLjUyNSAxNTYuNjcyIDYwMS43MjUgMTYwLjYzMVonLz48L3N2Zz4='></img>" 
-    if(singalbumTitle != ""){
-           player_control_albumTitle.innerHTML = singalbumTitle + " " + "<img class='albumTitleicon' src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJz48IS0tIEZvbnQgQXdlc29tZSBQcm8gNi4wLjAtYWxwaGEyIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIC0tPjxwYXRoIGQ9J00yNTYgMTZDMTIzLjQ2MSAxNiAxNiAxMjMuNDE5IDE2IDI1NlMxMjMuNDYxIDQ5NiAyNTYgNDk2UzQ5NiAzODguNTgxIDQ5NiAyNTZTMzg4LjUzOSAxNiAyNTYgMTZaTTgwLjcxNSAyNTZINzkuNjI3QzcwLjU0OSAyNTYgNjMuMjI5IDI0Ny45OSA2NC4wNjUgMjM4LjY1OEM3Mi4zNjQgMTQ2LjAxNyAxNDYuNDkgNzIuMDYgMjM5LjI3NCA2NC4wNTVDMjQ4LjI5MSA2My4yNzggMjU2IDcwLjc5MSAyNTYgODAuMTMyVjgwLjEzMkMyNTYgODguNDgyIDI0OS43ODYgOTUuMzYzIDI0MS43MjcgOTYuMDc3QzE2NC43NDUgMTAyLjg5OCAxMDMuMTQ4IDE2NC4zNDcgOTYuMTUzIDI0MS4zNTRDOTUuNDAxIDI0OS42MzQgODguNzcxIDI1NiA4MC43MTUgMjU2Wk0yNTYgMzUyQzIwMi45NzYgMzUyIDE2MCAzMDkgMTYwIDI1NlMyMDIuOTc2IDE2MCAyNTYgMTYwUzM1MiAyMDMgMzUyIDI1NlMzMDkuMDI0IDM1MiAyNTYgMzUyWk0yNTYgMjI0QzIzOC4zMDMgMjI0IDIyNCAyMzguMjUgMjI0IDI1NlMyMzguMzAzIDI4OCAyNTYgMjg4QzI3My42OTcgMjg4IDI4OCAyNzMuNzUgMjg4IDI1NlMyNzMuNjk3IDIyNCAyNTYgMjI0WicvPjwvc3ZnPg=='></img>" 
-    }else{
-        player_control_albumTitle.innerHTML = ""
-    }
-        player_control_title.innerHTML = singtitle + " " + "<img class='titleicon' src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB0PSIxNzIxNTQwMzA2MzU0IiBjbGFzcz0iaWNvbiIgdmVyc2lvbj0iMS4xIiBwLWlkPSIxNDA1Ij4KIDxnPgogIDx0aXRsZT5MYXllciAxPC90aXRsZT4KICA8cGF0aCBzdHJva2U9Im51bGwiIGQ9Im00OTkuMDk0MDIsNTkuMjUxODVsMC40OTk3Nyw0Ljg1NTRsMC4xODE3Myw0LjkwMTQzbDAsMjkyLjEwNjYzYTkwLjg2Njg4LDkyLjA0NTU3IDAgMSAxIC00NS40MTA3MiwtNzkuNzExNDdsLTAuMDIyNzIsLTEyMy44NzAzM2wtMjcyLjYwMDY0LDM5LjQ0MTUzbDAsMjEwLjE2MzA1YTkwLjg2Njg4LDkyLjA0NTU3IDAgMCAxIC04Ni4zMjM1NCw5MS45MzA1MmwtNC41NDMzNCwwLjExNTA2YTkwLjg2Njg4LDkyLjA0NTU3IDAgMSAxIDQ1LjQ1NjE2LC0xNzEuNzU3MDRsLTAuMDIyNzIsLTIyNS41MzQ2N2E2OC4xNTAxNiw2OS4wMzQxOCAwIDAgMSA1NC41MjAxMywtNjcuNjUzNWwzLjk5ODE0LC0wLjY5MDM0bDIyNy4xNjcyLC0zMi44ODMyOGE2OC4xNTAxNiw2OS4wMzQxOCAwIDAgMSA3Ny4xMDA1NSw1OC41ODcwMXptLTQwOC4yMTk0NiwzMDEuODYzNDZhNDUuNDMzNDQsNDYuMDIyNzkgMCAxIDAgMCw5Mi4wNDU1N2E0NS40MzM0NCw0Ni4wMjI3OSAwIDAgMCAwLC05Mi4wNDU1N3ptMzE4LjAzNDA4LC00Ni4wMjI3OWE0NS40MzM0NCw0Ni4wMjI3OSAwIDEgMCAwLDkyLjA0NTU3YTQ1LjQzMzQ0LDQ2LjAyMjc5IDAgMCAwIDAsLTkyLjA0NTU3em0yMi4xNDg4LC0yNjkuMDk1MjNsLTIuNjM1MTQsMC4yMzAxMWwtMjI3LjE2NzIsMzIuODgzMjhhMjIuNzE2NzIsMjMuMDExMzkgMCAwIDAgLTE5LjM3NzM2LDIwLjE1Nzk4bC0wLjEzNjMsMi42MjMzbDAsNDguNjAwMDZsMjcyLjYwMDY0LC0zOS40NDE1M2wwLC00Mi4wNDE4MmEyMi43MTY3MiwyMy4wMTEzOSAwIDAgMCAtMjMuMjg0NjQsLTIzLjAxMTM5eiIgZmlsbD0iIzAwMDAwMCIgcC1pZD0iMTQwNiIgaWQ9InN2Z18xIi8+CiAgPGxpbmUgZmlsbD0ibm9uZSIgeDE9IjM3IiB5MT0iODciIHgyPSI3NSIgeTI9IjE2MiIgaWQ9InN2Z18yIi8+CiA8L2c+Cgo8L3N2Zz4='></img>" 
-    }
-    
-}*/
 
 function player_iconcolor(rgb) {
     var player_control_titleicon = document.querySelector("#player_control .titleicon")
@@ -277,7 +251,6 @@ function player_iconcolor(rgb) {
 function pc_aubar() {
     var full = document.querySelector("#player_control .info-container");
     var usage = document.querySelector("#player_control .info");
-    var bar = document.querySelector(".aubar");
 
     var aubar = document.querySelector(".aubar");
     var rgbbg = document.querySelector(".aubar").getContext('2d');
@@ -285,8 +258,8 @@ function pc_aubar() {
     var height = full.clientHeight - usage.clientHeight;
     var width = full.clientWidth;
 
-    bar.width = width;
-    bar.height = height;
+    aubar.width = width;
+    aubar.height = height;
 
     aubarstop = false;
 
@@ -374,7 +347,7 @@ function pc_aubar() {
     } else if (player_control_visualaudiobar && player_control_barline == 1) {
         draw();
     } else {
-
+        return;
     }
 }
 

@@ -16,7 +16,7 @@ var cusaudioRoute = "";
 var mapRoute = "map/1.png";//粒子贴图路径
 var cusmapRoute = {}; //自定义贴图路径
 
-var FristLoad = true;
+var FirstLoad = true;
 var Paused = false
 
 
@@ -138,7 +138,7 @@ var oClock_bluryakeli
 //天气
 //var WeatherFormatTest =1;
 var weatherInit = false;
-var api
+var weather_api_choose
 var citynumber = ""
 var CityKey
 var APIHost
@@ -146,7 +146,7 @@ var VisualCrossing_Key
 var weather_updata = 3
 var appid
 var appsecret
-var FristLoadWeather = true
+var FirstLoadWeather = true
 var weather_unit = "metric"
 var weather_lang = "en"
 var qweatherapi_paymode = false
@@ -182,7 +182,7 @@ var sunset_show = false
 var moonphase_show = false
 var obstime_show = false
 
-var FristLoadweather = true
+var FirstLoadWeather = true
 var weather_Color
 var weather_blurcolor_show
 var weather_blurcolor
@@ -210,7 +210,7 @@ var hit_j
 var hit_k
 var hit_l
 
-var FristLoad = true
+var FirstLoad = true
 var hitokoto_color
 var hitokoto_blurcolor_show
 var hitokoto_blurcolor
@@ -222,7 +222,7 @@ var hitokoto_sizeX_show
 
 var countdown_txt
 var countdown_txt1
-var FristLoadcountdown = true
+var FirstLoadcountdown = true
 
 //音频圈
 var wallpaper = $('body').particles({}).audiovisualizer({});
@@ -230,6 +230,9 @@ var isGlobalSettings = false;
 
 //完美粒子
 var PWParticleShow = false;
+
+//音乐播放器
+var player_control_autohide = true; // 默认自动隐藏
 
 /** 全局定义 end -------------------------------------- */
 
@@ -355,7 +358,7 @@ window.wallpaperPropertyListener = {
             //clearT();
             custom = properties.image.value;
 
-            if (FristLoad == true) { } else { shouldShow(); }
+            if (FirstLoad == true) { } else { shouldShow(); }
         }
         //星河图片api选择
         if (properties.galaxyapi) {
@@ -365,7 +368,7 @@ window.wallpaperPropertyListener = {
             }else{
                 galaxyapi = "https://api.asxe.vip/scenery.php?"//二次元风景图
             }
-            if(FristLoad == true){}else{shouldShow();}*/
+            if(FirstLoad == true){}else{shouldShow();}*/
 
             galaxyapi = properties.galaxyapi.value
         }
@@ -389,13 +392,13 @@ window.wallpaperPropertyListener = {
                     chiyuanapi = "https://t.alcy.cc/fj/?json"//二次元风景图
                     break
             }
-            if (FristLoad == true) { } else { shouldShow(); }
+            if (FirstLoad == true) { } else { shouldShow(); }
         }
         //
         if (properties.customdirectory) {
             // 获取自定义壁纸
             clearT();
-            if ((properties.customdirectory) && (FristLoad == false)) {
+            if ((properties.customdirectory) && (FirstLoad == false)) {
                 changeBackground();
             }
         }
@@ -404,7 +407,7 @@ window.wallpaperPropertyListener = {
             clearT();
             wallpapermode = properties.wallpapermode.value;
             //changeBackground();
-            if (FristLoad) {
+            if (FirstLoad) {
                 setTimeout(function () {
                     changeBackground()
                 }, 5000)
@@ -432,7 +435,7 @@ window.wallpaperPropertyListener = {
         /*默认壁纸
         if (properties.DefaultWallpaper) {
             backgroundRoute = "url('imgs/"+ properties.DefaultWallpaper.value +".jpg')"
-            if(FristLoad == true){}else{shouldShow();}
+            if(FirstLoad == true){}else{shouldShow();}
         }*/
         if (properties.background_wallpapermode_9_URL) {
             pictures_URL = properties.background_wallpapermode_9_URL.value;
@@ -505,7 +508,7 @@ window.wallpaperPropertyListener = {
         // 更改幻灯切换时间
         if (properties.imageswitchtimes) {
             speed = properties.imageswitchtimes.value;
-            if (FristLoad == true) { } else { changeBackground() };
+            if (FirstLoad == true) { } else { changeBackground() };
         }
         //自由变换
         if (properties.bgy) {
@@ -560,7 +563,7 @@ window.wallpaperPropertyListener = {
         // 是否显示时间
         if (properties.showTime) {
             let oClock_show = properties.showTime.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oClock.style.visibility = oClock_show ? 'visible' : 'hidden';
                 oClock.style.display = oClock_show ? 'flex' : 'none';
             } else {
@@ -577,7 +580,7 @@ window.wallpaperPropertyListener = {
         // 是否显示日期
         if (properties.showDate) {
             let oDate_show = properties.showDate.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDate.style.visibility = oDate_show ? 'visible' : 'hidden';
                 oDate.style.display = oDate_show ? 'flex' : 'none';
             } else {
@@ -632,28 +635,19 @@ window.wallpaperPropertyListener = {
             document.querySelector("#clock .block .time-indicators").style.marginLeft = s + 'px';
         }
         if (properties.oclock_roundedcorners) {
-            var Roundedcorners = properties.oclock_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(oClock).height
-                    if (height != '0px' || timeout == true) {
-                        oClock_block.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                        oClock_block.style.padding = null
-                        oClock_block.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(oClock).height
-                oClock_block.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                oClock_block.style.padding = null
-                oClock_block.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-            }
+            const Roundedcorners = properties.oclock_roundedcorners.value;
 
+            const updateRoundedCorners = () => {
+                const height = parseFloat(window.getComputedStyle(oClock).height);
+                if (!height) return;
+
+                oClock_block.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
+                oClock_block.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+            };
+
+            updateRoundedCorners();
+            const observer = new ResizeObserver(updateRoundedCorners);
+            observer.observe(oClock);
         }
         // 日期大小
         if (properties.DateSize) {
@@ -738,62 +732,54 @@ window.wallpaperPropertyListener = {
         }
         //日期圆角
         if (properties.odate_roundedcorners) {
-            var Roundedcorners = properties.odate_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(oDate).height
-                    if (height != "0px" || timeout == true) {
-                        oDate_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                        oDate_webtext.style.padding = null
-                        oDate_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(oDate).height
-                oDate_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                oDate_webtext.style.padding = null
-                oDate_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-            }
+            const Roundedcorners = properties.odate_roundedcorners.value
+
+            const updateRoundedCorners = () => {
+                const height = parseFloat(window.getComputedStyle(oDate).height);
+                if (!height) return;
+
+                oDate_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
+                oDate_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+            };
+
+            updateRoundedCorners();
+            const observer = new ResizeObserver(updateRoundedCorners);
+            observer.observe(oDate);
         }
         //天气颜色
         if (properties.odate_color) {
             oDate_color = properties.odate_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDateappearance()
             }
         }
         if (properties.odate_blurcolor_show) {
             oDate_blurcolor_show = properties.odate_blurcolor_show.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDateappearance()
             }
         }
         if (properties.odate_blurcolor) {
             oDate_blurcolor = properties.odate_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDateappearance()
             }
         }
         if (properties.odate_yakeli_show) {
             oDate_yakeli_show = properties.odate_yakeli_show.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDateappearance()
             }
         }
         if (properties.odate_yakelicolor) {
             oDate_yakelicolor = properties.odate_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDateappearance()
             }
         }
         if (properties.odate_yakeli) {
             oDate_yakeli = properties.odate_yakeli.value / 100
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 oDateappearance()
             }
         }
@@ -821,37 +807,37 @@ window.wallpaperPropertyListener = {
         }
         /*if(properties.oclock_color){
             oClock_color = properties.oclock_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
-            if(FristLoad = true){
+            if(FirstLoad = true){
                 oDateappearance()
             }
         }*/
         if (properties.oclock_blurcolor_show) {
             oClock_blurcolor_show = properties.oclock_blurcolor_show.value
-            if (FristLoad = true) {
+            if (FirstLoad = true) {
                 oClockappearance()
             }
         }
         if (properties.oclock_blurcolor) {
             oClock_blurcolor = properties.oclock_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad = true) {
+            if (FirstLoad = true) {
                 oClockappearance()
             }
         }
         if (properties.oclock_yakeli_show) {
             oClock_yakeli_show = properties.oclock_yakeli_show.value
-            if (FristLoad = true) {
+            if (FirstLoad = true) {
                 oClockappearance()
             }
         }
         if (properties.oclock_yakelicolor) {
             oClock_yakelicolor = properties.oclock_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad = true) {
+            if (FirstLoad = true) {
                 oClockappearance()
             }
         }
         if (properties.oclock_yakeli) {
             oClock_yakeli = properties.oclock_yakeli.value / 100
-            if (FristLoad = true) {
+            if (FirstLoad = true) {
                 oClockappearance()
             }
         }
@@ -916,15 +902,15 @@ window.wallpaperPropertyListener = {
 
         }
         if (properties.weather_lat_latitude) {
-            weather_lat.latitude = properties.weather_lat_latitude.value
+            weather_address.latitude = properties.weather_lat_latitude.value
         }
         if (properties.weather_lat_longitude) {
-            weather_lat.longitude = properties.weather_lat_longitude.value
+            weather_address.longitude = properties.weather_lat_longitude.value
         }
         //获取天气城市优先获取
         if (properties.weather_CityText) {
             strCity = properties.weather_CityText.value;
-            if (!FristLoad)//首次不调用天气，由总开关调用
+            if (!FirstLoad)//首次不调用天气，由总开关调用
             {
                 //alert("调用:城市");	
                 weatherInit = false;
@@ -1072,44 +1058,45 @@ window.wallpaperPropertyListener = {
         //API选择
         if (properties.freeapi) {
             if (properties.freeapi.value) {
-                api = 2
-                if (FristLoadWeather == false) {
+                weather_api_choose = 2
+                if (FirstLoadWeather == false) {
                     getcity()
                 }
             }
         }
         if (properties.qweatherapi) {
             if (properties.qweatherapi.value) {
-                api = 1
-                if (FristLoadWeather == false) {
+                weather_api_choose = 1
+                if (FirstLoadWeather == false) {
                     getcity()
                 }
             }
-        } if (properties.qweatherapi_paymode) {
+        }
+        if (properties.qweatherapi_paymode) {
             if (properties.qweatherapi_paymode.value) {
                 qweatherapi_paymode = properties.qweatherapi_paymode.value
             }
         }
         if (properties.tianqiapi) {
             if (properties.tianqiapi.value) {
-                api = 3
-                if (FristLoadWeather == false) {
+                weather_api_choose = 3
+                if (FirstLoadWeather == false) {
                     getcity()
                 }
             }
         }
         if (properties.visualcrossingapi) {
             if (properties.visualcrossingapi.value) {
-                api = 4
-                if (FristLoadWeather == false) {
+                weather_api_choose = 4
+                if (FirstLoadWeather == false) {
                     getcity()
                 }
             }
         }
         if (properties.open_meteoapi) {
             if (properties.open_meteoapi.value) {
-                api = 5
-                if (FristLoadWeather == false) {
+                weather_api_choose = 5
+                if (FirstLoadWeather == false) {
                     getcity()
                 }
             }
@@ -1118,62 +1105,69 @@ window.wallpaperPropertyListener = {
         if (properties.weather_show) {
             let weather_show = properties.weather_show.value;
             clearWT();
-            if (FristLoad == false) {
-                weather.style.visibility = weather_show ? 'visible' : 'hidden';
-                weather.style.display = weather_show ? 'flex' : 'none';
-                weather_show ? weatherInit = false : null;
-                weather_show ? autoWeather() : null;
-            } else {
-                weather.style.display = "flex"
-                weather.style.visibility = weather_show ? 'visible' : 'hidden'
-                weather_show ? autoWeather() : null;
 
-                setTimeout(function () {
-                    if (!weather_show) {
-                        weather.style.display = "none"
-                    }
-                }, 3000);
+            if (FirstLoad) {
+                // 首次加载时总是显示3秒
+                weather.style.display = "flex";
+                weather.style.visibility = "visible";
+
+                // 如果 weather_show 为 true，初始化天气
+                if (weather_show) {
+                    autoWeather();
+                } else {
+                    // 3秒后隐藏
+                    setTimeout(() => {
+                        weather.style.display = "none";
+                    }, 3000);
+                }
+            } else {
+                // 非首次加载，根据设置直接显示/隐藏
+                if (weather_show) {
+                    weather.style.display = "flex";
+                    weather.style.visibility = "visible";
+                    weatherInit = false;  // 重置初始化标志
+                    autoWeather();
+                } else {
+                    weather.style.display = "none";
+                    weather.style.visibility = "hidden";
+                }
             }
+
         }
-        //天气api选择
-        /*if(properties.api){
-            api = properties.api.value
-                apiuse();
-        }*/
         // 天气颜色
         if (properties.weather_Color) {
             weather_Color = properties.weather_Color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoadweather == false) {
+            if (FirstLoadWeather == false) {
                 weatherappearance()
             }
         }
         if (properties.weather_blurcolor_show) {
             weather_blurcolor_show = properties.weather_blurcolor_show.value
-            if (FristLoadweather == false) {
+            if (FirstLoadWeather == false) {
                 weatherappearance()
             }
         }
         if (properties.weather_blurcolor) {
             weather_blurcolor = properties.weather_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoadweather == false) {
+            if (FirstLoadWeather == false) {
                 weatherappearance()
             }
         }
         if (properties.weather_yakeli_show) {
             weather_yakeli_show = properties.weather_yakeli_show.value
-            if (FristLoadweather == false) {
+            if (FirstLoadWeather == false) {
                 weatherappearance()
             }
         }
         if (properties.weather_yakelicolor) {
             weather_yakelicolor = properties.weather_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoadweather == false) {
+            if (FirstLoadWeather == false) {
                 weatherappearance()
             }
         }
         if (properties.weather_yakeli) {
             weather_yakeli = properties.weather_yakeli.value / 100
-            if (FristLoadweather == false) {
+            if (FirstLoadWeather == false) {
                 weatherappearance()
             }
         }
@@ -1181,7 +1175,7 @@ window.wallpaperPropertyListener = {
             weather_bluryakeli = properties.weather_bluryakeli.value
             weatherappearance()
 
-            FristLoadweather = false
+            FirstLoadWeather = false
         }
         function weatherappearance() {
 
@@ -1208,28 +1202,24 @@ window.wallpaperPropertyListener = {
         }
         //天气圆角
         if (properties.weather_roundedcorners) {
-            var Roundedcorners = properties.weather_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(weather).height
-                    if (height != "0px" || timeout == true) {
-                        weather_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                        weather_webtext.style.padding = null
-                        weather_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(weather).height
-                weather_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                weather_webtext.style.padding = null
-                weather_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-            }
+            const Roundedcorners = properties.weather_roundedcorners.value;
+
+            const updateRoundedCorners = () => {
+                const height = parseFloat(window.getComputedStyle(weather).height);
+                if (!height) return;
+
+                weather_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
+                weather_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+            };
+
+            // 首次计算
+            updateRoundedCorners();
+
+            // 当 weather 元素大小改变时重新计算
+            const observer = new ResizeObserver(updateRoundedCorners);
+            observer.observe(weather);
         }
+
         // 天气大小
         if (properties.weather_size) {
             var s = properties.weather_size.value;
@@ -1357,7 +1347,7 @@ window.wallpaperPropertyListener = {
         if (properties.hitokoto_show) {
             let hitokoto_show = properties.hitokoto_show.value;
             clearHT();
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 hitokoto.style.visibility = hitokoto_show ? 'visible' : 'hidden';
                 hitokoto.style.display = hitokoto_show ? 'flex' : 'none';
                 hitokoto_show ? hitokotoInit = false : null;
@@ -1377,31 +1367,31 @@ window.wallpaperPropertyListener = {
         // 一言外观
         if (properties.hitokoto_color) {
             hitokoto_color = properties.hitokoto_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 Element_effects_color(hitokoto_blurcolor_show, hitokoto_webtext, hitokoto_color, hitokoto_blurcolor)
             }
         }
         if (properties.hitokoto_blurcolor) {
             hitokoto_blurcolor = properties.hitokoto_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 Element_effects_color(hitokoto_blurcolor_show, hitokoto_webtext, hitokoto_color, hitokoto_blurcolor)
             }
         }
         if (properties.hitokoto_yakelicolor) {
             hitokoto_yakelicolor = properties.hitokoto_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
             }
         }
         if (properties.hitokoto_yakeli) {
             hitokoto_yakeli = properties.hitokoto_yakeli.value / 100
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
             }
         }
         if (properties.hitokoto_bluryakeli) {
             hitokoto_bluryakeli = properties.hitokoto_bluryakeli.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
             }
         }
@@ -1440,27 +1430,19 @@ window.wallpaperPropertyListener = {
         }
         //一言圆角
         if (properties.hitokoto_roundedcorners) {
-            var Roundedcorners = properties.hitokoto_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(hitokoto).height
-                    if (height != '0px' || timeout) {
-                        hitokoto_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                        hitokoto_webtext.style.padding = null
-                        hitokoto_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(hitokoto).height
-                hitokoto_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                hitokoto_webtext.style.padding = null
-                hitokoto_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-            }
+            const Roundedcorners = properties.hitokoto_roundedcorners.value
+
+            const updateRoundedCorners = () => {
+                const height = parseFloat(window.getComputedStyle(hitokoto).height);
+                if (!height) return;
+
+                hitokoto_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
+                hitokoto_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+            };
+
+            updateRoundedCorners();
+            const observer = new ResizeObserver(updateRoundedCorners);
+            observer.observe(hitokoto);
         }
         // 一言大小
         if (properties.hitokoto_size) {
@@ -2072,7 +2054,7 @@ window.wallpaperPropertyListener = {
         };
         if (properties.player_control_show) {
             player_control_show = properties.player_control_show.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
                 player_control.style.display = player_control_show ? 'flex' : 'none';
                 if (player_control_show) {
@@ -2080,7 +2062,7 @@ window.wallpaperPropertyListener = {
                     wallpaperMediaPropertiesListener(null);
                     wallpaperMediaPlaybackListener(null);
 
-                    if (FristLoad == false) {
+                    if (FirstLoad == false) {
                         thumbnailsue()
                     }
                     player_controlappearance();
@@ -2090,11 +2072,125 @@ window.wallpaperPropertyListener = {
                 player_control.style.visibility = player_control_show ? 'visible' : 'hidden'
 
                 setTimeout(function () {
-                    if (!player_control_show || (document.querySelector("#player_control .title .left").innerText == "loading...") || (document.querySelector("#player_control .title .right").innerText == "loading...")) {
+                    // 检查播放器是否应该显示
+                    if (!player_control_show) {
                         player_control.style.display = "none"
-                        console.log("none")
+                        console.log("播放器未开启")
+                        return;
                     }
-                }, 5000);
+
+                    // 检查是否有歌曲信息
+                    var leftTitle = document.querySelector("#player_control .title .left");
+                    var rightTitle = document.querySelector("#player_control .title .right");
+                    var isTitleLoading = (leftTitle && leftTitle.innerText == "loading...") ||
+                        (rightTitle && rightTitle.innerText == "loading...");
+
+                    // 如果有歌曲信息，保持显示
+                    if (!isTitleLoading) {
+                        console.log("有歌曲信息，保持显示")
+                        return;
+                    }
+
+                    // 没有歌曲信息，根据 autohide 设置处理
+                    if (player_control_autohide) {
+                        // 自动隐藏：隐藏播放器
+                        player_control.style.display = "none"
+                        console.log("自动隐藏：没有歌曲信息")
+                    } else {
+                        // 不自动隐藏：显示假数据
+                        console.log("不自动隐藏，显示假数据")
+
+                        // 设置假数据
+                        var titleElement = leftTitle || rightTitle;
+                        var artistElement = document.querySelector("#player_control .artist .left") ||
+                            document.querySelector("#player_control .artist .right");
+
+                        if (titleElement) {
+                            titleElement.innerHTML = "✧ପ(๑･ω･)੭";
+                        }
+                        if (artistElement) {
+                            artistElement.innerHTML = "少女祈祷中……";
+                        }
+
+                        // 隐藏专辑标题
+                        var albumTitleElement = document.querySelector("#player_control .albumTitle");
+                        if (albumTitleElement) {
+                            albumTitleElement.style.display = 'none';
+                        }
+
+                        // 更新全局变量
+                        singtitle = "✧ପ(๑･ω･)੭";
+                        singartist = "少女祈祷中……";
+                        singalbumTitle = "";
+
+                        console.log("已显示假数据")
+                    }
+                }, 3000); // 保持3秒延迟检查
+            }
+        }
+        // 默认自动隐藏变量监听
+        if (properties.player_control_autohide) {
+            player_control_autohide = properties.player_control_autohide.value;
+            if (FirstLoad == false) {
+                updatePlayerControlDisplay();
+            }
+        }
+
+        //未播放歌曲时的假函数设置
+        function showFakePlayerData() {
+            if (!player_control_autohide && player_control_show) {
+                // 设置假数据
+                singtitle = "٩(๑❛ᴗ❛๑)۶";
+                singartist = "少女乞讨中……";
+                singalbumTitle = "";
+
+                // 显示播放器
+                player_control.style.display = "flex";
+
+                // 更新标题
+                playertitle();
+
+                // 使用默认封面或空白封面
+                player_control_thumbnail.src = 'imgs/default_cover.png'; // 您需要创建一张空白封面
+
+                // 使用默认颜色
+                if (player_control_fontusetb !== 5) {
+                    fontcolor = colorGroup[Color_pickup_method - 1][player_control_fontusetb - 1];
+                } else {
+                    fontcolor = player_control_color;
+                }
+
+                player_control_info.style.color = "rgb(" + fontcolor + ")";
+                player_iconcolor(fontcolor);
+                player_control_timeline.style.backgroundColor = "rgb(" + fontcolor + ")";
+                document.querySelector('.timeline').style.backgroundColor = "rgba(255,255,255," + (player_control_yakeli + 0.4) + ")";
+            }
+        }
+
+        //配置项监听
+        if (properties.player_control_autohide) {
+            player_control_autohide = properties.player_control_autohide.value;
+            // 更新 player_control.js 中的变量
+            if (typeof window.player_control_autohide !== 'undefined') {
+                window.player_control_autohide = player_control_autohide;
+            }
+            // 根据新设置更新显示
+            if (FirstLoad == false) {
+                updatePlayerDisplayBasedOnAutohide();
+            }
+        }
+
+        // 更新播放器显示状态的函数
+        function updatePlayerControlDisplay() {
+            if (player_control_show) {
+                if (player_now === undefined ||
+                    player_now === window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
+                    if (player_control_autohide) {
+                        player_control.style.display = "none";
+                    } else {
+                        showFakePlayerData();
+                    }
+                }
             }
         }
         if (properties.player_control_scalefactor) {
@@ -2111,37 +2207,37 @@ window.wallpaperPropertyListener = {
         // 外观
         if (properties.player_control_color) {
             player_control_color = properties.player_control_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_controlappearance()
             }
         }
         if (properties.player_control_blurcolor_show) {
             player_control_blurcolor_show = properties.player_control_blurcolor_show.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_controlappearance()
             }
         }
         if (properties.player_control_blurcolor) {
             player_control_blurcolor = properties.player_control_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_controlappearance()
             }
         }
         if (properties.player_control_yakeli_show) {
             player_control_yakeli_show = properties.player_control_yakeli_show.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_controlappearance()
             }
         }
         if (properties.player_control_yakelicolor) {
             player_control_yakelicolor = properties.player_control_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_controlappearance()
             }
         }
         if (properties.player_control_yakeli) {
             player_control_yakeli = properties.player_control_yakeli.value / 100
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 player_controlappearance()
             }
         }
@@ -2172,7 +2268,7 @@ window.wallpaperPropertyListener = {
             if (player_control_thumbnail_size) {
                 player_control_thumbnailWrap.style.width = player_control_size_value + 'px';
                 player_control_thumbnailWrap.style.height = player_control_size_value + 'px';
-                if (FristLoad == false) {
+                if (FirstLoad == false) {
                     var ss = (player_control_size_value * (player_control_thumbnail_size_value / 100));
                     player_control_thumbnail.style.width = ss + 'px';
                     player_control_thumbnail.style.height = ss + 'px';
@@ -2194,29 +2290,26 @@ window.wallpaperPropertyListener = {
         }
         //圆角
         if (properties.player_control_roundedcorners) {
-            player_control_roundedcorners = properties.player_control_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(player_control_thumbnail).height
-                    if (height !== '0px' || timeout) {
-                        player_control_background.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
-                        player_control_thumbnail.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
-                        player_control_background.style.paddingRight = null
-                        player_control_background.style.paddingRight = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 200) + 'px';
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(player_control_thumbnail).height
-                player_control_background.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
-                player_control_thumbnail.style.borderRadius = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 100) + 'px';
-                player_control_background.style.paddingRight = null
-                player_control_background.style.paddingRight = (height.slice(0, -2) / 2) * (player_control_roundedcorners / 200) + 'px';
-            }
+            const rounded = properties.player_control_roundedcorners.value;
+
+            const updateCorners = () => {
+                const height = parseFloat(getComputedStyle(player_control_thumbnail).height);
+                if (!height) return;
+
+                const radius = (height / 2) * (rounded / 100);
+                const padding = (height / 2) * (rounded / 200);
+
+                player_control_background.style.borderRadius = radius + 'px';
+                player_control_thumbnail.style.borderRadius = radius + 'px';
+                player_control_background.style.paddingRight = padding + 'px';
+            };
+
+            // 初次执行
+            updateCorners();
+
+            // 当缩略图尺寸变化时自动更新
+            const observer = new ResizeObserver(updateCorners);
+            observer.observe(player_control_thumbnail);
         }
         //封面旋转
         if (properties.player_control_thumbnail_rotation) {
@@ -2269,13 +2362,13 @@ window.wallpaperPropertyListener = {
         }
         if (properties.player_control_yakelibgusetb) {
             player_control_yakelibgusetb = properties.player_control_yakelibgusetb.value;
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 thumbnailsue()
             }
         }
         if (properties.player_control_fontusetb) {
             player_control_fontusetb = properties.player_control_fontusetb.value;
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 thumbnailsue()
             }
         }
@@ -2290,7 +2383,7 @@ window.wallpaperPropertyListener = {
                     player_control_info.style.alignItems = 'flex-end'
                 }, 2500)
             } else {
-                if (FristLoad == false) {
+                if (FirstLoad == false) {
                     player_control_background.style.flexDirection = 'row'
                     var rawpadding = window.getComputedStyle(player_control_background).paddingLeft
                     player_control_background.style.paddingLeft = null
@@ -2298,7 +2391,7 @@ window.wallpaperPropertyListener = {
                     player_control_info.style.alignItems = 'flex-start'
                 }
             }
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 thumbnailsue()
                 playertitle()
             }
@@ -2314,26 +2407,26 @@ window.wallpaperPropertyListener = {
         }
         if (properties.player_control_samealbumtitle) {
             player_control_samealbumTitle = properties.player_control_samealbumtitle.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 playertitle()
             }
         }
         if (properties.player_control_visualaudiobar) {
             player_control_visualaudiobar = properties.player_control_visualaudiobar.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 pc_aubar()
             }
         }
         if (properties.player_control_barline) {
             player_control_barline = properties.player_control_barline.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 aubarstop = true
                 pc_aubar()
             }
         }
         if (properties.player_control_getcolor) {
             Color_pickup_method = properties.player_control_getcolor.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 thumbnailsue()
             }
         }
@@ -2379,37 +2472,37 @@ window.wallpaperPropertyListener = {
         }
         if (properties.countdown_color) {
             countdown_color = properties.countdown_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoadcountdown == false) {
+            if (FirstLoadcountdown == false) {
                 countdownappearance()
             }
         }
         if (properties.countdown_blurcolor_show) {
             countdown_blurcolor_show = properties.countdown_blurcolor_show.value
-            if (FristLoadcountdown == false) {
+            if (FirstLoadcountdown == false) {
                 countdownappearance()
             }
         }
         if (properties.countdown_blurcolor) {
             countdown_blurcolor = properties.countdown_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoadcountdown == false) {
+            if (FirstLoadcountdown == false) {
                 countdownappearance()
             }
         }
         if (properties.countdown_yakeli_show) {
             countdown_yakeli_show = properties.countdown_yakeli_show.value
-            if (FristLoadcountdown == false) {
+            if (FirstLoadcountdown == false) {
                 countdownappearance()
             }
         }
         if (properties.countdown_yakelicolor) {
             countdown_yakelicolor = properties.countdown_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FristLoadcountdown == false) {
+            if (FirstLoadcountdown == false) {
                 countdownappearance()
             }
         }
         if (properties.countdown_yakeli) {
             countdown_yakeli = properties.countdown_yakeli.value / 100
-            if (FristLoadcountdown == false) {
+            if (FirstLoadcountdown == false) {
                 countdownappearance()
             }
         }
@@ -2417,7 +2510,7 @@ window.wallpaperPropertyListener = {
             countdown_bluryakeli = properties.countdown_bluryakeli.value
             countdownappearance()
 
-            FristLoadcountdown = false
+            FirstLoadcountdown = false
         }
         function countdownappearance() {
 
@@ -2442,29 +2535,20 @@ window.wallpaperPropertyListener = {
             countdown.style.opacity = t;
         }
         if (properties.countdown_roundedcorners) {
-            var Roundedcorners = properties.countdown_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(countdown).height
-                    if (height != "0px" || timeout == true) {
-                        countdown_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                        countdown_webtext.style.padding = null
-                        countdown_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(countdown).height
-                countdown_webtext.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                countdown_webtext.style.padding = null
-                countdown_webtext.style.padding = "0 " + (height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px';
-            }
-        }
+            const Roundedcorners = properties.countdown_roundedcorners.value
 
+            const updateRoundedCorners = () => {
+                const height = parseFloat(window.getComputedStyle(countdown).height);
+                if (!height) return;
+
+                countdown_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
+                countdown_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+            };
+
+            updateRoundedCorners();
+            const observer = new ResizeObserver(updateRoundedCorners);
+            observer.observe(countdown);
+        }
         if (properties.picturesinfo_language) {
             picturesinfo_language = properties.picturesinfo_language.value
         }
@@ -2483,7 +2567,7 @@ window.wallpaperPropertyListener = {
         }
         if (properties.picturesinfo_show) {
             picturesinfo_show = properties.picturesinfo_show.value
-            if (FristLoad == false) {
+            if (FirstLoad == false) {
                 pictures.picture_info.style.visibility = picturesinfo_show ? 'visible' : 'hidden';
                 pictures.picture_info.style.display = picturesinfo_show ? 'flex' : 'none';
             } else {
@@ -2569,27 +2653,19 @@ window.wallpaperPropertyListener = {
             pictures.picture_info.style.opacity = t;
         }
         if (properties.picturesinfo_roundedcorners) {
-            var Roundedcorners = properties.picturesinfo_roundedcorners.value
-            if (FristLoad == true) {
-                let timeout = false
-                setTimeout(() => {
-                    timeout = true
-                }, 5000)
-                while (true) {
-                    var height = window.getComputedStyle(picture_info).height
-                    if (height != '0px' || timeout == true) {
-                        pictures.info.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                        pictures.info.style.padding = null
-                        pictures.info.style.padding = ((height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px ') + ((height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px ') + "0";
-                        break;
-                    }
-                }
-            } else {
-                var height = window.getComputedStyle(picture_info).height
-                pictures.info.style.borderRadius = (height.slice(0, -2) / 2) * (Roundedcorners / 100) + 'px';
-                pictures.info.style.padding = null
-                pictures.info.style.padding = ((height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px ') + ((height.slice(0, -2) / 2) * (Roundedcorners / 200) + 'px ') + "0";
-            }
+            const Roundedcorners = properties.picturesinfo_roundedcorners.value
+
+            const updateRoundedCorners = () => {
+                const height = parseFloat(window.getComputedStyle(picture_info).height);
+                if (!height) return;
+
+                pictures.info.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
+                pictures.info.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+            };
+
+            updateRoundedCorners();
+            const observer = new ResizeObserver(updateRoundedCorners);
+            observer.observe(picture_info);
         }
         if (properties.picturesinfo_showaway) {
             if (properties.picturesinfo_showaway.value == true) {
@@ -2681,9 +2757,9 @@ window.wallpaperPropertyListener = {
                 .join(', ');
             document.body.style.fontFamily = fontGroup;
         }
-        if (FristLoad == true) {
+        if (FirstLoad == true) {
             console.log("main.js load success")
-            FristLoad = false;
+            FirstLoad = false;
         }
     },
     userDirectoryFilesAddedOrChanged: function (propertyName, changedFiles) {
@@ -2807,3 +2883,23 @@ var shouldShowMap = function () {
         wallpaper.particles('particlesImage', mapRoute, 'true');
     }
 };
+
+// 页面加载完成后立即应用用户设置
+document.addEventListener('DOMContentLoaded', function () {
+    // 确保天气组件已经初始化
+    if (typeof updateWeatherStyles === 'function') {
+        updateWeatherStyles();
+    }
+});
+
+// 如果使用Wallpaper Engine的API，可以使用其就绪事件
+if (typeof window.wallpaperRegisterListener !== 'undefined') {
+    window.wallpaperRegisterListener(function (event) {
+        if (event === 'ready') {
+            // Wallpaper Engine准备就绪后立即应用用户设置
+            if (typeof updateWeatherStyles === 'function') {
+                updateWeatherStyles();
+            }
+        }
+    });
+}

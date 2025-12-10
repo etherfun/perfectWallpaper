@@ -24,6 +24,21 @@ video {
     overflow: hidden;
 }
 
+:root {
+    --weather-bg-opacity: 0.8;
+    --weather-bg-color: 0, 0, 0;
+    --weather-blur: 10px;
+    --weather-radius: 10px;
+    --weather-width: auto;
+}
+
+/* .weather-table-container {
+  background: rgba(var(--weather-bg-color), var(--weather-bg-opacity));
+  backdrop-filter: blur(var(--weather-blur));
+  border-radius: var(--weather-radius);
+  min-width: var(--weather-width);
+} */
+
 #show {
     display: none;
 }
@@ -129,6 +144,158 @@ video {
 #weather .text {
     font-size: 0.5em;
     z-index: 90;
+}
+
+/* 1号背景 - 所有样式都在这里 */
+.weather-table-container-no {
+    /* 默认样式，会被JS参数覆盖 */
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    box-sizing: border-box;
+    /* 确保有默认颜色，即使JS没有运行 */
+    color: white;
+}
+
+
+.weather-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+    color: white;
+    /* 确保表格不会超出容器 */
+    table-layout: fixed;
+}
+
+.weather-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.weather-row:last-child {
+    border-bottom: none;
+}
+
+.weather-cell {
+    padding: 6px 4px;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    color: white;
+    /* 确保单元格内容不会导致表格膨胀 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 特定单元格样式 - 简化颜色 */
+.city-cell {
+    font-weight: bold;
+    font-size: 1.1em;
+    text-align: center !important;
+}
+
+.icon-cell {
+    font-size: 1.3em;
+}
+
+.weather-cell {
+    font-weight: bold;
+    text-align: left;
+}
+
+.temp-cell {
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.feels-cell {
+    font-size: 0.9em;
+}
+
+.humidity-cell {
+    font-size: 0.9em;
+}
+
+.wind-cell {
+    text-align: left;
+    padding-left: 8px;
+}
+
+.wind-level-cell,
+.wind-speed-cell,
+.visibility-cell,
+.cloud-cell {
+    font-size: 0.9em;
+}
+
+.air-title-cell {
+    text-align: center;
+    font-weight: bold;
+}
+
+.air-value-cell {
+    font-weight: bold;
+}
+
+.warning-cell {
+    text-align: right;
+    padding-right: 8px;
+}
+
+/* 降水概率行样式 - 修复对齐问题 */
+.precip-icon,
+.dice-icon {
+    font-size: 1.2em;
+    width: 35px;
+    text-align: center;
+}
+
+.precip-times,
+.precip-probs {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85em;
+    text-align: center;
+    letter-spacing: 1px;
+}
+
+/* 为降水时间创建单独的单元格以确保对齐 */
+.precip-time-cell {
+    display: inline-block;
+    width: 12%;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.precip-prob-cell {
+    display: inline-block;
+    width: 12%;
+    text-align: center;
+    font-family: 'Courier New', monospace;
+}
+
+.greeting-cell {
+    font-style: italic;
+    padding: 10px 8px;
+    text-align: center;
+    font-size: 0.95em;
+    border-top: 2px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* 响应式调整 */
+@media (max-width: 768px) {
+    .weather-table {
+        font-size: 0.7em;
+    }
+
+    .weather-cell {
+        padding: 4px 3px;
+    }
 }
 
 #weather_graph {
@@ -365,6 +532,7 @@ canvas {
     padding: 0;
     margin: 0;
     opacity: 1;
+    pointer-events: none;
 }
 
 #sakura,
@@ -383,6 +551,255 @@ div.btnbg {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
+
+/*天气组件加载动画 */
+@keyframes pulse {
+    0% {
+        opacity: 0.6;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.6;
+    }
+}
+
+.loading-text {
+    animation: pulse 1.5s infinite;
+}
+
+/* 响应式调整 - 更精细的控制 */
+@media (max-width: 768px) {
+    .weather-table {
+        font-size: 0.7em;
+    }
+
+    .weather-cell {
+        padding: 4px 2px;
+    }
+
+    .precip-time-cell,
+    .precip-prob-cell {
+        width: 14% !important;
+        /* 在小屏幕上减少每个时间点的宽度 */
+    }
+}
+
+/* 确保表格在各种情况下都能正确显示 */
+.weather-table-container {
+    min-width: 300px;
+    /* 设置最小宽度，避免过窄 */
+    max-width: 100%;
+    /* 确保不会超出屏幕 */
+}
+
+#weather-warning-tooltip {
+    position: fixed;
+    display: none;
+
+    max-width: 400px;
+    padding: 12px 14px;
+
+    background: rgba(0, 0, 0, 0.85);
+    color: #fff;
+
+    border-radius: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+
+    z-index: 999999;
+    pointer-events: none;
+
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
+
+    transition: opacity 0.15s;
+    opacity: 0;
+}
+
+/* 优雅半透明天气弹窗 */
+.weather-tooltip {
+    position: fixed;
+    display: none;
+    pointer-events: none;
+
+    max-width: 400px;
+    padding: 12px 16px;
+
+    background: rgba(30, 30, 30, 0.8);
+    color: #fff;
+    border-radius: 12px;
+    backdrop-filter: blur(8px);
+
+    font-size: 13px;
+    line-height: 1.5;
+
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
+    transition: opacity 0.25s ease, transform 0.25s ease;
+
+    opacity: 0;
+    transform: translateY(6px);
+    z-index: 99999;
+}
+
+/* 弹出动画 */
+.weather-tooltip.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* 内部闪烁边框和辉光动画 */
+@keyframes borderGlowInset {
+    0% {
+        border-color: rgba(var(--alert-color), 0.6);
+        box-shadow: inset 0 0 9px rgba(var(--alert-color), 0.5), inset 0 0 18px rgba(var(--alert-color), 0.3);
+    }
+
+    50% {
+        border-color: rgba(var(--alert-color), 1);
+        box-shadow: inset 0 0 18px rgba(var(--alert-color), 1), inset 0 0 36px rgba(var(--alert-color), 0.7);
+    }
+
+    100% {
+        border-color: rgba(var(--alert-color), 0.6);
+        box-shadow: inset 0 0 9px rgba(var(--alert-color), 0.5), inset 0 0 18px rgba(var(--alert-color), 0.3);
+    }
+}
+
+/* 鼠标悬浮时触发动画 */
+.weather-tooltip.glow {
+    border: 2px solid var(--alert-color);
+    animation: borderGlowInset 2s infinite alternate;
+}
+
+/* 头部信息 */
+.tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border-left: 4px solid rgb(var(--alert-color));
+    padding: 8px;
+    padding-left: 12px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+}
+
+/* 保证标题区垂直栈式布局 */
+.tooltip-header .left {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+/* 三角警告图标占位 */
+.tooltip-icon {
+    flex: 0 0 100px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    cursor: default;
+}
+
+/* 图标可响应主题色（使用 CSS 变量）*/
+.tooltip-icon svg {
+    width: 100%;
+    height: 100%;
+    color: rgb(var(--alert-color));
+}
+
+.tooltip-title {
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(var(--alert-color));
+}
+
+.sender {
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 4px;
+}
+
+.tooltip-time {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* 事件信息 */
+.tooltip-event {
+    margin-bottom: 4px;
+    margin-top: 2px;
+}
+
+.event-severity {
+    font-size: 14px;
+    color: color-mix(in srgb, rgb(var(--alert-color)) 80%, white);
+}
+
+.event-timing {
+    font-size: 12px;
+    margin-top: 4px;
+}
+
+/* 预警信息 */
+.tooltip-headline {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 6px;
+}
+
+.tooltip-description {
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* 预警标准 */
+.tooltip-criteria {
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+/* 防范措施 */
+.tooltip-instructions {
+    font-size: 15px;
+    line-height: 1.4;
+}
+
+.tooltip-instructions ol {
+    padding-left: 16px;
+    margin: 4px 0;
+}
+
+.tooltip-instructions li {
+    margin-bottom: 4px;
+    font-size: 13px
+}
+
+/* 数据来源 */
+.tooltip-source {
+    font-size: 11px;
+    color: #aaa;
+    margin-top: 6px;
+    text-align: right;
+}
+
+/* 通用文本样式 */
+.text,
+.state,
+.time {
+    display: inline;
+}
+

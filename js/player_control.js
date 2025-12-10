@@ -24,6 +24,8 @@ var player_control_yakelicolor;
 var player_control_bluryakeli;
 var player_control_sizeX_show;
 var player_control_show = false;
+//添加默认自动隐藏变量
+var player_control_autohide = true;
 var player_control_yakelibgusetb = 1;
 var player_control_fontusetb = 5;
 var player_control_roundedcorners;
@@ -148,16 +150,38 @@ function wallpaperMediaPropertiesListener(event) {
 
         player_control_aubar.width = 0
         player_control_aubar.height = 0
-        if (player_control_show == true && (singtitle && singtitle !== '')) player_control.style.display = 'flex'
+        if (player_control_show == true && (singtitle && singtitle !== '')) {
+            player_control.style.display = 'flex'
+        } else if (player_control_show && (!singtitle || singtitle === '')) {
+            // 没有歌曲信息，但播放器是开启状态
+            if (!player_control_autohide) {
+                // 不自动隐藏，显示假数据
+                showFakePlayerData();
+            }
+        }
+    } else {
+        // event 为空，没有歌曲信息
+        if (player_control_show && !player_control_autohide) {
+            // 不自动隐藏，显示假数据
+            showFakePlayerData();
+        }
+        return; // 直接返回，不继续执行
     }
+
     if (!player_control_show || singtitle == undefined || singtitle == '') return
 
     playertitle()
     if (player_control_visualaudiobar) pc_aubar()
-    //setTimeout(pc_aubar,100)
 }
 
 function playertitle() {
+    // 如果没有歌曲信息且 autohide 为 false，显示假数据
+    if ((!singtitle || singtitle === "loading...") && !player_control_autohide && player_control_show) {
+        singtitle = "✧ପ(๑･ω･)੭";
+        singartist = "少女祈祷中……";
+        singalbumTitle = "";
+    }
+
     if (player_control_thumbnailrorl == false) {
         var player_control_title = document.querySelector("#player_control .title .left")
         var player_control_artist = document.querySelector("#player_control .artist .left")
@@ -186,7 +210,6 @@ function playertitle() {
     }
 }
 
-
 /*msct状态*/
 window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener)
 let = player_now
@@ -195,9 +218,16 @@ function wallpaperMediaPlaybackListener(event) {
 
     if (player_control_show) {
         if ((event.state == window.wallpaperMediaIntegration.PLAYBACK_PLAYING) || (event.state == window.wallpaperMediaIntegration.PLAYBACK_PAUSED)) {
+            // 正在播放或暂停 - 显示播放器
             player_control.style.display = "flex";
-        } else {
-            player_control.style.display = "none";
+        } else if (event.state == window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
+            // 停止播放 - 根据 autohide 设置决定
+            if (player_control_autohide) {
+                player_control.style.display = "none"; // 自动隐藏
+            } else {
+                // 不自动隐藏，显示假数据
+                showFakePlayerData();
+            }
         }
     }
 
@@ -234,7 +264,7 @@ function thumbnailsue() {
     player_control_info.style.color = "rgb(" + fontcolor + ")"
     player_iconcolor(fontcolor)
     player_control_timeline.style.backgroundColor = "rgb(" + fontcolor + ")"
-    document.querySelector('.timeline').style.backgroundColor = "rgba(" + [255,255,255] + "," + (player_control_yakeli + 0.4) + ")"
+    document.querySelector('.timeline').style.backgroundColor = "rgba(" + [255, 255, 255] + "," + (player_control_yakeli + 0.4) + ")"
 }
 
 function player_iconcolor(rgb) {
@@ -351,3 +381,38 @@ function pc_aubar() {
     }
 }
 
+function showFakePlayerData() {
+    // 设置假数据
+    singtitle = "٩(๑❛ᴗ❛๑)۶";
+    singartist = "少女乞讨中……";
+    singalbumTitle = "";
+
+    // 显示播放器
+    player_control.style.display = "flex";
+
+    // 更新标题
+    playertitle();
+
+    // 设置默认封面（需要一个空白图片）
+    player_control_thumbnail.src = 'imgs/default_cover.png';
+
+    // 使用默认颜色
+    if (player_control_fontusetb !== 5) {
+        fontcolor = colorGroup[Color_pickup_method - 1][player_control_fontusetb - 1];
+    } else {
+        fontcolor = player_control_color;
+    }
+
+    // 应用颜色
+    player_control_info.style.color = "rgb(" + fontcolor + ")";
+    player_iconcolor(fontcolor);
+    player_control_timeline.style.backgroundColor = "rgb(" + fontcolor + ")";
+    document.querySelector('.timeline').style.backgroundColor = "rgba(255,255,255," + (player_control_yakeli + 0.4) + ")";
+
+    // 停止进度条动画
+    if (timelineTimer) {
+        clearTimeout(timelineTimer);
+        timelineTimer = null;
+    }
+    player_control_timeline.style.width = "0%";
+}

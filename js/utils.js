@@ -86,7 +86,7 @@ function fetch_with_retry(url, options, maxRetries = 1) {
             fetch(url, options)
                 .then(async response => {
                     if (!response.ok) {
-                        const errorMsg = typeof get_i18n_text === 'function' 
+                        const errorMsg = typeof get_i18n_text === 'function'
                             ? String(await get_i18n_text(error_get_weather_data))
                             : '获取天气数据失败';
                         throw new Error(`${errorMsg} HTTP ${response.status}`);
@@ -107,4 +107,21 @@ function fetch_with_retry(url, options, maxRetries = 1) {
 
         attempt(0);
     });
+}
+/**格式化时间 */
+function getTime(timestamp, seconds = true) {
+    let format = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        seconds: '',
+        hour12: false
+    }
+    if (seconds) {
+        format.seconds = '2-digit';
+    }
+
+    return timestamp.toLocaleString('zh-CN', format).replace(/\//g, '-'); // 将斜杠替换为横杠
 }

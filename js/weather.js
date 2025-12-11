@@ -53,6 +53,9 @@ const weather_data = {
     air: "",
     weatherAlert: "",
     weatherAlertColor: "",
+    hourlyData: null,
+    hourlyTimes: ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
+    hourlyPops: ["0%", "0%", "0%", "0%", "0%", "0%", "0%"],
 };
 
 var temperature = "未获取";
@@ -78,14 +81,6 @@ var feels = "未获取";
 var high = "未获取";
 var low = "未获取";
 var air = "未获取";
-//更新：增加全局经纬度变量
-var currentLat = "";
-var currentLon = "";
-// 新增逐小时预报变量
-var hourlyTimes = ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-var hourlyPops = ["0%", "0%", "0%", "0%", "0%", "0%", "0%"];
-// 新增24小时预报数据变量
-var hourlyData = null;
 
 var windSpeed = "未获取";
 var humidity = "未获取";
@@ -329,9 +324,10 @@ function weather_init() {
             break
     }
 }
-const tooltip = document.querySelector("#weatherTooltip");
 
 function attachTooltip(element) {
+    const tooltip = document.querySelector("#weatherTooltip");
+
     element.addEventListener("mouseenter", () => {
         const alert = weather_data.weatherAlert.find(a => a.id == element.getAttribute("data-id"));
         if (alert.alert == "诸事顺遂") {
@@ -349,7 +345,7 @@ function attachTooltip(element) {
         tooltip.querySelector(".tooltip-headline").textContent = alert.title;
         tooltip.querySelector(".tooltip-description").textContent = alert.description;
         tooltip.querySelector(".tooltip-criteria").textContent = alert.criteria;
-        const instruction = alert.instruction?.split("\n").map(line => `<li>${line}</li>`).join("");
+        const instruction = alert.instruction?.split(" ").map(line => `<li>${line}</li>`).join("");
         if (instruction) {
             tooltip.querySelector(".tooltip-instructions").style.display = "block";
             tooltip.querySelector(".tooltip-instructions ol").innerHTML = instruction;
@@ -395,25 +391,7 @@ function attachTooltip(element) {
             }
         }, 250);
     });
-
-    function getTime(timestamp, seconds = true) {
-        let format = {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            seconds: '',
-            hour12: false
-        }
-        if (seconds) {
-            format.second = '2-digit';
-        }
-
-        return timestamp.toLocaleString('zh-CN', format).replace(/\//g, '-'); // 将斜杠替换为横杠
-    }
 }
-
 
 function autoWeather() {
     weather_init();
@@ -492,54 +470,6 @@ function getWeather_input_freeapi(strHtml) {
 }
 function FormatWeather_freeapi(strHtml) {
     return generateWeatherTable();
-}
-
-//和风天气api
-function getcity_qweatherapi(strHtml) {
-    if (!qweatherapi_paymode) {
-        if (localStorage.getItem('UseNumber') == null) {
-            localStorage.setItem('UseNumber', "0");
-        }
-
-        if (parseInt(localStorage.getItem('UseNumber')) + 1 > 50000) return;
-        if (new Date().day === 1) localStorage.setItem('UseNumber', "0")
-    }
-    let APIHost = window.APIHost === "" ? "geoapi.qweather.com" : `${window.APIHost}/geo`;
-    if (citynumber == "" || strCity != checkcity) {
-        if (!qweatherapi_paymode) localStorage.setItem('UseNumber', parseInt(localStorage.getItem('UseNumber')) + 1);
-        checkcity = strCity
-        fetch(`https://${APIHost}/v2/city/lookup?location=${strCity}`,
-            {
-                method: 'GET',
-                headers: {
-                    'X-QW-Api-Key': `${CityKey}`,
-                }
-            }
-        )
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log("地理位置数据:", JSON.stringify(data));
-                citynumber = data.location[0].id
-                cityname = data.location[0].name
-
-                // 保存经纬度信息到全局变量
-                currentLat = data.location[0].lat;
-                currentLon = data.location[0].lon;
-
-                console.log("获取到的经纬度:", currentLat, currentLon);
-
-                // 顺序调用API
-                getWeather_input_qweatherapi(citynumber, strHtml);
-            })
-    } else {
-        // 如果已有城市编号，直接调用天气API
-        getWeather_input_qweatherapi(citynumber);
-    }
 }
 
 async function getWeather_input_qweatherapi(citynumber) {
@@ -724,7 +654,7 @@ async function getWeather_input_qweatherapi(citynumber) {
             console.log("逐小时预报数据:", JSON.stringify(hourlyData));
 
             // 保存完整的24小时数据用于温度计算
-            window.hourlyData = hourlyData; // 保存为全局变量
+            weather_data.hourlyData = hourlyData; // 保存为全局变量
 
             // 提取接下来7小时的降水概率
             if (hourlyData && hourlyData.hourly && hourlyData.hourly.length > 0) {
@@ -732,30 +662,30 @@ async function getWeather_input_qweatherapi(citynumber) {
                 const next7Hours = hourlyData.hourly.slice(0, 7);
 
                 // 提取时间和降水概率
-                hourlyTimes = next7Hours.map(hour => {
+                weather_data.hourlyTimes = next7Hours.map(hour => {
                     // 提取时间部分（如 "15:00"）
                     const timeStr = hour.fxTime;
                     return timeStr.split('T')[1].split('+')[0].substring(0, 5); // 获取 HH:MM 格式
                 });
 
-                hourlyPops = next7Hours.map(hour => {
+                weather_data.hourlyPops = next7Hours.map(hour => {
                     // 处理降水概率，如果为空显示"——"
                     return hour.pop !== undefined && hour.pop !== "" ? `${hour.pop}%` : "——";
                 });
 
-                console.log("降水概率时间:", hourlyTimes);
-                console.log("降水概率值:", hourlyPops);
+                console.log("降水概率时间:", weather_data.hourlyTimes);
+                console.log("降水概率值:", weather_data.hourlyPops);
             } else {
                 console.warn("逐小时预报数据为空");
                 // 设置默认值
-                hourlyTimes = ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
-                hourlyPops = ["0%", "0%", "0%", "0%", "0%", "0%", "0%"];
+                weather_data.hourlyTimes = ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"];
+                weather_data.hourlyPops = ["0%", "0%", "0%", "0%", "0%", "0%", "0%"];
             }
 
             // 所有数据加载完成，一次性更新显示
             weather_webtext.innerHTML = generateWeatherTable();
 
-            // 将 tooltip 绑到任意元素
+            // 将 tooltip 绑到每个预警项上
             document.querySelectorAll(".weather-alert-item").forEach(item => {
                 attachTooltip(item);
             });
@@ -1173,9 +1103,9 @@ function getWeatherTips() {
     const isNight = hour >= 22 || hour < 5;
 
     // 判断天气状况
-    const weatherText = weathernow || "";
-    const windScale = parseInt(windLv) || 0;
-    const airQuality = parseInt(air) || 0;
+    const weatherText = weather_data.weathernow || "";
+    const windScale = parseInt(weather_data.windLv) || 0;
+    const airQuality = parseInt(weather_data.air) || 0;
 
     // 计算最高和最低温度 - 使用24小时预报数据
     let maxTemp = -100;
@@ -1183,8 +1113,8 @@ function getWeatherTips() {
 
     // 注意：这里需要确保hourlyData变量可用
     // 我们将在稍后的修改中确保这一点
-    if (typeof hourlyData !== 'undefined' && hourlyData.hourly) {
-        hourlyData.hourly.forEach(hour => {
+    if (typeof hourlyData !== 'undefined' && weather_data.hourlyData.hourly) {
+        weather_data.hourlyData.hourly.forEach(hour => {
             const temp = parseInt(hour.temp);
             if (!isNaN(temp)) {
                 if (temp > maxTemp) maxTemp = temp;
@@ -1195,7 +1125,7 @@ function getWeatherTips() {
 
     // 如果无法从24小时数据获取温度，使用当前温度作为默认值
     if (maxTemp === -100 && temperature && temperature !== "未获取") {
-        const currentTemp = parseInt(temperature);
+        const currentTemp = parseInt(weather_data.temperature);
         if (!isNaN(currentTemp)) {
             maxTemp = currentTemp;
             minTemp = currentTemp;
@@ -1330,7 +1260,7 @@ function generateWeatherTable() {
         if (air_show) {
             tableHTML += `<td class="weather-cell air-title-cell">空气质量</td>`;
             tableHTML += `<td class="weather-cell air-value-cell">${getAirQualityText(weather_data.air)}</td>`;
-            tableHTML += `<td class="weather-cell warning-cell" colspan="4">预警信息：${alertsHTML}</td>`;
+            tableHTML += `<td class="weather-cell warning-cell" colspan="4">预警信息：<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}<div><div></td>`;
         } else {
             tableHTML += `<td class="weather-cell warning-cell" colspan="6">预警信息：${alertsHTML}</td>`;
         }
@@ -1350,7 +1280,7 @@ function generateWeatherTable() {
 
     if (weathernow_show) {
         tableHTML += `
-            <td class="weather-cell icon-cell">${getWeatherIcon(weathernow || "")}</td>
+            <td class="weather-cell icon-cell">${getWeatherIcon(weather_data.weathernow || "")}</td>
             <td class="weather-cell weather-cell">${weather_data.weathernow || "未获取"}</td>
         `;
     }
@@ -1400,25 +1330,25 @@ function generateWeatherTable() {
         <tr class="weather-row precip-row">
             <td class="weather-cell precip-icon">🌧</td>
             <td class="weather-cell precip-times" colspan="5">
-                <span class="precip-time-cell">${hourlyTimes[0] || "12:00"}</span>
-                <span class="precip-time-cell">${hourlyTimes[1] || "13:00"}</span>
-                <span class="precip-time-cell">${hourlyTimes[2] || "14:00"}</span>
-                <span class="precip-time-cell">${hourlyTimes[3] || "15:00"}</span>
-                <span class="precip-time-cell">${hourlyTimes[4] || "16:00"}</span>
-                <span class="precip-time-cell">${hourlyTimes[5] || "17:00"}</span>
-                <span class="precip-time-cell">${hourlyTimes[6] || "18:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[0] || "12:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[1] || "13:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[2] || "14:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[3] || "15:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[4] || "16:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[5] || "17:00"}</span>
+                <span class="precip-time-cell">${weather_data.hourlyTimes[6] || "18:00"}</span>
             </td>
         </tr>
         <tr class="weather-row precip-prob-row">
             <td class="weather-cell dice-icon">🎲</td>
             <td class="weather-cell precip-probs" colspan="5">
-                <span class="precip-prob-cell">${hourlyPops[0] || "N/A%"}</span>
-                <span class="precip-prob-cell">${hourlyPops[1] || "N/A%"}</span>
-                <span class="precip-prob-cell">${hourlyPops[2] || "N/A%"}</span>
-                <span class="precip-prob-cell">${hourlyPops[3] || "N/A%"}</span>
-                <span class="precip-prob-cell">${hourlyPops[4] || "N/A%"}</span>
-                <span class="precip-prob-cell">${hourlyPops[5] || "N/A%"}</span>
-                <span class="precip-prob-cell">${hourlyPops[6] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[0] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[1] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[2] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[3] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[4] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[5] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.hourlyPops[6] || "N/A%"}</span>
             </td>
         </tr>
     `;

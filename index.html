@@ -38,45 +38,102 @@
         <div class="text">天气</div>
     </div>
 
-    <div id="weatherTooltip" class="weather-tooltip">
-        <!-- 头部信息：左侧是文本，右侧是图标占位 -->
-        <div class="tooltip-header">
-            <div class="left">
-                <div class="tooltip-title"></div>
-                <div class="sender"></div>
-                <div class="tooltip-time"><span class="text"></span> <span class="state"></span></div>
-
-                <!-- 事件信息 -->
-                <div class="tooltip-event">
-                    <div class="event-severity"><span class="text"></span></div>
-                    <div class="event-timing">
-                        <span class="start"><span class="time"></span></span>
-                        <br>
-                        <span class="end"><span class="time"></span></span>
+    <div id="weatherAlertTooltip" class="weather-tooltip">
+        <div class="tooltip-cards-container">
+        </div>
+    </div>
+    <div id="weatherHourlyTooltip" role="document">
+        <div class="popup-main">
+            <div>
+                <div class="big-icon" id="pIcon">
+                    <div id="pIconImg" class="icon-box"></div>
+                    <div>
+                        <div class="big-temp" id="pTemp">--°</div>
+                        <div class="popup-sub" id="pText">多云</div>
                     </div>
                 </div>
             </div>
 
-            <!-- 右侧三角警告 SVG（空心占位） -->
-            <div class="tooltip-icon" role="img" aria-label="警告"></div>
+            <div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label">相对湿度</div>
+                        <div class="detail-value" id="pHumidity">--%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">降水率 / 降水量</div>
+                        <div class="detail-value" id="pPrecip">-- mm</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">气压</div>
+                        <div class="detail-value" id="pPressure">-- hPa</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">云量</div>
+                        <div class="detail-value" id="pClouds">--%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">露点</div>
+                        <div class="detail-value" id="pDew">--°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">风向 / 角度</div>
+                        <div class="detail-value" id="pWindDir">— / —°</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">风力等级</div>
+                        <div class="detail-value" id="pWindLv">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label">风速</div>
+                        <div class="detail-value" id="pWindSpeed">— m/s</div>
+                    </div>
+                </div>
+            </div>
         </div>
-
-        <!-- 预警信息 -->
-        <div class="tooltip-headline"></div>
-        <div class="tooltip-description"></div>
-
-        <!-- 预警标准 -->
-        <div class="tooltip-criteria"></div>
-
-        <!-- 防范措施 -->
-        <div class="tooltip-instructions">
-            <strong>防范措施:</strong>
-            <ol></ol>
-        </div>
-
-        <!-- 数据来源 -->
-        <div class="tooltip-source"></div>
     </div>
+
+    <template id="weatherAlerttooltipCardTemplate">
+        <div class="tooltip-card">
+            <!-- 头部信息 -->
+            <div class="tooltip-header">
+                <div class="left">
+                    <div class="tooltip-title"></div>
+                    <div class="sender"></div>
+                    <div class="tooltip-time"><span class="text"></span> <span class="state"></span></div>
+
+                    <!-- 事件信息 -->
+                    <div class="tooltip-event">
+                        <div class="event-severity"><span class="text"></span></div>
+                        <div class="event-timing">
+                            <span class="start" data-i18n="weather_alert_start_time"><span class="time"></span></span>
+                            <br>
+                            <span class="end" data-i18n="weather_alert_expect_end_time"><span
+                                    class="time"></span></span>
+                        </div>
+                    </div>
+                </div>
+                <!--图标-->
+                <div class="tooltip-icon"></div>
+            </div>
+
+            <!-- 预警信息 -->
+            <div class="tooltip-headline"></div>
+            <div class="tooltip-description"></div>
+
+            <!-- 预警标准 -->
+            <div class="tooltip-criteria"></div>
+
+            <!-- 防范措施 -->
+            <div class="tooltip-instructions">
+                <strong data-i18n="weather_alert_action"></strong>
+                <ol></ol>
+            </div>
+
+            <!-- 数据来源 -->
+            <div class="tooltip-source"></div>
+        </div>
+    </template>
 
     <div id="player_control">
         <div class="background">

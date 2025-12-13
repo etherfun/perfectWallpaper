@@ -38,16 +38,74 @@ function hexToRgb(hexColor) {
 
 }
 
-/**i18n */
+/** i18n */
 let i18n_data = null;
-async function get_i18n_text() {
-    const res = await fetch(`i18n/zh-cn.json`);
-    i18n_data = await res.json();
+
+async function load_i18n_data() {
+    try {
+        const res = await fetch(`i18n/zh-CN.json`);
+        if (!res.ok) {
+            console.warn(`Language file ${current_lang}.json not found, falling back to zh-cn`);
+            current_lang = 'zh-cn';
+            const fallbackRes = await fetch(`i18n/zh-cn.json`);
+            i18n_data = await fallbackRes.json();
+        } else {
+            i18n_data = await res.json();
+        }
+        setTimeout(() => {
+            updateAllI18nElements();
+        }, 3000);
+    } catch (error) {
+        console.error('Failed to load i18n data:', error);
+    }
 }
-get_i18n_text();
+
+load_i18n_data();
 
 function i18n(key) {
-    return i18n_data[key];
+    if (!i18n_data) {
+        console.warn('i18n data not loaded yet');
+        return key;
+    }
+    return i18n_data[key] || key;
+}
+
+/** 自动更新所有带有 data-i18n 属性的元素 */
+function updateAllI18nElements() {
+    if (!i18n_data) return;
+
+    processElements(document.querySelectorAll('[data-i18n]'));
+
+    document.querySelectorAll('template').forEach(template => {
+        if (template.content) {
+            console.log('Processing template for i18n');
+            processElements(template.content.querySelectorAll('[data-i18n]'));
+        }
+    });
+}
+
+/** 处理元素集合的通用函数 */
+function processElements(elements) {
+    elements.forEach(element => {
+        const key = element.getAttribute('data-i18n');
+        const translation = i18n(key);
+
+        if (element.children.length > 0) {
+            const textNodes = Array.from(element.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE);
+
+            if (textNodes.length > 0) {
+                textNodes[0].textContent = translation;
+            } else {
+                element.insertBefore(
+                    document.createTextNode(translation),
+                    element.firstChild
+                );
+            }
+        } else {
+            element.textContent = translation;
+        }
+    });
 }
 
 /**天气请求数量检查 */
@@ -79,10 +137,9 @@ function weather_paymode() {
  * @param {number} maxRetries 重试次数
  * @returns 
  */
-function fetch_with_retry(url, options, maxRetries = 1) {
+function fetch_with_retry(url, options = {}, maxRetries = 3) {
     return new Promise((resolve, reject) => {
         const attempt = (retryCount) => {
-            console.log(url, JSON.stringify(options));
             fetch(url, options)
                 .then(async response => {
                     if (!response.ok) {

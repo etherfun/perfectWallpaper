@@ -39,6 +39,9 @@
     "weather_cloud": "Cloud cover %1%",
     "weather_dewtemperature": "Dew point %1%2",
     "weather_pressure": "Atmospheric pressure %1%2",
+    "weather_alert_action": "Preventive measures:",
+    "weather_alert_start_time": "Start Time:",
+    "weather_alert_expect_end_time": "Expected End Time:",
     "error_get_weather_data": "Error getting weather data:",
     "error_get_weather_data_over_usage": "Weather data retrieval exceeded usage limit"
 }

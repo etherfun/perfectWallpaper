@@ -39,6 +39,9 @@
     "weather_cloud": "云层密度%1%",
     "weather_dewtemperature": "露点%1%2",
     "weather_pressure": "大气压强%1%2",
+    "weather_alert_action": "防范措施:",
+    "weather_alert_start_time": "开始时间: ",
+    "weather_alert_expect_end_time": "预计结束: ",
     "error_get_weather_data": "获取天气数据出错：",
     "error_get_weather_data_over_usage": "天气数据获取超出使用次数限制"
 }

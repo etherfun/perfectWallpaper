@@ -603,58 +603,25 @@ div.btnbg {
     /* 确保不会超出屏幕 */
 }
 
-#weather-warning-tooltip {
-    position: fixed;
-    display: none;
-
-    max-width: 400px;
-    padding: 12px 14px;
-
-    background: rgba(0, 0, 0, 0.85);
-    color: #fff;
-
-    border-radius: 10px;
-    font-size: 14px;
-    line-height: 1.5;
-
-    z-index: 999999;
-    pointer-events: none;
-
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.35);
-
-    transition: opacity 0.15s;
-    opacity: 0;
-}
-
-/* 优雅半透明天气弹窗 */
-#weatherTooltip.weather-tooltip {
+/* 优雅半透明天气弹窗 - 修改为多卡片容器 */
+#weatherAlertTooltip.weather-tooltip {
     position: fixed;
     display: none;
     pointer-events: none;
 
-    max-width: 400px;
-    padding: 12px 16px;
+    max-width: 90vw;
+    max-height: 80vh;
 
-    background: rgba(30, 30, 30, 0.8);
     color: #fff;
-    border-radius: 12px;
-    backdrop-filter: blur(8px);
 
     font-size: 13px;
     line-height: 1.5;
 
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
     transition: opacity 0.25s ease, transform 0.25s ease;
 
     opacity: 0;
-    transform: translateY(6px);
+    transform: translateY(10px);
     z-index: 99999;
-}
-
-/* 弹出动画 */
-.weather-tooltip.show {
-    opacity: 1;
-    transform: translateY(0);
 }
 
 /* 内部闪烁边框和辉光动画 */
@@ -681,8 +648,44 @@ div.btnbg {
     animation: borderGlowInset 2s infinite alternate;
 }
 
-/* 头部信息 */
-#weatherTooltip .tooltip-header {
+/* 弹出动画 */
+.weather-tooltip.show {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+/* 卡片容器 */
+#weatherAlertTooltip .tooltip-cards-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+/* 单个卡片样式 */
+#weatherAlertTooltip .tooltip-card {
+    flex: 0 0 auto;
+    width: 320px;
+    min-height: 200px;
+
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+
+    border-radius: 12px;
+    background: rgba(30, 30, 30, 0.9);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+}
+
+/* 卡片内部边框闪烁效果 */
+#weatherAlertTooltip .tooltip-card.glow {
+    border: 2px solid var(--alert-color);
+    animation: borderGlowInset 2s infinite alternate;
+}
+
+/* 卡片头部信息 */
+#weatherAlertTooltip .tooltip-card .tooltip-header {
     display: flex;
     justify-content: space-between;
     gap: 8px;
@@ -690,19 +693,11 @@ div.btnbg {
     padding: 8px;
     padding-left: 12px;
     margin-bottom: 10px;
-    border-radius: 10px;
-}
-
-/* 保证标题区垂直栈式布局 */
-#weatherTooltip .tooltip-header .left {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-    min-width: 0;
+    border-radius: 6px;
 }
 
 /* 三角警告图标占位 */
-#weatherTooltip .tooltip-icon {
+#weatherAlertTooltip .tooltip-icon {
     flex: 0 0 100px;
     display: inline-flex;
     align-items: center;
@@ -712,83 +707,71 @@ div.btnbg {
 }
 
 /* 图标可响应主题色（使用 CSS 变量）*/
-#weatherTooltip .tooltip-icon svg {
+#weatherAlertTooltip .tooltip-icon svg {
     width: 100%;
     height: 100%;
     color: rgb(var(--alert-color));
 }
 
-#weatherTooltip .tooltip-title {
+#weatherAlertTooltip .tooltip-card .tooltip-title {
     font-weight: bold;
     font-size: 20px;
     color: rgb(var(--alert-color));
 }
 
-#weatherTooltip .sender {
+#weatherAlertTooltip .tooltip-card .sender {
     font-weight: bold;
     font-size: 15px;
     margin-top: 4px;
 }
 
-#weatherTooltip .tooltip-time {
+#weatherAlertTooltip .tooltip-card .tooltip-time {
     font-size: 12px;
     margin-top: 4px;
+    opacity: 0.8;
 }
 
-/* 事件信息 */
-#weatherTooltip .tooltip-event {
+#weatherAlertTooltip .tooltip-card .tooltip-event {
     margin-bottom: 4px;
     margin-top: 2px;
 }
 
-#weatherTooltip .event-severity {
+#weatherAlertTooltip .tooltip-card .event-severity {
     font-size: 14px;
     color: color-mix(in srgb, rgb(var(--alert-color)) 80%, white);
 }
 
-#weatherTooltip .event-timing {
-    font-size: 12px;
-    margin-top: 4px;
-}
-
-/* 预警信息 */
-#weatherTooltip .tooltip-headline {
+#weatherAlertTooltip .tooltip-card .tooltip-headline {
     font-weight: bold;
     font-size: 14px;
     margin-bottom: 6px;
+    color: rgb(var(--alert-color));
 }
 
-#weatherTooltip .tooltip-description {
+#weatherAlertTooltip .tooltip-card .tooltip-description {
     font-size: 13px;
     margin-bottom: 8px;
     line-height: 1.4;
 }
 
 /* 预警标准 */
-#weatherTooltip .tooltip-criteria {
+#weatherAlertTooltip .tooltip-card .tooltip-instructions {
     font-size: 13px;
     margin-bottom: 8px;
     line-height: 1.4;
 }
 
-/* 防范措施 */
-#weatherTooltip .tooltip-instructions {
-    font-size: 15px;
-    line-height: 1.4;
-}
-
-#weatherTooltip .tooltip-instructions ol {
+#weatherAlertTooltip .tooltip-card .tooltip-instructions ol {
     padding-left: 16px;
     margin: 4px 0;
 }
 
-#weatherTooltip .tooltip-instructions li {
+#weatherAlertTooltip .tooltip-card .tooltip-instructions li {
     margin-bottom: 4px;
     font-size: 13px
 }
 
-/* 数据来源 */
-#weatherTooltip .tooltip-source {
+#weatherAlertTooltip .tooltip-card .tooltip-source {
     font-size: 11px;
     color: #aaa;
     margin-top: 6px;
@@ -796,7 +779,7 @@ div.btnbg {
 }
 
 /* 通用文本样式 */
-#weatherTooltip .text,
+#weatherAlertTooltip .text,
 .state,
 .time {
     display: inline;
@@ -840,4 +823,100 @@ div.btnbg {
         margin-left: 100%;
         transform: translateX(-100%);
     }
+}
+
+/* 天气小时弹窗 */
+#weatherHourlyTooltip {
+    width: min(480px, 96%);
+    display: none;
+
+    padding: 12px;
+    position: relative;
+    z-index: 9999;
+    color:#fff;
+
+    border-radius: 12px;
+    background: rgba(30, 30, 30, 0.9);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(12px);
+
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    opacity: 0;
+    transform: translateY(10px);
+}
+
+#weatherHourlyTooltip.show {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+}
+
+#weatherHourlyTooltip .popup-sub {
+    /* color: #93a3b8; */
+    font-size: 23px;
+    margin-top: 8px;
+    text-align: center;
+}
+
+#weatherHourlyTooltip .popup-main {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+#weatherHourlyTooltip .big-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#weatherHourlyTooltip .big-icon img {
+    width: 64px;
+    height: 64px;
+}
+
+#weatherHourlyTooltip .big-temp {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 8px;
+}
+
+
+#weatherHourlyTooltip .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+}
+
+#weatherHourlyTooltip .detail-item {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.01), transparent);
+    padding: 10px;
+    border-radius: 8px;
+}
+
+#weatherHourlyTooltip .detail-label {
+    font-size: 12px;
+    color: #93a3b8;
+}
+
+#weatherHourlyTooltip .detail-value {
+    font-weight: 600;
+    margin-top: 6px;
+}
+
+#weatherHourlyTooltip .big-icon #pIconImg {
+    padding-top: 16px;
+    width: 64px;
+    height: 64px;
+    display: block;
+}
+#weatherHourlyTooltip #pIconImg svg {
+    width: 100%;
+    height: 100%;
 }

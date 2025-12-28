@@ -24,6 +24,8 @@ class FluidEffect2 {
             rotationEnabled: options.rotationEnabled !== undefined ? options.rotationEnabled : true,
             rotationDirections: options.rotationDirections || [1, -1, 1, -1], // 1:顺时针, -1:逆时针
             rotationDelays: options.rotationDelays || [0, 0.5, 1.0, 1.5], // 动画延迟（秒）
+            // canvas 位移幅度（像素）
+            canvasDisplacementAmplitude: options.canvasDisplacementAmplitude || 20,
             // 音频响应配置（已移除）
             ...options
         };
@@ -31,32 +33,32 @@ class FluidEffect2 {
         // 4个canvas元素
         this.canvases = [];
         this.canvasContexts = [];
-        
+
         // SVG滤镜元素
         this.svgFilter = null;
         this.feTurbulence = null;
         this.feDisplacementMap = null;
-        
+
         // 容器元素（两层结构）
         // this.fluidWrapper: 父容器（应用 SVG 滤镜）
         // this.fluidRect: 子容器（包含 canvas 集合与 overlay）
         this.fluidWrapper = null;
         this.fluidRect = null;
-        
+
         // 状态
         this.isRunning = false;
         this.animationId = null;
         this.currentImage = null;
         this.currentImageUrl = null;
-        
+
         // 旋转动画状态
         this.rotationAngles = [0, 0, 0, 0];
         this.rotationStartTimes = [0, 0, 0, 0];
         this.lastAnimationTime = 0;
-        
+
         // 音频相关
         this.playState = true;
-        
+
         // 初始化
         this.init();
     }
@@ -64,17 +66,17 @@ class FluidEffect2 {
     init() {
         // 创建SVG滤镜
         this.createSVGFilter();
-        
+
         // 创建4个canvas
         this.createCanvases();
-        
+
         // 设置容器样式
         this.setupContainer();
-        
+
         // 监听窗口大小变化
         window.addEventListener('resize', () => this.onResize());
         this.onResize();
-        
+
         console.log('FluidEffect2 initialized');
     }
 
@@ -85,7 +87,7 @@ class FluidEffect2 {
         svg.setAttribute("width", "0");
         svg.setAttribute("height", "0");
         svg.style.position = 'absolute';
-        
+
         // 创建滤镜
         const filter = document.createElementNS(svgNS, "filter");
         filter.setAttribute("id", "fluid-filter-2");
@@ -96,12 +98,12 @@ class FluidEffect2 {
         filter.setAttribute("filterUnits", "objectBoundingBox");
         filter.setAttribute("primitiveUnits", "userSpaceOnUse");
         filter.setAttribute("color-interpolation-filters", "sRGB");
-        
+
         // 创建湍流效果
         this.feTurbulence = document.createElementNS(svgNS, "feTurbulence");
         this.feTurbulence.setAttribute("type", "fractalNoise");
         // 固定 baseFrequency 为 0.005
-        this.feTurbulence.setAttribute("baseFrequency", '0.01');
+        this.feTurbulence.setAttribute("baseFrequency", '0.005');
         this.feTurbulence.setAttribute("numOctaves", this.options.turbulenceOctaves.toString());
         this.feTurbulence.setAttribute("seed", this.options.turbulenceSeed.toString());
         // 强制使用固定基频 0.005
@@ -112,17 +114,17 @@ class FluidEffect2 {
         this._turbulenceLastUpdateTime = performance.now() / 1000;
         const rng = this.options.turbulenceChangeIntervalRange || [1.5, 4.0];
         this._turbulenceNextChange = this._turbulenceLastUpdateTime + (rng[0] + Math.random() * (rng[1] - rng[0]));
-        
+
         // 创建置换图
         this.feDisplacementMap = document.createElementNS(svgNS, "feDisplacementMap");
         this.feDisplacementMap.setAttribute("in", "SourceGraphic");
         this.feDisplacementMap.setAttribute("scale", this.options.displacementScale.toString());
-        
+
         // 组装
         filter.appendChild(this.feTurbulence);
         filter.appendChild(this.feDisplacementMap);
         svg.appendChild(filter);
-        
+
         // 添加到文档
         document.body.appendChild(svg);
         this.svgFilter = filter;
@@ -151,6 +153,8 @@ class FluidEffect2 {
         this.fluidRect.style.filter = 'url(#fluid-filter-2)';
 
         // 创建4个canvas，放入子容器
+        // 初始化每个 canvas 的位移偏移数组
+        this._canvasOffsets = [];
         for (let i = 0; i < 4; i++) {
             const canvas = document.createElement('canvas');
             canvas.className = 'fluid-effect-canvas';
@@ -169,23 +173,20 @@ class FluidEffect2 {
             this.canvases.push(canvas);
             this.canvasContexts.push(ctx);
 
+            // 初始化随机位移（像素）
+            const amp = parseFloat(this.options.canvasDisplacementAmplitude) || 20;
+            this._canvasOffsets.push({
+                dx: (Math.random() * 2 - 1) * amp,
+                dy: (Math.random() * 2 - 1) * amp
+            });
+
+            const _delays = [0, 5, 10, 15];
+            const randDelay = _delays[i];
+            canvas.style.animationDelay = `${randDelay}s`;
+
             this.fluidRect.appendChild(canvas);
         }
 
-        // 创建一个覆盖层，模拟 ::after，用于应用 backdrop-filter 或其他覆盖样式
-        this.backdropOverlay = document.createElement('div');
-        this.backdropOverlay.className = 'fluid-effect-backdrop';
-        this.backdropOverlay.style.position = 'absolute';
-        this.backdropOverlay.style.left = '0';
-        this.backdropOverlay.style.top = '0';
-        this.backdropOverlay.style.width = '100%';
-        this.backdropOverlay.style.height = '100%';
-        this.backdropOverlay.style.pointerEvents = 'none';
-        this.backdropOverlay.style.zIndex = '2';
-        this.backdropOverlay.style.background = 'rgba(255,255,255,0)';
-
-        // 父容器包含子容器，再挂载到用户指定的 container
-        this.fluidWrapper.appendChild(this.backdropOverlay);
         this.fluidWrapper.appendChild(this.fluidRect);
         this.container.appendChild(this.fluidWrapper);
     }
@@ -208,63 +209,125 @@ class FluidEffect2 {
         const height = rect.height;
         const viewSize = Math.max(width, height);
         const canvasSize = viewSize * 0.707; // 0.707 ≈ 1/√2
-        
-        // 更新每个canvas的位置和大小
+        // 调试信息：输出容器与计算尺寸
+        console.log('onResize start', {containerWidth: width, containerHeight: height, canvasSize});
+
+        // 更新每个canvas的位置和大小（同时同步高 DPI backing buffer），保证 drawImage 按显示尺寸绘制
+        const displaySize = Math.max(1, Math.round(canvasSize));
+        const dpr = window.devicePixelRatio || 1;
+        // 保存当前 display size / dpr 以供绘制使用
+        this._lastDisplaySize = displaySize;
+        this._lastDpr = dpr;
+        console.log('onResize dpi info', {displaySize, dpr});
         for (let x = 0; x <= 1; x++) {
             for (let y = 0; y <= 1; y++) {
                 const index = y * 2 + x;
                 const canvas = this.canvases[index];
-                
+                if (!canvas) continue;
+
+                // 设置显示尺寸（CSS）
                 canvas.style.width = `${canvasSize}px`;
                 canvas.style.height = `${canvasSize}px`;
-                
+
+                // 计算并设置 backing buffer 大小（考虑 devicePixelRatio）
+                const backing = displaySize * dpr;
+                if (canvas.width !== backing || canvas.height !== backing) {
+                    canvas.width = backing;
+                    canvas.height = backing;
+                    const ctx = canvas.getContext('2d');
+                    if (ctx) {
+                        // 将绘图坐标系缩放到 CSS 像素单位，后续 drawImage 使用 displaySize 作为目标尺寸
+                        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                        ctx.filter = `blur(${this.options.blurAmount}px)`;
+                        // 调试信息：输出 ctx 变换和 canvas backing
+                        try {
+                            console.log('set backing', {index, backing, cssWidth: canvas.style.width, cssHeight: canvas.style.height, ctxTransform: ctx.getTransform()});
+                        } catch (e) {
+                            console.log('set backing', {index, backing, cssWidth: canvas.style.width, cssHeight: canvas.style.height});
+                        }
+                    }
+                } else {
+                    // 若未改变 backing，也输出当前状态便于排查
+                    console.log('backing unchanged', {index, canvasWidth: canvas.width, canvasHeight: canvas.height, cssWidth: canvas.style.width});
+                }
+
                 const signX = x === 0 ? -1 : 1;
                 const signY = y === 0 ? -1 : 1;
-                
+
                 const left = (width / 2 + signX * canvasSize * 0.35) - canvasSize / 2;
                 const top = (height / 2 + signY * canvasSize * 0.35) - canvasSize / 2;
-                
+
                 canvas.style.left = `${left}px`;
                 canvas.style.top = `${top}px`;
             }
+        }
+
+        // 将位移应用到每个 canvas（基于初始化的随机偏移）
+        for (let x = 0; x <= 1; x++) {
+            for (let y = 0; y <= 1; y++) {
+                const index = y * 2 + x;
+                const canvas = this.canvases[index];
+                if (!canvas) continue;
+                const offset = (this._canvasOffsets && this._canvasOffsets[index]) || { dx: 0, dy: 0 };
+                // 解析当前 left/top 并添加偏移（保持像素单位）
+                const leftPx = parseFloat(canvas.style.left || '0');
+                const topPx = parseFloat(canvas.style.top || '0');
+                canvas.style.left = `${leftPx + offset.dx}px`;
+                canvas.style.top = `${topPx + offset.dy}px`;
+            }
+        }
+
+        // 重新绘制当前图片以适应新的像素尺寸
+        if (this.currentImage) {
+            this.setSourceFromImage(this.currentImage);
         }
     }
 
     setSourceFromImage(image) {
         if (!image || !image.complete) return;
-        
+
         this.currentImage = image;
         this.currentImageUrl = image.src;
-        
-        const { width, height } = image;
-        
-        // 将图像分割到4个canvas
-        this.canvasContexts[0].drawImage(
-            image, 
-            0, 0, width / 2, height / 2, 
-            0, 0, this.options.resolution, this.options.resolution
-        );
-        
-        this.canvasContexts[1].drawImage(
-            image, 
-            width / 2, 0, width / 2, height / 2, 
-            0, 0, this.options.resolution, this.options.resolution
-        );
-        
-        this.canvasContexts[2].drawImage(
-            image, 
-            0, height / 2, width / 2, height / 2, 
-            0, 0, this.options.resolution, this.options.resolution
-        );
-        
-        this.canvasContexts[3].drawImage(
-            image, 
-            width / 2, height / 2, width / 2, height / 2, 
-            0, 0, this.options.resolution, this.options.resolution
-        );
-        
+
+        // 使用 naturalWidth/naturalHeight 获取图片真实像素尺寸，避免使用被 CSS 缩放后的 width/height
+        const width = image.naturalWidth || image.width || (image.clientWidth || 0);
+        const height = image.naturalHeight || image.height || (image.clientHeight || 0);
+        console.log('setSourceFromImage image size', {width, height, naturalWidth: image.naturalWidth, naturalHeight: image.naturalHeight});
+        const sWidth = Math.floor(width / 2);
+        const sHeight = Math.floor(height / 2);
+
+        for (let i = 0; i < 4; i++) {
+            const ctx = this.canvasContexts[i];
+            const canvas = this.canvases[i];
+            if (!ctx || !canvas) continue;
+
+            // 清空目标 canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // 计算源图像象限坐标
+            const sx = (i % 2 === 0) ? 0 : sWidth;
+            const sy = (i < 2) ? 0 : sHeight;
+
+            // 直接从原图裁切并缩放到目标 canvas 大小（使用 display 尺寸，ctx 已按 dpr 缩放）
+            const displaySize = this._lastDisplaySize || Math.round(canvas.width / (window.devicePixelRatio || 1));
+            // 调试信息：输出绘制参数
+            try {
+                console.log('drawImage params', {i, sx, sy, sWidth, sHeight, canvasWidth: canvas.width, canvasHeight: canvas.height, displaySize, dpr: this._lastDpr});
+                if (ctx && ctx.getTransform) console.log('ctx.getTransform()', ctx.getTransform());
+            } catch (e) {
+                console.log('drawImage debug', {i, sx, sy, sWidth, sHeight, displaySize});
+            }
+            ctx.drawImage(
+                image,
+                sx, sy, sWidth, sHeight,
+                0, 0, displaySize, displaySize
+            );
+        }
+
         // 更新湍流种子
-        this.feTurbulence.setAttribute('seed', Math.floor(Math.random() * 1000));
+        if (this.feTurbulence) {
+            this.feTurbulence.setAttribute('seed', Math.floor(Math.random() * 1000));
+        }
     }
 
     setSourceFromUrl(url) {
@@ -284,12 +347,12 @@ class FluidEffect2 {
     // 动画循环
     animate() {
         if (!this.isRunning) return;
-        
+
         // 更新旋转动画
         if (this.options.rotationEnabled) {
             this.updateRotations();
         }
-        
+
         this.animationId = requestAnimationFrame(() => this.animate());
     }
 
@@ -306,7 +369,7 @@ class FluidEffect2 {
         if (this.isRunning) return;
         this.isRunning = true;
         this.animate();
-        
+
         // 音频响应已移除
     }
 
@@ -316,7 +379,7 @@ class FluidEffect2 {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
-        
+
         // 音频相关清理已移除
     }
 
@@ -326,7 +389,7 @@ class FluidEffect2 {
         if (this.fluidWrapper) {
             this.fluidWrapper.classList.toggle('paused', !playing);
         }
-        
+
         // 如果暂停，停止旋转动画
         // 同步 canvas 的 CSS 动画播放状态
         this.canvases.forEach(canvas => {
@@ -343,25 +406,25 @@ class FluidEffect2 {
 
     updateOptions(newOptions) {
         this.options = { ...this.options, ...newOptions };
-        
+
         // 更新模糊
         if (newOptions.blurAmount !== undefined) {
             this.canvasContexts.forEach(ctx => {
                 ctx.filter = `blur(${newOptions.blurAmount}px)`;
             });
         }
-        
+
         // 更新湍流
         // 湍流基频固定为 0.005（忽略传入值），保持向后兼容但不允许更改
         if (newOptions.turbulenceFrequency !== undefined) {
             this.feTurbulence.setAttribute('baseFrequency', '0.005');
             this._baseTurbulenceFrequency = 0.005;
         }
-        
+
         if (newOptions.turbulenceOctaves !== undefined) {
             this.feTurbulence.setAttribute('numOctaves', newOptions.turbulenceOctaves.toString());
         }
-        
+
         if (newOptions.rotationDirections !== undefined) {
             // 确保有4个方向值
             if (Array.isArray(newOptions.rotationDirections) && newOptions.rotationDirections.length === 4) {
@@ -375,7 +438,7 @@ class FluidEffect2 {
                 }
             }
         }
-        
+
         if (newOptions.rotationDelays !== undefined) {
             // 确保有4个延迟值
             if (Array.isArray(newOptions.rotationDelays) && newOptions.rotationDelays.length === 4) {
@@ -391,19 +454,32 @@ class FluidEffect2 {
                 }
             }
         }
-        
+
         // 更新置换图缩放
         if (newOptions.displacementScale !== undefined) {
             this.feDisplacementMap.setAttribute('scale', newOptions.displacementScale.toString());
         }
-        
+
+        // 更新 canvas 位移幅度（重新生成偏移）
+        if (newOptions.canvasDisplacementAmplitude !== undefined) {
+            const amp = parseFloat(newOptions.canvasDisplacementAmplitude) || 0;
+            this.options.canvasDisplacementAmplitude = amp;
+            // 重新计算偏移
+            this._canvasOffsets = this.canvases.map(() => ({
+                dx: (Math.random() * 2 - 1) * amp,
+                dy: (Math.random() * 2 - 1) * amp
+            }));
+            // 触发一次布局更新
+            this.onResize();
+        }
+
         // 更新分辨率
         if (newOptions.resolution !== undefined) {
             this.canvases.forEach(canvas => {
                 canvas.width = newOptions.resolution;
                 canvas.height = newOptions.resolution;
             });
-            
+
             // 重新绘制图像
             if (this.currentImage) {
                 this.setSourceFromImage(this.currentImage);
@@ -413,12 +489,12 @@ class FluidEffect2 {
 
     destroy() {
         this.stop();
-        
+
         // 移除canvas
         if (this.fluidWrapper && this.fluidWrapper.parentNode) {
             this.fluidWrapper.parentNode.removeChild(this.fluidWrapper);
         }
-        
+
         // 移除SVG滤镜
         if (this.svgFilter && this.svgFilter.parentNode) {
             // this.svgFilter 是 <filter> 节点，其 parentNode 是 <svg>
@@ -427,7 +503,7 @@ class FluidEffect2 {
                 svgElem.parentNode.removeChild(svgElem);
             }
         }
-        
+
         // 清理引用
         this.canvases = [];
         this.canvasContexts = [];
@@ -437,7 +513,7 @@ class FluidEffect2 {
         this.fluidRect = null;
         this.fluidWrapper = null;
         this.currentImage = null;
-        
+
         console.log('FluidEffect2 destroyed');
     }
 }

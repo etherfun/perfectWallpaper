@@ -43,6 +43,9 @@ var player_control_hdong = 0.1
 var player_control_thumbnail_rotation
 var player_control_thumbnail_rotation_speed
 
+// 流体效果实例
+var fluidEffect = null
+
 var player_control = document.querySelector("#player_control")
 var player_control_background = document.querySelector("#player_control .background")
 var player_control_thumbnail = document.querySelector("#player_control .thumbnail")
@@ -81,6 +84,11 @@ function wallpaperMediaThumbnailListener(event) {
                 player_control_yakelicolor,
                 player_control_color
             ];
+
+            // 初始化或更新流体效果
+            if (window.FluidEffectConfig && window.FluidEffectConfig.enabled) {
+                initFluidEffect();
+            }
 
             setTimeout(function () {
                 thumbnailsue()
@@ -415,4 +423,115 @@ function showFakePlayerData() {
         timelineTimer = null;
     }
     player_control_timeline.style.width = "0%";
+}
+
+// 流体效果相关函数
+function initFluidEffect() {
+    // 确保配置对象存在
+    if (!window.FluidEffectConfig) {
+        console.warn('FluidEffectConfig not found. Make sure fluid_control.js is loaded.');
+        return;
+    }
+
+    // 如果已有流体效果实例，先销毁
+    if (fluidEffect) {
+        fluidEffect.destroy();
+        fluidEffect = null;
+    }
+
+    // 根据配置版本选择流体效果类
+    const useNewEffect = window.FluidEffectConfig.effectVersion === 2 && typeof FluidEffect2 !== 'undefined';
+    
+    if (useNewEffect) {
+        // 使用新的流体效果类 (FluidEffect2)
+        if (typeof FluidEffect2 === 'undefined') {
+            console.warn('FluidEffect2 class not found. Make sure fluid_effect2.js is loaded.');
+            return;
+        }
+        
+        try {
+            fluidEffect = new FluidEffect2(player_control_background, {
+                resolution: window.FluidEffectConfig.resolution,
+                blurAmount: window.FluidEffectConfig.blurAmount,
+                displacementScale: window.FluidEffectConfig.displacementScale,
+                turbulenceFrequency: window.FluidEffectConfig.turbulenceFrequency,
+                turbulenceOctaves: window.FluidEffectConfig.turbulenceOctaves,
+                animationSpeed: window.FluidEffectConfig.animationSpeed,
+                audioResponsive: window.FluidEffectConfig.audioResponsive,
+                minDisplacementScale: window.FluidEffectConfig.minDisplacementScale,
+                maxDisplacementScale: window.FluidEffectConfig.maxDisplacementScale
+            });
+            console.log('Using FluidEffect2 (new version)');
+        } catch (error) {
+            console.error('Failed to initialize FluidEffect2:', error);
+            return;
+        }
+    } else {
+        // 使用旧的流体效果类 (FluidEffect)
+        if (typeof FluidEffect === 'undefined') {
+            console.warn('FluidEffect class not found. Make sure fluid_effect.js is loaded.');
+            return;
+        }
+        
+        try {
+            fluidEffect = new FluidEffect(player_control_background, {
+                resolution: window.FluidEffectConfig.resolution,
+                density: window.FluidEffectConfig.intensity,
+                viscosity: window.FluidEffectConfig.viscosity,
+                diffusion: window.FluidEffectConfig.diffusion,
+                dt: window.FluidEffectConfig.dt,
+                iterations: window.FluidEffectConfig.iterations
+            });
+            console.log('Using FluidEffect (original version)');
+        } catch (error) {
+            console.error('Failed to initialize FluidEffect:', error);
+            return;
+        }
+    }
+
+        // 设置封面图像作为流体源
+        if (player_control_thumbnail && player_control_thumbnail.complete && fluidEffect.setSourceFromImage) {
+            fluidEffect.setSourceFromImage(player_control_thumbnail);
+            document.querySelector(".fluid-effect-wrapper").style.backgroundImage = "url('" + player_control_thumbnail.src + "')";
+        }
+
+        // 开始流体模拟
+        if (fluidEffect.start) {
+            fluidEffect.start();
+        }
+        
+        // 调整背景样式
+        player_control_background.style.background = 'none';
+        player_control_background.style.overflow = 'hidden';
+        
+        console.log('Fluid effect initialized successfully');
+}
+
+function destroyFluidEffect() {
+    if (fluidEffect) {
+        fluidEffect.destroy();
+        fluidEffect = null;
+        
+        // 恢复背景样式
+        if (player_control_background) {
+            player_control_background.style.background = '';
+        }
+    }
+}
+
+// 这些函数现在在 fluid_control.js 中定义
+// 这里只保留兼容性函数
+// 注意：为了避免递归调用，这里不调用FluidEffectConfig的方法
+// 实际的实现在fluid_control.js中
+
+function updateFluidIntensity(intensity) {
+    if (window.FluidEffectConfig) {
+        window.FluidEffectConfig.set('intensity', intensity);
+    }
+}
+
+function updateFluidResolution(resolution) {
+    if (window.FluidEffectConfig) {
+        window.FluidEffectConfig.set('resolution', resolution);
+    }
 }

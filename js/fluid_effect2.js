@@ -13,7 +13,7 @@ class FluidEffect2 {
             turbulenceFrequency: options.turbulenceFrequency || 0.010,
             turbulenceOctaves: options.turbulenceOctaves || 1,
             // 动画配置
-            animationSpeed: options.animationSpeed || 0.1,
+            animationSpeed: options.animationSpeed || 0.005,
             // 湍流变化模式：'sine'（正弦周期，默认）或 'drift'（无周期的平滑随机目标）
             turbulenceMode: options.turbulenceMode || 'sine',
             // 如果使用非周期模式，这个范围决定每次目标变化的间隔（秒）
@@ -194,13 +194,6 @@ class FluidEffect2 {
     setupContainer() {
         this.container.style.position = 'relative';
         this.container.style.overflow = 'hidden';
-        // 确保 overlay 在容器内时同步样式
-        if (this.backdropOverlay && this.options.backdropFilterEnabled) {
-            const bf = `blur(${this.options.backdropBlur}px) saturate(${this.options.backdropSaturate}%)`;
-            this.backdropOverlay.style.backdropFilter = bf;
-            this.backdropOverlay.style.webkitBackdropFilter = bf;
-            this.backdropOverlay.style.background = 'rgba(255,255,255,0)';
-        }
     }
 
     onResize() {
@@ -379,15 +372,13 @@ class FluidEffect2 {
             cancelAnimationFrame(this.animationId);
             this.animationId = null;
         }
-
-        // 音频相关清理已移除
     }
 
     setPlayState(playing) {
         this.playState = playing;
         // 按新的两层结构，控制父容器的暂停类
-        if (this.fluidWrapper) {
-            this.fluidWrapper.classList.toggle('paused', !playing);
+        if (this.fluidRect) {
+            this.fluidRect.style.animationPlayState = playing ? 'running' : 'paused';
         }
 
         // 如果暂停，停止旋转动画
@@ -395,7 +386,6 @@ class FluidEffect2 {
         this.canvases.forEach(canvas => {
             if (canvas) {
                 canvas.style.animationPlayState = playing ? 'running' : 'paused';
-                canvas.classList.toggle('paused', !playing);
             }
         });
 

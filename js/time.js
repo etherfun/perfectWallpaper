@@ -2,16 +2,6 @@
  * Created by Administrator on 2017/5/6 0006.
  */
 // 当前时间实现代码
-/*
-window.requestAnimFrame = (function(){
-	return  window.requestAnimationFrame       ||
-		window.webkitRequestAnimationFrame ||
-		window.mozRequestAnimationFrame    ||
-		function( callback ){
-			window.setTimeout(callback, 1000 / 60);
-		};
-})();
-*/
 
 var oClock = document.querySelector("#clock");
 var oClock_block = document.querySelector("#clock .block");
@@ -40,12 +30,6 @@ function setTimeColor() {
 
 	oClock.style.color = color2;
 	oDate.style.color = color2;
-	/*oClock.style.textShadow = '0 0 20px ' + color2;
-	oDate.style.textShadow = '0 0 20px' + color2;*/
-	//oClock.style.textShadow = '0 0 20px rgb('+c+')';
-	//oDate.style.textShadow = '0 0 20px rgb('+c+')';
-	//oClock.style.color = 'rgb('+c+')';
-	//oDate.style.color = 'rgb('+c+')';
 }
 
 
@@ -63,48 +47,13 @@ function oClockInit() {
 }
 
 oClockInit();
-//window.onresize = oClockInit;
-
-/*
-var show = document.querySelector("#show");
-function showi(str){
-	show.innerHTML = str;
-}
-*/
-
-
-/* 时间 */
-/*function getTime(){
-	var t = new Date();
-	
-	if(tStyle){
-		if(tShowSencends){
-			oClock.innerHTML = add0(t.getHours())+" : "+add0(t.getMinutes())+" <span class='sec'>"+add0(t.getSeconds()) + "</span>";
-		}else{
-			oClock.innerHTML = add0(t.getHours())+" : "+add0(t.getMinutes());
-		}
-		//oDate.innerHTML = "<span class='sec'>" + t.getFullYear() +"年"+t.getMonth() + "月" + t.getDate() + "日 "+ w_array[t.getDay()] + "</span>";
-	}else{
-		var h = t.getHours();
-		var str = h<12 ? "AM" : "PM";
-		//var str = h<12 ? "上午" : "下午";
-		h = h<=12 ? h : h-12;
-		if(tShowSencends){
-			oClock.innerHTML = "<span id='time'>"+add0(h)+" : "+add0(t.getMinutes())+" <span class='sec'>"+add0(t.getSeconds())+"</span><span class='st'>"+str+"</span></span>";
-		}else{
-			oClock.innerHTML = "<span id='time'>"+add0(h)+" : "+add0(t.getMinutes())+ "</span>" + " <span class='sec'>"+ str + "</span>"
-		}
-	}
-}*/
 
 function autoTime() {
 	getTime_sec();
 	setTimeout(autoTime, 1000);
 }
 
-
 autoTime();
-
 
 function getTime_sec() {
 	var t = new Date();

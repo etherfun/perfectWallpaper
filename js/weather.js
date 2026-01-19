@@ -1,8 +1,5 @@
 var weather = document.querySelector("#weather");
-var weather_webtext = document.querySelector("#weather .text");
 
-var checkcity
-var wt
 let wunit = {}
 let wlang = {}
 let weather_address = {
@@ -14,6 +11,7 @@ let weather_address = {
 }
 
 const weather_data = {
+    updateTime: "",
     icon: "",
     temperature: "",
     feels: "",
@@ -45,15 +43,10 @@ const weather_data = {
     rangefeelstemperature: "",
     rangetemperature: "",
     obstime: "",
-    updatetime: "",
     windLv: "",
-    cityname: "",
-    highDaliyTemp: "",
-    lowDaliyTemp: "",
     air: "",
     weatherAlert: "",
     weatherAlertColor: "",
-    hourlyData: null,
     sevenHourlyData: {
         updateTime: "",
         Times: ["12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"],
@@ -69,69 +62,10 @@ const weather_data = {
         Precips: [],
         Pressures: [],
         Clouds: [],
-        Dews: []
+        Dews: [],
+        preciptype: []
     }
 }
-
-var temperature = "未获取";
-var feels = "未获取";
-var weatherdata = "未获取";
-var weathernow = "未获取";
-var wind = "未获取";
-var windLv = "未获取";
-var precip = "未获取";
-var cloud = "未获取";
-var humidity = "未获取";
-var windSpeed = "未获取";
-var vis = "未获取";
-var dew = "未获取";
-var cityname = "未获取";
-var pressure = "未获取";
-
-var cityname = "未获取";
-var weathernow = "未获取";
-var wind = "未获取";
-var windLv = "未获取";
-var feels = "未获取";
-var high = "未获取";
-var low = "未获取";
-var air = "未获取";
-
-var windSpeed = "未获取";
-var humidity = "未获取";
-var temperature = "未获取";
-var temperature_max = "未获取";
-var temperature_min = "未获取";
-var feels = "未获取";
-var feels_max = "未获取";
-var feels_min = "未获取";
-var weathernow = "未获取";
-var wind = "未获取";
-var precip = "未获取";
-var precipcover = "未获取";
-var precipprob = "未获取";
-var snow = "未获取";
-var snowdepth = "未获取";
-var preciptype = "未获取";
-var windgust = "未获取";
-var visibility = "未获取";
-var solarradiation = "未获取";
-var uvindex = "未获取";
-var sunriseset
-var sunrise = "未获取";
-var sunset = "未获取";
-var moonphase = "未获取";
-var cloud = "未获取";
-var vis = "未获取";
-var dew = "未获取";
-var pressure = "未获取";
-var rangefeelstemperature = "未获取"
-var rangetemperature = "未获取"
-var obstime = "未获取"
-var weatherAlert = "未获取";
-var alertColor = "#ffffff";
-
-var nullweather = ""
 
 function weather_unit_choose() {
     switch (weather_unit) {
@@ -199,88 +133,49 @@ function weather_unit_choose() {
     }
 }
 function weather_lang_choose() {
-    switch (weather_lang) {
-        case "zh":
-            wlang = {
-                datetime: "观测时间%1",
-                humidity: "湿度%1%",
-                rangetemperature: "气温范围%1%3~%2%3",
-                feelstemperature: "体感%1%2",
-                rangefeelstemperature: "体感范围%1%3~%2%3",
-                precip: "降水",
-                precipcover: "全天预计%1%2小时",
-                precipprob: "当前%1%%2%3%4",
-                preciptype: "降水类型",
-                snow: "降雪%1%2",
-                snowdepth: "积雪深度%3%2",
-                windgust: "瞬时%1%2",
-                windSpeed: "平均%1%2",
-                vis: "能见度%1%2",
-                solarradiation: "太阳功率%1%2",
-                uvindex: "紫外线%1UV",
-                sunriseset: "日出/落%1-%2",
-                moonphase: "月相%1",
-                cloud: "云层密度%1%",
-                dewtemperature: "露点%1%2",
-                pressure: "大气压强%1%2"
-            }
-            break
-        case "en":
-            wlang = {
-                datetime: "Observation time %1",
-                humidity: "Humidity %1%",
-                rangetemperature: "Temperature range %1%3~%2%3",
-                feelstemperature: "Feels like %1%2",
-                rangefeelstemperature: "Feels like range %1%3~%2%3",
-                precip: "Precipitation",
-                precipcover: "Total expected %1%2 hours",
-                precipprob: "Current %1% %2%3",
-                preciptype: "Precipitation type",
-                snow: "Snowfall %1%2",
-                snowdepth: "Snow depth %3%2",
-                windgust: "Gust %1%2",
-                windSpeed: "Aerage %1%2",
-                vis: "Visibility %1%2",
-                solarradiation: "Solar radiation %1%2",
-                uvindex: "UVI%1",
-                sunriseset: "Sunrise/Set %1-%2",
-                moonphase: "Moonphase %1",
-                cloud: "Cloud cover %1%",
-                dewtemperature: "Dew point %1%2",
-                pressure: "Atmospheric pressure %1%2"
-            }
-            break
+    // 使用i18n获取多语言文本
+    wlang = {
+        datetime: i18n('weather_datetime'),
+        humidity: i18n('weather_humidity'),
+        rangetemperature: i18n('weather_rangetemperature'),
+        feelstemperature: i18n('weather_feelstemperature'),
+        rangefeelstemperature: i18n('weather_rangefeelstemperature'),
+        precip: i18n('weather_precip'),
+        precipcover: i18n('weather_precipcover'),
+        precipprob: i18n('weather_precipprob'),
+        preciptype: i18n('weather_preciptype'),
+        snow: i18n('weather_snow'),
+        snowdepth: i18n('weather_snowdepth'),
+        windgust: i18n('weather_windgust'),
+        windSpeed: i18n('weather_windSpeed'),
+        vis: i18n('weather_vis'),
+        solarradiation: i18n('weather_solarradiation'),
+        uvindex: i18n('weather_uvindex'),
+        sunriseset: i18n('weather_sunriseset'),
+        moonphase: i18n('weather_moonphase'),
+        cloud: i18n('weather_cloud'),
+        dewtemperature: i18n('weather_dewtemperature'),
+        pressure: i18n('weather_pressure')
     }
 }
 
-function oWeatherInit() {
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    //weather.style.width = w+'px';
-    weather.style.lineHeight = h + 'px';
-    //weather.style.height =  h+'px';
-    weather.style.fontSize = Math.floor(h / 300 * 20) + 'px';
-}
-oWeatherInit()
-
-function weather_init() {
-    if (strCity == "") {
+async function weather_init() {
+    if (weather_address.cityname == "") {
         $.get("http://i.tianqi.com/index.php?c=code&id=11", function (citydata) {
 
-            strCity = citydata.split("</strong>")[1].split(" ")[0];
-            apiuse()
+            weather_address.cityname = citydata.split("</strong>")[1].split(" ")[0];
         })
     }
 
     switch (weather_api_choose) {
-        case 1:
+        case 1://和风天气API
             if (!qweatherapi_paymode && weather_paymode()) {
                 return;
             }
 
-            if (weather_address.citynumber == "" || strCity != weather_address.checkcity) {
-                weather_address.checkcity = strCity
-                fetch_with_retry(`https://${APIHost}/geo//v2/city/lookup?location=${strCity}`, {
+            if (weather_address.citynumber == "" || weather_address.cityname != weather_address.checkcity) {
+                weather_address.checkcity = weather_address.cityname
+                fetch_with_retry(`https://${APIHost}/geo//v2/city/lookup?location=${weather_address.cityname}`, {
                     method: 'GET',
                     headers: {
                         'X-QW-Api-Key': CityKey,
@@ -292,7 +187,6 @@ function weather_init() {
                         return response.json();
                     })
                     .then(data => {
-                        console.log("地理位置数据:", data);
                         weather_address.citynumber = data.location[0].id
                         weather_address.cityname = data.location[0].name
 
@@ -305,8 +199,8 @@ function weather_init() {
                 getWeather_input_qweatherapi(weather_address.citynumber);
             }
             break
-        case 2:
-            fetch_with_retry("https://api.icufree.com/weather.php?cityname=" + strCity, {}, 3)
+        case 2://免费天气API
+            fetch_with_retry("https://api.icufree.com/weather.php?cityname=" + weather_address.cityname, {}, 3)
                 .then(response => response.json())
                 .then(res => {
                     weather_address.cityname = res.cityname;
@@ -317,14 +211,13 @@ function weather_init() {
                     weather_data.highDaliyTemp = res.high;
                     weather_data.lowDaliyTemp = res.low;
                 });
-            weather_webtext.innerHTML = generateWeatherTable();
+            weather.innerHTML = await generateWeatherTable();
             FristLoadWeather = false;
             break
-        case 3:
-            fetch_with_retry("https://v1.yiketianqi.com/free/day?appid=" + appid + "&appsecret=" + appsecret + "&unescape=1&city=" + strCity, {}, 3)
+        case 3://一刻天气API
+            fetch_with_retry("https://v1.yiketianqi.com/free/day?appid=" + appid + "&appsecret=" + appsecret + "&unescape=1&city=" + weather_address.cityname, {}, 3)
                 .then(response => response.json())
                 .then(res => {
-                    console.log(res);
                     weather_data.cityname = res.city;
                     weather_data.temperature = res.tem;
                     weather_data.weathernow = res.wea;
@@ -338,14 +231,15 @@ function weather_init() {
                     weather_data.humidity = res.humidity;
 
                 });
-            weather_webtext.innerHTML = generateWeatherTable();
+            weather.innerHTML = generateWeatherTable();
             FristLoadWeather = false
             break
-        case 4:
+        case 4://Visual Crossing API
             getWeather_input_VisualCrossingAPI()
+            weather.innerHTML = await generateWeatherTable();
             FristLoadWeather = false
             break
-        case 5:
+        case 5://Open-Meteo API
             getWeather_input_open_meteo()
             FristLoadWeather = false
             break
@@ -356,30 +250,26 @@ function autoWeather() {
     weather_init();
     switch (weather_updata) {
         case 1:
-            wt = setTimeout(autoWeather, 900000);
+            timerManager.create( autoWeather, 900000, 'updataWeather');
             break
         case 2:
-            wt = setTimeout(autoWeather, 1200000);
+            timerManager.create( autoWeather, 1200000, 'updataWeather');
             break
         case 3:
-            wt = setTimeout(autoWeather, 1800000);
+            timerManager.create( autoWeather, 1800000, 'updataWeather');
             break
         case 4:
-            wt = setTimeout(autoWeather, 2700000);
+            timerManager.create( autoWeather, 2700000, 'updataWeather');
             break
         case 6:
-            wt = setTimeout(autoWeather, 3600000);
+            timerManager.create( autoWeather, 3600000, 'updataWeather');
+            break
     }
 }
 
 async function getWeather_input_qweatherapi(citynumber) {
-    if (!weather_address.latitude || !weather_address.longitude) {
-        weather_webtext.innerHTML = generateWeatherTable();
-        return;
-    }
-
     if (!qweatherapi_paymode && weather_paymode()) {
-        return Promise.reject(new Error(i18n(error_get_weather_data_over_usage))); // 中断链
+        return Promise.reject(new Error(i18n("error_get_weather_data_over_usage"))); // 中断链
     }
 
     // 第一步：获取实时天气
@@ -398,8 +288,7 @@ async function getWeather_input_qweatherapi(citynumber) {
             return response.json();
         })
         .then(async res => {
-            console.log("实时天气数据:", res);
-            weather_data.updatetime = res.updateTime;
+            weather_data.updateTime = res.updateTime;
 
             weather_data.windSpeed = res.now.windSpeed;
             weather_data.humidity = res.now.humidity;
@@ -417,7 +306,7 @@ async function getWeather_input_qweatherapi(citynumber) {
 
             // 第二步：获取空气质量信息
             if (!qweatherapi_paymode && weather_paymode()) {
-                return Promise.reject(new Error(i18n(error_get_weather_data_over_usage))); // 中断链
+                return Promise.reject(new Error(i18n("error_get_weather_data_over_usage"))); // 中断链
             }
             return fetch_with_retry(`https://${APIHost}/airquality/v1/daily/${weather_address.latitude}/${weather_address.longitude}`,
                 {
@@ -435,7 +324,6 @@ async function getWeather_input_qweatherapi(citynumber) {
             return response.json();
         })
         .then(async airData => {
-            console.log("空气质量数据:", airData);
             if (airData && airData.days && airData.days.length > 0) {
                 const day = airData.days[0];
                 if (day.indexes && day.indexes.length > 0) {
@@ -451,25 +339,20 @@ async function getWeather_input_qweatherapi(citynumber) {
 
                     if (aqiIndex) {
                         weather_data.air = aqiIndex.aqi || aqiIndex.aqiDisplay || i18n("weather_no_data");
-                        console.log("空气质量AQI:", air, "名称:", aqiIndex.name);
                     } else {
-                        // 如果没有找到特定名称，使用第一个可用的指数
                         const firstIndex = day.indexes[0];
                         weather_data.air = firstIndex.aqi || firstIndex.aqiDisplay || i18n("weather_no_data");
-                        console.log("使用第一个空气质量指数:", air, "名称:", firstIndex.name);
                     }
                 } else {
-                    console.warn("空气质量指数数据为空");
                     weather_data.air = i18n("weather_no_data");
                 }
             } else {
-                console.warn("空气质量数据为空或格式不正确");
                 weather_data.air = i18n("weather_no_data");
             }
 
             // 第三步：获取天气预警
             if (!qweatherapi_paymode && weather_paymode()) {
-                return Promise.reject(new Error(i18n(error_get_weather_data_over_usage))); // 中断链
+                return Promise.reject(new Error(i18n("error_get_weather_data_over_usage"))); // 中断链
             }
             return fetch_with_retry(`https://${APIHost}/weatheralert/v1/current/${weather_address.latitude}/${weather_address.longitude}`,
                 {
@@ -488,16 +371,7 @@ async function getWeather_input_qweatherapi(citynumber) {
             return response.json();
         })
         .then(async alertData => {
-            console.log("预警数据:", alertData);
-
-            // 检查是否有预警数据
-            if (alertData && alertData.metadata && alertData.metadata.zeroResult) {
-                // 请求成功但无预警信息
-                weather_data.weatherAlert = [{
-                    alert: "诸事顺遂",
-                    alertColor: "#ffffff"
-                }];
-            } else if (alertData && alertData.alerts && alertData.alerts.length > 0) {
+            if (alertData && alertData.alerts && alertData.alerts.length > 0) {
                 // 有预警信息
                 const alert = alertData.alerts;
                 weather_data.weatherAlert = alert.map(alertList => {
@@ -531,7 +405,7 @@ async function getWeather_input_qweatherapi(citynumber) {
 
             // 第四步：获取逐小时降水概率预报
             if (!qweatherapi_paymode && weather_paymode()) {
-                return Promise.reject(new Error(i18n(error_get_weather_data_over_usage))); // 中断链
+                return Promise.reject(new Error(i18n("error_get_weather_data_over_usage"))); // 中断链
             }
             return fetch_with_retry(`https://${APIHost}/v7/weather/24h?location=${citynumber}`,
                 {
@@ -548,8 +422,7 @@ async function getWeather_input_qweatherapi(citynumber) {
             }
             return response.json();
         })
-        .then(hourlyData => {
-            console.log("逐小时预报数据:", hourlyData);
+        .then(async hourlyData => {
 
             // 保存完整的24小时数据用于温度计算
             weather_data.hourlyData = hourlyData;
@@ -616,404 +489,431 @@ async function getWeather_input_qweatherapi(citynumber) {
                 weather_data.sevenHourlyData.Dews = sevenHourlyData.map(hour => {
                     return hour.dew;
                 });
-
-                console.log("处理后的逐小时预报数据:", weather_data.sevenHourlyData);
             }
 
-            // 所有数据加载完成，一次性更新显示
-            weather_webtext.innerHTML = generateWeatherTable();
+            // 第五步：获取每日天气预报（3天）
+            if (!qweatherapi_paymode && weather_paymode()) {
+                return Promise.reject(new Error(i18n("error_get_weather_data_over_usage"))); // 中断链
+            }
+            return fetch_with_retry(`https://${APIHost}/v7/weather/3d?location=${citynumber}`,
+                {
+                    method: 'GET',
+                    headers: {
+                        'X-QW-Api-Key': `${CityKey}`,
+                    }
+                }
+            );
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Daily Forecast API response was not ok');
+            }
+            return response.json();
+        })
+        .then(async dailyData => {
+            // 处理每日天气预报数据
+            if (dailyData && dailyData.daily && dailyData.daily.length > 0) {
+                const today = dailyData.daily[0]; // 今天的数据
 
-            //将 tooltip 绑到每个预警项上
-            document.querySelectorAll(".weather-alert-item").forEach(item => {
-                attachWeatherAlertTooltip(item);
-            });
-            document.querySelectorAll(".precip-time-cell").forEach((el, i) => {
-                attachSevenHourlyTooltip(el, i);
-            });
+                // 填充每日天气数据
+                weather_data.temperature_max = today.tempMax;
+                weather_data.temperature_min = today.tempMin;
+                // 和风天气每日预报可能没有体感温度字段，使用实际温度作为备用
+                weather_data.feels_max = today.feelsLikeMax || today.tempMax;
+                weather_data.feels_min = today.feelsLikeMin || today.tempMin;
+                weather_data.sunrise = today.sunrise;
+                weather_data.sunset = today.sunset;
+                weather_data.moonphase = today.moonPhase;
+                weather_data.uvindex = today.uvIndex;
+
+                // 计算温度范围
+                weather_data.rangetemperature = `${today.tempMin}~${today.tempMax}`;
+                weather_data.rangefeelstemperature = `${today.feelsLikeMin || today.tempMin}~${today.feelsLikeMax || today.tempMax}`;
+
+                // 保存完整的3天预报数据
+                weather_data.dailyData = dailyData;
+            }
+
+            weather.innerHTML = await generateWeatherTable();
+            tooltip();
         })
 }
 
 //Visual Crossing API
 function getWeather_input_VisualCrossingAPI() {
-    $.get("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/" + strCity + "/today?unitGroup=" + weather_unit + "&include=current&key=" + VisualCrossing_Key + "&contentType=json&lang=" + weather_lang, async function (res) {
-
-        console.log(JSON.stringify(res));
-        var resn = res.currentConditions
-        var resd = res.days[0]
-
-        if (cityname_show) {
-            cityname = res.resolvedAddress
-        } else {
-            cityname = nullweather
-        }
-        if (obstime_show) {
-            obstime = wlang.datetime.replace("%1", resn.datetime)
-        } else {
-            obstime = nullweather
-        }
-        if (windspeed_show) {
-            windSpeed = wlang.windSpeed.replace("%1", resn.windspeed).replace("%2", wunit.wind)
-        } else {
-            windSpeed = nullweather
-        }
-        if (humidity_show) {
-            humidity = wlang.humidity.replace("%1", resn.humidity)
-        } else {
-            humidity = nullweather
-        }
-        if (temperature_show) {
-            temperature = resn.temp + wunit.temp
-        } else {
-            temperature = nullweather
-        }
-        if (feelstemperature_show) {
-            feels = wlang.feelstemperature.replace("%1", resn.feelslike).replace("%2", wunit.temp)
-        } else {
-            feels = nullweather
-        }
-        if (rangetemperature_show) {
-            rangetemperature = wlang.rangetemperature.replace("%1", resd.tempmin).replace("%2", resd.tempmax).replace("%3", wunit.temp).replace("%3", wunit.temp)
-        } else {
-            rangetemperature = nullweather
-        }
-        if (rangefeelstemperature_show) {
-            rangefeelstemperature = wlang.rangefeelstemperature.replace("%1", resd.feelslikemin).replace("%2", resd.feelslikemax).replace("%3", wunit.temp).replace("%3", wunit.temp)
-        } else {
-            rangefeelstemperature = nullweather
-        }
-        if (weathernow_show) {
-            weathernow = resn.conditions
-        } else {
-            weathernow = nullweather
-        }
-        if (precipcover_show) {
-            precipcover = wlang.precipcover.replace("%1", resd.preciptype).replace("%2", resd.precipcover)
-        } else {
-            precipcover = nullweather
-        }
-        if (precipprob_show) {
-            precipprob = wlang.precipprob.replace("%1", resn.precipprob).replace("%2", resn.preciptype).replace("%3", resn.precip).replace("%4", wunit.precip_1)
-        } else {
-            precipprob = nullweather
-        }
-        if (snow_show) {
-            snow = wlang.snow.replace("%1", resn.snow).replace("%2", wunit.snow_1)
-        } else {
-            snow = nullweather
-        }
-        if (snowdepth_show) {
-            snowdepth = wlang.snowdepth.replace("%3", resn.snowdepth).replace("%2", wunit.snow)
-        } else {
-            snowdepth = nullweather
-        }
-        if (windgust_show) {
-            windgust = wlang.windgust.replace("%1", resn.windgust).replace("%2", wunit.wind)
-        } else {
-            windgust = nullweather
-        }
-        if (vis_show) {
-            visibility = wlang.vis.replace("%1", resn.visibility).replace("%2", wunit.vis)
-        } else {
-            visibility = nullweather
-        }
-        if (solarradiation_show) {
-            solarradiation = wlang.solarradiation.replace("%1", resn.solarradiation).replace("%2", wunit.solarradiation)
-        } else {
-            solarradiation = nullweather
-        }
-        if (uvindex_show) {
-            uvindex = wlang.uvindex.replace("%1", resn.uvindex)
-        } else {
-            uvindex = nullweather
-        }
-        if (sunriseset_show) {
-            sunriseset = wlang.sunriseset.replace("%1", resd.sunrise).replace("%2", resd.sunset)//sunrise = resd.sunrise;sunset = resd.sunset
-        } else {
-            sunriseset = nullweather
-        }
-        if (cloud_show) {
-            cloud = wlang.cloud.replace("%1", resn.cloudcover)
-        } else {
-            cloud = nullweather
-        }
-        if (dewtemperature_show) {
-            dew = wlang.dewtemperature.replace("%1", resn.dew).replace("%2", wunit.temp)
-        } else {
-            dew = nullweather
-        }
-        if (pressure_show) {
-            pressure = wlang.pressure.replace("%1", resn.pressure).replace("%2", wunit.pressure)
-        } else {
-            pressure = nullweather
-        }
-
-        if (wind_show) {
-            if ((resn.winddir >= 337.5 && resn.winddir < 360) || (resn.winddir >= 0 && resn.winddir < 22.5)) {
-                wind = i18n("weather_wind_north");
-            } else if (resn.winddir >= 22.5 && resn.winddir < 67.5) {
-                wind = i18n("weather_wind_northeast");
-            } else if (resn.winddir >= 67.5 && resn.winddir < 112.5) {
-                wind = i18n("weather_wind_east");
-            } else if (resn.winddir >= 112.5 && resn.winddir < 157.5) {
-                wind = i18n("weather_wind_southeast");
-            } else if (resn.winddir >= 157.5 && resn.winddir < 202.5) {
-                wind = i18n("weather_wind_south");
-            } else if (resn.winddir >= 202.5 && resn.winddir < 247.5) {
-                wind = i18n("weather_wind_southwest");
-            } else if (resn.winddir >= 247.5 && resn.winddir < 292.5) {
-                wind = i18n("weather_wind_west");
-            } else if (resn.winddir >= 292.5 && resn.winddir < 337.5) {
-                wind = i18n("weather_wind_northwest");
-            } else {
-                wind = i18n("weather_no_data");
+    const nowDate = Math.floor(Date.now() / 1000);
+    const sevenDate = nowDate + 7 * 24 * 60 * 60;
+    fetch_with_retry(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(weather_address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${weather_unit}&key=${VisualCrossing_Key}&contentType=json&lang=id`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-        } else {
-            wind = i18n("weather_no_data");
-        }
+            return response.json();
+        })
+        .then(async res => {
+            console.log(JSON.stringify(res));
+            const resNow = res.currentConditions;
+            const resHourly = getNext7Hours(res);
+            const resdaliy = res.days;
 
-        if (moonphase_show) {
-            switch (weather_lang) {//moonphase
-                case "zh":
-                    if (moonphase === 0 || resd.moonphase === 1) {
-                        moonphase = wlang.moonphase.replace("%1", "新月")
-                    } else if (resd.moonphase > 0 && resd.moonphase < 0.20) {
-                        moonphase = wlang.moonphase.replace("%1", "娥眉月")
-                    } else if (resd.moonphase >= 0.2 && resd.moonphase >= 0.3) {
-                        moonphase = wlang.moonphase.replace("%1", "上弦月")
-                    } else if (resd.moonphase > 0.30 && resd.moonphase < 0.5) {
-                        moonphase = wlang.moonphase.replace("%1", "渐盈凸月")
-                    } else if (resd.moonphase == 0.5) {
-                        moonphase = wlang.moonphase.replace("%1", "满月")
-                    } else if (resd.moonphase > 0.5 && resd.moonphase < 0.70) {
-                        moonphase = wlang.moonphase.replace("%1", "渐亏凸月")
-                    } else if (resd.moonphase >= 0.70 && resd.moonphase >= 0.80) {
-                        moonphase = wlang.moonphase.replace("%1", "下弦月")
-                    } else if (resd.moonphase > 0.80 && resd.moonphase < 1) {
-                        moonphase = wlang.moonphase.replace("%1", "残月")
-                    }
-                    break
-                case "en":
-                    if (moonphase === 0 || resd.moonphase === 1) {
-                        moonphase = wlang.moonphase.replace("%1", "New Moon")
-                    } else if (resd.moonphase > 0 && resd.moonphase < 0.20) {
-                        moonphase = wlang.moonphase.replace("%1", "Waxing Crescent Moon")
-                    } else if (resd.moonphase >= 0.2 && resd.moonphase >= 0.3) {
-                        moonphase = wlang.moonphase.replace("%1", "First Quarter Moon")
-                    } else if (resd.moonphase > 0.30 && resd.moonphase < 0.5) {
-                        moonphase = wlang.moonphase.replace("%1", "Waxing Gibbous Moon")
-                    } else if (resd.moonphase == 0.5) {
-                        moonphase = wlang.moonphase.replace("%1", "Full Moon")
-                    } else if (resd.moonphase > 0.5 && resd.moonphase < 0.70) {
-                        moonphase = wlang.moonphase.replace("%1", "Waning Gibbous Moon")
-                    } else if (resd.moonphase >= 0.70 && resd.moonphase >= 0.80) {
-                        moonphase = wlang.moonphase.replace("%1", "Last Quarter Moon")
-                    } else if (resd.moonphase > 0.80 && resd.moonphase < 1) {
-                        moonphase = wlang.moonphase.replace("%1", "Waning Crescent Moon")
-                    }
-                    break
+            const directions = [
+                "weather_wind_north",
+                "weather_wind_northeast",
+                "weather_wind_east",
+                "weather_wind_southeast",
+                "weather_wind_south",
+                "weather_wind_southwest",
+                "weather_wind_west",
+                "weather_wind_northwest"
+            ];
+
+            weather_address.cityname = res.resolvedAddress.split(",")[0];
+
+            weather_data.updateTime = resNow.datetime;
+            weather_data.windSpeed = resNow.windspeed;
+            weather_data.humidity = resNow.humidity;
+            weather_data.temperature = resNow.temp;
+            weather_data.temperature_max = resdaliy[0].tempmax;
+            weather_data.temperature_min = resdaliy[0].tempmin;
+            weather_data.feels = resNow.feelslike;
+            weather_data.feels_max = resdaliy[0].feelslikemax;
+            weather_data.feels_min = resdaliy[0].feelslikemin;
+            weather_data.weathernow = resNow.conditions
+                .split(",")
+                .map(c => c.trim())
+                .map(c => i18n(`weather_visualcrossing_${c}`))
+                .join(" <br/> ");
+            weather_data.preciptype = resNow.preciptype;
+            weather_data.precipcover = resNow.precipcover;
+            weather_data.precipprob = resNow.precipprob;
+            weather_data.precip = resNow.precip;
+            weather_data.snow = resNow.snow;
+            weather_data.snowdepth = resNow.snowdepth;
+            weather_data.windgust = resNow.windgust;
+            weather_data.visibility = resNow.visibility;
+            weather_data.solarradiation = resNow.solarradiation;
+            weather_data.uvindex = resNow.uvindex;
+            weather_data.sunrise = resdaliy[0].sunrise;
+            weather_data.sunset = resdaliy[0].sunset;
+            weather_data.cloud = resdaliy[0].cloudcover;
+            weather_data.dew = resNow.dew;
+            weather_data.pressure = resNow.pressure; weather_data.icon = getQWeatherIcon(resNow.icon, isNightTime(new Date().toTimeString().split(" ")[0], resdaliy[0].sunrise, resdaliy[0].sunset));
+            {
+                const index = Math.floor((resNow.winddir + 22.5) / 45) % 8;
+                weather_data.wind = i18n(directions[index] ?? "weather_no_data");
             }
-        } else {
-            moonphase = nullweather
-        }
+            {
+                const moonPhaseKeys = [
+                    "weather_moonphase_new_moon",
+                    "weather_moonphase_waxing_crescent",
+                    "weather_moonphase_first_quarter",
+                    "weather_moonphase_waxing_gibbous",
+                    "weather_moonphase_full_moon",
+                    "weather_moonphase_waning_gibbous",
+                    "weather_moonphase_last_quarter",
+                    "weather_moonphase_waning_crescent"
+                ];
 
-        weather_webtext.innerHTML = generateWeatherTable();
-    });
+                const index = Math.floor((resdaliy[0].moonphase + 0.0625) * 8) % 8;
+                weather_data.moonphase = i18n(moonPhaseKeys[index] ?? nullweather);
+            }
+
+            weather_data.sevenHourlyData.Clouds = resHourly.map(hour => {
+                return hour.cloudcover;
+            });
+            weather_data.sevenHourlyData.Dews = resHourly.map(hour => {
+                return hour.dew;
+            });
+            weather_data.sevenHourlyData.Humidities = resHourly.map(hour => {
+                return hour.humidity;
+            });
+            weather_data.sevenHourlyData.Icons = resHourly.map(hour => {
+                const isNight = isNightTime(hour.datetime, resdaliy[0].sunrise, resdaliy[0].sunset);
+                return getQWeatherIcon(hour.icon, isNight);
+            });
+            weather_data.sevenHourlyData.Pops = resHourly.map(hour => {
+                return `${hour.precipprob}%`;
+            });
+            weather_data.sevenHourlyData.Precips = resHourly.map(hour => {
+                return hour.precip;
+            });
+            weather_data.sevenHourlyData.Pressures = resHourly.map(hour => {
+                return hour.pressure;
+            });
+            weather_data.sevenHourlyData.Temps = resHourly.map(hour => {
+                return hour.temp;
+            });
+            weather_data.sevenHourlyData.Texts = resHourly.map(hour => {
+                if (!hour.conditions) return "";
+
+                return hour.conditions
+                    .split(",")
+                    .map(c => c.trim())
+                    .map(c => i18n(`weather_visualcrossing_${c}`))
+                    .join(" <br/> ");
+            });
+            weather_data.sevenHourlyData.Times = resHourly.map(hour => {
+                return hour.datetime.slice(0, 5);
+            });
+            weather_data.sevenHourlyData.Wind360s = resHourly.map(hour => {
+                return hour.winddir;
+            });
+            weather_data.sevenHourlyData.WindSpeeds = resHourly.map(hour => {
+                return hour.windspeed;
+            });
+            weather_data.sevenHourlyData.Winds = resHourly.map(hour => {
+                const index = Math.floor((hour.winddir + 22.5) / 45) % 8;
+                return i18n(directions[index] ?? "weather_no_data");
+            });
+            weather_data.sevenHourlyData.preciptype = resHourly.map(hour => {
+                return hour.preciptype;
+            });
+
+            weather.innerHTML = await generateWeatherTable();
+            tooltip();
+
+            function getNext7Hours(res) {
+                const now = new Date();
+                const endTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
+
+                // 合并今天 + 明天的小时数据（防止跨天）
+                const allHours = [
+                    ...res.days[0].hours,
+                    ...(res.days[1]?.hours || [])
+                ];
+
+                return allHours.filter(h => {
+                    const [hh, mm, ss] = h.datetime.split(":").map(Number);
+
+                    const hourDate = new Date(now);
+                    hourDate.setHours(hh, mm, ss || 0, 0);
+
+                    if (hourDate < now) {
+                        hourDate.setDate(hourDate.getDate() + 1);
+                    }
+
+                    return hourDate > now && hourDate <= endTime;
+                });
+            }
+        });
 }
 
 function getWeather_input_open_meteo() {
-    $.get("https://api.open-meteo.com/v1/forecast?latitude=" + weather_address.latitude + "&longitude=" + weather_address.longitude + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&daily=temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&forecast_days=1" + "&temperature_unit=" + wunit.temperature_code + "&wind_speed_unit=" + wunit.wind_speed_code + "&precipitation_code" + wunit.precipitation_code, function (res) {
-        console.log(res)
+    fetch_with_retry("https://api.open-meteo.com/v1/forecast?latitude=" + weather_address.latitude + "&longitude=" + weather_address.longitude + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_min,sunrise,sunset,uv_index_max,temperature_2m_max&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto&forecast_days=1&forecast_hours=12" + "&temperature_unit=" + wunit.temperature_code + "&wind_speed_unit=" + wunit.wind_speed_code + "&precipitation_unit=" + wunit.precipitation_code, {}, 3)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(async res => {
 
-        //now
-        if (obstime_show) {
-            obstime = wlang.datetime.replace("%1", res.current.time.replace("T", " "))
-        } else {
-            obstime = nullweather
-        }
-        if (windspeed_show) {
-            windSpeed = wlang.windSpeed.replace("%1", res.current.wind_speed_10m).replace("%2", wunit.wind)
-        } else {
-            windSpeed = nullweather
-        }
-        if (humidity_show) {
-            humidity = wlang.humidity.replace("%1", res.current.relative_humidity_2m)
-        } else {
-            humidity = nullweather
-        }
-        if (temperature_show) {
-            temperature = res.current.temperature_2m + wunit.temp
-        } else {
-            temperature = nullweather
-        }
-        if (feelstemperature_show) {
-            feels = wlang.feelstemperature.replace("%1", res.current.apparent_temperature).replace("%2", wunit.temp)
-        } else {
-            feels = nullweather
-        }
-        if (rangetemperature_show) {
-            rangetemperature = wlang.rangetemperature.replace("%1", res.daily.temperature_2m_min[0]).replace("%2", res.daily.temperature_2m_min[0]).replace("%3", wunit.temp).replace("%3", wunit.temp)
-        } else {
-            rangetemperature = nullweather
-        }
-        if (weathernow_show) {
-            if (weather_lang == "zh") {
-                const weatherCodes = {
-                    0: "万里无云",
-                    1: "多云",
-                    2: "多云",
-                    3: "阴天",
-                    45: "雾",
-                    48: "浓雾",
-                    51: "毛毛雨",
-                    53: "毛毛雨",
-                    55: "毛毛雨",
-                    56: "冰冻毛毛雨",
-                    57: "冰冻毛毛雨",
-                    61: "小雨",
-                    63: "中雨",
-                    65: "大雨",
-                    67: "冻雨",
-                    71: "小雪",
-                    73: "中雪",
-                    75: "大雪",
-                    77: "冰雹",
-                    80: "小阵雨",
-                    81: "中阵雨",
-                    82: "大阵雨",
-                    85: "小阵雪",
-                    86: "阵雪",
-                    95: "雷暴",
-                    96: "雷暴携冰雹",
-                    99: "雷暴携大量冰雹"
-                };
-                weathernow = weatherCodes[res.current.weather_code]
-            } else {
-                const weatherCodes = {
-                    0: "Clear sky",
-                    1: "Cloudy",
-                    2: "Cloudy",
-                    3: "Overcast",
-                    45: "Fog",
-                    48: "Thick fog",
-                    51: "Slight Drizzle",
-                    53: "Moderate Drizzle",
-                    55: "Heavy intensity Drizzle",
-                    56: "Freezing Rain",
-                    57: "Freezing Rain",
-                    61: "Slight rain",
-                    63: "Moderate rain",
-                    65: "Heavy intensity rain",
-                    67: "Freezing Rain",
-                    71: "Slight Snow fall",
-                    73: "Moderate Snow fall",
-                    75: "Heavy intensity Snow fall",
-                    77: "Snow grains",
-                    80: "Slight Rain showers",
-                    81: "Moderate Rain showers",
-                    82: "Heavy intensity Rain showers",
-                    85: "Slight Snow showers",
-                    86: "Heavy Snow showers",
-                    95: "Thunderstorm",
-                    96: "Thunderstorm with slight hail",
-                    99: "Thunderstorm with heavy hail"
-                };
-                weathernow = weatherCodes[res.current.weather_code]
-            }
-        } else {
-            weathernow = nullweather
-        }
-        if (precip_show) {
-            if (weather_lang == "zh") {
-                precip = "降水" + res.current.precipitation + wunit.precip_1
-            } else {
-                precip = "Precipitation" + res.current.precipitation + wunit.precip_1
-            }
-        } else {
-            precip = nullweather
-        }
-        if (windgust_show) {
-            windgust = wlang.windgust.replace("%1", res.current.wind_gusts_10m).replace("%2", wunit.wind)
-        } else {
-            windgust = nullweather
-        }
-        if (sunriseset_show) {
-            sunriseset = wlang.sunriseset.replace("%1", res.daily.sunrise[0].slice(-5)).replace("%2", res.daily.sunset[0].slice(-5))//sunrise = resd.sunrise;sunset = resd.sunset
-        } else {
-            sunriseset = nullweather
-        }
-        if (cloud_show) {
-            cloud = wlang.cloud.replace("%1", res.current.cloud_cover)
-        } else {
-            cloud = nullweather
-        }
-        if (pressure_show) {
-            pressure = wlang.pressure.replace("%1", res.current.pressure_msl).replace("%2", wunit.pressure)
-        } else {
-            pressure = nullweather
-        }
+            // 更新天气数据到 weather_data 对象
+            weather_data.updateTime = res.current.time;
 
-        if (wind_show) {
-            switch (weather_lang) {//wind
-                case "zh":
-                    if ((res.current.wind_direction_10m >= 337.5 && res.current.wind_direction_10m < 360) || (res.current.wind_direction_10m >= 0 && res.current.wind_direction_10m < 22.5)) {
-                        wind = "北风"
-                    } else if (res.current.wind_direction_10m >= 22.5 && res.current.wind_direction_10m < 67.5) {
-                        wind = "东北风"
-                    } else if (res.current.wind_direction_10m >= 67.5 && res.current.wind_direction_10m < 112.5) {
-                        wind = "东风"
-                    } else if (res.current.wind_direction_10m >= 112.5 && res.current.wind_direction_10m < 157.5) {
-                        wind = "东南风"
-                    } else if (res.current.wind_direction_10m >= 157.5 && res.current.wind_direction_10m < 202.5) {
-                        wind = "南风"
-                    } else if (res.current.wind_direction_10m >= 202.5 && res.current.wind_direction_10m < 247.5) {
-                        wind = "西南风"
-                    } else if (res.current.wind_direction_10m >= 247.5 && res.current.wind_direction_10m < 292.5) {
-                        wind = "西风"
-                    } else if (res.current.wind_direction_10m >= 292.5 && res.current.wind_direction_10m < 337.5) {
-                        wind = "西北风"
-                    } else {
-                        wind = "未知风向"
-                    }
-                    break
-                case "en":
-                    if ((res.current.wind_direction_10m >= 337.5 && res.current.wind_direction_10m < 360) || (res.current.wind_direction_10m >= 0 && res.current.wind_direction_10m < 22.5)) {
-                        wind = "north wind"
-                    } else if (res.current.wind_direction_10m >= 22.5 && res.current.wind_direction_10m < 67.5) {
-                        wind = "north-easterly wind"
-                    } else if (res.current.wind_direction_10m >= 67.5 && res.current.wind_direction_10m < 112.5) {
-                        wind = "east wind"
-                    } else if (res.current.wind_direction_10m >= 112.5 && res.current.wind_direction_10m < 157.5) {
-                        wind = "south-easterly wind"
-                    } else if (res.current.wind_direction_10m >= 157.5 && res.current.wind_direction_10m < 202.5) {
-                        wind = "south wind"
-                    } else if (res.current.wind_direction_10m >= 202.5 && res.current.wind_direction_10m < 247.5) {
-                        wind = "southwest wind"
-                    } else if (res.current.wind_direction_10m >= 247.5 && res.current.wind_direction_10m < 292.5) {
-                        wind = "west wind"
-                    } else if (res.current.wind_direction_10m >= 292.5 && res.current.wind_direction_10m < 337.5) {
-                        wind = "northwest wind"
-                    } else {
-                        wind = "uncharted wind"
-                    }
-                    break
+            // 温度相关数据
+            weather_data.temperature = res.current.temperature_2m;
+            weather_data.temperature_max = res.daily.temperature_2m_max[0];
+            weather_data.temperature_min = res.daily.temperature_2m_min[0];
+
+            // 体感温度
+            weather_data.feels = res.current.apparent_temperature;
+
+            // 湿度
+            weather_data.humidity = res.current.relative_humidity_2m;
+
+            // 风速
+            weather_data.windSpeed = res.current.wind_speed_10m;
+
+            // 天气状况
+            {
+                // 直接使用天气代码构建国际化键名
+                const i18nKey = `weather_openmeteo_${res.current.weather_code}`;
+                weather_data.weathernow = i18n(i18nKey) || i18n("weather_no_data");
             }
-        } else {
-            wind = nullweather
-        }
-        weather_webtext.innerHTML = generateWeatherTable();
-    });
+
+            // 风向
+            {
+                const directions = [
+                    "weather_wind_north",
+                    "weather_wind_northeast",
+                    "weather_wind_east",
+                    "weather_wind_southeast",
+                    "weather_wind_south",
+                    "weather_wind_southwest",
+                    "weather_wind_west",
+                    "weather_wind_northwest"
+                ];
+
+                const index = Math.floor((res.current.wind_direction_10m + 22.5) / 45) % 8;
+                weather_data.wind = i18n(directions[index] ?? "weather_no_data");
+            }
+
+            // 降水
+            weather_data.precip = res.current.precipitation;
+
+            // 阵风
+            weather_data.windgust = res.current.wind_gusts_10m;
+
+            // 日出日落
+            weather_data.sunrise = res.daily.sunrise[0];
+            weather_data.sunset = res.daily.sunset[0];
+
+            // 云量
+            weather_data.cloud = res.current.cloud_cover;
+
+            // 气压
+            weather_data.pressure = res.current.pressure_msl;
+
+            // 观测时间
+            weather_data.obstime = res.current.time.replace("T", " ");
+
+            // 温度范围
+            weather_data.rangetemperature = `${res.daily.temperature_2m_min[0]}~${res.daily.temperature_2m_max[0]}`;
+
+            // UV指数
+            weather_data.uvindex = res.daily.uv_index_max ? res.daily.uv_index_max[0] : nullweather;
+
+            // 体感温度范围
+            weather_data.rangefeelstemperature = `${res.daily.apparent_temperature_min ? res.daily.apparent_temperature_min[0] : res.daily.temperature_2m_min[0]}~${res.daily.apparent_temperature_max ? res.daily.apparent_temperature_max[0] : res.daily.temperature_2m_max[0]}`;
+
+            // 降雨量（如果有）
+            weather_data.rain = res.current.rain || 0;
+
+            // 设置天气图标（需要创建 Open-Meteo 到和风天气图标的映射）
+            weather_data.icon = getOpenMeteoIcon(res.current.weather_code, res.current.time);
+
+            // 处理hourly数据用于七小时预报
+            if (res.hourly && res.hourly.time && res.hourly.time.length > 0) {
+                // 获取当前时间
+                const now = new Date();
+                const currentTime = now.toISOString().split('T')[0] + 'T' +
+                    now.getHours().toString().padStart(2, '0') + ':00';
+
+                // 找到当前时间在hourly数据中的索引
+                let currentIndex = res.hourly.time.findIndex(time => time >= currentTime);
+                if (currentIndex === -1) currentIndex = 0;
+
+                // 获取接下来7小时的数据
+                const next7Hours = Math.min(7, res.hourly.time.length - currentIndex);
+
+                // 初始化sevenHourlyData
+                weather_data.sevenHourlyData = {
+                    updateTime: res.current.time,
+                    Times: [],
+                    Pops: [],
+                    Temps: [],
+                    Icons: [],
+                    Texts: [],
+                    Wind360s: [],
+                    Winds: [],
+                    WindLvs: [],
+                    WindSpeeds: [],
+                    Humidities: [],
+                    Precips: [],
+                    Pressures: [],
+                    Clouds: [],
+                    Dews: [],
+                    preciptype: []
+                };
+
+                for (let i = 0; i < next7Hours; i++) {
+                    const idx = currentIndex + i;
+
+                    // 时间
+                    const timeStr = res.hourly.time[idx];
+                    weather_data.sevenHourlyData.Times.push(timeStr.split('T')[1].substring(0, 5));
+
+                    // 降水概率
+                    const pop = res.hourly.precipitation_probability ? res.hourly.precipitation_probability[idx] : 0;
+                    weather_data.sevenHourlyData.Pops.push(pop !== null ? `${pop}%` : "——");
+
+                    // 温度
+                    weather_data.sevenHourlyData.Temps.push(res.hourly.temperature_2m ? res.hourly.temperature_2m[idx] : "--");
+
+                    // 天气图标和文本
+                    const weatherCode = res.hourly.weather_code ? res.hourly.weather_code[idx] : res.current.weather_code;
+                    // 根据时间判断白天/夜晚（6:00-18:00为白天）
+                    const hour = parseInt(timeStr.split('T')[1].substring(0, 2));
+                    const isDay = hour >= 6 && hour < 18;
+                    weather_data.sevenHourlyData.Icons.push(getOpenMeteoIcon(weatherCode, timeStr));
+                    weather_data.sevenHourlyData.Texts.push(i18n(`weather_openmeteo_${weatherCode}`) || i18n("weather_no_data"));
+
+                    // 风向
+                    const windDir = res.hourly.wind_direction_10m ? res.hourly.wind_direction_10m[idx] : res.current.wind_direction_10m;
+                    const directions = [
+                        "weather_wind_north",
+                        "weather_wind_northeast",
+                        "weather_wind_east",
+                        "weather_wind_southeast",
+                        "weather_wind_south",
+                        "weather_wind_southwest",
+                        "weather_wind_west",
+                        "weather_wind_northwest"
+                    ];
+                    const dirIndex = Math.floor((windDir + 22.5) / 45) % 8;
+                    weather_data.sevenHourlyData.Winds.push(i18n(directions[dirIndex] ?? "weather_no_data"));
+                    weather_data.sevenHourlyData.Wind360s.push(windDir);
+
+                    // 风速
+                    weather_data.sevenHourlyData.WindSpeeds.push(res.hourly.wind_speed_10m ? res.hourly.wind_speed_10m[idx] : res.current.wind_speed_10m);
+
+                    // 湿度
+                    weather_data.sevenHourlyData.Humidities.push(res.hourly.relative_humidity_2m ? res.hourly.relative_humidity_2m[idx] : res.current.relative_humidity_2m);
+
+                    // 降水量
+                    weather_data.sevenHourlyData.Precips.push(res.hourly.precipitation ? res.hourly.precipitation[idx] : res.current.precipitation);
+
+                    // 气压
+                    weather_data.sevenHourlyData.Pressures.push(res.hourly.surface_pressure ? res.hourly.surface_pressure[idx] : res.current.surface_pressure);
+
+                    // 云量
+                    weather_data.sevenHourlyData.Clouds.push(res.hourly.cloud_cover ? res.hourly.cloud_cover[idx] : res.current.cloud_cover);
+
+                    // 露点温度
+                    weather_data.sevenHourlyData.Dews.push(res.hourly.dew_point_2m ? res.hourly.dew_point_2m[idx] : "--");
+
+                    // 降水类型（Open-Meteo不直接提供，根据天气代码推断）
+                    weather_data.sevenHourlyData.preciptype.push(getPrecipTypeFromCode(weatherCode));
+                }
+
+                // 如果不足7小时，用空值填充
+                while (weather_data.sevenHourlyData.Times.length < 7) {
+                    weather_data.sevenHourlyData.Times.push("--:--");
+                    weather_data.sevenHourlyData.Pops.push("——");
+                    weather_data.sevenHourlyData.Temps.push("--");
+                    weather_data.sevenHourlyData.Icons.push("999");
+                    weather_data.sevenHourlyData.Texts.push(i18n("weather_no_data"));
+                    weather_data.sevenHourlyData.Winds.push("--");
+                    weather_data.sevenHourlyData.Wind360s.push("--");
+                    weather_data.sevenHourlyData.WindSpeeds.push("--");
+                    weather_data.sevenHourlyData.Humidities.push("--");
+                    weather_data.sevenHourlyData.Precips.push("--");
+                    weather_data.sevenHourlyData.Pressures.push("--");
+                    weather_data.sevenHourlyData.Clouds.push("--");
+                    weather_data.sevenHourlyData.Dews.push("--");
+                    weather_data.sevenHourlyData.preciptype.push("--");
+                }
+            }
+
+            weather.innerHTML = await generateWeatherTable();
+            tooltip();
+        })
+        .catch(error => {
+            console.error('Error fetching Open-Meteo weather data:', error);
+            weather.innerHTML = `<div class="weather-error">${i18n('weather_error_loading')}</div>`;
+        });
 }
 
 // 问候语变更逻辑
 function getGreetingText() {
     const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) return '早上好，先生/女士。';
-    if (hour >= 12 && hour < 18) return '下午好，先生/女士。';
-    if (hour >= 18 && hour < 22) return '晚上好，先生/女士。';
-    return '夜深了，先生/女士。';
+    if (hour >= 5 && hour < 12) return i18n('weather_greeting_morning_formal');
+    if (hour >= 12 && hour < 18) return i18n('weather_greeting_afternoon_formal');
+    if (hour >= 18 && hour < 22) return i18n('weather_greeting_evening_formal');
+    return i18n('weather_greeting_late_night_formal');
 }
 
-// 新增：获取天气提示语
 function getWeatherTips() {
     const tips = [];
     const hour = new Date().getHours();
@@ -1030,9 +930,9 @@ function getWeatherTips() {
 
     // 注意：这里需要确保hourlyData变量可用
     // 我们将在稍后的修改中确保这一点
-    if (typeof hourlyData !== 'undefined' && weather_data.hourlyData.hourly) {
-        weather_data.hourlyData.hourly.forEach(hour => {
-            const temp = parseInt(hour.temp);
+    if (typeof weather_data.sevenHourlyData !== 'undefined') {
+        weather_data.sevenHourlyData.Temps.forEach(hour => {
+            const temp = parseInt(hour);
             if (!isNaN(temp)) {
                 if (temp > maxTemp) maxTemp = temp;
                 if (temp < minTemp) minTemp = temp;
@@ -1041,7 +941,7 @@ function getWeatherTips() {
     }
 
     // 如果无法从24小时数据获取温度，使用当前温度作为默认值
-    if (maxTemp === -100 && temperature && temperature !== "未获取") {
+    if (maxTemp === -100 && weather_data.temperature && weather_data.temperature !== "") {
         const currentTemp = parseInt(weather_data.temperature);
         if (!isNaN(currentTemp)) {
             maxTemp = currentTemp;
@@ -1050,40 +950,44 @@ function getWeatherTips() {
     }
 
     // 优先级0: 天气晴朗，早上好、下午好、晚上好时
-    if ((weatherText.includes('晴') || weatherText.includes('多云')) && !isNight) {
-        tips.push({ priority: 0, text: '祝您拥有愉快的一天。' });
+    const sunnyText = i18n('weather_condition_sunny');
+    const cloudyText = i18n('weather_condition_cloudy');
+    if ((weatherText.includes(sunnyText) || weatherText.includes(cloudyText)) && !isNight) {
+        tips.push({ priority: 0, text: i18n('weather_tip_sunny_day') });
     }
 
     // 优先级1: 下雨
-    if (weatherText.includes('雨')) {
-        tips.push({ priority: 1, text: '今日有雨，建议携带雨具。' });
+    const rainText = i18n('weather_condition_rain');
+    if (weatherText.includes(rainText)) {
+        tips.push({ priority: 1, text: i18n('weather_tip_rain') });
     }
 
     // 优先级2: 大风
     if (windScale >= 5) {
-        tips.push({ priority: 2, text: '今日大气对流活动增强。' });
+        tips.push({ priority: 2, text: i18n('weather_tip_windy') });
     }
 
     // 优先级3: 极端温度
     if (maxTemp >= 35) {
-        tips.push({ priority: 3, text: '今日大气温度异常上升。' });
+        tips.push({ priority: 3, text: i18n('weather_tip_hot') });
     } else if (minTemp <= -10) {
-        tips.push({ priority: 3, text: '今日大气温度异常降低。' });
+        tips.push({ priority: 3, text: i18n('weather_tip_cold') });
     }
 
     // 优先级4: 空气质量差
     if (airQuality > 100) {
-        tips.push({ priority: 4, text: '今日大气杂质浓度异常。' });
+        tips.push({ priority: 4, text: i18n('weather_tip_air_quality') });
     }
 
     // 优先级5: 下雪
-    if (weatherText.includes('雪')) {
-        tips.push({ priority: 5, text: '今日有雪，建议部署防滑措施。' });
+    const snowText = i18n('weather_condition_snow');
+    if (weatherText.includes(snowText)) {
+        tips.push({ priority: 5, text: i18n('weather_tip_snow') });
     }
 
     // 优先级6: 天气晴朗，夜深了时
-    if ((weatherText.includes('晴') || weatherText.includes('多云')) && isNight) {
-        tips.push({ priority: 6, text: '请您注意休息，不休息也行。' });
+    if ((weatherText.includes(sunnyText) || weatherText.includes(cloudyText)) && isNight) {
+        tips.push({ priority: 6, text: i18n('weather_tip_sunny_night') });
     }
 
     // 按优先级排序，取优先级最高的
@@ -1095,14 +999,13 @@ function getWeatherTips() {
     return '';
 }
 
-// ========== 新增表格显示函数 ==========
-function generateWeatherTable() {
+async function generateWeatherTable() {
     // 检查数据是否已加载
-    if (weather_data.temperature === "未获取" && weather_data.weathernow === "未获取") {
+    if (weather_data.temperature === "" && weather_data.weathernow === "") {
         return `
         <div class="weather-table-container" style="background: rgba(0,0,0,0.8); padding: 20px; border-radius: 10px;">
             <div style="color: white; text-align: center; font-size: 16px;">
-                正在加载天气数据...
+                ${i18n('weather_loading')}
             </div>
         </div>
         `;
@@ -1110,45 +1013,28 @@ function generateWeatherTable() {
 
     // 获取当前时间用于问候语
     const hour = new Date().getHours();
-    let greeting = "祝您拥有愉快的一天";
-    if (hour < 6) greeting = "夜深了，注意休息";
-    else if (hour < 12) greeting = "早上好，祝您拥有愉快的一天";
-    else if (hour < 14) greeting = "中午好，记得用餐";
-    else if (hour < 18) greeting = "下午好，保持活力";
-    else greeting = "晚上好，放松身心";
-
-    // 获取天气图标
-    function getWeatherIcon(weatherText) {
-        const iconMap = {
-            '晴': '☀️', '多云': '⛅', '阴': '☁️', '雨': '🌧', '雪': '❄️',
-            '雾': '🌫', '雷': '⛈', '风': '💨', '沙': '🌪', '小雨': '🌧',
-            '中雨': '🌧', '大雨': '🌧', '暴雨': '🌧', '小雪': '❄️', '中雪': '❄️',
-            '大雪': '❄️', '暴雪': '❄️'
-        };
-        for (let key in iconMap) {
-            if (weatherText && weatherText.includes(key)) return iconMap[key];
-        }
-        return '🌈';
-    }
+    if (hour < 6) greeting = i18n('weather_greeting_late_night');
+    else if (hour < 12) greeting = i18n('weather_greeting_morning');
+    else if (hour < 14) greeting = i18n('weather_greeting_noon');
+    else if (hour < 18) greeting = i18n('weather_greeting_afternoon');
+    else greeting = i18n('weather_greeting_evening');
 
     // 获取空气质量等级
     function getAirQualityText(airValue) {
-        if (!airValue || airValue === "未获取") return "未获取";
+        if (!airValue || airValue === "") return "";
 
-        // 尝试转换为数字
         let airNum = parseFloat(airValue);
         if (isNaN(airNum)) {
-            // 如果无法转换为数字，直接返回原值
             return airValue;
         }
 
-        // 根据中国空气质量指数标准分级
-        if (airNum <= 50) return `优 (${airNum})`;
-        if (airNum <= 100) return `良 (${airNum})`;
-        if (airNum <= 150) return `轻度污染 (${airNum})`;
-        if (airNum <= 200) return `中度污染 (${airNum})`;
-        if (airNum <= 300) return `重度污染 (${airNum})`;
-        return `严重污染 (${airNum})`;
+        // 根据中国空气质量指数标准分级，使用i18n
+        if (airNum <= 50) return `${i18n('weather_air_quality_excellent')} (${airNum})`;
+        if (airNum <= 100) return `${i18n('weather_air_quality_good')} (${airNum})`;
+        if (airNum <= 150) return `${i18n('weather_air_quality_light_pollution')} (${airNum})`;
+        if (airNum <= 200) return `${i18n('weather_air_quality_moderate_pollution')} (${airNum})`;
+        if (airNum <= 300) return `${i18n('weather_air_quality_heavy_pollution')} (${airNum})`;
+        return `${i18n('weather_air_quality_severe_pollution')} (${airNum})`;
     }
 
     function getAlart() {
@@ -1171,15 +1057,12 @@ function generateWeatherTable() {
                 alertMap[alert.alert] = {
                     ...alert,
                     ids: [alert.id],
-                    // 保持最严重的预警颜色和等级
                     level: alert.level,
                     color: alert.color
                 };
             } else {
-                // 如果预警名称已存在，合并ID并保持更严重的等级
                 alertMap[alert.alert].ids.push(alert.id);
 
-                // 如果当前预警更严重，更新等级和颜色
                 const currentSeverity = severityLevel[alert.level];
                 const existingSeverity = severityLevel[alertMap[alert.alert].level];
 
@@ -1190,7 +1073,6 @@ function generateWeatherTable() {
             }
         });
 
-        // 将Map转换回数组
         const mergedAlerts = Object.values(alertMap);
         let alertsHTML = "";
         mergedAlerts.forEach(a => {
@@ -1198,67 +1080,100 @@ function generateWeatherTable() {
             alertsHTML += `<span class="weather-alert-item" style="color: rgb(${a.color}); font-weight: bold; margin-right: 10px;" data-id="${idsString}">${a.alert}</span>`;
         });
 
-        if (air_show) {
-            tableHTML += `<td class="weather-cell air-title-cell">空气质量</td>`;
+        if ([1].includes(weather_api_choose)) {
+            tableHTML += `<td class="weather-cell air-title-cell">${i18n('weather_air_quality_label')}</td>`;
             tableHTML += `<td class="weather-cell air-value-cell">${getAirQualityText(weather_data.air)}</td>`;
-            tableHTML += `<td class="weather-cell warning-cell" colspan="4">预警信息：<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div><div></td>`;
-        } else {
-            tableHTML += `<td class="weather-cell warning-cell" colspan="6">预警信息：${alertsHTML}</td>`;
+        }
+        if (mergedAlerts.length > 0) {
+            tableHTML += `<td class="weather-cell warning-cell" colspan="4">${i18n('weather_alert_label')}<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div><div></td>`;
         }
     }
 
+    let weatherIconSVG = "";
+    try {
+        const res = await fetch_with_retry(`source/QWeather-Icons/icons/${weather_data.icon}-fill.svg`);
+        weatherIconSVG = await res.text();
+    } catch (e) {
+        const res = await fetch_with_retry(`source/QWeather-Icons/icons/999-fill.svg`);
+        weatherIconSVG = await res.text();
+    }
+
+    let leftHTML = `
+        <div class="weather-left">
+        `;
+
+    leftHTML += `
+
+            <div class="weather-icon">
+                ${weatherIconSVG}
+            </div>
+            `;
+
+    leftHTML += `
+            <div class="weather-temp">
+                ${weather_data.temperature}${wunit.temp || "℃"}
+            </div>
+        `;
+
+    leftHTML += `
+            <div class="weather-text">
+                ${weather_data.weathernow || ""}
+            </div>
+        `;
+
+    if ([1, 2, 3, 4].includes(weather_api_choose)) {
+        leftHTML += `
+            <div class="weather-city">
+                ${weather_address.cityname}
+            </div>
+        `;
+    }
+
+    leftHTML += `
+            <div class="weather-feels">
+                ${i18n('weather_feels_label')} ${weather_data.feels}${wunit.temp || "℃"}
+            </div>
+        `;
+
+    leftHTML += `
+        </div>
+        `;
+
     let tableHTML = `
-    <div class="weather-table-container">
         <table class="weather-table">
             <tr class="weather-row main-row">
     `;
 
-    // 第一行：城市和主要天气信息
-    if (cityname_show) {
-        tableHTML += `<td class="weather-cell city-cell" rowspan="2">${weather_address.cityname || "未获取"}</td>`;
+    tableHTML += `<td class="weather-cell humidity-cell">${weather_data.temperature_max} - ${weather_data.temperature_min}℃</td>`;
+
+    tableHTML += `<td class="weather-cell humidity-cell">${i18n('weather_humidity_label')}${weather_data.humidity}%</td>`;
+
+
+    tableHTML += `<td class="weather-cell wind-cell">${weather_data.wind}</td>`;
+
+
+
+    if ([1, 2].includes(weather_api_choose)) {
+        tableHTML += `<td class="weather-cell wind-level-cell">${weather_data.windLv}${i18n('weather_wind_level_label')}</td>`;
     }
 
-    if (weathernow_show) {
-        tableHTML += `
-            <td class="weather-cell icon-cell">${getWeatherIcon(weather_data.weathernow || "")}</td>
-            <td class="weather-cell weather-cell">${weather_data.weathernow || "未获取"}</td>
-        `;
+    tableHTML += `<td class="weather-cell wind-speed-cell">${weather_data.windSpeed}${wunit.wind || "km/h"}</td>`;
+
+    if ([1, 2].includes(weather_api_choose)) {
+        tableHTML += `<td class="weather-cell visibility-cell">${i18n('weather_visibility_label')}${weather_data.vis}${wunit.vis || "km"}</td>`;
     }
 
-    if (temperature_show) {
-        tableHTML += `<td class="weather-cell temp-cell">${weather_data.temperature || "未获取"}${wunit.temp || "℃"}</td>`;
-    }
-
-    if (feelstemperature_show) {
-        tableHTML += `<td class="weather-cell feels-cell">体感${weather_data.feels || "未获取"}${wunit.temp || "℃"}</td>`;
-    }
-
-    if (humidity_show) {
-        tableHTML += `<td class="weather-cell humidity-cell">湿度${weather_data.humidity || "未获取"}%</td>`;
-    }
+    tableHTML += `<td class="weather-cell cloud-cell">${i18n('weather_cloud_label')}${weather_data.cloud}%</td>`;
 
     tableHTML += `</tr><tr class="weather-row detail-row">`;
 
-    // 第二行：风力和能见度信息
-    if (wind_show) {
-        tableHTML += `<td class="weather-cell wind-cell">${weather_data.wind || "未获取"}</td>`;
-    }
+    tableHTML += `<td class="weather-cell uv-cell">${i18n('weather_uv_label')}${weather_data.uvindex}</td>`;
 
-    if (windlv_show) {
-        tableHTML += `<td class="weather-cell wind-level-cell">${weather_data.windLv || "未获取"}级</td>`;
-    }
+    tableHTML += `<td class="weather-cell sunrise-cell">${i18n('weather_sunrise_label')}${formatTime(weather_data.sunrise)}</td>`;
 
-    if (windspeed_show) {
-        tableHTML += `<td class="weather-cell wind-speed-cell">${weather_data.windSpeed || "未获取"}${wunit.wind || "km/h"}</td>`;
-    }
+    tableHTML += `<td class="weather-cell sunset-cell">${i18n('weather_sunset_label')}${formatTime(weather_data.sunset)}</td>`;
 
-    if (vis_show) {
-        tableHTML += `<td class="weather-cell visibility-cell">能见度${weather_data.vis || "未获取"}${wunit.vis || "km"}</td>`;
-    }
-
-    if (cloud_show) {
-        tableHTML += `<td class="weather-cell cloud-cell">云度${weather_data.cloud || "未获取"}%</td>`;
-    }
+    tableHTML += `<td class="weather-cell moonphase-cell">${weather_data.moonphase}</td>`;
 
     tableHTML += `</tr><tr class="weather-row air-row">`;
 
@@ -1266,32 +1181,33 @@ function generateWeatherTable() {
     getAlart();
 
     // 降水概率行（动态显示）
-    tableHTML += `
+    if ([1, 4, 5].includes(weather_api_choose)) {
+        tableHTML += `
         <tr class="weather-row precip-row">
-            <td class="weather-cell precip-icon">🌧</td>
+            <td class="weather-cell precip-text"  rowspan="2" data-i18n="weather_show_precipprob">${i18n('weather_show_precipprob')}</td>
             <td class="weather-cell precip-times" colspan="5">
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[0] || "12:00"}</span>
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[1] || "13:00"}</span>
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[2] || "14:00"}</span>
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[3] || "15:00"}</span>
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[4] || "16:00"}</span>
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[5] || "17:00"}</span>
-                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[6] || "18:00"}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[0]}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[1]}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[2]}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[3]}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[4]}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[5]}</span>
+                <span class="precip-time-cell">${weather_data.sevenHourlyData.Times[6]}</span>
             </td>
         </tr>
         <tr class="weather-row precip-prob-row">
-            <td class="weather-cell dice-icon">🎲</td>
             <td class="weather-cell precip-probs" colspan="5">
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[0] || "N/A%"}</span>
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[1] || "N/A%"}</span>
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[2] || "N/A%"}</span>
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[3] || "N/A%"}</span>
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[4] || "N/A%"}</span>
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[5] || "N/A%"}</span>
-                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[6] || "N/A%"}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[0]}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[1]}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[2]}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[3]}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[4]}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[5]}</span>
+                <span class="precip-prob-cell">${weather_data.sevenHourlyData.Pops[6]}</span>
             </td>
         </tr>
-    `;
+        `;
+    }
 
     // 问候语行
     const greetingText = getGreetingText();
@@ -1302,22 +1218,26 @@ function generateWeatherTable() {
         <tr class="weather-row greeting-row">
             <td class="weather-cell greeting-cell" colspan="6">${fullGreeting}</td>
         </tr>
-    `;
-    tableHTML += `
         </table>
-    </div>
     `;
 
-    return tableHTML;
+    return `
+        <div class="weather-container">
+            ${leftHTML}
+
+            <div class="weather-right">
+                ${tableHTML}
+            </div>
+        </div>
+    `;
+
 }
 
 function attachSevenHourlyTooltip(element, hourIndex) {
     const tooltip = document.querySelector("#weatherHourlyTooltip");
     const card = tooltip.querySelector(".popup-main");
-    console.log(card.cloneNode(true))
 
     element.addEventListener("mouseenter", (e) => {
-        // 取数据
         const i = hourIndex;
         const pop = weather_data.sevenHourlyData.Pops[i] ?? "--";
         const temp = weather_data.sevenHourlyData.Temps[i] ?? "--";
@@ -1333,17 +1253,16 @@ function attachSevenHourlyTooltip(element, hourIndex) {
         const clouds = weather_data.sevenHourlyData.Clouds[i] ?? "--";
         const dew = weather_data.sevenHourlyData.Dews[i] ?? "--";
 
-        // 填充 tooltip 内容
-        card.querySelector("#pTemp").textContent = `${temp}°`;
-        card.querySelector("#pText").textContent = text;
-        card.querySelector("#pHumidity").textContent = `${hum}%`;
-        card.querySelector("#pPrecip").textContent = `${pop} / ${precip}mm`;
-        card.querySelector("#pPressure").textContent = `${pres}hPa`;
-        card.querySelector("#pClouds").textContent = `${clouds}%`;
-        card.querySelector("#pDew").textContent = `${dew}°`;
-        card.querySelector("#pWindDir").textContent = `${wind} / ${wind360}°`;
+        card.querySelector("#pTemp").textContent = `${temp}${i18n('weather_tooltip_unit_degree')}`;
+        card.querySelector("#pText").innerHTML = text;
+        card.querySelector("#pHumidity").textContent = `${hum}${i18n('weather_tooltip_unit_percent')}`;
+        card.querySelector("#pPrecip").textContent = `${pop} / ${precip}${i18n('weather_tooltip_unit_mm')}`;
+        card.querySelector("#pPressure").textContent = `${pres}${i18n('weather_tooltip_unit_hpa')}`;
+        card.querySelector("#pClouds").textContent = `${clouds}${i18n('weather_tooltip_unit_percent')}`;
+        card.querySelector("#pDew").textContent = `${dew}${i18n('weather_tooltip_unit_degree')}`;
+        card.querySelector("#pWindDir").textContent = `${wind} / ${wind360}${i18n('weather_tooltip_unit_degree')}`;
         card.querySelector("#pWindLv").textContent = windLv;
-        card.querySelector("#pWindSpeed").textContent = windSp + " m/s";
+        card.querySelector("#pWindSpeed").textContent = windSp + ` ${i18n('weather_tooltip_unit_ms')}`;
 
         fetch_with_retry(`source/QWeather-Icons/icons/${icon}-fill.svg`)
             .then(res => res.text())
@@ -1351,7 +1270,6 @@ function attachSevenHourlyTooltip(element, hourIndex) {
                 card.querySelector("#pIconImg").innerHTML = svg;
             })
 
-        // 显示
         tooltip.style.display = "block";
         tooltip.classList.add("show");
     });
@@ -1389,7 +1307,7 @@ function attachWeatherAlertTooltip(element) {
     const cardTemplate = document.querySelector("#weatherAlerttooltipCardTemplate");
     const alertName = element.innerText;
 
-    if (element.innerText == "诸事顺遂") return;
+    if (element.innerText == i18n('weather_alert_everything_ok')) return;
 
     element.addEventListener("mouseenter", (e) => {
 
@@ -1430,16 +1348,15 @@ function attachWeatherAlertTooltip(element) {
                     card.querySelector(".tooltip-icon").innerHTML = svg;
                 })
 
+            tooltip.style.display = "block";
             card.classList.add("glow");
             tooltip.classList.add("show", "glow");
-            tooltip.style.display = "block";
 
             cardsContainer.appendChild(card);
         });
     });
 
     element.addEventListener("mousemove", (e) => {
-
 
         const tipWidth = tooltip.offsetWidth;
         const tipHeight = tooltip.offsetHeight;
@@ -1470,4 +1387,174 @@ function attachWeatherAlertTooltip(element) {
             }
         }, 250);
     });
+}
+
+function tooltip() {
+    if ([1].includes(weather_api_choose)) {
+        document.querySelectorAll(".weather-alert-item").forEach(item => {
+            attachWeatherAlertTooltip(item);
+        });
+    }
+    if ([1, 4, 5].includes(weather_api_choose)) {
+        document.querySelectorAll(".precip-time-cell").forEach((el, i) => {
+            attachSevenHourlyTooltip(el, i);
+        });
+    }
+}
+
+// VisualCrossing icon → 和风天气 icon映射
+const VC_ICON_TO_QWEATHER = {
+    // ===== 晴 / 多云 =====
+    "clear-day": { day: 100, night: 150 },
+    "clear-night": { day: 100, night: 150 },
+
+    "partly-cloudy-day": { day: 101, night: 151 },
+    "partly-cloudy-night": { day: 101, night: 151 },
+
+    "cloudy": { day: 101, night: 151 },
+
+    // ===== 雨 =====
+    "rain": { day: 399, night: 399 },
+    "showers-day": { day: 300, night: 350 },
+    "showers-night": { day: 300, night: 350 },
+
+    // ===== 雷雨 =====
+    "thunder-rain": { day: 302, night: 302 },
+    "thunder-showers-day": { day: 302, night: 302 },
+    "thunder-showers-night": { day: 302, night: 302 },
+
+    // ===== 雪 =====
+    "snow": { day: 499, night: 499 },
+    "snow-showers-day": { day: 407, night: 457 },
+    "snow-showers-night": { day: 407, night: 457 },
+
+    // ===== 雾 =====
+    "fog": { day: 501, night: 501 },
+
+    // ===== 风（无昼夜图标，兜底）=====
+    "wind": { day: 101, night: 151 }
+};
+
+// Open-Meteo 天气代码 → 和风天气 icon映射
+const OPEN_METEO_TO_QWEATHER = {
+    // 晴 (0)
+    0: { day: 100, night: 150 },
+
+    // 多云 (1, 2, 3)
+    1: { day: 101, night: 151 },
+    2: { day: 101, night: 151 },
+    3: { day: 101, night: 151 },
+
+    // 雾 (45, 48)
+    45: { day: 501, night: 501 },
+    48: { day: 501, night: 501 },
+
+    // 毛毛雨 (51, 53, 55)
+    51: { day: 300, night: 350 },
+    53: { day: 300, night: 350 },
+    55: { day: 300, night: 350 },
+
+    // 冰冻毛毛雨 (56, 57)
+    56: { day: 399, night: 399 },
+    57: { day: 399, night: 399 },
+
+    // 雨 (61, 63, 65)
+    61: { day: 302, night: 302 },
+    63: { day: 302, night: 302 },
+    65: { day: 302, night: 302 },
+
+    // 冻雨 (67)
+    67: { day: 399, night: 399 },
+
+    // 雪 (71, 73, 75)
+    71: { day: 407, night: 457 },
+    73: { day: 407, night: 457 },
+    75: { day: 407, night: 457 },
+
+    // 冰雹 (77)
+    77: { day: 499, night: 499 },
+
+    // 阵雨 (80, 81, 82)
+    80: { day: 302, night: 302 },
+    81: { day: 302, night: 302 },
+    82: { day: 302, night: 302 },
+
+    // 阵雪 (85, 86)
+    85: { day: 407, night: 457 },
+    86: { day: 407, night: 457 },
+
+    // 雷暴 (95, 96, 99)
+    95: { day: 302, night: 302 },
+    96: { day: 302, night: 302 },
+    99: { day: 302, night: 302 }
+};
+
+// 获取 Open-Meteo 天气代码对应的和风天气图标
+function getOpenMeteoIcon(weatherCode, timeString) {
+    const defaultIcon = { day: 100, night: 150 };
+
+    const iconMapping = OPEN_METEO_TO_QWEATHER[weatherCode] || defaultIcon;
+
+    let isNight = false;
+    if (timeString) {
+        const time = new Date(timeString);
+        const hour = time.getHours();
+        isNight = hour >= 18 || hour < 6;
+    }
+
+    // 返回对应的图标编号
+    return isNight ? iconMapping.night : iconMapping.day;
+}
+
+// 根据Open-Meteo天气代码推断降水类型
+function getPrecipTypeFromCode(weatherCode) {
+    // 雨相关代码
+    const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
+
+    // 雪相关代码
+    const snowCodes = [71, 73, 75, 77, 85, 86];
+
+    // 冻雨相关代码
+    const freezingRainCodes = [56, 57, 66, 67];
+
+    // 冰雹相关代码
+    const hailCodes = [77];
+
+    if (rainCodes.includes(weatherCode)) {
+        if (freezingRainCodes.includes(weatherCode)) {
+            return i18n('weather_precip_type_freezing_rain');
+        } else if (hailCodes.includes(weatherCode)) {
+            return i18n('weather_precip_type_hail');
+        }
+        return i18n('weather_precip_type_rain');
+    } else if (snowCodes.includes(weatherCode)) {
+        return i18n('weather_precip_type_snow');
+    }
+
+    return i18n('weather_precip_type_none');
+}
+
+// 格式化时间函数（用于日出日落时间）
+function formatTime(timeString) {
+    if (!timeString) return "--:--";
+
+    try {
+        const date = new Date(timeString);
+        if (isNaN(date.getTime())) {
+            const timeMatch = timeString.match(/(\d{1,2}):(\d{1,2})/);
+            if (timeMatch) {
+                const hours = timeMatch[1].padStart(2, '0');
+                const minutes = timeMatch[2].padStart(2, '0');
+                return `${hours}:${minutes}`;
+            }
+            return timeString;
+        }
+
+        const hours = date.getHours().toString().padStart(2, '0');
+        const minutes = date.getMinutes().toString().padStart(2, '0');
+        return `${hours}:${minutes}`;
+    } catch (error) {
+        debugLogger.error('Error formatting time:', error, timeString);
+        return timeString;
+    }
 }

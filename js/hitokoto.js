@@ -1,8 +1,6 @@
 var hitokoto = document.querySelector("#hitokoto");
 var hitokoto_webtext = document.querySelector("#hitokoto .text");
 
-var ht
-
 var  hitokoto_text = "未获取";
 var  from_who_text = "未获取";
 var  from_text = "未获取";
@@ -66,16 +64,16 @@ function autoHitokto(){
     getHitokoto();
     switch(hitokoto_updata){//更新时间
         case 1:
-            ht = setTimeout(autoHitokto, 1800000);
+            timerManager.create(autoHitokto, 1800000, 'updataHitokto');
             break
         case 2:
-            ht = setTimeout(autoHitokto, 3600000);
+            timerManager.create(autoHitokto, 3600000, 'updataHitokto');
             break
         case 3:
-            ht = setTimeout(autoHitokto, 7200000);
+            timerManager.create(autoHitokto, 7200000, 'updataHitokto');
             break
         case 4:
-            ht = setTimeout(autoHitokto, 10800000);
+            timerManager.create(autoHitokto, 10800000, 'updataHitokto');
             break
         case 5:
             break

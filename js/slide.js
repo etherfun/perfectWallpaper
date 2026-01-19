@@ -14,7 +14,70 @@ var pictures = {
 	text: document.querySelector("#picture_info .description")
 }
 
-var t
+// 背景层相关变量
+var backgroundLayers = {
+    container: document.querySelector("#background-container"),
+    layer1: document.querySelector("#background-layer1"),
+    layer2: document.querySelector("#background-layer2"),
+    blurLayer1: document.querySelector("#background-blur-layer1"),
+    blurLayer2: document.querySelector("#background-blur-layer2"),
+    currentActive: 1, // 当前活动的层 (1 或 2)
+    blurCurrentActive: 1, // 当前活动的模糊层 (1 或 2)
+    isTransitioning: false // 是否正在过渡中
+}
+
+/** 使用两层背景进行渐变切换（支持模糊背景层两层切换） */
+function transitionBackground(newImageUrl) {
+    if (backgroundLayers.isTransitioning) return;
+    backgroundLayers.isTransitioning = true;
+    
+    // 获取当前和下一层（主背景层）
+    var currentLayer = backgroundLayers.currentActive === 1 ? backgroundLayers.layer1 : backgroundLayers.layer2;
+    var nextLayer = backgroundLayers.currentActive === 1 ? backgroundLayers.layer2 : backgroundLayers.layer1;
+    
+    // 获取当前和下一层（模糊背景层）
+    var currentBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer1 : backgroundLayers.blurLayer2;
+    var nextBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer2 : backgroundLayers.blurLayer1;
+    
+    // 设置下一层的背景图片（主背景层）
+    nextLayer.style.backgroundImage = "url('" + newImageUrl + "')";
+    
+    // 设置下一层的背景图片（模糊背景层）
+    if (nextBlurLayer) {
+        nextBlurLayer.style.backgroundImage = "url('" + newImageUrl + "')";
+    }
+    
+    // 自动应用背景样式到新层
+    applyBackgroundStyle();
+    
+    // 开始渐变过渡
+    setTimeout(function() {
+        // 淡出当前层（主背景层）
+        currentLayer.style.opacity = 0;
+        
+        // 淡入下一层（主背景层）
+        nextLayer.style.opacity = 1;
+        
+        // 淡出当前层（模糊背景层）
+        if (currentBlurLayer) {
+            currentBlurLayer.style.opacity = 0;
+        }
+        
+        // 淡入下一层（模糊背景层）
+        if (nextBlurLayer) {
+            nextBlurLayer.style.opacity = 1;
+        }
+        
+        // 切换活动层
+        backgroundLayers.currentActive = backgroundLayers.currentActive === 1 ? 2 : 1;
+        backgroundLayers.blurCurrentActive = backgroundLayers.blurCurrentActive === 1 ? 2 : 1;
+        
+        // 重置过渡状态
+        setTimeout(function() {
+            backgroundLayers.isTransitioning = false;
+        }, 1000);
+    }, 50);
+}
 
 /** 更新播放列表 */
 function updateFileList(currentFiles) {
@@ -78,39 +141,46 @@ function changeBackground() {
 			} else {
 				shouldShow();
 			};
-			t = setTimeout(changeBackground, calculate(speed));
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, calculate(speed), 'backgroundChange');
 			break;
 		case 3://视频模式
 			shouldShow();
 			break;
 		case 4://Bing壁纸
 			shouldShow();
-			t = setTimeout(changeBackground, 10800000);
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, 10800000, 'backgroundChange');
 			break;
 		case 5://Lorem Picsum
 			shouldShow();
-			t = setTimeout(changeBackground, calculate(speed));
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, calculate(speed), 'backgroundChange');
 			break;
 		case 6://NASA
 			shouldShow();
-			t = setTimeout(changeBackground, 10800000);
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, 10800000, 'backgroundChange');
 			break;
 		case 7://次元api
 			shouldShow();
-			t = setTimeout(changeBackground, calculate(speed));
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, calculate(speed), 'backgroundChange');
 			break;
 		case 8://Windows聚焦
 			shouldShow();
-			t = setTimeout(changeBackground, calculate(speed));
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, calculate(speed), 'backgroundChange');
 			break
 		case 9://自定义
 			shouldShow();
-			t = setTimeout(changeBackground, calculate(speed));
+            timerManager.remove('backgroundChange');
+            timerManager.create( changeBackground, calculate(speed), 'backgroundChange');
 			break
 		default:
 	}
-	//setInterval("changeBackground()",5000);
 
+    if (document.querySelector(".fluid-effect-wrapper:not(#player_control .fluid-effect-wrapper)")) timerManager.pause('backgroundChange')
 }
 
 // 顺序切or随机切换
@@ -143,35 +213,32 @@ function nextImage(rands) {
 
 /** 应该展示的背景 */
 function shouldShow() {
+    document.body.style.backgroundImage = "";
 
 	switch (wallpapermode) {
 		case 1://单一壁纸模式
-			//关闭幻灯片特效
-			$.backstretch("destroy", false);
 			//关闭视频
 			myvideo.src = null;
-			//document.body.style.background = "";
+			//清除body的背景图片
 			document.body.style.backgroundImage = "";
+			
+			var imageUrl;
 			if (custom) {
-				document.body.style.background = "url('" + 'file:///' + custom + "')";
-				//RGBuse.style.background = "url('"+'file:///' + custom + "')";
-				//document.body.style.backgroundImage="url('"+'file:///' + custom + "')";
+				imageUrl = 'file:///' + custom;
 			} else {
-				//document.body.style.background = "url('imgs/1.jpg')";
-				document.body.style.background = backgroundRoute;
-				//RGBuse.style.background = backgroundRoute;
-				//document.body.style.backgroundImage = "url('imgs/1.jpg')";
+				imageUrl = backgroundRoute.replace(/^url\("(.+?)"\)$/, '$1');
 			}
-			//设置但壁纸样式
-			setBackgroundStyle();
+			
+			//使用两层背景系统进行渐变切换
+			transitionBackground(imageUrl);
+			
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
 			if (RGB_show) {
-				var src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1')
 				if (RGB_show) {
 					nextphoto = true
 					setTimeout(function () {
-						background2canvas(src, false)
+						background2canvas(imageUrl, false)
 						nextphoto = false
 					}, 100)
 				}
@@ -181,13 +248,12 @@ function shouldShow() {
 			//关闭视频
 			myvideo.src = null;
 			if (myList.length) {
-				//$.backstretch('file:///' + currentImg, {fade: 1000});
-				document.body.style.backgroundImage = "url('" + 'file:///' + currentImg + "')";
-				//TransitionSwith('file:///' + currentImg);
+				//使用两层背景系统进行渐变切换
+				transitionBackground('file:///' + currentImg);
 			} else {
-				$.backstretch("destroy", false);
-				document.body.style.backgroundImage = "url('imgs/1.jpg')";
-				//RGBuse.style.backgroundImage = backgroundRoute
+				
+				//使用两层背景系统进行渐变切换
+				transitionBackground("url('imgs/1.jpg')");
 			}
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
@@ -200,8 +266,6 @@ function shouldShow() {
 			}
 			break;
 		case 3://视频模式
-			//关闭幻灯片特效
-			$.backstretch("destroy", false);
 			ChangeVideoModel();
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
@@ -217,8 +281,6 @@ function shouldShow() {
 			if (picturesinfo_show && pictures.picture_info.style.display == "none") {
 				pictures.picture_info.style.display = "flex"
 			}
-			// 关闭幻灯片特效
-			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
@@ -258,8 +320,8 @@ function shouldShow() {
 				img.src = bingurl + "_UHD.jpg";
 
 				img.onload = function () {
-					//TransitionSwith(img.src);
-					document.body.style.backgroundImage = "url('" + img.src + "')";
+					//使用两层背景系统进行渐变切换
+					transitionBackground(img.src);
 
 					if (RGB_show) {
 						nextphoto = true
@@ -268,13 +330,10 @@ function shouldShow() {
 							nextphoto = false
 						}, 100)
 					}
-					setBackgroundStyle();
 				};
 			});
 			break;
 		case 5: // Lorem Picsum
-			// 关闭幻灯片特效
-			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 			var timestamp = new Date().getTime();
@@ -283,8 +342,8 @@ function shouldShow() {
 			img.src = "https://picsum.photos/3840/2160?random=" + timestamp;
 
 			img.onload = function () {
-				//TransitionSwith(img.src);
-				document.body.style.backgroundImage = "url(" + img.src + ")";
+				//使用两层背景系统进行渐变切换
+				transitionBackground(img.src);
 
 				if (RGB_show) {
 					nextphoto = true
@@ -293,14 +352,13 @@ function shouldShow() {
 						nextphoto = false
 					}, 100)
 				}
-				setBackgroundStyle();
 			};
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
 			break;
 		/*case 6://星河图片api
 			// 关闭幻灯片特效
-			$.backstretch("destroy", false);
+			
 			// 关闭视频
 			myvideo.src = null;
 			var timestamp = new Date().getTime();
@@ -309,14 +367,11 @@ function shouldShow() {
 			img.src = galaxyapi + timestamp;    
 			 
 			img.onload = function() {  
-				
-				document.body.style.backgroundImage = "url(" + galaxyapi + timestamp + ")";
-				setBackgroundStyle();  
+				//使用两层背景系统进行渐变切换
+				transitionBackground(galaxyapi + timestamp);
 			};  
 			break*/
 		case 7: // 次元api  
-			// 关闭幻灯片特效  
-			//$.backstretch("destroy", false);  
 			// 关闭视频  
 			myvideo.src = null;
 
@@ -326,8 +381,8 @@ function shouldShow() {
 				img.src = getchiyuan;
 
 				img.onload = function () {
-					//TransitionSwith(img.src);
-					document.body.style.backgroundImage = "url('" + img.src + "')";
+					//使用两层背景系统进行渐变切换
+					transitionBackground(img.src);
 
 					if (RGB_show) {
 						nextphoto = true
@@ -336,7 +391,6 @@ function shouldShow() {
 							nextphoto = false
 						}, 100)
 					}
-					setBackgroundStyle();
 				};
 			});
 			clearpicturesinfo()
@@ -346,8 +400,6 @@ function shouldShow() {
 			if (picturesinfo_show && pictures.picture_info.style.display == "none") {
 				pictures.picture_info.style.display = "flex"
 			}
-			// 关闭幻灯片特效
-			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
@@ -388,8 +440,8 @@ function shouldShow() {
 				var img = new Image();
 				img.src = url
 				img.onload = function () {
-					//TransitionSwith(img.src);
-					document.body.style.backgroundImage = "url('" + img.src + "')";
+					//使用两层背景系统进行渐变切换
+					transitionBackground(img.src);
 
 					if (RGB_show) {
 						nextphoto = true
@@ -398,7 +450,6 @@ function shouldShow() {
 							nextphoto = false
 						}, 100)
 					}
-					setBackgroundStyle();
 				};
 			}
 
@@ -408,8 +459,6 @@ function shouldShow() {
 			if (picturesinfo_show && pictures.picture_info.style.display == "none") {
 				pictures.picture_info.style.display = "flex"
 			}
-			// 关闭幻灯片特效
-			//$.backstretch("destroy", false);
 			// 关闭视频
 			myvideo.src = null;
 
@@ -446,10 +495,9 @@ function shouldShow() {
 				picturesinfo_showrl(title, copyright, where, text)
 
 				img.onload = function () {
-					//TransitionSwith(img.src);
-					document.body.style.backgroundImage = "url('" + img.src + "')";
+					//使用两层背景系统进行渐变切换
+					transitionBackground(img.src);
 
-					setBackgroundStyle();
 					if (RGB_show) {
 						nextphoto = true
 						setTimeout(function () {
@@ -464,15 +512,13 @@ function shouldShow() {
 			if (picturesinfo_show && pictures.picture_info.style.display == "none") {
 				pictures.picture_info.style.display = "flex"
 			}
-			// 关闭幻灯片特效
-			//$.backstretch("destroy", false);
 			// 关闭视频
 			var img = new Image();
 			img.src = pictures_URL;
 
 			img.onload = function () {
-				//TransitionSwith(img.src);
-				document.body.style.backgroundImage = "url(" + img.src + ")";
+				//使用两层背景系统进行渐变切换
+				transitionBackground(img.src);
 
 				if (RGB_show) {
 					nextphoto = true
@@ -481,7 +527,6 @@ function shouldShow() {
 						nextphoto = false
 					}, 100)
 				}
-				setBackgroundStyle();
 			};
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
@@ -494,81 +539,176 @@ function shouldShow() {
 
 };
 
-/** 设置壁纸 */
+/** 设置壁纸样式（兼容性函数，调用新的applyBackgroundStyle） */
 var setBackgroundStyle = function () {
-	//单壁纸样式
+	applyBackgroundStyle();
+};
+
+/** 应用背景样式到两层背景系统（支持模糊背景层两层切换） */
+function applyBackgroundStyle() {
+	// 确保背景层存在
+	if (!backgroundLayers.layer1 || !backgroundLayers.layer2) {
+		return;
+	}
+	
+	// 获取当前活动的模糊背景层
+	var currentBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer1 : backgroundLayers.blurLayer2;
+	var nextBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer2 : backgroundLayers.blurLayer1;
+	
+	// 首先隐藏所有模糊背景层（默认状态）
+	if (backgroundLayers.blurLayer1) {
+		backgroundLayers.blurLayer1.style.opacity = "0";
+	}
+	if (backgroundLayers.blurLayer2) {
+		backgroundLayers.blurLayer2.style.opacity = "0";
+	}
+	
+	// 清除所有可能由适应模式设置的样式
+	backgroundLayers.layer1.style.filter = "";
+	backgroundLayers.layer2.style.filter = "";
+	backgroundLayers.layer1.style.transform = "";
+	backgroundLayers.layer2.style.transform = "";
+	backgroundLayers.container.style.backgroundColor = "";
+	
+	// 单壁纸样式
 	switch (bgStyle) {
 		case 1:
 			// 填充
-			document.body.style.backgroundRepeat = "no-repeat";
-			document.body.style.backgroundSize = "cover";
-			document.body.style.backgroundPosition = "center";
+			backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer1.style.backgroundSize = "cover";
+			backgroundLayers.layer2.style.backgroundSize = "cover";
+			backgroundLayers.layer1.style.backgroundPosition = "center";
+			backgroundLayers.layer2.style.backgroundPosition = "center";
 			break;
 		case 2:
 			// 拉伸
-			//document.body.style.backgroundImage = "";
-			//document.body.style.background="url('"+'file:///' + img + "')";
-			document.body.style.backgroundRepeat = "no-repeat";
-			document.body.style.backgroundSize = "100% 100%";
-			document.body.style.backgroundPosition = "center";
+			backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer1.style.backgroundSize = "100% 100%";
+			backgroundLayers.layer2.style.backgroundSize = "100% 100%";
+			backgroundLayers.layer1.style.backgroundPosition = "center";
+			backgroundLayers.layer2.style.backgroundPosition = "center";
 			break;
 		case 3:
-			// 适应
-			//document.body.style.backgroundImage = "";
-			//document.body.style.background="url('"+'file:///' + img + "')";
-			document.body.style.backgroundRepeat = "no-repeat";
-			document.body.style.backgroundSize = "contain";
-			document.body.style.backgroundPosition = "center";
+			// 适应模式：图片保持清晰，空白区域显示模糊背景
+			backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer1.style.backgroundSize = "contain";
+			backgroundLayers.layer2.style.backgroundSize = "contain";
+			backgroundLayers.layer1.style.backgroundPosition = "center";
+			backgroundLayers.layer2.style.backgroundPosition = "center";
+			
+			// 显示当前活动的模糊背景层填充空白区域
+			if (currentBlurLayer) {
+				currentBlurLayer.style.opacity = "1";
+				// 模糊背景层使用cover模式填充整个屏幕
+				currentBlurLayer.style.backgroundSize = "cover";
+				currentBlurLayer.style.backgroundPosition = "center";
+				currentBlurLayer.style.backgroundRepeat = "no-repeat";
+			}
+			
+			// 设置背景颜色为深色以增强模糊效果
+			backgroundLayers.container.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
 			break;
 		case 4:
 			// 平铺
-			//document.body.style.backgroundImage = "";
-			//document.body.style.background="url('"+'file:///' + img + "')";
-			document.body.style.backgroundRepeat = "repeat";
+			backgroundLayers.layer1.style.backgroundRepeat = "repeat";
+			backgroundLayers.layer2.style.backgroundRepeat = "repeat";
 			break;
 		case 5:
-			// 居中
-			//document.body.style.backgroundImage = "";
-			//document.body.style.background="url('"+'file:///' + img + "')";
-			document.body.style.backgroundRepeat = "no-repeat";
-			document.body.style.backgroundPosition = "center";
+			// 居中模式：图片居中显示，空白区域显示模糊背景
+			backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer1.style.backgroundPosition = "center";
+			backgroundLayers.layer2.style.backgroundPosition = "center";
+			
+			// 显示当前活动的模糊背景层填充空白区域
+			if (currentBlurLayer) {
+				currentBlurLayer.style.opacity = "1";
+				// 模糊背景层使用cover模式填充整个屏幕
+				currentBlurLayer.style.backgroundSize = "cover";
+				currentBlurLayer.style.backgroundPosition = "center";
+				currentBlurLayer.style.backgroundRepeat = "no-repeat";
+			}
+			
+			// 设置背景颜色为深色以增强模糊效果
+			backgroundLayers.container.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
 			break;
 		case 6:
-			//自由
-			document.body.style.backgroundRepeat = "no-repeat";
-			document.body.style.backgroundSize = bgs;
-			document.body.style.backgroundPosition = bgx + " " + bgy;
+			// 自由模式：自定义大小和位置，空白区域显示模糊背景
+			backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
+			backgroundLayers.layer1.style.backgroundSize = bgs;
+			backgroundLayers.layer2.style.backgroundSize = bgs;
+			backgroundLayers.layer1.style.backgroundPosition = bgx + " " + bgy;
+			backgroundLayers.layer2.style.backgroundPosition = bgx + " " + bgy;
+			
+			// 显示当前活动的模糊背景层填充空白区域
+			if (currentBlurLayer) {
+				currentBlurLayer.style.opacity = "1";
+				// 模糊背景层使用cover模式填充整个屏幕
+				currentBlurLayer.style.backgroundSize = "cover";
+				currentBlurLayer.style.backgroundPosition = "center";
+				currentBlurLayer.style.backgroundRepeat = "no-repeat";
+			}
+			
+			// 设置背景颜色为深色以增强模糊效果
+			backgroundLayers.container.style.backgroundColor = "rgba(0, 0, 0, 0.3)";
+			break;
 		default:
 	}
-};
-
+	
+	// 清除body的背景样式，让两层背景系统接管
+	document.body.style.backgroundRepeat = "";
+	document.body.style.backgroundSize = "";
+	document.body.style.backgroundPosition = "";
+	document.body.style.backgroundImage = "";
+}
 
 function TransitionSwith() {
+	var transitionValue = "";
+	
 	switch (TransitionMode) {
 		case 0:
 			switch (TransitionMode_choose_0) {
-				case 0: document.body.style.transition = "background-image 1s linear 0s"; break;
-				case 1: document.body.style.transition = "background-image 1s linear(0 0%, 0.22 2.1%, 0.86 6.5%, 1.11 8.6%, 1.3 10.7%, 1.35 11.8%, 1.37 12.9%, 1.37 13.7%, 1.36 14.5%, 1.32 16.2%, 1.03 21.8%, 0.94 24%, 0.89 25.9%, 0.88 26.85%, 0.87 27.8%, 0.87 29.25%, 0.88 30.7%, 0.91 32.4%, 0.98 36.4%, 1.01 38.3%, 1.04 40.5%, 1.05 42.7%, 1.05 44.1%, 1.04 45.7%, 1 53.3%, 0.99 55.4%, 0.98 57.5%, 0.99 60.7%, 1 68.1%, 1.01 72.2%, 1 86.7%, 1 100%) 0s"; break;
-				case 2: document.body.style.transition = "background-image 1s linear(0 0%, 0 2.27%, 0.02 4.53%, 0.04 6.8%, 0.06 9.07%, 0.1 11.33%, 0.14 13.6%, 0.25 18.15%, 0.39 22.7%, 0.56 27.25%, 0.77 31.8%, 1 36.35%, 0.89 40.9%, 0.85 43.18%, 0.81 45.45%, 0.79 47.72%, 0.77 50%, 0.75 52.27%, 0.75 54.55%, 0.75 56.82%, 0.77 59.1%, 0.79 61.38%, 0.81 63.65%, 0.85 65.93%, 0.89 68.2%, 1 72.7%, 0.97 74.98%, 0.95 77.25%, 0.94 79.53%, 0.94 81.8%, 0.94 84.08%, 0.95 86.35%, 0.97 88.63%, 1 90.9%, 0.99 93.18%, 0.98 95.45%, 0.99 97.73%, 1 100%) 0s"; break;
-				case 3: document.body.style.transition = "background-image 1s linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%) 0s"; break;
+				case 0: transitionValue = "opacity 1s linear 0s"; break;
+				case 1: transitionValue = "opacity 1s linear(0 0%, 0.22 2.1%, 0.86 6.5%, 1.11 8.6%, 1.3 10.7%, 1.35 11.8%, 1.37 12.9%, 1.37 13.7%, 1.36 14.5%, 1.32 16.2%, 1.03 21.8%, 0.94 24%, 0.89 25.9%, 0.88 26.85%, 0.87 27.8%, 0.87 29.25%, 0.88 30.7%, 0.91 32.4%, 0.98 36.4%, 1.01 38.3%, 1.04 40.5%, 1.05 42.7%, 1.05 44.1%, 1.04 45.7%, 1 53.3%, 0.99 55.4%, 0.98 57.5%, 0.99 60.7%, 1 68.1%, 1.01 72.2%, 1 86.7%, 1 100%) 0s"; break;
+				case 2: transitionValue = "opacity 1s linear(0 0%, 0 2.27%, 0.02 4.53%, 0.04 6.8%, 0.06 9.07%, 0.1 11.33%, 0.14 13.6%, 0.25 18.15%, 0.39 22.7%, 0.56 27.25%, 0.77 31.8%, 1 36.35%, 0.89 40.9%, 0.85 43.18%, 0.81 45.45%, 0.79 47.72%, 0.77 50%, 0.75 52.27%, 0.75 54.55%, 0.75 56.82%, 0.77 59.1%, 0.79 61.38%, 0.81 63.65%, 0.85 65.93%, 0.89 68.2%, 1 72.7%, 0.97 74.98%, 0.95 77.25%, 0.94 79.53%, 0.94 81.8%, 0.94 84.08%, 0.95 86.35%, 0.97 88.63%, 1 90.9%, 0.99 93.18%, 0.98 95.45%, 0.99 97.73%, 1 100%) 0s"; break;
+				case 3: transitionValue = "opacity 1s linear(0 0%, 0 1.8%, 0.01 3.6%, 0.03 6.35%, 0.07 9.1%, 0.13 11.4%, 0.19 13.4%, 0.27 15%, 0.34 16.1%, 0.54 18.35%, 0.66 20.6%, 0.72 22.4%, 0.77 24.6%, 0.81 27.3%, 0.85 30.4%, 0.88 35.1%, 0.92 40.6%, 0.94 47.2%, 0.96 55%, 0.98 64%, 0.99 74.4%, 1 86.4%, 1 100%) 0s"; break;
 			}
 			break;
 		case 1:
 			switch (TransitionMode_choose_1) {
-				case 0: document.body.style.transition = "background-image 1s ease-in-out 0s"; break;
-				case 1: document.body.style.transition = "background-image 1s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s"; break;
-				case 2: document.body.style.transition = "background-image 1s cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s"; break;
-				case 3: document.body.style.transition = "background-image 1s cubic-bezier(0.65, 0.05, 0.36, 1) 0s"; break;
-				case 4: document.body.style.transition = "background-image 1s cubic-bezier(0.4, 0, 0.2, 1) 0s"; break;
+				case 0: transitionValue = "opacity 1s ease-in-out 0s"; break;
+				case 1: transitionValue = "opacity 1s cubic-bezier(0.45, 0.05, 0.55, 0.95) 0s"; break;
+				case 2: transitionValue = "opacity 1s cubic-bezier(0.46, 0.03, 0.52, 0.96) 0s"; break;
+				case 3: transitionValue = "opacity 1s cubic-bezier(0.65, 0.05, 0.36, 1) 0s"; break;
+				case 4: transitionValue = "opacity 1s cubic-bezier(0.4, 0, 0.2, 1) 0s"; break;
 			}
 			break;
 		case 2:
-			document.body.style.transition = "background-image 1s ease-in 0s"; break;
+			transitionValue = "opacity 1s ease-in 0s"; break;
 		case 3:
-			document.body.style.transition = "background-image 1s ease-out 0s"; break;
+			transitionValue = "opacity 1s ease-out 0s"; break;
 		case 4:
-			document.body.style.transition = TransitionMode_choose_4; break;
+			transitionValue = TransitionMode_choose_4; break;
 	}
+	
+	// 应用到所有背景层（主背景层和模糊背景层）
+	if (backgroundLayers.layer1 && backgroundLayers.layer2) {
+		backgroundLayers.layer1.style.transition = transitionValue;
+		backgroundLayers.layer2.style.transition = transitionValue;
+	}
+	
+	// 应用到模糊背景层
+	if (backgroundLayers.blurLayer1 && backgroundLayers.blurLayer2) {
+		backgroundLayers.blurLayer1.style.transition = transitionValue;
+		backgroundLayers.blurLayer2.style.transition = transitionValue;
+	}
+	
+	// 保持body的过渡设置（用于兼容性）
+	document.body.style.transition = transitionValue.replace("opacity", "background-image");
 };
 
 function picturesinfo_showrl(title, author, where, text) {

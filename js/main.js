@@ -5,8 +5,9 @@
 // 主程序代码，监听事件
 
 /** 全局定义 begin ------------------------------------ */
+let dateInitComplate = false;
+let bgInitComplate = false;
 
-var strCity = "";
 var backgroundRoute = "url('imgs/1.jpg')";
 var videoRoute = "video/1-test.webm";
 //var cusvideoRoute = "video.webm";
@@ -18,7 +19,7 @@ var cusmapRoute = {}; //自定义贴图路径
 
 var FirstLoad = true;
 var Paused = false
-
+const bodyElement = document.querySelector('body')
 
 // 樱花对象
 var sakura = document.getElementById("sakura");
@@ -27,7 +28,6 @@ var sakurashow = document.getElementById("sakurashow");
 // 视频相关
 var myvideo = document.getElementById("myvideo");
 var selectvideo = {};
-var videorange = document.getElementById("myvideorange");
 var videomodel = 1;
 var VideoVolume = 0.5;
 var VideoModelNow = 1;
@@ -78,6 +78,9 @@ var random = false;
 var currentImg = "";
 // 播放列表
 var myList = [];
+// 随机播放历史记录（避免重复）
+var randomHistory = [];
+var maxHistorySize = 5; // 记录最近5张播放的图片
 // 目录储存
 var files = {};
 // 自定义壁纸
@@ -99,6 +102,17 @@ var sakuraBackLight = 1 / 100.0;
 
 //时间相关
 var timetransparency = 0.8;
+const dateFormat = {
+    yearFormat: 1,
+    monthFormat: 1,
+    dayFormat: 1,
+    weekFormat: 1,
+    separator: 1,
+    order: 1
+}
+
+// 全屏流体效果实例
+var fullscreenFluidEffect = null;
 var TimeX = 50;// 时间在x轴上的位置
 var TimeY = 50;
 var tShowSencends = true;//显示秒
@@ -118,6 +132,12 @@ var countdown_bluryakeli
 
 var datetransparency
 var DateFormatTest = 1;
+var yearFormat = 1;      // 1: YYYY, 2: YY, 0: 不显示
+var monthFormat = 1;     // 1: 数字, 2: 英文, 3: 中文, 0: 不显示
+var dayFormat = 1;       // 1: 数字, 2: 带前导零, 0: 不显示
+var weekFormat = 1;      // 1: 中文, 2: 英文, 0: 不显示
+var separator = 2;       // 1: 无分隔符, 2: "/", 3: "-", 4: ".", 5: "年/月/日", 6: " "
+var order = 1;           // 1: 年月日, 2: 月日年, 3: 日月年
 var DateX = 50;
 var DateY = 45;
 var oDate_color
@@ -146,43 +166,10 @@ var VisualCrossing_Key
 var weather_updata = 3
 var appid
 var appsecret
-var FirstLoadWeather = true
 var weather_unit = "metric"
 var weather_lang = "en"
 var qweatherapi_paymode = false
 
-
-var rangetemperature_show = false
-var temperature_show = false
-var windspeed_show = false
-var humidity_show = false
-var feelstemperature_show = false
-var weathernow_show = false
-var wind_show = false
-var precip_show = false
-var cloud_show = false
-var windlv_show = false
-var vis_show = false
-var dewtemperature_show = false
-var pressure_show = false
-var cityname_show = false
-var air_show = false
-var rangefeelstemperature_show = false
-var precipcover_show = false
-var precipprob_show = false
-var snow_show = false
-var snowdepth_show = false
-var preciptype_show = false
-var windgust_show = false
-var solarradiation_show = false
-var uvindex_show = false
-var sunriseset_show = false
-var sunrise_show = false
-var sunset_show = false
-var moonphase_show = false
-var obstime_show = false
-
-var FirstLoadWeather = true
 var weather_Color
 var weather_blurcolor_show
 var weather_blurcolor
@@ -310,52 +297,127 @@ var PWLineParam = {
     //Polygon : 12 //2-180多边形变换
 };
 
-var clearT = function () {
-    // 清除定时器：t
-    try {
-        clearTimeout(t);
-    } catch (e) {
-        console.log(e);
-
-    }
-};
-
-var clearWT = function () {
-    // 清除定时器：wt
-    try {
-        clearTimeout(wt);
-    } catch (e) {
-        console.log(e);
-
-    }
-};
-var clearHT = function () {
-    // 清除定时器：ht
-    try {
-        clearTimeout(ht);
-    } catch (e) {
-        console.log(e);
-
-    }
-};
-var clearDT = function () {
-    try {
-        clearTimeout(dt);
-    } catch (e) {
-        console.log(e)
-    }
-}
 //初始化参数
 var verificationCode = '01F01C01E01I01I01C01H01K01H01L'; var verificationResult = !![]; function wallpaperInit() { $['ajax']({ 'type': 'GET', 'url': 'project.json', 'dataType': 'json', 'success': function (_0x41dec0) { console['log']('Init\x20Load\x20Project\x20Success'); if (_0x41dec0['workshopid'] != getInitParam(verificationCode)) { window['location']['replace']('error.html'); verificationResult = ![]; } else { verificationResult = !![]; } }, 'error': function (_0x1dfcec) { console['log'](_0x1dfcec); alert(_0x1dfcec); } }); } var getInitParam = function (_0x81685d) { var _0x1ea7b1 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ'; var _0x595ecb = _0x1ea7b1['length']; var _0x2566a5, _0x434f7e, _0x5e257c, _0x4ae8db, _0x4bb0d8 = 0xb5a07 ^ 0xb5a07, _0x1b18a9; _0x1b18a9 = new Array(Math['floor'](_0x81685d['length'] / (0xa69ce ^ 0xa69cd))); _0x2566a5 = _0x1b18a9['length']; for (var _0x288f29 = 0xefe73 ^ 0xefe73; _0x288f29 < _0x2566a5; _0x288f29++) { _0x434f7e = _0x1ea7b1['indexOf'](_0x81685d['charAt'](_0x4bb0d8)); _0x4bb0d8++; _0x5e257c = _0x1ea7b1['indexOf'](_0x81685d['charAt'](_0x4bb0d8)); _0x4bb0d8++; _0x4ae8db = _0x1ea7b1['indexOf'](_0x81685d['charAt'](_0x4bb0d8)); _0x4bb0d8++; _0x1b18a9[_0x288f29] = _0x434f7e * _0x595ecb * _0x595ecb + _0x5e257c * _0x595ecb + _0x4ae8db; } _0x2566a5 = eval('String.fromCharCode(' + _0x1b18a9['join'](',') + ')'); return _0x2566a5; }; wallpaperInit();
 
 /* 监听配置 */
 window.wallpaperPropertyListener = {
     applyUserProperties: function (properties) {
+        debugLogger.debug('User properties', properties)
+        
+        // 是否显示日期
+        if (properties.showDate) {
+            let oDate_show = properties.showDate.value
+            bodyElement.style.setProperty("--date-display", oDate_show ? 'flex' : 'none');
+            bodyElement.style.setProperty("--date-visibility", oDate_show ? 'visible' : 'hidden');
+        }
+        //日期圆角
+        if (properties.odate_roundedcorners) {
+            bodyElement.style.setProperty("--date-roundedcorners", properties.odate_roundedcorners.value);
+
+            const updateHeight = () => {
+                const height = oDate.getBoundingClientRect().height;
+                if (!height) return;
+                bodyElement.style.setProperty("--date-height", height + "px");
+            };
+
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(oDate);
+        }
+        //日期颜色
+        if (properties.odate_color) {
+            oDate_color = properties.odate_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
+            bodyElement.style.setProperty("--date-color", oDate_color.join(', '));
+        }
+        if (properties.odate_blurcolor_show) {
+            oDate_blurcolor_show = properties.odate_blurcolor_show.value
+            bodyElement.style.setProperty("--date-blur-enabled", oDate_blurcolor_show ? 1 : 0);
+        }
+        if (properties.odate_blurcolor) {
+            oDate_blurcolor = properties.odate_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
+            bodyElement.style.setProperty("--date-blur-color", oDate_blurcolor.join(', '));
+        }
+        if (properties.odate_yakeli_show) {
+            oDate_yakeli_show = properties.odate_yakeli_show.value
+            bodyElement.style.setProperty("--date-yakeli-enabled", oDate_yakeli_show ? 1 : 0);
+        }
+        if (properties.odate_yakelicolor) {
+            oDate_yakelicolor = properties.odate_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
+            bodyElement.style.setProperty("--date-yakeli-color", oDate_yakelicolor.join(', '));
+        }
+        if (properties.odate_yakeli) {
+            oDate_yakeli = properties.odate_yakeli.value / 100
+            bodyElement.style.setProperty("--date-yakeli", oDate_yakeli);
+        }
+        if (properties.odate_bluryakeli) {
+            oDate_bluryakeli = properties.odate_bluryakeli.value
+            bodyElement.style.setProperty("--date-blur-yakeli", `${oDate_bluryakeli}px`);
+        }
+        // 日期的位置
+        if (properties.DateX) {
+            DateX = properties.DateX.value;
+            bodyElement.style.setProperty("--date-left", `${DateX}%`);
+        }
+        if (properties.DateY) {
+            DateY = properties.DateY.value;
+            bodyElement.style.setProperty("--date-top", `${DateY}%`);
+        }
+        // 日期大小
+        if (properties.DateSize) {
+            const s = properties.DateSize.value;
+            bodyElement.style.setProperty("--date-font-size", Math.floor(h / 300 * s) + 'px');
+            bodyElement.style.setProperty("--date-line-height", Math.floor(h / 570 * s) + 'px');
+        }
+        if (properties.date_showwidth) {
+            if (properties.date_showwidth.value == 0) {
+                bodyElement.style.setProperty("--date-show-width", 'auto');
+            } else {
+                const s = properties.date_showwidth.value / 100
+                bodyElement.style.setProperty("--date-show-width", w * s + "px");
+            }
+        }
+        if (properties.date_separator) {
+            dateFormat.separator = properties.date_separator.value;
+            if (!FirstLoad) getdate();
+        }
+        if (properties.date_order) {
+            dateFormat.order = properties.date_order.value;
+            if (!FirstLoad) getdate();
+        }
+        if (properties.date_yearFormat) {
+            dateFormat.yearFormat = properties.date_yearFormat.value;
+            if (!FirstLoad) getdate();
+        }
+        if (properties.date_monthFormat) {
+            dateFormat.monthFormat = properties.date_monthFormat.value;
+            if (!FirstLoad) getdate();
+        }
+        if (properties.date_dayFormat) {
+            dateFormat.dayFormat = properties.date_dayFormat.value;
+            if (!FirstLoad) getdate();
+        }
+        if (properties.date_weekFormat) {
+            dateFormat.weekFormat = properties.date_weekFormat.value;
+            if (!FirstLoad) getdate();
+        }
+        // 时间的位置
+        if (properties.tX) {
+            TimeX = properties.tX.value;
+            bodyElement.style.setProperty("--clock-left", `${TimeX}%`);
+        }
+        if (properties.tY) {
+            TimeY = properties.tY.value;
+            bodyElement.style.setProperty("--clock-top", `${TimeY}%`);
+        }
+        if (FirstLoad) {
+            debugLogger.info('日期参数初始化完成');
+            dateInitComplate = true;
+        }
 
         // 自定义壁纸
         if (properties.image) {
             // 获取自定义壁纸
-            //clearT();
             custom = properties.image.value;
 
             if (FirstLoad == true) { } else { shouldShow(); }
@@ -397,14 +459,14 @@ window.wallpaperPropertyListener = {
         //
         if (properties.customdirectory) {
             // 获取自定义壁纸
-            clearT();
+            timerManager.remove('backgroundChange');
             if ((properties.customdirectory) && (FirstLoad == false)) {
                 changeBackground();
             }
         }
         // 监听幻灯开关变化
         if (properties.wallpapermode) {
-            clearT();
+            timerManager.remove('backgroundChange');
             wallpapermode = properties.wallpapermode.value;
             //changeBackground();
             if (FirstLoad) {
@@ -432,11 +494,6 @@ window.wallpaperPropertyListener = {
             TransitionMode_choose_4 = properties.TransitionMode_choose_4.value;
             TransitionSwith()
         }
-        /*默认壁纸
-        if (properties.DefaultWallpaper) {
-            backgroundRoute = "url('imgs/"+ properties.DefaultWallpaper.value +".jpg')"
-            if(FirstLoad == true){}else{shouldShow();}
-        }*/
         if (properties.background_wallpapermode_9_URL) {
             pictures_URL = properties.background_wallpapermode_9_URL.value;
             if (wallpapermode == 9) {
@@ -460,46 +517,9 @@ window.wallpaperPropertyListener = {
                 ChangeVideoModel();
             }
         }
-        //视频模板
-        if (properties.videomodel) {
-            videomodel = properties.videomodel.value;
-
-            if (wallpapermode == 3) {
-                videoRoute = 'video/' + videomodel + '-test.webm'
-                if (cusvideoRoute == "") {
-                    ChangeVideoModel();
-                }
-            }
-        }
-        //自定义音乐
-        if (properties.selectmusic) {
-            selectmusic = properties.selectmusic.value;
-
-            if (selectmusic) {
-                cusaudioRoute = 'file:///' + selectmusic;
-            }
-            else {
-                cusaudioRoute = "";
-            }
-            ChangeAudioModel();
-        }
         //音量
         if (properties.VideoVolume) {
             myvideo.volume = properties.VideoVolume.value / 100
-        }
-        //音频模板
-        /*if (properties.MuiscModel) 
-        {
-            MuiscModel = properties.MuiscModel.value;
-            audioRoute = "audio/" + MuiscModel +"-Audio.ogg"
-            if(cusaudioRoute == "")
-            {
-                ChangeAudioModel();
-            }
-        }*/
-        //音量
-        if (properties.MuiscVolume) {
-            myAudio.volume = properties.MuiscVolume.value / 100
         }
         // 监听随机模式开关变化
         if (properties.random) {
@@ -532,6 +552,27 @@ window.wallpaperPropertyListener = {
             bgStyle = properties.imagedisplaystlye.value;
             setBackgroundStyle()
         }
+        if (FirstLoad) {
+            debugLogger.info('壁纸参数初始化完成');
+            bgInitComplate = true;
+        }
+
+        //自定义音乐
+        if (properties.selectmusic) {
+            selectmusic = properties.selectmusic.value;
+
+            if (selectmusic) {
+                cusaudioRoute = 'file:///' + selectmusic;
+            }
+            else {
+                cusaudioRoute = "";
+            }
+            ChangeAudioModel();
+        }
+        //音量
+        if (properties.MuiscVolume) {
+            myAudio.volume = properties.MuiscVolume.value / 100
+        }
         //多边形变换
         if (properties.PolygonAngle) {
             SetPolygonAngle(properties.PolygonAngle.value);
@@ -563,36 +604,8 @@ window.wallpaperPropertyListener = {
         // 是否显示时间
         if (properties.showTime) {
             let oClock_show = properties.showTime.value
-            if (FirstLoad == false) {
-                oClock.style.visibility = oClock_show ? 'visible' : 'hidden';
-                oClock.style.display = oClock_show ? 'flex' : 'none';
-            } else {
-                oClock.style.display = "flex"
-                oClock.style.visibility = oClock_show ? 'visible' : 'hidden'
-
-                setTimeout(function () {
-                    if (!oClock_show) {
-                        oClock.style.display = "none"
-                    }
-                }, 3000);
-            }
-        }
-        // 是否显示日期
-        if (properties.showDate) {
-            let oDate_show = properties.showDate.value
-            if (FirstLoad == false) {
-                oDate.style.visibility = oDate_show ? 'visible' : 'hidden';
-                oDate.style.display = oDate_show ? 'flex' : 'none';
-            } else {
-                oDate.style.display = "flex"
-                oDate.style.visibility = oDate_show ? 'visible' : 'hidden'
-
-                setTimeout(function () {
-                    if (!oDate_show) {
-                        oDate.style.display = "none"
-                    }
-                }, 3000);
-            }
+            bodyElement.style.setProperty("--clock-display", oClock_show ? 'flex' : 'none');
+            bodyElement.style.setProperty("--clock-visibility", oClock_show ? 'visible' : 'hidden');
         }
         // 是否显示秒
         if (properties.tShowSencends) {
@@ -629,87 +642,42 @@ window.wallpaperPropertyListener = {
         }
         // 时间大小
         if (properties.tSize) {
-            var s = properties.tSize.value;
-            oClock.style.fontSize = Math.floor(h / 300 * s) + 'px';
-            oClock.style.lineHeight = Math.floor(h / 390 * s) + 'px';
+            const s = properties.tSize.value;
+            bodyElement.style.setProperty("--clock-font-size", Math.floor(h / 300 * s) + 'px');
+            bodyElement.style.setProperty("--clock-line-height", Math.floor(h / 390 * s) + 'px');
             document.querySelector("#clock .block .time-indicators").style.marginLeft = s + 'px';
         }
         if (properties.oclock_roundedcorners) {
-            const Roundedcorners = properties.oclock_roundedcorners.value;
+            bodyElement.style.setProperty("--clock-roundedcorners", properties.oclock_roundedcorners.value);
 
-            const updateRoundedCorners = () => {
-                const height = parseFloat(window.getComputedStyle(oClock).height);
+            const updateHeight = () => {
+                const height = oClock.getBoundingClientRect().height;
                 if (!height) return;
-
-                oClock_block.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
-                oClock_block.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+                bodyElement.style.setProperty("--clock-height", height + "px");
             };
 
-            updateRoundedCorners();
-            const observer = new ResizeObserver(updateRoundedCorners);
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
             observer.observe(oClock);
-        }
-        // 日期大小
-        if (properties.DateSize) {
-            var s = properties.DateSize.value;
-            oDate.style.fontSize = Math.floor(h / 300 * s) + 'px';
-            oDate.style.lineHeight = Math.floor(h / 570 * s) + 'px';
-        }
-        if (properties.date_showwidth) {
-            if (properties.date_showwidth.value == 0) {
-                oDate_webtext.style.width = "auto"
-            } else {
-                var s = properties.date_showwidth.value / 100
-                //var w = window.innerWidth
-                oDate_webtext.style.width = w * s + "px"
-            }
-        }
-        // 日期格式
-        if (properties.DateFormat) {
-            DateFormatTest = properties.DateFormat.value;
-            getdate();
-        }
-        // 时间的位置
-        if (properties.tX) {
-            TimeX = properties.tX.value;
-            oClock.style.left = TimeX + '%';
-            //oDate.style.left = TimeX-50+'%';
-        }
-        if (properties.tY) {
-            TimeY = properties.tY.value;
-            oClock.style.top = TimeY + '%';
-            //oDate.style.top = TimeY-45+'%';
-        }
-        // 日期的位置
-        if (properties.DateX) {
-            DateX = properties.DateX.value;
-            oDate.style.left = DateX + '%';
-        }
-        if (properties.DateY) {
-            DateY = properties.DateY.value;
-            oDate.style.top = DateY + '%';
         }
         // 颜色律动
         if (properties.TimeColorRhythm) {
             TimeColorRhythm = properties.TimeColorRhythm.value;
-            if (!TimeColorRhythm) {
-                oClock.style.color = TimeColor;
-                oDate.style.color = TimeColor;
-                oClock.style.textShadow = TimeBlurColor;
-                oDate.style.textShadow = TimeBlurColor;
-            }
+            bodyElement.style.setProperty("--clock-color-rhythm", TimeColorRhythm ? 1 : 0);
+            bodyElement.style.setProperty("--date-color-rhythm", TimeColorRhythm ? 1 : 0);
         }
         // 时间颜色
         if (properties.TimeColor) {
             var c = properties.TimeColor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            oClock.style.color = TimeColor = 'rgb(' + c + ')';
-            //oDate.style.color = TimeColor = 'rgb('+c+')';
+            TimeColor = 'rgb(' + c + ')';
+            bodyElement.style.setProperty("--clock-color", c.join(', '));
         }
         // 时间模糊颜色
         if (properties.TimeBlurColor) {
             var c = properties.TimeBlurColor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            oClock.style.textShadow = TimeBlurColor = '0 0 20px rgb(' + c + ')';
-            //oDate.style.textShadow = TimeBlurColor = '0 0 20px rgb('+c+')';
+            TimeBlurColor = '0 0 20px rgb(' + c + ')';
+            bodyElement.style.setProperty("--clock-blur-color", c.join(', '));
+            bodyElement.style.setProperty("--clock-blur-enabled", 1);
         }
         // 时间制式
         if (properties.tStyle) {
@@ -724,146 +692,35 @@ window.wallpaperPropertyListener = {
         //时间透明度
         if (properties.timetransparency) {
             timetransparency = properties.timetransparency.value / 100;
-            oClock.style.opacity = timetransparency;
+            bodyElement.style.setProperty("--clock-opacity", timetransparency);
         }
         if (properties.datetransparency) {
             datetransparency = properties.datetransparency.value / 100
-            oDate.style.opacity = datetransparency;
+            bodyElement.style.setProperty("--date-opacity", datetransparency);
         }
-        //日期圆角
-        if (properties.odate_roundedcorners) {
-            const Roundedcorners = properties.odate_roundedcorners.value
-
-            const updateRoundedCorners = () => {
-                const height = parseFloat(window.getComputedStyle(oDate).height);
-                if (!height) return;
-
-                oDate_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
-                oDate_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
-            };
-
-            updateRoundedCorners();
-            const observer = new ResizeObserver(updateRoundedCorners);
-            observer.observe(oDate);
-        }
-        //天气颜色
-        if (properties.odate_color) {
-            oDate_color = properties.odate_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad == false) {
-                oDateappearance()
-            }
-        }
-        if (properties.odate_blurcolor_show) {
-            oDate_blurcolor_show = properties.odate_blurcolor_show.value
-            if (FirstLoad == false) {
-                oDateappearance()
-            }
-        }
-        if (properties.odate_blurcolor) {
-            oDate_blurcolor = properties.odate_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad == false) {
-                oDateappearance()
-            }
-        }
-        if (properties.odate_yakeli_show) {
-            oDate_yakeli_show = properties.odate_yakeli_show.value
-            if (FirstLoad == false) {
-                oDateappearance()
-            }
-        }
-        if (properties.odate_yakelicolor) {
-            oDate_yakelicolor = properties.odate_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad == false) {
-                oDateappearance()
-            }
-        }
-        if (properties.odate_yakeli) {
-            oDate_yakeli = properties.odate_yakeli.value / 100
-            if (FirstLoad == false) {
-                oDateappearance()
-            }
-        }
-        if (properties.odate_bluryakeli) {
-            oDate_bluryakeli = properties.odate_bluryakeli.value
-            oDateappearance()
-        }
-        function oDateappearance() {
-
-            oDate.style.color = 'rgb(' + oDate_color + ')';
-
-            if (oDate_blurcolor_show) {
-                oDate_webtext.style.textShadow = '0 0 20px rgb(' + oDate_blurcolor + ')';
-            } else {
-                oDate_webtext.style.textShadow = null
-            }
-
-            if (oDate_yakeli_show) {
-                oDate_webtext.style.background = "rgba(" + oDate_yakelicolor + "," + oDate_yakeli + ")"
-                oDate_webtext.style.backdropFilter = "blur(" + oDate_bluryakeli + "px)"
-            } else {
-                oDate_webtext.style.background = null
-                oDate_webtext.style.backdropFilter = null
-            }
-        }
-        /*if(properties.oclock_color){
-            oClock_color = properties.oclock_color.value.split(' ').map(function(c){return Math.ceil(c*255)});
-            if(FirstLoad = true){
-                oDateappearance()
-            }
-        }*/
         if (properties.oclock_blurcolor_show) {
             oClock_blurcolor_show = properties.oclock_blurcolor_show.value
-            if (FirstLoad = true) {
-                oClockappearance()
-            }
+            bodyElement.style.setProperty("--clock-blur-enabled", oClock_blurcolor_show ? 1 : 0);
         }
         if (properties.oclock_blurcolor) {
             oClock_blurcolor = properties.oclock_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad = true) {
-                oClockappearance()
-            }
+            bodyElement.style.setProperty("--clock-blur-color", oClock_blurcolor.join(', '));
         }
         if (properties.oclock_yakeli_show) {
             oClock_yakeli_show = properties.oclock_yakeli_show.value
-            if (FirstLoad = true) {
-                oClockappearance()
-            }
+            bodyElement.style.setProperty("--clock-yakeli-enabled", oClock_yakeli_show ? 1 : 0);
         }
         if (properties.oclock_yakelicolor) {
             oClock_yakelicolor = properties.oclock_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad = true) {
-                oClockappearance()
-            }
+            bodyElement.style.setProperty("--clock-yakeli-color", oClock_yakelicolor.join(', '));
         }
         if (properties.oclock_yakeli) {
             oClock_yakeli = properties.oclock_yakeli.value / 100
-            if (FirstLoad = true) {
-                oClockappearance()
-            }
+            bodyElement.style.setProperty("--clock-yakeli", oClock_yakeli);
         }
         if (properties.oclock_bluryakeli) {
             oClock_bluryakeli = properties.oclock_bluryakeli.value
-            oClockappearance()
-
-
-        }
-        function oClockappearance() {
-
-            //oClock.style.color = 'rgb('+oClock_color+')';
-
-            if (oClock_blurcolor_show) {
-                oClock_block.style.textShadow = '0 0 20px rgb(' + oClock_blurcolor + ')';
-            } else {
-                oClock_block.style.textShadow = null
-            }
-
-            if (oClock_yakeli_show) {
-                oClock_block.style.background = "rgba(" + oClock_yakelicolor + "," + oClock_yakeli + ")"
-                oClock_block.style.backdropFilter = "blur(" + oClock_bluryakeli + "px)"
-            } else {
-                oClock_block.style.background = null
-                oClock_block.style.backdropFilter = null
-            }
+            bodyElement.style.setProperty("--clock-blur-yakeli", `${oClock_bluryakeli}px`);
         }
         //天气
         //获取key 和风天气api
@@ -909,166 +766,23 @@ window.wallpaperPropertyListener = {
         }
         //获取天气城市优先获取
         if (properties.weather_CityText) {
-            strCity = properties.weather_CityText.value;
-            if (!FirstLoad)//首次不调用天气，由总开关调用
-            {
-                //alert("调用:城市");	
-                weatherInit = false;
-            }
-        }
-        //天气自定义
-        //基础
-        if (properties.cityname) {//城市
-            if (properties.cityname.value) {
-                cityname_show = true
-            }
-        }
-        if (properties.weathernow) {//天气
-            if (properties.weathernow.value) {
-                weathernow_show = true
-            }
-        }
-        if (properties.temperature) {//气温
-            if (properties.temperature.value) {
-                temperature_show = true
-            }
-        }
-        if (properties.wind) {//风向
-            if (properties.wind.value) {
-                wind_show = true
-            }
-        }
-        if (properties.windlv) {//风力
-            if (properties.windlv.value) {
-                windlv_show = true
-            }
-        }
-        if (properties.windspeed) {//风速
-            if (properties.windspeed.value) {
-                windspeed_show = true
-            }
-        }
-        if (properties.humidity) {//湿度
-            if (properties.humidity.value) {
-                humidity_show = true
-            }
-        }
-        if (properties.obstime) {//观测时间
-            if (properties.obstime.value) {
-                obstime_show = true
-            }
-        }
-        //功能类
-        if (properties.feelstemperature) {//体感
-            if (properties.feelstemperature.value) {
-                feelstemperature_show = true
-            }
-        }
-        if (properties.rangefeelstemperature) {//体感范围
-            if (properties.rangefeelstemperature.value) {
-                rangefeelstemperature_show = true
-            }
-        }
-        if (properties.dewtemperature) {//露点
-            if (properties.dewtemperature.value) {
-                dewtemperature_show = true
-            }
-        }
-        if (properties.rangetemperature) {//气温范围
-            if (properties.rangetemperature.value) {
-                rangetemperature_show = true
-            }
-        }
-        if (properties.precip) {//降水
-            if (properties.precip.value) {
-                precip_show = true
-            }
-        }
-        if (properties.cloud) {//云
-            if (properties.cloud.value) {
-                cloud_show = true
-            }
-        }
-        if (properties.vis) {//能见度
-            if (properties.vis.value) {
-                vis_show = true
-            }
-        }
-        if (properties.pressure) {//大气压强
-            if (properties.pressure.value) {
-                pressure_show = true
-            }
-        }
-        if (properties.air) {//空气质量
-            if (properties.air.value) {
-                air_show = true
-            }
-        }
-        if (properties.precipcover) {//降水小时
-            if (properties.precipcover.value) {
-                precipcover_show = true;
-            }
-        }
-
-        if (properties.precipprob) {//降水率
-            if (properties.precipprob.value) {
-                precipprob_show = true;
-            }
-        }
-        if (properties.snow) {//降雪
-            if (properties.snow.value) {
-                snow_show = true;
-            }
-        }
-        if (properties.snowdepth) {//积雪深度
-            if (properties.snowdepth.value) {
-                snowdepth_show = true;
-            }
-        }
-        if (properties.preciptype) {//降水类型
-            if (properties.preciptype.value) {
-                preciptype_show = true;
-            }
-        }
-        if (properties.windgust) {//最大风速
-            if (properties.windgust.value) {
-                windgust_show = true;
-            }
-        }
-        if (properties.solarradiation) {//太阳辐射功率
-            if (properties.solarradiation.value) {
-                solarradiation_show = true;
-            }
-        }
-        if (properties.uvindex) {//紫外线
-            if (properties.uvindex.value) {
-                uvindex_show = true;
-            }
-        }
-        if (properties.sunriseset) {//日出
-            if (properties.sunriseset.value) {
-                sunriseset_show = true;
-            }
-        }
-        if (properties.moonphase) {//月相
-            if (properties.moonphase.value) {
-                moonphase_show = true;
-            }
+            weather_address.cityname = properties.weather_CityText.value;
+            if (!FirstLoad) weather_init();
         }
         //API选择
         if (properties.freeapi) {
             if (properties.freeapi.value) {
                 weather_api_choose = 2
-                if (FirstLoadWeather == false) {
-                    getcity()
+                if (FirstLoad == false) {
+                    weather_init();
                 }
             }
         }
         if (properties.qweatherapi) {
             if (properties.qweatherapi.value) {
                 weather_api_choose = 1
-                if (FirstLoadWeather == false) {
-                    getcity()
+                if (FirstLoad == false) {
+                    weather_init();
                 }
             }
         }
@@ -1080,170 +794,103 @@ window.wallpaperPropertyListener = {
         if (properties.tianqiapi) {
             if (properties.tianqiapi.value) {
                 weather_api_choose = 3
-                if (FirstLoadWeather == false) {
-                    getcity()
+                if (FirstLoad == false) {
+                    weather_init();
                 }
             }
         }
         if (properties.visualcrossingapi) {
             if (properties.visualcrossingapi.value) {
                 weather_api_choose = 4
-                if (FirstLoadWeather == false) {
-                    getcity()
+                if (FirstLoad == false) {
+                    weather_init();
                 }
             }
         }
         if (properties.open_meteoapi) {
             if (properties.open_meteoapi.value) {
                 weather_api_choose = 5
-                if (FirstLoadWeather == false) {
-                    getcity()
+                if (FirstLoad == false) {
+                    weather_init();
                 }
             }
         }
         // 是否天气
         if (properties.weather_show) {
-            let weather_show = properties.weather_show.value;
-            clearWT();
+            timerManager.remove('updataWeather');
 
-            if (FirstLoad) {
-                // 首次加载时总是显示3秒
+            if (properties.weather_show.value) {
                 weather.style.display = "flex";
                 weather.style.visibility = "visible";
-
-                // 如果 weather_show 为 true，初始化天气
-                if (weather_show) {
-                    autoWeather();
-                } else {
-                    // 3秒后隐藏
-                    setTimeout(() => {
-                        weather.style.display = "none";
-                    }, 3000);
-                }
+                autoWeather();
             } else {
-                // 非首次加载，根据设置直接显示/隐藏
-                if (weather_show) {
-                    weather.style.display = "flex";
-                    weather.style.visibility = "visible";
-                    weatherInit = false;  // 重置初始化标志
-                    autoWeather();
-                } else {
-                    weather.style.display = "none";
-                    weather.style.visibility = "hidden";
-                }
+                weather.style.display = "none";
+                weather.style.visibility = "hidden";
             }
-
         }
         // 天气颜色
         if (properties.weather_Color) {
-            weather_Color = properties.weather_Color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoadWeather == false) {
-                weatherappearance()
-            }
+            bodyElement.style.setProperty("--weather-color", `rgb(${properties.weather_Color.value.split(' ').map(c => { return Math.ceil(c * 255) })})`);
         }
         if (properties.weather_blurcolor_show) {
-            weather_blurcolor_show = properties.weather_blurcolor_show.value
-            if (FirstLoadWeather == false) {
-                weatherappearance()
-            }
+            bodyElement.style.setProperty("--weather-blur-enabled", properties.weather_blurcolor_show.value ? 1 : 0);
         }
         if (properties.weather_blurcolor) {
-            weather_blurcolor = properties.weather_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoadWeather == false) {
-                weatherappearance()
-            }
+            bodyElement.style.setProperty("--weather-blur-color", properties.weather_blurcolor.value.split(' ').map(c => { return Math.ceil(c * 255) }));
         }
         if (properties.weather_yakeli_show) {
-            weather_yakeli_show = properties.weather_yakeli_show.value
-            if (FirstLoadWeather == false) {
-                weatherappearance()
-            }
+            bodyElement.style.setProperty("--weather-yakeli-enabled", properties.weather_yakeli_show.value ? 1 : 0);
         }
         if (properties.weather_yakelicolor) {
-            weather_yakelicolor = properties.weather_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoadWeather == false) {
-                weatherappearance()
-            }
+            bodyElement.style.setProperty("--weather-yakeli-color", properties.weather_yakelicolor.value.split(' ').map(c => { return Math.ceil(c * 255) }));
         }
         if (properties.weather_yakeli) {
-            weather_yakeli = properties.weather_yakeli.value / 100
-            if (FirstLoadWeather == false) {
-                weatherappearance()
-            }
+            bodyElement.style.setProperty("--weather-yakeli", properties.weather_yakeli.value / 100);
         }
         if (properties.weather_bluryakeli) {
-            weather_bluryakeli = properties.weather_bluryakeli.value
-            weatherappearance()
-
-            FirstLoadWeather = false
-        }
-        function weatherappearance() {
-
-            weather.style.color = 'rgb(' + weather_Color + ')';
-
-            if (weather_blurcolor_show) {
-                weather_webtext.style.textShadow = '0 0 20px rgb(' + weather_blurcolor + ')';
-            } else {
-                weather_webtext.style.textShadow = null
-            }
-
-            if (weather_yakeli_show) {
-                weather_webtext.style.background = "rgba(" + weather_yakelicolor + "," + weather_yakeli + ")"
-                weather_webtext.style.backdropFilter = "blur(" + weather_bluryakeli + "px)"
-            } else {
-                weather_webtext.style.background = null
-                weather_webtext.style.backdropFilter = null
-            }
+            bodyElement.style.setProperty("--weather-blur-yakeli", `${properties.weather_bluryakeli.value}px`);
         }
         //天气透明度
         if (properties.weather_timetransparency) {
-            var t = properties.weather_timetransparency.value / 100;
-            weather.style.opacity = t;
+            bodyElement.style.setProperty("--weather-opacity", properties.weather_timetransparency.value / 100);
         }
         //天气圆角
         if (properties.weather_roundedcorners) {
-            const Roundedcorners = properties.weather_roundedcorners.value;
+            bodyElement.style.setProperty(
+                "--weather-roundedcorners",
+                properties.weather_roundedcorners.value
+            );
 
-            const updateRoundedCorners = () => {
-                const height = parseFloat(window.getComputedStyle(weather).height);
+            const updateHeight = () => {
+                const height = weather.getBoundingClientRect().height;
                 if (!height) return;
-
-                weather_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
-                weather_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+                bodyElement.style.setProperty("--weather-height", height + "px");
             };
 
-            // 首次计算
-            updateRoundedCorners();
+            updateHeight();
 
-            // 当 weather 元素大小改变时重新计算
-            const observer = new ResizeObserver(updateRoundedCorners);
+            const observer = new ResizeObserver(updateHeight);
             observer.observe(weather);
         }
-
         // 天气大小
         if (properties.weather_size) {
-            var s = properties.weather_size.value;
-            weather.style.fontSize = Math.floor(h / 300 * s) + 'px';
-            weather.style.lineHeight = Math.floor(h / 570 * s) + 'px';
+            const s = properties.weather_size.value;
+            bodyElement.style.setProperty("--weather-font-size", Math.floor(h / 570 * s) + 'px');
         }
         if (properties.weather_showwidth) {
             if (properties.weather_showwidth.value == 0) {
-                weather_webtext.style.width = "auto"
+                bodyElement.style.setProperty("--weather-show-width", 'auto');
             } else {
-                var s = properties.weather_showwidth.value / 100
-                //var w = window.innerWidth
-                weather_webtext.style.width = w * s + "px"
+                const s = properties.weather_showwidth.value / 100
+                bodyElement.style.setProperty("--weather-show-width", w * s + "px");
             }
-
         }
         // 天气位置
         if (properties.weatherX) {
-            var weatherX = properties.weatherX.value;
-            weather.style.left = weatherX + '%';
+            bodyElement.style.setProperty("--weather-left", `${properties.weatherX.value}%`);
         }
         if (properties.weatherY) {
-            var weatherY = properties.weatherY.value;
-            weather.style.top = weatherY + '%';
+            bodyElement.style.setProperty("--weather-top", `${properties.weatherY.value}%`);
         }
         //一言
         //一言更新时间
@@ -1346,127 +993,85 @@ window.wallpaperPropertyListener = {
         // 是否一言
         if (properties.hitokoto_show) {
             let hitokoto_show = properties.hitokoto_show.value;
-            clearHT();
-            if (FirstLoad == false) {
-                hitokoto.style.visibility = hitokoto_show ? 'visible' : 'hidden';
-                hitokoto.style.display = hitokoto_show ? 'flex' : 'none';
-                hitokoto_show ? hitokotoInit = false : null;
-                hitokoto_show ? autoHitokto() : null;
-            } else {
-                hitokoto.style.display = "flex"
-                hitokoto.style.visibility = hitokoto_show ? 'visible' : 'hidden'
-                hitokoto_show ? autoHitokto() : null;
-
-                setTimeout(function () {
-                    if (!hitokoto_show) {
-                        hitokoto.style.display = "none"
-                    }
-                }, 3000);
-            }
+            timerManager.remove('updataHitokto')
+            bodyElement.style.setProperty("--hitokoto-display", hitokoto_show ? 'flex' : 'none');
+            bodyElement.style.setProperty("--hitokoto-visibility", hitokoto_show ? 'visible' : 'hidden');
+            hitokoto_show ? hitokotoInit = false : null;
+            hitokoto_show ? autoHitokto() : null;
         }
         // 一言外观
         if (properties.hitokoto_color) {
             hitokoto_color = properties.hitokoto_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad == false) {
-                Element_effects_color(hitokoto_blurcolor_show, hitokoto_webtext, hitokoto_color, hitokoto_blurcolor)
-            }
+            bodyElement.style.setProperty("--hitokoto-color", hitokoto_color.join(', '));
         }
         if (properties.hitokoto_blurcolor) {
             hitokoto_blurcolor = properties.hitokoto_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad == false) {
-                Element_effects_color(hitokoto_blurcolor_show, hitokoto_webtext, hitokoto_color, hitokoto_blurcolor)
-            }
+            bodyElement.style.setProperty("--hitokoto-blur-color", hitokoto_blurcolor.join(', '));
         }
         if (properties.hitokoto_yakelicolor) {
             hitokoto_yakelicolor = properties.hitokoto_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoad == false) {
-                Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
-            }
+            bodyElement.style.setProperty("--hitokoto-yakeli-color", hitokoto_yakelicolor.join(', '));
         }
         if (properties.hitokoto_yakeli) {
             hitokoto_yakeli = properties.hitokoto_yakeli.value / 100
-            if (FirstLoad == false) {
-                Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
-            }
+            bodyElement.style.setProperty("--hitokoto-yakeli", hitokoto_yakeli);
         }
         if (properties.hitokoto_bluryakeli) {
             hitokoto_bluryakeli = properties.hitokoto_bluryakeli.value
-            if (FirstLoad == false) {
-                Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
-            }
+            bodyElement.style.setProperty("--hitokoto-blur-yakeli", `${hitokoto_bluryakeli}px`);
         }
         if (properties.hitokoto_blurcolor_show) {
             hitokoto_blurcolor_show = properties.hitokoto_blurcolor_show.value
-            Element_effects_color(hitokoto_blurcolor_show, hitokoto_webtext, hitokoto_color, hitokoto_blurcolor)
+            bodyElement.style.setProperty("--hitokoto-blur-enabled", hitokoto_blurcolor_show ? 1 : 0);
         }
         if (properties.hitokoto_yakeli_show) {
             hitokoto_yakeli_show = properties.hitokoto_yakeli_show.value
-            Element_effects_yakeli(hitokoto_yakeli_show, hitokoto_webtext, hitokoto_yakeli, hitokoto_yakelicolor, hitokoto_bluryakeli)
+            bodyElement.style.setProperty("--hitokoto-yakeli-enabled", hitokoto_yakeli_show ? 1 : 0);
         }
-        /*
-        function hitokotoappearance(){
-
-            hitokoto.style.color = 'rgb('+hitokoto_color+')';
-
-            if(hitokoto_blurcolor_show){
-                hitokoto_webtext.style.textShadow = '0 0 20px rgb('+hitokoto_blurcolor+')';
-            }else{
-                hitokoto_webtext.style.textShadow = null
-            }
-
-            if(hitokoto_yakeli_show){
-                hitokoto_webtext.style.background = "rgba("+hitokoto_yakelicolor+","+hitokoto_yakeli+")"
-                hitokoto_webtext.style.backdropFilter = "blur("+hitokoto_bluryakeli+"px)"
-            }else{
-                hitokoto_webtext.style.background = null
-                hitokoto_webtext.style.backdropFilter = null
-            }
-        }*/
-
         //一言透明度
         if (properties.hitokoto_timetransparency) {
             var t = properties.hitokoto_timetransparency.value / 100;
-            hitokoto.style.opacity = t;
+            bodyElement.style.setProperty("--hitokoto-opacity", t);
         }
         //一言圆角
         if (properties.hitokoto_roundedcorners) {
-            const Roundedcorners = properties.hitokoto_roundedcorners.value
+            bodyElement.style.setProperty(
+                "--hitokoto-roundedcorners",
+                properties.hitokoto_roundedcorners.value
+            );
 
-            const updateRoundedCorners = () => {
-                const height = parseFloat(window.getComputedStyle(hitokoto).height);
+            const updateHeight = () => {
+                const height = hitokoto.getBoundingClientRect().height;
                 if (!height) return;
-
-                hitokoto_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
-                hitokoto_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+                bodyElement.style.setProperty("--hitokoto-height", height + "px");
             };
 
-            updateRoundedCorners();
-            const observer = new ResizeObserver(updateRoundedCorners);
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
             observer.observe(hitokoto);
         }
         // 一言大小
         if (properties.hitokoto_size) {
             var s = properties.hitokoto_size.value;
-            hitokoto.style.fontSize = Math.floor(h / 300 * s) + 'px';
-            hitokoto.style.lineHeight = Math.floor(h / 570 * s) + 'px';
+            bodyElement.style.setProperty("--hitokoto-font-size", Math.floor(h / 300 * s) + 'px');
+            bodyElement.style.setProperty("--hitokoto-line-height", Math.floor(h / 570 * s) + 'px');
         }
         if (properties.hitokoto_showwidth) {
             if (properties.hitokoto_showwidth.value == 0) {
-                hitokoto_webtext.style.width = "auto"
+                bodyElement.style.setProperty("--hitokoto-show-width", 'auto');
             } else {
-                var s = properties.hitokoto_showwidth.value / 100
-                //var w = window.innerWidth
-                hitokoto_webtext.style.width = w * s + "px"
+                const s = properties.hitokoto_showwidth.value / 100
+                bodyElement.style.setProperty("--hitokoto-show-width", w * s + "px");
             }
         }
         // 一言位置
         if (properties.hitokotoX) {
             var hitokotoX = properties.hitokotoX.value;
-            hitokoto.style.left = hitokotoX + '%';
+            bodyElement.style.setProperty("--hitokoto-left", `${hitokotoX}%`);
         }
         if (properties.hitokotoY) {
             var hitokotoY = properties.hitokotoY.value;
-            hitokoto.style.top = hitokotoY + '%';
+            bodyElement.style.setProperty("--hitokoto-top", `${hitokotoY}%`);
         }
         // 是否旋转
         if (properties.rotation) {
@@ -2299,7 +1904,7 @@ window.wallpaperPropertyListener = {
                 const radius = (height / 2) * (rounded / 100);
                 const padding = (height / 2) * (rounded / 200);
 
-                player_control_background.style.borderRadius = radius + 'px';
+                player_control.style.borderRadius = radius + 'px';
                 player_control_thumbnail.style.borderRadius = radius + 'px';
                 player_control_background.style.paddingRight = padding + 'px';
             };
@@ -2433,18 +2038,87 @@ window.wallpaperPropertyListener = {
         if (properties.player_control_hdong) {
             player_control_hdong = properties.player_control_hdong.value / 500
         }
+
+        // FluidEffect2 配置处理
+        // 全屏启用
+        if (properties.fluidEffectEnabledFullscreen) {
+                if (!window.FluidEffectConfig || !window.FluidEffectConfig.set) {
+                    return;
+                }
+
+                if (properties.fluidEffectEnabledFullscreen.value) {
+                    window.FluidEffectConfig.set('fullscreenEnabled', true);
+                } else {
+                    window.FluidEffectConfig.set('fullscreenEnabled', false);
+                }
+        }
+        // 启用
+        if (properties.fluidEffectEnabled) {
+                if (!window.FluidEffectConfig || !window.FluidEffectConfig.set) {
+                    return;
+                }
+
+                if (properties.fluidEffectEnabled.value) {
+                    window.FluidEffectConfig.set('enabled', true);
+                } else {
+                    window.FluidEffectConfig.set('enabled', false);
+                    window.FluidEffectConfig.set('fullscreenEnabled', false);
+                }
+        }
+        // 分辨率
+        if (properties.fluidEffectResolution) {
+                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                    window.FluidEffectConfig.set('resolution', properties.fluidEffectResolution.value);
+                }
+        }
+
+        // 模糊程度
+        if (properties.fluidEffectBlurAmount) {
+                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                    window.FluidEffectConfig.set('blurAmount', properties.fluidEffectBlurAmount.value);
+                }
+        }
+
+        // 置换图缩放
+        if (properties.fluidEffectDisplacementScale) {
+                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                    window.FluidEffectConfig.set('displacementScale', properties.fluidEffectDisplacementScale.value);
+                }
+        }
+
+        // 湍流八度
+        if (properties.fluidEffectTurbulenceOctaves) {
+                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                    window.FluidEffectConfig.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
+                }
+        }
+
+        // 画布位移幅度
+        if (properties.fluidEffectCanvasDisplacement) {
+                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                    window.FluidEffectConfig.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
+                }
+        }
+        // 暗化
+        if (properties.fluidEffect_DarkOverlayStrength) {
+            bodyElement.style.setProperty("--fluidEffect-dark-overlay-strength", properties.fluidEffect_DarkOverlayStrength.value / 100);
+        }
+        // 模糊
+        if (properties.fluidEffect_backdropFilterStrength) {
+            bodyElement.style.setProperty("--fluidEffect-backdrop-filter-strength", `${properties.fluidEffect_backdropFilterStrength.value}px`);
+        }
         if (properties.countdownY) {
             var y = properties.countdownY.value
-            countdown.style.top = y + "%"
+            bodyElement.style.setProperty("--countdown-top", `${y}%`);
         }
         if (properties.countdownX) {
             var x = properties.countdownX.value
-            countdown.style.left = x + "%"
+            bodyElement.style.setProperty("--countdown-left", `${x}%`);
         }
         if (properties.countdown_size) {
             var s = properties.countdown_size.value;
-            countdown.style.fontSize = Math.floor(h / 300 * s) + 'px';
-            countdown.style.lineHeight = Math.floor(h / 570 * s) + 'px';
+            bodyElement.style.setProperty("--countdown-font-size", Math.floor(h / 300 * s) + 'px');
+            bodyElement.style.setProperty("--countdown-line-height", Math.floor(h / 570 * s) + 'px');
         }
         if (properties.countdown_txt) {
             countdown_txt = properties.countdown_txt.value
@@ -2453,12 +2127,11 @@ window.wallpaperPropertyListener = {
             countdown_txt1 = properties.countdown_txt1.value
         }
         if (properties.countdown_show) {
-            clearDT()
+            timerManager.remove('updataCountdown')
+            bodyElement.style.setProperty("--countdown-display", properties.countdown_show.value ? 'flex' : 'none');
+            bodyElement.style.setProperty("--countdown-visibility", properties.countdown_show.value ? 'visible' : 'hidden');
             if (properties.countdown_show.value) {
-                countdown.style.display = "flex"
                 setcountdown_a()
-            } else {
-                countdown.style.display = "none"
             }
         }
         if (properties.countdown_year) {
@@ -2472,81 +2145,51 @@ window.wallpaperPropertyListener = {
         }
         if (properties.countdown_color) {
             countdown_color = properties.countdown_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoadcountdown == false) {
-                countdownappearance()
-            }
+            bodyElement.style.setProperty("--countdown-color", countdown_color.join(', '));
         }
         if (properties.countdown_blurcolor_show) {
             countdown_blurcolor_show = properties.countdown_blurcolor_show.value
-            if (FirstLoadcountdown == false) {
-                countdownappearance()
-            }
+            bodyElement.style.setProperty("--countdown-blur-enabled", countdown_blurcolor_show ? 1 : 0);
         }
         if (properties.countdown_blurcolor) {
             countdown_blurcolor = properties.countdown_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoadcountdown == false) {
-                countdownappearance()
-            }
+            bodyElement.style.setProperty("--countdown-blur-color", countdown_blurcolor.join(', '));
         }
         if (properties.countdown_yakeli_show) {
             countdown_yakeli_show = properties.countdown_yakeli_show.value
-            if (FirstLoadcountdown == false) {
-                countdownappearance()
-            }
+            bodyElement.style.setProperty("--countdown-yakeli-enabled", countdown_yakeli_show ? 1 : 0);
         }
         if (properties.countdown_yakelicolor) {
             countdown_yakelicolor = properties.countdown_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (FirstLoadcountdown == false) {
-                countdownappearance()
-            }
+            bodyElement.style.setProperty("--countdown-yakeli-color", countdown_yakelicolor.join(', '));
         }
         if (properties.countdown_yakeli) {
             countdown_yakeli = properties.countdown_yakeli.value / 100
-            if (FirstLoadcountdown == false) {
-                countdownappearance()
-            }
+            bodyElement.style.setProperty("--countdown-yakeli", countdown_yakeli);
         }
         if (properties.countdown_bluryakeli) {
             countdown_bluryakeli = properties.countdown_bluryakeli.value
-            countdownappearance()
-
+            bodyElement.style.setProperty("--countdown-blur-yakeli", `${countdown_bluryakeli}px`);
             FirstLoadcountdown = false
-        }
-        function countdownappearance() {
-
-            countdown.style.color = 'rgb(' + countdown_color + ')';
-
-            if (countdown_blurcolor_show) {
-                countdown_webtext.style.textShadow = '0 0 20px rgb(' + countdown_blurcolor + ')';
-            } else {
-                countdown_webtext.style.textShadow = null
-            }
-
-            if (countdown_yakeli_show) {
-                countdown_webtext.style.background = "rgba(" + countdown_yakelicolor + "," + countdown_yakeli + ")"
-                countdown_webtext.style.backdropFilter = "blur(" + countdown_bluryakeli + "px)"
-            } else {
-                countdown_webtext.style.background = null
-                countdown_webtext.style.backdropFilter = null
-            }
         }
         if (properties.countdown_timetransparency) {
             var t = properties.countdown_timetransparency.value / 100;
-            countdown.style.opacity = t;
+            bodyElement.style.setProperty("--countdown-opacity", t);
         }
         if (properties.countdown_roundedcorners) {
-            const Roundedcorners = properties.countdown_roundedcorners.value
+            bodyElement.style.setProperty(
+                "--countdown-roundedcorners",
+                properties.countdown_roundedcorners.value
+            );
 
-            const updateRoundedCorners = () => {
-                const height = parseFloat(window.getComputedStyle(countdown).height);
+            const updateHeight = () => {
+                const height = countdown.getBoundingClientRect().height;
                 if (!height) return;
-
-                countdown_webtext.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
-                countdown_webtext.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+                bodyElement.style.setProperty("--countdown-height", height + "px");
             };
 
-            updateRoundedCorners();
-            const observer = new ResizeObserver(updateRoundedCorners);
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
             observer.observe(countdown);
         }
         if (properties.picturesinfo_language) {
@@ -2554,145 +2197,90 @@ window.wallpaperPropertyListener = {
         }
         if (properties.picturesinfoY) {
             var y = properties.picturesinfoY.value
-            pictures.picture_info.style.top = y + "%"
+            bodyElement.style.setProperty("--picture-info-top", `${y}%`);
         }
         if (properties.picturesinfoX) {
             var x = properties.picturesinfoX.value
-            pictures.picture_info.style.left = x + "%"
+            bodyElement.style.setProperty("--picture-info-left", `${x}%`);
         }
         if (properties.picturesinfo_size) {
             var s = properties.picturesinfo_size.value;
-            pictures.picture_info.style.fontSize = Math.floor(h / 600 * s) + 'px';
-            pictures.picture_info.style.lineHeight = Math.floor(h / 1140 * s) + 'px';
+            bodyElement.style.setProperty("--picture-info-font-size", Math.floor(h / 600 * s) + 'px');
+            bodyElement.style.setProperty("--picture-info-line-height", Math.floor(h / 1140 * s) + 'px');
         }
         if (properties.picturesinfo_show) {
             picturesinfo_show = properties.picturesinfo_show.value
-            if (FirstLoad == false) {
-                pictures.picture_info.style.visibility = picturesinfo_show ? 'visible' : 'hidden';
-                pictures.picture_info.style.display = picturesinfo_show ? 'flex' : 'none';
-            } else {
-                pictures.picture_info.style.display = "flex"
-                pictures.picture_info.style.visibility = picturesinfo_show ? 'visible' : 'hidden'
-
-                setTimeout(function () {
-                    if (!picturesinfo_show || document.querySelector("#picture_info .title .left").innerText == "UNKNOW") {
-                        pictures.picture_info.style.display = "none"
-                    }
-                }, 3000);
-            }
+            bodyElement.style.setProperty("--picture-info-display", picturesinfo_show ? 'flex' : 'none');
+            bodyElement.style.setProperty("--picture-info-visibility", picturesinfo_show ? 'visible' : 'hidden');
         }
         if (properties.picturesinfo_color) {
             picturesinfo_color = properties.picturesinfo_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (Fristpicturesinfo == false) {
-                picturesinfoappearance()
-            }
+            bodyElement.style.setProperty("--picture-info-color", picturesinfo_color.join(', '));
         }
         if (properties.picturesinfo_blurcolor_show) {
             picturesinfo_blurcolor_show = properties.picturesinfo_blurcolor_show.value
-            if (Fristpicturesinfo == false) {
-                picturesinfoappearance()
-            }
+            bodyElement.style.setProperty("--picture-info-blur-enabled", picturesinfo_blurcolor_show ? 1 : 0);
         }
         if (properties.picturesinfo_blurcolor) {
             picturesinfo_blurcolor = properties.picturesinfo_blurcolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (Fristpicturesinfo == false) {
-                picturesinfoappearance()
-            }
+            bodyElement.style.setProperty("--picture-info-blur-color", picturesinfo_blurcolor.join(', '));
         }
         if (properties.picturesinfo_yakeli_show) {
             picturesinfo_yakeli_show = properties.picturesinfo_yakeli_show.value
-            if (Fristpicturesinfo == false) {
-                picturesinfoappearance()
-            }
+            bodyElement.style.setProperty("--picture-info-yakeli-enabled", picturesinfo_yakeli_show ? 1 : 0);
         }
         if (properties.picturesinfo_yakelicolor) {
             picturesinfo_yakelicolor = properties.picturesinfo_yakelicolor.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
-            if (Fristpicturesinfo == false) {
-                picturesinfoappearance()
-            }
+            bodyElement.style.setProperty("--picture-info-yakeli-color", picturesinfo_yakelicolor.join(', '));
         }
         if (properties.picturesinfo_yakeli) {
             picturesinfo_yakeli = properties.picturesinfo_yakeli.value / 100
-            if (Fristpicturesinfo == false) {
-                picturesinfoappearance()
-            }
+            bodyElement.style.setProperty("--picture-info-yakeli", picturesinfo_yakeli);
         }
         if (properties.picturesinfo_bluryakeli) {
             picturesinfo_bluryakeli = properties.picturesinfo_bluryakeli.value
-            picturesinfoappearance()
-
+            bodyElement.style.setProperty("--picture-info-blur-yakeli", `${picturesinfo_bluryakeli}px`);
             Fristpicturesinfo = false
         }
-        function picturesinfoappearance() {
 
-            pictures.picture_info.style.color = 'rgb(' + picturesinfo_color + ')';
-            var titleicon = document.querySelector("#picture_info .titleicon")
-            var authoricon = document.querySelector("#picture_info .authoricon")
-            var locationicon = document.querySelector("#picture_info .locationicon")
-            var filter = 'drop-shadow(0 10240px ' + 'rgb(' + picturesinfo_color + '))'
-            var filter1 = 'drop-shadow(0 10237px ' + 'rgb(' + picturesinfo_color + '))'
-            titleicon.style.filter = filter1;
-            authoricon.style.filter = filter;
-            locationicon.style.filter = filter;
 
-        }
-        if (picturesinfo_blurcolor_show) {
-            pictures.info.style.textShadow = '0 0 20px rgb(' + picturesinfo_blurcolor + ')';
-        } else {
-            pictures.info.style.textShadow = null
-        }
-        if (picturesinfo_yakeli_show) {
-            pictures.info.style.background = "rgba(" + picturesinfo_yakelicolor + "," + picturesinfo_yakeli + ")"
-            pictures.info.style.backdropFilter = "blur(" + picturesinfo_bluryakeli + "px)"
-        } else {
-            pictures.info.style.background = null
-            pictures.info.style.backdropFilter = null
-        }
         if (properties.picturesinfo_timetransparency) {
             var t = properties.picturesinfo_timetransparency.value / 100;
-            pictures.picture_info.style.opacity = t;
+            bodyElement.style.setProperty("--picture-info-opacity", t);
         }
         if (properties.picturesinfo_roundedcorners) {
-            const Roundedcorners = properties.picturesinfo_roundedcorners.value
+            bodyElement.style.setProperty(
+                "--picture-info-roundedcorners",
+                properties.picturesinfo_roundedcorners.value
+            );
 
-            const updateRoundedCorners = () => {
-                const height = parseFloat(window.getComputedStyle(picture_info).height);
+            const updateHeight = () => {
+                const height = pictures.picture_info.getBoundingClientRect().height;
                 if (!height) return;
-
-                pictures.info.style.borderRadius = (height / 2) * (Roundedcorners / 100) + 'px';
-                pictures.info.style.padding = "0 " + (height / 2) * (Roundedcorners / 200) + 'px';
+                bodyElement.style.setProperty("--picture-info-height", height + "px");
             };
 
-            updateRoundedCorners();
-            const observer = new ResizeObserver(updateRoundedCorners);
-            observer.observe(picture_info);
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(pictures.picture_info);
         }
         if (properties.picturesinfo_showaway) {
-            if (properties.picturesinfo_showaway.value == true) {
-                pictures.picture_info.style.transform = 'translate(-100%, 0)';
-            } else {
-                pictures.picture_info.style.transform = 'translate(0, 0)';
-            }
+            bodyElement.style.setProperty("--picture-info-transform", properties.picturesinfo_showaway.value ? 'translate(-100%, 0)' : 'translate(0, 0)');
         }
         if (properties.picturesinfo_showRorL) {
             picturesinfo_showRorL = properties.picturesinfo_showRorL.value
-            if (properties.picturesinfo_showRorL.value) {
-                pictures.picture_info.style.textAlign = "right"
-            } else {
-                pictures.picture_info.style.textAlign = "left"
-            }
+            bodyElement.style.setProperty("--picture-info-text-align", picturesinfo_showRorL ? "right" : "left");
         }
         if (properties.picturesinfo_showwidth) {
             if (properties.picturesinfo_showwidth.value == 0) {
-                pictures.info.style.width = 'auto'
+                bodyElement.style.setProperty("--picture-info-show-width", 'auto');
             } else {
-                var s = properties.picturesinfo_showwidth.value / 100
-                //var w = window.innerWidth
-                pictures.info.style.width = w * s + 'px'
+                const s = properties.picturesinfo_showwidth.value / 100
+                bodyElement.style.setProperty("--picture-info-show-width", w * s + "px");
             }
         }
         if (properties.picturesinfo_description) {
-            document.querySelector('.description').style.display = properties.picturesinfo_description.value ? "block" : "none"
+            bodyElement.style.setProperty("--picture-info-description-display", properties.picturesinfo_description.value ? "block" : "none");
         }
         if (properties.rgb_fps) {
             switch (properties.rgb_fps.value) {
@@ -2725,10 +2313,10 @@ window.wallpaperPropertyListener = {
             audiobarRGB = properties.rgb_au.value
         }
         if (properties.rgb_sa_op) {
-            opacity_saRGb = properties.rgb_sa_op.value / 100
+            opacity_saRGb = properties.rgb_sa_op.value / 100;
         }
         if (properties.rgb_au_high) {
-            aurgbhigh = properties.rgb_au_high.value
+            aurgbhigh = properties.rgb_au_high.value / 2;
         }
         if (properties.rgb_au_color) {
             aurgbcolor = properties.rgb_au_color.value.split(' ').map(function (c) { return Math.ceil(c * 255) });
@@ -2891,15 +2479,3 @@ document.addEventListener('DOMContentLoaded', function () {
         updateWeatherStyles();
     }
 });
-
-// 如果使用Wallpaper Engine的API，可以使用其就绪事件
-if (typeof window.wallpaperRegisterListener !== 'undefined') {
-    window.wallpaperRegisterListener(function (event) {
-        if (event === 'ready') {
-            // Wallpaper Engine准备就绪后立即应用用户设置
-            if (typeof updateWeatherStyles === 'function') {
-                updateWeatherStyles();
-            }
-        }
-    });
-}

@@ -17,18 +17,60 @@ var colorGroup
 
 // 检查是否有播放内容的函数
 function hasPlaybackContent() {
-    // 检查是否有歌曲信息
-    const hasSongInfo = singtitle && singtitle !== '' && singtitle !== 'loading...';
+    // 详细调试信息
+    const playbackStates = window.wallpaperMediaIntegration ? {
+        PLAYBACK_PLAYING: window.wallpaperMediaIntegration.PLAYBACK_PLAYING,
+        PLAYBACK_PAUSED: window.wallpaperMediaIntegration.PLAYBACK_PAUSED,
+        PLAYBACK_STOPPED: window.wallpaperMediaIntegration.PLAYBACK_STOPPED
+    } : null;
+    
+    debugLogger.info('hasPlaybackContent 检查', {
+        singtitle: singtitle,
+        player_now: player_now,
+        wallpaperMediaIntegration: !!window.wallpaperMediaIntegration,
+        playbackStates: playbackStates,
+        isPlaying: player_now === (playbackStates ? playbackStates.PLAYBACK_PLAYING : undefined),
+        isPaused: player_now === (playbackStates ? playbackStates.PLAYBACK_PAUSED : undefined),
+        isStopped: player_now === (playbackStates ? playbackStates.PLAYBACK_STOPPED : undefined)
+    });
+    
+    // 检查是否有歌曲信息 - 更严格的检查
+    const hasSongInfo = singtitle && 
+                       singtitle !== '' && 
+                       singtitle !== 'loading...' &&
+                       singtitle !== '✧ପ(๑･ω･)੭' && // 排除假数据
+                       singtitle !== '٩(๑❛ᴗ❛๑)۶';   // 排除假数据
+    
+    if (!hasSongInfo) {
+        debugLogger.info('没有有效的歌曲信息');
+        return false;
+    }
+    
+    // 检查 window.wallpaperMediaIntegration 是否已初始化
+    if (!window.wallpaperMediaIntegration) {
+        debugLogger.info('wallpaperMediaIntegration 未初始化');
+        return false;
+    }
     
     // 检查当前播放状态
     const isPlayingOrPaused = player_now === window.wallpaperMediaIntegration.PLAYBACK_PLAYING || 
                               player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED;
     
-    // 检查播放器是否显示
-    const isPlayerVisible = player_control_show && player_control.style.display !== 'none';
+    if (!isPlayingOrPaused) {
+        debugLogger.info('播放器不在播放或暂停状态', {
+            player_now: player_now,
+            PLAYBACK_PLAYING: window.wallpaperMediaIntegration.PLAYBACK_PLAYING,
+            PLAYBACK_PAUSED: window.wallpaperMediaIntegration.PLAYBACK_PAUSED,
+            isPlaying: player_now === window.wallpaperMediaIntegration.PLAYBACK_PLAYING,
+            isPaused: player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED
+        });
+        return false;
+    }
     
-    // 有播放内容的条件：有歌曲信息且（正在播放/暂停）或播放器可见
-    return hasSongInfo && (isPlayingOrPaused || isPlayerVisible);
+    debugLogger.info('有播放内容', {
+        state: player_now === window.wallpaperMediaIntegration.PLAYBACK_PLAYING ? '播放中' : '暂停中'
+    });
+    return true;
 }
 
 var player_control_color;
@@ -76,6 +118,13 @@ var player_control_aubar = document.querySelector("#player_control .aubar")
 /*msct封面*/
 window.wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener)
 function wallpaperMediaThumbnailListener(event) {
+    debugLogger.info('wallpaperMediaThumbnailListener 被调用', {
+        event: !!event,
+        player_control_show: player_control_show,
+        FluidEffectConfig: !!window.FluidEffectConfig,
+        FluidEffectConfig_enabled: window.FluidEffectConfig ? window.FluidEffectConfig.enabled : '未定义'
+    });
+    
     if (event && player_control_show) {
         player_control_thumbnail.src = event.thumbnail;
 
@@ -102,12 +151,45 @@ function wallpaperMediaThumbnailListener(event) {
             ];
 
             // 初始化或更新流体效果（只在有播放内容时）
-            if (window.FluidEffectConfig && window.FluidEffectConfig.enabled && hasPlaybackContent()) {
-                initFluidEffect();
+            // 确保所有依赖都已就绪
+            if (window.FluidEffectConfig && typeof window.FluidEffectConfig.enabled !== 'undefined' && 
+                window.FluidEffectConfig.enabled) {
+                
+                // 详细检查播放内容
+                const hasContent = hasPlaybackContent();
+                debugLogger.info('流体效果初始化检查', {
+                    FluidEffectConfig_enabled: window.FluidEffectConfig.enabled,
+                    hasPlaybackContent: hasContent,
+                    singtitle: singtitle,
+                    player_now: player_now,
+                    wallpaperMediaIntegration: !!window.wallpaperMediaIntegration,
+                    isPaused: window.wallpaperMediaIntegration && player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED
+                });
+                
+                if (hasContent) {
+                    // 检查 initFluidEffect 函数是否存在
+                    if (typeof initFluidEffect === 'function') {
+                        debugLogger.info('正在初始化流体效果');
+                        initFluidEffect();
+                        
+                        // 如果媒体处于暂停状态，立即暂停流体效果
+                        if (window.wallpaperMediaIntegration && 
+                            player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED &&
+                            fluidEffect && fluidEffect.setPlayState) {
+                            debugLogger.info('媒体处于暂停状态，暂停流体效果');
+                            fluidEffect.setPlayState(false);
+                        }
+                    } else {
+                        console.log('initFluidEffect 函数未定义，跳过流体效果初始化');
+                    }
+                } else {
+                    debugLogger.info('没有播放内容，跳过流体效果初始化');
+                }
             }
 
             // 更新全屏流体效果（如果启用且有播放内容）
-            if (window.FluidEffectConfig && window.FluidEffectConfig.fullscreenEnabled && 
+            if (window.FluidEffectConfig && typeof window.FluidEffectConfig.fullscreenEnabled !== 'undefined' && 
+                window.FluidEffectConfig.fullscreenEnabled && 
                 typeof updateFullscreenFluidSource === 'function' && hasPlaybackContent()) {
                 updateFullscreenFluidSource();
             }
@@ -242,7 +324,6 @@ function playertitle() {
 
 /*msct状态*/
 window.wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener)
-let = player_now
 function wallpaperMediaPlaybackListener(event) {
     if (event) player_now = event.state
 
@@ -285,12 +366,20 @@ function wallpaperMediaPlaybackListener(event) {
 // 控制流体效果播放状态
 function controlFluidEffectPlayback(playbackState) {
     // 检查是否启用了流体效果
-    if (!window.FluidEffectConfig) {
+    if (!window.FluidEffectConfig || typeof window.FluidEffectConfig.enabled === 'undefined') {
+        console.log('FluidEffectConfig 未初始化或 enabled 属性未定义');
+        return;
+    }
+
+    // 检查 window.wallpaperMediaIntegration 是否已初始化
+    if (!window.wallpaperMediaIntegration) {
+        console.log('wallpaperMediaIntegration 未初始化');
         return;
     }
 
     // 处理播放器流体效果
-    if (window.FluidEffectConfig.enabled && !window.FluidEffectConfig.fullscreenEnabled) {
+    if (window.FluidEffectConfig.enabled && 
+        (!window.FluidEffectConfig.fullscreenEnabled || typeof window.FluidEffectConfig.fullscreenEnabled === 'undefined')) {
         if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             // 播放状态 - 恢复流体效果
             resumeFluidEffect();
@@ -326,10 +415,21 @@ function resumeFluidEffect() {
         return;
     }
     
+    // 检查 FluidEffectConfig 是否已初始化
+    if (!window.FluidEffectConfig || typeof window.FluidEffectConfig.enabled === 'undefined') {
+        console.log('FluidEffectConfig 未初始化或 enabled 属性未定义');
+        return;
+    }
+    
     // 如果流体效果不存在，先初始化
-    if (!fluidEffect && window.FluidEffectConfig && window.FluidEffectConfig.enabled) {
+    if (!fluidEffect && window.FluidEffectConfig.enabled) {
         console.log('流体效果未初始化，正在初始化...');
-        initFluidEffect();
+        // 检查 initFluidEffect 函数是否存在
+        if (typeof initFluidEffect === 'function') {
+            initFluidEffect();
+        } else {
+            console.log('initFluidEffect 函数未定义，无法初始化流体效果');
+        }
     }
     
     if (fluidEffect && fluidEffect.setPlayState) {
@@ -575,90 +675,3 @@ function showFakePlayerData() {
     stopFluidEffect();
     stopFullscreenFluidEffect();
 }
-
-// 流体效果相关函数
-function initFluidEffect() {
-    // 确保配置对象存在
-    if (!window.FluidEffectConfig) {
-        console.warn('FluidEffectConfig not found. Make sure fluid_control.js is loaded.');
-        return;
-    }
-
-    // 检查是否启用了全屏流体效果，如果启用则跳过播放器流体效果初始化
-    if (window.FluidEffectConfig.fullscreenEnabled) {
-        console.log('全屏流体效果已启用，跳过播放器流体效果初始化');
-        return;
-    }
-
-    // 检查是否有播放内容，如果没有则不初始化流体效果
-    if (!hasPlaybackContent()) {
-        console.log('没有播放内容，跳过流体效果初始化');
-        return;
-    }
-
-    // 如果已有流体效果实例，先销毁
-    if (fluidEffect) {
-        fluidEffect.destroy();
-        fluidEffect = null;
-    }
-
-    // 使用新的流体效果类 (FluidEffect2)
-    if (typeof FluidEffect2 === 'undefined') {
-        console.warn('FluidEffect2 class not found. Make sure fluid_effect2.js is loaded.');
-        return;
-    }
-    
-    try {
-        fluidEffect = new FluidEffect2(player_control_background, {
-            resolution: window.FluidEffectConfig.resolution,
-            blurAmount: window.FluidEffectConfig.blurAmount,
-            displacementScale: window.FluidEffectConfig.displacementScale,
-            turbulenceFrequency: window.FluidEffectConfig.turbulenceFrequency,
-            turbulenceOctaves: window.FluidEffectConfig.turbulenceOctaves,
-            animationSpeed: window.FluidEffectConfig.animationSpeed,
-            audioResponsive: window.FluidEffectConfig.audioResponsive,
-            minDisplacementScale: window.FluidEffectConfig.minDisplacementScale,
-            maxDisplacementScale: window.FluidEffectConfig.maxDisplacementScale
-        });
-        console.log('Fluid effect initialized (FluidEffect2)');
-    } catch (error) {
-        console.error('Failed to initialize fluid effect:', error);
-        return;
-    }
-
-        // 设置封面图像作为流体源
-        if (player_control_thumbnail && player_control_thumbnail.complete && fluidEffect.setSourceFromImage) {
-            fluidEffect.setSourceFromImage(player_control_thumbnail);
-            document.querySelector(".fluid-effect-wrapper").style.backgroundImage = "url('" + player_control_thumbnail.src + "')";
-        }
-
-        // 开始流体模拟
-        if (fluidEffect.start) {
-            fluidEffect.start();
-        }
-        
-        // 调整背景样式
-        player_control_background.style.background = 'none';
-        player_control_background.style.overflow = 'hidden';
-        
-        console.log('Fluid effect initialized successfully');
-}
-
-function destroyFluidEffect() {
-    // 检查是否启用了全屏流体效果，如果启用则跳过播放器流体效果销毁
-    if (window.FluidEffectConfig && window.FluidEffectConfig.fullscreenEnabled) {
-        console.log('全屏流体效果已启用，跳过播放器流体效果销毁');
-        return;
-    }
-
-    if (fluidEffect) {
-        fluidEffect.destroy();
-        fluidEffect = null;
-        
-        // 恢复背景样式
-        if (player_control_background) {
-            player_control_background.style.background = '';
-        }
-    }
-}
-

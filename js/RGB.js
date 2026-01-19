@@ -1,22 +1,22 @@
-var wallpaperSettings = {
+let wallpaperSettings = {
     ledPlugin: false,
     cuePlugin: false
 };
 
-var backgroundRGB
-var sakuraRGB
-var RGBRefresh
-var RGB_show
-var particlesRGB
-var nextphoto
-var audiobarRGB
-var opacity_saRGb
-var audioArray
-var aurgbcolor
-var aurgbhigh
-var audiobarrainbowcolor
-var rainbowmove
-var rainbowmovespeed
+let backgroundRGB
+let sakuraRGB
+let RGBRefresh
+let RGB_show
+let particlesRGB
+let nextphoto
+let audiobarRGB
+let opacity_saRGb
+let audioArray
+let aurgbcolor
+let aurgbhigh
+let audiobarrainbowcolor
+let rainbowmove
+let rainbowmovespeed
 let time = 0
 
 window.wallpaperPluginListener = {
@@ -29,16 +29,17 @@ window.wallpaperPluginListener = {
             // iCUE-specific plugin loaded, only needed if you want to utilize extra iCUE functions
             wallpaperSettings.cuePlugin = true;
         }
+        debugLogger.info('RGB插件启用情况', {type: name})
     }
 };
 
 function getEncodedCanvasImageData(canvas) {
-    var context = canvas.getContext('2d');
-    var imageData = context.getImageData(0, 0, 100, 20);
-    var colorArray = [];
+    let context = canvas.getContext('2d');
+    let imageData = context.getImageData(0, 0, 100, 20);
+    let colorArray = [];
 
-    for (var d = 0; d < imageData.data.length; d += 4) {
-        var write = d / 4 * 3;
+    for (let d = 0; d < imageData.data.length; d += 4) {
+        let write = d / 4 * 3;
         colorArray[write] = imageData.data[d];
         colorArray[write + 1] = imageData.data[d + 1];
         colorArray[write + 2] = imageData.data[d + 2];
@@ -49,57 +50,57 @@ function getEncodedCanvasImageData(canvas) {
 // Only execute this logic if the LED plugin has actually been loaded
 function startRGB() {
     const canvas = document.getElementById('RGBuse');
-    var encodedImageData = getEncodedCanvasImageData(canvas);
+    let encodedImageData = getEncodedCanvasImageData(canvas);
     window.wpPlugins.led.setAllDevicesByImageData(encodedImageData, canvas.width, canvas.height);
 }
 
 
-function background2canvas(src, videoORimages){
-    var Frist = true 
-    var sakura = document.getElementById('sakura')
-    var particles = document.getElementById('canvas-particles')
-    var bg = document.getElementById('RGBuse')
-    var rgbbg = document.getElementById('RGBuse').getContext('2d')
+function background2canvas(src, videoORimages) {
+    let Frist = true
+    let sakura = document.getElementById('sakura')
+    let particles = document.getElementById('canvas-particles')
+    let bg = document.getElementById('RGBuse')
+    let rgbbg = document.getElementById('RGBuse').getContext('2d')
 
-    function drawLayers(){
-        var sakurause = (sakuraRGB && ((sakura.width == window.screen.width) && (sakura.height == window.screen.height)))
-        
+    function drawLayers() {
+        let sakurause = (sakuraRGB && ((sakura.width == window.screen.width) && (sakura.height == window.screen.height)))
+
         rgbbg.save()
         rgbbg.globalAlpha = opacity_saRGb
-        if(sakurause){rgbbg.drawImage(sakura,0,0,sakura.width,sakura.height,0,0,100,20)}
+        if (sakurause) { rgbbg.drawImage(sakura, 0, 0, sakura.width, sakura.height, 0, 0, 100, 20) }
 
         rgbbg.globalAlpha = 1
-        if(particlesRGB){rgbbg.drawImage(particles,0,0,particles.width,particles.height,0,0,100,20)}
+        if (particlesRGB) { rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20) }
         if (audiobarrainbowcolor) {
             if (audiobarRGB && audioArray) {
-                var barWidth = bg.width / 128;
-                var scaleFactor = aurgbhigh;
-                var hueStep = 360 / 128;
-        
+                let barWidth = bg.width / 128;
+                let scaleFactor = aurgbhigh;
+                let hueStep = 360 / 128;
+
                 // 初始化 smoothedAudioArray，如果不存在
                 if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
                     window.smoothedAudioArray = new Array(audioArray.length).fill(0);
                 }
-        
+
                 // 更新 smoothedAudioArray 值，逐渐靠近 audioArray
-                for (var i = 0; i < audioArray.length; ++i) {
+                for (let i = 0; i < audioArray.length; ++i) {
                     window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1; // 平滑系数为 0.1
                 }
-        
-                for (var i = 0; i < audioArray.length; ++i) {
-                    var hue = (i * hueStep + time) % 360;
-                    var saturation = '100%';
-                    var lightness = '50%';
-                    var rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;
-        
-                    var channelIndex = i % 64;
+
+                for (let i = 0; i < audioArray.length; ++i) {
+                    let hue = (i * hueStep + time) % 360;
+                    let saturation = '100%';
+                    let lightness = '50%';
+                    let rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;
+
+                    let channelIndex = i % 64;
                     if (i >= 64) {
                         channelIndex += 64;
                     }
-        
-                    var height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
-                    var actualHeight = Math.min(height, bg.height);
-        
+
+                    let height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                    let actualHeight = Math.min(height, bg.height);
+
                     rgbbg.fillStyle = rgbColor;
                     rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
                 }
@@ -109,79 +110,76 @@ function background2canvas(src, videoORimages){
             }
         } else {
             if (audiobarRGB && audioArray) {
-                var barWidth = bg.width / 128;
-                var scaleFactor = aurgbhigh;
+                let barWidth = bg.width / 128;
+                let scaleFactor = aurgbhigh;
                 rgbbg.fillStyle = 'rgb(' + aurgbcolor + ')';
-        
+
                 // 初始化 smoothedAudioArray，如果不存在
                 if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
                     window.smoothedAudioArray = new Array(audioArray.length).fill(0);
                 }
-        
+
                 // 更新 smoothedAudioArray 值
-                for (var i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1; // 平滑系数为 0.1
+                for (let i = 0; i < audioArray.length; ++i) {
+                    window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
                 }
-        
-                for (var i = 0; i < audioArray.length; ++i) {
-                    var channelIndex = i % 64;
+
+                for (let i = 0; i < audioArray.length; ++i) {
+                    let channelIndex = i % 64;
                     if (i >= 64) {
                         channelIndex += 64;
                     }
-                    var height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
-                    var actualHeight = Math.min(height, bg.height);
+                    let height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                    let actualHeight = Math.min(height, bg.height);
                     rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
                 }
             }
         }
-        
-        
-        
+
         rgbbg.restore()
         startRGB()
-        if(wallpaperSettings.ledPlugin && !nextphoto && !Paused && RGB_show && (videoORimages || (sakurause || particlesRGB || audiobarRGB))){
-            if(RGBRefresh != "free"){
-                setTimeout(function(){
-                    requestAnimationFrame(drawbackground);  
-                },RGBRefresh)
-            }else{
-                requestAnimationFrame(drawbackground)
+        if (wallpaperSettings.ledPlugin && !nextphoto && !Paused && RGB_show && (videoORimages || (sakurause || particlesRGB || audiobarRGB))) {
+            if (RGBRefresh != "free") {
+                setTimeout(function () {
+                    requestAnimationFrame(drawbackground);
+                }, RGBRefresh);
+            } else {
+                requestAnimationFrame(drawbackground);
             }
         }
-    }  
-      
-    function drawbackground() {  
-        
-        if(backgroundRGB){
-            if(videoORimages){
-                var video = document.getElementById('myvideo') 
-                if(!video.paused && !video.ended){
-                    rgbbg.drawImage(video,0,0,100,20)
+    }
+
+    function drawbackground() {
+        if (backgroundRGB) {
+            if (videoORimages) {
+                let video = document.getElementById('myvideo')
+                if (!video.paused && !video.ended) {
+                    rgbbg.drawImage(video, 0, 0, 100, 20);
                     drawLayer();
-                    Frist =false
+                    Frist = false;
                 }
-            }else{  
-                var img = new Image() 
-                img.src = src
-                img.onload = function(){
-                    if(Frist == true){
-                        setTimeout(function(){
-                            rgbbg.drawImage(img,0,0,100,20)
-                            drawLayers()
-                            Frist =false
-                        },500)
-                    }else{
-                        rgbbg.drawImage(img,0,0,100,20)
-                        drawLayers()
-                        Frist =false
+            } else {
+                let img = new Image()
+                img.src = src;
+                img.onload = function () {
+                    if (Frist == true) {
+                        setTimeout(function () {
+                            rgbbg.drawImage(img, 0, 0, 100, 20);
+                            drawLayers();
+                            Frist = false;
+                        }, 500);
+                    } else {
+                        rgbbg.drawImage(img, 0, 0, 100, 20);
+                        drawLayers();
+                        Frist = false;
                     }
                 }
             }
-        }else{
-            rgbbg.clearRect(0,0,100,20)
+        } else {
+            rgbbg.clearRect(0, 0, 100, 20);
             drawLayers();
         }
     }
     //drawLayers()
-    requestAnimationFrame(drawbackground)
+    requestAnimationFrame(drawbackground);
 }

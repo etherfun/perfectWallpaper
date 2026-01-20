@@ -23,7 +23,7 @@ function hasPlaybackContent() {
         PLAYBACK_PAUSED: window.wallpaperMediaIntegration.PLAYBACK_PAUSED,
         PLAYBACK_STOPPED: window.wallpaperMediaIntegration.PLAYBACK_STOPPED
     } : null;
-    
+
     debugLogger.info('hasPlaybackContent 检查', {
         singtitle: singtitle,
         player_now: player_now,
@@ -33,29 +33,29 @@ function hasPlaybackContent() {
         isPaused: player_now === (playbackStates ? playbackStates.PLAYBACK_PAUSED : undefined),
         isStopped: player_now === (playbackStates ? playbackStates.PLAYBACK_STOPPED : undefined)
     });
-    
+
     // 检查是否有歌曲信息 - 更严格的检查
-    const hasSongInfo = singtitle && 
-                       singtitle !== '' && 
-                       singtitle !== 'loading...' &&
-                       singtitle !== '✧ପ(๑･ω･)੭' && // 排除假数据
-                       singtitle !== '٩(๑❛ᴗ❛๑)۶';   // 排除假数据
-    
+    const hasSongInfo = singtitle &&
+        singtitle !== '' &&
+        singtitle !== 'loading...' &&
+        singtitle !== '✧ପ(๑･ω･)੭' && // 排除假数据
+        singtitle !== '٩(๑❛ᴗ❛๑)۶';   // 排除假数据
+
     if (!hasSongInfo) {
         debugLogger.info('没有有效的歌曲信息');
         return false;
     }
-    
+
     // 检查 window.wallpaperMediaIntegration 是否已初始化
     if (!window.wallpaperMediaIntegration) {
         debugLogger.info('wallpaperMediaIntegration 未初始化');
         return false;
     }
-    
+
     // 检查当前播放状态
-    const isPlayingOrPaused = player_now === window.wallpaperMediaIntegration.PLAYBACK_PLAYING || 
-                              player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED;
-    
+    const isPlayingOrPaused = player_now === window.wallpaperMediaIntegration.PLAYBACK_PLAYING ||
+        player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED;
+
     if (!isPlayingOrPaused) {
         debugLogger.info('播放器不在播放或暂停状态', {
             player_now: player_now,
@@ -66,7 +66,7 @@ function hasPlaybackContent() {
         });
         return false;
     }
-    
+
     debugLogger.info('有播放内容', {
         state: player_now === window.wallpaperMediaIntegration.PLAYBACK_PLAYING ? '播放中' : '暂停中'
     });
@@ -124,7 +124,7 @@ function wallpaperMediaThumbnailListener(event) {
         FluidEffectConfig: !!window.FluidEffectConfig,
         FluidEffectConfig_enabled: window.FluidEffectConfig ? window.FluidEffectConfig.enabled : '未定义'
     });
-    
+
     if (event && player_control_show) {
         player_control_thumbnail.src = event.thumbnail;
 
@@ -152,9 +152,9 @@ function wallpaperMediaThumbnailListener(event) {
 
             // 初始化或更新流体效果（只在有播放内容时）
             // 确保所有依赖都已就绪
-            if (window.FluidEffectConfig && typeof window.FluidEffectConfig.enabled !== 'undefined' && 
+            if (window.FluidEffectConfig && typeof window.FluidEffectConfig.enabled !== 'undefined' &&
                 window.FluidEffectConfig.enabled) {
-                
+
                 // 详细检查播放内容
                 const hasContent = hasPlaybackContent();
                 debugLogger.info('流体效果初始化检查', {
@@ -165,15 +165,15 @@ function wallpaperMediaThumbnailListener(event) {
                     wallpaperMediaIntegration: !!window.wallpaperMediaIntegration,
                     isPaused: window.wallpaperMediaIntegration && player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED
                 });
-                
+
                 if (hasContent) {
                     // 检查 initFluidEffect 函数是否存在
                     if (typeof initFluidEffect === 'function') {
                         debugLogger.info('正在初始化流体效果');
                         initFluidEffect();
-                        
+
                         // 如果媒体处于暂停状态，立即暂停流体效果
-                        if (window.wallpaperMediaIntegration && 
+                        if (window.wallpaperMediaIntegration &&
                             player_now === window.wallpaperMediaIntegration.PLAYBACK_PAUSED &&
                             fluidEffect && fluidEffect.setPlayState) {
                             debugLogger.info('媒体处于暂停状态，暂停流体效果');
@@ -188,8 +188,8 @@ function wallpaperMediaThumbnailListener(event) {
             }
 
             // 更新全屏流体效果（如果启用且有播放内容）
-            if (window.FluidEffectConfig && typeof window.FluidEffectConfig.fullscreenEnabled !== 'undefined' && 
-                window.FluidEffectConfig.fullscreenEnabled && 
+            if (window.FluidEffectConfig && typeof window.FluidEffectConfig.fullscreenEnabled !== 'undefined' &&
+                window.FluidEffectConfig.fullscreenEnabled &&
                 typeof updateFullscreenFluidSource === 'function' && hasPlaybackContent()) {
                 updateFullscreenFluidSource();
             }
@@ -264,20 +264,11 @@ function wallpaperMediaPropertiesListener(event) {
         player_control_aubar.height = 0
         if (player_control_show == true && (singtitle && singtitle !== '')) {
             player_control.style.display = 'flex'
-        } else if (player_control_show && (!singtitle || singtitle === '')) {
-            // 没有歌曲信息，但播放器是开启状态
-            if (!player_control_autohide) {
-                // 不自动隐藏，显示假数据
-                showFakePlayerData();
-            }
+        } else {
+            player_control.style.display = 'none';
         }
     } else {
-        // event 为空，没有歌曲信息
-        if (player_control_show && !player_control_autohide) {
-            // 不自动隐藏，显示假数据
-            showFakePlayerData();
-        }
-        return; // 直接返回，不继续执行
+        player_control.style.display = 'none';
     }
 
     if (!player_control_show || singtitle == undefined || singtitle == '') return
@@ -336,8 +327,8 @@ function wallpaperMediaPlaybackListener(event) {
             if (player_control_autohide) {
                 player_control.style.display = "none"; // 自动隐藏
             } else {
-                // 不自动隐藏，显示假数据
-                showFakePlayerData();
+                // 不自动隐藏，显示播放器但不设置假数据
+                player_control.style.display = "flex";
             }
         }
     } else {
@@ -378,7 +369,7 @@ function controlFluidEffectPlayback(playbackState) {
     }
 
     // 处理播放器流体效果
-    if (window.FluidEffectConfig.enabled && 
+    if (window.FluidEffectConfig.enabled &&
         (!window.FluidEffectConfig.fullscreenEnabled || typeof window.FluidEffectConfig.fullscreenEnabled === 'undefined')) {
         if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             // 播放状态 - 恢复流体效果
@@ -414,13 +405,13 @@ function resumeFluidEffect() {
         console.log('没有播放内容，跳过流体效果恢复');
         return;
     }
-    
+
     // 检查 FluidEffectConfig 是否已初始化
     if (!window.FluidEffectConfig || typeof window.FluidEffectConfig.enabled === 'undefined') {
         console.log('FluidEffectConfig 未初始化或 enabled 属性未定义');
         return;
     }
-    
+
     // 如果流体效果不存在，先初始化
     if (!fluidEffect && window.FluidEffectConfig.enabled) {
         console.log('流体效果未初始化，正在初始化...');
@@ -431,7 +422,7 @@ function resumeFluidEffect() {
             console.log('initFluidEffect 函数未定义，无法初始化流体效果');
         }
     }
-    
+
     if (fluidEffect && fluidEffect.setPlayState) {
         fluidEffect.setPlayState(true);
         console.log('播放器流体效果已恢复');
@@ -465,7 +456,7 @@ function resumeFullscreenFluidEffect() {
         console.log('没有播放内容，跳过全屏流体效果恢复');
         return;
     }
-    
+
     // 检查全局fullscreenFluidEffect变量是否存在
     if (typeof fullscreenFluidEffect !== 'undefined' && fullscreenFluidEffect && fullscreenFluidEffect.setPlayState) {
         fullscreenFluidEffect.setPlayState(true);
@@ -636,42 +627,4 @@ function pc_aubar() {
     }
 }
 
-function showFakePlayerData() {
-    // 设置假数据
-    singtitle = "٩(๑❛ᴗ❛๑)۶";
-    singartist = "少女乞讨中……";
-    singalbumTitle = "";
 
-    // 显示播放器
-    player_control.style.display = "flex";
-
-    // 更新标题
-    playertitle();
-
-    // 设置默认封面（需要一个空白图片）
-    player_control_thumbnail.src = 'imgs/default_cover.png';
-
-    // 使用默认颜色
-    if (player_control_fontusetb !== 5) {
-        fontcolor = colorGroup[Color_pickup_method - 1][player_control_fontusetb - 1];
-    } else {
-        fontcolor = player_control_color;
-    }
-
-    // 应用颜色
-    player_control_info.style.color = "rgb(" + fontcolor + ")";
-    player_iconcolor(fontcolor);
-    player_control_timeline.style.backgroundColor = "rgb(" + fontcolor + ")";
-    document.querySelector('.timeline').style.backgroundColor = "rgba(255,255,255," + (player_control_yakeli + 0.4) + ")";
-
-    // 停止进度条动画
-    if (timelineTimer) {
-        clearTimeout(timelineTimer);
-        timelineTimer = null;
-    }
-    player_control_timeline.style.width = "0%";
-
-    // 停止流体效果（当显示假数据时）
-    stopFluidEffect();
-    stopFullscreenFluidEffect();
-}

@@ -1,6 +1,6 @@
 {
 	"contentrating" : "Everyone",
-	"description" : "有bug欢迎上报 尽可能会在一周内修复\r\n(如果可以请使用上方的 \" 讨论 \" 板块反馈问题或者提问 方便管理以及回复)\r\n这个壁纸也有可能会更新我自己的功能 \r\n也可以提出一些功能 有空就会加入进来\r\n\r\n如果原作者认为这个壁纸侵犯了你的权利 留言后会在一周内删除",
+	"description" : "🐞 Bug Reports Welcome!\nPlease feel free to report any issues or bugs. We'll try our best to fix them within a week.\n(If possible, use the \"Discussions\" section above to submit feedback or questions for better organization and faster responses.)\n\n🛠️ Feature Updates & Customization\nThis wallpaper may receive updates with new personal features/functions I develop.\nFeel free to suggest features—I'll add them when time allows!\n\n⚠️ Copyright Notice\nIf the original creator believes this wallpaper infringes your rights, leave a comment below and it will be removed within one week.",
 	"file" : "index.html",
 	"general" : 
 	{
@@ -30,57 +30,86 @@
 				"ui_audio_circle_center_y" : "Center of circle-Y(%)",
 				"ui_audio_circle_center_y_percent" : "Center of circle-Y(%)",
 				"ui_audio_circle_line_width" : "Circle Line Width",
+				"ui_audio_color" : "Color",
 				"ui_audio_color_gradient" : "Color Gradient",
 				"ui_audio_color_mode" : "Color Mode",
 				"ui_audio_color_rhythm" : "Color Rhythm",
+				"ui_audio_colormode_1" : "Normal Mode",
+				"ui_audio_colormode_2" : "Solid Color Gradient",
+				"ui_audio_colormode_3" : "Rainbow Gradient",
 				"ui_audio_coming_soon" : "Coming soon",
 				"ui_audio_date_correlation" : "Date Correlation",
+				"ui_audio_direction_1" : "Outward",
+				"ui_audio_direction_2" : "Inward",
+				"ui_audio_direction_3" : "Two Way",
 				"ui_audio_distance" : "Distance",
 				"ui_audio_first_point" : "First Point",
-				"ui_audio_from_the_web" : "From the web",
-				"ui_audio_game" : "game",
 				"ui_audio_gradient_rate" : "Gradient Rate",
 				"ui_audio_help_author_info" : "Author Information",
 				"ui_audio_help_support" : "Support",
 				"ui_audio_hitokoto_title" : "Hitokoto",
 				"ui_audio_image_separator" : "__________________________________________",
-				"ui_audio_jitterbug" : "jitterbug",
 				"ui_audio_line_settings" : "Line Settings",
 				"ui_audio_line_width" : "Line Width",
-				"ui_audio_literature" : "literature",
 				"ui_audio_middle_line" : "Middle Line",
 				"ui_audio_modifier_header" : "Modifier",
 				"ui_audio_modifier_title" : "Modifier",
 				"ui_audio_mouse_coordinate_offset" : "Mouse Coordinate Offset?",
 				"ui_audio_music_title" : "Music",
-				"ui_audio_netease_cloud" : "NetEase Cloud",
 				"ui_audio_opacity" : "Opacity",
-				"ui_audio_original" : "original",
 				"ui_audio_other" : "other",
-				"ui_audio_philosophy" : "philosophy",
-				"ui_audio_poetry" : "poetry",
 				"ui_audio_point_number" : "Point Number",
 				"ui_audio_polygon_transform" : "Polygon",
 				"ui_audio_polygon_transform_hint" : "Polygon<br /><small>Use peak audio for more obvious effect</small>",
 				"ui_audio_pwcircle_title" : "Perfect Wallpaper Circle (PWCircle)",
+				"ui_audio_pwcircleringtype_1" : "Static Ring",
+				"ui_audio_pwcircleringtype_2" : "Inner Ring",
+				"ui_audio_pwcircleringtype_3" : "Outer Ring",
 				"ui_audio_pwline_title" : "Perfect Wallpaper Line (PWLine)",
+				"ui_audio_pwlinecolormode_1" : "Normal Mode",
+				"ui_audio_pwlinecolormode_2" : "Solid Color Gradient",
+				"ui_audio_pwlinecolormode_3" : "Rainbow Gradient",
+				"ui_audio_pwlinedirection_1" : "Upward-Left",
+				"ui_audio_pwlinedirection_2" : "Down-Right",
+				"ui_audio_pwlinedirection_3" : "Two Way",
+				"ui_audio_pwlineposition_1" : "Transverse",
+				"ui_audio_pwlineposition_2" : "Vertical",
+				"ui_audio_pwlinestyle_1" : "Bar",
+				"ui_audio_pwlinestyle_2" : "Peak",
+				"ui_audio_pwlinestyle_3" : "Peak No Line",
 				"ui_audio_radius" : "Radius",
 				"ui_audio_ring_settings" : "Ring Settings",
+				"ui_audio_ringtype_1" : "Static Ring",
+				"ui_audio_ringtype_2" : "Inner Ring",
+				"ui_audio_ringtype_3" : "Outer Ring",
 				"ui_audio_rotating_ball" : "Rotating Ball",
 				"ui_audio_rotating_ring" : "Rotating Ring",
 				"ui_audio_rotation_angle" : "Rotation Angle",
 				"ui_audio_second_point" : "Second Point",
 				"ui_audio_semicircle_direction" : "SemiCircle Direction",
+				"ui_audio_semicircledirection_1" : "Upward",
+				"ui_audio_semicircledirection_2" : "Down",
+				"ui_audio_semicircledirection_3" : "Left",
+				"ui_audio_semicircledirection_4" : "Right",
 				"ui_audio_show_ball" : "Show Ball?",
 				"ui_audio_show_inner_ring" : "Show Inner Ring?",
 				"ui_audio_show_line" : "Show Line?",
 				"ui_audio_show_outer_ring" : "Show Outer Ring?",
 				"ui_audio_show_ring" : "Show Ring?",
+				"ui_audio_show_semi_circle" : "Semicircle Effect",
 				"ui_audio_show_static_ring" : "Show Static Ring?",
-				"ui_audio_showbiz" : "showbiz",
 				"ui_audio_special_effects_title" : "Special Effects",
+				"ui_audio_style_1" : "Bar",
+				"ui_audio_style_2" : "Peak",
+				"ui_audio_style_3" : "Peak (No Line)",
 				"ui_audio_time_correlation" : "Time Correlation",
 				"ui_audio_time_date_title" : "Time&Date",
+				"ui_audio_visual_audio_model" : "Visual Audio Model",
+				"ui_audio_visual_audio_model_1" : "None",
+				"ui_audio_visual_audio_model_2" : "Perfect Circle (PWCircle)",
+				"ui_audio_visual_audio_model_3" : "Perfect Line (PWLine)",
+				"ui_audio_visual_audio_model_4" : "Alice Circle (Alice)",
+				"ui_audio_visual_audio_model_5" : "Coming Soon",
 				"ui_audio_wave_color" : "Wave Color",
 				"ui_audio_wave_density" : "Wave Density",
 				"ui_audio_wave_direction" : "Wave direction",
@@ -100,6 +129,12 @@
 				"ui_background_galaxyapi" : "How To Get It",
 				"ui_background_image" : "Background Image",
 				"ui_background_imagedisplaystlye" : "Wallpaper Display Stlye",
+				"ui_background_imagedisplaystlye_1" : "Fill",
+				"ui_background_imagedisplaystlye_2" : "Stretch",
+				"ui_background_imagedisplaystlye_3" : "Adapt",
+				"ui_background_imagedisplaystlye_4" : "Tile",
+				"ui_background_imagedisplaystlye_5" : "Center",
+				"ui_background_imagedisplaystlye_6" : "Free",
 				"ui_background_imageswitchtimes" : "Image Switching Frequency",
 				"ui_background_info" : "Show photo info",
 				"ui_background_random" : "Enable Random Switch",
@@ -161,46 +196,47 @@
 				"ui_countdown_txt_after" : "Display text in front of the countdown",
 				"ui_countdown_txt_befor" : "Display text behind the countdown",
 				"ui_countdown_year" : "Year",
+				"ui_date_DateFormat" : "Date Format",
 				"ui_date_TimeColorRhythm" : "Color Rhythm",
-                "ui_date_dayFormat" : "Day Format",
-                "ui_date_dayFormat_1":"Abbreviation - 7",
-                "ui_date_dayFormat_2":"Full - 07",
-                "ui_date_dayFormat_3":"Do not display",
-                "ui_date_monthFormat" : "Month Format",
+				"ui_date_dayFormat" : "Day Format",
+				"ui_date_dayFormat_1" : "Abbreviation - 7",
+				"ui_date_dayFormat_2" : "Full - 07",
+				"ui_date_dayFormat_3" : "Do not display",
+				"ui_date_monthFormat" : "Month Format",
 				"ui_date_monthFormat_1" : "Number - 1",
 				"ui_date_monthFormat_2" : "English - January",
 				"ui_date_monthFormat_3" : "Chinese - 一月",
-                "ui_date_monthFormat_4": "Do not display",
-                "ui_date_order": "Date Display Order",
-                "ui_date_order_1": "Year Month Day",
-                "ui_date_order_2": "Month Day Year",
-                "ui_date_order_3": "Day Month Year",
-                "ui_date_separator": "Date format separator",
-                "ui_date_separator_1": "No separator",
-                "ui_date_separator_2": "/",
-                "ui_date_separator_3": "-",
-                "ui_date_separator_4": ".",
-                "ui_date_separator_5": "年/月/日",
-                "ui_date_separator_6": "Space",
-                "ui_date_show": "Visual Date",
-                "ui_date_showTime": "Visual Time",
-                "ui_date_tShowSencends": "Display seconds",
-                "ui_date_tStyle": "24-Hour",
-                "ui_date_weekFormat": "Week Format",
-                "ui_date_weekFormat_1": "Chinese",
-                "ui_date_weekFormat_2": "English",
-                "ui_date_weekFormat_3": "Do not display",
-                "ui_date_yearFormat": "Year Format",
-                "ui_date_yearFormat_1": "Full - 2026",
-                "ui_date_yearFormat_2": "Abbreviated - 26",
-                "ui_date_yearFormat_3": "Do not display",
-                "ui_effect_AliceParticles_particles_color": "Particles Color",
-                "ui_effect_AliceParticles_particles_direction": "Direction of Particles",
-                "ui_effect_AliceParticles_particles_image": "Particles Image",
-                "ui_effect_AliceParticles_particles_isBounce": "Bounce",
-                "ui_effect_AliceParticles_particles_isMove": "Particles Move",
-                "ui_effect_AliceParticles_particles_isParticles": "Particles Effect",
-                "ui_effect_AliceParticles_particles_isStraight": "Straight",
+				"ui_date_monthFormat_4" : "Do not display",
+				"ui_date_order" : "Date Display Order",
+				"ui_date_order_1" : "Year Month Day",
+				"ui_date_order_2" : "Month Day Year",
+				"ui_date_order_3" : "Day Month Year",
+				"ui_date_separator" : "Date format separator",
+				"ui_date_separator_1" : "No separator",
+				"ui_date_separator_2" : "/",
+				"ui_date_separator_3" : "-",
+				"ui_date_separator_4" : ".",
+				"ui_date_separator_5" : "年/月/日",
+				"ui_date_separator_6" : "Space",
+				"ui_date_show" : "Visual Date",
+				"ui_date_showTime" : "Visual Time",
+				"ui_date_tShowSencends" : "Display seconds",
+				"ui_date_tStyle" : "24-Hour",
+				"ui_date_weekFormat" : "Week Format",
+				"ui_date_weekFormat_1" : "Chinese",
+				"ui_date_weekFormat_2" : "English",
+				"ui_date_weekFormat_3" : "Do not display",
+				"ui_date_yearFormat" : "Year Format",
+				"ui_date_yearFormat_1" : "Full - 2026",
+				"ui_date_yearFormat_2" : "Abbreviated - 26",
+				"ui_date_yearFormat_3" : "Do not display",
+				"ui_effect_AliceParticles_particles_color" : "Particles Color",
+				"ui_effect_AliceParticles_particles_direction" : "Direction of Particles",
+				"ui_effect_AliceParticles_particles_image" : "Particles Image",
+				"ui_effect_AliceParticles_particles_isBounce" : "Bounce",
+				"ui_effect_AliceParticles_particles_isMove" : "Particles Move",
+				"ui_effect_AliceParticles_particles_isParticles" : "Particles Effect",
+				"ui_effect_AliceParticles_particles_isStraight" : "Straight",
 				"ui_effect_AliceParticles_particles_linkColor" : "Link Color",
 				"ui_effect_AliceParticles_particles_linkDistance" : "Link Distance",
 				"ui_effect_AliceParticles_particles_linkEnable" : "Show Line",
@@ -219,6 +255,16 @@
 				"ui_effect_AliceParticles_particles_speed" : "Particles Speed",
 				"ui_effect_AliceParticles_particles_speedRandom" : "Speed Random",
 				"ui_effect_AliceParticlestxt" : "Alice Particles ----------",
+				"ui_effect_particles_image_10" : "10. Image 10",
+				"ui_effect_particles_image_6" : "6. Image 6",
+				"ui_effect_particles_image_7" : "7. Image 7",
+				"ui_effect_particles_image_8" : "8. Image 8",
+				"ui_effect_particles_image_9" : "9. GOGE",
+				"ui_effect_particles_shapetype_1" : "Circle",
+				"ui_effect_particles_shapetype_2" : "Square",
+				"ui_effect_particles_shapetype_3" : "Triangle",
+				"ui_effect_particles_shapetype_4" : "Star",
+				"ui_effect_particles_shapetype_5" : "Image",
 				"ui_effect_sakura_sakurabackcolor" : "Sakura BackColor",
 				"ui_effect_sakura_sakurabackground" : "Sakura Background",
 				"ui_effect_sakura_sakurabacklight" : "Sakura Background Light",
@@ -234,6 +280,7 @@
 				"ui_fluid_effect_displacement_scale" : "Displacement Map Scale",
 				"ui_fluid_effect_enabled" : "Enable Fluid Effect",
 				"ui_fluid_effect_enabled_fullscreen" : "Fullscreen Fluid Effect",
+				"ui_fluid_effect_enabled_fullscreen_tip" : "<small>★ Fullscreen fluid effects may cause significant performance issues. It is recommended for desktop computers or systems with a dedicated graphics card equivalent to GTX 1060 | RX 580 or higher.</small>",
 				"ui_fluid_effect_resolution" : "Canvas Resolution",
 				"ui_fluid_effect_rotation_delays" : "Rotation Delay",
 				"ui_fluid_effect_rotation_directions" : "Rotation Direction",
@@ -256,15 +303,33 @@
 				"ui_friendlink_weathercategory_3" : "<h6>Visual Crossing API || visualcrossing.com</h6><small>A comprehensive API with a large volume of data supports global weather (although some regions may be occupied by regions with the same name, which can be troublesome), historical weather, multi-language support, automatic unit conversion, and multiple data types in one API request, such as: request 15-day daily weather, 24-hour hourly forecasts, current weather, meteorological disaster warnings, and meteorological events. It can be said that it is very powerful, and has a daily limit of 10,000 requests.</small>",
 				"ui_friendlink_weathercategory_4" : "<h6>Open Meteo ApI || open-meteo.com</h6><small>An Open Historical Weather API With Multiple Regional Weather Sources</small>",
 				"ui_getAPIHOST_qweather" : "The API Host",
+				"ui_global_settings_language" : "Language Settings",
+				"ui_global_settings_language_tip" : "<small>★ Requires reload after setting</small>",
 				"ui_help_author_info" : "Author Information",
 				"ui_help_support" : "Support",
 				"ui_hitokoto_hitokoto_auth" : "Show Author",
 				"ui_hitokoto_hitokoto_diy" : "Hitokoto Customize",
 				"ui_hitokoto_hitokoto_null" : "<small>You can uncheck ' Hitokoto Customize ' after you have set it up</small><br/>- - - - - - - - - - - - - - - - - - - - - - - - - - -",
 				"ui_hitokoto_hitokoto_updata" : "Hitokoto Update Time",
+				"ui_hitokoto_type_FromTheWeb" : "From the web",
+				"ui_hitokoto_type_NetEaseCloud" : "<i>NetEase Cloud</i>",
+				"ui_hitokoto_type_game" : "game",
+				"ui_hitokoto_type_jitterbug" : "jitterbug",
+				"ui_hitokoto_type_literature" : "literature",
+				"ui_hitokoto_type_original" : "original",
+				"ui_hitokoto_type_other" : "Other",
+				"ui_hitokoto_type_philosophy" : "philosophy",
+				"ui_hitokoto_type_poetry" : "poetry",
+				"ui_hitokoto_type_showbiz" : "showbiz",
+				"ui_hitokoto_updata_1" : "30 min",
+				"ui_hitokoto_updata_2" : "60 min",
+				"ui_hitokoto_updata_3" : "120 min",
+				"ui_hitokoto_updata_4" : "180 min",
+				"ui_hitokoto_updata_5" : "Do Not Update",
 				"ui_music_MuiscVolume" : "Volume",
 				"ui_music_musictext" : "<small>★ BGM can be directly selected from OGG or WEBM audio files</small>",
 				"ui_music_selectmusic" : "Custom Music",
+				"ui_open_meteoapi" : "Open-Meteo API (open-meteo.com)",
 				"ui_player_control_VisualAudioBar" : "Visual Audio",
 				"ui_player_control_barline" : "Visual Audio Styles",
 				"ui_player_control_barline_1" : "Audio Bar",
@@ -302,14 +367,19 @@
 				"ui_rgb_tips" : "<small>※ Requires RGB lighting device support and Wallpaper Engine LED Lighting Plugin enabled</small>",
 				"ui_setting_RorL" : "Align text to the right(Restart)",
 				"ui_setting_language" : "Language",
+				"ui_setting_language_1" : "Simplified Chinese",
+				"ui_setting_language_2" : "English (US)",
 				"ui_setting_show" : "Switch",
 				"ui_setting_showaway" : "The right side is the X-axis origin(For example, 0 becomes 100 and vice versa)",
 				"ui_setting_x-asis" : "X-Asis site",
 				"ui_setting_y-asis" : "Y-Asis site",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
+				"ui_ui_global_settings_language" : "Language setting",
 				"ui_update_log_title" : "Update Log",
-				"ui_wallpaper_updata" : "Open Update Log",
+				"ui_wallpaper_updata" : "Click to Open Update Log",
+				"ui_wallpaper_updata_open_on_update" : "Open update log when wallpaper updates",
+				"ui_wallpaper_updata_open_on_update_tip" : "<small>★ It is recommended to disable this function when publishing presets to reduce interference caused by updates</small>",
 				"ui_weather_freeapi" : "<br/>Free API<br/>Steam user@Guooo",
 				"ui_weather_getcityappid_tianqiapi" : "The Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "The Appsecret",
@@ -324,6 +394,10 @@
 				"ui_weather_text_weather_3" : "<small>★ Apply for API if you can, it will work better than the free one (although the free one is also enough)</small>",
 				"ui_weather_thankapi" : "<small>★Thanks to Steam user @Guooo for the API</small>",
 				"ui_weather_tianqiapi" : "<br/>tianqi API<br/>tianqiapi.com",
+				"ui_weather_unit_1" : "Metric",
+				"ui_weather_unit_2" : "Imperial (US)",
+				"ui_weather_unit_3" : "Imperial (UK)",
+				"ui_weather_unit_4" : "Scientific (Base)",
 				"ui_weather_updata" : "Weather update time",
 				"ui_weather_visualcrossingapi" : "Visual Crossing API<br/>visualcrossing.com",
 				"ui_weather_weather_CityText" : "City Weather",
@@ -337,48 +411,107 @@
 			"zh-chs" : 
 			{
 				"ui_audio_alice_circle" : "爱丽丝圆环",
+				"ui_audio_animation" : "动画",
 				"ui_audio_audio_amplitude" : "音频振幅",
 				"ui_audio_audio_decline" : "音频衰弱",
+				"ui_audio_audio_settings" : "音频设置",
+				"ui_audio_author_info_header" : "作者信息",
 				"ui_audio_author_info_title" : "作者信息",
 				"ui_audio_background_title" : "背景",
+				"ui_audio_ball_settings" : "球体设置",
 				"ui_audio_ball_size" : "小球大小",
 				"ui_audio_ball_spacer" : "小球间隔",
 				"ui_audio_blur_color" : "模糊颜色",
 				"ui_audio_blur_gradient" : "模糊色渐变",
 				"ui_audio_blur_size" : "模糊程度",
+				"ui_audio_caricature" : "卡通风格",
 				"ui_audio_center_of_ring_x" : "X轴偏移",
 				"ui_audio_center_of_ring_y" : "Y轴偏移",
+				"ui_audio_circle_center_x" : "圆心 X 坐标（%）",
 				"ui_audio_circle_center_x_percent" : "位置-X轴(%)",
+				"ui_audio_circle_center_y" : "圆心 Y 坐标（%）",
 				"ui_audio_circle_center_y_percent" : "位置-Y轴(%)",
 				"ui_audio_circle_line_width" : "圆环线宽",
+				"ui_audio_color" : "颜色",
 				"ui_audio_color_gradient" : "颜色渐变",
 				"ui_audio_color_mode" : "色彩模式",
 				"ui_audio_color_rhythm" : "炫彩律动",
+				"ui_audio_colormode_1" : "普通模式",
+				"ui_audio_colormode_2" : "纯色渐变",
+				"ui_audio_colormode_3" : "彩虹渐变",
 				"ui_audio_coming_soon" : "敬请期待",
 				"ui_audio_date_correlation" : "日期相关",
+				"ui_audio_direction_1" : "向外",
+				"ui_audio_direction_2" : "向内",
+				"ui_audio_direction_3" : "双向",
 				"ui_audio_distance" : "内外环距离",
 				"ui_audio_first_point" : "第一点",
 				"ui_audio_gradient_rate" : "渐变速率",
+				"ui_audio_help_author_info" : "作者信息",
+				"ui_audio_help_support" : "支持",
 				"ui_audio_hitokoto_title" : "一言",
+				"ui_audio_image_separator" : "__________________________________________",
+				"ui_audio_line_settings" : "线条设置",
+				"ui_audio_line_width" : "线条宽度",
+				"ui_audio_middle_line" : "中线",
+				"ui_audio_modifier_header" : "修饰器",
 				"ui_audio_modifier_title" : "修改者",
 				"ui_audio_mouse_coordinate_offset" : "鼠标坐标偏移",
 				"ui_audio_music_title" : "音乐",
 				"ui_audio_opacity" : "不透明度",
+				"ui_audio_other" : "其他",
 				"ui_audio_point_number" : "点的数量",
+				"ui_audio_polygon_transform" : "多边形",
 				"ui_audio_polygon_transform_hint" : "多边形变换<br /><small>用波峰音频效果更明显</small>",
 				"ui_audio_pwcircle_title" : "完美壁纸圆环(PWCircle)",
+				"ui_audio_pwcircleringtype_1" : "静态环",
+				"ui_audio_pwcircleringtype_2" : "内环",
+				"ui_audio_pwcircleringtype_3" : "外环",
 				"ui_audio_pwline_title" : "完美壁纸直线(PWLine)",
+				"ui_audio_pwlinecolormode_1" : "普通模式",
+				"ui_audio_pwlinecolormode_2" : "纯色渐变",
+				"ui_audio_pwlinecolormode_3" : "彩虹渐变",
+				"ui_audio_pwlinedirection_1" : "向上/左",
+				"ui_audio_pwlinedirection_2" : "向下/右",
+				"ui_audio_pwlinedirection_3" : "双向",
+				"ui_audio_pwlineposition_1" : "横",
+				"ui_audio_pwlineposition_2" : "竖",
+				"ui_audio_pwlinestyle_1" : "长条",
+				"ui_audio_pwlinestyle_2" : "波峰",
+				"ui_audio_pwlinestyle_3" : "波峰(不连线)",
 				"ui_audio_radius" : "圆环半径",
+				"ui_audio_ring_settings" : "圆环设置",
+				"ui_audio_ringtype_1" : "静态环",
+				"ui_audio_ringtype_2" : "内环",
+				"ui_audio_ringtype_3" : "外环",
 				"ui_audio_rotating_ball" : "旋转小球",
 				"ui_audio_rotating_ring" : "旋转圆环",
+				"ui_audio_rotation_angle" : "旋转角度",
 				"ui_audio_second_point" : "第二点",
 				"ui_audio_semicircle_direction" : "半圆方向",
+				"ui_audio_semicircledirection_1" : "向上",
+				"ui_audio_semicircledirection_2" : "向下",
+				"ui_audio_semicircledirection_3" : "向左",
+				"ui_audio_semicircledirection_4" : "向右",
 				"ui_audio_show_ball" : "显示小球",
 				"ui_audio_show_inner_ring" : "显示内圆环",
 				"ui_audio_show_line" : "显示连线",
+				"ui_audio_show_outer_ring" : "显示外环？",
+				"ui_audio_show_ring" : "显示圆环？",
+				"ui_audio_show_semi_circle" : "显示为半圆",
+				"ui_audio_show_static_ring" : "显示静态圆环？",
 				"ui_audio_special_effects_title" : "特效",
+				"ui_audio_style_1" : "长条",
+				"ui_audio_style_2" : "波峰",
+				"ui_audio_style_3" : "波峰（不连线）",
 				"ui_audio_time_correlation" : "时间相关",
 				"ui_audio_time_date_title" : "时间&日期",
+				"ui_audio_visual_audio_model" : "可视化音频模板",
+				"ui_audio_visual_audio_model_1" : "无",
+				"ui_audio_visual_audio_model_2" : "完美圆环",
+				"ui_audio_visual_audio_model_3" : "完美直线",
+				"ui_audio_visual_audio_model_4" : "Alice 圆环",
+				"ui_audio_visual_audio_model_5" : "敬请期待",
 				"ui_audio_wave_color" : "音频颜色",
 				"ui_audio_wave_density" : "音频疏密",
 				"ui_audio_wave_direction" : "音频方向",
@@ -389,6 +522,7 @@
 				"ui_audio_wave_style" : "音频样式",
 				"ui_audio_wave_transparency" : "音频透明度",
 				"ui_audio_weather_title" : "天气",
+				"ui_background_TransitionRandom" : "随机切换效果",
 				"ui_background_background_text" : "<small>※ 因为壁纸引擎限制必须使用WEBM或者OGG格式的视频</small>",
 				"ui_background_background_text1" : "<small>※ 您使用了由他人提供的API图源,请尽可能降低更新频率以减少服务器压力或被服务提供者拉黑(●'◡'●)</small>",
 				"ui_background_chiyuanapi" : "壁纸显示类型",
@@ -397,6 +531,12 @@
 				"ui_background_galaxyapi" : "获取方式",
 				"ui_background_image" : "自定义壁纸",
 				"ui_background_imagedisplaystlye" : "壁纸显示风格",
+				"ui_background_imagedisplaystlye_1" : "填充",
+				"ui_background_imagedisplaystlye_2" : "拉伸",
+				"ui_background_imagedisplaystlye_3" : "适应",
+				"ui_background_imagedisplaystlye_4" : "平铺",
+				"ui_background_imagedisplaystlye_5" : "居中",
+				"ui_background_imagedisplaystlye_6" : "自由",
 				"ui_background_imageswitchtimes" : "壁纸切换频率",
 				"ui_background_info" : "显示图片信息",
 				"ui_background_random" : "开启随机",
@@ -453,28 +593,17 @@
 				"ui_color_yakeli_show" : "亚克力背景",
 				"ui_color_yakelicolor" : "亚克力颜色",
 				"ui_countdown_day" : "天",
+				"ui_countdown_group" : "倒计时",
 				"ui_countdown_month" : "月",
 				"ui_countdown_txt_after" : "倒计时后方显示文字",
 				"ui_countdown_txt_befor" : "倒计时前方显示文字",
 				"ui_countdown_year" : "年",
 				"ui_date_DateFormat" : "日期格式",
 				"ui_date_TimeColorRhythm" : "颜色律动",
-				"ui_date_show" : "显示日期",
-				"ui_date_showTime" : "显示时间",
-				"ui_date_tShowSencends" : "显示秒",
-				"ui_date_tStyle" : "24小时制",
-				"ui_date_weekFormat" : "星期格式",
-                "ui_date_weekFormat_1":"中文",
-                "ui_date_weekFormat_2":"英文",
-                "ui_date_weekFormat_3":"不显示",
-				"ui_date_yearFormat" : "年份格式",
-                "ui_date_yearFormat_1": "完整 - 2026",
-                "ui_date_yearFormat_2": "缩写 - 26",
-                "ui_date_yearFormat_3": "不显示",
 				"ui_date_dayFormat" : "日期格式",
-                "ui_date_dayFormat_1":"缩写 - 7",
-                "ui_date_dayFormat_2":"完整 - 07",
-                "ui_date_dayFormat_3":"不显示",
+				"ui_date_dayFormat_1" : "缩写 - 7",
+				"ui_date_dayFormat_2" : "完整 - 07",
+				"ui_date_dayFormat_3" : "不显示",
 				"ui_date_monthFormat" : "月份格式",
 				"ui_date_monthFormat_1" : "数字 - 1",
 				"ui_date_monthFormat_2" : "英文 - January",
@@ -484,13 +613,25 @@
 				"ui_date_order_1" : "年 月 日",
 				"ui_date_order_2" : "月 日 年",
 				"ui_date_order_3" : "日 月 年",
-                "ui_date_separator": "日期格式分隔符",
-                "ui_date_separator_1": "无分隔符",
-                "ui_date_separator_2": "/",
-                "ui_date_separator_3": "-",
-                "ui_date_separator_4": ".",
-                "ui_date_separator_5": "年/月/日",
-                "ui_date_separator_6": "空格",
+				"ui_date_separator" : "日期格式分隔符",
+				"ui_date_separator_1" : "无分隔符",
+				"ui_date_separator_2" : "/",
+				"ui_date_separator_3" : "-",
+				"ui_date_separator_4" : ".",
+				"ui_date_separator_5" : "年/月/日",
+				"ui_date_separator_6" : "空格",
+				"ui_date_show" : "显示日期",
+				"ui_date_showTime" : "显示时间",
+				"ui_date_tShowSencends" : "显示秒",
+				"ui_date_tStyle" : "24小时制",
+				"ui_date_weekFormat" : "星期格式",
+				"ui_date_weekFormat_1" : "中文",
+				"ui_date_weekFormat_2" : "英文",
+				"ui_date_weekFormat_3" : "不显示",
+				"ui_date_yearFormat" : "年份格式",
+				"ui_date_yearFormat_1" : "完整 - 2026",
+				"ui_date_yearFormat_2" : "缩写 - 26",
+				"ui_date_yearFormat_3" : "不显示",
 				"ui_effect_AliceParticles_particles_color" : "粒子颜色",
 				"ui_effect_AliceParticles_particles_direction" : "粒子方向",
 				"ui_effect_AliceParticles_particles_image" : "粒子图片",
@@ -516,6 +657,16 @@
 				"ui_effect_AliceParticles_particles_speed" : "粒子速度",
 				"ui_effect_AliceParticles_particles_speedRandom" : "随机速度",
 				"ui_effect_AliceParticlestxt" : "Alice粒子特效 ----------",
+				"ui_effect_particles_image_10" : "10. 笑脸",
+				"ui_effect_particles_image_6" : "6. 狗抱鱼",
+				"ui_effect_particles_image_7" : "7. 抠鼻",
+				"ui_effect_particles_image_8" : "8. 蝴蝶",
+				"ui_effect_particles_image_9" : "9. GOGE",
+				"ui_effect_particles_shapetype_1" : "圆形",
+				"ui_effect_particles_shapetype_2" : "正方形",
+				"ui_effect_particles_shapetype_3" : "三角形",
+				"ui_effect_particles_shapetype_4" : "星形",
+				"ui_effect_particles_shapetype_5" : "图片",
 				"ui_effect_sakura_sakurabackcolor" : "樱花背景色",
 				"ui_effect_sakura_sakurabackground" : "樱花背景",
 				"ui_effect_sakura_sakurabacklight" : "背景亮度",
@@ -531,6 +682,7 @@
 				"ui_fluid_effect_displacement_scale" : "置换图缩放",
 				"ui_fluid_effect_enabled" : "启用流体效果",
 				"ui_fluid_effect_enabled_fullscreen" : "全屏流体效果",
+				"ui_fluid_effect_enabled_fullscreen_tip" : "<small>★ 全屏流体效果可能会带来严重的性能问题建议台式机或者拥有 GTX1060 | RX 580 及以上的独立显卡使用<small>",
 				"ui_fluid_effect_resolution" : "画布分辨率",
 				"ui_fluid_effect_rotation_delays" : "旋转延迟",
 				"ui_fluid_effect_rotation_directions" : "旋转方向",
@@ -544,17 +696,38 @@
 				"ui_friendlink_wallpaper_0" : "<h6>Bing壁纸</h6><small>原是微软旗下的Bing搜索中的一个特色,在Bing搜索主页的背景是每日不同的一张壁纸,在一众搜索引擎的美观上是最好的.在20年3月左右上线了单独的APPBing壁纸</small>",
 				"ui_friendlink_wallpaper_1" : "<h6>Lorem Ipsum APi || picsum.photos</h6><small>Lorem Picsum一个免费面向大众的随机图库,图源均来自Unsplash</small>",
 				"ui_friendlink_wallpaper_2" : "<h6>次元Api || t.alcy.cc</h6><small>次元Api一个免费面向大众的多样图库类型的个人图片Api,且没有任何捐赠方式(现在都快7TB/月的数据访问量了)</small>",
+				"ui_friendlink_wallpaper_3" : "<h6>NASA 每日星空 || apod.nasa.gov</h6><small>NASA 每日科幻级天文图</small>",
 				"ui_friendlink_wallpapercategory" : "壁纸类",
 				"ui_friendlink_weathercategory" : "天气类",
 				"ui_friendlink_weathercategory_0" : "<h6>免费API || SteamUser@Guooo</h6><small>来自Steam用户@Guooo在<a href='https://www.steamcommunity.com/workshop/filedetails/discussion/884307090/3412054783687240237/'>原壁纸讨论页</a>发布的一个替换API,为自己付费购买高德地图企业API,配额有点多就公开了.</small>",
 				"ui_friendlink_weathercategory_1" : "<h6>和风天气API || qweather.com</h6><small>一个全球部署支持30+语言的天气提供商,英文曾名为HeWeather在20年10月12日日后正式改名为QWeather.它也有自己独立App和风天气</small>",
 				"ui_friendlink_weathercategory_2" : "<h6>天气API || tianqiapi.com</h6><small>一个十分多样的天气提供商多家大头企业也是他的客户 如:华为,苹果,多个政府网站等等</small>",
 				"ui_friendlink_weathercategory_3" : "<h6>Visual Crossing API || visualcrossing.com</h6><small>一个量大管饱的API 支持全球天气(但是有的地区可能会被重名地区名占用,会有点麻烦),历史天气,多语言支持,自动换算单位,一次API请求多种数据等,如:同时请求15天整天天气,24小时小时预报,当前天气,气象灾害预警,气象事件.可以说十分强大,而且每日限额10000次</small>",
+				"ui_friendlink_weathercategory_4" : "<h6>Open Meteo API || open-meteo.com</h6><small>支持多地区天气数据的开放历史天气 API</small>",
 				"ui_getAPIHOST_qweather" : "获得的API Host",
+				"ui_global_settings_language" : "语言设置",
+				"ui_global_settings_language_tip" : "<small>★ 设置后需要重载壁纸</small>",
+				"ui_help_author_info" : "作者信息",
+				"ui_help_support" : "支持",
 				"ui_hitokoto_hitokoto_auth" : "显示作者",
 				"ui_hitokoto_hitokoto_diy" : "自定义一言",
 				"ui_hitokoto_hitokoto_null" : "<small>设置好后可以取消勾选⌈ 自定义一言 ⌋</small><br/>- - - - - - - - - - - - - - - - - - - - - - - - - - -",
 				"ui_hitokoto_hitokoto_updata" : "一言更新时间",
+				"ui_hitokoto_type_FromTheWeb" : "来自网络",
+				"ui_hitokoto_type_NetEaseCloud" : "<i>网易云<i/>",
+				"ui_hitokoto_type_game" : "游戏",
+				"ui_hitokoto_type_jitterbug" : "抖动",
+				"ui_hitokoto_type_literature" : "文学",
+				"ui_hitokoto_type_original" : "原创",
+				"ui_hitokoto_type_other" : "其他",
+				"ui_hitokoto_type_philosophy" : "哲学",
+				"ui_hitokoto_type_poetry" : "诗词",
+				"ui_hitokoto_type_showbiz" : "影视",
+				"ui_hitokoto_updata_1" : "30分钟",
+				"ui_hitokoto_updata_2" : "60分钟",
+				"ui_hitokoto_updata_3" : "120分钟",
+				"ui_hitokoto_updata_4" : "180分钟",
+				"ui_hitokoto_updata_5" : "不更新",
 				"ui_music_MuiscVolume" : "音量",
 				"ui_music_musictext" : "<small>★ BGM可以选择OGG或者Webm音频文件</small>",
 				"ui_music_selectmusic" : "自定义音乐",
@@ -596,13 +769,19 @@
 				"ui_rgb_tips" : "<small>※ 需要RGB灯光设备支持,且已启用壁纸引擎LED灯光插件</small>",
 				"ui_setting_RorL" : "文字对齐右侧(需重载)",
 				"ui_setting_language" : "语言",
+				"ui_setting_language_1" : "简体中文",
+				"ui_setting_language_2" : "English(US)",
 				"ui_setting_show" : "开关",
 				"ui_setting_showaway" : "右侧为X轴原点(例如0变100反之亦然)",
 				"ui_setting_x-asis" : "X轴位置",
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
-				"ui_wallpaper_updata" : "打开更新日志",
+				"ui_ui_global_settings_language" : "语言设置",
+				"ui_update_log_title" : "更新日志",
+				"ui_wallpaper_updata" : "点击打开更新日志",
+				"ui_wallpaper_updata_open_on_update" : "在壁纸更新时打开更新日志",
+				"ui_wallpaper_updata_open_on_update_tip" : "<small>★ 推荐发布预设时禁用该功能, 减少更新带来的干扰</small>",
 				"ui_weather_freeapi" : "<br/>免费API<br/>Steam user@Guooo",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -617,6 +796,10 @@
 				"ui_weather_text_weather_3" : "<small>★有条件可以去申请API会比免费的好用(虽然免费的也后够用了)</small>",
 				"ui_weather_thankapi" : "<small>★感谢Steam用户@Guooo提供的API</small>",
 				"ui_weather_tianqiapi" : "<br/>天气API<br/>tianqiapi.com",
+				"ui_weather_unit_1" : "公制单位",
+				"ui_weather_unit_2" : "英制单位（US）",
+				"ui_weather_unit_3" : "英制单位（UK）",
+				"ui_weather_unit_4" : "科学单位",
 				"ui_weather_updata" : "天气更新时间",
 				"ui_weather_visualcrossingapi" : "Visual Crossing API<br/>visualcrossing.com",
 				"ui_weather_weather_CityText" : "定位城市",
@@ -633,16 +816,16 @@
 			"AuthorInformation" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 341,
-				"order" : 441,
+				"index" : 346,
+				"order" : 446,
 				"text" : "<br/><h4>●  作者信息 </h4><small>作者：老陈（ZYM），毕业于 西安邮电大学 2010届<br/>QQ：394011315<br/>QQ交流群1：552188051<br/>QQ交流群2：673748076<br/>QQ交流群3：1036775823<br/>QQ交流群4：776830214<br />优先加序号靠后的QQ群，群内可以获取作者编写的无损webm格式视频转换工具，各种视频模板资源，还可以体验全新的完美壁纸测试版，也欢迎有编程能力的大佬来交流，各种答疑，兴趣交流等等<br /></small>",
 				"type" : "text"
 			},
 			"BlurColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 2",
-				"index" : 103,
-				"order" : 203,
+				"index" : 107,
+				"order" : 207,
 				"text" : "ui_audio_blur_gradient",
 				"type" : "bool",
 				"value" : true
@@ -650,45 +833,45 @@
 			"ColorMode" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 101,
+				"index" : 105,
 				"options" : 
 				[
 					{
 						"condition" : "PWLinePosition.value == 1",
-						"label" : "普通模式",
+						"label" : "ui_audio_colormode_1",
 						"value" : 1
 					},
 					{
 						"condition" : "PWLinePosition.value == 1",
-						"label" : "纯色渐变",
+						"label" : "ui_audio_colormode_2",
 						"value" : 2
 					},
 					{
-						"label" : "彩虹渐变",
+						"label" : "ui_audio_colormode_3",
 						"value" : 3
 					}
 				],
-				"order" : 201,
-				"text" : "<br />色彩模式<br />Color Mode<br />",
+				"order" : 205,
+				"text" : "ui_audio_color_mode",
 				"type" : "combo",
 				"value" : 1
 			},
 			"ColorRhythm" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 3",
-				"index" : 104,
-				"order" : 204,
-				"text" : "<br />炫彩律动<br />Color Rhythm<br />",
+				"index" : 108,
+				"order" : 208,
+				"text" : "ui_audio_color_rhythm",
 				"type" : "bool",
 				"value" : true
 			},
 			"DateSize" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 207,
+				"index" : 211,
 				"max" : 50,
 				"min" : 10,
-				"order" : 307,
+				"order" : 311,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 19
@@ -696,10 +879,10 @@
 			"DateX" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 205,
+				"index" : 209,
 				"max" : 100,
 				"min" : 0,
-				"order" : 305,
+				"order" : 309,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -707,10 +890,10 @@
 			"DateY" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 206,
+				"index" : 210,
 				"max" : 100,
 				"min" : 0,
-				"order" : 306,
+				"order" : 310,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 54
@@ -718,21 +901,21 @@
 			"GradientRate" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value != 1",
-				"index" : 107,
+				"index" : 111,
 				"max" : 40,
 				"min" : 1,
-				"order" : 207,
-				"text" : "<br />渐变速率<br />Gradient Rate<br />",
+				"order" : 211,
+				"text" : "ui_audio_gradient_rate",
 				"type" : "slider",
 				"value" : 5
 			},
 			"MuiscVolume" : 
 			{
 				"condition" : "MuiscModel.value != 0 || selectmusic.value != '' ",
-				"index" : 48,
+				"index" : 52,
 				"max" : 100,
 				"min" : 0,
-				"order" : 148,
+				"order" : 152,
 				"text" : "ui_music_MuiscVolume",
 				"type" : "slider",
 				"value" : 50
@@ -740,72 +923,72 @@
 			"PWLineBlurColor" : 
 			{
 				"condition" : "(visual_audio_model.value == 2 && (PWLineColorMode.value == 1 || PWLineColorMode.value == 3))||(PWLineColorMode.value == 2 && PWLineBlurColorGradient.value == false )",
-				"index" : 124,
-				"order" : 224,
-				"text" : "<br />模糊颜色<br />Blur Color<br />",
+				"index" : 128,
+				"order" : 228,
+				"text" : "ui_audio_blur_color",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
 			},
 			"PWLineBlurColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 2",
-				"index" : 121,
-				"order" : 221,
-				"text" : "<br />模糊色渐变<br />Blur Gradient<br />",
+				"index" : 125,
+				"order" : 225,
+				"text" : "ui_audio_blur_gradient",
 				"type" : "bool",
 				"value" : true
 			},
 			"PWLineColor" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 1||(PWLineColorMode.value == 2 && PWLineSolidColorGradient.value == false )",
-				"index" : 123,
-				"order" : 223,
-				"text" : "<br />音频颜色<br />Wave Color<br />",
+				"index" : 127,
+				"order" : 227,
+				"text" : "ui_audio_wave_color",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
 			"PWLineColorMode" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 119,
+				"index" : 123,
 				"options" : 
 				[
 					{
 						"condition" : "PWLinePosition.value == 1",
-						"label" : "普通模式",
+						"label" : "ui_audio_pwlinecolormode_1",
 						"value" : 1
 					},
 					{
 						"condition" : "PWLinePosition.value == 1",
-						"label" : "纯色渐变",
+						"label" : "ui_audio_pwlinecolormode_2",
 						"value" : 2
 					},
 					{
-						"label" : "彩虹渐变",
+						"label" : "ui_audio_pwlinecolormode_3",
 						"value" : 3
 					}
 				],
-				"order" : 219,
-				"text" : "<br />色彩模式<br />Color Mode<br />",
+				"order" : 223,
+				"text" : "ui_audio_color_mode",
 				"type" : "combo",
 				"value" : 1
 			},
 			"PWLineColorRhythm" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 3",
-				"index" : 122,
-				"order" : 222,
-				"text" : "<br />炫彩律动<br />Color Rhythm<br />",
+				"index" : 126,
+				"order" : 226,
+				"text" : "ui_audio_color_rhythm",
 				"type" : "bool",
 				"value" : true
 			},
 			"PWLineDensity" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 114,
+				"index" : 118,
 				"max" : 12,
 				"min" : 1,
-				"order" : 214,
+				"order" : 218,
 				"text" : "ui_audio_wave_density",
 				"type" : "slider",
 				"value" : 12
@@ -813,357 +996,357 @@
 			"PWLineDirection" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 110,
+				"index" : 114,
 				"options" : 
 				[
 					{
 						"condition" : "PWLinePosition.value == 1",
-						"label" : "向上/左-Upward-Left",
+						"label" : "ui_audio_pwlinedirection_1",
 						"value" : 1
 					},
 					{
 						"condition" : "PWLinePosition.value == 1",
-						"label" : "向下/右-Down-Right",
+						"label" : "ui_audio_pwlinedirection_2",
 						"value" : 2
 					},
 					{
-						"label" : "双向-Two Way",
+						"label" : "ui_audio_pwlinedirection_3",
 						"value" : 3
 					}
 				],
-				"order" : 210,
-				"text" : "<br />音频方向<br />Wave direction<br />",
+				"order" : 214,
+				"text" : "ui_audio_wave_direction",
 				"type" : "combo",
 				"value" : 3
 			},
 			"PWLineGradientRate" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value != 1",
-				"index" : 125,
+				"index" : 129,
 				"max" : 40,
 				"min" : 1,
-				"order" : 225,
-				"text" : "<br />渐变速率<br />Gradient Rate<br />",
+				"order" : 229,
+				"text" : "ui_audio_gradient_rate",
 				"type" : "slider",
 				"value" : 5
 			},
 			"PWLinePosition" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 108,
+				"index" : 112,
 				"options" : 
 				[
 					{
-						"label" : "横-Transverse",
+						"label" : "ui_audio_pwlineposition_1",
 						"value" : 1
 					},
 					{
-						"label" : "竖-Vertical",
+						"label" : "ui_audio_pwlineposition_2",
 						"value" : 2
 					}
 				],
-				"order" : 208,
-				"text" : "<br />音频位置<br />Wave Position<br />",
+				"order" : 212,
+				"text" : "ui_audio_wave_position>",
 				"type" : "combo",
 				"value" : 1
 			},
 			"PWLineRange" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 115,
+				"index" : 119,
 				"max" : 15,
 				"min" : 1,
-				"order" : 215,
-				"text" : "<br />音频幅度<br />Wave Range<br />",
+				"order" : 219,
+				"text" : "ui_audio_wave_range",
 				"type" : "slider",
 				"value" : 8
 			},
 			"PWLineSolidColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 2",
-				"index" : 120,
-				"order" : 220,
-				"text" : "<br />颜色渐变<br />Color Gradient<br />",
+				"index" : 124,
+				"order" : 224,
+				"text" : "ui_audio_color_gradient",
 				"type" : "bool",
 				"value" : true
 			},
 			"PWLineSpacing" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 113,
+				"index" : 117,
 				"max" : 10,
 				"min" : 0,
-				"order" : 213,
-				"text" : "<br />音频间距(%)<br />Wave Spacing(%)<br />",
+				"order" : 217,
+				"text" : "ui_audio_wave_spacing",
 				"type" : "slider",
 				"value" : 8
 			},
 			"PWLineStyle" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 109,
+				"index" : 113,
 				"options" : 
 				[
 					{
-						"label" : "长条-Bar",
+						"label" : "ui_audio_pwlinestyle_1",
 						"value" : 1
 					},
 					{
-						"label" : "波峰-Peak",
+						"label" : "ui_audio_pwlinestyle_2",
 						"value" : 2
 					},
 					{
-						"label" : "波峰(不连线)-Peak No Line",
+						"label" : "ui_audio_pwlinestyle_3",
 						"value" : 3
 					}
 				],
-				"order" : 209,
-				"text" : "<br />音频样式<br />Wave Style<br />",
+				"order" : 213,
+				"text" : "ui_audio_wave_style",
 				"type" : "combo",
 				"value" : 1
 			},
 			"PWLineTransparency" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 116,
+				"index" : 120,
 				"max" : 100,
 				"min" : 0,
-				"order" : 216,
-				"text" : "<br />音频透明度<br />Wave Transparency<br />",
+				"order" : 220,
+				"text" : "ui_audio_wave_transparency",
 				"type" : "slider",
 				"value" : 80
 			},
 			"PWLineWidth" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 112,
+				"index" : 116,
 				"max" : 10,
 				"min" : 1,
-				"order" : 212,
-				"text" : "<br />音频线宽<br />Wave Line Width<br />",
+				"order" : 216,
+				"text" : "ui_audio_wave_line_width",
 				"type" : "slider",
 				"value" : 9
 			},
 			"PWLineX" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 117,
+				"index" : 121,
 				"max" : 100,
 				"min" : 0,
-				"order" : 217,
-				"text" : "<br />位置-X轴(%)<br />Center of circle-X(%)<br />",
+				"order" : 221,
+				"text" : "ui_audio_circle_center_x",
 				"type" : "slider",
 				"value" : 50
 			},
 			"PWLineY" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 118,
+				"index" : 122,
 				"max" : 100,
 				"min" : 0,
-				"order" : 218,
-				"text" : "<br />位置-Y轴(%)<br />Center of circle-Y(%)<br />",
+				"order" : 222,
+				"text" : "ui_audio_circle_center_y",
 				"type" : "slider",
 				"value" : 96
 			},
 			"PWMiddleLine" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 111,
-				"order" : 211,
-				"text" : "<br />显示中线<br />Middle Line<br />",
+				"index" : 115,
+				"order" : 215,
+				"text" : "ui_audio_middle_line",
 				"type" : "bool",
 				"value" : false
 			},
 			"PolygonAngle" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && showSemiCircle.value == false",
-				"index" : 93,
+				"index" : 97,
 				"max" : 12,
 				"min" : 1,
-				"order" : 193,
-				"text" : "<br />多边形变换<br />Polygon<br /><small>用波峰音频效果更明显</small><br />",
+				"order" : 197,
+				"text" : "ui_audio_polygon_transform_hint",
 				"type" : "slider",
 				"value" : 12
 			},
 			"SemiCircledirection" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && showSemiCircle.value == true",
-				"index" : 90,
+				"index" : 94,
 				"options" : 
 				[
 					{
-						"label" : "向上-Upward",
+						"label" : "ui_audio_semicircledirection_1",
 						"value" : 1
 					},
 					{
-						"label" : "向下-Down",
+						"label" : "ui_audio_semicircledirection_2",
 						"value" : 2
 					},
 					{
-						"label" : "向左-Lift",
+						"label" : "ui_audio_semicircledirection_3",
 						"value" : 3
 					},
 					{
-						"label" : "向右-Right",
+						"label" : "ui_audio_semicircledirection_4",
 						"value" : 4
 					}
 				],
-				"order" : 190,
-				"text" : "<br />半圆方向<br />SemiCircle Direction<br />",
+				"order" : 194,
+				"text" : "ui_audio_semicircle_direction",
 				"type" : "combo",
 				"value" : 1
 			},
 			"SolidColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 2",
-				"index" : 102,
-				"order" : 202,
-				"text" : "<br />颜色渐变<br />Color Gradient<br />",
+				"index" : 106,
+				"order" : 206,
+				"text" : "ui_audio_color_gradient",
 				"type" : "bool",
 				"value" : true
 			},
 			"Test_Author" : 
 			{
-				"index" : 340,
-				"order" : 440,
+				"index" : 345,
+				"order" : 445,
 				"text" : "<br /><h4>●  原作者信息</h4><br />(Author Information)",
 				"type" : "bool",
 				"value" : false
 			},
 			"Test_ModAuthor" : 
 			{
-				"index" : 347,
-				"order" : 447,
+				"index" : 352,
+				"order" : 452,
 				"text" : "<br /><h4>●  修改者</h4><br />",
 				"type" : "bool",
 				"value" : false
 			},
 			"Text_BGM" : 
 			{
-				"index" : 46,
-				"order" : 146,
+				"index" : 50,
+				"order" : 150,
 				"text" : "●  音乐  Music",
 				"type" : "group"
 			},
 			"Text_Background_Options" : 
 			{
-				"index" : 5,
-				"order" : 105,
+				"index" : 9,
+				"order" : 109,
 				"text" : "●  背景  Background",
 				"type" : "group"
 			},
 			"Text_Hitokoto" : 
 			{
-				"index" : 249,
-				"order" : 349,
+				"index" : 253,
+				"order" : 353,
 				"text" : "●  一言  Hitokoto",
 				"type" : "group"
 			},
 			"Text_SpecialEffects" : 
 			{
-				"index" : 50,
-				"order" : 150,
+				"index" : 54,
+				"order" : 154,
 				"text" : "●  特效  Special Effects",
 				"type" : "group"
 			},
 			"Text_Visual_Time" : 
 			{
-				"index" : 170,
-				"order" : 270,
+				"index" : 174,
+				"order" : 274,
 				"text" : "●  时间&日期  Time&Date",
 				"type" : "group"
 			},
 			"Text_Weather" : 
 			{
-				"index" : 209,
-				"order" : 309,
+				"index" : 213,
+				"order" : 313,
 				"text" : "●  天气  Weather",
 				"type" : "group"
 			},
 			"Text_line155" : 
 			{
 				"condition" : "",
-				"index" : 172,
-				"order" : 272,
+				"index" : 176,
+				"order" : 276,
 				"text" : "ui_audio_time_correlation",
 				"type" : "text"
 			},
 			"Text_line160" : 
 			{
 				"condition" : "",
-				"index" : 188,
-				"order" : 288,
+				"index" : 192,
+				"order" : 292,
 				"text" : "ui_audio_date_correlation",
 				"type" : "text"
 			},
 			"Text_line195" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 355,
-				"order" : 455,
+				"index" : 360,
+				"order" : 460,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
 			"Text_line196" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 362,
-				"order" : 462,
+				"index" : 367,
+				"order" : 467,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
 			"Text_line31" : 
 			{
-				"index" : 51,
-				"order" : 151,
+				"index" : 55,
+				"order" : 155,
 				"text" : "ui_effect_sakuratxt",
 				"type" : "text"
 			},
 			"Text_line33" : 
 			{
-				"index" : 59,
-				"order" : 159,
+				"index" : 63,
+				"order" : 163,
 				"text" : "ui_effect_AliceParticlestxt",
 				"type" : "text"
 			},
 			"Text_line42" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 86,
-				"order" : 186,
+				"index" : 90,
+				"order" : 190,
 				"text" : "ui_audio_pwcircle_title",
 				"type" : "text"
 			},
 			"Text_line43" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 87,
-				"order" : 187,
+				"index" : 91,
+				"order" : 191,
 				"text" : "ui_audio_pwline_title",
 				"type" : "text"
 			},
 			"Text_line44" : 
 			{
 				"condition" : "visual_audio_model.value == 4",
-				"index" : 88,
-				"order" : 188,
+				"index" : 92,
+				"order" : 192,
 				"text" : "ui_audio_coming_soon",
 				"type" : "text"
 			},
 			"Text_line83" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 126,
-				"order" : 226,
+				"index" : 130,
+				"order" : 230,
 				"text" : "ui_audio_alice_circle",
 				"type" : "text"
 			},
 			"TimeColor" : 
 			{
 				"condition" : "(showTime.value == true || showDate.value == true) && TimeColorRhythm.value != true",
-				"index" : 176,
-				"order" : 276,
+				"index" : 180,
+				"order" : 280,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1171,8 +1354,8 @@
 			"TimeColorRhythm" : 
 			{
 				"condition" : "showTime.value == true || showDate.value == true",
-				"index" : 171,
-				"order" : 271,
+				"index" : 175,
+				"order" : 275,
 				"text" : "ui_date_TimeColorRhythm",
 				"type" : "bool",
 				"value" : false
@@ -1180,7 +1363,7 @@
 			"TransitionMode" : 
 			{
 				"condition" : "[2, 5, 7, 8].includes(wallpapermode.value)",
-				"index" : 23,
+				"index" : 27,
 				"options" : 
 				[
 					{
@@ -1204,7 +1387,7 @@
 						"value" : 4
 					}
 				],
-				"order" : 123,
+				"order" : 127,
 				"text" : "ui_backgruond_TransitionMode",
 				"type" : "combo",
 				"value" : 0
@@ -1212,7 +1395,7 @@
 			"TransitionMode_choose_0" : 
 			{
 				"condition" : "[2, 5, 7, 8].includes(wallpapermode.value) && TransitionMode.value == 0",
-				"index" : 24,
+				"index" : 28,
 				"options" : 
 				[
 					{
@@ -1232,7 +1415,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 124,
+				"order" : 128,
 				"text" : "ui_backgruond_TransitionMode_choose",
 				"type" : "combo",
 				"value" : 0
@@ -1240,7 +1423,7 @@
 			"TransitionMode_choose_1" : 
 			{
 				"condition" : "[2, 5, 7, 8].includes(wallpapermode.value) && TransitionMode.value == 1",
-				"index" : 25,
+				"index" : 29,
 				"options" : 
 				[
 					{
@@ -1264,7 +1447,7 @@
 						"value" : 4
 					}
 				],
-				"order" : 125,
+				"order" : 129,
 				"text" : "ui_backgruond_TransitionMode_choose",
 				"type" : "combo",
 				"value" : 0
@@ -1272,8 +1455,8 @@
 			"TransitionMode_choose_4" : 
 			{
 				"condition" : "[2, 5, 7, 8].includes(wallpapermode.value) && TransitionMode.value == 4",
-				"index" : 26,
-				"order" : 126,
+				"index" : 30,
+				"order" : 130,
 				"text" : "ui_backgruond_TransitionMode_4",
 				"type" : "textinput",
 				"value" : ""
@@ -1281,10 +1464,10 @@
 			"VideoVolume" : 
 			{
 				"condition" : "wallpapermode.value == 3",
-				"index" : 14,
+				"index" : 18,
 				"max" : 100,
 				"min" : 0,
-				"order" : 114,
+				"order" : 118,
 				"text" : "ui_backgroung_VideoVolume",
 				"type" : "slider",
 				"value" : 0
@@ -1292,42 +1475,42 @@
 			"audio_AudioText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 141,
-				"order" : 241,
+				"index" : 145,
+				"order" : 245,
 				"text" : "ui_audio_audio_settings",
 				"type" : "text"
 			},
 			"audio_BallText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 151,
-				"order" : 251,
+				"index" : 155,
+				"order" : 255,
 				"text" : "ui_audio_ball_settings",
 				"type" : "text"
 			},
 			"audio_LineText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 144,
-				"order" : 244,
+				"index" : 148,
+				"order" : 248,
 				"text" : "ui_audio_line_settings",
 				"type" : "text"
 			},
 			"audio_RingText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 127,
-				"order" : 227,
+				"index" : 131,
+				"order" : 231,
 				"text" : "ui_audio_ring_settings",
 				"type" : "text"
 			},
 			"audio_amplitude" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 142,
+				"index" : 146,
 				"max" : 10,
 				"min" : 1,
-				"order" : 242,
+				"order" : 246,
 				"text" : "ui_audio_audio_amplitude",
 				"type" : "slider",
 				"value" : 5
@@ -1335,132 +1518,132 @@
 			"audio_ballRotation" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 155,
+				"index" : 159,
 				"max" : 60,
 				"min" : -60,
-				"order" : 255,
-				"text" : "<br/>旋转小球<br/>Rotating Ball<br/>",
+				"order" : 259,
+				"text" : "ui_audio_rotating_ball",
 				"type" : "slider",
 				"value" : 0
 			},
 			"audio_ballSize" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 154,
+				"index" : 158,
 				"max" : 10,
 				"min" : 1,
-				"order" : 254,
-				"text" : "<br/>小球大小<br/>Ball Size<br/>",
+				"order" : 258,
+				"text" : "ui_audio_ball_size",
 				"type" : "slider",
 				"value" : 3
 			},
 			"audio_ballSpacer" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 153,
+				"index" : 157,
 				"max" : 10,
 				"min" : 1,
-				"order" : 253,
-				"text" : "<br/>小球间隔<br/>Ball Spacer<br/>",
+				"order" : 257,
+				"text" : "ui_audio_ball_spacer",
 				"type" : "slider",
 				"value" : 4
 			},
 			"audio_color" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 135,
-				"order" : 235,
-				"text" : "<br/>颜色<br/>Color<br/>",
+				"index" : 139,
+				"order" : 239,
+				"text" : "ui_audio_color",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
 			"audio_decline" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 143,
+				"index" : 147,
 				"max" : 20,
 				"min" : 0,
-				"order" : 243,
-				"text" : "<br/>音频衰弱<br/>Audio Decline<br/>",
+				"order" : 247,
+				"text" : "ui_audio_audio_decline",
 				"type" : "slider",
 				"value" : 20
 			},
 			"audio_distance" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 149,
+				"index" : 153,
 				"max" : 100,
 				"min" : 0,
-				"order" : 249,
-				"text" : "<br/>内外环距离<br/>Distance<br/>",
+				"order" : 253,
+				"text" : "ui_audio_distance",
 				"type" : "slider",
 				"value" : 0
 			},
 			"audio_firstPoint" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 146,
+				"index" : 150,
 				"options" : 
 				[
 					{
-						"label" : "静态环/Static Ring",
+						"label" : "ui_audio_ringtype_1",
 						"value" : 1
 					},
 					{
-						"label" : "内环/Inner Ring",
+						"label" : "ui_audio_ringtype_2",
 						"value" : 2
 					},
 					{
-						"label" : "外环/Outer Ring",
+						"label" : "ui_audio_ringtype_3",
 						"value" : 3
 					}
 				],
-				"order" : 246,
-				"text" : "<br/>第一点<br/>First Point<br/>",
+				"order" : 250,
+				"text" : "ui_audio_first_point",
 				"type" : "combo",
 				"value" : 2
 			},
 			"audio_isBall" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 152,
-				"order" : 252,
-				"text" : "<br/>显示小球<br/>Show Ball?<br/>",
+				"index" : 156,
+				"order" : 256,
+				"text" : "ui_audio_show_ball",
 				"type" : "bool",
 				"value" : true
 			},
 			"audio_isClickOffset" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 138,
-				"order" : 238,
-				"text" : "<br/>鼠标坐标偏移<br/>Mouse Coordinate Offset?<br/>",
+				"index" : 142,
+				"order" : 242,
+				"text" : "ui_audio_mouse_coordinate_offset",
 				"type" : "bool",
 				"value" : false
 			},
 			"audio_isInnerRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 130,
-				"order" : 230,
-				"text" : "<br/>显示内圆环<br/>Show Inner Ring?<br/>",
+				"index" : 134,
+				"order" : 234,
+				"text" : "ui_audio_show_inner_ring",
 				"type" : "bool",
 				"value" : true
 			},
 			"audio_isLineTo" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 145,
-				"order" : 245,
-				"text" : "<br/>显示连线<br/>Show Line?<br/>",
+				"index" : 149,
+				"order" : 249,
+				"text" : "ui_audio_show_line",
 				"type" : "bool",
 				"value" : false
 			},
 			"audio_isOuterRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 131,
-				"order" : 231,
+				"index" : 135,
+				"order" : 235,
 				"text" : "ui_audio_show_outer_ring",
 				"type" : "bool",
 				"value" : true
@@ -1468,8 +1651,8 @@
 			"audio_isRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 128,
-				"order" : 228,
+				"index" : 132,
+				"order" : 232,
 				"text" : "ui_audio_show_ring",
 				"type" : "bool",
 				"value" : true
@@ -1477,8 +1660,8 @@
 			"audio_isStaticRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 129,
-				"order" : 229,
+				"index" : 133,
+				"order" : 233,
 				"text" : "ui_audio_show_static_ring",
 				"type" : "bool",
 				"value" : false
@@ -1486,128 +1669,128 @@
 			"audio_lineWidth" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 150,
+				"index" : 154,
 				"max" : 10,
 				"min" : 1,
-				"order" : 250,
-				"text" : "<br/>线条粗细<br/>Line Width<br/>",
+				"order" : 254,
+				"text" : "ui_audio_line_width",
 				"type" : "slider",
 				"value" : 5
 			},
 			"audio_offsetX" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isClickOffset.value == false",
-				"index" : 139,
+				"index" : 143,
 				"max" : 100,
 				"min" : 0,
-				"order" : 239,
-				"text" : "<br/>X轴偏移<br/>Center of Ring-X(%)<br/>",
+				"order" : 243,
+				"text" : "ui_audio_center_of_ring_x",
 				"type" : "slider",
 				"value" : 50
 			},
 			"audio_offsetY" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isClickOffset.value == false",
-				"index" : 140,
+				"index" : 144,
 				"max" : 100,
 				"min" : 0,
-				"order" : 240,
-				"text" : "<br/>Y轴偏移<br/>Center of Ring-Y(%)<br/>",
+				"order" : 244,
+				"text" : "ui_audio_center_of_ring_y",
 				"type" : "slider",
 				"value" : 50
 			},
 			"audio_opacity" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 134,
+				"index" : 138,
 				"max" : 100,
 				"min" : 0,
-				"order" : 234,
-				"text" : "<br/>不透明度<br/>Opacity<br/>",
+				"order" : 238,
+				"text" : "ui_audio_opacity",
 				"type" : "slider",
 				"value" : 90
 			},
 			"audio_pointNum" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 148,
+				"index" : 152,
 				"max" : 120,
 				"min" : 3,
-				"order" : 248,
-				"text" : "<br/>点的数量<br/>Point Number<br/>",
+				"order" : 252,
+				"text" : "ui_audio_point_number",
 				"type" : "slider",
 				"value" : 120
 			},
 			"audio_radius" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 132,
+				"index" : 136,
 				"max" : 10,
 				"min" : 1,
-				"order" : 232,
-				"text" : "<br/>圆环半径<br/>Radius<br/>",
+				"order" : 236,
+				"text" : "ui_audio_radius",
 				"type" : "slider",
 				"value" : 5
 			},
 			"audio_ringRotation" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 133,
+				"index" : 137,
 				"max" : 60,
 				"min" : -60,
-				"order" : 233,
-				"text" : "<br/>旋转圆环<br/>Rotating Ring<br/>",
+				"order" : 237,
+				"text" : "ui_audio_rotating_ring",
 				"type" : "slider",
 				"value" : 0
 			},
 			"audio_secondPoint" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 147,
+				"index" : 151,
 				"options" : 
 				[
 					{
-						"label" : "静态环/Static Ring",
+						"label" : "ui_audio_pwcircleringtype_1",
 						"value" : 1
 					},
 					{
-						"label" : "内环/Inner Ring",
+						"label" : "ui_audio_pwcircleringtype_2",
 						"value" : 2
 					},
 					{
-						"label" : "外环/Outer Ring",
+						"label" : "ui_audio_pwcircleringtype_3",
 						"value" : 3
 					}
 				],
-				"order" : 247,
-				"text" : "<br/>第二点<br/>Second Point<br/>",
+				"order" : 251,
+				"text" : "ui_audio_second_point",
 				"type" : "combo",
 				"value" : 3
 			},
 			"audio_shadowBlur" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 137,
+				"index" : 141,
 				"max" : 10,
 				"min" : 0,
-				"order" : 237,
-				"text" : "<br/>模糊程度<br/>Blur Size<br/>",
+				"order" : 241,
+				"text" : "ui_audio_blur_size",
 				"type" : "slider",
 				"value" : 3
 			},
 			"audio_shadowColor" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 136,
-				"order" : 236,
+				"index" : 140,
+				"order" : 240,
 				"text" : "<br/>模糊颜色<br/>Blur Color<br/>",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
 			"authorinfo" : 
 			{
-				"index" : 339,
-				"order" : 439,
+				"index" : 344,
+				"order" : 444,
 				"text" : "●  作者信息  Author Info",
 				"type" : "group",
 				"value" : ""
@@ -1615,16 +1798,16 @@
 			"background_text" : 
 			{
 				"condition" : "wallpapermode.value == 3",
-				"index" : 15,
-				"order" : 115,
+				"index" : 19,
+				"order" : 119,
 				"text" : "ui_background_background_text",
 				"type" : "text"
 			},
 			"background_text1" : 
 			{
 				"condition" : "[5, 7,8].includes(wallpapermode.value)",
-				"index" : 18,
-				"order" : 118,
+				"index" : 22,
+				"order" : 122,
 				"text" : "ui_background_background_text1",
 				"type" : "txt",
 				"value" : 0
@@ -1632,8 +1815,8 @@
 			"background_wallpapermode_9_TIP" : 
 			{
 				"condition" : "wallpapermode.value == 9",
-				"index" : 10,
-				"order" : 110,
+				"index" : 14,
+				"order" : 114,
 				"text" : "ui_background_wallpapermode_9_TIP",
 				"type" : "text",
 				"value" : "1 0 0"
@@ -1641,8 +1824,8 @@
 			"background_wallpapermode_9_URL" : 
 			{
 				"condition" : "wallpapermode.value == 9",
-				"index" : 9,
-				"order" : 109,
+				"index" : 13,
+				"order" : 113,
 				"text" : "ui_background_wallpapermode_9_URL",
 				"type" : "textinput",
 				"value" : ""
@@ -1650,10 +1833,10 @@
 			"bgs" : 
 			{
 				"condition" : "imagedisplaystlye.value == 6",
-				"index" : 22,
+				"index" : 26,
 				"max" : 200,
 				"min" : 0,
-				"order" : 122,
+				"order" : 126,
 				"text" : "ui_bacnground_bgs",
 				"type" : "slider",
 				"value" : 100
@@ -1661,10 +1844,10 @@
 			"bgx" : 
 			{
 				"condition" : "imagedisplaystlye.value == 6",
-				"index" : 21,
+				"index" : 25,
 				"max" : 100,
 				"min" : 0,
-				"order" : 121,
+				"order" : 125,
 				"text" : "ui_bacnground_bgx",
 				"type" : "slider",
 				"value" : 50
@@ -1672,10 +1855,10 @@
 			"bgy" : 
 			{
 				"condition" : "imagedisplaystlye.value == 6",
-				"index" : 20,
+				"index" : 24,
 				"max" : 100,
 				"min" : 0,
-				"order" : 120,
+				"order" : 124,
 				"text" : "ui_bacnground_bgy",
 				"type" : "slider",
 				"value" : 50
@@ -1683,38 +1866,38 @@
 			"blurColor" : 
 			{
 				"condition" : "(visual_audio_model.value == 1 && (ColorMode.value == 1 || ColorMode.value == 3))||(ColorMode.value == 2 && BlurColorGradient.value == false )",
-				"index" : 106,
-				"order" : 206,
-				"text" : "<br />模糊颜色<br />Blur Color<br />",
+				"index" : 110,
+				"order" : 210,
+				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
 			},
 			"cX" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 98,
+				"index" : 102,
 				"max" : 100,
 				"min" : 0,
-				"order" : 198,
-				"text" : "<br />圆心-X(%)<br />Center of circle-X(%)<br />",
+				"order" : 202,
+				"text" : "ui_audio_circle_center_x",
 				"type" : "slider",
 				"value" : 50
 			},
 			"cY" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 99,
+				"index" : 103,
 				"max" : 100,
 				"min" : 0,
-				"order" : 199,
-				"text" : "<br />圆心-Y(%)<br />Center of circle-Y(%)<br />",
+				"order" : 203,
+				"text" : "ui_audio_circle_center_y",
 				"type" : "slider",
 				"value" : 50
 			},
 			"chiyuanapi" : 
 			{
 				"condition" : "wallpapermode.value == 7",
-				"index" : 7,
+				"index" : 11,
 				"options" : 
 				[
 					{
@@ -1738,7 +1921,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 107,
+				"order" : 111,
 				"text" : "ui_background_chiyuanapi",
 				"type" : "combo",
 				"value" : 1
@@ -1746,9 +1929,9 @@
 			"color" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 1||(ColorMode.value == 2 && SolidColorGradient.value == false )",
-				"index" : 105,
-				"order" : 205,
-				"text" : "<br />音频颜色<br />Wave Color<br />",
+				"index" : 109,
+				"order" : 209,
+				"text" : "ui_audio_wave_color",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
@@ -1756,10 +1939,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 297,
+				"index" : 301,
 				"max" : 100,
 				"min" : 0,
-				"order" : 397,
+				"order" : 401,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -1768,10 +1951,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 296,
+				"index" : 300,
 				"max" : 100,
 				"min" : 0,
-				"order" : 396,
+				"order" : 400,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 57
@@ -1779,8 +1962,8 @@
 			"countdown_blurcolor" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_blurcolor_show.value == true",
-				"index" : 292,
-				"order" : 392,
+				"index" : 296,
+				"order" : 396,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -1788,8 +1971,8 @@
 			"countdown_blurcolor_show" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 291,
-				"order" : 391,
+				"index" : 295,
+				"order" : 395,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -1798,10 +1981,10 @@
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 293,
+				"index" : 297,
 				"max" : 50,
 				"min" : 0,
-				"order" : 393,
+				"order" : 397,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 4
@@ -1809,8 +1992,8 @@
 			"countdown_color" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 288,
-				"order" : 388,
+				"index" : 292,
+				"order" : 392,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1818,16 +2001,16 @@
 			"countdown_day" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 285,
-				"order" : 385,
+				"index" : 289,
+				"order" : 389,
 				"text" : "ui_countdown_day",
 				"type" : "textinput",
 				"value" : "180"
 			},
 			"countdown_group" : 
 			{
-				"index" : 281,
-				"order" : 381,
+				"index" : 285,
+				"order" : 385,
 				"text" : "●  倒计时  Countdown",
 				"type" : "group",
 				"value" : ""
@@ -1835,8 +2018,8 @@
 			"countdown_month" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 284,
-				"order" : 384,
+				"index" : 288,
+				"order" : 388,
 				"text" : "ui_countdown_month",
 				"type" : "textinput",
 				"value" : "1919"
@@ -1844,18 +2027,18 @@
 			"countdown_roundedcorners" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
-				"index" : 295,
+				"index" : 299,
 				"max" : 100,
 				"min" : 0,
-				"order" : 395,
+				"order" : 399,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
 			},
 			"countdown_show" : 
 			{
-				"index" : 282,
-				"order" : 382,
+				"index" : 286,
+				"order" : 386,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -1864,10 +2047,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 298,
+				"index" : 302,
 				"max" : 100,
 				"min" : 0,
-				"order" : 398,
+				"order" : 402,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -1876,10 +2059,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 299,
+				"index" : 303,
 				"max" : 50,
 				"min" : 10,
-				"order" : 399,
+				"order" : 403,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
@@ -1888,10 +2071,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 300,
+				"index" : 304,
 				"max" : 100,
 				"min" : 1,
-				"order" : 400,
+				"order" : 404,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -1899,8 +2082,8 @@
 			"countdown_txt" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 286,
-				"order" : 386,
+				"index" : 290,
+				"order" : 390,
 				"text" : "ui_countdown_txt_befor",
 				"type" : "textinput",
 				"value" : ""
@@ -1908,8 +2091,8 @@
 			"countdown_txt1" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 287,
-				"order" : 387,
+				"index" : 291,
+				"order" : 391,
 				"text" : "ui_countdown_txt_after",
 				"type" : "textinput",
 				"value" : ""
@@ -1918,10 +2101,10 @@
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 294,
+				"index" : 298,
 				"max" : 100,
 				"min" : 0,
-				"order" : 394,
+				"order" : 398,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 3
@@ -1929,8 +2112,8 @@
 			"countdown_yakeli_show" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 289,
-				"order" : 389,
+				"index" : 293,
+				"order" : 393,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -1938,8 +2121,8 @@
 			"countdown_yakelicolor" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
-				"index" : 290,
-				"order" : 390,
+				"index" : 294,
+				"order" : 394,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -1947,8 +2130,8 @@
 			"countdown_year" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 283,
-				"order" : 383,
+				"index" : 287,
+				"order" : 387,
 				"text" : "ui_countdown_year",
 				"type" : "textinput",
 				"value" : "114514"
@@ -1956,39 +2139,16 @@
 			"customdirectory" : 
 			{
 				"condition" : "wallpapermode.value == 2",
-				"index" : 12,
+				"index" : 16,
 				"mode" : "fetchall",
-				"order" : 112,
+				"order" : 116,
 				"text" : "ui_background_customdirectory",
 				"type" : "directory"
-			},
-			"date_showwidth" : 
-			{
-				"condition" : "showDate.value == true",
-				"fraction" : false,
-				"index" : 203,
-				"max" : 100,
-				"min" : 0,
-				"order" : 303,
-				"text" : "ui_color_showwidth",
-				"type" : "slider",
-				"value" : 0
-			},
-			"datetransparency" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 208,
-				"max" : 100,
-				"min" : 0,
-				"order" : 308,
-				"text" : "ui_color_timetransparency",
-				"type" : "slider",
-				"value" : 100
 			},
 			"date_dayFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 192,
+				"index" : 196,
 				"options" : 
 				[
 					{
@@ -2004,698 +2164,15 @@
 						"value" : 0
 					}
 				],
-				"order" : 292,
+				"order" : 296,
 				"text" : "ui_date_dayFormat",
 				"type" : "combo",
 				"value" : 1
 			},
-			"direction" : 
-			{
-				"condition" : "visual_audio_model.value == 1",
-				"index" : 92,
-				"options" : 
-				[
-					{
-						"label" : "向外-Outward",
-						"value" : 1
-					},
-					{
-						"label" : "向内-Inward",
-						"value" : 2
-					},
-					{
-						"label" : "双向-Two Way",
-						"value" : 3
-					}
-				],
-				"order" : 192,
-				"text" : "ui_audio_wave_direction",
-				"type" : "combo",
-				"value" : 1
-			},
-			"fluidEffectBlurAmount" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 315,
-				"max" : 20,
-				"min" : 0,
-				"order" : 415,
-				"text" : "ui_fluid_effect_blur_amount",
-				"type" : "slider",
-				"value" : 5
-			},
-			"fluidEffectCanvasDisplacement" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 317,
-				"max" : 100,
-				"min" : 0,
-				"order" : 417,
-				"text" : "ui_fluid_effect_canvas_displacement",
-				"type" : "slider",
-				"value" : 20
-			},
-			"fluidEffectDisplacementScale" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 319,
-				"max" : 1000,
-				"min" : 0,
-				"order" : 419,
-				"text" : "ui_fluid_effect_displacement_scale",
-				"type" : "slider",
-				"value" : 400
-			},
-			"fluidEffectEnabled" : 
-			{
-				"index" : 311,
-				"order" : 411,
-				"text" : "ui_fluid_effect_enabled",
-				"type" : "bool",
-				"value" : false
-			},
-			"fluidEffectEnabledFullscreen" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 312,
-				"order" : 412,
-				"text" : "ui_fluid_effect_enabled_fullscreen",
-				"type" : "bool",
-				"value" : false
-			},
-			"fluidEffectResolution" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 314,
-				"max" : 1024,
-				"min" : 128,
-				"order" : 414,
-				"text" : "ui_fluid_effect_resolution",
-				"type" : "slider",
-				"value" : 512
-			},
-			"fluidEffectTurbulenceOctaves" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 318,
-				"max" : 10,
-				"min" : 1,
-				"order" : 418,
-				"text" : "ui_fluid_effect_turbulence_octaves",
-				"type" : "slider",
-				"value" : 1
-			},
-			"fluidEffect_DarkOverlayStrength" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"fraction" : false,
-				"index" : 313,
-				"max" : 100,
-				"min" : 0,
-				"order" : 413,
-				"text" : "ui_fluid_effect_dark_overlay_strength",
-				"type" : "slider",
-				"value" : 30
-			},
-			"fluidEffect_backdropFilterStrength" : 
-			{
-				"condition" : "fluidEffectEnabled.value == true",
-				"fraction" : false,
-				"index" : 316,
-				"max" : 128,
-				"min" : 0,
-				"order" : 416,
-				"text" : "ui_fluid_effect_backdrop_filter_strength",
-				"type" : "slider",
-				"value" : 16
-			},
-			"fontSetting" : 
-			{
-				"index" : 3,
-				"order" : 103,
-				"text" : "ui_fontSetting",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"fontSetting_tip" : 
-			{
-				"index" : 4,
-				"order" : 104,
-				"text" : "ui_fontSetting_tip",
-				"type" : "txt",
-				"value" : ""
-			},
-			"freeapi" : 
-			{
-				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && freeapi.value == true)",
-				"index" : 213,
-				"order" : 313,
-				"text" : "ui_weather_freeapi",
-				"type" : "bool",
-				"value" : false
-			},
-			"friendlylinks" : 
-			{
-				"condition" : "",
-				"index" : 349,
-				"order" : 449,
-				"text" : "●  友情链接  Friend Links",
-				"type" : "group",
-				"value" : true
-			},
-			"functioncategory" : 
-			{
-				"condition" : "friendlylinks.value == true",
-				"index" : 363,
-				"order" : 463,
-				"text" : "ui_friendlink_functioncategory",
-				"type" : "bool",
-				"value" : false
-			},
-			"functioncategory_1" : 
-			{
-				"condition" : "friendlylinks.value == true && functioncategory.value == true",
-				"index" : 364,
-				"order" : 464,
-				"text" : "ui_friendlink_functioncategory_1",
-				"type" : "txt",
-				"value" : false
-			},
-			"galaxyapi" : 
-			{
-				"condition" : "wallpapermode.value == 6",
-				"index" : 8,
-				"options" : 
-				[
-					{
-						"label" : "ui_background_wallpapermode_6_galaxyapi_1",
-						"value" : 1
-					},
-					{
-						"label" : "ui_background_wallpapermode_6_galaxyapi_2",
-						"value" : 2
-					}
-				],
-				"order" : 108,
-				"text" : "ui_background_galaxyapi",
-				"type" : "combo",
-				"value" : 1
-			},
-			"getAPIHOST_qweather" : 
-			{
-				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 227,
-				"order" : 327,
-				"text" : "ui_getAPIHOST_qweather",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"getcityappid_tianqiapi" : 
-			{
-				"condition" : "weather_show.value == true && tianqiapi.value == true",
-				"index" : 229,
-				"order" : 329,
-				"text" : "ui_weather_getcityappid_tianqiapi",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"getcityappsecret_tianqiapi" : 
-			{
-				"condition" : "weather_show.value == true && tianqiapi.value == true",
-				"index" : 231,
-				"order" : 331,
-				"text" : "ui_weather_getcityappsecret_tianqiapi",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"getcitykey_qweather" : 
-			{
-				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 228,
-				"order" : 328,
-				"text" : "ui_weather_getcitykey_qweather",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"getcitykey_visualcrossing" : 
-			{
-				"condition" : "weather_show.value == true && visualcrossingapi.value == true",
-				"index" : 230,
-				"order" : 330,
-				"text" : "ui_weather_getcitykey_visualcrossing",
-				"type" : "textinput",
-				"value" : ""
-			},
-			"help" : 
-			{
-				"condition" : "Test_Author.value == true",
-				"index" : 344,
-				"order" : 444,
-				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1759199212007589774/D084C90AD44D6BC3480A4046F0C1703A858A5673/' width='100%'  />",
-				"type" : "text"
-			},
-			"helpBZ" : 
-			{
-				"condition" : "Test_Author.value == true",
-				"index" : 346,
-				"order" : 446,
-				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529045343/C16164193E685A485B287C50E156F837DA1B2BB1/' width='100%'  />",
-				"type" : "text"
-			},
-			"helpDY" : 
-			{
-				"condition" : "Test_Author.value == true",
-				"index" : 345,
-				"order" : 445,
-				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529042529/ABB6DE28206C09CA53C1FD0651408433F648B16A/' width='100%' />",
-				"type" : "text"
-			},
-			"helpEnd" : 
-			{
-				"condition" : "Test_Author.value == true",
-				"index" : 342,
-				"order" : 442,
-				"text" : "<small><br/>完美壁纸完全免费，需要您的支持<br/>支付宝394011315@qq.com 陈振原<br />欢迎赞助鼓励！感谢大家支持！</small>",
-				"type" : "text"
-			},
-			"helpUp" : 
-			{
-				"condition" : "Test_Author.value == true",
-				"index" : 343,
-				"order" : 443,
-				"text" : "<small><br/>老陈已经开通了抖音和B站<br/>完美壁纸教程，桌面改造教程，桌搭好物推荐<br />数码开箱，创意礼物，出租屋改造等等<br />最接地气数码博主，有问必答，爱你们！<br />关注老陈，监督老陈完成全新版本的完美壁纸！</small>",
-				"type" : "text"
-			},
-			"hitokotoX" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"fraction" : false,
-				"index" : 278,
-				"max" : 100,
-				"min" : 0,
-				"order" : 378,
-				"text" : "ui_setting_x-asis",
-				"type" : "slider",
-				"value" : 20
-			},
-			"hitokotoY" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"fraction" : false,
-				"index" : 277,
-				"max" : 100,
-				"min" : 0,
-				"order" : 377,
-				"text" : "ui_setting_y-asis",
-				"type" : "slider",
-				"value" : 18
-			},
-			"hitokoto_a" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 255,
-				"order" : 355,
-				"text" : "<br/>动画<br />animation<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_auth" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"index" : 251,
-				"order" : 351,
-				"text" : "ui_hitokoto_hitokoto_auth",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_b" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 256,
-				"order" : 356,
-				"text" : "<br/>漫画<br />caricature<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_blurcolor" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_blurcolor_show.value == true",
-				"index" : 270,
-				"order" : 370,
-				"text" : "ui_color_blurcolor",
-				"type" : "color",
-				"value" : "1 0.8 0.8"
-			},
-			"hitokoto_blurcolor_show" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"index" : 269,
-				"order" : 369,
-				"text" : "ui_color_blurcolor_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_bluryakeli" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 274,
-				"max" : 50,
-				"min" : 0,
-				"order" : 374,
-				"text" : "ui_color_bluryakeli",
-				"type" : "slider",
-				"value" : 3
-			},
-			"hitokoto_c" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 257,
-				"order" : 357,
-				"text" : "<br/>游戏<br />game<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_color" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"index" : 268,
-				"order" : 368,
-				"text" : "ui_color_color",
-				"type" : "color",
-				"value" : "1 1 1"
-			},
-			"hitokoto_d" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 258,
-				"order" : 358,
-				"text" : "<br/>文学<br />literature<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_diy" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"index" : 254,
-				"order" : 354,
-				"text" : "ui_hitokoto_hitokoto_diy",
-				"type" : "bool",
-				"value" : false
-			},
-			"hitokoto_e" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 259,
-				"order" : 359,
-				"text" : "<br/>原创<br />original<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_f" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 260,
-				"order" : 360,
-				"text" : "<br/>来自网络<br />From the web<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_g" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 261,
-				"order" : 361,
-				"text" : "<br/>其他<br />other<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_h" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 262,
-				"order" : 362,
-				"text" : "<br/>影视<br />showbiz<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_i" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 263,
-				"order" : 363,
-				"text" : "<br/>诗词<br />poetry<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_j" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 264,
-				"order" : 364,
-				"text" : "<br/>网易云<br /><i>NetEase Cloud</i><br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_k" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 265,
-				"order" : 365,
-				"text" : "<br/>哲学<br />philosophy<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_l" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 266,
-				"order" : 366,
-				"text" : "<br/>抖机灵<br />jitterbug<br/>",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_null" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 267,
-				"order" : 367,
-				"text" : "ui_hitokoto_hitokoto_null",
-				"type" : "text"
-			},
-			"hitokoto_roundedcorners" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"index" : 276,
-				"max" : 100,
-				"min" : 0,
-				"order" : 376,
-				"text" : "ui_color_roundedcorners",
-				"type" : "slider",
-				"value" : 50
-			},
-			"hitokoto_show" : 
-			{
-				"condition" : "",
-				"index" : 250,
-				"order" : 350,
-				"text" : "ui_setting_show",
-				"type" : "bool",
-				"value" : false
-			},
-			"hitokoto_showwidth" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"fraction" : false,
-				"index" : 275,
-				"max" : 100,
-				"min" : 0,
-				"order" : 375,
-				"text" : "ui_color_showwidth",
-				"type" : "slider",
-				"value" : 0
-			},
-			"hitokoto_size" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"fraction" : false,
-				"index" : 279,
-				"max" : 50,
-				"min" : 10,
-				"order" : 379,
-				"text" : "ui_color_size",
-				"type" : "slider",
-				"value" : 10
-			},
-			"hitokoto_timetransparency" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"fraction" : false,
-				"index" : 280,
-				"max" : 100,
-				"min" : 1,
-				"order" : 380,
-				"text" : "ui_color_timetransparency",
-				"type" : "slider",
-				"value" : 100
-			},
-			"hitokoto_updata" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"index" : 252,
-				"options" : 
-				[
-					{
-						"label" : "30min",
-						"value" : 1
-					},
-					{
-						"label" : "60min",
-						"value" : 2
-					},
-					{
-						"label" : "120min",
-						"value" : 3
-					},
-					{
-						"label" : "180min",
-						"value" : 4
-					},
-					{
-						"label" : "不更新",
-						"value" : 5
-					}
-				],
-				"order" : 352,
-				"text" : "ui_hitokoto_hitokoto_updata",
-				"type" : "combo",
-				"value" : 5
-			},
-			"hitokoto_yakeli" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 273,
-				"max" : 100,
-				"min" : 0,
-				"order" : 373,
-				"text" : "ui_color_yakeli",
-				"type" : "slider",
-				"value" : 4
-			},
-			"hitokoto_yakeli_show" : 
-			{
-				"condition" : "hitokoto_show.value == true",
-				"index" : 271,
-				"order" : 371,
-				"text" : "ui_color_yakeli_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"hitokoto_yakelicolor" : 
-			{
-				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"index" : 272,
-				"order" : 372,
-				"text" : "ui_color_yakelicolor",
-				"type" : "color",
-				"value" : "0 0 0"
-			},
-			"image" : 
-			{
-				"condition" : "wallpapermode.value == 1",
-				"index" : 11,
-				"order" : 111,
-				"text" : "ui_background_image",
-				"type" : "file"
-			},
-			"imagedisplaystlye" : 
-			{
-				"condition" : "wallpapermode.value !== 3",
-				"index" : 19,
-				"options" : 
-				[
-					{
-						"label" : "填充-Fill",
-						"value" : 1
-					},
-					{
-						"label" : "拉伸-Stretching",
-						"value" : 2
-					},
-					{
-						"label" : "适应-Adapt",
-						"value" : 3
-					},
-					{
-						"label" : "平铺-Tile",
-						"value" : 4
-					},
-					{
-						"label" : "居中-Center",
-						"value" : 5
-					},
-					{
-						"label" : "自由-Free",
-						"value" : 6
-					}
-				],
-				"order" : 119,
-				"text" : "ui_background_imagedisplaystlye",
-				"type" : "combo",
-				"value" : 1
-			},
-			"imageswitchtimes" : 
-			{
-				"condition" : "[2, 5, 7,8].includes(wallpapermode.value)",
-				"index" : 17,
-				"options" : 
-				[
-					{
-						"label" : "30秒-30S",
-						"value" : 0.5
-					},
-					{
-						"label" : "1分钟-1min",
-						"value" : 1
-					},
-					{
-						"label" : "5分钟-5min",
-						"value" : 2
-					},
-					{
-						"label" : "10分钟-10min",
-						"value" : 3
-					},
-					{
-						"label" : "30分钟-30min",
-						"value" : 4
-					},
-					{
-						"label" : "60分钟-60min",
-						"value" : 5
-					}
-				],
-				"order" : 117,
-				"text" : "ui_background_imageswitchtimes",
-				"type" : "combo",
-				"value" : 2
-			},
-			"lineWidth" : 
-			{
-				"condition" : "visual_audio_model.value == 1",
-				"index" : 95,
-				"max" : 10,
-				"min" : 1,
-				"order" : 195,
-				"text" : "<br />圆环线宽<br />Circle Line Width<br />",
-				"type" : "slider",
-				"value" : 9
-			},
 			"date_monthFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 191,
+				"index" : 195,
 				"options" : 
 				[
 					{
@@ -2715,183 +2192,15 @@
 						"value" : 0
 					}
 				],
-				"order" : 291,
+				"order" : 295,
 				"text" : "ui_date_monthFormat",
 				"type" : "combo",
 				"value" : 1
 			},
-			"music_text" : 
-			{
-				"index" : 49,
-				"order" : 149,
-				"text" : "ui_music_musictext",
-				"type" : "text"
-			},
-			"oclock_blurcolor" : 
-			{
-				"condition" : "showTime.value == true && oclock_blurcolor_show.value == true",
-				"index" : 178,
-				"order" : 278,
-				"text" : "ui_color_blurcolor",
-				"type" : "color",
-				"value" : "1 0.8 0.8"
-			},
-			"oclock_blurcolor_show" : 
-			{
-				"condition" : "showTime.value == true || oclock_blurcolor_show == true",
-				"index" : 177,
-				"order" : 277,
-				"text" : "ui_color_blurcolor_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"oclock_bluryakeli" : 
-			{
-				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 182,
-				"max" : 50,
-				"min" : 0,
-				"order" : 282,
-				"text" : "ui_color_bluryakeli",
-				"type" : "slider",
-				"value" : 3
-			},
-			"oclock_roundedcorners" : 
-			{
-				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 183,
-				"max" : 100,
-				"min" : 0,
-				"order" : 283,
-				"text" : "ui_color_roundedcorners",
-				"type" : "slider",
-				"value" : 50
-			},
-			"oclock_yakeli" : 
-			{
-				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 181,
-				"max" : 100,
-				"min" : 0,
-				"order" : 281,
-				"text" : "ui_color_yakeli",
-				"type" : "slider",
-				"value" : 4
-			},
-			"oclock_yakeli_show" : 
-			{
-				"condition" : "showTime.value == true",
-				"index" : 179,
-				"order" : 279,
-				"text" : "ui_color_yakeli_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"oclock_yakelicolor" : 
-			{
-				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
-				"index" : 180,
-				"order" : 280,
-				"text" : "ui_color_yakelicolor",
-				"type" : "color",
-				"value" : "0 0 0"
-			},
-			"odate_blurcolor" : 
-			{
-				"condition" : "showDate.value == true && odate_blurcolor_show.value == true",
-				"index" : 198,
-				"order" : 298,
-				"text" : "ui_color_blurcolor",
-				"type" : "color",
-				"value" : "1 0.8 0.8"
-			},
-			"odate_blurcolor_show" : 
-			{
-				"condition" : "showDate.value == true || oDate_blurcolor_show == true",
-				"index" : 197,
-				"order" : 297,
-				"text" : "ui_color_blurcolor_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"odate_bluryakeli" : 
-			{
-				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 202,
-				"max" : 50,
-				"min" : 0,
-				"order" : 302,
-				"text" : "ui_color_bluryakeli",
-				"type" : "slider",
-				"value" : 3
-			},
-			"odate_color" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 196,
-				"order" : 296,
-				"text" : "ui_color_color",
-				"type" : "color",
-				"value" : "1 1 1"
-			},
-			"odate_roundedcorners" : 
-			{
-				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"index" : 204,
-				"max" : 100,
-				"min" : 0,
-				"order" : 304,
-				"text" : "ui_color_roundedcorners",
-				"type" : "slider",
-				"value" : 50
-			},
-			"odate_yakeli" : 
-			{
-				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 201,
-				"max" : 100,
-				"min" : 0,
-				"order" : 301,
-				"text" : "ui_color_yakeli",
-				"type" : "slider",
-				"value" : 4
-			},
-			"odate_yakeli_show" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 199,
-				"order" : 299,
-				"text" : "ui_color_yakeli_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"odate_yakelicolor" : 
-			{
-				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"index" : 200,
-				"order" : 300,
-				"text" : "ui_color_yakelicolor",
-				"type" : "color",
-				"value" : "0 0 0"
-			},
-			"open_meteoapi" : 
-			{
-				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value == false) || (weather_show.value == true && open_meteoapi.value == true)",
-				"index" : 218,
-				"order" : 318,
-				"text" : "ui_weather_open_meteoapi",
-				"type" : "bool",
-				"value" : false
-			},
 			"date_order" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 194,
+				"index" : 198,
 				"options" : 
 				[
 					{
@@ -2907,16 +2216,1010 @@
 						"value" : 3
 					}
 				],
-				"order" : 294,
+				"order" : 298,
 				"text" : "ui_date_order",
 				"type" : "combo",
 				"value" : 1
 			},
+			"date_separator" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 199,
+				"options" : 
+				[
+					{
+						"label" : "ui_date_separator_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_date_separator_2",
+						"value" : 2
+					},
+					{
+						"label" : "ui_date_separator_3",
+						"value" : 3
+					},
+					{
+						"label" : "ui_date_separator_4",
+						"value" : 4
+					},
+					{
+						"label" : "ui_date_separator_5",
+						"value" : 5
+					},
+					{
+						"label" : "ui_date_separator_6",
+						"value" : 6
+					}
+				],
+				"order" : 299,
+				"text" : "ui_date_separator",
+				"type" : "combo",
+				"value" : 2
+			},
+			"date_showwidth" : 
+			{
+				"condition" : "showDate.value == true",
+				"fraction" : false,
+				"index" : 207,
+				"max" : 100,
+				"min" : 0,
+				"order" : 307,
+				"text" : "ui_color_showwidth",
+				"type" : "slider",
+				"value" : 0
+			},
+			"date_weekFormat" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 197,
+				"options" : 
+				[
+					{
+						"label" : "ui_date_weekFormat_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_date_weekFormat_2",
+						"value" : 2
+					},
+					{
+						"label" : "ui_date_weekFormat_3",
+						"value" : 0
+					}
+				],
+				"order" : 297,
+				"text" : "ui_date_weekFormat",
+				"type" : "combo",
+				"value" : 1
+			},
+			"date_yearFormat" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 194,
+				"options" : 
+				[
+					{
+						"label" : "ui_date_yearFormat_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_date_yearFormat_2",
+						"value" : 2
+					},
+					{
+						"label" : "ui_date_yearFormat_3",
+						"value" : 0
+					}
+				],
+				"order" : 294,
+				"text" : "ui_date_yearFormat",
+				"type" : "combo",
+				"value" : 1
+			},
+			"datetransparency" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 212,
+				"max" : 100,
+				"min" : 0,
+				"order" : 312,
+				"text" : "ui_color_timetransparency",
+				"type" : "slider",
+				"value" : 100
+			},
+			"direction" : 
+			{
+				"condition" : "visual_audio_model.value == 1",
+				"index" : 96,
+				"options" : 
+				[
+					{
+						"label" : "ui_audio_direction_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_audio_direction_2",
+						"value" : 2
+					},
+					{
+						"label" : "ui_audio_direction_3",
+						"value" : 3
+					}
+				],
+				"order" : 196,
+				"text" : "ui_audio_wave_direction",
+				"type" : "combo",
+				"value" : 1
+			},
+			"fluidEffectBlurAmount" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 320,
+				"max" : 20,
+				"min" : 0,
+				"order" : 420,
+				"text" : "ui_fluid_effect_blur_amount",
+				"type" : "slider",
+				"value" : 5
+			},
+			"fluidEffectCanvasDisplacement" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 322,
+				"max" : 100,
+				"min" : 0,
+				"order" : 422,
+				"text" : "ui_fluid_effect_canvas_displacement",
+				"type" : "slider",
+				"value" : 20
+			},
+			"fluidEffectDisplacementScale" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 324,
+				"max" : 1000,
+				"min" : 0,
+				"order" : 424,
+				"text" : "ui_fluid_effect_displacement_scale",
+				"type" : "slider",
+				"value" : 400
+			},
+			"fluidEffectEnabled" : 
+			{
+				"index" : 315,
+				"order" : 415,
+				"text" : "ui_fluid_effect_enabled",
+				"type" : "bool",
+				"value" : false
+			},
+			"fluidEffectEnabledFullscreen" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 316,
+				"order" : 416,
+				"text" : "ui_fluid_effect_enabled_fullscreen",
+				"type" : "bool",
+				"value" : false
+			},
+			"fluidEffectResolution" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 319,
+				"max" : 1024,
+				"min" : 128,
+				"order" : 419,
+				"text" : "ui_fluid_effect_resolution",
+				"type" : "slider",
+				"value" : 512
+			},
+			"fluidEffectTurbulenceOctaves" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 323,
+				"max" : 10,
+				"min" : 1,
+				"order" : 423,
+				"text" : "ui_fluid_effect_turbulence_octaves",
+				"type" : "slider",
+				"value" : 1
+			},
+			"fluidEffect_DarkOverlayStrength" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"fraction" : false,
+				"index" : 318,
+				"max" : 100,
+				"min" : 0,
+				"order" : 418,
+				"text" : "ui_fluid_effect_dark_overlay_strength",
+				"type" : "slider",
+				"value" : 30
+			},
+			"fluidEffect_backdropFilterStrength" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"fraction" : false,
+				"index" : 321,
+				"max" : 128,
+				"min" : 0,
+				"order" : 421,
+				"text" : "ui_fluid_effect_backdrop_filter_strength",
+				"type" : "slider",
+				"value" : 16
+			},
+			"fluid_effect_enabled_fullscreen_tip" : 
+			{
+				"condition" : "fluidEffectEnabled.value == true",
+				"index" : 317,
+				"order" : 417,
+				"text" : "ui_fluid_effect_enabled_fullscreen_tip",
+				"type" : "test",
+				"value" : "1 0 0"
+			},
+			"fontSetting" : 
+			{
+				"index" : 7,
+				"order" : 107,
+				"text" : "ui_fontSetting",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"fontSetting_tip" : 
+			{
+				"index" : 8,
+				"order" : 108,
+				"text" : "ui_fontSetting_tip",
+				"type" : "txt",
+				"value" : ""
+			},
+			"freeapi" : 
+			{
+				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && freeapi.value == true)",
+				"index" : 217,
+				"order" : 317,
+				"text" : "ui_weather_freeapi",
+				"type" : "bool",
+				"value" : false
+			},
+			"friendlylinks" : 
+			{
+				"condition" : "",
+				"index" : 354,
+				"order" : 454,
+				"text" : "●  友情链接  Friend Links",
+				"type" : "group",
+				"value" : true
+			},
+			"functioncategory" : 
+			{
+				"condition" : "friendlylinks.value == true",
+				"index" : 368,
+				"order" : 468,
+				"text" : "ui_friendlink_functioncategory",
+				"type" : "bool",
+				"value" : false
+			},
+			"functioncategory_1" : 
+			{
+				"condition" : "friendlylinks.value == true && functioncategory.value == true",
+				"index" : 369,
+				"order" : 469,
+				"text" : "ui_friendlink_functioncategory_1",
+				"type" : "txt",
+				"value" : false
+			},
+			"galaxyapi" : 
+			{
+				"condition" : "wallpapermode.value == 6",
+				"index" : 12,
+				"options" : 
+				[
+					{
+						"label" : "ui_background_wallpapermode_6_galaxyapi_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_background_wallpapermode_6_galaxyapi_2",
+						"value" : 2
+					}
+				],
+				"order" : 112,
+				"text" : "ui_background_galaxyapi",
+				"type" : "combo",
+				"value" : 1
+			},
+			"getAPIHOST_qweather" : 
+			{
+				"condition" : "weather_show.value == true && qweatherapi.value == true",
+				"index" : 231,
+				"order" : 331,
+				"text" : "ui_getAPIHOST_qweather",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"getcityappid_tianqiapi" : 
+			{
+				"condition" : "weather_show.value == true && tianqiapi.value == true",
+				"index" : 233,
+				"order" : 333,
+				"text" : "ui_weather_getcityappid_tianqiapi",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"getcityappsecret_tianqiapi" : 
+			{
+				"condition" : "weather_show.value == true && tianqiapi.value == true",
+				"index" : 235,
+				"order" : 335,
+				"text" : "ui_weather_getcityappsecret_tianqiapi",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"getcitykey_qweather" : 
+			{
+				"condition" : "weather_show.value == true && qweatherapi.value == true",
+				"index" : 232,
+				"order" : 332,
+				"text" : "ui_weather_getcitykey_qweather",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"getcitykey_visualcrossing" : 
+			{
+				"condition" : "weather_show.value == true && visualcrossingapi.value == true",
+				"index" : 234,
+				"order" : 334,
+				"text" : "ui_weather_getcitykey_visualcrossing",
+				"type" : "textinput",
+				"value" : ""
+			},
+			"global_settings_language" : 
+			{
+				"index" : 5,
+				"options" : 
+				[
+					{
+						"label" : "ui_setting_language_1",
+						"value" : "zh-CN"
+					},
+					{
+						"label" : "ui_setting_language_2",
+						"value" : "en-US"
+					}
+				],
+				"order" : 105,
+				"text" : "ui_global_settings_language",
+				"type" : "combo",
+				"value" : "zh-CN"
+			},
+			"global_settings_language_tip" : 
+			{
+				"index" : 6,
+				"order" : 106,
+				"text" : "ui_global_settings_language_tip",
+				"type" : "test",
+				"value" : "1 0 0"
+			},
+			"help" : 
+			{
+				"condition" : "Test_Author.value == true",
+				"index" : 349,
+				"order" : 449,
+				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1759199212007589774/D084C90AD44D6BC3480A4046F0C1703A858A5673/' width='100%'  />",
+				"type" : "text"
+			},
+			"helpBZ" : 
+			{
+				"condition" : "Test_Author.value == true",
+				"index" : 351,
+				"order" : 451,
+				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529045343/C16164193E685A485B287C50E156F837DA1B2BB1/' width='100%'  />",
+				"type" : "text"
+			},
+			"helpDY" : 
+			{
+				"condition" : "Test_Author.value == true",
+				"index" : 350,
+				"order" : 450,
+				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529042529/ABB6DE28206C09CA53C1FD0651408433F648B16A/' width='100%' />",
+				"type" : "text"
+			},
+			"helpEnd" : 
+			{
+				"condition" : "Test_Author.value == true",
+				"index" : 347,
+				"order" : 447,
+				"text" : "<small><br/>完美壁纸完全免费，需要您的支持<br/>支付宝394011315@qq.com 陈振原<br />欢迎赞助鼓励！感谢大家支持！</small>",
+				"type" : "text"
+			},
+			"helpUp" : 
+			{
+				"condition" : "Test_Author.value == true",
+				"index" : 348,
+				"order" : 448,
+				"text" : "<small><br/>老陈已经开通了抖音和B站<br/>完美壁纸教程，桌面改造教程，桌搭好物推荐<br />数码开箱，创意礼物，出租屋改造等等<br />最接地气数码博主，有问必答，爱你们！<br />关注老陈，监督老陈完成全新版本的完美壁纸！</small>",
+				"type" : "text"
+			},
+			"hitokotoX" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"fraction" : false,
+				"index" : 282,
+				"max" : 100,
+				"min" : 0,
+				"order" : 382,
+				"text" : "ui_setting_x-asis",
+				"type" : "slider",
+				"value" : 20
+			},
+			"hitokotoY" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"fraction" : false,
+				"index" : 281,
+				"max" : 100,
+				"min" : 0,
+				"order" : 381,
+				"text" : "ui_setting_y-asis",
+				"type" : "slider",
+				"value" : 18
+			},
+			"hitokoto_a" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 259,
+				"order" : 359,
+				"text" : "<br/>动画<br />animation<br/>",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_auth" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"index" : 255,
+				"order" : 355,
+				"text" : "ui_hitokoto_hitokoto_auth",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_b" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 260,
+				"order" : 360,
+				"text" : "<br/>漫画<br />caricature<br/>",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_blurcolor" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_blurcolor_show.value == true",
+				"index" : 274,
+				"order" : 374,
+				"text" : "ui_color_blurcolor",
+				"type" : "color",
+				"value" : "1 0.8 0.8"
+			},
+			"hitokoto_blurcolor_show" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"index" : 273,
+				"order" : 373,
+				"text" : "ui_color_blurcolor_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_bluryakeli" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 278,
+				"max" : 50,
+				"min" : 0,
+				"order" : 378,
+				"text" : "ui_color_bluryakeli",
+				"type" : "slider",
+				"value" : 3
+			},
+			"hitokoto_c" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 261,
+				"order" : 361,
+				"text" : "ui_hitokoto_type_game",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_color" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"index" : 272,
+				"order" : 372,
+				"text" : "ui_color_color",
+				"type" : "color",
+				"value" : "1 1 1"
+			},
+			"hitokoto_d" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 262,
+				"order" : 362,
+				"text" : "<ui_hitokoto_type_literature",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_diy" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"index" : 258,
+				"order" : 358,
+				"text" : "ui_hitokoto_hitokoto_diy",
+				"type" : "bool",
+				"value" : false
+			},
+			"hitokoto_e" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 263,
+				"order" : 363,
+				"text" : "ui_hitokoto_type_original",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_f" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 264,
+				"order" : 364,
+				"text" : "ui_hitokoto_type_FromTheWeb",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_g" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 265,
+				"order" : 365,
+				"text" : "ui_hitokoto_type_other",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_h" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 266,
+				"order" : 366,
+				"text" : "ui_hitokoto_type_showbiz",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_i" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 267,
+				"order" : 367,
+				"text" : "ui_hitokoto_type_poetry",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_j" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 268,
+				"order" : 368,
+				"text" : "ui_hitokoto_type_NetEaseCloud",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_k" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 269,
+				"order" : 369,
+				"text" : "ui_hitokoto_type_philosophy",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_l" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 270,
+				"order" : 370,
+				"text" : "ui_hitokoto_type_jitterbug",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_null" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
+				"index" : 271,
+				"order" : 371,
+				"text" : "ui_hitokoto_hitokoto_null",
+				"type" : "text"
+			},
+			"hitokoto_roundedcorners" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
+				"index" : 280,
+				"max" : 100,
+				"min" : 0,
+				"order" : 380,
+				"text" : "ui_color_roundedcorners",
+				"type" : "slider",
+				"value" : 50
+			},
+			"hitokoto_show" : 
+			{
+				"condition" : "",
+				"index" : 254,
+				"order" : 354,
+				"text" : "ui_setting_show",
+				"type" : "bool",
+				"value" : false
+			},
+			"hitokoto_showwidth" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"fraction" : false,
+				"index" : 279,
+				"max" : 100,
+				"min" : 0,
+				"order" : 379,
+				"text" : "ui_color_showwidth",
+				"type" : "slider",
+				"value" : 0
+			},
+			"hitokoto_size" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"fraction" : false,
+				"index" : 283,
+				"max" : 50,
+				"min" : 10,
+				"order" : 383,
+				"text" : "ui_color_size",
+				"type" : "slider",
+				"value" : 10
+			},
+			"hitokoto_timetransparency" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"fraction" : false,
+				"index" : 284,
+				"max" : 100,
+				"min" : 1,
+				"order" : 384,
+				"text" : "ui_color_timetransparency",
+				"type" : "slider",
+				"value" : 100
+			},
+			"hitokoto_updata" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"index" : 256,
+				"options" : 
+				[
+					{
+						"label" : "ui_hitokoto_updata_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_hitokoto_updata_2",
+						"value" : 2
+					},
+					{
+						"label" : "ui_hitokoto_updata_3",
+						"value" : 3
+					},
+					{
+						"label" : "ui_hitokoto_updata_4",
+						"value" : 4
+					},
+					{
+						"label" : "ui_hitokoto_updata_5",
+						"value" : 5
+					}
+				],
+				"order" : 356,
+				"text" : "ui_hitokoto_hitokoto_updata",
+				"type" : "combo",
+				"value" : 5
+			},
+			"hitokoto_yakeli" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 277,
+				"max" : 100,
+				"min" : 0,
+				"order" : 377,
+				"text" : "ui_color_yakeli",
+				"type" : "slider",
+				"value" : 4
+			},
+			"hitokoto_yakeli_show" : 
+			{
+				"condition" : "hitokoto_show.value == true",
+				"index" : 275,
+				"order" : 375,
+				"text" : "ui_color_yakeli_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"hitokoto_yakelicolor" : 
+			{
+				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
+				"index" : 276,
+				"order" : 376,
+				"text" : "ui_color_yakelicolor",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"image" : 
+			{
+				"condition" : "wallpapermode.value == 1",
+				"index" : 15,
+				"order" : 115,
+				"text" : "ui_background_image",
+				"type" : "file"
+			},
+			"imagedisplaystlye" : 
+			{
+				"condition" : "wallpapermode.value !== 3",
+				"index" : 23,
+				"options" : 
+				[
+					{
+						"label" : "ui_background_imagedisplaystlye_1",
+						"value" : 1
+					},
+					{
+						"label" : "ui_background_imagedisplaystlye_2",
+						"value" : 2
+					},
+					{
+						"label" : "ui_background_imagedisplaystlye_3",
+						"value" : 3
+					},
+					{
+						"label" : "ui_background_imagedisplaystlye_4",
+						"value" : 4
+					},
+					{
+						"label" : "ui_background_imagedisplaystlye_5",
+						"value" : 5
+					},
+					{
+						"label" : "ui_background_imagedisplaystlye_6",
+						"value" : 6
+					}
+				],
+				"order" : 123,
+				"text" : "ui_background_imagedisplaystlye",
+				"type" : "combo",
+				"value" : 1
+			},
+			"imageswitchtimes" : 
+			{
+				"condition" : "[2, 5, 7,8].includes(wallpapermode.value)",
+				"index" : 21,
+				"options" : 
+				[
+					{
+						"label" : "ui_background_imageswitchtimes_1",
+						"value" : 0.5
+					},
+					{
+						"label" : "ui_background_imageswitchtimes_2",
+						"value" : 1
+					},
+					{
+						"label" : "ui_background_imageswitchtimes_3",
+						"value" : 2
+					},
+					{
+						"label" : "ui_background_imageswitchtimes_4",
+						"value" : 3
+					},
+					{
+						"label" : "ui_background_imageswitchtimes_5",
+						"value" : 4
+					},
+					{
+						"label" : "ui_background_imageswitchtimes_6",
+						"value" : 5
+					}
+				],
+				"order" : 121,
+				"text" : "ui_background_imageswitchtimes",
+				"type" : "combo",
+				"value" : 2
+			},
+			"lineWidth" : 
+			{
+				"condition" : "visual_audio_model.value == 1",
+				"index" : 99,
+				"max" : 10,
+				"min" : 1,
+				"order" : 199,
+				"text" : "ui_audio_circle_line_width",
+				"type" : "slider",
+				"value" : 9
+			},
+			"music_text" : 
+			{
+				"index" : 53,
+				"order" : 153,
+				"text" : "ui_music_musictext",
+				"type" : "text"
+			},
+			"oclock_blurcolor" : 
+			{
+				"condition" : "showTime.value == true && oclock_blurcolor_show.value == true",
+				"index" : 182,
+				"order" : 282,
+				"text" : "ui_color_blurcolor",
+				"type" : "color",
+				"value" : "1 0.8 0.8"
+			},
+			"oclock_blurcolor_show" : 
+			{
+				"condition" : "showTime.value == true || oclock_blurcolor_show == true",
+				"index" : 181,
+				"order" : 281,
+				"text" : "ui_color_blurcolor_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"oclock_bluryakeli" : 
+			{
+				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 186,
+				"max" : 50,
+				"min" : 0,
+				"order" : 286,
+				"text" : "ui_color_bluryakeli",
+				"type" : "slider",
+				"value" : 3
+			},
+			"oclock_roundedcorners" : 
+			{
+				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 187,
+				"max" : 100,
+				"min" : 0,
+				"order" : 287,
+				"text" : "ui_color_roundedcorners",
+				"type" : "slider",
+				"value" : 50
+			},
+			"oclock_yakeli" : 
+			{
+				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 185,
+				"max" : 100,
+				"min" : 0,
+				"order" : 285,
+				"text" : "ui_color_yakeli",
+				"type" : "slider",
+				"value" : 4
+			},
+			"oclock_yakeli_show" : 
+			{
+				"condition" : "showTime.value == true",
+				"index" : 183,
+				"order" : 283,
+				"text" : "ui_color_yakeli_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"oclock_yakelicolor" : 
+			{
+				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
+				"index" : 184,
+				"order" : 284,
+				"text" : "ui_color_yakelicolor",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"odate_blurcolor" : 
+			{
+				"condition" : "showDate.value == true && odate_blurcolor_show.value == true",
+				"index" : 202,
+				"order" : 302,
+				"text" : "ui_color_blurcolor",
+				"type" : "color",
+				"value" : "1 0.8 0.8"
+			},
+			"odate_blurcolor_show" : 
+			{
+				"condition" : "showDate.value == true || oDate_blurcolor_show == true",
+				"index" : 201,
+				"order" : 301,
+				"text" : "ui_color_blurcolor_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"odate_bluryakeli" : 
+			{
+				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 206,
+				"max" : 50,
+				"min" : 0,
+				"order" : 306,
+				"text" : "ui_color_bluryakeli",
+				"type" : "slider",
+				"value" : 3
+			},
+			"odate_color" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 200,
+				"order" : 300,
+				"text" : "ui_color_color",
+				"type" : "color",
+				"value" : "1 1 1"
+			},
+			"odate_roundedcorners" : 
+			{
+				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
+				"index" : 208,
+				"max" : 100,
+				"min" : 0,
+				"order" : 308,
+				"text" : "ui_color_roundedcorners",
+				"type" : "slider",
+				"value" : 50
+			},
+			"odate_yakeli" : 
+			{
+				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 205,
+				"max" : 100,
+				"min" : 0,
+				"order" : 305,
+				"text" : "ui_color_yakeli",
+				"type" : "slider",
+				"value" : 4
+			},
+			"odate_yakeli_show" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 203,
+				"order" : 303,
+				"text" : "ui_color_yakeli_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"odate_yakelicolor" : 
+			{
+				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
+				"index" : 204,
+				"order" : 304,
+				"text" : "ui_color_yakelicolor",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"open_meteoapi" : 
+			{
+				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value == false) || (weather_show.value == true && open_meteoapi.value == true)",
+				"index" : 222,
+				"order" : 322,
+				"text" : "ui_weather_open_meteoapi",
+				"type" : "bool",
+				"value" : false
+			},
 			"particles_color" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 64,
-				"order" : 164,
+				"index" : 68,
+				"order" : 168,
 				"text" : "ui_effect_AliceParticles_particles_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -2924,47 +3227,47 @@
 			"particles_direction" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 80,
+				"index" : 84,
 				"options" : 
 				[
 					{
-						"label" : "无/none",
+						"label" : "ui_effect_particles_direction_1",
 						"value" : 1
 					},
 					{
-						"label" : "顶部/top",
+						"label" : "ui_effect_particles_direction_2",
 						"value" : 2
 					},
 					{
-						"label" : "右上角/top-right",
+						"label" : "ui_effect_particles_direction_3",
 						"value" : 3
 					},
 					{
-						"label" : "右侧/right",
+						"label" : "ui_effect_particles_direction_4",
 						"value" : 4
 					},
 					{
-						"label" : "右下角/bottom-right",
+						"label" : "ui_effect_particles_direction_5",
 						"value" : 5
 					},
 					{
-						"label" : "底部/bottom",
+						"label" : "ui_effect_particles_direction_6",
 						"value" : 6
 					},
 					{
-						"label" : "左下角/bottom-left",
+						"label" : "ui_effect_particles_direction_7",
 						"value" : 7
 					},
 					{
-						"label" : "左侧/left",
+						"label" : "ui_effect_particles_direction_8",
 						"value" : 8
 					},
 					{
-						"label" : "左上角/top-left",
+						"label" : "ui_effect_particles_direction_9",
 						"value" : 9
 					}
 				],
-				"order" : 180,
+				"order" : 184,
 				"text" : "ui_effect_AliceParticles_particles_direction",
 				"type" : "combo",
 				"value" : 6
@@ -2972,16 +3275,16 @@
 			"particles_image" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_shapeType.value == 5",
-				"index" : 69,
-				"order" : 169,
+				"index" : 73,
+				"order" : 173,
 				"text" : "ui_effect_AliceParticles_particles_image",
 				"type" : "file"
 			},
 			"particles_isBounce" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 82,
-				"order" : 182,
+				"index" : 86,
+				"order" : 186,
 				"text" : "ui_effect_AliceParticles_particles_isBounce",
 				"type" : "bool",
 				"value" : false
@@ -2989,16 +3292,16 @@
 			"particles_isMove" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 77,
-				"order" : 177,
+				"index" : 81,
+				"order" : 181,
 				"text" : "ui_effect_AliceParticles_particles_isMove",
 				"type" : "bool",
 				"value" : true
 			},
 			"particles_isParticles" : 
 			{
-				"index" : 60,
-				"order" : 160,
+				"index" : 64,
+				"order" : 164,
 				"text" : "ui_effect_AliceParticles_particles_isParticles",
 				"type" : "bool",
 				"value" : false
@@ -3006,8 +3309,8 @@
 			"particles_isStraight" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 81,
-				"order" : 181,
+				"index" : 85,
+				"order" : 185,
 				"text" : "ui_effect_AliceParticles_particles_isStraight",
 				"type" : "bool",
 				"value" : false
@@ -3015,8 +3318,8 @@
 			"particles_linkColor" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 75,
-				"order" : 175,
+				"index" : 79,
+				"order" : 179,
 				"text" : "ui_effect_AliceParticles_particles_linkColor",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3024,10 +3327,10 @@
 			"particles_linkDistance" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 73,
+				"index" : 77,
 				"max" : 300,
 				"min" : 0,
-				"order" : 173,
+				"order" : 177,
 				"text" : "ui_effect_AliceParticles_particles_linkDistance",
 				"type" : "slider",
 				"value" : 60
@@ -3035,8 +3338,8 @@
 			"particles_linkEnable" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 72,
-				"order" : 172,
+				"index" : 76,
+				"order" : 176,
 				"text" : "ui_effect_AliceParticles_particles_linkEnable",
 				"type" : "bool",
 				"value" : false
@@ -3044,10 +3347,10 @@
 			"particles_linkOpacity" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 76,
+				"index" : 80,
 				"max" : 100,
 				"min" : 0,
-				"order" : 176,
+				"order" : 180,
 				"text" : "ui_effect_AliceParticles_particles_linkOpacity",
 				"type" : "slider",
 				"value" : 75
@@ -3055,10 +3358,10 @@
 			"particles_linkWidth" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 74,
+				"index" : 78,
 				"max" : 10,
 				"min" : 0,
-				"order" : 174,
+				"order" : 178,
 				"text" : "ui_effect_AliceParticles_particles_linkWidth",
 				"type" : "slider",
 				"value" : 2
@@ -3066,19 +3369,19 @@
 			"particles_moveOutMode" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 83,
+				"index" : 87,
 				"options" : 
 				[
 					{
-						"label" : "离开/Out",
+						"label" : "ui_effect_particles_moveOutMode_1",
 						"value" : 1
 					},
 					{
-						"label" : "反弹/Bounce",
+						"label" : "ui_effect_particles_moveOutMode_2",
 						"value" : 2
 					}
 				],
-				"order" : 183,
+				"order" : 187,
 				"text" : "ui_effect_AliceParticles_particles_moveOutMode",
 				"type" : "combo",
 				"value" : 1
@@ -3086,10 +3389,10 @@
 			"particles_number" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 61,
+				"index" : 65,
 				"max" : 500,
 				"min" : 0,
-				"order" : 161,
+				"order" : 165,
 				"text" : "ui_effect_AliceParticles_particles_number",
 				"type" : "slider",
 				"value" : 180
@@ -3097,10 +3400,10 @@
 			"particles_opacity" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 62,
+				"index" : 66,
 				"max" : 100,
 				"min" : 0,
-				"order" : 162,
+				"order" : 166,
 				"text" : "ui_effect_AliceParticles_particles_opacity",
 				"type" : "slider",
 				"value" : 75
@@ -3108,8 +3411,8 @@
 			"particles_opacityRandom" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 63,
-				"order" : 163,
+				"index" : 67,
+				"order" : 167,
 				"text" : "ui_effect_AliceParticles_particles_opacityRandom",
 				"type" : "bool",
 				"value" : true
@@ -3117,47 +3420,47 @@
 			"particles_picdef" : 
 			{
 				"condition" : "particles_shapeType.value == 5 && particles_isParticles.value == true",
-				"index" : 68,
+				"index" : 72,
 				"options" : 
 				[
 					{
-						"label" : "1.爱心",
+						"label" : "ui_effect_particles_image_1",
 						"value" : 1
 					},
 					{
-						"label" : "2.流星",
+						"label" : "ui_effect_particles_image_2",
 						"value" : 2
 					},
 					{
-						"label" : "3.猫脸",
+						"label" : "ui_effect_particles_image_3",
 						"value" : 3
 					},
 					{
-						"label" : "4.Fighting",
+						"label" : "ui_effect_particles_image_4",
 						"value" : 4
 					},
 					{
-						"label" : "5.哭笑",
+						"label" : "ui_effect_particles_image_5",
 						"value" : 5
 					},
 					{
-						"label" : "6.狗抱鱼",
+						"label" : "ui_effect_particles_image_6",
 						"value" : 6
 					},
 					{
-						"label" : "7.抠鼻",
+						"label" : "ui_effect_particles_image_7",
 						"value" : 7
 					},
 					{
-						"label" : "8.蝴蝶",
+						"label" : "ui_effect_particles_image_8",
 						"value" : 8
 					},
 					{
-						"label" : "9.GOGE",
+						"label" : "ui_effect_particles_image_9",
 						"value" : 9
 					},
 					{
-						"label" : "10.笑脸",
+						"label" : "ui_effect_particles_image_10",
 						"value" : 10
 					},
 					{
@@ -3221,7 +3524,7 @@
 						"value" : 25
 					}
 				],
-				"order" : 168,
+				"order" : 172,
 				"text" : "ui_effect_AliceParticles_particles_picdef",
 				"type" : "combo",
 				"value" : 1
@@ -3229,10 +3532,10 @@
 			"particles_shadowBlur" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 66,
+				"index" : 70,
 				"max" : 5,
 				"min" : 0,
-				"order" : 166,
+				"order" : 170,
 				"text" : "ui_effect_AliceParticles_particles_shadowBlur",
 				"type" : "slider",
 				"value" : 0
@@ -3240,8 +3543,8 @@
 			"particles_shadowColor" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 65,
-				"order" : 165,
+				"index" : 69,
+				"order" : 169,
 				"text" : "ui_effect_AliceParticles_particles_shadowColor",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3249,31 +3552,31 @@
 			"particles_shapeType" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 67,
+				"index" : 71,
 				"options" : 
 				[
 					{
-						"label" : "圆形/circle",
+						"label" : "ui_effect_particles_shapetype_1",
 						"value" : 1
 					},
 					{
-						"label" : "正方形/edge",
+						"label" : "ui_effect_particles_shapetype_2",
 						"value" : 2
 					},
 					{
-						"label" : "三角形/triangle",
+						"label" : "ui_effect_particles_shapetype_3",
 						"value" : 3
 					},
 					{
-						"label" : "星形/star",
+						"label" : "ui_effect_particles_shapetype_4",
 						"value" : 4
 					},
 					{
-						"label" : "图片/image",
+						"label" : "ui_effect_particles_shapetype_5",
 						"value" : 5
 					}
 				],
-				"order" : 167,
+				"order" : 171,
 				"text" : "ui_effect_AliceParticles_particles_shapeType",
 				"type" : "combo",
 				"value" : 1
@@ -3281,8 +3584,8 @@
 			"particles_sizeRandom" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 71,
-				"order" : 171,
+				"index" : 75,
+				"order" : 175,
 				"text" : "ui_effect_AliceParticles_particles_sizeRandom",
 				"type" : "bool",
 				"value" : true
@@ -3290,10 +3593,10 @@
 			"particles_sizeValue" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 70,
+				"index" : 74,
 				"max" : 50,
 				"min" : 0,
-				"order" : 170,
+				"order" : 174,
 				"text" : "ui_effect_AliceParticles_particles_sizeValue",
 				"type" : "slider",
 				"value" : 5
@@ -3301,10 +3604,10 @@
 			"particles_speed" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 78,
+				"index" : 82,
 				"max" : 50,
 				"min" : 1,
-				"order" : 178,
+				"order" : 182,
 				"text" : "ui_effect_AliceParticles_particles_speed",
 				"type" : "slider",
 				"value" : 5
@@ -3312,8 +3615,8 @@
 			"particles_speedRandom" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 79,
-				"order" : 179,
+				"index" : 83,
+				"order" : 183,
 				"text" : "ui_effect_AliceParticles_particles_speedRandom",
 				"type" : "bool",
 				"value" : true
@@ -3322,10 +3625,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 40,
+				"index" : 44,
 				"max" : 100,
 				"min" : 0,
-				"order" : 140,
+				"order" : 144,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 0
@@ -3334,10 +3637,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 41,
+				"index" : 45,
 				"max" : 100,
 				"min" : 0,
-				"order" : 141,
+				"order" : 145,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 76
@@ -3345,8 +3648,8 @@
 			"picturesinfo_blurcolor" : 
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_blurcolor_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 35,
-				"order" : 135,
+				"index" : 39,
+				"order" : 139,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3354,8 +3657,8 @@
 			"picturesinfo_blurcolor_show" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 34,
-				"order" : 134,
+				"index" : 38,
+				"order" : 138,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -3364,10 +3667,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 37,
+				"index" : 41,
 				"max" : 50,
 				"min" : 0,
-				"order" : 137,
+				"order" : 141,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 2
@@ -3375,8 +3678,8 @@
 			"picturesinfo_color" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 31,
-				"order" : 131,
+				"index" : 35,
+				"order" : 135,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3384,8 +3687,8 @@
 			"picturesinfo_description" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 29,
-				"order" : 129,
+				"index" : 33,
+				"order" : 133,
 				"text" : "ui_background_description",
 				"type" : "bool",
 				"value" : false
@@ -3393,7 +3696,7 @@
 			"picturesinfo_language" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 30,
+				"index" : 34,
 				"options" : 
 				[
 					{
@@ -3417,7 +3720,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 130,
+				"order" : 134,
 				"text" : "ui_setting_language",
 				"type" : "combo",
 				"value" : 1
@@ -3425,10 +3728,10 @@
 			"picturesinfo_roundedcorners" : 
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 38,
+				"index" : 42,
 				"max" : 100,
 				"min" : 0,
-				"order" : 138,
+				"order" : 142,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3436,8 +3739,8 @@
 			"picturesinfo_show" : 
 			{
 				"condition" : "[4,6,8].includes(wallpapermode.value)",
-				"index" : 28,
-				"order" : 128,
+				"index" : 32,
+				"order" : 132,
 				"text" : "ui_background_info",
 				"type" : "bool",
 				"value" : true
@@ -3445,8 +3748,8 @@
 			"picturesinfo_showRorL" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 45,
-				"order" : 145,
+				"index" : 49,
+				"order" : 149,
 				"text" : "ui_setting_RorL",
 				"type" : "bool",
 				"value" : false
@@ -3454,8 +3757,8 @@
 			"picturesinfo_showaway" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 44,
-				"order" : 144,
+				"index" : 48,
+				"order" : 148,
 				"text" : "ui_setting_showaway",
 				"type" : "bool",
 				"value" : false
@@ -3464,10 +3767,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 39,
+				"index" : 43,
 				"max" : 100,
 				"min" : 0,
-				"order" : 139,
+				"order" : 143,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -3476,10 +3779,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 42,
+				"index" : 46,
 				"max" : 50,
 				"min" : 10,
-				"order" : 142,
+				"order" : 146,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 15
@@ -3488,10 +3791,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 43,
+				"index" : 47,
 				"max" : 100,
 				"min" : 1,
-				"order" : 143,
+				"order" : 147,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -3500,10 +3803,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 36,
+				"index" : 40,
 				"max" : 100,
 				"min" : 0,
-				"order" : 136,
+				"order" : 140,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 0
@@ -3511,8 +3814,8 @@
 			"picturesinfo_yakeli_show" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 32,
-				"order" : 132,
+				"index" : 36,
+				"order" : 136,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3520,16 +3823,16 @@
 			"picturesinfo_yakelicolor" : 
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 33,
-				"order" : 133,
+				"index" : 37,
+				"order" : 137,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
 			},
 			"player_control" : 
 			{
-				"index" : 301,
-				"order" : 401,
+				"index" : 305,
+				"order" : 405,
 				"text" : "●  媒体集成  Media Integration",
 				"type" : "group",
 				"value" : ""
@@ -3537,7 +3840,7 @@
 			"player_control_barline" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_visualaudiobar.value == true",
-				"index" : 304,
+				"index" : 308,
 				"options" : 
 				[
 					{
@@ -3549,7 +3852,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 404,
+				"order" : 408,
 				"text" : "ui_player_control_barline",
 				"type" : "combo",
 				"value" : 1
@@ -3557,8 +3860,8 @@
 			"player_control_blurcolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_blurcolor_show.value == true",
-				"index" : 323,
-				"order" : 423,
+				"index" : 328,
+				"order" : 428,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3566,8 +3869,8 @@
 			"player_control_blurcolor_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 322,
-				"order" : 422,
+				"index" : 327,
+				"order" : 427,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -3576,10 +3879,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 331,
+				"index" : 336,
 				"max" : 50,
 				"min" : 0,
-				"order" : 431,
+				"order" : 436,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -3587,8 +3890,8 @@
 			"player_control_color" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_fontusetb.value == 5",
-				"index" : 326,
-				"order" : 426,
+				"index" : 331,
+				"order" : 431,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3596,7 +3899,7 @@
 			"player_control_fontusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 325,
+				"index" : 330,
 				"options" : 
 				[
 					{
@@ -3620,7 +3923,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 425,
+				"order" : 430,
 				"text" : "ui_color_color",
 				"type" : "combo",
 				"value" : 2
@@ -3628,7 +3931,7 @@
 			"player_control_getcolor" : 
 			{
 				"condition" : "player_control_show.value == true && (player_control_yakelibgusetb.value != 5 ||player_control_fontusetb.value != 5)",
-				"index" : 324,
+				"index" : 329,
 				"options" : 
 				[
 					{
@@ -3640,7 +3943,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 424,
+				"order" : 429,
 				"text" : "ui_player_control_getcolor",
 				"type" : "combo",
 				"value" : 1
@@ -3649,10 +3952,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_visualaudiobar.value == true",
 				"fraction" : true,
-				"index" : 305,
+				"index" : 309,
 				"max" : 100,
 				"min" : 1,
-				"order" : 405,
+				"order" : 409,
 				"precision" : 2,
 				"step" : 1,
 				"text" : "ui_player_control_hdong",
@@ -3662,10 +3965,10 @@
 			"player_control_roundedcorners" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
-				"index" : 332,
+				"index" : 337,
 				"max" : 100,
 				"min" : 0,
-				"order" : 432,
+				"order" : 437,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3673,8 +3976,8 @@
 			"player_control_samealbumtitle" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 338,
-				"order" : 438,
+				"index" : 343,
+				"order" : 443,
 				"text" : "ui_player_control_samealbumTitle",
 				"type" : "bool",
 				"value" : false
@@ -3683,10 +3986,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_visualaudiobar.value == true",
 				"fraction" : true,
-				"index" : 306,
+				"index" : 310,
 				"max" : 10,
 				"min" : 1,
-				"order" : 406,
+				"order" : 410,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_player_control_scaleFactor",
@@ -3696,8 +3999,8 @@
 			"player_control_show" : 
 			{
 				"condition" : "",
-				"index" : 302,
-				"order" : 402,
+				"index" : 306,
+				"order" : 406,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : true
@@ -3705,8 +4008,8 @@
 			"player_control_showaway" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 337,
-				"order" : 437,
+				"index" : 342,
+				"order" : 442,
 				"text" : "ui_setting_showaway",
 				"type" : "bool",
 				"value" : false
@@ -3715,10 +4018,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 333,
+				"index" : 338,
 				"max" : 100,
 				"min" : 0,
-				"order" : 433,
+				"order" : 438,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -3727,10 +4030,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 334,
+				"index" : 339,
 				"max" : 50,
 				"min" : 10,
-				"order" : 434,
+				"order" : 439,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
@@ -3738,8 +4041,8 @@
 			"player_control_thumbnail_rotation" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 307,
-				"order" : 407,
+				"index" : 311,
+				"order" : 411,
 				"text" : "ui_player_control_thumbnail_rotation",
 				"type" : "bool",
 				"value" : false
@@ -3748,10 +4051,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_thumbnail_rotation.value == true",
 				"fraction" : true,
-				"index" : 308,
+				"index" : 312,
 				"max" : 9.9,
 				"min" : 0.1,
-				"order" : 408,
+				"order" : 412,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_player_control_thumbnail_rotation_speed",
@@ -3761,8 +4064,8 @@
 			"player_control_thumbnail_size" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 309,
-				"order" : 409,
+				"index" : 313,
+				"order" : 413,
 				"text" : "ui_player_control_thumbnail_size",
 				"type" : "bool",
 				"value" : false
@@ -3771,10 +4074,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_thumbnail_size.value == true",
 				"fraction" : true,
-				"index" : 310,
+				"index" : 314,
 				"max" : 100,
 				"min" : 0,
-				"order" : 410,
+				"order" : 414,
 				"precision" : 2,
 				"step" : 1,
 				"text" : "ui_player_control_thumbnail_size_value",
@@ -3784,8 +4087,8 @@
 			"player_control_thumbnailrorl" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 336,
-				"order" : 436,
+				"index" : 341,
+				"order" : 441,
 				"text" : "ui_player_control_thumbnailrorl",
 				"type" : "bool",
 				"value" : false
@@ -3794,10 +4097,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 335,
+				"index" : 340,
 				"max" : 100,
 				"min" : 1,
-				"order" : 435,
+				"order" : 440,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -3805,8 +4108,8 @@
 			"player_control_visualaudiobar" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 303,
-				"order" : 403,
+				"index" : 307,
+				"order" : 407,
 				"text" : "ui_player_control_VisualAudioBar",
 				"type" : "bool",
 				"value" : true
@@ -3815,10 +4118,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 330,
+				"index" : 335,
 				"max" : 100,
 				"min" : 0,
-				"order" : 430,
+				"order" : 435,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -3826,8 +4129,8 @@
 			"player_control_yakeli_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 327,
-				"order" : 427,
+				"index" : 332,
+				"order" : 432,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3835,7 +4138,7 @@
 			"player_control_yakelibgusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 328,
+				"index" : 333,
 				"options" : 
 				[
 					{
@@ -3859,7 +4162,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 428,
+				"order" : 433,
 				"text" : "ui_color_yakelicolor",
 				"type" : "combo",
 				"value" : 4
@@ -3867,8 +4170,8 @@
 			"player_control_yakelicolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true && player_control_yakelibgusetb.value == 5",
-				"index" : 329,
-				"order" : 429,
+				"index" : 334,
+				"order" : 434,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3877,10 +4180,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 321,
+				"index" : 326,
 				"max" : 100,
 				"min" : 0,
-				"order" : 421,
+				"order" : 426,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 0
@@ -3889,10 +4192,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 320,
+				"index" : 325,
 				"max" : 100,
 				"min" : 0,
-				"order" : 420,
+				"order" : 425,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 83
@@ -3900,8 +4203,8 @@
 			"qweatherapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && qweatherapi.value == true)",
-				"index" : 214,
-				"order" : 314,
+				"index" : 218,
+				"order" : 318,
 				"text" : "ui_weather_qweatherapi",
 				"type" : "bool",
 				"value" : false
@@ -3909,8 +4212,8 @@
 			"qweatherapi_paymode" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 222,
-				"order" : 322,
+				"index" : 226,
+				"order" : 326,
 				"text" : "ui_qweatherapi_paymode",
 				"type" : "bool",
 				"value" : false
@@ -3918,19 +4221,19 @@
 			"radius" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 96,
+				"index" : 100,
 				"max" : 80,
 				"min" : 20,
-				"order" : 196,
-				"text" : "<br />圆环半径(%)<br />Circle Radius(%)<br />",
+				"order" : 200,
+				"text" : "ui_audio_radius",
 				"type" : "slider",
 				"value" : 40
 			},
 			"random" : 
 			{
 				"condition" : "wallpapermode.value == 2",
-				"index" : 16,
-				"order" : 116,
+				"index" : 20,
+				"order" : 120,
 				"text" : "ui_background_random",
 				"type" : "bool",
 				"value" : false
@@ -3938,18 +4241,18 @@
 			"range" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 97,
+				"index" : 101,
 				"max" : 15,
 				"min" : 1,
-				"order" : 197,
-				"text" : "<br />音频幅度<br />Wave Range<br />",
+				"order" : 201,
+				"text" : "ui_audio_wave_range",
 				"type" : "slider",
 				"value" : 9
 			},
 			"rbg_group" : 
 			{
-				"index" : 156,
-				"order" : 256,
+				"index" : 160,
+				"order" : 260,
 				"text" : "●  RGB灯光 RGB Lighting",
 				"type" : "group",
 				"value" : ""
@@ -3957,8 +4260,8 @@
 			"rgb_au" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 164,
-				"order" : 264,
+				"index" : 168,
+				"order" : 268,
 				"text" : "ui_rgb_au",
 				"type" : "bool",
 				"value" : false
@@ -3966,8 +4269,8 @@
 			"rgb_au_color" : 
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true && rgb_color_rainbow.value == false",
-				"index" : 166,
-				"order" : 266,
+				"index" : 170,
+				"order" : 270,
 				"text" : "ui_rgb_au_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3976,10 +4279,10 @@
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true",
 				"fraction" : true,
-				"index" : 165,
+				"index" : 169,
 				"max" : 10,
 				"min" : 1,
-				"order" : 265,
+				"order" : 269,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_rgb_au_high",
@@ -3989,8 +4292,8 @@
 			"rgb_bg" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 160,
-				"order" : 260,
+				"index" : 164,
+				"order" : 264,
 				"text" : "ui_rgb_bg",
 				"type" : "bool",
 				"value" : false
@@ -3998,8 +4301,8 @@
 			"rgb_color_rainbow" : 
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true",
-				"index" : 167,
-				"order" : 267,
+				"index" : 171,
+				"order" : 271,
 				"text" : "ui_rgb_color_rainbow",
 				"type" : "bool",
 				"value" : false
@@ -4007,8 +4310,8 @@
 			"rgb_color_rainbow_move" : 
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true && rgb_color_rainbow.value == true",
-				"index" : 168,
-				"order" : 268,
+				"index" : 172,
+				"order" : 272,
 				"text" : "ui_rgb_color_rainbow_move",
 				"type" : "bool",
 				"value" : false
@@ -4017,10 +4320,10 @@
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true && rgb_color_rainbow.value == true && rgb_color_rainbow_move.value == true",
 				"fraction" : true,
-				"index" : 169,
+				"index" : 173,
 				"max" : 10,
 				"min" : 0.1,
-				"order" : 269,
+				"order" : 273,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_rgb_color_rainbow_movespeed",
@@ -4030,7 +4333,7 @@
 			"rgb_fps" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 159,
+				"index" : 163,
 				"options" : 
 				[
 					{
@@ -4054,7 +4357,7 @@
 						"value" : "free"
 					}
 				],
-				"order" : 259,
+				"order" : 263,
 				"text" : "ui_rgb_fps",
 				"type" : "combo",
 				"value" : "free"
@@ -4062,8 +4365,8 @@
 			"rgb_pa" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 163,
-				"order" : 263,
+				"index" : 167,
+				"order" : 267,
 				"text" : "ui_rgb_pa",
 				"type" : "bool",
 				"value" : false
@@ -4071,8 +4374,8 @@
 			"rgb_sa" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 161,
-				"order" : 261,
+				"index" : 165,
+				"order" : 265,
 				"text" : "ui_rgb_sa",
 				"type" : "bool",
 				"value" : false
@@ -4081,26 +4384,26 @@
 			{
 				"condition" : "rgb_show.value == true && rgb_sa.value == true",
 				"fraction" : false,
-				"index" : 162,
+				"index" : 166,
 				"max" : 100,
 				"min" : 1,
-				"order" : 262,
+				"order" : 266,
 				"text" : "ui_rgb_sa_op",
 				"type" : "slider",
 				"value" : 70
 			},
 			"rgb_show" : 
 			{
-				"index" : 158,
-				"order" : 258,
+				"index" : 162,
+				"order" : 262,
 				"text" : "ui_rgb_show",
 				"type" : "bool",
 				"value" : false
 			},
 			"rgb_tips" : 
 			{
-				"index" : 157,
-				"order" : 257,
+				"index" : 161,
+				"order" : 261,
 				"text" : "ui_rgb_tips",
 				"type" : "txt",
 				"value" : ""
@@ -4108,19 +4411,19 @@
 			"rotation" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && showSemiCircle.value == false",
-				"index" : 94,
+				"index" : 98,
 				"max" : 10,
 				"min" : -10,
-				"order" : 194,
-				"text" : "<br />旋转角度<br />Rotation Angle<br />",
+				"order" : 198,
+				"text" : "ui_audio_rotation_angle",
 				"type" : "slider",
 				"value" : 0
 			},
 			"sakurabackcolor" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 55,
-				"order" : 155,
+				"index" : 59,
+				"order" : 159,
 				"text" : "ui_effect_sakura_sakurabackcolor",
 				"type" : "bool",
 				"value" : false
@@ -4128,8 +4431,8 @@
 			"sakurabackground" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 54,
-				"order" : 154,
+				"index" : 58,
+				"order" : 158,
 				"text" : "ui_effect_sakura_sakurabackground",
 				"type" : "bool",
 				"value" : false
@@ -4137,10 +4440,10 @@
 			"sakurabacklight" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 57,
+				"index" : 61,
 				"max" : 100,
 				"min" : 1,
-				"order" : 157,
+				"order" : 161,
 				"text" : "ui_effect_sakura_sakurabacklight",
 				"type" : "slider",
 				"value" : 50
@@ -4148,10 +4451,10 @@
 			"sakurapointnumber" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 58,
+				"index" : 62,
 				"max" : 1000,
 				"min" : 50,
-				"order" : 158,
+				"order" : 162,
 				"text" : "ui_effect_sakura_sakurapointnumber",
 				"type" : "slider",
 				"value" : 300
@@ -4159,10 +4462,10 @@
 			"sakurareverse" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 56,
+				"index" : 60,
 				"max" : 100,
 				"min" : 0,
-				"order" : 156,
+				"order" : 160,
 				"text" : "ui_effect_sakura_sakurareverse",
 				"type" : "bool",
 				"value" : true
@@ -4170,10 +4473,10 @@
 			"sakuratransparency" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 53,
+				"index" : 57,
 				"max" : 100,
 				"min" : 0,
-				"order" : 153,
+				"order" : 157,
 				"text" : "ui_effect_sakura_sakuratransparency",
 				"type" : "slider",
 				"value" : 40
@@ -4188,8 +4491,8 @@
 			"selectmusic" : 
 			{
 				"fileType" : "video",
-				"index" : 47,
-				"order" : 147,
+				"index" : 51,
+				"order" : 151,
 				"text" : "ui_music_selectmusic",
 				"type" : "file"
 			},
@@ -4197,67 +4500,31 @@
 			{
 				"condition" : "wallpapermode.value == 3",
 				"fileType" : "video",
-				"index" : 13,
-				"order" : 113,
+				"index" : 17,
+				"order" : 117,
 				"text" : "ui_background_selectvideo",
 				"type" : "file"
 			},
-			"date_separator" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 195,
-				"options" : 
-				[
-					{
-						"label" : "ui_date_separator_1",
-						"value" : 1
-					},
-					{
-						"label" : "ui_date_separator_2",
-						"value" : 2
-					},
-					{
-						"label" : "ui_date_separator_3",
-						"value" : 3
-					},
-					{
-						"label" : "ui_date_separator_4",
-						"value" : 4
-					},
-					{
-						"label" : "ui_date_separator_5",
-						"value" : 5
-					},
-					{
-						"label" : "ui_date_separator_6",
-						"value" : 6
-					}
-				],
-				"order" : 295,
-				"text" : "ui_date_separator",
-				"type" : "combo",
-				"value" : 2
-			},
 			"setting" : 
 			{
-				"index" : 2,
-				"order" : 102,
-				"text" : "●  Global Settings 全局设置",
+				"index" : 4,
+				"order" : 104,
+				"text" : "●  全局设置 Global Settings",
 				"type" : "group",
 				"value" : ""
 			},
 			"showDate" : 
 			{
-				"index" : 189,
-				"order" : 289,
+				"index" : 193,
+				"order" : 293,
 				"text" : "ui_date_show",
 				"type" : "bool",
 				"value" : true
 			},
 			"showSakura" : 
 			{
-				"index" : 52,
-				"order" : 152,
+				"index" : 56,
+				"order" : 156,
 				"text" : "ui_effect_sakura_showSakura",
 				"type" : "bool",
 				"value" : true
@@ -4265,16 +4532,16 @@
 			"showSemiCircle" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 89,
-				"order" : 189,
-				"text" : "<br />显示为半圆<br />Semicircle Effect<br />",
+				"index" : 93,
+				"order" : 193,
+				"text" : "ui_audio_show_semi_circle",
 				"type" : "bool",
 				"value" : false
 			},
 			"showTime" : 
 			{
-				"index" : 173,
-				"order" : 273,
+				"index" : 177,
+				"order" : 277,
 				"text" : "ui_date_showTime",
 				"type" : "bool",
 				"value" : true
@@ -4282,32 +4549,32 @@
 			"style" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 91,
+				"index" : 95,
 				"options" : 
 				[
 					{
-						"label" : "长条-Bar",
+						"label" : "ui_audio_style_1",
 						"value" : 1
 					},
 					{
-						"label" : "波峰-Peak",
+						"label" : "ui_audio_style_2",
 						"value" : 2
 					},
 					{
-						"label" : "波峰(不连线)-Peak No Line",
+						"label" : "ui_audio_style_3",
 						"value" : 3
 					}
 				],
-				"order" : 191,
-				"text" : "<br />音频样式<br />Wave Style<br />",
+				"order" : 195,
+				"text" : "ui_audio_wave_style",
 				"type" : "combo",
 				"value" : 1
 			},
 			"tShowSencends" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 175,
-				"order" : 275,
+				"index" : 179,
+				"order" : 279,
 				"text" : "ui_date_tShowSencends",
 				"type" : "bool",
 				"value" : true
@@ -4315,10 +4582,10 @@
 			"tSize" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 186,
+				"index" : 190,
 				"max" : 50,
 				"min" : 10,
-				"order" : 286,
+				"order" : 290,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 18
@@ -4326,8 +4593,8 @@
 			"tStyle" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 174,
-				"order" : 274,
+				"index" : 178,
+				"order" : 278,
 				"text" : "ui_date_tStyle",
 				"type" : "bool",
 				"value" : true
@@ -4335,10 +4602,10 @@
 			"tX" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 184,
+				"index" : 188,
 				"max" : 100,
 				"min" : 0,
-				"order" : 284,
+				"order" : 288,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -4346,10 +4613,10 @@
 			"tY" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 185,
+				"index" : 189,
 				"max" : 100,
 				"min" : 0,
-				"order" : 285,
+				"order" : 289,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 50
@@ -4357,48 +4624,48 @@
 			"test_modauthor1" : 
 			{
 				"condition" : "Test_ModAuthor.value == true",
-				"index" : 348,
-				"order" : 448,
+				"index" : 353,
+				"order" : 453,
 				"text" : "<small>就一个普通大学生<small/><br/><h5>后面可能会自己加点功能 反正都是给自己用的 也可以去创意工坊提出一些功能加入进来或者提出BUG和不合理之处 我都会回复的<h5/>",
 				"type" : "text"
 			},
 			"text_line41" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 253,
-				"order" : 353,
+				"index" : 257,
+				"order" : 357,
 				"text" : "<br/>- - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_onlychina" : 
 			{
 				"condition" : "(weather_show.value == true) && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false)",
-				"index" : 212,
-				"order" : 312,
+				"index" : 216,
+				"order" : 316,
 				"text" : "ui_text_onlychina",
 				"type" : "text",
 				"value" : 1
 			},
 			"text_visual_audio" : 
 			{
-				"index" : 84,
-				"order" : 184,
+				"index" : 88,
+				"order" : 188,
 				"text" : "●  可视化音频  Visual Audio",
 				"type" : "group"
 			},
 			"text_weather_3" : 
 			{
 				"condition" : "weather_show.value == true && freeapi.value == true",
-				"index" : 221,
-				"order" : 321,
+				"index" : 225,
+				"order" : 325,
 				"text" : "ui_weather_text_weather_3",
 				"type" : "text"
 			},
 			"text_worldwidesupport" : 
 			{
 				"condition" : "(weather_show.value == true) && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false)",
-				"index" : 216,
-				"order" : 316,
+				"index" : 220,
+				"order" : 320,
 				"text" : "ui_text_worldwidesupport",
 				"type" : "text",
 				"value" : 1
@@ -4406,8 +4673,8 @@
 			"thankapi" : 
 			{
 				"condition" : "weather_show.value == true && freeapi.value == true",
-				"index" : 220,
-				"order" : 320,
+				"index" : 224,
+				"order" : 324,
 				"text" : "ui_weather_thankapi",
 				"type" : "text",
 				"value" : ""
@@ -4415,8 +4682,8 @@
 			"tianqiapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && tianqiapi.value == true)",
-				"index" : 215,
-				"order" : 315,
+				"index" : 219,
+				"order" : 319,
 				"text" : "ui_weather_tianqiapi",
 				"type" : "bool",
 				"value" : false
@@ -4424,10 +4691,10 @@
 			"timetransparency" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 187,
+				"index" : 191,
 				"max" : 100,
 				"min" : 0,
-				"order" : 287,
+				"order" : 291,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -4435,75 +4702,93 @@
 			"ui_TransitionMode_4_text" : 
 			{
 				"condition" : "[2, 5, 7, 8].includes(wallpapermode.value) && TransitionMode.value == 4",
-				"index" : 27,
-				"order" : 127,
+				"index" : 31,
+				"order" : 131,
 				"text" : "ui_backgruond_TransitionMode_4_text",
 				"type" : "text",
 				"value" : ""
 			},
-			"updata_log" : 
+			"updata_log_1_7_0" : 
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.8.0(29) 2025-10-16(Y-M-D)<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.7.0(29) 2026-1-20(Y-M-D)<br/>",
 				"type" : "bool",
 				"value" : true
 			},
 			"visual_audio_model" : 
 			{
 				"condition" : "",
-				"index" : 85,
+				"index" : 89,
 				"options" : 
 				[
 					{
-						"label" : "无(Nothing)",
+						"label" : "ui_audio_visual_audio_model_1",
 						"value" : 0
 					},
 					{
-						"label" : "完美圆环(PWCircle)",
+						"label" : "ui_audio_visual_audio_model_2",
 						"value" : 1
 					},
 					{
-						"label" : "完美直线(PWLine)",
+						"label" : "ui_audio_visual_audio_model_3",
 						"value" : 2
 					},
 					{
-						"label" : "Alice圆环(Alice)",
+						"label" : "ui_audio_visual_audio_model_4",
 						"value" : 3
 					},
 					{
-						"label" : "敬请期待(Coming soon)",
+						"label" : "ui_audio_visual_audio_model_5",
 						"value" : 4
 					}
 				],
-				"order" : 185,
-				"text" : "<br />可视化音频模板<br />Visual Audio Model<br />",
+				"order" : 189,
+				"text" : "ui_audio_visual_audio_model",
 				"type" : "combo",
 				"value" : 1
 			},
 			"visualcrossingapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && visualcrossingapi.value == true)",
-				"index" : 217,
-				"order" : 317,
+				"index" : 221,
+				"order" : 321,
 				"text" : "ui_weather_visualcrossingapi",
 				"type" : "bool",
 				"value" : false
 			},
 			"wallpaper_updata" : 
 			{
-				"condition" : "updata_log.value == true",
+				"condition" : "updata_log_1_7_0.value == true",
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_wallpaper_updata",
+				"type" : "bool",
+				"value" : false
+			},
+			"wallpaper_updata_open_on_update" : 
+			{
+				"condition" : "updata_log_1_7_0.value == true",
+				"index" : 2,
+				"order" : 102,
+				"text" : "ui_wallpaper_updata_open_on_update",
+				"type" : "bool",
+				"value" : true
+			},
+			"wallpaper_updata_open_on_update_tip" : 
+			{
+				"condition" : "updata_log_1_7_0.value == true",
+				"index" : 3,
+				"order" : 103,
+				"text" : "ui_wallpaper_updata_open_on_update_tip",
 				"type" : "text",
-				"value" : ""
+				"value" : true
 			},
 			"wallpapercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 350,
-				"order" : 450,
+				"index" : 355,
+				"order" : 455,
 				"text" : "ui_friendlink_wallpapercategory",
 				"type" : "bool",
 				"value" : false
@@ -4511,38 +4796,38 @@
 			"wallpapercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 351,
-				"order" : 451,
+				"index" : 356,
+				"order" : 456,
 				"text" : "ui_friendlink_wallpaper_0",
 				"type" : "text"
 			},
 			"wallpapercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 352,
-				"order" : 452,
+				"index" : 357,
+				"order" : 457,
 				"text" : "ui_friendlink_wallpaper_1",
 				"type" : "text"
 			},
 			"wallpapercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 353,
-				"order" : 453,
+				"index" : 358,
+				"order" : 458,
 				"text" : "ui_friendlink_wallpaper_2",
 				"type" : "text"
 			},
 			"wallpapercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 354,
-				"order" : 454,
+				"index" : 359,
+				"order" : 459,
 				"text" : "ui_friendlink_wallpaper_3",
 				"type" : "text"
 			},
 			"wallpapermode" : 
 			{
-				"index" : 6,
+				"index" : 10,
 				"options" : 
 				[
 					{
@@ -4582,7 +4867,7 @@
 						"value" : 9
 					}
 				],
-				"order" : 106,
+				"order" : 110,
 				"text" : "ui_background_wallpapermode",
 				"type" : "combo",
 				"value" : 1
@@ -4590,21 +4875,21 @@
 			"wavetransparency" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 100,
+				"index" : 104,
 				"max" : 100,
 				"min" : 0,
-				"order" : 200,
-				"text" : "<br />可视化音频透明度<br />Wave Transparency<br />",
+				"order" : 204,
+				"text" : "ui_audio_wave_transparency",
 				"type" : "slider",
 				"value" : 80
 			},
 			"weatherX" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 245,
+				"index" : 249,
 				"max" : 100,
 				"min" : 0,
-				"order" : 345,
+				"order" : 349,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 20
@@ -4612,10 +4897,10 @@
 			"weatherY" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 246,
+				"index" : 250,
 				"max" : 100,
 				"min" : 0,
-				"order" : 346,
+				"order" : 350,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 15
@@ -4623,16 +4908,16 @@
 			"weather_CityText" : 
 			{
 				"condition" : "weather_show.value == true && open_meteoapi.value  == false",
-				"index" : 225,
-				"order" : 325,
+				"index" : 229,
+				"order" : 329,
 				"text" : "ui_weather_weather_CityText",
 				"type" : "textinput"
 			},
 			"weather_Color" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 234,
-				"order" : 334,
+				"index" : 238,
+				"order" : 338,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -4640,8 +4925,8 @@
 			"weather_blurcolor" : 
 			{
 				"condition" : "weather_show.value == true && weather_blurcolor_show.value == true",
-				"index" : 238,
-				"order" : 338,
+				"index" : 242,
+				"order" : 342,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -4649,8 +4934,8 @@
 			"weather_blurcolor_show" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 237,
-				"order" : 337,
+				"index" : 241,
+				"order" : 341,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -4659,10 +4944,10 @@
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 242,
+				"index" : 246,
 				"max" : 50,
 				"min" : 0,
-				"order" : 342,
+				"order" : 346,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -4670,7 +4955,7 @@
 			"weather_lang" : 
 			{
 				"condition" : "weather_show.value == true && (visualcrossingapi.value == true || open_meteoapi.value  == true)",
-				"index" : 235,
+				"index" : 239,
 				"options" : 
 				[
 					{
@@ -4686,7 +4971,7 @@
 						"value" : "en"
 					}
 				],
-				"order" : 335,
+				"order" : 339,
 				"text" : "ui_weather_weather_lang",
 				"type" : "combo",
 				"value" : "zh"
@@ -4694,8 +4979,8 @@
 			"weather_lat_latitude" : 
 			{
 				"condition" : "weather_show.value == true && open_meteoapi.value == true",
-				"index" : 224,
-				"order" : 324,
+				"index" : 228,
+				"order" : 328,
 				"text" : "ui_weather_lat_latitude",
 				"type" : "textinput",
 				"value" : ""
@@ -4703,8 +4988,8 @@
 			"weather_lat_longitude" : 
 			{
 				"condition" : "weather_show.value == true && open_meteoapi.value == true",
-				"index" : 223,
-				"order" : 323,
+				"index" : 227,
+				"order" : 327,
 				"text" : "ui_weather_lat_longitude",
 				"type" : "textinput",
 				"value" : ""
@@ -4712,18 +4997,18 @@
 			"weather_roundedcorners" : 
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
-				"index" : 244,
+				"index" : 248,
 				"max" : 100,
 				"min" : 0,
-				"order" : 344,
+				"order" : 348,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
 			},
 			"weather_show" : 
 			{
-				"index" : 210,
-				"order" : 310,
+				"index" : 214,
+				"order" : 314,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -4732,10 +5017,10 @@
 			{
 				"condition" : "weather_show.value == true",
 				"fraction" : false,
-				"index" : 243,
+				"index" : 247,
 				"max" : 100,
 				"min" : 0,
-				"order" : 343,
+				"order" : 347,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -4743,10 +5028,10 @@
 			"weather_size" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 247,
+				"index" : 251,
 				"max" : 50,
 				"min" : 10,
-				"order" : 347,
+				"order" : 351,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 12
@@ -4754,26 +5039,26 @@
 			"weather_text1" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 219,
-				"order" : 319,
+				"index" : 223,
+				"order" : 323,
 				"text" : "ui_weather_weather_text1",
 				"type" : "text"
 			},
 			"weather_text4" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 226,
-				"order" : 326,
+				"index" : 230,
+				"order" : 330,
 				"text" : "ui_weather_text4",
 				"type" : "text"
 			},
 			"weather_timetransparency" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 248,
+				"index" : 252,
 				"max" : 100,
 				"min" : 0,
-				"order" : 348,
+				"order" : 352,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -4781,27 +5066,27 @@
 			"weather_unit" : 
 			{
 				"condition" : "weather_show.value == true && (visualcrossingapi.value == true || open_meteoapi.value  == true)",
-				"index" : 236,
+				"index" : 240,
 				"options" : 
 				[
 					{
-						"label" : "公制单位-Metric",
+						"label" : "ui_weather_unit_1",
 						"value" : "metric"
 					},
 					{
-						"label" : "英制单位-US",
+						"label" : "ui_weather_unit_2",
 						"value" : "us"
 					},
 					{
-						"label" : "英制单位-UK",
+						"label" : "ui_weather_unit_3",
 						"value" : "uk"
 					},
 					{
-						"label" : "科学单位-Base",
+						"label" : "ui_weather_unit_4",
 						"value" : "base"
 					}
 				],
-				"order" : 336,
+				"order" : 340,
 				"text" : "ui_weather_weather_unit",
 				"type" : "combo",
 				"value" : "metric"
@@ -4809,7 +5094,7 @@
 			"weather_updata" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 233,
+				"index" : 237,
 				"options" : 
 				[
 					{
@@ -4833,7 +5118,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 333,
+				"order" : 337,
 				"text" : "ui_weather_updata",
 				"type" : "combo",
 				"value" : 3
@@ -4842,10 +5127,10 @@
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 241,
+				"index" : 245,
 				"max" : 100,
 				"min" : 0,
-				"order" : 341,
+				"order" : 345,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -4853,8 +5138,8 @@
 			"weather_yakeli_show" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 239,
-				"order" : 339,
+				"index" : 243,
+				"order" : 343,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -4862,8 +5147,8 @@
 			"weather_yakelicolor" : 
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
-				"index" : 240,
-				"order" : 340,
+				"index" : 244,
+				"order" : 344,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -4871,24 +5156,24 @@
 			"weatherapitext" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false)",
-				"index" : 211,
-				"order" : 311,
+				"index" : 215,
+				"order" : 315,
 				"text" : "ui_weather_weatherapitext",
 				"type" : "text"
 			},
 			"weatherapitiptext" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 232,
-				"order" : 332,
+				"index" : 236,
+				"order" : 336,
 				"text" : "ui_weather_weatherapitiptext",
 				"type" : "text"
 			},
 			"weathercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 356,
-				"order" : 456,
+				"index" : 361,
+				"order" : 461,
 				"text" : "ui_friendlink_weathercategory",
 				"type" : "bool",
 				"value" : false
@@ -4896,90 +5181,42 @@
 			"weathercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 357,
-				"order" : 457,
+				"index" : 362,
+				"order" : 462,
 				"text" : "ui_friendlink_weathercategory_0",
 				"type" : "text"
 			},
 			"weathercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 358,
-				"order" : 458,
+				"index" : 363,
+				"order" : 463,
 				"text" : "ui_friendlink_weathercategory_1",
 				"type" : "text"
 			},
 			"weathercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 359,
-				"order" : 459,
+				"index" : 364,
+				"order" : 464,
 				"text" : "ui_friendlink_weathercategory_2",
 				"type" : "text"
 			},
 			"weathercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 360,
-				"order" : 460,
+				"index" : 365,
+				"order" : 465,
 				"text" : "ui_friendlink_weathercategory_3",
 				"type" : "text"
 			},
 			"weathercategory_4" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 361,
-				"order" : 461,
+				"index" : 366,
+				"order" : 466,
 				"text" : "ui_friendlink_weathercategory_4",
 				"type" : "text"
-			},
-			"date_weekFormat" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 193,
-				"options" : 
-				[
-					{
-						"label" : "ui_date_weekFormat_1",
-						"value" : 1
-					},
-					{
-						"label" : "ui_date_weekFormat_2",
-						"value" : 2
-					},
-					{
-						"label" : "ui_date_weekFormat_3",
-						"value" : 0
-					}
-				],
-				"order" : 293,
-				"text" : "ui_date_weekFormat",
-				"type" : "combo",
-				"value" : 1
-			},
-			"date_yearFormat" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 190,
-				"options" : 
-				[
-					{
-						"label" : "ui_date_yearFormat_1",
-						"value" : 1
-					},
-					{
-						"label" : "ui_date_yearFormat_2",
-						"value" : 2
-					},
-					{
-						"label" : "ui_date_yearFormat_3",
-						"value" : 0
-					}
-				],
-				"order" : 290,
-				"text" : "ui_date_yearFormat",
-				"type" : "combo",
-				"value" : 1
 			}
 		},
 		"supportsaudioprocessing" : true
@@ -4988,9 +5225,9 @@
 	"ratingsex" : "none",
 	"ratingviolence" : "none",
 	"tags" : [ "Relaxing" ],
-	"title" : "Perfect Wallpaper-完美壁纸 天气完美修复版 | 多API更自由的天气格式 多彩一言 每日壁纸 RGB设备支持",
+	"title" : "Perfect Wallpaper -  Weather Fix | Media Integration | Daily Web Wallpaper | RGB Lighting",
 	"type" : "web",
-	"version" : 24,
+	"version" : 25,
 	"visibility" : "public",
 	"workshopid" : "3026605859",
 	"workshopurl" : "steam://url/CommunityFilePage/3026605859"

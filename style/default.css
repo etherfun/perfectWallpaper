@@ -624,7 +624,7 @@ video {
 
 #picture_info {
     visibility: var(--picture-info-visibility);
-    display: var(--picture-info-display);
+    display: var(--picture-info-description-display);
     z-index: 10;
     position: absolute;
     top: var(--picture-info-top);
@@ -1254,11 +1254,11 @@ div.btnbg {
         transform: translateX(400px);
         opacity: 0;
     }
-    3.63% {
+    6.67% {
         transform: translateX(0);
         opacity: 1;
     }
-    94.29% {
+    90% {
         transform: translateX(0);
         opacity: 1;
     }
@@ -2230,7 +2230,7 @@ div.btnbg {
 
 /* 通用显示样式 - 使用动画 */
 .link-copy-notification.show {
-    animation: slideInOut 11.03s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+    animation: slideInOut 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
     display: block !important; /* 确保元素显示 */
 }
 
@@ -2754,7 +2754,6 @@ div.btnbg {
     align-items: center;
     gap: 8px;
     z-index: 10;
-    opacity: 0;
     transform: translateY(-10px);
     transition: all 0.3s ease;
     backdrop-filter: blur(10px);

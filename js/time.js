@@ -32,22 +32,6 @@ function setTimeColor() {
 	oDate.style.color = color2;
 }
 
-
-function oClockInit() {
-	var w = window.innerWidth;
-	var h = window.innerHeight;
-	//oClock.style.width = w+'px';
-	//oClock.style.lineHeight = h+'px';
-	//oClock.style.height =  h+'px';
-	oClock.style.fontSize = Math.floor(h / 300 * 20) + 'px';
-	//oDate.style.width = w+'px';
-	oDate.style.fontSize = Math.floor(h / 300 * 20) + 'px';
-
-	//weather.font-size = '0.5em';
-}
-
-oClockInit();
-
 function autoTime() {
 	getTime_sec();
 	setTimeout(autoTime, 1000);

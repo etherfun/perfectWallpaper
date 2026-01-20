@@ -47,10 +47,10 @@ let i18n_data = null;
 
 async function load_i18n_data() {
     try {
-        const res = await fetch(`i18n/en-US.json`);
+        const res = await fetch(`i18n/${globalSettingsLanguage}.json`);
         if (!res.ok) {
-            debugLogger.warn(`Language file ${current_lang}.json not found, falling back to zh-cn`);
-            current_lang = 'zh-cn';
+            debugLogger.warn(`Language file ${globalSettingsLanguage}.json not found, falling back to en-US`);
+            current_lang = 'en-US';
             const fallbackRes = await fetch(`i18n/en-US.json`);
             i18n_data = await fallbackRes.json();
         } else {

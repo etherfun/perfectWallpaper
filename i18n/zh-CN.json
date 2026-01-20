@@ -176,7 +176,7 @@
     "version_info_title": "版本信息",
     "version_current_tab": "当前版本",
     "version_history_tab": "版本历史",
-    "version_scroll_hint": "点击箭头区域或内容区域滚动",
+    "version_scroll_hint": "点击空白滑块内容区域滚动",
     "version_no_data": "暂无版本信息",
     "version_changes_title": "更新内容",
     "version_history_title": "版本历史",
@@ -192,7 +192,16 @@
     
     "version_1_7_0_title": "功能更新",
     "version_1_7_0_image_alt": "[水鏡と月の歌](https://www.pixiv.net/artworks/137067746) By torino",
-    "version_1_7_0_changes": "## 功能调整\n- 移除媒体集成加载等待时间\n- 加入和风天气请求次数检测\n## Bug修复\n- 修复Window聚焦壁纸请求问题",
+    "version_1_7_0_changes": "## 新增功能\n- 媒体集成支持流体背景, 支持在有媒体播放时设置流体壁纸\n- 全新的天气组件\n- 添加更新提醒\n## 优化\n- 添加i18n翻译位于全局设置中\n- 优化壁纸在不同的比例下的切换连贯效果\n- 重构天气代码\n- 当壁纸没有完全覆盖时, 添加背景模糊效果\n- 优化幻灯片壁纸随机效果\n- 调整日期格式设置方式, 可独立设置年月日等\n- 清理无用组件/调用库",
+    
+    "version_1_6_9_title": "功能更新",
+    "version_1_6_9_changes": "## 新增功能\n- 媒体集成封面支持独立大小设置\n- 优化媒体集成相关代码\n- 媒体集成封面支持旋转\n- 支持自定义字体(来自Steam用户请求)\n- 媒体集成支持播放进度条",
+    
+    "version_1_6_8_1_title": "代码优化",
+    "version_1_6_8_1_changes": "## 优化\n- 优化播放器相关代码逻辑",
+    
+    "version_1_6_8_title": "功能更新",
+    "version_1_6_8_changes": "## 功能调整\n- 移除媒体集成加载等待时间\n- 加入和风天气请求次数检测\n## Bug修复\n- 修复Window聚焦壁纸请求问题",
     
     "version_1_6_7_title": "功能更新",
     "version_1_6_7_changes": "## 和风天气API调整\n- 跟进和风天气API V.4.0 版本请求方式",

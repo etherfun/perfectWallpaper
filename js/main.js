@@ -7,6 +7,11 @@
 /** 全局定义 begin ------------------------------------ */
 let dateInitComplate = false;
 let bgInitComplate = false;
+let updateInitComplate = false;
+
+let globalSettingsLanguage = "zh-CN";
+
+let fullscreenFluidEffectValue
 
 var backgroundRoute = "url('imgs/1.jpg')";
 var videoRoute = "video/1-test.webm";
@@ -302,9 +307,25 @@ var verificationCode = '01F01C01E01I01I01C01H01K01H01L'; var verificationResult 
 
 /* 监听配置 */
 window.wallpaperPropertyListener = {
-    applyUserProperties: function (properties) {
+    applyUserProperties: async function (properties) {
         debugLogger.debug('User properties', properties)
-        
+
+        if (properties.wallpaper_updata && FirstLoad !== true) {
+            await window.versionManager.initUpdateModal(false);
+        }
+        if (properties.wallpaper_updata_open_on_update) {
+            localStorage.setItem("perfectwall_version_show_update", properties.wallpaper_updata_open_on_update.value);
+        }
+        if (FirstLoad) {
+            debugLogger.info('更新参数初始化完成');
+            updateInitComplate = true;
+        }
+        if (properties.global_settings_language) {
+            globalSettingsLanguage = properties.global_settings_language.value;
+
+            load_i18n_data();
+        }
+
         // 是否显示日期
         if (properties.showDate) {
             let oDate_show = properties.showDate.value
@@ -1053,7 +1074,7 @@ window.wallpaperPropertyListener = {
         // 一言大小
         if (properties.hitokoto_size) {
             var s = properties.hitokoto_size.value;
-            bodyElement.style.setProperty("--hitokoto-font-size", Math.floor(h / 300 * s) + 'px');
+            bodyElement.style.setProperty("--hitokoto-font-size", Math.floor(h / 570 * s) + 'px');
             bodyElement.style.setProperty("--hitokoto-line-height", Math.floor(h / 570 * s) + 'px');
         }
         if (properties.hitokoto_showwidth) {
@@ -1733,71 +1754,6 @@ window.wallpaperPropertyListener = {
                 }, 3000); // 保持3秒延迟检查
             }
         }
-        // 默认自动隐藏变量监听
-        if (properties.player_control_autohide) {
-            player_control_autohide = properties.player_control_autohide.value;
-            if (FirstLoad == false) {
-                updatePlayerControlDisplay();
-            }
-        }
-
-        //未播放歌曲时的假函数设置
-        function showFakePlayerData() {
-            if (!player_control_autohide && player_control_show) {
-                // 设置假数据
-                singtitle = "٩(๑❛ᴗ❛๑)۶";
-                singartist = "少女乞讨中……";
-                singalbumTitle = "";
-
-                // 显示播放器
-                player_control.style.display = "flex";
-
-                // 更新标题
-                playertitle();
-
-                // 使用默认封面或空白封面
-                player_control_thumbnail.src = 'imgs/default_cover.png'; // 您需要创建一张空白封面
-
-                // 使用默认颜色
-                if (player_control_fontusetb !== 5) {
-                    fontcolor = colorGroup[Color_pickup_method - 1][player_control_fontusetb - 1];
-                } else {
-                    fontcolor = player_control_color;
-                }
-
-                player_control_info.style.color = "rgb(" + fontcolor + ")";
-                player_iconcolor(fontcolor);
-                player_control_timeline.style.backgroundColor = "rgb(" + fontcolor + ")";
-                document.querySelector('.timeline').style.backgroundColor = "rgba(255,255,255," + (player_control_yakeli + 0.4) + ")";
-            }
-        }
-
-        //配置项监听
-        if (properties.player_control_autohide) {
-            player_control_autohide = properties.player_control_autohide.value;
-            // 更新 player_control.js 中的变量
-            if (typeof window.player_control_autohide !== 'undefined') {
-                window.player_control_autohide = player_control_autohide;
-            }
-            // 根据新设置更新显示
-            if (FirstLoad == false) {
-                updatePlayerDisplayBasedOnAutohide();
-            }
-        }
-
-        // 更新播放器显示状态的函数
-        function updatePlayerControlDisplay() {
-            if (player_control_show) {
-                if (player_now === undefined ||
-                    player_now === window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
-                    if (player_control_autohide) {
-                        player_control.style.display = "none";
-                    } else {
-                        showFakePlayerData();
-                    }
-                }
-            }
-        }
         if (properties.player_control_scalefactor) {
             player_control_scalefactor = properties.player_control_scalefactor.value
         }
@@ -2042,62 +1998,64 @@ window.wallpaperPropertyListener = {
         // FluidEffect2 配置处理
         // 全屏启用
         if (properties.fluidEffectEnabledFullscreen) {
-                if (!window.FluidEffectConfig || !window.FluidEffectConfig.set) {
-                    return;
-                }
+            if (!window.FluidEffectConfig || !window.FluidEffectConfig.set) {
+                return;
+            }
 
-                if (properties.fluidEffectEnabledFullscreen.value) {
-                    window.FluidEffectConfig.set('fullscreenEnabled', true);
-                } else {
-                    window.FluidEffectConfig.set('fullscreenEnabled', false);
-                }
+            if (properties.fluidEffectEnabledFullscreen.value) {
+                window.FluidEffectConfig.set('fullscreenEnabled', true);
+            } else {
+                window.FluidEffectConfig.set('fullscreenEnabled', false);
+            }
+            fullscreenFluidEffectValue = properties.fluidEffectEnabledFullscreen.value;
         }
         // 启用
         if (properties.fluidEffectEnabled) {
-                if (!window.FluidEffectConfig || !window.FluidEffectConfig.set) {
-                    return;
-                }
+            if (!window.FluidEffectConfig || !window.FluidEffectConfig.set) {
+                return;
+            }
 
-                if (properties.fluidEffectEnabled.value) {
-                    window.FluidEffectConfig.set('enabled', true);
-                } else {
-                    window.FluidEffectConfig.set('enabled', false);
-                    window.FluidEffectConfig.set('fullscreenEnabled', false);
-                }
+            if (properties.fluidEffectEnabled.value) {
+                window.FluidEffectConfig.set('enabled', true);
+                if (fullscreenFluidEffectValue) window.FluidEffectConfig.set('fullscreenEnabled', true);
+            } else {
+                window.FluidEffectConfig.set('enabled', false);
+                window.FluidEffectConfig.set('fullscreenEnabled', false);
+            }
         }
         // 分辨率
         if (properties.fluidEffectResolution) {
-                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
-                    window.FluidEffectConfig.set('resolution', properties.fluidEffectResolution.value);
-                }
+            if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                window.FluidEffectConfig.set('resolution', properties.fluidEffectResolution.value);
+            }
         }
 
         // 模糊程度
         if (properties.fluidEffectBlurAmount) {
-                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
-                    window.FluidEffectConfig.set('blurAmount', properties.fluidEffectBlurAmount.value);
-                }
+            if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                window.FluidEffectConfig.set('blurAmount', properties.fluidEffectBlurAmount.value);
+            }
         }
 
         // 置换图缩放
         if (properties.fluidEffectDisplacementScale) {
-                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
-                    window.FluidEffectConfig.set('displacementScale', properties.fluidEffectDisplacementScale.value);
-                }
+            if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                window.FluidEffectConfig.set('displacementScale', properties.fluidEffectDisplacementScale.value);
+            }
         }
 
         // 湍流八度
         if (properties.fluidEffectTurbulenceOctaves) {
-                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
-                    window.FluidEffectConfig.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
-                }
+            if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                window.FluidEffectConfig.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
+            }
         }
 
         // 画布位移幅度
         if (properties.fluidEffectCanvasDisplacement) {
-                if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
-                    window.FluidEffectConfig.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
-                }
+            if (window.FluidEffectConfig && window.FluidEffectConfig.set) {
+                window.FluidEffectConfig.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
+            }
         }
         // 暗化
         if (properties.fluidEffect_DarkOverlayStrength) {

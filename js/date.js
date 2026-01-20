@@ -158,7 +158,5 @@ function autodata(){
 
 waitAndExecute(
     () => dateInitComplate === true,
-    () => {
-        autodata();
-    }
+    () => autodata()
 );

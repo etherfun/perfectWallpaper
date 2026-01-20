@@ -21,8 +21,8 @@ const EnhancedVersionConfig = {
     SHOW_SETTINGS: {
         autoCloseDelay: 20000,
         animationDuration: 400,
-        showOnFirstLoad: true,
-        showOnUpdate: true,
+        showOnFirstLoad: false,
+        showOnUpdate: Boolean(localStorage.getItem("perfectwall_version_show_update")),
         enableHistoryNavigation: true,
         enableMarkdown: true,
         defaultView: "current"
@@ -110,10 +110,10 @@ class SimpleMarkdown {
                 const spaces = listMatch[1].length;
                 const markers = listMatch[2];  // 可能是 -、--、---、*、**、*** 等
                 const content = listMatch[3];
-                
+
                 // 计算缩进级别
                 let indentLevel;
-                
+
                 if (markers.length === 1) {
                     // 单个标记：使用空格缩进
                     // 每2个空格算一级缩进
@@ -122,13 +122,13 @@ class SimpleMarkdown {
                     // 多个标记：使用标记数量表示层级
                     // 例如：-- 表示一级缩进，--- 表示两级缩进
                     indentLevel = markers.length - 1;
-                    
+
                     // 如果还有空格缩进，也加上
                     if (spaces > 0) {
                         indentLevel += Math.floor(spaces / 2);
                     }
                 }
-                
+
                 // 新的列表项
                 if (!inList) {
                     inList = true;
@@ -146,7 +146,7 @@ class SimpleMarkdown {
                 listItems = [];
                 inList = false;
             }
-            
+
             // 处理段落中的内联标记
             const processedLine = this.processInlineMarkdown(trimmedLine);
             result += `<p class="md-paragraph">${processedLine}</p>`;
@@ -168,35 +168,35 @@ class SimpleMarkdown {
     // 处理内联Markdown（粗体、删除线、行内代码、链接）
     static processInlineMarkdown(text) {
         if (!text) return '';
-        
+
         // 转义HTML特殊字符
         let processed = this.escapeHtml(text);
-        
+
         // 处理链接 [文本](url) - 点击复制链接并弹窗提示
         processed = processed.replace(/\[([^\[\]]+)\]\(([^\)]+)\)/g, '<a href="javascript:void(0)" class="md-link" data-url="$2" onclick="SimpleMarkdown.copyLink(this)">$1</a>');
-        
+
         // 处理行内代码 `code`
         processed = processed.replace(/`([^`]+)`/g, '<code class="md-inline-code">$1</code>');
-        
+
         // 处理粗体 **bold**
         processed = processed.replace(/\*\*([^*]+)\*\*/g, '<strong class="md-bold">$1</strong>');
-        
+
         // 处理删除线 ~~strikethrough~~
         processed = processed.replace(/~~([^~]+)~~/g, '<del class="md-strikethrough">$1</del>');
-        
+
         return processed;
     }
 
     // 渲染列表HTML（支持嵌套）
     static renderListHtml(items) {
         if (!items || items.length === 0) return '';
-        
+
         let html = '<ul class="md-list">';
         let currentIndent = 0;
-        
+
         for (let i = 0; i < items.length; i++) {
             const item = items[i];
-            
+
             // 处理嵌套
             if (item.indent > currentIndent) {
                 // 开始嵌套列表
@@ -207,16 +207,16 @@ class SimpleMarkdown {
                 html += '</ul>';
                 currentIndent = item.indent;
             }
-            
+
             html += `<li class="md-list-item">${item.content}</li>`;
         }
-        
+
         // 关闭所有嵌套列表
         while (currentIndent > 0) {
             html += '</ul>';
             currentIndent--;
         }
-        
+
         html += '</ul>';
         return html;
     }
@@ -266,7 +266,7 @@ class SimpleMarkdown {
                 navigator.clipboard.writeText(text);
                 return true;
             }
-            
+
             // 备用方法：使用textarea
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -274,7 +274,7 @@ class SimpleMarkdown {
             textarea.style.opacity = '0';
             document.body.appendChild(textarea);
             textarea.select();
-            
+
             try {
                 const successful = document.execCommand('copy');
                 document.body.removeChild(textarea);
@@ -314,11 +314,11 @@ class SimpleMarkdown {
         // 尝试添加到版本弹窗内的容器
         const versionModal = document.getElementById('version-modal');
         const linkNotificationContainer = document.getElementById('link-notification-container');
-        
+
         if (versionModal && linkNotificationContainer) {
             // 版本弹窗存在，添加到弹窗内的容器
             linkNotificationContainer.appendChild(notification);
-            
+
             // 使用requestAnimationFrame确保DOM更新后添加动画
             requestAnimationFrame(() => {
                 requestAnimationFrame(() => {
@@ -328,7 +328,7 @@ class SimpleMarkdown {
         } else {
             // 版本弹窗不存在，添加到页面body（备用）
             document.body.appendChild(notification);
-            
+
             // 显示通知
             setTimeout(() => {
                 notification.classList.add('show');
@@ -359,10 +359,10 @@ class SimpleMarkdown {
     // 隐藏通知
     static hideNotification(notification) {
         if (!notification) return;
-        
+
         // 移除show类，这将停止动画并立即隐藏通知
         notification.classList.remove('show');
-        
+
         // 立即移除元素
         this.removeNotification(notification);
     }
@@ -370,7 +370,7 @@ class SimpleMarkdown {
     // 移除通知元素
     static removeNotification(notification) {
         if (!notification) return;
-        
+
         // 短暂延迟后移除元素，确保动画状态已更新
         setTimeout(() => {
             if (notification.parentNode) {
@@ -382,7 +382,7 @@ class SimpleMarkdown {
     // 截断URL显示
     static truncateUrl(url, maxLength) {
         if (!url || url.length <= maxLength) return url;
-        
+
         const half = Math.floor(maxLength / 2) - 2;
         return url.substring(0, half) + '...' + url.substring(url.length - half);
     }
@@ -422,19 +422,19 @@ class versionManager {
     // 刷新弹窗内容
     refreshModalContent() {
         if (!this.updateModal) return;
-        
+
         // 刷新版本列表
         const listContainer = document.getElementById('version-list-container');
         if (listContainer) {
             listContainer.innerHTML = this.renderVersionList();
         }
-        
+
         // 刷新版本计数
         const countElement = document.querySelector('.total-count');
         if (countElement) {
             countElement.textContent = EnhancedVersionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
         }
-        
+
         // 刷新当前版本详情
         this.updateVersionDetail();
     }
@@ -594,7 +594,7 @@ class versionManager {
         if (!EnhancedVersionConfig.VERSION_HISTORY || !Array.isArray(EnhancedVersionConfig.VERSION_HISTORY)) {
             return [];
         }
-        
+
         return EnhancedVersionConfig.VERSION_HISTORY.sort((a, b) => {
             // 首先按日期排序（降序：最新的在前面）
             const dateA = this.parseDate(a.date);
@@ -627,8 +627,8 @@ class versionManager {
     }
 
     // 初始化版本更新弹窗
-    async initUpdateModal() {
-        if (!this.isNewVersion && !EnhancedVersionConfig.SHOW_SETTINGS.showOnFirstLoad) {
+    async initUpdateModal(s = true) {
+        if ((!this.isNewVersion && !EnhancedVersionConfig.SHOW_SETTINGS.showOnFirstLoad) && s) {
             return;
         }
 
@@ -645,7 +645,7 @@ class versionManager {
                     this.isDataLoaded = true;
                 }
             }
-            
+
             // 创建弹窗
             this.createModalHTML();
             this.showModal();
@@ -757,31 +757,31 @@ class versionManager {
 
         // 绑定事件
         this.bindEvents();
-        
+
         // 填充内容（数据应该已经加载）
         this.fillModalContent();
     }
-    
+
     // 填充弹窗内容
     fillModalContent() {
         // 填充版本列表
         const listContainer = document.getElementById('version-list-container');
         const countElement = document.querySelector('.total-count');
-        
+
         if (listContainer && countElement) {
             listContainer.innerHTML = this.renderVersionList();
             countElement.textContent = EnhancedVersionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
         }
-        
+
         // 填充当前版本详情
         const versionInfo = this.getCurrentVersionInfo();
-        
+
         // 更新标题
         const titleElement = document.getElementById('detail-version-title');
         if (titleElement && versionInfo) {
             titleElement.textContent = versionInfo.title || `版本 v${versionInfo.version}`;
         }
-        
+
         // 更新元信息
         const metaElement = document.getElementById('detail-version-meta');
         if (metaElement && versionInfo) {
@@ -790,7 +790,7 @@ class versionManager {
                 <span class="detail-date">${versionInfo.date}</span>
             `;
         }
-        
+
         // 更新内容
         const contentElement = document.getElementById('version-detail-content');
         if (contentElement && versionInfo) {
@@ -843,12 +843,12 @@ class versionManager {
     // 渲染版本列表（用于左侧栏）
     renderVersionList() {
         const allHistory = this.getAllVersionHistory();
-        
+
         return allHistory.map((history, index) => {
             const versionInfo = this.getVersionInfo(history.version);
             const isCurrent = history.version === this.currentVersion;
             const isSelected = history.version === this.selectedVersion;
-            
+
             return `
                 <div class="version-list-item ${isCurrent ? 'current' : ''} ${isSelected ? 'selected' : ''}" 
                      data-version="${history.version}"
@@ -873,16 +873,16 @@ class versionManager {
     // 选择版本（更新右侧详情）
     selectVersion(version) {
         if (!version || this.selectedVersion === version) return;
-        
+
         // 检测用户交互
         this.detectUserInteraction();
-        
+
         // 更新选中的版本
         this.selectedVersion = version;
-        
+
         // 更新左侧列表选中状态
         this.updateVersionListSelection();
-        
+
         // 更新右侧详情内容
         this.updateVersionDetail();
     }
@@ -899,24 +899,24 @@ class versionManager {
     // 更新版本详情
     updateVersionDetail() {
         const versionInfo = this.getVersionInfo(this.selectedVersion);
-        
+
         // 更新标题
         const titleElement = document.getElementById('detail-version-title');
         if (titleElement && versionInfo) {
             titleElement.textContent = versionInfo.title || `版本 v${versionInfo.version}`;
         }
-        
+
         // 更新元信息
         const metaElement = document.getElementById('detail-version-meta');
         if (metaElement && versionInfo) {
             metaElement.innerHTML = `
                 <span class="detail-version">v${versionInfo.version}</span>
                 <span class="detail-date">${versionInfo.date}</span>
-                ${versionInfo.version === this.currentVersion ? 
+                ${versionInfo.version === this.currentVersion ?
                     '<span class="current-badge">' + i18n('version_current_version') + '</span>' : ''}
             `;
         }
-        
+
         // 更新内容
         const contentElement = document.getElementById('version-detail-content');
         if (contentElement) {
@@ -1224,7 +1224,7 @@ class versionManager {
         if (linkNotificationContainer) {
             linkNotificationContainer.innerHTML = '';
         }
-        
+
         // 清理页面上的通知（备用情况）
         const pageNotifications = document.querySelectorAll('.link-copy-notification');
         pageNotifications.forEach(notification => {
@@ -1317,27 +1317,28 @@ document.addEventListener('click', function (e) {
     }
 });
 
-// 页面加载完成后初始化
-$(document).ready(function () {
-    // 确保版本管理器已创建
-    if (!window.versionManager) {
-        window.versionManager = new versionManager();
-    }
-    
-    // 延迟显示，确保其他内容已加载
-    setTimeout(async () => {
-        if (window.versionManager) {
-            try {
-                await window.versionManager.initUpdateModal();
-            } catch (error) {
-                console.error("初始化版本弹窗失败:", error);
-            }
+waitAndExecute(
+    () => updateInitComplate === true,
+    () => {
+        if (!window.versionManager) {
+            window.versionManager = new versionManager();
         }
-    }, 2000);
-});
+
+        // 延迟显示，确保其他内容已加载
+        setTimeout(async () => {
+            if (window.versionManager) {
+                try {
+                    await window.versionManager.initUpdateModal();
+                } catch (error) {
+                    console.error("初始化版本弹窗失败:", error);
+                }
+            }
+        }, 2000);
+    }, 
+    500, 15000);
 
 // 提供手动显示版本信息的方法
-window.showVersionInfo = function() {
+window.showVersionInfo = function () {
     if (window.versionManager) {
         window.versionManager.showVersionInfo();
     }

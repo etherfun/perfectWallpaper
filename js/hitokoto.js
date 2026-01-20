@@ -6,17 +6,6 @@ var  from_who_text = "未获取";
 var  from_text = "未获取";
 var  nullHitokoto = "" 
 
-
-function oHitokotoInit(){
-    var w = window.innerWidth;
-    var h = window.innerHeight;
-    //hitokoto.style.width = w+'px';
-    hitokoto.style.lineHeight = /*h+'px';*/Math.floor(h/300*20) + 'px';
-	hitokoto.style.fontSize = Math.floor(h/300*20) + 'px';
-
-}
-oHitokotoInit()
-
 function getHitokoto_input(strHtml1){
     $.get("https://v1.hitokoto.cn/?" + hit_a + hit_b + hit_c + hit_d + hit_e + hit_f + hit_g + hit_h + hit_i + hit_j + hit_k + hit_l , function(res1){
        

@@ -1,5 +1,13 @@
 [
     {
+        "version": "1.7.1",
+        "date": "2026-1-22",
+        "titleKey": "version_1_7_1_title",
+        "image": "update/134463827_p0.jpg",
+        "imageAltKey": "version_1_7_1_image_alt",
+        "changesKey": "version_1_7_1_changes"
+    },
+    {
         "version": "1.7.0",
         "date": "2026-1-20",
         "titleKey": "version_1_7_0_title",

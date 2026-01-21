@@ -9,7 +9,6 @@
 			"en-us" : 
 			{
 				"ui_audio_alice_circle" : "Alice Circle",
-				"ui_audio_animation" : "animation",
 				"ui_audio_audio_amplitude" : "Audio Amplitude",
 				"ui_audio_audio_decline" : "Audio Decline",
 				"ui_audio_audio_settings" : "Audio Settings",
@@ -22,7 +21,6 @@
 				"ui_audio_blur_color" : "Blur Color",
 				"ui_audio_blur_gradient" : "Blur Gradient",
 				"ui_audio_blur_size" : "Blur Size",
-				"ui_audio_caricature" : "caricature",
 				"ui_audio_center_of_ring_x" : "Center of Ring-X(%)",
 				"ui_audio_center_of_ring_y" : "Center of Ring-Y(%)",
 				"ui_audio_circle_center_x" : "Center of circle-X(%)",
@@ -136,6 +134,12 @@
 				"ui_background_imagedisplaystlye_5" : "Center",
 				"ui_background_imagedisplaystlye_6" : "Free",
 				"ui_background_imageswitchtimes" : "Image Switching Frequency",
+				"ui_background_imageswitchtimes_1" : "30S",
+				"ui_background_imageswitchtimes_2" : "1Min",
+				"ui_background_imageswitchtimes_3" : "5Min",
+				"ui_background_imageswitchtimes_4" : "10Min",
+				"ui_background_imageswitchtimes_5" : "30Min",
+				"ui_background_imageswitchtimes_6" : "60Min",
 				"ui_background_info" : "Show photo info",
 				"ui_background_random" : "Enable Random Switch",
 				"ui_background_selectvideo" : "Custom Video",
@@ -230,6 +234,7 @@
 				"ui_date_yearFormat_1" : "Full - 2026",
 				"ui_date_yearFormat_2" : "Abbreviated - 26",
 				"ui_date_yearFormat_3" : "Do not display",
+				"ui_debugger_copy" : "Click to open window to copy debugger log",
 				"ui_effect_AliceParticles_particles_color" : "Particles Color",
 				"ui_effect_AliceParticles_particles_direction" : "Direction of Particles",
 				"ui_effect_AliceParticles_particles_image" : "Particles Image",
@@ -313,6 +318,8 @@
 				"ui_hitokoto_hitokoto_updata" : "Hitokoto Update Time",
 				"ui_hitokoto_type_FromTheWeb" : "From the web",
 				"ui_hitokoto_type_NetEaseCloud" : "<i>NetEase Cloud</i>",
+				"ui_hitokoto_type_animation" : "animation",
+				"ui_hitokoto_type_caricature" : "caricature",
 				"ui_hitokoto_type_game" : "game",
 				"ui_hitokoto_type_jitterbug" : "jitterbug",
 				"ui_hitokoto_type_literature" : "literature",
@@ -380,6 +387,7 @@
 				"ui_wallpaper_updata" : "Click to Open Update Log",
 				"ui_wallpaper_updata_open_on_update" : "Open update log when wallpaper updates",
 				"ui_wallpaper_updata_open_on_update_tip" : "<small>★ It is recommended to disable this function when publishing presets to reduce interference caused by updates</small>",
+				"ui_weather_daliy_tip" : "天气提示",
 				"ui_weather_freeapi" : "<br/>Free API<br/>Steam user@Guooo",
 				"ui_weather_getcityappid_tianqiapi" : "The Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "The Appsecret",
@@ -402,7 +410,6 @@
 				"ui_weather_visualcrossingapi" : "Visual Crossing API<br/>visualcrossing.com",
 				"ui_weather_weather_CityText" : "City Weather",
 				"ui_weather_weather_diy" : "Weather Customization",
-				"ui_weather_weather_lang" : "Language",
 				"ui_weather_weather_text1" : "<small>※ If you need to change the API, please uncheck the selected API, we will add a good API later</small>",
 				"ui_weather_weather_unit" : "Unit",
 				"ui_weather_weatherapitext" : "Weather API Selection",
@@ -411,7 +418,6 @@
 			"zh-chs" : 
 			{
 				"ui_audio_alice_circle" : "爱丽丝圆环",
-				"ui_audio_animation" : "动画",
 				"ui_audio_audio_amplitude" : "音频振幅",
 				"ui_audio_audio_decline" : "音频衰弱",
 				"ui_audio_audio_settings" : "音频设置",
@@ -424,7 +430,6 @@
 				"ui_audio_blur_color" : "模糊颜色",
 				"ui_audio_blur_gradient" : "模糊色渐变",
 				"ui_audio_blur_size" : "模糊程度",
-				"ui_audio_caricature" : "卡通风格",
 				"ui_audio_center_of_ring_x" : "X轴偏移",
 				"ui_audio_center_of_ring_y" : "Y轴偏移",
 				"ui_audio_circle_center_x" : "圆心 X 坐标（%）",
@@ -538,6 +543,12 @@
 				"ui_background_imagedisplaystlye_5" : "居中",
 				"ui_background_imagedisplaystlye_6" : "自由",
 				"ui_background_imageswitchtimes" : "壁纸切换频率",
+				"ui_background_imageswitchtimes_1" : "30秒",
+				"ui_background_imageswitchtimes_2" : "1分钟",
+				"ui_background_imageswitchtimes_3" : "5分钟",
+				"ui_background_imageswitchtimes_4" : "10分钟",
+				"ui_background_imageswitchtimes_5" : "30分钟",
+				"ui_background_imageswitchtimes_6" : "60分钟",
 				"ui_background_info" : "显示图片信息",
 				"ui_background_random" : "开启随机",
 				"ui_background_selectvideo" : "自定义视频",
@@ -632,6 +643,7 @@
 				"ui_date_yearFormat_1" : "完整 - 2026",
 				"ui_date_yearFormat_2" : "缩写 - 26",
 				"ui_date_yearFormat_3" : "不显示",
+				"ui_debugger_copy" : "点击打开复制调试日志",
 				"ui_effect_AliceParticles_particles_color" : "粒子颜色",
 				"ui_effect_AliceParticles_particles_direction" : "粒子方向",
 				"ui_effect_AliceParticles_particles_image" : "粒子图片",
@@ -715,6 +727,8 @@
 				"ui_hitokoto_hitokoto_updata" : "一言更新时间",
 				"ui_hitokoto_type_FromTheWeb" : "来自网络",
 				"ui_hitokoto_type_NetEaseCloud" : "<i>网易云<i/>",
+				"ui_hitokoto_type_animation" : "动画",
+				"ui_hitokoto_type_caricature" : "漫画",
 				"ui_hitokoto_type_game" : "游戏",
 				"ui_hitokoto_type_jitterbug" : "抖动",
 				"ui_hitokoto_type_literature" : "文学",
@@ -782,6 +796,7 @@
 				"ui_wallpaper_updata" : "点击打开更新日志",
 				"ui_wallpaper_updata_open_on_update" : "在壁纸更新时打开更新日志",
 				"ui_wallpaper_updata_open_on_update_tip" : "<small>★ 推荐发布预设时禁用该功能, 减少更新带来的干扰</small>",
+				"ui_weather_daliy_tip" : "天气提示",
 				"ui_weather_freeapi" : "<br/>免费API<br/>Steam user@Guooo",
 				"ui_weather_getcityappid_tianqiapi" : "获得的Appid",
 				"ui_weather_getcityappsecret_tianqiapi" : "获得的Appsecret",
@@ -804,7 +819,6 @@
 				"ui_weather_visualcrossingapi" : "Visual Crossing API<br/>visualcrossing.com",
 				"ui_weather_weather_CityText" : "定位城市",
 				"ui_weather_weather_diy" : "天气自定义",
-				"ui_weather_weather_lang" : "语言",
 				"ui_weather_weather_text1" : "<small>※ 如需更换API请取消勾选API,后续有好的API会加入</small>",
 				"ui_weather_weather_unit" : "单位",
 				"ui_weather_weatherapitext" : "天气API选择",
@@ -816,16 +830,16 @@
 			"AuthorInformation" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 346,
-				"order" : 446,
+				"index" : 345,
+				"order" : 445,
 				"text" : "<br/><h4>●  作者信息 </h4><small>作者：老陈（ZYM），毕业于 西安邮电大学 2010届<br/>QQ：394011315<br/>QQ交流群1：552188051<br/>QQ交流群2：673748076<br/>QQ交流群3：1036775823<br/>QQ交流群4：776830214<br />优先加序号靠后的QQ群，群内可以获取作者编写的无损webm格式视频转换工具，各种视频模板资源，还可以体验全新的完美壁纸测试版，也欢迎有编程能力的大佬来交流，各种答疑，兴趣交流等等<br /></small>",
 				"type" : "text"
 			},
 			"BlurColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 2",
-				"index" : 107,
-				"order" : 207,
+				"index" : 106,
+				"order" : 206,
 				"text" : "ui_audio_blur_gradient",
 				"type" : "bool",
 				"value" : true
@@ -833,7 +847,7 @@
 			"ColorMode" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 105,
+				"index" : 104,
 				"options" : 
 				[
 					{
@@ -851,7 +865,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 205,
+				"order" : 204,
 				"text" : "ui_audio_color_mode",
 				"type" : "combo",
 				"value" : 1
@@ -859,8 +873,8 @@
 			"ColorRhythm" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 3",
-				"index" : 108,
-				"order" : 208,
+				"index" : 107,
+				"order" : 207,
 				"text" : "ui_audio_color_rhythm",
 				"type" : "bool",
 				"value" : true
@@ -868,10 +882,10 @@
 			"DateSize" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 211,
+				"index" : 210,
 				"max" : 50,
 				"min" : 10,
-				"order" : 311,
+				"order" : 310,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 19
@@ -879,10 +893,10 @@
 			"DateX" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 209,
+				"index" : 208,
 				"max" : 100,
 				"min" : 0,
-				"order" : 309,
+				"order" : 308,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -890,10 +904,10 @@
 			"DateY" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 210,
+				"index" : 209,
 				"max" : 100,
 				"min" : 0,
-				"order" : 310,
+				"order" : 309,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 54
@@ -901,10 +915,10 @@
 			"GradientRate" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value != 1",
-				"index" : 111,
+				"index" : 110,
 				"max" : 40,
 				"min" : 1,
-				"order" : 211,
+				"order" : 210,
 				"text" : "ui_audio_gradient_rate",
 				"type" : "slider",
 				"value" : 5
@@ -912,10 +926,10 @@
 			"MuiscVolume" : 
 			{
 				"condition" : "MuiscModel.value != 0 || selectmusic.value != '' ",
-				"index" : 52,
+				"index" : 51,
 				"max" : 100,
 				"min" : 0,
-				"order" : 152,
+				"order" : 151,
 				"text" : "ui_music_MuiscVolume",
 				"type" : "slider",
 				"value" : 50
@@ -923,8 +937,8 @@
 			"PWLineBlurColor" : 
 			{
 				"condition" : "(visual_audio_model.value == 2 && (PWLineColorMode.value == 1 || PWLineColorMode.value == 3))||(PWLineColorMode.value == 2 && PWLineBlurColorGradient.value == false )",
-				"index" : 128,
-				"order" : 228,
+				"index" : 127,
+				"order" : 227,
 				"text" : "ui_audio_blur_color",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -932,8 +946,8 @@
 			"PWLineBlurColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 2",
-				"index" : 125,
-				"order" : 225,
+				"index" : 124,
+				"order" : 224,
 				"text" : "ui_audio_blur_gradient",
 				"type" : "bool",
 				"value" : true
@@ -941,8 +955,8 @@
 			"PWLineColor" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 1||(PWLineColorMode.value == 2 && PWLineSolidColorGradient.value == false )",
-				"index" : 127,
-				"order" : 227,
+				"index" : 126,
+				"order" : 226,
 				"text" : "ui_audio_wave_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -950,7 +964,7 @@
 			"PWLineColorMode" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 123,
+				"index" : 122,
 				"options" : 
 				[
 					{
@@ -968,7 +982,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 223,
+				"order" : 222,
 				"text" : "ui_audio_color_mode",
 				"type" : "combo",
 				"value" : 1
@@ -976,8 +990,8 @@
 			"PWLineColorRhythm" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 3",
-				"index" : 126,
-				"order" : 226,
+				"index" : 125,
+				"order" : 225,
 				"text" : "ui_audio_color_rhythm",
 				"type" : "bool",
 				"value" : true
@@ -985,10 +999,10 @@
 			"PWLineDensity" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 118,
+				"index" : 117,
 				"max" : 12,
 				"min" : 1,
-				"order" : 218,
+				"order" : 217,
 				"text" : "ui_audio_wave_density",
 				"type" : "slider",
 				"value" : 12
@@ -996,7 +1010,7 @@
 			"PWLineDirection" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 114,
+				"index" : 113,
 				"options" : 
 				[
 					{
@@ -1014,7 +1028,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 214,
+				"order" : 213,
 				"text" : "ui_audio_wave_direction",
 				"type" : "combo",
 				"value" : 3
@@ -1022,10 +1036,10 @@
 			"PWLineGradientRate" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value != 1",
-				"index" : 129,
+				"index" : 128,
 				"max" : 40,
 				"min" : 1,
-				"order" : 229,
+				"order" : 228,
 				"text" : "ui_audio_gradient_rate",
 				"type" : "slider",
 				"value" : 5
@@ -1033,7 +1047,7 @@
 			"PWLinePosition" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 112,
+				"index" : 111,
 				"options" : 
 				[
 					{
@@ -1045,7 +1059,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 212,
+				"order" : 211,
 				"text" : "ui_audio_wave_position>",
 				"type" : "combo",
 				"value" : 1
@@ -1053,10 +1067,10 @@
 			"PWLineRange" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 119,
+				"index" : 118,
 				"max" : 15,
 				"min" : 1,
-				"order" : 219,
+				"order" : 218,
 				"text" : "ui_audio_wave_range",
 				"type" : "slider",
 				"value" : 8
@@ -1064,8 +1078,8 @@
 			"PWLineSolidColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 2 && PWLineColorMode.value == 2",
-				"index" : 124,
-				"order" : 224,
+				"index" : 123,
+				"order" : 223,
 				"text" : "ui_audio_color_gradient",
 				"type" : "bool",
 				"value" : true
@@ -1073,10 +1087,10 @@
 			"PWLineSpacing" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 117,
+				"index" : 116,
 				"max" : 10,
 				"min" : 0,
-				"order" : 217,
+				"order" : 216,
 				"text" : "ui_audio_wave_spacing",
 				"type" : "slider",
 				"value" : 8
@@ -1084,7 +1098,7 @@
 			"PWLineStyle" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 113,
+				"index" : 112,
 				"options" : 
 				[
 					{
@@ -1100,7 +1114,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 213,
+				"order" : 212,
 				"text" : "ui_audio_wave_style",
 				"type" : "combo",
 				"value" : 1
@@ -1108,10 +1122,10 @@
 			"PWLineTransparency" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 120,
+				"index" : 119,
 				"max" : 100,
 				"min" : 0,
-				"order" : 220,
+				"order" : 219,
 				"text" : "ui_audio_wave_transparency",
 				"type" : "slider",
 				"value" : 80
@@ -1119,10 +1133,10 @@
 			"PWLineWidth" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 116,
+				"index" : 115,
 				"max" : 10,
 				"min" : 1,
-				"order" : 216,
+				"order" : 215,
 				"text" : "ui_audio_wave_line_width",
 				"type" : "slider",
 				"value" : 9
@@ -1130,10 +1144,10 @@
 			"PWLineX" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 121,
+				"index" : 120,
 				"max" : 100,
 				"min" : 0,
-				"order" : 221,
+				"order" : 220,
 				"text" : "ui_audio_circle_center_x",
 				"type" : "slider",
 				"value" : 50
@@ -1141,10 +1155,10 @@
 			"PWLineY" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 122,
+				"index" : 121,
 				"max" : 100,
 				"min" : 0,
-				"order" : 222,
+				"order" : 221,
 				"text" : "ui_audio_circle_center_y",
 				"type" : "slider",
 				"value" : 96
@@ -1152,8 +1166,8 @@
 			"PWMiddleLine" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 115,
-				"order" : 215,
+				"index" : 114,
+				"order" : 214,
 				"text" : "ui_audio_middle_line",
 				"type" : "bool",
 				"value" : false
@@ -1161,10 +1175,10 @@
 			"PolygonAngle" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && showSemiCircle.value == false",
-				"index" : 97,
+				"index" : 96,
 				"max" : 12,
 				"min" : 1,
-				"order" : 197,
+				"order" : 196,
 				"text" : "ui_audio_polygon_transform_hint",
 				"type" : "slider",
 				"value" : 12
@@ -1172,7 +1186,7 @@
 			"SemiCircledirection" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && showSemiCircle.value == true",
-				"index" : 94,
+				"index" : 93,
 				"options" : 
 				[
 					{
@@ -1192,7 +1206,7 @@
 						"value" : 4
 					}
 				],
-				"order" : 194,
+				"order" : 193,
 				"text" : "ui_audio_semicircle_direction",
 				"type" : "combo",
 				"value" : 1
@@ -1200,32 +1214,32 @@
 			"SolidColorGradient" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 2",
-				"index" : 106,
-				"order" : 206,
+				"index" : 105,
+				"order" : 205,
 				"text" : "ui_audio_color_gradient",
 				"type" : "bool",
 				"value" : true
 			},
 			"Test_Author" : 
 			{
-				"index" : 345,
-				"order" : 445,
+				"index" : 344,
+				"order" : 444,
 				"text" : "<br /><h4>●  原作者信息</h4><br />(Author Information)",
 				"type" : "bool",
 				"value" : false
 			},
 			"Test_ModAuthor" : 
 			{
-				"index" : 352,
-				"order" : 452,
+				"index" : 351,
+				"order" : 451,
 				"text" : "<br /><h4>●  修改者</h4><br />",
 				"type" : "bool",
 				"value" : false
 			},
 			"Text_BGM" : 
 			{
-				"index" : 50,
-				"order" : 150,
+				"index" : 49,
+				"order" : 149,
 				"text" : "●  音乐  Music",
 				"type" : "group"
 			},
@@ -1238,115 +1252,115 @@
 			},
 			"Text_Hitokoto" : 
 			{
-				"index" : 253,
-				"order" : 353,
+				"index" : 252,
+				"order" : 352,
 				"text" : "●  一言  Hitokoto",
 				"type" : "group"
 			},
 			"Text_SpecialEffects" : 
 			{
-				"index" : 54,
-				"order" : 154,
+				"index" : 53,
+				"order" : 153,
 				"text" : "●  特效  Special Effects",
 				"type" : "group"
 			},
 			"Text_Visual_Time" : 
 			{
-				"index" : 174,
-				"order" : 274,
+				"index" : 173,
+				"order" : 273,
 				"text" : "●  时间&日期  Time&Date",
 				"type" : "group"
 			},
 			"Text_Weather" : 
 			{
-				"index" : 213,
-				"order" : 313,
+				"index" : 212,
+				"order" : 312,
 				"text" : "●  天气  Weather",
 				"type" : "group"
 			},
 			"Text_line155" : 
 			{
 				"condition" : "",
-				"index" : 176,
-				"order" : 276,
+				"index" : 175,
+				"order" : 275,
 				"text" : "ui_audio_time_correlation",
 				"type" : "text"
 			},
 			"Text_line160" : 
 			{
 				"condition" : "",
-				"index" : 192,
-				"order" : 292,
+				"index" : 191,
+				"order" : 291,
 				"text" : "ui_audio_date_correlation",
 				"type" : "text"
 			},
 			"Text_line195" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 360,
-				"order" : 460,
+				"index" : 359,
+				"order" : 459,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
 			"Text_line196" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 367,
-				"order" : 467,
+				"index" : 366,
+				"order" : 466,
 				"text" : "__________________________________________",
 				"type" : "text"
 			},
 			"Text_line31" : 
 			{
-				"index" : 55,
-				"order" : 155,
+				"index" : 54,
+				"order" : 154,
 				"text" : "ui_effect_sakuratxt",
 				"type" : "text"
 			},
 			"Text_line33" : 
 			{
-				"index" : 63,
-				"order" : 163,
+				"index" : 62,
+				"order" : 162,
 				"text" : "ui_effect_AliceParticlestxt",
 				"type" : "text"
 			},
 			"Text_line42" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 90,
-				"order" : 190,
+				"index" : 89,
+				"order" : 189,
 				"text" : "ui_audio_pwcircle_title",
 				"type" : "text"
 			},
 			"Text_line43" : 
 			{
 				"condition" : "visual_audio_model.value == 2",
-				"index" : 91,
-				"order" : 191,
+				"index" : 90,
+				"order" : 190,
 				"text" : "ui_audio_pwline_title",
 				"type" : "text"
 			},
 			"Text_line44" : 
 			{
 				"condition" : "visual_audio_model.value == 4",
-				"index" : 92,
-				"order" : 192,
+				"index" : 91,
+				"order" : 191,
 				"text" : "ui_audio_coming_soon",
 				"type" : "text"
 			},
 			"Text_line83" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 130,
-				"order" : 230,
+				"index" : 129,
+				"order" : 229,
 				"text" : "ui_audio_alice_circle",
 				"type" : "text"
 			},
 			"TimeColor" : 
 			{
 				"condition" : "(showTime.value == true || showDate.value == true) && TimeColorRhythm.value != true",
-				"index" : 180,
-				"order" : 280,
+				"index" : 179,
+				"order" : 279,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1354,8 +1368,8 @@
 			"TimeColorRhythm" : 
 			{
 				"condition" : "showTime.value == true || showDate.value == true",
-				"index" : 175,
-				"order" : 275,
+				"index" : 174,
+				"order" : 274,
 				"text" : "ui_date_TimeColorRhythm",
 				"type" : "bool",
 				"value" : false
@@ -1475,42 +1489,42 @@
 			"audio_AudioText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 145,
-				"order" : 245,
+				"index" : 144,
+				"order" : 244,
 				"text" : "ui_audio_audio_settings",
 				"type" : "text"
 			},
 			"audio_BallText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 155,
-				"order" : 255,
+				"index" : 154,
+				"order" : 254,
 				"text" : "ui_audio_ball_settings",
 				"type" : "text"
 			},
 			"audio_LineText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 148,
-				"order" : 248,
+				"index" : 147,
+				"order" : 247,
 				"text" : "ui_audio_line_settings",
 				"type" : "text"
 			},
 			"audio_RingText" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 131,
-				"order" : 231,
+				"index" : 130,
+				"order" : 230,
 				"text" : "ui_audio_ring_settings",
 				"type" : "text"
 			},
 			"audio_amplitude" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 146,
+				"index" : 145,
 				"max" : 10,
 				"min" : 1,
-				"order" : 246,
+				"order" : 245,
 				"text" : "ui_audio_audio_amplitude",
 				"type" : "slider",
 				"value" : 5
@@ -1518,10 +1532,10 @@
 			"audio_ballRotation" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 159,
+				"index" : 158,
 				"max" : 60,
 				"min" : -60,
-				"order" : 259,
+				"order" : 258,
 				"text" : "ui_audio_rotating_ball",
 				"type" : "slider",
 				"value" : 0
@@ -1529,10 +1543,10 @@
 			"audio_ballSize" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 158,
+				"index" : 157,
 				"max" : 10,
 				"min" : 1,
-				"order" : 258,
+				"order" : 257,
 				"text" : "ui_audio_ball_size",
 				"type" : "slider",
 				"value" : 3
@@ -1540,10 +1554,10 @@
 			"audio_ballSpacer" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isBall.value == true",
-				"index" : 157,
+				"index" : 156,
 				"max" : 10,
 				"min" : 1,
-				"order" : 257,
+				"order" : 256,
 				"text" : "ui_audio_ball_spacer",
 				"type" : "slider",
 				"value" : 4
@@ -1551,8 +1565,8 @@
 			"audio_color" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 139,
-				"order" : 239,
+				"index" : 138,
+				"order" : 238,
 				"text" : "ui_audio_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1560,10 +1574,10 @@
 			"audio_decline" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 147,
+				"index" : 146,
 				"max" : 20,
 				"min" : 0,
-				"order" : 247,
+				"order" : 246,
 				"text" : "ui_audio_audio_decline",
 				"type" : "slider",
 				"value" : 20
@@ -1571,10 +1585,10 @@
 			"audio_distance" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 153,
+				"index" : 152,
 				"max" : 100,
 				"min" : 0,
-				"order" : 253,
+				"order" : 252,
 				"text" : "ui_audio_distance",
 				"type" : "slider",
 				"value" : 0
@@ -1582,7 +1596,7 @@
 			"audio_firstPoint" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 150,
+				"index" : 149,
 				"options" : 
 				[
 					{
@@ -1598,7 +1612,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 250,
+				"order" : 249,
 				"text" : "ui_audio_first_point",
 				"type" : "combo",
 				"value" : 2
@@ -1606,8 +1620,8 @@
 			"audio_isBall" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 156,
-				"order" : 256,
+				"index" : 155,
+				"order" : 255,
 				"text" : "ui_audio_show_ball",
 				"type" : "bool",
 				"value" : true
@@ -1615,8 +1629,8 @@
 			"audio_isClickOffset" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 142,
-				"order" : 242,
+				"index" : 141,
+				"order" : 241,
 				"text" : "ui_audio_mouse_coordinate_offset",
 				"type" : "bool",
 				"value" : false
@@ -1624,8 +1638,8 @@
 			"audio_isInnerRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 134,
-				"order" : 234,
+				"index" : 133,
+				"order" : 233,
 				"text" : "ui_audio_show_inner_ring",
 				"type" : "bool",
 				"value" : true
@@ -1633,8 +1647,8 @@
 			"audio_isLineTo" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 149,
-				"order" : 249,
+				"index" : 148,
+				"order" : 248,
 				"text" : "ui_audio_show_line",
 				"type" : "bool",
 				"value" : false
@@ -1642,8 +1656,8 @@
 			"audio_isOuterRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 135,
-				"order" : 235,
+				"index" : 134,
+				"order" : 234,
 				"text" : "ui_audio_show_outer_ring",
 				"type" : "bool",
 				"value" : true
@@ -1651,8 +1665,8 @@
 			"audio_isRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 132,
-				"order" : 232,
+				"index" : 131,
+				"order" : 231,
 				"text" : "ui_audio_show_ring",
 				"type" : "bool",
 				"value" : true
@@ -1660,8 +1674,8 @@
 			"audio_isStaticRing" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 133,
-				"order" : 233,
+				"index" : 132,
+				"order" : 232,
 				"text" : "ui_audio_show_static_ring",
 				"type" : "bool",
 				"value" : false
@@ -1669,10 +1683,10 @@
 			"audio_lineWidth" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 154,
+				"index" : 153,
 				"max" : 10,
 				"min" : 1,
-				"order" : 254,
+				"order" : 253,
 				"text" : "ui_audio_line_width",
 				"type" : "slider",
 				"value" : 5
@@ -1680,10 +1694,10 @@
 			"audio_offsetX" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isClickOffset.value == false",
-				"index" : 143,
+				"index" : 142,
 				"max" : 100,
 				"min" : 0,
-				"order" : 243,
+				"order" : 242,
 				"text" : "ui_audio_center_of_ring_x",
 				"type" : "slider",
 				"value" : 50
@@ -1691,10 +1705,10 @@
 			"audio_offsetY" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isClickOffset.value == false",
-				"index" : 144,
+				"index" : 143,
 				"max" : 100,
 				"min" : 0,
-				"order" : 244,
+				"order" : 243,
 				"text" : "ui_audio_center_of_ring_y",
 				"type" : "slider",
 				"value" : 50
@@ -1702,10 +1716,10 @@
 			"audio_opacity" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 138,
+				"index" : 137,
 				"max" : 100,
 				"min" : 0,
-				"order" : 238,
+				"order" : 237,
 				"text" : "ui_audio_opacity",
 				"type" : "slider",
 				"value" : 90
@@ -1713,10 +1727,10 @@
 			"audio_pointNum" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 152,
+				"index" : 151,
 				"max" : 120,
 				"min" : 3,
-				"order" : 252,
+				"order" : 251,
 				"text" : "ui_audio_point_number",
 				"type" : "slider",
 				"value" : 120
@@ -1724,10 +1738,10 @@
 			"audio_radius" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 136,
+				"index" : 135,
 				"max" : 10,
 				"min" : 1,
-				"order" : 236,
+				"order" : 235,
 				"text" : "ui_audio_radius",
 				"type" : "slider",
 				"value" : 5
@@ -1735,10 +1749,10 @@
 			"audio_ringRotation" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 137,
+				"index" : 136,
 				"max" : 60,
 				"min" : -60,
-				"order" : 237,
+				"order" : 236,
 				"text" : "ui_audio_rotating_ring",
 				"type" : "slider",
 				"value" : 0
@@ -1746,7 +1760,7 @@
 			"audio_secondPoint" : 
 			{
 				"condition" : "visual_audio_model.value == 3 && audio_isLineTo.value == true",
-				"index" : 151,
+				"index" : 150,
 				"options" : 
 				[
 					{
@@ -1762,7 +1776,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 251,
+				"order" : 250,
 				"text" : "ui_audio_second_point",
 				"type" : "combo",
 				"value" : 3
@@ -1770,10 +1784,10 @@
 			"audio_shadowBlur" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 141,
+				"index" : 140,
 				"max" : 10,
 				"min" : 0,
-				"order" : 241,
+				"order" : 240,
 				"text" : "ui_audio_blur_size",
 				"type" : "slider",
 				"value" : 3
@@ -1781,16 +1795,16 @@
 			"audio_shadowColor" : 
 			{
 				"condition" : "visual_audio_model.value == 3",
-				"index" : 140,
-				"order" : 240,
+				"index" : 139,
+				"order" : 239,
 				"text" : "<br/>模糊颜色<br/>Blur Color<br/>",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
 			"authorinfo" : 
 			{
-				"index" : 344,
-				"order" : 444,
+				"index" : 343,
+				"order" : 443,
 				"text" : "●  作者信息  Author Info",
 				"type" : "group",
 				"value" : ""
@@ -1866,8 +1880,8 @@
 			"blurColor" : 
 			{
 				"condition" : "(visual_audio_model.value == 1 && (ColorMode.value == 1 || ColorMode.value == 3))||(ColorMode.value == 2 && BlurColorGradient.value == false )",
-				"index" : 110,
-				"order" : 210,
+				"index" : 109,
+				"order" : 209,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -1875,10 +1889,10 @@
 			"cX" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 102,
+				"index" : 101,
 				"max" : 100,
 				"min" : 0,
-				"order" : 202,
+				"order" : 201,
 				"text" : "ui_audio_circle_center_x",
 				"type" : "slider",
 				"value" : 50
@@ -1886,10 +1900,10 @@
 			"cY" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 103,
+				"index" : 102,
 				"max" : 100,
 				"min" : 0,
-				"order" : 203,
+				"order" : 202,
 				"text" : "ui_audio_circle_center_y",
 				"type" : "slider",
 				"value" : 50
@@ -1929,8 +1943,8 @@
 			"color" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && ColorMode.value == 1||(ColorMode.value == 2 && SolidColorGradient.value == false )",
-				"index" : 109,
-				"order" : 209,
+				"index" : 108,
+				"order" : 208,
 				"text" : "ui_audio_wave_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -1939,10 +1953,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 301,
+				"index" : 300,
 				"max" : 100,
 				"min" : 0,
-				"order" : 401,
+				"order" : 400,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -1951,10 +1965,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 300,
+				"index" : 299,
 				"max" : 100,
 				"min" : 0,
-				"order" : 400,
+				"order" : 399,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 57
@@ -1962,8 +1976,8 @@
 			"countdown_blurcolor" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_blurcolor_show.value == true",
-				"index" : 296,
-				"order" : 396,
+				"index" : 295,
+				"order" : 395,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -1971,8 +1985,8 @@
 			"countdown_blurcolor_show" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 295,
-				"order" : 395,
+				"index" : 294,
+				"order" : 394,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -1981,10 +1995,10 @@
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 297,
+				"index" : 296,
 				"max" : 50,
 				"min" : 0,
-				"order" : 397,
+				"order" : 396,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 4
@@ -1992,8 +2006,8 @@
 			"countdown_color" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 292,
-				"order" : 392,
+				"index" : 291,
+				"order" : 391,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -2001,16 +2015,16 @@
 			"countdown_day" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 289,
-				"order" : 389,
+				"index" : 288,
+				"order" : 388,
 				"text" : "ui_countdown_day",
 				"type" : "textinput",
 				"value" : "180"
 			},
 			"countdown_group" : 
 			{
-				"index" : 285,
-				"order" : 385,
+				"index" : 284,
+				"order" : 384,
 				"text" : "●  倒计时  Countdown",
 				"type" : "group",
 				"value" : ""
@@ -2018,8 +2032,8 @@
 			"countdown_month" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 288,
-				"order" : 388,
+				"index" : 287,
+				"order" : 387,
 				"text" : "ui_countdown_month",
 				"type" : "textinput",
 				"value" : "1919"
@@ -2027,18 +2041,18 @@
 			"countdown_roundedcorners" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
-				"index" : 299,
+				"index" : 298,
 				"max" : 100,
 				"min" : 0,
-				"order" : 399,
+				"order" : 398,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
 			},
 			"countdown_show" : 
 			{
-				"index" : 286,
-				"order" : 386,
+				"index" : 285,
+				"order" : 385,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -2047,10 +2061,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 302,
+				"index" : 301,
 				"max" : 100,
 				"min" : 0,
-				"order" : 402,
+				"order" : 401,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -2059,10 +2073,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 303,
+				"index" : 302,
 				"max" : 50,
 				"min" : 10,
-				"order" : 403,
+				"order" : 402,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
@@ -2071,10 +2085,10 @@
 			{
 				"condition" : "countdown_show.value == true",
 				"fraction" : false,
-				"index" : 304,
+				"index" : 303,
 				"max" : 100,
 				"min" : 1,
-				"order" : 404,
+				"order" : 403,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -2082,8 +2096,8 @@
 			"countdown_txt" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 290,
-				"order" : 390,
+				"index" : 289,
+				"order" : 389,
 				"text" : "ui_countdown_txt_befor",
 				"type" : "textinput",
 				"value" : ""
@@ -2091,8 +2105,8 @@
 			"countdown_txt1" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 291,
-				"order" : 391,
+				"index" : 290,
+				"order" : 390,
 				"text" : "ui_countdown_txt_after",
 				"type" : "textinput",
 				"value" : ""
@@ -2101,10 +2115,10 @@
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 298,
+				"index" : 297,
 				"max" : 100,
 				"min" : 0,
-				"order" : 398,
+				"order" : 397,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 3
@@ -2112,8 +2126,8 @@
 			"countdown_yakeli_show" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 293,
-				"order" : 393,
+				"index" : 292,
+				"order" : 392,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -2121,8 +2135,8 @@
 			"countdown_yakelicolor" : 
 			{
 				"condition" : "countdown_show.value == true && countdown_yakeli_show.value == true",
-				"index" : 294,
-				"order" : 394,
+				"index" : 293,
+				"order" : 393,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -2130,8 +2144,8 @@
 			"countdown_year" : 
 			{
 				"condition" : "countdown_show.value == true",
-				"index" : 287,
-				"order" : 387,
+				"index" : 286,
+				"order" : 386,
 				"text" : "ui_countdown_year",
 				"type" : "textinput",
 				"value" : "114514"
@@ -2148,7 +2162,7 @@
 			"date_dayFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 196,
+				"index" : 195,
 				"options" : 
 				[
 					{
@@ -2164,7 +2178,7 @@
 						"value" : 0
 					}
 				],
-				"order" : 296,
+				"order" : 295,
 				"text" : "ui_date_dayFormat",
 				"type" : "combo",
 				"value" : 1
@@ -2172,7 +2186,7 @@
 			"date_monthFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 195,
+				"index" : 194,
 				"options" : 
 				[
 					{
@@ -2192,7 +2206,7 @@
 						"value" : 0
 					}
 				],
-				"order" : 295,
+				"order" : 294,
 				"text" : "ui_date_monthFormat",
 				"type" : "combo",
 				"value" : 1
@@ -2200,7 +2214,7 @@
 			"date_order" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 198,
+				"index" : 197,
 				"options" : 
 				[
 					{
@@ -2216,7 +2230,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 298,
+				"order" : 297,
 				"text" : "ui_date_order",
 				"type" : "combo",
 				"value" : 1
@@ -2224,7 +2238,7 @@
 			"date_separator" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 199,
+				"index" : 198,
 				"options" : 
 				[
 					{
@@ -2252,7 +2266,7 @@
 						"value" : 6
 					}
 				],
-				"order" : 299,
+				"order" : 298,
 				"text" : "ui_date_separator",
 				"type" : "combo",
 				"value" : 2
@@ -2261,10 +2275,10 @@
 			{
 				"condition" : "showDate.value == true",
 				"fraction" : false,
-				"index" : 207,
+				"index" : 206,
 				"max" : 100,
 				"min" : 0,
-				"order" : 307,
+				"order" : 306,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -2272,7 +2286,7 @@
 			"date_weekFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 197,
+				"index" : 196,
 				"options" : 
 				[
 					{
@@ -2288,7 +2302,7 @@
 						"value" : 0
 					}
 				],
-				"order" : 297,
+				"order" : 296,
 				"text" : "ui_date_weekFormat",
 				"type" : "combo",
 				"value" : 1
@@ -2296,7 +2310,7 @@
 			"date_yearFormat" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 194,
+				"index" : 193,
 				"options" : 
 				[
 					{
@@ -2312,7 +2326,7 @@
 						"value" : 0
 					}
 				],
-				"order" : 294,
+				"order" : 293,
 				"text" : "ui_date_yearFormat",
 				"type" : "combo",
 				"value" : 1
@@ -2320,18 +2334,34 @@
 			"datetransparency" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 212,
+				"index" : 211,
 				"max" : 100,
 				"min" : 0,
-				"order" : 312,
+				"order" : 311,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
 			},
+			"debugger" : 
+			{
+				"index" : 369,
+				"order" : 469,
+				"text" : "● 调试选项 Debugger",
+				"type" : "group",
+				"value" : ""
+			},
+			"debugger_copy" : 
+			{
+				"index" : 370,
+				"order" : 470,
+				"text" : "ui_debugger_copy",
+				"type" : "bool",
+				"value" : true
+			},
 			"direction" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 96,
+				"index" : 95,
 				"options" : 
 				[
 					{
@@ -2347,7 +2377,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 196,
+				"order" : 195,
 				"text" : "ui_audio_wave_direction",
 				"type" : "combo",
 				"value" : 1
@@ -2355,10 +2385,10 @@
 			"fluidEffectBlurAmount" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 320,
+				"index" : 319,
 				"max" : 20,
 				"min" : 0,
-				"order" : 420,
+				"order" : 419,
 				"text" : "ui_fluid_effect_blur_amount",
 				"type" : "slider",
 				"value" : 5
@@ -2366,10 +2396,10 @@
 			"fluidEffectCanvasDisplacement" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 322,
+				"index" : 321,
 				"max" : 100,
 				"min" : 0,
-				"order" : 422,
+				"order" : 421,
 				"text" : "ui_fluid_effect_canvas_displacement",
 				"type" : "slider",
 				"value" : 20
@@ -2377,18 +2407,18 @@
 			"fluidEffectDisplacementScale" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 324,
+				"index" : 323,
 				"max" : 1000,
 				"min" : 0,
-				"order" : 424,
+				"order" : 423,
 				"text" : "ui_fluid_effect_displacement_scale",
 				"type" : "slider",
 				"value" : 400
 			},
 			"fluidEffectEnabled" : 
 			{
-				"index" : 315,
-				"order" : 415,
+				"index" : 314,
+				"order" : 414,
 				"text" : "ui_fluid_effect_enabled",
 				"type" : "bool",
 				"value" : false
@@ -2396,8 +2426,8 @@
 			"fluidEffectEnabledFullscreen" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 316,
-				"order" : 416,
+				"index" : 315,
+				"order" : 415,
 				"text" : "ui_fluid_effect_enabled_fullscreen",
 				"type" : "bool",
 				"value" : false
@@ -2405,10 +2435,10 @@
 			"fluidEffectResolution" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 319,
+				"index" : 318,
 				"max" : 1024,
 				"min" : 128,
-				"order" : 419,
+				"order" : 418,
 				"text" : "ui_fluid_effect_resolution",
 				"type" : "slider",
 				"value" : 512
@@ -2416,10 +2446,10 @@
 			"fluidEffectTurbulenceOctaves" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 323,
+				"index" : 322,
 				"max" : 10,
 				"min" : 1,
-				"order" : 423,
+				"order" : 422,
 				"text" : "ui_fluid_effect_turbulence_octaves",
 				"type" : "slider",
 				"value" : 1
@@ -2428,10 +2458,10 @@
 			{
 				"condition" : "fluidEffectEnabled.value == true",
 				"fraction" : false,
-				"index" : 318,
+				"index" : 317,
 				"max" : 100,
 				"min" : 0,
-				"order" : 418,
+				"order" : 417,
 				"text" : "ui_fluid_effect_dark_overlay_strength",
 				"type" : "slider",
 				"value" : 30
@@ -2440,10 +2470,10 @@
 			{
 				"condition" : "fluidEffectEnabled.value == true",
 				"fraction" : false,
-				"index" : 321,
+				"index" : 320,
 				"max" : 128,
 				"min" : 0,
-				"order" : 421,
+				"order" : 420,
 				"text" : "ui_fluid_effect_backdrop_filter_strength",
 				"type" : "slider",
 				"value" : 16
@@ -2451,8 +2481,8 @@
 			"fluid_effect_enabled_fullscreen_tip" : 
 			{
 				"condition" : "fluidEffectEnabled.value == true",
-				"index" : 317,
-				"order" : 417,
+				"index" : 316,
+				"order" : 416,
 				"text" : "ui_fluid_effect_enabled_fullscreen_tip",
 				"type" : "test",
 				"value" : "1 0 0"
@@ -2476,8 +2506,8 @@
 			"freeapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && freeapi.value == true)",
-				"index" : 217,
-				"order" : 317,
+				"index" : 216,
+				"order" : 316,
 				"text" : "ui_weather_freeapi",
 				"type" : "bool",
 				"value" : false
@@ -2485,8 +2515,8 @@
 			"friendlylinks" : 
 			{
 				"condition" : "",
-				"index" : 354,
-				"order" : 454,
+				"index" : 353,
+				"order" : 453,
 				"text" : "●  友情链接  Friend Links",
 				"type" : "group",
 				"value" : true
@@ -2494,8 +2524,8 @@
 			"functioncategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 368,
-				"order" : 468,
+				"index" : 367,
+				"order" : 467,
 				"text" : "ui_friendlink_functioncategory",
 				"type" : "bool",
 				"value" : false
@@ -2503,8 +2533,8 @@
 			"functioncategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && functioncategory.value == true",
-				"index" : 369,
-				"order" : 469,
+				"index" : 368,
+				"order" : 468,
 				"text" : "ui_friendlink_functioncategory_1",
 				"type" : "txt",
 				"value" : false
@@ -2532,8 +2562,8 @@
 			"getAPIHOST_qweather" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 231,
-				"order" : 331,
+				"index" : 230,
+				"order" : 330,
 				"text" : "ui_getAPIHOST_qweather",
 				"type" : "textinput",
 				"value" : ""
@@ -2541,8 +2571,8 @@
 			"getcityappid_tianqiapi" : 
 			{
 				"condition" : "weather_show.value == true && tianqiapi.value == true",
-				"index" : 233,
-				"order" : 333,
+				"index" : 232,
+				"order" : 332,
 				"text" : "ui_weather_getcityappid_tianqiapi",
 				"type" : "textinput",
 				"value" : ""
@@ -2550,8 +2580,8 @@
 			"getcityappsecret_tianqiapi" : 
 			{
 				"condition" : "weather_show.value == true && tianqiapi.value == true",
-				"index" : 235,
-				"order" : 335,
+				"index" : 234,
+				"order" : 334,
 				"text" : "ui_weather_getcityappsecret_tianqiapi",
 				"type" : "textinput",
 				"value" : ""
@@ -2559,8 +2589,8 @@
 			"getcitykey_qweather" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 232,
-				"order" : 332,
+				"index" : 231,
+				"order" : 331,
 				"text" : "ui_weather_getcitykey_qweather",
 				"type" : "textinput",
 				"value" : ""
@@ -2568,8 +2598,8 @@
 			"getcitykey_visualcrossing" : 
 			{
 				"condition" : "weather_show.value == true && visualcrossingapi.value == true",
-				"index" : 234,
-				"order" : 334,
+				"index" : 233,
+				"order" : 333,
 				"text" : "ui_weather_getcitykey_visualcrossing",
 				"type" : "textinput",
 				"value" : ""
@@ -2604,40 +2634,40 @@
 			"help" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 349,
-				"order" : 449,
+				"index" : 348,
+				"order" : 448,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1759199212007589774/D084C90AD44D6BC3480A4046F0C1703A858A5673/' width='100%'  />",
 				"type" : "text"
 			},
 			"helpBZ" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 351,
-				"order" : 451,
+				"index" : 350,
+				"order" : 450,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529045343/C16164193E685A485B287C50E156F837DA1B2BB1/' width='100%'  />",
 				"type" : "text"
 			},
 			"helpDY" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 350,
-				"order" : 450,
+				"index" : 349,
+				"order" : 449,
 				"text" : "<br/><img src='https://steamuserimages-a.akamaihd.net/ugc/1848171366529042529/ABB6DE28206C09CA53C1FD0651408433F648B16A/' width='100%' />",
 				"type" : "text"
 			},
 			"helpEnd" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 347,
-				"order" : 447,
+				"index" : 346,
+				"order" : 446,
 				"text" : "<small><br/>完美壁纸完全免费，需要您的支持<br/>支付宝394011315@qq.com 陈振原<br />欢迎赞助鼓励！感谢大家支持！</small>",
 				"type" : "text"
 			},
 			"helpUp" : 
 			{
 				"condition" : "Test_Author.value == true",
-				"index" : 348,
-				"order" : 448,
+				"index" : 347,
+				"order" : 447,
 				"text" : "<small><br/>老陈已经开通了抖音和B站<br/>完美壁纸教程，桌面改造教程，桌搭好物推荐<br />数码开箱，创意礼物，出租屋改造等等<br />最接地气数码博主，有问必答，爱你们！<br />关注老陈，监督老陈完成全新版本的完美壁纸！</small>",
 				"type" : "text"
 			},
@@ -2645,10 +2675,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 282,
+				"index" : 281,
 				"max" : 100,
 				"min" : 0,
-				"order" : 382,
+				"order" : 381,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 20
@@ -2657,10 +2687,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 281,
+				"index" : 280,
 				"max" : 100,
 				"min" : 0,
-				"order" : 381,
+				"order" : 380,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 18
@@ -2668,8 +2698,8 @@
 			"hitokoto_a" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 259,
-				"order" : 359,
+				"index" : 258,
+				"order" : 358,
 				"text" : "<br/>动画<br />animation<br/>",
 				"type" : "bool",
 				"value" : true
@@ -2677,8 +2707,8 @@
 			"hitokoto_auth" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 255,
-				"order" : 355,
+				"index" : 254,
+				"order" : 354,
 				"text" : "ui_hitokoto_hitokoto_auth",
 				"type" : "bool",
 				"value" : true
@@ -2686,17 +2716,17 @@
 			"hitokoto_b" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 260,
-				"order" : 360,
-				"text" : "<br/>漫画<br />caricature<br/>",
+				"index" : 259,
+				"order" : 359,
+				"text" : "ui_hitokoto_type_caricature",
 				"type" : "bool",
 				"value" : true
 			},
 			"hitokoto_blurcolor" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_blurcolor_show.value == true",
-				"index" : 274,
-				"order" : 374,
+				"index" : 273,
+				"order" : 373,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -2704,8 +2734,8 @@
 			"hitokoto_blurcolor_show" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 273,
-				"order" : 373,
+				"index" : 272,
+				"order" : 372,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -2714,10 +2744,10 @@
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 278,
+				"index" : 277,
 				"max" : 50,
 				"min" : 0,
-				"order" : 378,
+				"order" : 377,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -2725,8 +2755,8 @@
 			"hitokoto_c" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 261,
-				"order" : 361,
+				"index" : 260,
+				"order" : 360,
 				"text" : "ui_hitokoto_type_game",
 				"type" : "bool",
 				"value" : true
@@ -2734,8 +2764,8 @@
 			"hitokoto_color" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 272,
-				"order" : 372,
+				"index" : 271,
+				"order" : 371,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -2743,8 +2773,8 @@
 			"hitokoto_d" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 262,
-				"order" : 362,
+				"index" : 261,
+				"order" : 361,
 				"text" : "<ui_hitokoto_type_literature",
 				"type" : "bool",
 				"value" : true
@@ -2752,8 +2782,8 @@
 			"hitokoto_diy" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 258,
-				"order" : 358,
+				"index" : 257,
+				"order" : 357,
 				"text" : "ui_hitokoto_hitokoto_diy",
 				"type" : "bool",
 				"value" : false
@@ -2761,8 +2791,8 @@
 			"hitokoto_e" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 263,
-				"order" : 363,
+				"index" : 262,
+				"order" : 362,
 				"text" : "ui_hitokoto_type_original",
 				"type" : "bool",
 				"value" : true
@@ -2770,8 +2800,8 @@
 			"hitokoto_f" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 264,
-				"order" : 364,
+				"index" : 263,
+				"order" : 363,
 				"text" : "ui_hitokoto_type_FromTheWeb",
 				"type" : "bool",
 				"value" : true
@@ -2779,8 +2809,8 @@
 			"hitokoto_g" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 265,
-				"order" : 365,
+				"index" : 264,
+				"order" : 364,
 				"text" : "ui_hitokoto_type_other",
 				"type" : "bool",
 				"value" : true
@@ -2788,8 +2818,8 @@
 			"hitokoto_h" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 266,
-				"order" : 366,
+				"index" : 265,
+				"order" : 365,
 				"text" : "ui_hitokoto_type_showbiz",
 				"type" : "bool",
 				"value" : true
@@ -2797,8 +2827,8 @@
 			"hitokoto_i" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 267,
-				"order" : 367,
+				"index" : 266,
+				"order" : 366,
 				"text" : "ui_hitokoto_type_poetry",
 				"type" : "bool",
 				"value" : true
@@ -2806,8 +2836,8 @@
 			"hitokoto_j" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 268,
-				"order" : 368,
+				"index" : 267,
+				"order" : 367,
 				"text" : "ui_hitokoto_type_NetEaseCloud",
 				"type" : "bool",
 				"value" : true
@@ -2815,8 +2845,8 @@
 			"hitokoto_k" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 269,
-				"order" : 369,
+				"index" : 268,
+				"order" : 368,
 				"text" : "ui_hitokoto_type_philosophy",
 				"type" : "bool",
 				"value" : true
@@ -2824,8 +2854,8 @@
 			"hitokoto_l" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 270,
-				"order" : 370,
+				"index" : 269,
+				"order" : 369,
 				"text" : "ui_hitokoto_type_jitterbug",
 				"type" : "bool",
 				"value" : true
@@ -2833,18 +2863,18 @@
 			"hitokoto_null" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 271,
-				"order" : 371,
+				"index" : 270,
+				"order" : 370,
 				"text" : "ui_hitokoto_hitokoto_null",
 				"type" : "text"
 			},
 			"hitokoto_roundedcorners" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"index" : 280,
+				"index" : 279,
 				"max" : 100,
 				"min" : 0,
-				"order" : 380,
+				"order" : 379,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -2852,8 +2882,8 @@
 			"hitokoto_show" : 
 			{
 				"condition" : "",
-				"index" : 254,
-				"order" : 354,
+				"index" : 253,
+				"order" : 353,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -2862,10 +2892,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 279,
+				"index" : 278,
 				"max" : 100,
 				"min" : 0,
-				"order" : 379,
+				"order" : 378,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -2874,10 +2904,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 283,
+				"index" : 282,
 				"max" : 50,
 				"min" : 10,
-				"order" : 383,
+				"order" : 382,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 10
@@ -2886,10 +2916,10 @@
 			{
 				"condition" : "hitokoto_show.value == true",
 				"fraction" : false,
-				"index" : 284,
+				"index" : 283,
 				"max" : 100,
 				"min" : 1,
-				"order" : 384,
+				"order" : 383,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -2897,7 +2927,7 @@
 			"hitokoto_updata" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 256,
+				"index" : 255,
 				"options" : 
 				[
 					{
@@ -2921,7 +2951,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 356,
+				"order" : 355,
 				"text" : "ui_hitokoto_hitokoto_updata",
 				"type" : "combo",
 				"value" : 5
@@ -2930,10 +2960,10 @@
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 277,
+				"index" : 276,
 				"max" : 100,
 				"min" : 0,
-				"order" : 377,
+				"order" : 376,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -2941,8 +2971,8 @@
 			"hitokoto_yakeli_show" : 
 			{
 				"condition" : "hitokoto_show.value == true",
-				"index" : 275,
-				"order" : 375,
+				"index" : 274,
+				"order" : 374,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -2950,8 +2980,8 @@
 			"hitokoto_yakelicolor" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_yakeli_show.value == true",
-				"index" : 276,
-				"order" : 376,
+				"index" : 275,
+				"order" : 375,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3039,26 +3069,26 @@
 			"lineWidth" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 99,
+				"index" : 98,
 				"max" : 10,
 				"min" : 1,
-				"order" : 199,
+				"order" : 198,
 				"text" : "ui_audio_circle_line_width",
 				"type" : "slider",
 				"value" : 9
 			},
 			"music_text" : 
 			{
-				"index" : 53,
-				"order" : 153,
+				"index" : 52,
+				"order" : 152,
 				"text" : "ui_music_musictext",
 				"type" : "text"
 			},
 			"oclock_blurcolor" : 
 			{
 				"condition" : "showTime.value == true && oclock_blurcolor_show.value == true",
-				"index" : 182,
-				"order" : 282,
+				"index" : 181,
+				"order" : 281,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3066,8 +3096,8 @@
 			"oclock_blurcolor_show" : 
 			{
 				"condition" : "showTime.value == true || oclock_blurcolor_show == true",
-				"index" : 181,
-				"order" : 281,
+				"index" : 180,
+				"order" : 280,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -3076,10 +3106,10 @@
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 186,
+				"index" : 185,
 				"max" : 50,
 				"min" : 0,
-				"order" : 286,
+				"order" : 285,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -3088,10 +3118,10 @@
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 187,
+				"index" : 186,
 				"max" : 100,
 				"min" : 0,
-				"order" : 287,
+				"order" : 286,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3100,10 +3130,10 @@
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 185,
+				"index" : 184,
 				"max" : 100,
 				"min" : 0,
-				"order" : 285,
+				"order" : 284,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -3111,8 +3141,8 @@
 			"oclock_yakeli_show" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 183,
-				"order" : 283,
+				"index" : 182,
+				"order" : 282,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3120,8 +3150,8 @@
 			"oclock_yakelicolor" : 
 			{
 				"condition" : "showTime.value == true && oclock_yakeli_show.value == true",
-				"index" : 184,
-				"order" : 284,
+				"index" : 183,
+				"order" : 283,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3129,8 +3159,8 @@
 			"odate_blurcolor" : 
 			{
 				"condition" : "showDate.value == true && odate_blurcolor_show.value == true",
-				"index" : 202,
-				"order" : 302,
+				"index" : 201,
+				"order" : 301,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3138,8 +3168,8 @@
 			"odate_blurcolor_show" : 
 			{
 				"condition" : "showDate.value == true || oDate_blurcolor_show == true",
-				"index" : 201,
-				"order" : 301,
+				"index" : 200,
+				"order" : 300,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -3148,10 +3178,10 @@
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 206,
+				"index" : 205,
 				"max" : 50,
 				"min" : 0,
-				"order" : 306,
+				"order" : 305,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -3159,8 +3189,8 @@
 			"odate_color" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 200,
-				"order" : 300,
+				"index" : 199,
+				"order" : 299,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3168,10 +3198,10 @@
 			"odate_roundedcorners" : 
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"index" : 208,
+				"index" : 207,
 				"max" : 100,
 				"min" : 0,
-				"order" : 308,
+				"order" : 307,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3180,10 +3210,10 @@
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 205,
+				"index" : 204,
 				"max" : 100,
 				"min" : 0,
-				"order" : 305,
+				"order" : 304,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -3191,8 +3221,8 @@
 			"odate_yakeli_show" : 
 			{
 				"condition" : "showDate.value == true",
-				"index" : 203,
-				"order" : 303,
+				"index" : 202,
+				"order" : 302,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3200,8 +3230,8 @@
 			"odate_yakelicolor" : 
 			{
 				"condition" : "showDate.value == true && odate_yakeli_show.value == true",
-				"index" : 204,
-				"order" : 304,
+				"index" : 203,
+				"order" : 303,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -3209,8 +3239,8 @@
 			"open_meteoapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value == false) || (weather_show.value == true && open_meteoapi.value == true)",
-				"index" : 222,
-				"order" : 322,
+				"index" : 221,
+				"order" : 321,
 				"text" : "ui_weather_open_meteoapi",
 				"type" : "bool",
 				"value" : false
@@ -3218,8 +3248,8 @@
 			"particles_color" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 68,
-				"order" : 168,
+				"index" : 67,
+				"order" : 167,
 				"text" : "ui_effect_AliceParticles_particles_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3227,7 +3257,7 @@
 			"particles_direction" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 84,
+				"index" : 83,
 				"options" : 
 				[
 					{
@@ -3267,7 +3297,7 @@
 						"value" : 9
 					}
 				],
-				"order" : 184,
+				"order" : 183,
 				"text" : "ui_effect_AliceParticles_particles_direction",
 				"type" : "combo",
 				"value" : 6
@@ -3275,16 +3305,16 @@
 			"particles_image" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_shapeType.value == 5",
-				"index" : 73,
-				"order" : 173,
+				"index" : 72,
+				"order" : 172,
 				"text" : "ui_effect_AliceParticles_particles_image",
 				"type" : "file"
 			},
 			"particles_isBounce" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 86,
-				"order" : 186,
+				"index" : 85,
+				"order" : 185,
 				"text" : "ui_effect_AliceParticles_particles_isBounce",
 				"type" : "bool",
 				"value" : false
@@ -3292,16 +3322,16 @@
 			"particles_isMove" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 81,
-				"order" : 181,
+				"index" : 80,
+				"order" : 180,
 				"text" : "ui_effect_AliceParticles_particles_isMove",
 				"type" : "bool",
 				"value" : true
 			},
 			"particles_isParticles" : 
 			{
-				"index" : 64,
-				"order" : 164,
+				"index" : 63,
+				"order" : 163,
 				"text" : "ui_effect_AliceParticles_particles_isParticles",
 				"type" : "bool",
 				"value" : false
@@ -3309,8 +3339,8 @@
 			"particles_isStraight" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 85,
-				"order" : 185,
+				"index" : 84,
+				"order" : 184,
 				"text" : "ui_effect_AliceParticles_particles_isStraight",
 				"type" : "bool",
 				"value" : false
@@ -3318,8 +3348,8 @@
 			"particles_linkColor" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 79,
-				"order" : 179,
+				"index" : 78,
+				"order" : 178,
 				"text" : "ui_effect_AliceParticles_particles_linkColor",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3327,10 +3357,10 @@
 			"particles_linkDistance" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 77,
+				"index" : 76,
 				"max" : 300,
 				"min" : 0,
-				"order" : 177,
+				"order" : 176,
 				"text" : "ui_effect_AliceParticles_particles_linkDistance",
 				"type" : "slider",
 				"value" : 60
@@ -3338,8 +3368,8 @@
 			"particles_linkEnable" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 76,
-				"order" : 176,
+				"index" : 75,
+				"order" : 175,
 				"text" : "ui_effect_AliceParticles_particles_linkEnable",
 				"type" : "bool",
 				"value" : false
@@ -3347,10 +3377,10 @@
 			"particles_linkOpacity" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 80,
+				"index" : 79,
 				"max" : 100,
 				"min" : 0,
-				"order" : 180,
+				"order" : 179,
 				"text" : "ui_effect_AliceParticles_particles_linkOpacity",
 				"type" : "slider",
 				"value" : 75
@@ -3358,10 +3388,10 @@
 			"particles_linkWidth" : 
 			{
 				"condition" : "particles_isParticles.value == true && particles_linkEnable.value == true",
-				"index" : 78,
+				"index" : 77,
 				"max" : 10,
 				"min" : 0,
-				"order" : 178,
+				"order" : 177,
 				"text" : "ui_effect_AliceParticles_particles_linkWidth",
 				"type" : "slider",
 				"value" : 2
@@ -3369,7 +3399,7 @@
 			"particles_moveOutMode" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 87,
+				"index" : 86,
 				"options" : 
 				[
 					{
@@ -3381,7 +3411,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 187,
+				"order" : 186,
 				"text" : "ui_effect_AliceParticles_particles_moveOutMode",
 				"type" : "combo",
 				"value" : 1
@@ -3389,10 +3419,10 @@
 			"particles_number" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 65,
+				"index" : 64,
 				"max" : 500,
 				"min" : 0,
-				"order" : 165,
+				"order" : 164,
 				"text" : "ui_effect_AliceParticles_particles_number",
 				"type" : "slider",
 				"value" : 180
@@ -3400,10 +3430,10 @@
 			"particles_opacity" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 66,
+				"index" : 65,
 				"max" : 100,
 				"min" : 0,
-				"order" : 166,
+				"order" : 165,
 				"text" : "ui_effect_AliceParticles_particles_opacity",
 				"type" : "slider",
 				"value" : 75
@@ -3411,8 +3441,8 @@
 			"particles_opacityRandom" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 67,
-				"order" : 167,
+				"index" : 66,
+				"order" : 166,
 				"text" : "ui_effect_AliceParticles_particles_opacityRandom",
 				"type" : "bool",
 				"value" : true
@@ -3420,7 +3450,7 @@
 			"particles_picdef" : 
 			{
 				"condition" : "particles_shapeType.value == 5 && particles_isParticles.value == true",
-				"index" : 72,
+				"index" : 71,
 				"options" : 
 				[
 					{
@@ -3524,7 +3554,7 @@
 						"value" : 25
 					}
 				],
-				"order" : 172,
+				"order" : 171,
 				"text" : "ui_effect_AliceParticles_particles_picdef",
 				"type" : "combo",
 				"value" : 1
@@ -3532,10 +3562,10 @@
 			"particles_shadowBlur" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 70,
+				"index" : 69,
 				"max" : 5,
 				"min" : 0,
-				"order" : 170,
+				"order" : 169,
 				"text" : "ui_effect_AliceParticles_particles_shadowBlur",
 				"type" : "slider",
 				"value" : 0
@@ -3543,8 +3573,8 @@
 			"particles_shadowColor" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 69,
-				"order" : 169,
+				"index" : 68,
+				"order" : 168,
 				"text" : "ui_effect_AliceParticles_particles_shadowColor",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3552,7 +3582,7 @@
 			"particles_shapeType" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 71,
+				"index" : 70,
 				"options" : 
 				[
 					{
@@ -3576,7 +3606,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 171,
+				"order" : 170,
 				"text" : "ui_effect_AliceParticles_particles_shapeType",
 				"type" : "combo",
 				"value" : 1
@@ -3584,8 +3614,8 @@
 			"particles_sizeRandom" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 75,
-				"order" : 175,
+				"index" : 74,
+				"order" : 174,
 				"text" : "ui_effect_AliceParticles_particles_sizeRandom",
 				"type" : "bool",
 				"value" : true
@@ -3593,10 +3623,10 @@
 			"particles_sizeValue" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 74,
+				"index" : 73,
 				"max" : 50,
 				"min" : 0,
-				"order" : 174,
+				"order" : 173,
 				"text" : "ui_effect_AliceParticles_particles_sizeValue",
 				"type" : "slider",
 				"value" : 5
@@ -3604,10 +3634,10 @@
 			"particles_speed" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 82,
+				"index" : 81,
 				"max" : 50,
 				"min" : 1,
-				"order" : 182,
+				"order" : 181,
 				"text" : "ui_effect_AliceParticles_particles_speed",
 				"type" : "slider",
 				"value" : 5
@@ -3615,8 +3645,8 @@
 			"particles_speedRandom" : 
 			{
 				"condition" : "particles_isParticles.value == true",
-				"index" : 83,
-				"order" : 183,
+				"index" : 82,
+				"order" : 182,
 				"text" : "ui_effect_AliceParticles_particles_speedRandom",
 				"type" : "bool",
 				"value" : true
@@ -3625,10 +3655,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 44,
+				"index" : 43,
 				"max" : 100,
 				"min" : 0,
-				"order" : 144,
+				"order" : 143,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 0
@@ -3637,10 +3667,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 45,
+				"index" : 44,
 				"max" : 100,
 				"min" : 0,
-				"order" : 145,
+				"order" : 144,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 76
@@ -3648,8 +3678,8 @@
 			"picturesinfo_blurcolor" : 
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_blurcolor_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 39,
-				"order" : 139,
+				"index" : 38,
+				"order" : 138,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3657,8 +3687,8 @@
 			"picturesinfo_blurcolor_show" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 38,
-				"order" : 138,
+				"index" : 37,
+				"order" : 137,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -3667,10 +3697,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 41,
+				"index" : 40,
 				"max" : 50,
 				"min" : 0,
-				"order" : 141,
+				"order" : 140,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 2
@@ -3678,8 +3708,8 @@
 			"picturesinfo_color" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 35,
-				"order" : 135,
+				"index" : 34,
+				"order" : 134,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3693,45 +3723,13 @@
 				"type" : "bool",
 				"value" : false
 			},
-			"picturesinfo_language" : 
-			{
-				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 34,
-				"options" : 
-				[
-					{
-						"label" : "简体中文",
-						"value" : 1
-					},
-					{
-						"label" : "繁体中文",
-						"value" : 2
-					},
-					{
-						"label" : "English(US)",
-						"value" : 3
-					},
-					{
-						"label" : "日本語",
-						"value" : 4
-					},
-					{
-						"label" : "한국어",
-						"value" : 5
-					}
-				],
-				"order" : 134,
-				"text" : "ui_setting_language",
-				"type" : "combo",
-				"value" : 1
-			},
 			"picturesinfo_roundedcorners" : 
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 42,
+				"index" : 41,
 				"max" : 100,
 				"min" : 0,
-				"order" : 142,
+				"order" : 141,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3748,8 +3746,8 @@
 			"picturesinfo_showRorL" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 49,
-				"order" : 149,
+				"index" : 48,
+				"order" : 148,
 				"text" : "ui_setting_RorL",
 				"type" : "bool",
 				"value" : false
@@ -3757,8 +3755,8 @@
 			"picturesinfo_showaway" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 48,
-				"order" : 148,
+				"index" : 47,
+				"order" : 147,
 				"text" : "ui_setting_showaway",
 				"type" : "bool",
 				"value" : false
@@ -3767,10 +3765,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 43,
+				"index" : 42,
 				"max" : 100,
 				"min" : 0,
-				"order" : 143,
+				"order" : 142,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -3779,10 +3777,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 46,
+				"index" : 45,
 				"max" : 50,
 				"min" : 10,
-				"order" : 146,
+				"order" : 145,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 15
@@ -3791,10 +3789,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 47,
+				"index" : 46,
 				"max" : 100,
 				"min" : 1,
-				"order" : 147,
+				"order" : 146,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -3803,10 +3801,10 @@
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
 				"fraction" : false,
-				"index" : 40,
+				"index" : 39,
 				"max" : 100,
 				"min" : 0,
-				"order" : 140,
+				"order" : 139,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 0
@@ -3814,8 +3812,8 @@
 			"picturesinfo_yakeli_show" : 
 			{
 				"condition" : "picturesinfo_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 36,
-				"order" : 136,
+				"index" : 35,
+				"order" : 135,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -3823,16 +3821,16 @@
 			"picturesinfo_yakelicolor" : 
 			{
 				"condition" : "picturesinfo_show.value == true && picturesinfo_yakeli_show.value == true && [4,6,8].includes(wallpapermode.value)",
-				"index" : 37,
-				"order" : 137,
+				"index" : 36,
+				"order" : 136,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
 			},
 			"player_control" : 
 			{
-				"index" : 305,
-				"order" : 405,
+				"index" : 304,
+				"order" : 404,
 				"text" : "●  媒体集成  Media Integration",
 				"type" : "group",
 				"value" : ""
@@ -3840,7 +3838,7 @@
 			"player_control_barline" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_visualaudiobar.value == true",
-				"index" : 308,
+				"index" : 307,
 				"options" : 
 				[
 					{
@@ -3852,7 +3850,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 408,
+				"order" : 407,
 				"text" : "ui_player_control_barline",
 				"type" : "combo",
 				"value" : 1
@@ -3860,8 +3858,8 @@
 			"player_control_blurcolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_blurcolor_show.value == true",
-				"index" : 328,
-				"order" : 428,
+				"index" : 327,
+				"order" : 427,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -3869,8 +3867,8 @@
 			"player_control_blurcolor_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 327,
-				"order" : 427,
+				"index" : 326,
+				"order" : 426,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : false
@@ -3879,10 +3877,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 336,
+				"index" : 335,
 				"max" : 50,
 				"min" : 0,
-				"order" : 436,
+				"order" : 435,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
@@ -3890,8 +3888,8 @@
 			"player_control_color" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_fontusetb.value == 5",
-				"index" : 331,
-				"order" : 431,
+				"index" : 330,
+				"order" : 430,
 				"text" : "ui_color_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -3899,7 +3897,7 @@
 			"player_control_fontusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 330,
+				"index" : 329,
 				"options" : 
 				[
 					{
@@ -3923,7 +3921,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 430,
+				"order" : 429,
 				"text" : "ui_color_color",
 				"type" : "combo",
 				"value" : 2
@@ -3931,7 +3929,7 @@
 			"player_control_getcolor" : 
 			{
 				"condition" : "player_control_show.value == true && (player_control_yakelibgusetb.value != 5 ||player_control_fontusetb.value != 5)",
-				"index" : 329,
+				"index" : 328,
 				"options" : 
 				[
 					{
@@ -3943,7 +3941,7 @@
 						"value" : 2
 					}
 				],
-				"order" : 429,
+				"order" : 428,
 				"text" : "ui_player_control_getcolor",
 				"type" : "combo",
 				"value" : 1
@@ -3952,10 +3950,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_visualaudiobar.value == true",
 				"fraction" : true,
-				"index" : 309,
+				"index" : 308,
 				"max" : 100,
 				"min" : 1,
-				"order" : 409,
+				"order" : 408,
 				"precision" : 2,
 				"step" : 1,
 				"text" : "ui_player_control_hdong",
@@ -3965,10 +3963,10 @@
 			"player_control_roundedcorners" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
-				"index" : 337,
+				"index" : 336,
 				"max" : 100,
 				"min" : 0,
-				"order" : 437,
+				"order" : 436,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
@@ -3976,8 +3974,8 @@
 			"player_control_samealbumtitle" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 343,
-				"order" : 443,
+				"index" : 342,
+				"order" : 442,
 				"text" : "ui_player_control_samealbumTitle",
 				"type" : "bool",
 				"value" : false
@@ -3986,10 +3984,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_visualaudiobar.value == true",
 				"fraction" : true,
-				"index" : 310,
+				"index" : 309,
 				"max" : 10,
 				"min" : 1,
-				"order" : 410,
+				"order" : 409,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_player_control_scaleFactor",
@@ -3999,8 +3997,8 @@
 			"player_control_show" : 
 			{
 				"condition" : "",
-				"index" : 306,
-				"order" : 406,
+				"index" : 305,
+				"order" : 405,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : true
@@ -4008,8 +4006,8 @@
 			"player_control_showaway" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 342,
-				"order" : 442,
+				"index" : 341,
+				"order" : 441,
 				"text" : "ui_setting_showaway",
 				"type" : "bool",
 				"value" : false
@@ -4018,10 +4016,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 338,
+				"index" : 337,
 				"max" : 100,
 				"min" : 0,
-				"order" : 438,
+				"order" : 437,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -4030,10 +4028,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 339,
+				"index" : 338,
 				"max" : 50,
 				"min" : 10,
-				"order" : 439,
+				"order" : 438,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 20
@@ -4041,8 +4039,8 @@
 			"player_control_thumbnail_rotation" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 311,
-				"order" : 411,
+				"index" : 310,
+				"order" : 410,
 				"text" : "ui_player_control_thumbnail_rotation",
 				"type" : "bool",
 				"value" : false
@@ -4051,10 +4049,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_thumbnail_rotation.value == true",
 				"fraction" : true,
-				"index" : 312,
+				"index" : 311,
 				"max" : 9.9,
 				"min" : 0.1,
-				"order" : 412,
+				"order" : 411,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_player_control_thumbnail_rotation_speed",
@@ -4064,8 +4062,8 @@
 			"player_control_thumbnail_size" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 313,
-				"order" : 413,
+				"index" : 312,
+				"order" : 412,
 				"text" : "ui_player_control_thumbnail_size",
 				"type" : "bool",
 				"value" : false
@@ -4074,10 +4072,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_thumbnail_size.value == true",
 				"fraction" : true,
-				"index" : 314,
+				"index" : 313,
 				"max" : 100,
 				"min" : 0,
-				"order" : 414,
+				"order" : 413,
 				"precision" : 2,
 				"step" : 1,
 				"text" : "ui_player_control_thumbnail_size_value",
@@ -4087,8 +4085,8 @@
 			"player_control_thumbnailrorl" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 341,
-				"order" : 441,
+				"index" : 340,
+				"order" : 440,
 				"text" : "ui_player_control_thumbnailrorl",
 				"type" : "bool",
 				"value" : false
@@ -4097,10 +4095,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 340,
+				"index" : 339,
 				"max" : 100,
 				"min" : 1,
-				"order" : 440,
+				"order" : 439,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -4108,8 +4106,8 @@
 			"player_control_visualaudiobar" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 307,
-				"order" : 407,
+				"index" : 306,
+				"order" : 406,
 				"text" : "ui_player_control_VisualAudioBar",
 				"type" : "bool",
 				"value" : true
@@ -4118,10 +4116,10 @@
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 335,
+				"index" : 334,
 				"max" : 100,
 				"min" : 0,
-				"order" : 435,
+				"order" : 434,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -4129,8 +4127,8 @@
 			"player_control_yakeli_show" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 332,
-				"order" : 432,
+				"index" : 331,
+				"order" : 431,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -4138,7 +4136,7 @@
 			"player_control_yakelibgusetb" : 
 			{
 				"condition" : "player_control_show.value == true",
-				"index" : 333,
+				"index" : 332,
 				"options" : 
 				[
 					{
@@ -4162,7 +4160,7 @@
 						"value" : 5
 					}
 				],
-				"order" : 433,
+				"order" : 432,
 				"text" : "ui_color_yakelicolor",
 				"type" : "combo",
 				"value" : 4
@@ -4170,8 +4168,8 @@
 			"player_control_yakelicolor" : 
 			{
 				"condition" : "player_control_show.value == true && player_control_yakeli_show.value == true && player_control_yakelibgusetb.value == 5",
-				"index" : 334,
-				"order" : 434,
+				"index" : 333,
+				"order" : 433,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -4180,10 +4178,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 326,
+				"index" : 325,
 				"max" : 100,
 				"min" : 0,
-				"order" : 426,
+				"order" : 425,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 0
@@ -4192,10 +4190,10 @@
 			{
 				"condition" : "player_control_show.value == true",
 				"fraction" : false,
-				"index" : 325,
+				"index" : 324,
 				"max" : 100,
 				"min" : 0,
-				"order" : 425,
+				"order" : 424,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 83
@@ -4203,8 +4201,8 @@
 			"qweatherapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && qweatherapi.value == true)",
-				"index" : 218,
-				"order" : 318,
+				"index" : 217,
+				"order" : 317,
 				"text" : "ui_weather_qweatherapi",
 				"type" : "bool",
 				"value" : false
@@ -4212,8 +4210,8 @@
 			"qweatherapi_paymode" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 226,
-				"order" : 326,
+				"index" : 225,
+				"order" : 325,
 				"text" : "ui_qweatherapi_paymode",
 				"type" : "bool",
 				"value" : false
@@ -4221,10 +4219,10 @@
 			"radius" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 100,
+				"index" : 99,
 				"max" : 80,
 				"min" : 20,
-				"order" : 200,
+				"order" : 199,
 				"text" : "ui_audio_radius",
 				"type" : "slider",
 				"value" : 40
@@ -4241,18 +4239,18 @@
 			"range" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 101,
+				"index" : 100,
 				"max" : 15,
 				"min" : 1,
-				"order" : 201,
+				"order" : 200,
 				"text" : "ui_audio_wave_range",
 				"type" : "slider",
 				"value" : 9
 			},
 			"rbg_group" : 
 			{
-				"index" : 160,
-				"order" : 260,
+				"index" : 159,
+				"order" : 259,
 				"text" : "●  RGB灯光 RGB Lighting",
 				"type" : "group",
 				"value" : ""
@@ -4260,8 +4258,8 @@
 			"rgb_au" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 168,
-				"order" : 268,
+				"index" : 167,
+				"order" : 267,
 				"text" : "ui_rgb_au",
 				"type" : "bool",
 				"value" : false
@@ -4269,8 +4267,8 @@
 			"rgb_au_color" : 
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true && rgb_color_rainbow.value == false",
-				"index" : 170,
-				"order" : 270,
+				"index" : 169,
+				"order" : 269,
 				"text" : "ui_rgb_au_color",
 				"type" : "color",
 				"value" : "1 1 1"
@@ -4279,10 +4277,10 @@
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true",
 				"fraction" : true,
-				"index" : 169,
+				"index" : 168,
 				"max" : 10,
 				"min" : 1,
-				"order" : 269,
+				"order" : 268,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_rgb_au_high",
@@ -4292,8 +4290,8 @@
 			"rgb_bg" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 164,
-				"order" : 264,
+				"index" : 163,
+				"order" : 263,
 				"text" : "ui_rgb_bg",
 				"type" : "bool",
 				"value" : false
@@ -4301,8 +4299,8 @@
 			"rgb_color_rainbow" : 
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true",
-				"index" : 171,
-				"order" : 271,
+				"index" : 170,
+				"order" : 270,
 				"text" : "ui_rgb_color_rainbow",
 				"type" : "bool",
 				"value" : false
@@ -4310,8 +4308,8 @@
 			"rgb_color_rainbow_move" : 
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true && rgb_color_rainbow.value == true",
-				"index" : 172,
-				"order" : 272,
+				"index" : 171,
+				"order" : 271,
 				"text" : "ui_rgb_color_rainbow_move",
 				"type" : "bool",
 				"value" : false
@@ -4320,10 +4318,10 @@
 			{
 				"condition" : "rgb_show.value == true && rgb_au.value == true && rgb_color_rainbow.value == true && rgb_color_rainbow_move.value == true",
 				"fraction" : true,
-				"index" : 173,
+				"index" : 172,
 				"max" : 10,
 				"min" : 0.1,
-				"order" : 273,
+				"order" : 272,
 				"precision" : 2,
 				"step" : 0.1,
 				"text" : "ui_rgb_color_rainbow_movespeed",
@@ -4333,7 +4331,7 @@
 			"rgb_fps" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 163,
+				"index" : 162,
 				"options" : 
 				[
 					{
@@ -4357,7 +4355,7 @@
 						"value" : "free"
 					}
 				],
-				"order" : 263,
+				"order" : 262,
 				"text" : "ui_rgb_fps",
 				"type" : "combo",
 				"value" : "free"
@@ -4365,8 +4363,8 @@
 			"rgb_pa" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 167,
-				"order" : 267,
+				"index" : 166,
+				"order" : 266,
 				"text" : "ui_rgb_pa",
 				"type" : "bool",
 				"value" : false
@@ -4374,8 +4372,8 @@
 			"rgb_sa" : 
 			{
 				"condition" : "rgb_show.value == true",
-				"index" : 165,
-				"order" : 265,
+				"index" : 164,
+				"order" : 264,
 				"text" : "ui_rgb_sa",
 				"type" : "bool",
 				"value" : false
@@ -4384,26 +4382,26 @@
 			{
 				"condition" : "rgb_show.value == true && rgb_sa.value == true",
 				"fraction" : false,
-				"index" : 166,
+				"index" : 165,
 				"max" : 100,
 				"min" : 1,
-				"order" : 266,
+				"order" : 265,
 				"text" : "ui_rgb_sa_op",
 				"type" : "slider",
 				"value" : 70
 			},
 			"rgb_show" : 
 			{
-				"index" : 162,
-				"order" : 262,
+				"index" : 161,
+				"order" : 261,
 				"text" : "ui_rgb_show",
 				"type" : "bool",
 				"value" : false
 			},
 			"rgb_tips" : 
 			{
-				"index" : 161,
-				"order" : 261,
+				"index" : 160,
+				"order" : 260,
 				"text" : "ui_rgb_tips",
 				"type" : "txt",
 				"value" : ""
@@ -4411,10 +4409,10 @@
 			"rotation" : 
 			{
 				"condition" : "visual_audio_model.value == 1 && showSemiCircle.value == false",
-				"index" : 98,
+				"index" : 97,
 				"max" : 10,
 				"min" : -10,
-				"order" : 198,
+				"order" : 197,
 				"text" : "ui_audio_rotation_angle",
 				"type" : "slider",
 				"value" : 0
@@ -4422,8 +4420,8 @@
 			"sakurabackcolor" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 59,
-				"order" : 159,
+				"index" : 58,
+				"order" : 158,
 				"text" : "ui_effect_sakura_sakurabackcolor",
 				"type" : "bool",
 				"value" : false
@@ -4431,8 +4429,8 @@
 			"sakurabackground" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 58,
-				"order" : 158,
+				"index" : 57,
+				"order" : 157,
 				"text" : "ui_effect_sakura_sakurabackground",
 				"type" : "bool",
 				"value" : false
@@ -4440,10 +4438,10 @@
 			"sakurabacklight" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 61,
+				"index" : 60,
 				"max" : 100,
 				"min" : 1,
-				"order" : 161,
+				"order" : 160,
 				"text" : "ui_effect_sakura_sakurabacklight",
 				"type" : "slider",
 				"value" : 50
@@ -4451,10 +4449,10 @@
 			"sakurapointnumber" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 62,
+				"index" : 61,
 				"max" : 1000,
 				"min" : 50,
-				"order" : 162,
+				"order" : 161,
 				"text" : "ui_effect_sakura_sakurapointnumber",
 				"type" : "slider",
 				"value" : 300
@@ -4462,10 +4460,10 @@
 			"sakurareverse" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 60,
+				"index" : 59,
 				"max" : 100,
 				"min" : 0,
-				"order" : 160,
+				"order" : 159,
 				"text" : "ui_effect_sakura_sakurareverse",
 				"type" : "bool",
 				"value" : true
@@ -4473,10 +4471,10 @@
 			"sakuratransparency" : 
 			{
 				"condition" : "showSakura.value == true",
-				"index" : 57,
+				"index" : 56,
 				"max" : 100,
 				"min" : 0,
-				"order" : 157,
+				"order" : 156,
 				"text" : "ui_effect_sakura_sakuratransparency",
 				"type" : "slider",
 				"value" : 40
@@ -4491,8 +4489,8 @@
 			"selectmusic" : 
 			{
 				"fileType" : "video",
-				"index" : 51,
-				"order" : 151,
+				"index" : 50,
+				"order" : 150,
 				"text" : "ui_music_selectmusic",
 				"type" : "file"
 			},
@@ -4515,16 +4513,16 @@
 			},
 			"showDate" : 
 			{
-				"index" : 193,
-				"order" : 293,
+				"index" : 192,
+				"order" : 292,
 				"text" : "ui_date_show",
 				"type" : "bool",
 				"value" : true
 			},
 			"showSakura" : 
 			{
-				"index" : 56,
-				"order" : 156,
+				"index" : 55,
+				"order" : 155,
 				"text" : "ui_effect_sakura_showSakura",
 				"type" : "bool",
 				"value" : true
@@ -4532,16 +4530,16 @@
 			"showSemiCircle" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 93,
-				"order" : 193,
+				"index" : 92,
+				"order" : 192,
 				"text" : "ui_audio_show_semi_circle",
 				"type" : "bool",
 				"value" : false
 			},
 			"showTime" : 
 			{
-				"index" : 177,
-				"order" : 277,
+				"index" : 176,
+				"order" : 276,
 				"text" : "ui_date_showTime",
 				"type" : "bool",
 				"value" : true
@@ -4549,7 +4547,7 @@
 			"style" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 95,
+				"index" : 94,
 				"options" : 
 				[
 					{
@@ -4565,7 +4563,7 @@
 						"value" : 3
 					}
 				],
-				"order" : 195,
+				"order" : 194,
 				"text" : "ui_audio_wave_style",
 				"type" : "combo",
 				"value" : 1
@@ -4573,8 +4571,8 @@
 			"tShowSencends" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 179,
-				"order" : 279,
+				"index" : 178,
+				"order" : 278,
 				"text" : "ui_date_tShowSencends",
 				"type" : "bool",
 				"value" : true
@@ -4582,10 +4580,10 @@
 			"tSize" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 190,
+				"index" : 189,
 				"max" : 50,
 				"min" : 10,
-				"order" : 290,
+				"order" : 289,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 18
@@ -4593,8 +4591,8 @@
 			"tStyle" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 178,
-				"order" : 278,
+				"index" : 177,
+				"order" : 277,
 				"text" : "ui_date_tStyle",
 				"type" : "bool",
 				"value" : true
@@ -4602,10 +4600,10 @@
 			"tX" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 188,
+				"index" : 187,
 				"max" : 100,
 				"min" : 0,
-				"order" : 288,
+				"order" : 287,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 50
@@ -4613,10 +4611,10 @@
 			"tY" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 189,
+				"index" : 188,
 				"max" : 100,
 				"min" : 0,
-				"order" : 289,
+				"order" : 288,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 50
@@ -4624,48 +4622,48 @@
 			"test_modauthor1" : 
 			{
 				"condition" : "Test_ModAuthor.value == true",
-				"index" : 353,
-				"order" : 453,
+				"index" : 352,
+				"order" : 452,
 				"text" : "<small>就一个普通大学生<small/><br/><h5>后面可能会自己加点功能 反正都是给自己用的 也可以去创意工坊提出一些功能加入进来或者提出BUG和不合理之处 我都会回复的<h5/>",
 				"type" : "text"
 			},
 			"text_line41" : 
 			{
 				"condition" : "hitokoto_show.value == true && hitokoto_diy.value == true",
-				"index" : 257,
-				"order" : 357,
+				"index" : 256,
+				"order" : 356,
 				"text" : "<br/>- - - - - - - - - - - - - - - - - - - - - - - - - -<br/>",
 				"type" : "text"
 			},
 			"text_onlychina" : 
 			{
 				"condition" : "(weather_show.value == true) && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false)",
-				"index" : 216,
-				"order" : 316,
+				"index" : 215,
+				"order" : 315,
 				"text" : "ui_text_onlychina",
 				"type" : "text",
 				"value" : 1
 			},
 			"text_visual_audio" : 
 			{
-				"index" : 88,
-				"order" : 188,
+				"index" : 87,
+				"order" : 187,
 				"text" : "●  可视化音频  Visual Audio",
 				"type" : "group"
 			},
 			"text_weather_3" : 
 			{
 				"condition" : "weather_show.value == true && freeapi.value == true",
-				"index" : 225,
-				"order" : 325,
+				"index" : 224,
+				"order" : 324,
 				"text" : "ui_weather_text_weather_3",
 				"type" : "text"
 			},
 			"text_worldwidesupport" : 
 			{
 				"condition" : "(weather_show.value == true) && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false)",
-				"index" : 220,
-				"order" : 320,
+				"index" : 219,
+				"order" : 319,
 				"text" : "ui_text_worldwidesupport",
 				"type" : "text",
 				"value" : 1
@@ -4673,8 +4671,8 @@
 			"thankapi" : 
 			{
 				"condition" : "weather_show.value == true && freeapi.value == true",
-				"index" : 224,
-				"order" : 324,
+				"index" : 223,
+				"order" : 323,
 				"text" : "ui_weather_thankapi",
 				"type" : "text",
 				"value" : ""
@@ -4682,8 +4680,8 @@
 			"tianqiapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && tianqiapi.value == true)",
-				"index" : 219,
-				"order" : 319,
+				"index" : 218,
+				"order" : 318,
 				"text" : "ui_weather_tianqiapi",
 				"type" : "bool",
 				"value" : false
@@ -4691,10 +4689,10 @@
 			"timetransparency" : 
 			{
 				"condition" : "showTime.value == true",
-				"index" : 191,
+				"index" : 190,
 				"max" : 100,
 				"min" : 0,
-				"order" : 291,
+				"order" : 290,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -4708,18 +4706,18 @@
 				"type" : "text",
 				"value" : ""
 			},
-			"updata_log_1_7_0" : 
+			"updata_log" : 
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.7.0(29) 2026-1-20(Y-M-D)<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.7.1(30) 2026-1-22(Y-M-D)<br/>",
 				"type" : "bool",
 				"value" : true
 			},
 			"visual_audio_model" : 
 			{
 				"condition" : "",
-				"index" : 89,
+				"index" : 88,
 				"options" : 
 				[
 					{
@@ -4743,7 +4741,7 @@
 						"value" : 4
 					}
 				],
-				"order" : 189,
+				"order" : 188,
 				"text" : "ui_audio_visual_audio_model",
 				"type" : "combo",
 				"value" : 1
@@ -4751,15 +4749,15 @@
 			"visualcrossingapi" : 
 			{
 				"condition" : "(weather_show.value == true && freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false) || (weather_show.value == true && visualcrossingapi.value == true)",
-				"index" : 221,
-				"order" : 321,
+				"index" : 220,
+				"order" : 320,
 				"text" : "ui_weather_visualcrossingapi",
 				"type" : "bool",
 				"value" : false
 			},
 			"wallpaper_updata" : 
 			{
-				"condition" : "updata_log_1_7_0.value == true",
+				"condition" : "updata_log.value == true",
 				"index" : 1,
 				"order" : 101,
 				"text" : "ui_wallpaper_updata",
@@ -4768,7 +4766,7 @@
 			},
 			"wallpaper_updata_open_on_update" : 
 			{
-				"condition" : "updata_log_1_7_0.value == true",
+				"condition" : "updata_log.value == true",
 				"index" : 2,
 				"order" : 102,
 				"text" : "ui_wallpaper_updata_open_on_update",
@@ -4777,7 +4775,7 @@
 			},
 			"wallpaper_updata_open_on_update_tip" : 
 			{
-				"condition" : "updata_log_1_7_0.value == true",
+				"condition" : "updata_log.value == true",
 				"index" : 3,
 				"order" : 103,
 				"text" : "ui_wallpaper_updata_open_on_update_tip",
@@ -4787,8 +4785,8 @@
 			"wallpapercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 355,
-				"order" : 455,
+				"index" : 354,
+				"order" : 454,
 				"text" : "ui_friendlink_wallpapercategory",
 				"type" : "bool",
 				"value" : false
@@ -4796,32 +4794,32 @@
 			"wallpapercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 356,
-				"order" : 456,
+				"index" : 355,
+				"order" : 455,
 				"text" : "ui_friendlink_wallpaper_0",
 				"type" : "text"
 			},
 			"wallpapercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 357,
-				"order" : 457,
+				"index" : 356,
+				"order" : 456,
 				"text" : "ui_friendlink_wallpaper_1",
 				"type" : "text"
 			},
 			"wallpapercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 358,
-				"order" : 458,
+				"index" : 357,
+				"order" : 457,
 				"text" : "ui_friendlink_wallpaper_2",
 				"type" : "text"
 			},
 			"wallpapercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && wallpapercategory.value == true",
-				"index" : 359,
-				"order" : 459,
+				"index" : 358,
+				"order" : 458,
 				"text" : "ui_friendlink_wallpaper_3",
 				"type" : "text"
 			},
@@ -4875,10 +4873,10 @@
 			"wavetransparency" : 
 			{
 				"condition" : "visual_audio_model.value == 1",
-				"index" : 104,
+				"index" : 103,
 				"max" : 100,
 				"min" : 0,
-				"order" : 204,
+				"order" : 203,
 				"text" : "ui_audio_wave_transparency",
 				"type" : "slider",
 				"value" : 80
@@ -4886,10 +4884,10 @@
 			"weatherX" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 249,
+				"index" : 248,
 				"max" : 100,
 				"min" : 0,
-				"order" : 349,
+				"order" : 348,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 20
@@ -4897,10 +4895,10 @@
 			"weatherY" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 250,
+				"index" : 249,
 				"max" : 100,
 				"min" : 0,
-				"order" : 350,
+				"order" : 349,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 15
@@ -4908,8 +4906,8 @@
 			"weather_CityText" : 
 			{
 				"condition" : "weather_show.value == true && open_meteoapi.value  == false",
-				"index" : 229,
-				"order" : 329,
+				"index" : 228,
+				"order" : 328,
 				"text" : "ui_weather_weather_CityText",
 				"type" : "textinput"
 			},
@@ -4925,8 +4923,8 @@
 			"weather_blurcolor" : 
 			{
 				"condition" : "weather_show.value == true && weather_blurcolor_show.value == true",
-				"index" : 242,
-				"order" : 342,
+				"index" : 241,
+				"order" : 341,
 				"text" : "ui_color_blurcolor",
 				"type" : "color",
 				"value" : "1 0.8 0.8"
@@ -4934,8 +4932,8 @@
 			"weather_blurcolor_show" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 241,
-				"order" : 341,
+				"index" : 240,
+				"order" : 340,
 				"text" : "ui_color_blurcolor_show",
 				"type" : "bool",
 				"value" : true
@@ -4944,43 +4942,27 @@
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 246,
+				"index" : 245,
 				"max" : 50,
 				"min" : 0,
-				"order" : 346,
+				"order" : 345,
 				"text" : "ui_color_bluryakeli",
 				"type" : "slider",
 				"value" : 3
 			},
-			"weather_lang" : 
+			"weather_daliy_tip" : 
 			{
-				"condition" : "weather_show.value == true && (visualcrossingapi.value == true || open_meteoapi.value  == true)",
-				"index" : 239,
-				"options" : 
-				[
-					{
-						"label" : "简体中文",
-						"value" : "zh"
-					},
-					{
-						"label" : "English",
-						"value" : "en"
-					},
-					{
-						"label" : "Come S∞ning",
-						"value" : "en"
-					}
-				],
-				"order" : 339,
-				"text" : "ui_weather_weather_lang",
-				"type" : "combo",
-				"value" : "zh"
+				"index" : 236,
+				"order" : 336,
+				"text" : "ui_weather_daliy_tip",
+				"type" : "bool",
+				"value" : false
 			},
 			"weather_lat_latitude" : 
 			{
 				"condition" : "weather_show.value == true && open_meteoapi.value == true",
-				"index" : 228,
-				"order" : 328,
+				"index" : 227,
+				"order" : 327,
 				"text" : "ui_weather_lat_latitude",
 				"type" : "textinput",
 				"value" : ""
@@ -4988,8 +4970,8 @@
 			"weather_lat_longitude" : 
 			{
 				"condition" : "weather_show.value == true && open_meteoapi.value == true",
-				"index" : 227,
-				"order" : 327,
+				"index" : 226,
+				"order" : 326,
 				"text" : "ui_weather_lat_longitude",
 				"type" : "textinput",
 				"value" : ""
@@ -4997,18 +4979,18 @@
 			"weather_roundedcorners" : 
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
-				"index" : 248,
+				"index" : 247,
 				"max" : 100,
 				"min" : 0,
-				"order" : 348,
+				"order" : 347,
 				"text" : "ui_color_roundedcorners",
 				"type" : "slider",
 				"value" : 50
 			},
 			"weather_show" : 
 			{
-				"index" : 214,
-				"order" : 314,
+				"index" : 213,
+				"order" : 313,
 				"text" : "ui_setting_show",
 				"type" : "bool",
 				"value" : false
@@ -5017,10 +4999,10 @@
 			{
 				"condition" : "weather_show.value == true",
 				"fraction" : false,
-				"index" : 247,
+				"index" : 246,
 				"max" : 100,
 				"min" : 0,
-				"order" : 347,
+				"order" : 346,
 				"text" : "ui_color_showwidth",
 				"type" : "slider",
 				"value" : 0
@@ -5028,10 +5010,10 @@
 			"weather_size" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 251,
+				"index" : 250,
 				"max" : 50,
-				"min" : 10,
-				"order" : 351,
+				"min" : 1,
+				"order" : 350,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 12
@@ -5039,26 +5021,26 @@
 			"weather_text1" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 223,
-				"order" : 323,
+				"index" : 222,
+				"order" : 322,
 				"text" : "ui_weather_weather_text1",
 				"type" : "text"
 			},
 			"weather_text4" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 230,
-				"order" : 330,
+				"index" : 229,
+				"order" : 329,
 				"text" : "ui_weather_text4",
 				"type" : "text"
 			},
 			"weather_timetransparency" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 252,
+				"index" : 251,
 				"max" : 100,
 				"min" : 0,
-				"order" : 352,
+				"order" : 351,
 				"text" : "ui_color_timetransparency",
 				"type" : "slider",
 				"value" : 100
@@ -5066,7 +5048,7 @@
 			"weather_unit" : 
 			{
 				"condition" : "weather_show.value == true && (visualcrossingapi.value == true || open_meteoapi.value  == true)",
-				"index" : 240,
+				"index" : 239,
 				"options" : 
 				[
 					{
@@ -5086,7 +5068,7 @@
 						"value" : "base"
 					}
 				],
-				"order" : 340,
+				"order" : 339,
 				"text" : "ui_weather_weather_unit",
 				"type" : "combo",
 				"value" : "metric"
@@ -5127,10 +5109,10 @@
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
 				"fraction" : false,
-				"index" : 245,
+				"index" : 244,
 				"max" : 100,
 				"min" : 0,
-				"order" : 345,
+				"order" : 344,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 4
@@ -5138,8 +5120,8 @@
 			"weather_yakeli_show" : 
 			{
 				"condition" : "weather_show.value == true",
-				"index" : 243,
-				"order" : 343,
+				"index" : 242,
+				"order" : 342,
 				"text" : "ui_color_yakeli_show",
 				"type" : "bool",
 				"value" : true
@@ -5147,8 +5129,8 @@
 			"weather_yakelicolor" : 
 			{
 				"condition" : "weather_show.value == true && weather_yakeli_show.value == true",
-				"index" : 244,
-				"order" : 344,
+				"index" : 243,
+				"order" : 343,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
@@ -5156,24 +5138,24 @@
 			"weatherapitext" : 
 			{
 				"condition" : "weather_show.value == true && (freeapi.value == false && qweatherapi.value == false && tianqiapi.value == false && visualcrossingapi.value == false && open_meteoapi.value  == false)",
-				"index" : 215,
-				"order" : 315,
+				"index" : 214,
+				"order" : 314,
 				"text" : "ui_weather_weatherapitext",
 				"type" : "text"
 			},
 			"weatherapitiptext" : 
 			{
 				"condition" : "weather_show.value == true && qweatherapi.value == true",
-				"index" : 236,
-				"order" : 336,
+				"index" : 235,
+				"order" : 335,
 				"text" : "ui_weather_weatherapitiptext",
 				"type" : "text"
 			},
 			"weathercategory" : 
 			{
 				"condition" : "friendlylinks.value == true",
-				"index" : 361,
-				"order" : 461,
+				"index" : 360,
+				"order" : 460,
 				"text" : "ui_friendlink_weathercategory",
 				"type" : "bool",
 				"value" : false
@@ -5181,40 +5163,40 @@
 			"weathercategory_0" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 362,
-				"order" : 462,
+				"index" : 361,
+				"order" : 461,
 				"text" : "ui_friendlink_weathercategory_0",
 				"type" : "text"
 			},
 			"weathercategory_1" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 363,
-				"order" : 463,
+				"index" : 362,
+				"order" : 462,
 				"text" : "ui_friendlink_weathercategory_1",
 				"type" : "text"
 			},
 			"weathercategory_2" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 364,
-				"order" : 464,
+				"index" : 363,
+				"order" : 463,
 				"text" : "ui_friendlink_weathercategory_2",
 				"type" : "text"
 			},
 			"weathercategory_3" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 365,
-				"order" : 465,
+				"index" : 364,
+				"order" : 464,
 				"text" : "ui_friendlink_weathercategory_3",
 				"type" : "text"
 			},
 			"weathercategory_4" : 
 			{
 				"condition" : "friendlylinks.value == true && weathercategory.value == true",
-				"index" : 366,
-				"order" : 466,
+				"index" : 365,
+				"order" : 465,
 				"text" : "ui_friendlink_weathercategory_4",
 				"type" : "text"
 			}
@@ -5227,7 +5209,7 @@
 	"tags" : [ "Relaxing" ],
 	"title" : "Perfect Wallpaper -  Weather Fix | Media Integration | Daily Web Wallpaper | RGB Lighting",
 	"type" : "web",
-	"version" : 25,
+	"version" : 26,
 	"visibility" : "public",
 	"workshopid" : "3026605859",
 	"workshopurl" : "steam://url/CommunityFilePage/3026605859"

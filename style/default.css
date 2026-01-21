@@ -15,7 +15,8 @@ body {
     width: 100%;
     height: 100%;
     z-index: -1;
-    overflow: hidden; /* 防止模糊效果溢出 */
+    overflow: hidden;
+    /* 防止模糊效果溢出 */
 }
 
 /* 背景层样式 */
@@ -29,8 +30,10 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     opacity: 0;
-    will-change: filter, transform; /* 优化模糊和缩放性能 */
-    backface-visibility: hidden; /* 防止模糊效果闪烁 */
+    will-change: filter, transform;
+    /* 优化模糊和缩放性能 */
+    backface-visibility: hidden;
+    /* 防止模糊效果闪烁 */
 }
 
 #background-layer1 {
@@ -54,8 +57,10 @@ body {
     background-repeat: no-repeat;
     filter: blur(20px) brightness(0.8);
     transform: scale(1.1);
-    z-index: -1; /* 在背景层之下 */
-    opacity: 0; /* 默认隐藏 */
+    z-index: -1;
+    /* 在背景层之下 */
+    opacity: 0;
+    /* 默认隐藏 */
     transition: opacity 1s ease-in-out;
 }
 
@@ -337,7 +342,9 @@ video {
     text-align: center;
     font-size: var(--weather-font-size);
     line-height: var(--weather-font-size);
+    display: flex;
     justify-content: space-around;
+    align-items: center;
     transform: translate(-50%, -50%);
     opacity: var(--weather-opacity);
     overflow: hidden;
@@ -404,7 +411,7 @@ video {
 
 .weather-cell {
     font-weight: bold;
-    text-align: left;
+    text-align: center;
 }
 
 .temp-cell {
@@ -412,24 +419,9 @@ video {
     font-weight: bold;
 }
 
-.feels-cell {
-    font-size: 0.9em;
-}
-
-.humidity-cell {
-    font-size: 0.9em;
-}
-
 .wind-cell {
-    text-align: left;
+    text-align: center;
     padding-left: 8px;
-}
-
-.wind-level-cell,
-.wind-speed-cell,
-.visibility-cell,
-.cloud-cell {
-    font-size: 0.9em;
 }
 
 .air-title-cell {
@@ -828,9 +820,9 @@ div.btnbg {
     z-index: 1;
 
     border-radius: calc((var(--weather-height) / 2) * (var(--weather-roundedcorners) / 100) / 4);
-    background-color: rgba(var(--weather-yakeli-color), calc(var(--weather-yakeli) * var(--weather-yakeli-enabled)));
+    background-color: rgba(var(--weather-yakeli-color), calc(calc(var(--weather-yakeli)*1.5) * var(--weather-yakeli-enabled)));
     box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
-    backdrop-filter: blur(var(--weather-blur-yakeli));
+    backdrop-filter: blur(calc(var(--weather-blur-yakeli)*3));
 }
 
 /* 卡片内部边框闪烁效果 */
@@ -1119,6 +1111,9 @@ div.btnbg {
 
 #weather .weather-right {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #weather .weather-table {
@@ -1189,6 +1184,7 @@ div.btnbg {
     z-index: 1;
     backdrop-filter: blur(calc(var(--fluidEffect-backdrop-filter-strength)* 3)) !important;
 }
+
 .fluid-effect-wrapper::before {
     content: "";
     position: absolute;
@@ -1254,14 +1250,17 @@ div.btnbg {
         transform: translateX(400px);
         opacity: 0;
     }
+
     6.67% {
         transform: translateX(0);
         opacity: 1;
     }
+
     90% {
         transform: translateX(0);
         opacity: 1;
     }
+
     100% {
         transform: translateX(400px);
         opacity: 0;
@@ -1311,7 +1310,7 @@ div.btnbg {
     background: linear-gradient(135deg, rgba(30, 30, 40, 0.95), rgba(20, 20, 30, 0.98));
     border-radius: 20px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1);
+        0 0 0 1px rgba(255, 255, 255, 0.1);
     overflow: hidden;
     transform: translateY(20px) scale(0.95);
     transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1347,8 +1346,15 @@ div.btnbg {
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.7; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
 }
 
 .version-modal-close {
@@ -1378,12 +1384,12 @@ div.btnbg {
     overflow-y: auto;
     max-height: calc(80vh - 200px);
     box-sizing: border-box;
-    
+
     /* 添加平滑滚动和触摸优化 */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    
+
     /* 隐藏滚动条但保持功能 */
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1609,7 +1615,7 @@ div.btnbg {
     .version-modal-content {
         background: linear-gradient(135deg, rgba(20, 20, 30, 0.98), rgba(10, 10, 20, 0.98));
     }
-    
+
     .version-badge {
         background: linear-gradient(135deg, #3a5fef, #7a1fef);
     }
@@ -1655,8 +1661,8 @@ div.btnbg {
     background: linear-gradient(145deg, rgba(25, 25, 35, 0.98), rgba(15, 15, 25, 0.98));
     border-radius: 24px;
     box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6),
-                0 0 0 1px rgba(255, 255, 255, 0.08),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        0 0 0 1px rgba(255, 255, 255, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
     overflow: hidden;
     transform: translateY(30px) scale(0.95);
     transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -1671,10 +1677,10 @@ div.btnbg {
 
 .modal-header {
     padding: 28px 32px;
-    background: linear-gradient(90deg, 
-        rgba(80, 100, 255, 0.15), 
-        rgba(120, 80, 255, 0.15),
-        rgba(200, 80, 255, 0.1));
+    background: linear-gradient(90deg,
+            rgba(80, 100, 255, 0.15),
+            rgba(120, 80, 255, 0.15),
+            rgba(200, 80, 255, 0.1));
     border-bottom: 1px solid rgba(255, 255, 255, 0.12);
     display: flex;
     align-items: center;
@@ -1704,8 +1710,15 @@ div.btnbg {
 }
 
 @keyframes gentle-float {
-    0%, 100% { transform: translateY(0) rotate(0deg); }
-    50% { transform: translateY(-5px) rotate(5deg); }
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+    }
 }
 
 .version-indicator {
@@ -1737,11 +1750,14 @@ div.btnbg {
 }
 
 @keyframes pulse-glow {
-    0%, 100% { 
+
+    0%,
+    100% {
         box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
         transform: scale(1);
     }
-    50% { 
+
+    50% {
         box-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
         transform: scale(1.05);
     }
@@ -1836,12 +1852,12 @@ div.btnbg {
     transform: translateX(20px);
     transition: all 0.4s ease;
     box-sizing: border-box;
-    
+
     /* 添加平滑滚动和触摸优化 */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    
+
     /* 隐藏滚动条但保持功能 */
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -1864,7 +1880,8 @@ div.btnbg {
 /* 当前版本视图样式 */
 .version-detail {
     animation: fade-in 0.5s ease;
-    min-height: 100%; /* 确保内容区域有足够高度 */
+    min-height: 100%;
+    /* 确保内容区域有足够高度 */
 }
 
 /* 确保弹窗内容可以正常滚动 */
@@ -1905,8 +1922,15 @@ div.btnbg {
 
 
 @keyframes fade-in {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 .version-header {
@@ -1956,11 +1980,15 @@ div.btnbg {
     max-width: 100%;
     display: flex;
     flex-direction: column;
-    align-items: center; /* 水平居中 */
-    justify-content: flex-start; /* 从顶部开始 */
-    width: fit-content; /* 根据内容自适应宽度 */
+    align-items: center;
+    /* 水平居中 */
+    justify-content: flex-start;
+    /* 从顶部开始 */
+    width: fit-content;
+    /* 根据内容自适应宽度 */
     margin-left: auto;
-    margin-right: auto; /* 水平居中 */
+    margin-right: auto;
+    /* 水平居中 */
 }
 
 .version-image {
@@ -1992,10 +2020,11 @@ div.btnbg {
     text-align: center;
 }
 
-.image-info .md-paragraph{
+.image-info .md-paragraph {
     margin: 0;
     line-height: 0;
 }
+
 .image-description {
     font-weight: 500;
     color: rgba(255, 255, 255, 0.9);
@@ -2178,8 +2207,10 @@ div.btnbg {
     transform: translateX(400px);
     opacity: 0;
     animation: none;
-    will-change: transform, opacity; /* 提示浏览器优化动画性能 */
-    backface-visibility: hidden; /* 防止动画闪烁 */
+    will-change: transform, opacity;
+    /* 提示浏览器优化动画性能 */
+    backface-visibility: hidden;
+    /* 防止动画闪烁 */
     -webkit-backface-visibility: hidden;
 }
 
@@ -2193,7 +2224,8 @@ div.btnbg {
     opacity: 0;
     width: 350px;
     max-width: calc(100% - 40px);
-    z-index: 10000; /* 高于版本弹窗的z-index: 9999 */
+    z-index: 10000;
+    /* 高于版本弹窗的z-index: 9999 */
     background-color: rgba(0, 0, 0, 0.9);
     border: 1px solid rgba(74, 111, 255, 0.4);
     border-radius: 12px;
@@ -2201,8 +2233,10 @@ div.btnbg {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(10px);
     animation: none;
-    will-change: transform, opacity; /* 提示浏览器优化动画性能 */
-    backface-visibility: hidden; /* 防止动画闪烁 */
+    will-change: transform, opacity;
+    /* 提示浏览器优化动画性能 */
+    backface-visibility: hidden;
+    /* 防止动画闪烁 */
     -webkit-backface-visibility: hidden;
 }
 
@@ -2214,8 +2248,10 @@ div.btnbg {
     width: 100%;
     height: 100%;
     overflow: visible;
-    z-index: 1000; /* 提高z-index确保在最上层 */
-    pointer-events: none; /* 容器本身不拦截事件 */
+    z-index: 1000;
+    /* 提高z-index确保在最上层 */
+    pointer-events: none;
+    /* 容器本身不拦截事件 */
 }
 
 /* 确保通知内容可以点击 */
@@ -2225,19 +2261,22 @@ div.btnbg {
     top: 20px;
     right: 20px;
     margin: 0;
-    z-index: 1001; /* 比容器更高 */
+    z-index: 1001;
+    /* 比容器更高 */
 }
 
 /* 通用显示样式 - 使用动画 */
 .link-copy-notification.show {
     animation: slideInOut 6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    display: block !important; /* 确保元素显示 */
+    display: block !important;
+    /* 确保元素显示 */
 }
 
 /* 版本弹窗内通知显示样式 - 使用动画 */
 .version-modal .link-copy-notification.show {
     animation: slideInOut 11.03s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-    display: block !important; /* 确保元素显示 */
+    display: block !important;
+    /* 确保元素显示 */
 }
 
 .notification-content {
@@ -2342,19 +2381,49 @@ div.btnbg {
 }
 
 /* 代码块语法高亮（基础样式） */
-.language-javascript .keyword { color: #ff79c6; }
-.language-javascript .string { color: #f1fa8c; }
-.language-javascript .number { color: #bd93f9; }
-.language-javascript .comment { color: #6272a4; }
-.language-javascript .function { color: #50fa7b; }
+.language-javascript .keyword {
+    color: #ff79c6;
+}
 
-.language-html .tag { color: #ff79c6; }
-.language-html .attr-name { color: #50fa7b; }
-.language-html .attr-value { color: #f1fa8c; }
+.language-javascript .string {
+    color: #f1fa8c;
+}
 
-.language-css .property { color: #50fa7b; }
-.language-css .value { color: #f1fa8c; }
-.language-css .selector { color: #ff79c6; }
+.language-javascript .number {
+    color: #bd93f9;
+}
+
+.language-javascript .comment {
+    color: #6272a4;
+}
+
+.language-javascript .function {
+    color: #50fa7b;
+}
+
+.language-html .tag {
+    color: #ff79c6;
+}
+
+.language-html .attr-name {
+    color: #50fa7b;
+}
+
+.language-html .attr-value {
+    color: #f1fa8c;
+}
+
+.language-css .property {
+    color: #50fa7b;
+}
+
+.language-css .value {
+    color: #f1fa8c;
+}
+
+.language-css .selector {
+    color: #ff79c6;
+}
 
 /* 嵌套列表样式 */
 .md-nested-list {
@@ -2456,16 +2525,23 @@ div.btnbg {
 }
 
 @keyframes pulse-dot {
-    0%, 100% { box-shadow: 0 0 0 2px rgba(74, 111, 255, 0.5); }
-    50% { box-shadow: 0 0 0 6px rgba(74, 111, 255, 0.2); }
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 2px rgba(74, 111, 255, 0.5);
+    }
+
+    50% {
+        box-shadow: 0 0 0 6px rgba(74, 111, 255, 0.2);
+    }
 }
 
 .timeline-line {
     width: 2px;
     height: calc(100% + 30px);
-    background: linear-gradient(to bottom, 
-        rgba(74, 111, 255, 0.5), 
-        rgba(138, 47, 255, 0.3));
+    background: linear-gradient(to bottom,
+            rgba(74, 111, 255, 0.5),
+            rgba(138, 47, 255, 0.3));
     margin-top: 10px;
 }
 
@@ -2810,7 +2886,8 @@ div.btnbg {
     flex-shrink: 0;
 }
 
-.footer-left, .footer-right {
+.footer-left,
+.footer-right {
     display: flex;
     gap: 15px;
 }
@@ -2865,6 +2942,7 @@ div.btnbg {
         opacity: 0.8;
         transform: scale(1);
     }
+
     100% {
         opacity: 1;
         transform: scale(1.05);
@@ -2881,6 +2959,7 @@ div.btnbg {
     0% {
         text-shadow: 0 0 5px rgba(255, 71, 87, 0.5);
     }
+
     100% {
         text-shadow: 0 0 10px rgba(255, 71, 87, 0.8);
     }
@@ -3018,12 +3097,12 @@ div.btnbg {
     padding-right: 30px;
     overflow-y: auto;
     max-height: calc(90vh - 100px);
-    
+
     /* 添加平滑滚动和触摸优化 */
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
-    
+
     /* 隐藏滚动条但保持功能 */
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -3060,6 +3139,7 @@ div.btnbg {
 
 /* 打印样式 */
 @media print {
+
     .version-modal,
     .version-detail-modal {
         display: none !important;
@@ -3153,29 +3233,32 @@ div.btnbg {
 
 .gradient-scrollbar::before {
     top: 0;
-    background: linear-gradient(to bottom, 
-        rgba(25, 25, 35, 0.98), 
-        transparent);
+    background: linear-gradient(to bottom,
+            rgba(25, 25, 35, 0.98),
+            transparent);
 }
 
 .gradient-scrollbar::after {
     bottom: 0;
-    background: linear-gradient(to top, 
-        rgba(25, 25, 35, 0.98), 
-        transparent);
+    background: linear-gradient(to top,
+            rgba(25, 25, 35, 0.98),
+            transparent);
 }
 
 /* 应用到版本更新弹窗的滚动区域 */
 .modal-body .view-content,
 .detail-modal-body {
     /* 选择一种方案应用 */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
 }
 
 .modal-body .view-content::-webkit-scrollbar,
 .detail-modal-body::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
     width: 0;
     height: 0;
 }
@@ -3184,7 +3267,8 @@ div.btnbg {
 .modal-body .view-content,
 .detail-modal-body {
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* 平滑滚动 */
+    -webkit-overflow-scrolling: touch;
+    /* 平滑滚动 */
 }
 
 /* 原版版本弹窗的滚动条隐藏 */
@@ -3219,9 +3303,9 @@ div.btnbg {
     position: absolute;
     right: 0;
     width: 100%;
-    background: linear-gradient(to bottom, 
-        rgba(74, 111, 255, 0.5), 
-        rgba(138, 47, 255, 0.5));
+    background: linear-gradient(to bottom,
+            rgba(74, 111, 255, 0.5),
+            rgba(138, 47, 255, 0.5));
     border-radius: 2px;
     transition: height 0.1s ease, top 0.1s ease;
 }
@@ -3237,23 +3321,21 @@ div.btnbg {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, 
-        rgba(74, 111, 255, 0.3), 
-        rgba(138, 47, 255, 0.3));
+    background: linear-gradient(135deg,
+            rgba(74, 111, 255, 0.3),
+            rgba(138, 47, 255, 0.3));
     border-radius: 4px;
     border: 2px solid rgba(25, 25, 35, 0.98);
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, 
-        rgba(74, 111, 255, 0.5), 
-        rgba(138, 47, 255, 0.5));
+    background: linear-gradient(135deg,
+            rgba(74, 111, 255, 0.5),
+            rgba(138, 47, 255, 0.5));
 }
 
 /* 滚动条隐藏的JavaScript辅助类 */
-.no-scrollbar {
-
-}
+.no-scrollbar {}
 
 .no-scrollbar::-webkit-scrollbar {
     width: 0 !important;
@@ -3269,12 +3351,15 @@ div.btnbg {
 /* 隐藏滚动条但保留滚动功能的通用类 */
 .scrollbar-hidden {
     /* 隐藏滚动条但保留功能 */
-    scrollbar-width: none; /* Firefox */
-    -ms-overflow-style: none; /* IE 10+ */
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE 10+ */
 }
 
 .scrollbar-hidden::-webkit-scrollbar {
-    display: none; /* Chrome, Safari, Opera */
+    display: none;
+    /* Chrome, Safari, Opera */
 }
 
 
@@ -3545,9 +3630,12 @@ body:not(.slide-mode) #navigation-buttons {
     flex: 1;
     display: flex;
     flex-direction: column;
-    overflow: visible; /* 改为visible确保通知可以显示 */
-    min-width: 0; /* 防止flex item溢出 */
-    position: relative; /* 为绝对定位的子元素提供参考 */
+    overflow: visible;
+    /* 改为visible确保通知可以显示 */
+    min-width: 0;
+    /* 防止flex item溢出 */
+    position: relative;
+    /* 为绝对定位的子元素提供参考 */
 }
 
 .version-detail-header {

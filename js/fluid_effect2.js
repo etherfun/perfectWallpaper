@@ -278,7 +278,6 @@ class FluidEffect2 {
 
 
         debugLogger.info('设置 FluidEffect2 图像源', {
-            imageSrc: image.src,
             naturalWidth: image.naturalWidth,
             naturalHeight: image.naturalHeight
         });

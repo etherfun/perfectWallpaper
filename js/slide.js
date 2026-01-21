@@ -251,9 +251,8 @@ function shouldShow() {
 				//使用两层背景系统进行渐变切换
 				transitionBackground('file:///' + currentImg);
 			} else {
-				
 				//使用两层背景系统进行渐变切换
-				transitionBackground("url('imgs/1.jpg')");
+				transitionBackground("imgs/1.jpg");
 			}
 			clearpicturesinfo()
 			pictures.picture_info.style.display = "none"
@@ -284,25 +283,7 @@ function shouldShow() {
 			// 关闭视频
 			myvideo.src = null;
 
-			switch (picturesinfo_language) {
-				case 1:
-					var lga = "zh-CN"
-					break
-				case 2:
-					var lga = "zh-TW"
-					break
-				case 3:
-					var lga = "en-US"
-					break
-				case 4:
-					var lga = "ja-JP"
-					break
-				case 5:
-					var lga = "Ko_KR"
-			}
-
-			$.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + lga, function (get) {
-				console.log(JSON.stringify(get));
+			$.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + globalSettingsLanguage, function (get) {
 
 				var title = get.images[0].title
 				var text = ""
@@ -462,27 +443,10 @@ function shouldShow() {
 			// 关闭视频
 			myvideo.src = null;
 
-			switch (picturesinfo_language) {
-				case 1:
-					var lga = "zh-CN"
-					break
-				case 2:
-					var lga = "zh-TW"
-					break
-				case 3:
-					var lga = "en-US"
-					break
-				case 4:
-					var lga = "ja-JP"
-					break
-				case 5:
-					var lga = "Ko_KR"
-			}
-			var city = lga.slice(3)
+			var city = globalSettingsLanguage.slice(3)
 
-			$.get(`https://fd.api.iris.microsoft.com/v4/api/selection?&placement=88000820&bcnt=1&country=${city}&locale=${lga}&fmt=json`, function (get) {
+			$.get(`https://fd.api.iris.microsoft.com/v4/api/selection?&placement=88000820&bcnt=1&country=${city}&locale=${globalSettingsLanguage}&fmt=json`, function (get) {
 				var rawjson = JSON.parse(get.batchrsp.items[0].item)
-				console.log(rawjson)
 
 				var url = rawjson.ad.landscapeImage.asset
 				var img = new Image();

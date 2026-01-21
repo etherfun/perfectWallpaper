@@ -7,13 +7,14 @@
 /** 全局定义 begin ------------------------------------ */
 let dateInitComplate = false;
 let bgInitComplate = false;
+let weatherInitComplate = false;
 let updateInitComplate = false;
 
 let globalSettingsLanguage = "zh-CN";
 
 let fullscreenFluidEffectValue
 
-var backgroundRoute = "url('imgs/1.jpg')";
+var backgroundRoute = "imgs/1.jpg";
 var videoRoute = "video/1-test.webm";
 //var cusvideoRoute = "video.webm";
 var cusvideoRoute = "";
@@ -308,7 +309,7 @@ var verificationCode = '01F01C01E01I01I01C01H01K01H01L'; var verificationResult 
 /* 监听配置 */
 window.wallpaperPropertyListener = {
     applyUserProperties: async function (properties) {
-        debugLogger.debug('User properties', properties)
+        if (FirstLoad == true) debugLogger.debug('User properties', properties);
 
         if (properties.wallpaper_updata && FirstLoad !== true) {
             await window.versionManager.initUpdateModal(false);
@@ -316,13 +317,15 @@ window.wallpaperPropertyListener = {
         if (properties.wallpaper_updata_open_on_update) {
             localStorage.setItem("perfectwall_version_show_update", properties.wallpaper_updata_open_on_update.value);
         }
+        if (properties.debugger_copy && FirstLoad !== true) {
+            showDebugLogModal(debugLogger.exportToJSON());
+        }
         if (FirstLoad) {
             debugLogger.info('更新参数初始化完成');
             updateInitComplate = true;
         }
         if (properties.global_settings_language) {
             globalSettingsLanguage = properties.global_settings_language.value;
-
             load_i18n_data();
         }
 
@@ -777,7 +780,10 @@ window.wallpaperPropertyListener = {
         if (properties.weather_unit) {
             weather_unit = properties.weather_unit.value
             weather_unit_choose()
-
+        }
+        if (properties.weather_daliy_tip) {
+            weather_daliy_tip = properties.weather_daliy_tip.value
+            if (FirstLoad == false) weather.innerHTML = await generateWeatherTable();
         }
         if (properties.weather_lat_latitude) {
             weather_address.latitude = properties.weather_lat_latitude.value
@@ -896,7 +902,7 @@ window.wallpaperPropertyListener = {
         // 天气大小
         if (properties.weather_size) {
             const s = properties.weather_size.value;
-            bodyElement.style.setProperty("--weather-font-size", Math.floor(h / 570 * s) + 'px');
+            bodyElement.style.setProperty("--weather-font-size", Math.floor(h / 900 * s) + 'px');
         }
         if (properties.weather_showwidth) {
             if (properties.weather_showwidth.value == 0) {
@@ -912,6 +918,10 @@ window.wallpaperPropertyListener = {
         }
         if (properties.weatherY) {
             bodyElement.style.setProperty("--weather-top", `${properties.weatherY.value}%`);
+        }
+        if (FirstLoad) {
+            debugLogger.info('天气参数初始化完成');
+            weatherInitComplate = true;
         }
         //一言
         //一言更新时间
@@ -2429,6 +2439,80 @@ var shouldShowMap = function () {
         wallpaper.particles('particlesImage', mapRoute, 'true');
     }
 };
+
+/**
+ * 显示调试日志模态框
+ * @param {string} logText - 日志文本
+ */
+function showDebugLogModal(logText) {
+    // 如果已经存在模态框，先移除
+    const existingModal = document.getElementById('debug-log-modal');
+    if (existingModal) {
+        document.body.removeChild(existingModal);
+    }
+
+    // 转义HTML特殊字符，用于textarea内容
+    // 简单转义：只转义可能破坏HTML结构的字符
+    const escapedLogText = logText
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/`/g, '&#96;')
+        .replace(/\$/g, '&#36;');
+
+    // 创建模态框容器
+    const modal = document.createElement('div');
+    modal.id = 'debug-log-modal';
+    modal.className = 'version-modal show';
+    modal.innerHTML = `
+        <div class="modal-overlay"></div>
+        <div class="modal-content" style="width: 70%; max-width: 800px; height: 80%; max-height: 600px;">
+            <div class="modal-header">
+                <div class="header-left">
+                    <h3 class="modal-title">调试日志</h3>
+                    <span class="version-badge">${debugLogger.logs.length} 条日志</span>
+                </div>
+                <button class="modal-close" onclick="closeDebugLogModal()">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="view-content active" style="padding: 20px; position: relative; top: auto; left: auto; width: auto; height: auto; display: block; opacity: 1; visibility: visible; transform: none;">
+                    <textarea id="debug-log-textarea" rows="15" style="width: 100%; font-family: monospace; background: rgba(0,0,0,0.3); color: #fff; border: 1px solid rgba(255,255,255,0.2); padding: 10px; border-radius: 8px; resize: vertical;">${escapedLogText}</textarea>
+                    <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+                        <button class="version-btn" onclick="copyDebugLog()" style="background: linear-gradient(135deg, #4CAF50, #8BC34A);">复制日志</button>
+                        <button class="version-btn" onclick="closeDebugLogModal()" style="background: linear-gradient(135deg, #f44336, #ff9800);">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    document.body.appendChild(modal);
+
+    // 阻止点击遮罩层关闭（可选）
+    modal.querySelector('.modal-overlay').addEventListener('click', closeDebugLogModal);
+}
+
+function closeDebugLogModal() {
+    const modal = document.getElementById('debug-log-modal');
+    if (modal) {
+        document.body.removeChild(modal);
+    }
+}
+
+function copyDebugLog() {
+    const textarea = document.getElementById('debug-log-textarea');
+    if (textarea) {
+        clipboardCopy(textarea.value)
+            .then(() => {
+                // 可以添加复制成功提示
+                console.log('调试日志已复制到剪贴板');
+            })
+            .catch(err => {
+                console.error('复制失败:', err);
+            });
+    }
+}
 
 // 页面加载完成后立即应用用户设置
 document.addEventListener('DOMContentLoaded', function () {

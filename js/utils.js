@@ -96,7 +96,7 @@ function updateAllI18nElements() {
 
     document.querySelectorAll('template').forEach(template => {
         if (template.content) {
-            debugLogger.iofo('Processing template for i18n')
+            debugLogger.info('Processing template for i18n')
             processElements(template.content.querySelectorAll('[data-i18n]'));
         }
     });
@@ -1343,5 +1343,32 @@ function waitAndExecute(conditionFn, actionFn, interval = 100, timeout = 20000) 
         };
         
         check();
+    });
+}
+
+function clipboardCopy(text) {
+    if (navigator.clipboard?.writeText) {
+        return navigator.clipboard.writeText(text);
+    }
+
+    return new Promise((resolve, reject) => {
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        textarea.style.left = '-9999px';
+
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        try {
+            const success = document.execCommand('copy');
+            success ? resolve() : reject(new Error('Copy failed'));
+        } catch (err) {
+            reject(err);
+        } finally {
+            document.body.removeChild(textarea);
+        }
     });
 }

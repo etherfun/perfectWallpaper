@@ -113,15 +113,6 @@
     "weather_openmeteo_96": "雷暴携冰雹",
     "weather_openmeteo_99": "雷暴携大量冰雹",
     "weather_loading": "正在加载天气数据...",
-    "weather_greeting_late_night": "夜深了，注意休息",
-    "weather_greeting_morning": "早上好，祝您拥有愉快的一天",
-    "weather_greeting_noon": "中午好，记得用餐",
-    "weather_greeting_afternoon": "下午好，保持活力",
-    "weather_greeting_evening": "晚上好，放松身心",
-    "weather_greeting_morning_formal": "早上好，先生/女士。",
-    "weather_greeting_afternoon_formal": "下午好，先生/女士。",
-    "weather_greeting_evening_formal": "晚上好，先生/女士。",
-    "weather_greeting_late_night_formal": "夜深了，先生/女士。",
     "weather_humidity_label": "湿度",
     "weather_wind_level_label": "级",
     "weather_visibility_label": "能见度",
@@ -140,6 +131,31 @@
     "weather_tip_air_quality": "今日大气杂质浓度异常。",
     "weather_tip_snow": "今日有雪，建议部署防滑措施。",
     "weather_tip_sunny_night": "请您注意休息，不休息也行。",
+    "weather_tip_alert": "当前有天气预警，请注意安全防范。",
+    "weather_tip_windy_strong": "强风天气，注意出行安全。",
+    "weather_tip_air_quality_poor": "空气质量较差，建议减少户外活动。",
+    "weather_tip_uv_extreme": "紫外线极强，请做好充分防护。",
+    "weather_tip_uv_high": "紫外线较强，请注意防晒。",
+    "weather_tip_uv_moderate": "紫外线中等，外出请适当防护。",
+    "weather_tip_hot_extreme": "极端高温天气，注意防暑降温。",
+    "weather_tip_cold_extreme": "极端低温天气，注意防寒保暖。",
+    "weather_tip_feels_hotter": "体感温度高于实际温度，注意防暑。",
+    "weather_tip_feels_colder": "体感温度低于实际温度，注意保暖。",
+    "weather_tip_humidity_high": "湿度较高，注意通风防潮。",
+    "weather_tip_humidity_low": "空气干燥，注意补水保湿。",
+    "weather_tip_visibility_poor": "能见度较差，注意交通安全。",
+    "weather_tip_visibility_low": "能见度较低，谨慎驾驶。",
+    "weather_tip_morning_sunny": "清晨阳光明媚，适合户外活动。",
+    "weather_tip_afternoon_sunny": "午后天气晴朗，注意适当防晒。",
+    "weather_tip_evening_sunny": "傍晚天气良好，适合散步放松。",
+    "weather_tip_cloudy_heavy": "阴天多云，光线较暗。",
+    "weather_tip_cloudy": "多云天气，适合室内活动。",
+    "weather_tip_heavy_precip": "强降水天气，注意防洪防涝。",
+    "weather_tip_moderate_precip": "有降水，请携带雨具。",
+    "weather_tip_default_morning": "早上好，注意天气变化。",
+    "weather_tip_default_afternoon": "下午好，保持良好状态。",
+    "weather_tip_default_evening": "晚上好，注意适时休息。",
+    "weather_tip_default_night": "夜深了，注意休息保暖。",
     "weather_error_loading": "天气数据加载失败",
     "weather_air_quality_excellent": "优",
     "weather_air_quality_good": "良",
@@ -153,6 +169,13 @@
     "weather_tooltip_unit_degree": "°",
     "weather_tooltip_unit_percent": "%",
     "weather_alert_everything_ok": "诸事顺遂",
+    "weather_alert_alert": "发布",
+    "weather_alert_update": "更新",
+    "weather_alert_severity_unknown": "严重性未知",
+    "weather_alert_severity_minor": "轻微威胁",
+    "weather_alert_severity_moderate": "中等威胁",
+    "weather_alert_severity_severe": "重大威胁",
+    "weather_alert_severity_extreme": "严重威胁",
     "weather_precip_type_rain": "雨",
     "weather_precip_type_freezing_rain": "冻雨",
     "weather_precip_type_hail": "冰雹",
@@ -171,6 +194,8 @@
     "weather_tooltip_wind_level": "风力等级",
     "weather_tooltip_wind_speed": "风速",
     "weather_tooltip_default_weather": "多云",
+    "already_copy": "链接已复制",
+    "already_copy_tip": "请在浏览器地址栏中粘贴访问",
     "app_title": "完美壁纸",
     "version_update_title": "版本更新",
     "version_info_title": "版本信息",
@@ -187,100 +212,70 @@
     "version_dont_show_again": "不再显示",
     "version_i_understand": "我知道了",
     "version_current_version": "当前版本",
-    
-
-    
+    "version_1_7_1_title": "常规更新",
+    "version_1_7_1_image_alt": "[刻律德菈](https://www.pixiv.net/artworks/134463827) By AL光",
+    "version_1_7_1_changes": "\n## 新增功能\n- 新增复制调试日志选项\n## 优化\n- 调整天气组件大小设置\n- 天气组件问候语可选择隐藏\n- 统一使用全局设置语言为壁纸语言\n## Bug修复\n- 修复天气预警部分值错误显示/无i18n翻译\n- 修复日志记录调用错误\n- 修复使用默认壁纸时导致壁纸无效或不显示",
     "version_1_7_0_title": "功能更新",
     "version_1_7_0_image_alt": "[水鏡と月の歌](https://www.pixiv.net/artworks/137067746) By torino",
     "version_1_7_0_changes": "## 新增功能\n- 媒体集成支持流体背景, 支持在有媒体播放时设置流体壁纸\n- 全新的天气组件\n- 添加更新提醒\n## 优化\n- 添加i18n翻译位于全局设置中\n- 优化壁纸在不同的比例下的切换连贯效果\n- 重构天气代码\n- 当壁纸没有完全覆盖时, 添加背景模糊效果\n- 优化幻灯片壁纸随机效果\n- 调整日期格式设置方式, 可独立设置年月日等\n- 清理无用组件/调用库",
-    
     "version_1_6_9_title": "功能更新",
     "version_1_6_9_changes": "## 新增功能\n- 媒体集成封面支持独立大小设置\n- 优化媒体集成相关代码\n- 媒体集成封面支持旋转\n- 支持自定义字体(来自Steam用户请求)\n- 媒体集成支持播放进度条",
-    
     "version_1_6_8_1_title": "代码优化",
     "version_1_6_8_1_changes": "## 优化\n- 优化播放器相关代码逻辑",
-    
     "version_1_6_8_title": "功能更新",
     "version_1_6_8_changes": "## 功能调整\n- 移除媒体集成加载等待时间\n- 加入和风天气请求次数检测\n## Bug修复\n- 修复Window聚焦壁纸请求问题",
-    
     "version_1_6_7_title": "功能更新",
     "version_1_6_7_changes": "## 和风天气API调整\n- 跟进和风天气API V.4.0 版本请求方式",
-    
     "version_1_6_6_title": "Bug修复",
     "version_1_6_6_changes": "## Bug修复\n- 修复0点时日期不更新\n- 修复媒体集成->可视化音频样式->音频线 会超出范围问题\n## 功能调整\n- 微调媒体集成->变化幅度 最大最小值(默认值效果不变)",
-    
     "version_1_6_5_title": "常规更新",
     "version_1_6_5_changes": "## 新增功能\n- 壁纸新增自定义网址,方便更多壁纸显示\n## Bug修复\n- 修复部分设备的组件显示层级问题\n## 功能调整\n- 免费天气API回归(原来是去年用限额导致失效了)",
-    
     "version_1_6_4_1_title": "1.6.4 冷补丁",
     "version_1_6_4_1_changes": "## Bug修复",
-    
     "version_1_6_4_title": "常规更新",
     "version_1_6_4_changes": "## Bug修复\n- 修复显示风格在部分模式下无效\n##功能调整\n- 修改壁纸渐变效果",
-    
     "version_1_6_3_title": "常规更新",
     "version_1_6_3_changes": "## Bug修复\n- 修复天气与倒计时无法更改颜色\n##功能调整\n- 移除天气API: 免费API(原因: 疑似停止服务返回数据无效)",
-    
     "version_1_6_2_title": "Bug修复",
     "version_1_6_2_changes": "## Bug修复\n- 修复背景API的请求问题(NASA每日星空,栗次元等)",
-    
     "version_1_6_1_title": "常规更新",
     "version_1_6_1_changes": "",
-    
     "version_1_6_0_1_title": "1.6.0 冷补丁",
     "version_1_6_0_1_changes": "## Bug修复",
-    
     "version_1_6_0_title": "功能更新",
     "version_1_6_0_changes": "",
-    
     "version_1_6_0_beta_4_title": "1.6.0 测试版V4",
     "version_1_6_0_beta_4_changes": "## 测试内容\n- 新增功能:\n-- 媒体集成\n-- 倒计时\n-- 媒体集成封面支持圆角,右侧显示及以右侧为基准\n- Bug修复:\n-- 媒体集成可能出现的亚克力圆角失效问题\n",
-    
     "version_1_6_0_beta_3_title": "1.6.0 测试版V3",
     "version_1_6_0_beta_3_changes": "## 测试内容\n- 新增功能:\n-- 新增媒体集成\n-- 媒体集成封面支持圆角,右侧显示及以右侧为基准\n- Bug修复:\n-- 媒体集成可能出现的亚克力圆角失效问题\n## 功能更新\n- 使用最新最热(?)的分组方便管理",
-    
     "version_1_6_0_beta_2_title": "1.6.0 测试版V2",
     "version_1_6_0_beta_2_changes": "## 测试内容\n- 新增功能: 新增媒体集成\n- Bug修复: 媒体集成可能出现的亚克力圆角失效问题\n## Bug修复\n- 修复Bing壁纸反复请求Bug",
-    
     "version_1_6_0_beta_1_title": "1.6.0 测试版",
     "version_1_6_0_beta_1_changes": "## 测试内容\n- 新增功能: 新增媒体集成\n## 新增功能\n- 时间支持亚克力效果\n功能调整\n- 更改亚克力圆角改变逻辑\n## Bug修复\n## 其他\n- 完善英语翻译",
-    
     "version_1_5_2_1_title": "1.5.2 冷补丁",
     "version_1_5_2_1_changes": "## 优化\n- 移除壁纸自带资源包括普通壁纸,视频壁纸,音频仅保留默认壁纸, 降低不必要的占用",
-    
     "version_1_5_2_title": "常规更新",
     "version_1_5_2_changes": "## 新增功能\n- 新增天气API: Visual Crossing API (visualcrossing.com)\n- 新增友情链接\n## 优化\n- 移除壁纸自带资源包括普通壁纸,视频壁纸,音频仅保留默认壁纸, 降低不必要的占用\n## 功能调整\n- 调整 壁纸显示风格->自由 位置改变逻辑\n- 开始使用壁纸引擎自带的本地化方式",
-    
     "version_1_5_1_title": "Bug修复",
     "version_1_5_1_changes": "## 新增功能\n- 次元API | 星河图片API\n## Bug修复",
-    
     "version_1_5_0_title": "常规更新",
     "version_1_5_0_changes": "## 新增功能\n- 组件支持亚克力背景（除时间外）\n## 优化\n- 解耦合部分代码\n## Bug修复\n- 修复部分天气描述bug\n## 其他\n- 完善英语翻译",
-
     "version_1_4_0_title": "功能更新",
     "version_1_4_0_changes": "## 新增功能\n- 新增天气API: 天气API (tianqiapi.com)\n- 新增在线壁纸: Bing壁纸\n## 功能调整\n- 因一言服务的公益性 修改了一言更新时间",
-
     "version_1_2_0_title": "Bug修复",
     "version_1_2_0_changes": "## Bug修复\n- 修复了和风天气API的降水与大气压强失效问题\n- 修复了一言颜色不显示问题",
-
     "version_1_1_2_title": "1.1 冷补丁V2",
     "version_1_1_2_changes": "## Bug修复",
-
     "version_1_1_1_title": "1.1 冷补丁",
     "version_1_1_1_changes": "## Bug修复",
-
     "version_1_1_0_title": "一言支持",
     "version_1_1_0_changes": "- 🎉 添加一言",
-
     "version_1_0_1_title": "1.0 冷补丁",
     "version_1_0_1_changes": "## Bug修复",
-    
     "version_1_0_0_title": "初始发布",
     "version_1_0_0_changes": "## 🎉 首次发布\n- 添加多个天气API源",
-    
     "version_image_default_alt": "版本图片",
     "version_no_preview": "无预览内容",
-    
     "version_fallback_title": "版本 v",
     "version_fallback_title_with_version": "版本"
 }

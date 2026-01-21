@@ -3,7 +3,7 @@ const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res
 
 const EnhancedVersionConfig = {
     // 当前版本号
-    CURRENT_VERSION: "1.7.0",
+    CURRENT_VERSION: "1.7.1",
 
     // 弹窗尺寸设置
     MODAL_SIZE: {
@@ -303,9 +303,9 @@ class SimpleMarkdown {
             <div class="notification-content">
                 <div class="notification-icon">📋</div>
                 <div class="notification-text">
-                    <div class="notification-title">链接已复制</div>
+                    <div class="notification-title">${i18n("already_copy")}</div>
                     <div class="notification-url">${this.truncateUrl(url, 40)}</div>
-                    <div class="notification-hint">请在浏览器地址栏中粘贴访问</div>
+                    <div class="notification-hint">${i18n("already_copy_tip")}</div>
                 </div>
                 <button class="notification-close">&times;</button>
             </div>

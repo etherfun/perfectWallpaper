@@ -1,594 +1,3 @@
-/**给元素添加颜色 */
-function Element_effects_color(TorF, Element, Element_color, Element_blurcolor) {
-
-    Element.style.color = 'rgb(' + Element_color + ')';
-
-    if (TorF) {
-        Element.style.textShadow = '0 0 20px rgb(' + Element_blurcolor + ')';
-    } else {
-        Element.style.textShadow = null
-    }
-}
-
-/**给元素添加亚克力效果 */
-function Element_effects_yakeli(TorF, Element, Element_yakeli, Element_yakelicolor, Element_bluryakeli) {
-    if (TorF) {
-        Element.style.background = "rgba(" + Element_yakelicolor + "," + Element_yakeli + ")"
-        Element.style.backdropFilter = "blur(" + Element_bluryakeli + "px)"
-    } else {
-        Element.style.background = null
-        Element.style.backdropFilter = null
-    }
-}
-
-/**数字不足指定位数则加"0" */
-function add0(n, digits = 2) {
-    let str = n.toString();
-    while (str.length < digits) {
-        str = '0' + str;
-    }
-    return str;
-}
-
-/**Hex转化为16位 */
-function hexToRgb(hexColor) {
-    var colorCode = hexColor.replace("#", "");
-
-    var r = parseInt(colorCode.substring(0, 2), 16);
-    var g = parseInt(colorCode.substring(2, 4), 16);
-    var b = parseInt(colorCode.substring(4, 6), 16);
-
-    return [r, g, b];
-
-}
-
-/** i18n */
-let i18n_data = null;
-
-async function load_i18n_data() {
-    try {
-        const res = await fetch(`i18n/${globalSettingsLanguage}.json`);
-        if (!res.ok) {
-            debugLogger.warn(`Language file ${globalSettingsLanguage}.json not found, falling back to en-US`);
-            current_lang = 'en-US';
-            const fallbackRes = await fetch(`i18n/en-US.json`);
-            i18n_data = await fallbackRes.json();
-        } else {
-            i18n_data = await res.json();
-        }
-        
-        // 初始化i18n更新
-        initI18nUpdate();
-    } catch (error) {
-        debugLogger.error('Failed to load i18n data:', error);
-    }
-}
-
-/** 初始化i18n更新系统 */
-function initI18nUpdate() {
-    // 立即更新现有元素
-    updateAllI18nElements();
-    
-    // 初始化MutationObserver监听DOM变化
-    initI18nObserver();
-    
-    // 添加一个延迟的二次更新，确保所有动态内容都已加载
-    setTimeout(() => {
-        updateAllI18nElements();
-    }, 5000);
-}
-
-load_i18n_data();
-
-function i18n(key) {
-    if (!i18n_data) {
-        debugLogger.warn('i18n data not loaded yet')
-        return key;
-    }
-    return i18n_data[key] || key;
-}
-
-/** 自动更新所有带有 data-i18n 属性的元素 */
-function updateAllI18nElements() {
-    if (!i18n_data) return;
-
-    processElements(document.querySelectorAll('[data-i18n]'));
-
-    document.querySelectorAll('template').forEach(template => {
-        if (template.content) {
-            debugLogger.info('Processing template for i18n')
-            processElements(template.content.querySelectorAll('[data-i18n]'));
-        }
-    });
-
-    // 更新页面标题
-    const pageTitleElement = document.getElementById('page-title');
-    if (pageTitleElement) {
-        pageTitleElement.textContent = i18n('app_title');
-    }
-}
-
-/** 初始化MutationObserver监听DOM变化 */
-let i18nObserver = null;
-let i18nUpdateTimeout = null;
-let pendingMutations = [];
-
-function initI18nObserver() {
-    if (i18nObserver) {
-        i18nObserver.disconnect();
-    }
-
-    // 创建MutationObserver实例
-    i18nObserver = new MutationObserver((mutations) => {
-        // 收集所有变化
-        pendingMutations.push(...mutations);
-        
-        // 智能防抖处理：根据变化数量决定延迟时间
-        clearTimeout(i18nUpdateTimeout);
-        
-        // 如果变化很多，给更多时间收集所有变化
-        const delay = mutations.length > 5 ? 200 : 100;
-        
-        i18nUpdateTimeout = setTimeout(() => {
-            if (pendingMutations.length > 0) {
-                handleDomMutations(pendingMutations);
-                pendingMutations = []; // 清空已处理的变更
-            }
-        }, delay);
-    });
-
-    // 配置观察选项
-    const observerConfig = {
-        childList: true,      // 观察子节点的添加或删除
-        subtree: true,        // 观察所有后代节点
-        attributes: true,     // 观察属性变化
-        attributeFilter: ['data-i18n'] // 只观察data-i18n属性变化
-    };
-
-    // 开始观察整个文档
-    i18nObserver.observe(document.documentElement, observerConfig);
-    
-    debugLogger.info('i18n MutationObserver initialized');
-}
-
-/** 处理DOM变化 */
-function handleDomMutations(mutations) {
-    if (!i18n_data) return;
-
-    const elementsToUpdate = new Set();
-
-    mutations.forEach(mutation => {
-        // 处理新增的节点
-        if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeType === Node.ELEMENT_NODE) {
-                    // 检查节点本身是否有data-i18n属性
-                    if (node.hasAttribute && node.hasAttribute('data-i18n')) {
-                        elementsToUpdate.add(node);
-                    }
-                    
-                    // 检查节点的后代元素是否有data-i18n属性
-                    const i18nElements = node.querySelectorAll ? node.querySelectorAll('[data-i18n]') : [];
-                    i18nElements.forEach(el => elementsToUpdate.add(el));
-                }
-            });
-        }
-        
-        // 处理属性变化
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-i18n') {
-            elementsToUpdate.add(mutation.target);
-        }
-    });
-
-    // 如果有需要更新的元素，进行处理
-    if (elementsToUpdate.size > 0) {
-        processElements(Array.from(elementsToUpdate));
-    }
-}
-
-/** 停止监听DOM变化 */
-function stopI18nObserver() {
-    if (i18nObserver) {
-        i18nObserver.disconnect();
-        i18nObserver = null;
-    }
-    clearTimeout(i18nUpdateTimeout);
-}
-
-/** 处理元素集合的通用函数 */
-function processElements(elements) {
-    const processedElements = new Set();
-    
-    elements.forEach(element => {
-        // 跳过已处理的元素
-        if (processedElements.has(element)) {
-            return;
-        }
-        
-        const key = element.getAttribute('data-i18n');
-        if (!key) {
-            return; // 如果没有data-i18n属性，跳过
-        }
-        
-        const translation = i18n(key);
-        
-        // 检查是否需要更新（避免不必要的DOM操作）
-        const currentText = element.textContent || '';
-        if (currentText === translation && translation !== key) {
-            processedElements.add(element);
-            return; // 文本已经是最新翻译，跳过
-        }
-
-        if (element.children.length > 0) {
-            const textNodes = Array.from(element.childNodes)
-                .filter(node => node.nodeType === Node.TEXT_NODE);
-
-            if (textNodes.length > 0) {
-                textNodes[0].textContent = translation;
-            } else {
-                element.insertBefore(
-                    document.createTextNode(translation),
-                    element.firstChild
-                );
-            }
-        } else {
-            element.textContent = translation;
-        }
-        
-        processedElements.add(element);
-    });
-    
-    return processedElements.size; // 返回实际处理的元素数量
-}
-
-/**天气请求数量检查 */
-function weather_paymode() {
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentDate = today.getDate();
-
-    const usageData = JSON.parse(localStorage.getItem('UsageData') || '{}');
-    localStorage.removeItem('UseNumber');
-
-    if (currentDate === 1 || usageData.month !== currentMonth) {
-        usageData.count = 0;
-        usageData.month = currentMonth;
-    }
-
-    if (usageData.count >= 50000) {
-        debugLogger.warn('Weather api over Usage')
-        return true; // 需要付费
-    }
-
-    usageData.count = (usageData.count || 0) + 1;
-    localStorage.setItem('UsageData', JSON.stringify(usageData));
-}
-
-/**
- * 如果失败多次重试fetch请求
- * @param {string} url url地址
- * @param {{}} options 传递请求头
- * @param {number} maxRetries 重试次数
- * @returns 
- */
-function fetch_with_retry(url, options = {}, maxRetries = 3) {
-    return new Promise((resolve, reject) => {
-        const attempt = (retryCount) => {
-            fetch(url, options)
-                .then(async response => {
-                    if (!response.ok) {
-                        const errorMsg = typeof get_i18n_text === 'function'
-                            ? String(await get_i18n_text(error_get_weather_data))
-                            : '获取天气数据失败';
-                            debugLogger.warn("Get weather feli")
-                        throw new Error(`${errorMsg} HTTP ${response.status}`);
-                    }
-                    return response;
-                })
-                .then(resolve)
-                .catch(error => {
-                    if (retryCount < maxRetries) {
-                        debugLogger.warn(`${url} 第 ${retryCount + 1} 次重试...`);
-                        const delay = Math.pow(4, retryCount) * 1000;
-                        setTimeout(() => attempt(retryCount + 1), delay);
-                    } else {
-                        debugLogger.warn(`${url} Get weather feli`)
-                        reject(error);
-                    }
-                });
-        };
-
-        attempt(0);
-    });
-}
-/**格式化时间 */
-function getTime(timestamp, seconds = true) {
-    let format = {
-        year: 'numeric',
-        month: '2-digit',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-        seconds: '',
-        hour12: false
-    }
-    if (seconds) {
-        format.seconds = '2-digit';
-    }
-
-    return timestamp.toLocaleString(undefined, format).replace(/\//g, '-');
-}
-
-/**
- * 根据 VisualCrossing icon 和昼夜状态获取和风 iconId
- * @param {string} vcIcon VisualCrossing icon
- * @param {boolean} isNight 是否夜晚
- * @returns {number} 和风天气 iconId
- */
-function getQWeatherIcon(vcIcon, isNight) {
-    if (!vcIcon) return 999;
-
-    const rule = VC_ICON_TO_QWEATHER[vcIcon];
-    if (!rule) return 999;
-
-    return isNight ? rule.night : rule.day;
-}
-
-/**
- * 判断当前时间是否夜晚
- * @param {string} nowTime - 当前时间 "HH:MM:SS"
- * @param {string} sunrise - 日出时间 "HH:MM:SS"
- * @param {string} sunset - 日落时间 "HH:MM:SS"
- * @returns {boolean} - true 表示夜晚，false 表示白天
- */
-function isNightTime(nowTime, sunrise, sunset) {
-    const toMinutes = t => t.split(":").map(Number).reduce((sum, v, i) => sum + (i < 2 ? v * 60 : v), 0);
-    const now = toMinutes(nowTime);
-    const rise = toMinutes(sunrise);
-    const set = toMinutes(sunset);
-    return now < rise || now > set;
-}
-
-/**
- * 多定时器管理器类（支持暂停）
- * 管理多个setTimeout定时器，每个定时器可独立控制
- */
-class MultiTimerManager {
-    constructor() {
-        // 存储所有定时器：key -> 定时器对象
-        this.timers = new Map();
-        // 计数器，用于生成唯一ID
-        this.counter = 0;
-    }
-
-    /**
-     * 创建并启动一个定时器
-     * @param {Function} callback - 回调函数
-     * @param {number} delay - 延迟时间(毫秒)
-     * @param {string} [name] - 定时器名称（可选，不指定则自动生成）
-     * @returns {string} 定时器ID
-     */
-    create(callback, delay, name) {
-        const timerId = name || `timer_${++this.counter}`;
-        
-        // 如果已存在同名定时器，先清除
-        if (this.timers.has(timerId)) {
-            this.remove(timerId);
-        }
-
-        const timerObj = {
-            id: timerId,
-            callback,
-            delay,
-            remaining: delay,      // 剩余时间
-            startTime: Date.now(), // 开始时间
-            timerId: null,         // 原生定时器ID
-            isPaused: false,       // 是否暂停
-            isActive: true,        // 是否激活
-            status: 'running',     // 状态：running, paused, finished
-        };
-
-        // 设置原生定时器
-        timerObj.timerId = setTimeout(() => {
-            this._executeTimer(timerId);
-        }, delay);
-
-        // 存储定时器
-        this.timers.set(timerId, timerObj);
-        debugLogger.info(`定时器 "${timerId}" 已启动，${delay}ms后执行`);
-        
-        return timerId;
-    }
-
-    /**
-     * 暂停定时器
-     * @param {string} timerId - 定时器ID
-     * @returns {boolean} 是否成功
-     */
-    pause(timerId) {
-        const timer = this.timers.get(timerId);
-        if (!timer || !timer.isActive || timer.isPaused) {
-            debugLogger.warn(`定时器 "${timerId}" 不存在、未激活或已暂停`);
-            return false;
-        }
-
-        // 计算已运行的时间
-        const elapsed = Date.now() - timer.startTime;
-        timer.remaining = Math.max(0, timer.remaining - elapsed);
-        
-        // 清除原生定时器
-        clearTimeout(timer.timerId);
-        timer.timerId = null;
-        timer.isPaused = true;
-        timer.status = 'paused';
-        
-        debugLogger.info(`定时器 "${timerId}" 已暂停，剩余 ${timer.remaining}ms`);
-        return true;
-    }
-
-    /**
-     * 恢复定时器
-     * @param {string} timerId - 定时器ID
-     * @returns {boolean} 是否成功
-     */
-    resume(timerId) {
-        const timer = this.timers.get(timerId);
-        if (!timer || !timer.isActive || !timer.isPaused) {
-            debugLogger.warn(`定时器 "${timerId}" 不存在、未激活或未暂停`);
-            return false;
-        }
-
-        // 重新设置定时器
-        timer.startTime = Date.now();
-        timer.isPaused = false;
-        timer.status = 'running';
-        
-        timer.timerId = setTimeout(() => {
-            this._executeTimer(timerId);
-        }, timer.remaining);
-
-        debugLogger.info(`定时器 "${timerId}" 已恢复，${timer.remaining}ms后执行`);
-        return true;
-    }
-
-    /**
-     * 清除定时器
-     * @param {string} timerId - 定时器ID
-     * @returns {boolean} 是否成功
-     */
-    remove(timerId) {
-        const timer = this.timers.get(timerId);
-        if (!timer) {
-            return false;
-        }
-
-        // 清除原生定时器
-        if (timer.timerId) {
-            clearTimeout(timer.timerId);
-        }
-
-        // 从Map中移除
-        this.timers.delete(timerId);
-        debugLogger.info(`定时器 "${timerId}" 已清除`);
-        return true;
-    }
-
-    /**
-     * 获取所有定时器状态
-     * @returns {Array} 定时器状态列表
-     */
-    getAllStatus() {
-        const statusList = [];
-        for (const [id, timer] of this.timers) {
-            let remaining = timer.remaining;
-            
-            // 如果正在运行，重新计算剩余时间
-            if (timer.isActive && !timer.isPaused) {
-                const elapsed = Date.now() - timer.startTime;
-                remaining = Math.max(0, timer.remaining - elapsed);
-            }
-            
-            statusList.push({
-                id: timer.id,
-                name: timer.id,
-                status: timer.status,
-                delay: timer.delay,
-                remaining: remaining,
-                progress: timer.delay > 0 ? 
-                    ((timer.delay - remaining) / timer.delay * 100).toFixed(1) + '%' : '100%',
-                isActive: timer.isActive,
-                isPaused: timer.isPaused
-            });
-        }
-        return statusList;
-    }
-
-    /**
-     * 获取单个定时器状态
-     * @param {string} timerId - 定时器ID
-     * @returns {Object|null} 定时器状态
-     */
-    getStatus(timerId) {
-        const timer = this.timers.get(timerId);
-        if (!timer) return null;
-
-        let remaining = timer.remaining;
-        if (timer.isActive && !timer.isPaused) {
-            const elapsed = Date.now() - timer.startTime;
-            remaining = Math.max(0, timer.remaining - elapsed);
-        }
-
-        return {
-            id: timer.id,
-            status: timer.status,
-            delay: timer.delay,
-            remaining: remaining,
-            progress: timer.delay > 0 ? 
-                ((timer.delay - remaining) / timer.delay * 100).toFixed(1) + '%' : '100%',
-            isActive: timer.isActive,
-            isPaused: timer.isPaused
-        };
-    }
-
-    /**
-     * 清除所有定时器
-     */
-    clearAll() {
-        for (const [id, timer] of this.timers) {
-            if (timer.timerId) {
-                clearTimeout(timer.timerId);
-            }
-        }
-        this.timers.clear();
-        debugLogger.info('所有定时器已清除');
-    }
-
-    /**
-     * 暂停所有定时器
-     */
-    pauseAll() {
-        for (const [id] of this.timers) {
-            this.pause(id);
-        }
-        debugLogger.info('所有定时器已暂停');
-    }
-
-    /**
-     * 恢复所有定时器
-     */
-    resumeAll() {
-        for (const [id] of this.timers) {
-            this.resume(id);
-        }
-        debugLogger.info('所有定时器已恢复');
-    }
-
-    /**
-     * 执行定时器回调（内部方法）
-     * @param {string} timerId - 定时器ID
-     */
-    _executeTimer(timerId) {
-        const timer = this.timers.get(timerId);
-        if (!timer) return;
-
-        try {
-            this.timers.delete(timerId);
-            // 执行回调
-            timer.callback();
-            timer.status = 'finished';
-            timer.isActive = false;
-            
-            
-            debugLogger.info(`定时器 "${timerId}" 执行完成`);
-        } catch (error) {
-            debugLogger.error(`定时器 "${timerId}" 执行出错:`, error);
-            timer.status = 'error';
-        }
-    }
-}
-
-window.MultiTimerManager = MultiTimerManager;
-var timerManager = new MultiTimerManager();
 
 /**
  * 调试日志保存器
@@ -1304,6 +713,601 @@ window.addEventListener('unhandledrejection', function(event) {
     });
 });
 
+/**给元素添加颜色 */
+function Element_effects_color(TorF, Element, Element_color, Element_blurcolor) {
+
+    Element.style.color = 'rgb(' + Element_color + ')';
+
+    if (TorF) {
+        Element.style.textShadow = '0 0 20px rgb(' + Element_blurcolor + ')';
+    } else {
+        Element.style.textShadow = null
+    }
+}
+
+/**给元素添加亚克力效果 */
+function Element_effects_yakeli(TorF, Element, Element_yakeli, Element_yakelicolor, Element_bluryakeli) {
+    if (TorF) {
+        Element.style.background = "rgba(" + Element_yakelicolor + "," + Element_yakeli + ")"
+        Element.style.backdropFilter = "blur(" + Element_bluryakeli + "px)"
+    } else {
+        Element.style.background = null
+        Element.style.backdropFilter = null
+    }
+}
+
+/**数字不足指定位数则加"0" */
+function add0(n, digits = 2) {
+    let str = n.toString();
+    while (str.length < digits) {
+        str = '0' + str;
+    }
+    return str;
+}
+
+/**Hex转化为16位 */
+function hexToRgb(hexColor) {
+    var colorCode = hexColor.replace("#", "");
+
+    var r = parseInt(colorCode.substring(0, 2), 16);
+    var g = parseInt(colorCode.substring(2, 4), 16);
+    var b = parseInt(colorCode.substring(4, 6), 16);
+
+    return [r, g, b];
+
+}
+
+/** i18n */
+let i18n_data = null;
+
+async function load_i18n_data() {
+    try {
+        const res = await fetch(`i18n/${globalSettingsLanguage}.json`);
+        if (!res.ok) {
+            debugLogger.warn(`Language file ${globalSettingsLanguage}.json not found, falling back to en-US`);
+            current_lang = 'en-US';
+            const fallbackRes = await fetch(`i18n/en-US.json`);
+            i18n_data = await fallbackRes.json();
+        } else {
+            i18n_data = await res.json();
+        }
+        
+        // 初始化i18n更新
+        initI18nUpdate();
+    } catch (error) {
+        debugLogger.error('Failed to load i18n data:', error);
+    }
+}
+
+/** 初始化i18n更新系统 */
+function initI18nUpdate() {
+    // 立即更新现有元素
+    updateAllI18nElements();
+    
+    // 初始化MutationObserver监听DOM变化
+    initI18nObserver();
+    
+    // 添加一个延迟的二次更新，确保所有动态内容都已加载
+    setTimeout(() => {
+        updateAllI18nElements();
+    }, 5000);
+}
+
+load_i18n_data();
+
+function i18n(key) {
+    if (!i18n_data) {
+        debugLogger.warn('i18n data not loaded yet')
+        return key;
+    }
+    return i18n_data[key] || key;
+}
+
+/** 自动更新所有带有 data-i18n 属性的元素 */
+function updateAllI18nElements() {
+    if (!i18n_data) return;
+
+    processElements(document.querySelectorAll('[data-i18n]'));
+
+    document.querySelectorAll('template').forEach(template => {
+        if (template.content) {
+            debugLogger.info('Processing template for i18n')
+            processElements(template.content.querySelectorAll('[data-i18n]'));
+        }
+    });
+
+    // 更新页面标题
+    const pageTitleElement = document.getElementById('page-title');
+    if (pageTitleElement) {
+        pageTitleElement.textContent = i18n('app_title');
+    }
+}
+
+/** 初始化MutationObserver监听DOM变化 */
+let i18nObserver = null;
+let i18nUpdateTimeout = null;
+let pendingMutations = [];
+
+function initI18nObserver() {
+    if (i18nObserver) {
+        i18nObserver.disconnect();
+    }
+
+    // 创建MutationObserver实例
+    i18nObserver = new MutationObserver((mutations) => {
+        // 收集所有变化
+        pendingMutations.push(...mutations);
+        
+        // 智能防抖处理：根据变化数量决定延迟时间
+        clearTimeout(i18nUpdateTimeout);
+        
+        // 如果变化很多，给更多时间收集所有变化
+        const delay = mutations.length > 5 ? 200 : 100;
+        
+        i18nUpdateTimeout = setTimeout(() => {
+            if (pendingMutations.length > 0) {
+                handleDomMutations(pendingMutations);
+                pendingMutations = []; // 清空已处理的变更
+            }
+        }, delay);
+    });
+
+    // 配置观察选项
+    const observerConfig = {
+        childList: true,      // 观察子节点的添加或删除
+        subtree: true,        // 观察所有后代节点
+        attributes: true,     // 观察属性变化
+        attributeFilter: ['data-i18n'] // 只观察data-i18n属性变化
+    };
+
+    // 开始观察整个文档
+    i18nObserver.observe(document.documentElement, observerConfig);
+    
+    debugLogger.info('i18n MutationObserver initialized');
+}
+
+/** 处理DOM变化 */
+function handleDomMutations(mutations) {
+    if (!i18n_data) return;
+
+    const elementsToUpdate = new Set();
+
+    mutations.forEach(mutation => {
+        // 处理新增的节点
+        if (mutation.type === 'childList') {
+            mutation.addedNodes.forEach(node => {
+                if (node.nodeType === Node.ELEMENT_NODE) {
+                    // 检查节点本身是否有data-i18n属性
+                    if (node.hasAttribute && node.hasAttribute('data-i18n')) {
+                        elementsToUpdate.add(node);
+                    }
+                    
+                    // 检查节点的后代元素是否有data-i18n属性
+                    const i18nElements = node.querySelectorAll ? node.querySelectorAll('[data-i18n]') : [];
+                    i18nElements.forEach(el => elementsToUpdate.add(el));
+                }
+            });
+        }
+        
+        // 处理属性变化
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-i18n') {
+            elementsToUpdate.add(mutation.target);
+        }
+    });
+
+    // 如果有需要更新的元素，进行处理
+    if (elementsToUpdate.size > 0) {
+        processElements(Array.from(elementsToUpdate));
+    }
+}
+
+/** 停止监听DOM变化 */
+function stopI18nObserver() {
+    if (i18nObserver) {
+        i18nObserver.disconnect();
+        i18nObserver = null;
+    }
+    clearTimeout(i18nUpdateTimeout);
+}
+
+/** 处理元素集合的通用函数 */
+function processElements(elements) {
+    const processedElements = new Set();
+    
+    elements.forEach(element => {
+        // 跳过已处理的元素
+        if (processedElements.has(element)) {
+            return;
+        }
+        
+        const key = element.getAttribute('data-i18n');
+        if (!key) {
+            return; // 如果没有data-i18n属性，跳过
+        }
+        
+        const translation = i18n(key);
+        
+        // 检查是否需要更新（避免不必要的DOM操作）
+        const currentText = element.textContent || '';
+        if (currentText === translation && translation !== key) {
+            processedElements.add(element);
+            return; // 文本已经是最新翻译，跳过
+        }
+
+        if (element.children.length > 0) {
+            const textNodes = Array.from(element.childNodes)
+                .filter(node => node.nodeType === Node.TEXT_NODE);
+
+            if (textNodes.length > 0) {
+                textNodes[0].textContent = translation;
+            } else {
+                element.insertBefore(
+                    document.createTextNode(translation),
+                    element.firstChild
+                );
+            }
+        } else {
+            element.textContent = translation;
+        }
+        
+        processedElements.add(element);
+    });
+    
+    return processedElements.size; // 返回实际处理的元素数量
+}
+
+/**天气请求数量检查 */
+function weather_paymode() {
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentDate = today.getDate();
+
+    const usageData = JSON.parse(localStorage.getItem('UsageData') || '{}');
+    localStorage.removeItem('UseNumber');
+
+    if (currentDate === 1 || usageData.month !== currentMonth) {
+        usageData.count = 0;
+        usageData.month = currentMonth;
+    }
+
+    if (usageData.count >= 50000) {
+        debugLogger.warn('Weather api over Usage')
+        return true; // 需要付费
+    }
+
+    usageData.count = (usageData.count || 0) + 1;
+    localStorage.setItem('UsageData', JSON.stringify(usageData));
+}
+
+/**
+ * 如果失败多次重试fetch请求
+ * @param {string} url url地址
+ * @param {{}} options 传递请求头
+ * @param {number} maxRetries 重试次数
+ * @returns 
+ */
+function fetch_with_retry(url, options = {}, maxRetries = 3) {
+    return new Promise((resolve, reject) => {
+        const attempt = (retryCount) => {
+            fetch(url, options)
+                .then(async response => {
+                    if (!response.ok) {
+                        const errorMsg = typeof get_i18n_text === 'function'
+                            ? String(await get_i18n_text(error_get_weather_data))
+                            : '获取天气数据失败';
+                            debugLogger.warn("Get weather feli")
+                        throw new Error(`${errorMsg} HTTP ${response.status}`);
+                    }
+                    return response;
+                })
+                .then(resolve)
+                .catch(error => {
+                    if (retryCount < maxRetries) {
+                        debugLogger.warn(`${url} 第 ${retryCount + 1} 次重试...`);
+                        const delay = Math.pow(4, retryCount) * 2000;
+                        setTimeout(() => attempt(retryCount + 1), delay);
+                    } else {
+                        debugLogger.warn(`${url} Get weather feli`)
+                        reject(error);
+                    }
+                });
+        };
+
+        attempt(0);
+    });
+}
+/**格式化时间 */
+function getTime(timestamp, seconds = true) {
+    let format = {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        seconds: '',
+        hour12: false
+    }
+    if (seconds) {
+        format.seconds = '2-digit';
+    }
+
+    return timestamp.toLocaleString(undefined, format).replace(/\//g, '-');
+}
+
+/**
+ * 根据 VisualCrossing icon 和昼夜状态获取和风 iconId
+ * @param {string} vcIcon VisualCrossing icon
+ * @param {boolean} isNight 是否夜晚
+ * @returns {number} 和风天气 iconId
+ */
+function getQWeatherIcon(vcIcon, isNight) {
+    if (!vcIcon) return 999;
+
+    const rule = VC_ICON_TO_QWEATHER[vcIcon];
+    if (!rule) return 999;
+
+    return isNight ? rule.night : rule.day;
+}
+
+/**
+ * 判断当前时间是否夜晚
+ * @param {string} nowTime - 当前时间 "HH:MM:SS"
+ * @param {string} sunrise - 日出时间 "HH:MM:SS"
+ * @param {string} sunset - 日落时间 "HH:MM:SS"
+ * @returns {boolean} - true 表示夜晚，false 表示白天
+ */
+function isNightTime(nowTime, sunrise, sunset) {
+    const toMinutes = t => {
+        const [hours, minutes, seconds] = t.split(":").map(Number);
+        return hours * 60 + minutes + seconds / 60;
+    };
+    const now = toMinutes(nowTime);
+    const rise = toMinutes(sunrise);
+    const set = toMinutes(sunset);
+    return now < rise || now > set;
+}
+
+/**
+ * 多定时器管理器类（支持暂停）
+ * 管理多个setTimeout定时器，每个定时器可独立控制
+ */
+class MultiTimerManager {
+    constructor() {
+        // 存储所有定时器：key -> 定时器对象
+        this.timers = new Map();
+        // 计数器，用于生成唯一ID
+        this.counter = 0;
+    }
+
+    /**
+     * 创建并启动一个定时器
+     * @param {Function} callback - 回调函数
+     * @param {number} delay - 延迟时间(毫秒)
+     * @param {string} [name] - 定时器名称（可选，不指定则自动生成）
+     * @returns {string} 定时器ID
+     */
+    create(callback, delay, name) {
+        const timerId = name || `timer_${++this.counter}`;
+        
+        // 如果已存在同名定时器，先清除
+        if (this.timers.has(timerId)) {
+            this.remove(timerId);
+        }
+
+        const timerObj = {
+            id: timerId,
+            callback,
+            delay,
+            remaining: delay,      // 剩余时间
+            startTime: Date.now(), // 开始时间
+            timerId: null,         // 原生定时器ID
+            isPaused: false,       // 是否暂停
+            isActive: true,        // 是否激活
+            status: 'running',     // 状态：running, paused, finished
+        };
+
+        // 设置原生定时器
+        timerObj.timerId = setTimeout(() => {
+            this._executeTimer(timerId);
+        }, delay);
+
+        // 存储定时器
+        this.timers.set(timerId, timerObj);
+        debugLogger.info(`定时器 "${timerId}" 已启动，${delay}ms后执行`);
+        
+        return timerId;
+    }
+
+    /**
+     * 暂停定时器
+     * @param {string} timerId - 定时器ID
+     * @returns {boolean} 是否成功
+     */
+    pause(timerId) {
+        const timer = this.timers.get(timerId);
+        if (!timer || !timer.isActive || timer.isPaused) {
+            debugLogger.warn(`定时器 "${timerId}" 不存在、未激活或已暂停`);
+            return false;
+        }
+
+        // 计算已运行的时间
+        const elapsed = Date.now() - timer.startTime;
+        timer.remaining = Math.max(0, timer.remaining - elapsed);
+        
+        // 清除原生定时器
+        clearTimeout(timer.timerId);
+        timer.timerId = null;
+        timer.isPaused = true;
+        timer.status = 'paused';
+        
+        debugLogger.info(`定时器 "${timerId}" 已暂停，剩余 ${timer.remaining}ms`);
+        return true;
+    }
+
+    /**
+     * 恢复定时器
+     * @param {string} timerId - 定时器ID
+     * @returns {boolean} 是否成功
+     */
+    resume(timerId) {
+        const timer = this.timers.get(timerId);
+        if (!timer || !timer.isActive || !timer.isPaused) {
+            debugLogger.warn(`定时器 "${timerId}" 不存在、未激活或未暂停`);
+            return false;
+        }
+
+        // 重新设置定时器
+        timer.startTime = Date.now();
+        timer.isPaused = false;
+        timer.status = 'running';
+        
+        timer.timerId = setTimeout(() => {
+            this._executeTimer(timerId);
+        }, timer.remaining);
+
+        debugLogger.info(`定时器 "${timerId}" 已恢复，${timer.remaining}ms后执行`);
+        return true;
+    }
+
+    /**
+     * 清除定时器
+     * @param {string} timerId - 定时器ID
+     * @returns {boolean} 是否成功
+     */
+    remove(timerId) {
+        const timer = this.timers.get(timerId);
+        if (!timer) {
+            return false;
+        }
+
+        // 清除原生定时器
+        if (timer.timerId) {
+            clearTimeout(timer.timerId);
+        }
+
+        // 从Map中移除
+        this.timers.delete(timerId);
+        debugLogger.info(`定时器 "${timerId}" 已清除`);
+        return true;
+    }
+
+    /**
+     * 获取所有定时器状态
+     * @returns {Array} 定时器状态列表
+     */
+    getAllStatus() {
+        const statusList = [];
+        for (const [id, timer] of this.timers) {
+            let remaining = timer.remaining;
+            
+            // 如果正在运行，重新计算剩余时间
+            if (timer.isActive && !timer.isPaused) {
+                const elapsed = Date.now() - timer.startTime;
+                remaining = Math.max(0, timer.remaining - elapsed);
+            }
+            
+            statusList.push({
+                id: timer.id,
+                name: timer.id,
+                status: timer.status,
+                delay: timer.delay,
+                remaining: remaining,
+                progress: timer.delay > 0 ? 
+                    ((timer.delay - remaining) / timer.delay * 100).toFixed(1) + '%' : '100%',
+                isActive: timer.isActive,
+                isPaused: timer.isPaused
+            });
+        }
+        return statusList;
+    }
+
+    /**
+     * 获取单个定时器状态
+     * @param {string} timerId - 定时器ID
+     * @returns {Object|null} 定时器状态
+     */
+    getStatus(timerId) {
+        const timer = this.timers.get(timerId);
+        if (!timer) return null;
+
+        let remaining = timer.remaining;
+        if (timer.isActive && !timer.isPaused) {
+            const elapsed = Date.now() - timer.startTime;
+            remaining = Math.max(0, timer.remaining - elapsed);
+        }
+
+        return {
+            id: timer.id,
+            status: timer.status,
+            delay: timer.delay,
+            remaining: remaining,
+            progress: timer.delay > 0 ? 
+                ((timer.delay - remaining) / timer.delay * 100).toFixed(1) + '%' : '100%',
+            isActive: timer.isActive,
+            isPaused: timer.isPaused
+        };
+    }
+
+    /**
+     * 清除所有定时器
+     */
+    clearAll() {
+        for (const [id, timer] of this.timers) {
+            if (timer.timerId) {
+                clearTimeout(timer.timerId);
+            }
+        }
+        this.timers.clear();
+        debugLogger.info('所有定时器已清除');
+    }
+
+    /**
+     * 暂停所有定时器
+     */
+    pauseAll() {
+        for (const [id] of this.timers) {
+            this.pause(id);
+        }
+        debugLogger.info('所有定时器已暂停');
+    }
+
+    /**
+     * 恢复所有定时器
+     */
+    resumeAll() {
+        for (const [id] of this.timers) {
+            this.resume(id);
+        }
+        debugLogger.info('所有定时器已恢复');
+    }
+
+    /**
+     * 执行定时器回调（内部方法）
+     * @param {string} timerId - 定时器ID
+     */
+    _executeTimer(timerId) {
+        const timer = this.timers.get(timerId);
+        if (!timer) return;
+
+        try {
+            this.timers.delete(timerId);
+            // 执行回调
+            timer.callback();
+            timer.status = 'finished';
+            timer.isActive = false;
+            
+            
+            debugLogger.info(`定时器 "${timerId}" 执行完成`);
+        } catch (error) {
+            debugLogger.error(`定时器 "${timerId}" 执行出错:`, error);
+            timer.status = 'error';
+        }
+    }
+}
+
+window.MultiTimerManager = MultiTimerManager;
+var timerManager = new MultiTimerManager();
+
 /**
  * 等待条件成立后执行函数
  * @param {Function} conditionFn - 条件检测函数，返回true时执行
@@ -1346,29 +1350,48 @@ function waitAndExecute(conditionFn, actionFn, interval = 100, timeout = 20000) 
     });
 }
 
-function clipboardCopy(text) {
-    if (navigator.clipboard?.writeText) {
-        return navigator.clipboard.writeText(text);
-    }
+/**
+ * 防抖函数
+ * @param {Function} func - 需要防抖的函数
+ * @param {number} wait - 等待时间(毫秒)
+ * @param {boolean} immediate - 是否立即执行
+ * @returns {Function} 防抖处理后的函数
+ */
+function debounce(func, wait, immediate = false) {
+    let timeout;
+    
+    return function executedFunction(...args) {
+        const context = this;
+        const later = function() {
+            timeout = null;
+            if (!immediate) func.apply(context, args);
+        };
+        
+        const callNow = immediate && !timeout;
+        
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+        
+        if (callNow) func.apply(context, args);
+    };
+}
 
-    return new Promise((resolve, reject) => {
-        const textarea = document.createElement('textarea');
-        textarea.value = text;
-
-        textarea.style.position = 'fixed';
-        textarea.style.opacity = '0';
-        textarea.style.left = '-9999px';
-
-        document.body.appendChild(textarea);
-        textarea.select();
-
-        try {
-            const success = document.execCommand('copy');
-            success ? resolve() : reject(new Error('Copy failed'));
-        } catch (err) {
-            reject(err);
-        } finally {
-            document.body.removeChild(textarea);
+/**
+ * 节流函数
+ * @param {Function} func - 需要节流的函数
+ * @param {number} limit - 限制时间(毫秒)
+ * @returns {Function} 节流处理后的函数
+ */
+function throttle(func, limit) {
+    let inThrottle;
+    
+    return function(...args) {
+        const context = this;
+        
+        if (!inThrottle) {
+            func.apply(context, args);
+            inThrottle = true;
+            setTimeout(() => inThrottle = false, limit);
         }
-    });
+    };
 }

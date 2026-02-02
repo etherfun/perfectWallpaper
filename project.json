@@ -4710,7 +4710,7 @@
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V1.7.1(30) 2026-1-22(Y-M-D)<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V1.7.2(31) 2026-2-1(Y-M-D)<br/>",
 				"type" : "bool",
 				"value" : true
 			},
@@ -5209,7 +5209,7 @@
 	"tags" : [ "Relaxing" ],
 	"title" : "Perfect Wallpaper -  Weather Fix | Media Integration | Daily Web Wallpaper | RGB Lighting",
 	"type" : "web",
-	"version" : 26,
+	"version" : 27,
 	"visibility" : "public",
 	"workshopid" : "3026605859",
 	"workshopurl" : "steam://url/CommunityFilePage/3026605859"

@@ -309,8 +309,6 @@ var verificationCode = '01F01C01E01I01I01C01H01K01H01L'; var verificationResult 
 /* 监听配置 */
 window.wallpaperPropertyListener = {
     applyUserProperties: async function (properties) {
-        if (FirstLoad == true) debugLogger.debug('User properties', properties);
-
         if (properties.wallpaper_updata && FirstLoad !== true) {
             await window.versionManager.initUpdateModal(false);
         }
@@ -787,21 +785,23 @@ window.wallpaperPropertyListener = {
         }
         if (properties.weather_lat_latitude) {
             weather_address.latitude = properties.weather_lat_latitude.value
+            if (!FirstLoad) debounce(weather_init, 1500);
         }
         if (properties.weather_lat_longitude) {
             weather_address.longitude = properties.weather_lat_longitude.value
+            if (!FirstLoad) debounce(weather_init, 1500);
         }
         //获取天气城市优先获取
         if (properties.weather_CityText) {
             weather_address.cityname = properties.weather_CityText.value;
-            if (!FirstLoad) weather_init();
+            if (!FirstLoad) debounce(weather_init, 1500);
         }
         //API选择
         if (properties.freeapi) {
             if (properties.freeapi.value) {
                 weather_api_choose = 2
                 if (FirstLoad == false) {
-                    weather_init();
+                    debounce(weather_init, 1500);
                 }
             }
         }
@@ -809,7 +809,7 @@ window.wallpaperPropertyListener = {
             if (properties.qweatherapi.value) {
                 weather_api_choose = 1
                 if (FirstLoad == false) {
-                    weather_init();
+                    debounce(weather_init, 1500);
                 }
             }
         }
@@ -822,7 +822,7 @@ window.wallpaperPropertyListener = {
             if (properties.tianqiapi.value) {
                 weather_api_choose = 3
                 if (FirstLoad == false) {
-                    weather_init();
+                    debounce(weather_init, 1500);
                 }
             }
         }
@@ -830,7 +830,7 @@ window.wallpaperPropertyListener = {
             if (properties.visualcrossingapi.value) {
                 weather_api_choose = 4
                 if (FirstLoad == false) {
-                    weather_init();
+                    debounce(weather_init, 1500);
                 }
             }
         }
@@ -838,7 +838,7 @@ window.wallpaperPropertyListener = {
             if (properties.open_meteoapi.value) {
                 weather_api_choose = 5
                 if (FirstLoad == false) {
-                    weather_init();
+                    debounce(weather_init, 1500);
                 }
             }
         }

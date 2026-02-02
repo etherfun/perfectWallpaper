@@ -1,9 +1,9 @@
 // 版本历史数据Promise
 const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res => res.json());
 
-const EnhancedVersionConfig = {
+const versionConfig = {
     // 当前版本号
-    CURRENT_VERSION: "1.7.1",
+    CURRENT_VERSION: "1.7.2",
 
     // 弹窗尺寸设置
     MODAL_SIZE: {
@@ -391,7 +391,7 @@ class SimpleMarkdown {
 // 增强版版本管理器
 class versionManager {
     constructor() {
-        this.currentVersion = EnhancedVersionConfig.CURRENT_VERSION;
+        this.currentVersion = versionConfig.CURRENT_VERSION;
         this.storedVersion = this.getStoredVersion();
 
         this.isNewVersion = this.checkVersionUpdate();
@@ -402,7 +402,7 @@ class versionManager {
 
         // 倒数计时相关属性
         this.countdownInterval = null;
-        this.remainingSeconds = Math.floor(EnhancedVersionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
+        this.remainingSeconds = Math.floor(versionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
         this.countdownActive = false;
 
         // 鼠标移动检测相关属性
@@ -432,7 +432,7 @@ class versionManager {
         // 刷新版本计数
         const countElement = document.querySelector('.total-count');
         if (countElement) {
-            countElement.textContent = EnhancedVersionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
+            countElement.textContent = versionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
         }
 
         // 刷新当前版本详情
@@ -442,7 +442,7 @@ class versionManager {
     // 获取本地存储的版本号
     getStoredVersion() {
         try {
-            return localStorage.getItem(EnhancedVersionConfig.STORAGE_KEY) || "0.0.0";
+            return localStorage.getItem(versionConfig.STORAGE_KEY) || "0.0.0";
         } catch (error) {
             console.error("读取本地存储失败:", error);
             return "0.0.0";
@@ -452,7 +452,7 @@ class versionManager {
     // 保存当前版本号到本地存储
     saveCurrentVersion() {
         try {
-            localStorage.setItem(EnhancedVersionConfig.STORAGE_KEY, this.currentVersion);
+            localStorage.setItem(versionConfig.STORAGE_KEY, this.currentVersion);
         } catch (error) {
         }
     }
@@ -460,7 +460,7 @@ class versionManager {
     // 检查是否有版本更新
     checkVersionUpdate() {
 
-        if (this.storedVersion === "0.0.0" && EnhancedVersionConfig.SHOW_SETTINGS.showOnFirstLoad) {
+        if (this.storedVersion === "0.0.0" && versionConfig.SHOW_SETTINGS.showOnFirstLoad) {
             return true; // 首次加载
         }
 
@@ -530,12 +530,12 @@ class versionManager {
         }
 
         // 检查数据是否已加载
-        if (!EnhancedVersionConfig.VERSION_HISTORY || !Array.isArray(EnhancedVersionConfig.VERSION_HISTORY)) {
+        if (!versionConfig.VERSION_HISTORY || !Array.isArray(versionConfig.VERSION_HISTORY)) {
             return null;
         }
 
         // 查找匹配的版本信息
-        const rawInfo = EnhancedVersionConfig.VERSION_HISTORY.find(info =>
+        const rawInfo = versionConfig.VERSION_HISTORY.find(info =>
             info.version === targetVersion
         );
 
@@ -591,11 +591,11 @@ class versionManager {
 
     // 获取所有更新历史（按日期降序排列，最新的在前面）
     getAllVersionHistory() {
-        if (!EnhancedVersionConfig.VERSION_HISTORY || !Array.isArray(EnhancedVersionConfig.VERSION_HISTORY)) {
+        if (!versionConfig.VERSION_HISTORY || !Array.isArray(versionConfig.VERSION_HISTORY)) {
             return [];
         }
 
-        return EnhancedVersionConfig.VERSION_HISTORY.sort((a, b) => {
+        return versionConfig.VERSION_HISTORY.sort((a, b) => {
             // 首先按日期排序（降序：最新的在前面）
             const dateA = this.parseDate(a.date);
             const dateB = this.parseDate(b.date);
@@ -628,7 +628,7 @@ class versionManager {
 
     // 初始化版本更新弹窗
     async initUpdateModal(s = true) {
-        if ((!this.isNewVersion && !EnhancedVersionConfig.SHOW_SETTINGS.showOnFirstLoad) && s) {
+        if ((!this.isNewVersion && !versionConfig.SHOW_SETTINGS.showOnFirstLoad) && s) {
             return;
         }
 
@@ -637,11 +637,11 @@ class versionManager {
             if (!this.isDataLoaded) {
                 try {
                     const historyData = await VERSION_HISTORY_PROMISE;
-                    EnhancedVersionConfig.VERSION_HISTORY = historyData;
+                    versionConfig.VERSION_HISTORY = historyData;
                     this.isDataLoaded = true;
                 } catch (error) {
                     console.error("加载版本历史数据失败:", error);
-                    EnhancedVersionConfig.VERSION_HISTORY = [];
+                    versionConfig.VERSION_HISTORY = [];
                     this.isDataLoaded = true;
                 }
             }
@@ -667,10 +667,10 @@ class versionManager {
             <div id="version-modal" class="version-modal">
                 <div class="modal-overlay"></div>
                 <div class="modal-content" style="
-                    width: ${EnhancedVersionConfig.MODAL_SIZE.width};
-                    max-width: ${EnhancedVersionConfig.MODAL_SIZE.maxWidth};
-                    height: ${EnhancedVersionConfig.MODAL_SIZE.height};
-                    max-height: ${EnhancedVersionConfig.MODAL_SIZE.maxHeight};
+                    width: ${versionConfig.MODAL_SIZE.width};
+                    max-width: ${versionConfig.MODAL_SIZE.maxWidth};
+                    height: ${versionConfig.MODAL_SIZE.height};
+                    max-height: ${versionConfig.MODAL_SIZE.maxHeight};
                 ">
                     <div class="modal-header">
                         <div class="header-left">
@@ -770,7 +770,7 @@ class versionManager {
 
         if (listContainer && countElement) {
             listContainer.innerHTML = this.renderVersionList();
-            countElement.textContent = EnhancedVersionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
+            countElement.textContent = versionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
         }
 
         // 填充当前版本详情
@@ -813,12 +813,12 @@ class versionManager {
 
         return `
             <div class="version-detail">
-                ${EnhancedVersionConfig.IMAGE_SETTINGS.showImage && versionInfo.image && versionInfo.image.trim() !== '' ? `
+                ${versionConfig.IMAGE_SETTINGS.showImage && versionInfo.image && versionInfo.image.trim() !== '' ? `
                     <div class="version-image-container">
                         <img src="${versionInfo.image}" 
                              class="version-image"
-                             style="max-height: ${EnhancedVersionConfig.IMAGE_SETTINGS.maxHeight}; width: auto; max-width: 100%;
-                             ${EnhancedVersionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}>
+                             style="max-height: ${versionConfig.IMAGE_SETTINGS.maxHeight}; width: auto; max-width: 100%;
+                             ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}>
                         <div class="image-info">
                             <div class="image-description">
                                 ${SimpleMarkdown.parse(versionInfo.imageAlt) || i18n('version_image_default_alt')}
@@ -830,7 +830,7 @@ class versionManager {
                 <div class="version-changes">
                     <h4>${i18n('version_changes_title')}</h4>
                     <div class="changes-content">
-                        ${EnhancedVersionConfig.SHOW_SETTINGS.enableMarkdown ?
+                        ${versionConfig.SHOW_SETTINGS.enableMarkdown ?
                 SimpleMarkdown.parse(versionInfo.changes.join('\n')) :
                 this.renderPlainChanges(versionInfo.changes)
             }
@@ -1004,7 +1004,7 @@ class versionManager {
     // 开始倒数计时（带鼠标移动检测）
     startCountdown() {
         // 重置倒数时间
-        this.remainingSeconds = Math.floor(EnhancedVersionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
+        this.remainingSeconds = Math.floor(versionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
         this.countdownActive = true;
 
         // 更新按钮显示
@@ -1114,7 +1114,7 @@ class versionManager {
     // 重置倒数计时
     resetCountdown() {
         // 重置剩余时间
-        this.remainingSeconds = Math.floor(EnhancedVersionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
+        this.remainingSeconds = Math.floor(versionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
 
         // 更新显示
         this.updateCountdownDisplay();
@@ -1183,7 +1183,7 @@ class versionManager {
             this.updateModal.classList.add('show');
 
             // 开始倒数计时
-            if (EnhancedVersionConfig.SHOW_SETTINGS.autoCloseDelay > 0) {
+            if (versionConfig.SHOW_SETTINGS.autoCloseDelay > 0) {
                 this.startCountdown();
             }
         }, 100);
@@ -1214,7 +1214,7 @@ class versionManager {
                 this.updateModal = null;
                 this.isInitialized = false;
             }
-        }, EnhancedVersionConfig.SHOW_SETTINGS.animationDuration);
+        }, versionConfig.SHOW_SETTINGS.animationDuration);
     }
 
     // 清理所有链接复制通知
@@ -1236,8 +1236,8 @@ class versionManager {
 
     // 禁用未来更新提示
     disableFutureUpdates() {
-        EnhancedVersionConfig.SHOW_SETTINGS.showOnUpdate = false;
-        EnhancedVersionConfig.SHOW_SETTINGS.showOnFirstLoad = false;
+        versionConfig.SHOW_SETTINGS.showOnUpdate = false;
+        versionConfig.SHOW_SETTINGS.showOnFirstLoad = false;
 
         localStorage.setItem('perfectwall_disable_updates', 'true');
     }
@@ -1296,8 +1296,8 @@ class versionManager {
 
     // 更新版本配置（外部调用）
     updateConfig(newConfig) {
-        Object.assign(EnhancedVersionConfig, newConfig);
-        this.currentVersion = EnhancedVersionConfig.CURRENT_VERSION;
+        Object.assign(versionConfig, newConfig);
+        this.currentVersion = versionConfig.CURRENT_VERSION;
         this.isNewVersion = this.checkVersionUpdate();
     }
 }
@@ -1348,7 +1348,7 @@ window.showVersionInfo = function () {
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         versionManager,
-        EnhancedVersionConfig,
+        versionConfig,
         SimpleMarkdown
     };
 }

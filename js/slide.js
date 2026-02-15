@@ -219,6 +219,7 @@ function shouldShow() {
 		case 1://单一壁纸模式
 			//关闭视频
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 			//清除body的背景图片
 			document.body.style.backgroundImage = "";
 			
@@ -247,6 +248,7 @@ function shouldShow() {
 		case 2://随机模式
 			//关闭视频
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 			if (myList.length) {
 				//使用两层背景系统进行渐变切换
 				transitionBackground('file:///' + currentImg);
@@ -267,6 +269,7 @@ function shouldShow() {
 		case 3://视频模式
 			ChangeVideoModel();
 			clearpicturesinfo()
+            backgroundLayers.container.style.display = "none"; // 视频模式下隐藏背景层
 			pictures.picture_info.style.display = "none"
 			if (RGB_show) {
 				nextphoto = true
@@ -282,6 +285,7 @@ function shouldShow() {
 			}
 			// 关闭视频
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
 			$.get("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + globalSettingsLanguage, function (get) {
 
@@ -317,6 +321,7 @@ function shouldShow() {
 		case 5: // Lorem Picsum
 			// 关闭视频
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 			var timestamp = new Date().getTime();
 
 			var img = new Image();
@@ -355,6 +360,7 @@ function shouldShow() {
 		case 7: // 次元api  
 			// 关闭视频  
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
 			$.get(chiyuanapi, function (getchiyuan) {
 
@@ -383,6 +389,7 @@ function shouldShow() {
 			}
 			// 关闭视频
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
 			switch (galaxyapi) {
 				case 2:
@@ -442,6 +449,7 @@ function shouldShow() {
 			}
 			// 关闭视频
 			myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
 			var city = globalSettingsLanguage.slice(3)
 
@@ -477,6 +485,8 @@ function shouldShow() {
 				pictures.picture_info.style.display = "flex"
 			}
 			// 关闭视频
+            myvideo.src = null;
+            backgroundLayers.container.style.display = "block"; // 确保背景层可见
 			var img = new Image();
 			img.src = pictures_URL;
 

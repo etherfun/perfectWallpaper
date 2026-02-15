@@ -177,8 +177,6 @@ class DebugLogger {
         
         // 重定向控制台方法
         this.setupConsoleRedirection();
-        
-        this.info('控制台捕获已初始化', { config: this.consoleCaptureConfig });
     }
     
     /**
@@ -1289,19 +1287,53 @@ class MultiTimerManager {
         const timer = this.timers.get(timerId);
         if (!timer) return;
 
-        try {
-            this.timers.delete(timerId);
-            // 执行回调
-            timer.callback();
-            timer.status = 'finished';
-            timer.isActive = false;
-            
-            
-            debugLogger.info(`定时器 "${timerId}" 执行完成`);
-        } catch (error) {
-            debugLogger.error(`定时器 "${timerId}" 执行出错:`, error);
-            timer.status = 'error';
-        }
+        // 检查动画状态
+        const checkAnimationState = () => {
+            if (document.body.style.animationPlayState === 'paused') {
+                // 动画暂停中，无限等待动画恢复
+                debugLogger.info(`定时器 "${timerId}" 等待动画恢复播放...`);
+                
+                // 监听动画状态变化
+                const observer = new MutationObserver((mutations) => {
+                    mutations.forEach((mutation) => {
+                        if (mutation.attributeName === 'style' && 
+                            document.body.style.animationPlayState !== 'paused') {
+                            // 动画已恢复播放，停止监听并执行回调
+                            observer.disconnect();
+                            executeTimerCallback();
+                        }
+                    });
+                });
+
+                // 开始监听body元素的style属性变化
+                observer.observe(document.body, {
+                    attributes: true,
+                    attributeFilter: ['style']
+                });
+            } else {
+                // 动画正在播放，直接执行回调
+                executeTimerCallback();
+            }
+        };
+
+        // 执行定时器回调的实际函数
+        const executeTimerCallback = () => {
+            try {
+                this.timers.delete(timerId);
+                // 执行回调
+                timer.callback();
+                timer.status = 'finished';
+                timer.isActive = false;
+
+                debugLogger.info(`定时器 "${timerId}" 执行完成`);
+            } catch (error) {
+                debugLogger.error(`定时器 "${timerId}" 执行出错:`, error);
+                timer.status = 'error';
+            }
+        };
+
+        // 开始检查动画状态
+        checkAnimationState();
     }
 }
 
@@ -1322,26 +1354,19 @@ function waitAndExecute(conditionFn, actionFn, interval = 100, timeout = 20000) 
         
         const check = () => {
             try {
-                // 检查条件
                 const conditionMet = conditionFn();
                 
                 if (conditionMet === true) {
-                    // 条件成立，执行传入的函数
-                    try {
-                        const result = actionFn();
-                        resolve(result);
-                    } catch (error) {
-                        debugLogger.error(`执行函数失败: ${error.message}`)
-                        reject(new Error(`执行函数失败: ${error.message}`));
-                    }
+                    const result = actionFn();
+                    resolve(result);
                 } else if (Date.now() - startTime > timeout) {
-                    debugLogger.error('等待条件超时')
+                    debugLogger.error('等待条件超时');
                     reject(new Error('等待条件超时'));
                 } else {
                     setTimeout(check, interval);
                 }
             } catch (error) {
-                debugLogger.error(`条件检测失败: ${error.message}`)
+                debugLogger.error(`条件检测失败: ${error.message}`);
                 reject(new Error(`条件检测失败: ${error.message}`));
             }
         };

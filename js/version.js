@@ -19,7 +19,7 @@ const versionConfig = {
 
     // 弹窗显示设置
     SHOW_SETTINGS: {
-        autoCloseDelay: 20000,
+        autoCloseDelay: 60000,
         animationDuration: 400,
         showOnFirstLoad: false,
         showOnUpdate: Boolean(localStorage.getItem("perfectwall_version_show_update")),

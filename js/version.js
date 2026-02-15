@@ -3,7 +3,7 @@ const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res
 
 const versionConfig = {
     // 当前版本号
-    CURRENT_VERSION: "1.7.2",
+    CURRENT_VERSION: "1.7.3",
 
     // 弹窗尺寸设置
     MODAL_SIZE: {

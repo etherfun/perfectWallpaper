@@ -308,6 +308,7 @@ video {
 }
 
 #oDate {
+    white-space: nowrap;
     visibility: var(--date-visibility);
     display: var(--date-display);
     z-index: 10;
@@ -454,7 +455,6 @@ video {
 }
 
 #player_control .info {
-    padding: 0.4em;
     white-space: nowrap;
     display: flex;
     flex-direction: column;

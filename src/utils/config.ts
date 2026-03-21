@@ -373,6 +373,8 @@ class AppConfig {
     fluidEffect: any;
     fullscreenFluidEffect: any;
     FluidEffectConfig: any;
+    fullscreenFluidEnabled: boolean;
+    pictureInfoHideStyleAdded: boolean;
     // 运行时状态
     files: Record<string, string[]>;
     myList: string[];
@@ -409,6 +411,8 @@ class AppConfig {
       fluidEffect: undefined,
       fullscreenFluidEffect: undefined,
       FluidEffectConfig: undefined,
+      fullscreenFluidEnabled: false,
+      pictureInfoHideStyleAdded: false,
       files: {},
       myList: [],
       photo: {
@@ -422,8 +426,61 @@ class AppConfig {
         }
       },
       wallpaper: null,
-      param: null,
-      PWLineParam: null
+      param: {
+        style: 1,
+        r: 0.45,
+        color: "rgba(255,255,255,0.8)",
+        blurColor: "#ffcccc",
+        arr1: [] as { x: number; y: number }[],
+        arr2: [] as { x: number; y: number }[],
+        rotation: 0,
+        rotationcopy: 0,
+        offsetAngle: 0,
+        waveArr: new Array(120),
+        cX: 0.5,
+        cY: 0.5,
+        range: 9,
+        shadowBlur: 15,
+        lineWidth: 9,
+        showCircle: true,
+        wavetransparency: 0.8,
+        showSemiCircle: false,
+        SemiCircledirection: 1,
+        Polygon: 12,
+        SolidColorGradient: true,
+        BlurColorGradient: true,
+        ColorRhythm: true,
+        ColorMode: 1,
+        TagNow: 1,
+        GradientRate: 0.5
+      },
+      PWLineParam: {
+        style: 1,
+        sw: 0.8,
+        lineWidth: 9,
+        waveArr: new Array(120),
+        range: 5,
+        color: "rgba(255,255,255,0.8)",
+        blurColor: "#ffcccc",
+        shadowBlur: 100,
+        arr1: [] as { x: number; y: number }[],
+        arr2: [] as { x: number; y: number }[],
+        arr3: [] as { x: number; y: number }[],
+        LineX: 0.5,
+        LineY: 0.5,
+        showLine: true,
+        LinePosition: 1,
+        Direction: 1,
+        LineDensity: 120,
+        LineTransparency: 0.8,
+        MiddleLine: false,
+        TagNow: 1,
+        SolidColorGradient: true,
+        BlurColorGradient: true,
+        ColorRhythm: true,
+        ColorMode: 1,
+        GradientRate: 0.5
+      }
     };
     this._initDefaults();
   }
@@ -499,6 +556,11 @@ class AppConfig {
   public getLanguageCode(): string {
     return this.getLanguage().slice(0, 2);
   }
+
+  // ==================== 屏幕尺寸方法 ====================
+
+  public getScreenHeight(): number { return window.innerHeight; }
+  public getScreenWidth(): number { return window.innerWidth; }
 
   // ==================== 核心运行时状态方法 ====================
 
@@ -1359,22 +1421,49 @@ class AppConfig {
 // 直接导出 AppConfig 单例
 const appConfig = AppConfig.getInstance();
 
-// 导出配置代理，支持 config.xxx 访问
-export const config = new Proxy({} as AppConfig, {
+// 配置代理类型 - 支持 config.xxx 属性访问
+// config.xxx → appConfig.getXxx()
+// config.xxx = value → appConfig.setXxx(value)
+interface ConfigProxy {
+  // 保留 AppConfig 的原始方法
+  get(key: string): ConfigValue | undefined;
+  set(key: string, value: ConfigValue): void;
+  has(key: string): boolean;
+  keys(): string[];
+  reset(): void;
+  addListener(listener: ConfigListener): void;
+  removeListener(listener: ConfigListener): void;
+  batchSet(settings: Record<string, any>): void;
+  runtime: AppConfig['runtime'];
+  // 动态属性访问 (通过 Proxy 实现)
+  [prop: string]: any;
+}
+
+// 导出配置代理，支持 config.xxx 属性访问
+// config.xxx → appConfig.getXxx() 或 appConfig.get('xxx')
+// config.xxx = value → appConfig.setXxx(value) 或 appConfig.set('xxx', value)
+export const config = new Proxy({} as ConfigProxy, {
   get(_, prop: string) {
-    // 方法调用转发到 appConfig
-    if (typeof (appConfig as any)[prop] === 'function') {
-      return (appConfig as any)[prop].bind(appConfig);
+    // 内部属性和批量方法直接返回
+    if (prop === 'has' || prop === 'keys' || prop === 'reset' ||
+        prop === 'addListener' || prop === 'removeListener' || prop === 'batchSet' ||
+        prop === 'getInstance' || prop === 'runtime' || prop === 'constructor') {
+      return (appConfig as any)[prop];
     }
-    // 配置属性直接返回
-    if (appConfig.has(prop)) {
-      return appConfig.get(prop);
+    // 检查是否有对应的 getter 方法 (getXxx)
+    const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+    const getterName = 'get' + capital(prop);
+    if (typeof (appConfig as any)[getterName] === 'function') {
+      return (appConfig as any)[getterName].call(appConfig);
     }
-    return undefined;
+    // 返回属性本身 (可能是函数或其他)
+    return (appConfig as any)[prop];
   },
   set(_, prop: string, value) {
-    if (appConfig.has(prop)) {
-      appConfig.set(prop, value);
+    const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+    const setterName = 'set' + capital(prop);
+    if (typeof (appConfig as any)[setterName] === 'function') {
+      (appConfig as any)[setterName].call(appConfig, value);
       return true;
     }
     return false;

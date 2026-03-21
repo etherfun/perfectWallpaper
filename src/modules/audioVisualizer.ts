@@ -4,7 +4,7 @@
  * 并在音频数据到达时触发 PWCircle 和 PWLine 的绘制
  */
 
-import { appConfig } from '../utils/config';
+import { appConfig, config } from '../utils/config';
 
 // PWCircle 绘制函数
 import { setCan, createPoint, style1, style2, style3 } from './PWCircle';
@@ -63,7 +63,7 @@ function wallpaperAudioListener(audioData: number[]): void {
     }
 
     // 获取当前可视化模式
-    const model = appConfig.getVisualAudioModel();
+    const model = config.visualAudioModel;
 
     switch (model) {
         case 1: // 完美圆圈

@@ -1,6 +1,6 @@
 // 视频和音频控制模块
 
-import { appConfig } from '../utils/config';
+import { config } from '../utils/config';
 
 // 获取DOM元素
 const myvideo = document.getElementById("myvideo") as HTMLVideoElement;
@@ -10,11 +10,11 @@ const myAudio = document.getElementById("myAudio") as HTMLAudioElement;
  * 切换视频模式
  */
 export function ChangeVideoModel(): void {
-    if (appConfig.getCusvideoRoute() != "") {
-        myvideo.src = appConfig.getCusvideoRoute();
+    if (config.cusvideoRoute != "") {
+        myvideo.src = config.cusvideoRoute;
         myvideo.play();
     } else {
-        myvideo.src = appConfig.getVideoRoute();
+        myvideo.src = config.videoRoute;
         myvideo.play();
     }
 }
@@ -23,8 +23,8 @@ export function ChangeVideoModel(): void {
  * 切换音频模式
  */
 export function ChangeAudioModel(): void {
-    if (appConfig.getCusaudioRoute() != "") {
-        myAudio.src = appConfig.getCusaudioRoute();
+    if (config.cusaudioRoute != "") {
+        myAudio.src = config.cusaudioRoute;
         myAudio.play();
     } else {
         myAudio.src = "";
@@ -38,7 +38,7 @@ export function ChangeAudioModel(): void {
 export function pauseVideo(): void {
     if (myvideo) {
         myvideo.pause();
-        appConfig.setPaused(true);
+        config.paused = true;
     }
 }
 
@@ -48,7 +48,7 @@ export function pauseVideo(): void {
 export function playVideo(): void {
     if (myvideo) {
         myvideo.play();
-        appConfig.setPaused(false);
+        config.paused = false;
     }
 }
 

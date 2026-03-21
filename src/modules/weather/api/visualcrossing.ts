@@ -1,7 +1,7 @@
 import type { WeatherAddress, WeatherData } from '../../../../types/weather';
 import { fetch_with_retry, isNightTime, getQWeatherIcon } from '../../../utils/tool';
 import { i18n } from '../../../utils/i18n';
-import { appConfig } from '../../../utils/config';
+import { config } from '../../../utils/config';
 
 interface VisualCrossingHour {
   datetime: string;
@@ -122,7 +122,7 @@ export async function visualcrossing(
   const sevenDate = nowDate + 7 * 24 * 60 * 60;
 
   const response = await fetch_with_retry(
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(weather_address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${appConfig.getWeatherUnit()}&key=${appConfig.getVisualCrossingKey()}&contentType=json&lang=id`,
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(weather_address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${config.weatherUnit}&key=${config.visualCrossingKey}&contentType=json&lang=id`,
     {},
     3
   );

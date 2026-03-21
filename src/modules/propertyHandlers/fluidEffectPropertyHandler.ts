@@ -5,7 +5,7 @@
 
 import { WallpaperProperties } from './types';
 import { elements } from '../../utils/elementManager';
-import { appConfig } from '@/utils/config';
+import { appConfig, config } from '@/utils/config';
 
 export interface FluidEffectPropertyHandlerResult {
     // empty for now
@@ -40,7 +40,7 @@ export function handleFluidEffectProperties(
         } else {
             appConfig.runtime.FluidEffectConfig.set('fullscreenEnabled', false);
         }
-        appConfig.setFluidEffectEnabledFullscreen(properties.fluidEffectEnabledFullscreen.value);
+        config.fluidEffectEnabledFullscreen = properties.fluidEffectEnabledFullscreen.value;
     }
 
     // 启用
@@ -51,7 +51,7 @@ export function handleFluidEffectProperties(
 
         if (properties.fluidEffectEnabled.value) {
             appConfig.runtime.FluidEffectConfig.set('enabled', true);
-            if (appConfig.getFluidEffectEnabledFullscreen()) {
+            if (config.fluidEffectEnabledFullscreen) {
                 appConfig.runtime.FluidEffectConfig.set('fullscreenEnabled', true);
             }
         } else {

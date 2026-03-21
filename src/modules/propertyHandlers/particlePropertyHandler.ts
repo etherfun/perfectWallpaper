@@ -4,6 +4,8 @@
  */
 
 import { WallpaperProperties } from './types';
+import { appConfig } from '@/utils/config';
+import { shouldShow } from '../slide';
 
 export interface ParticlePropertyHandlerResult {
     // empty for now
@@ -21,8 +23,7 @@ export function handleParticleProperties(
 ): ParticlePropertyHandlerResult {
     const result: ParticlePropertyHandlerResult = {};
 
-    const wallpaper = (window as any).wallpaper;
-    const shouldShowMap = (window as any).shouldShowMap;
+    const wallpaper = appConfig.runtime.wallpaper;
 
     // 显示粒子
     if (properties.particles_isParticles) {
@@ -67,8 +68,7 @@ export function handleParticleProperties(
 
     // 自定义粒子图片
     if (properties.particles_image) {
-        (window as any).cusmapRoute = properties.particles_image.value;
-        shouldShowMap();
+        shouldShow();
     }
 
     // 粒子类型
@@ -88,7 +88,7 @@ export function handleParticleProperties(
                 break;
             case 5:
                 wallpaper.particles('set', 'shapeType', 'image');
-                shouldShowMap();
+                shouldShow();
                 break;
             default:
                 wallpaper.particles('set', 'shapeType', 'circle');
@@ -97,8 +97,7 @@ export function handleParticleProperties(
 
     // 默认图片
     if (properties.particles_picdef) {
-        (window as any).mapRoute = 'map/' + properties.particles_picdef.value + '.png';
-        shouldShowMap();
+        shouldShow();
     }
 
     // 粒子大小

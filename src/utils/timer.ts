@@ -388,7 +388,3 @@ export function throttle<T extends (...args: any[]) => any>(
 
 // 全局定时器管理器实例
 export const timerManager = new MultiTimerManager();
-
-// 暴露到全局对象
-(window as any).MultiTimerManager = MultiTimerManager;
-(window as any).timerManager = timerManager;

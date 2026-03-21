@@ -1,6 +1,6 @@
 import type { WeatherAddress, WeatherData } from '../../../../types/weather';
 import { fetch_with_retry } from '../../../utils/tool';
-import { appConfig } from '../../../utils/config';
+import { config } from '../../../utils/config';
 
 interface YiKeTianQiResponse {
   city: string;
@@ -25,7 +25,7 @@ export async function yiketianqi(
   weather_data: WeatherData
 ): Promise<void> {
   const response = await fetch_with_retry(
-    `https://v1.yiketianqi.com/free/day?appid=${appConfig.getWeatherAppId()}&appsecret=${appConfig.getWeatherAppSecret()}&unescape=1&city=${weather_address.cityname}`,
+    `https://v1.yiketianqi.com/free/day?appid=${config.weatherAppId}&appsecret=${config.weatherAppSecret}&unescape=1&city=${weather_address.cityname}`,
     {},
     3
   );

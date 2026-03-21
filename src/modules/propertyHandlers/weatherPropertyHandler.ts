@@ -4,25 +4,15 @@
  */
 
 import { WallpaperProperties } from './types';
-import { appConfig } from '../../utils/config';
+import { config } from '../../utils/config';
 import { debugLogger } from '../../utils/logger';
 import { timerManager } from '../../utils/timer';
+import { elements } from '@/utils/elementManager';
+import { weather_address, weather_init, generateWeatherTable, autoWeather, weather_unit_choose } from '../weather';
+import { debounce } from '../../utils/timer';
 
-declare let weather_address: {
-    cityname: string;
-    latitude: string;
-    longitude: string;
-};
-declare let weather: HTMLElement;
-declare let bodyElement: HTMLElement;
-declare let h: number;
-declare let w: number;
-declare let weather_init: () => void;
-declare let debounce: <T extends (...args: any[]) => any>(func: T, wait: number) => (...args: Parameters<T>) => void;
-declare let generateWeatherTable: () => Promise<void>;
-declare let weather_lang_choose: () => void;
-declare let weather_unit_choose: () => void;
-declare let autoWeather: () => void;
+// 获取天气元素
+const weather = elements.weather.weather as HTMLElement;
 
 export interface WeatherPropertyHandlerResult {
     // weatherInitComplate 现在通过 appConfig 管理
@@ -42,42 +32,41 @@ export function handleWeatherProperties(
 
     // 获取key 和风天气api
     if (properties.getcitykey_qweather) {
-        appConfig.setCityKey(properties.getcitykey_qweather.value);
+        config.cityKey = properties.getcitykey_qweather.value;
     }
 
     // 获取API host 和风天气api
     if (properties.getAPIHOST_qweather) {
-        appConfig.setApiHost(properties.getAPIHOST_qweather.value);
+        config.apiHost = properties.getAPIHOST_qweather.value;
     }
 
     // 获取appid&appsecret 天气api
     if (properties.getcityappid_tianqiapi) {
-        appConfig.setWeatherAppId(properties.getcityappid_tianqiapi.value);
+        config.weatherAppId = properties.getcityappid_tianqiapi.value;
     }
 
     if (properties.getcityappsecret_tianqiapi) {
-        appConfig.setWeatherAppSecret(properties.getcityappsecret_tianqiapi.value);
+        config.weatherAppSecret = properties.getcityappsecret_tianqiapi.value;
     }
 
     // VisualCrossing_Key
     if (properties.getcitykey_visualcrossing) {
-        appConfig.setVisualCrossingKey(properties.getcitykey_visualcrossing.value);
+        config.visualCrossingKey = properties.getcitykey_visualcrossing.value;
     }
 
     // 天气更新时间
     if (properties.weather_updata) {
-        appConfig.setWeatherUpdate(properties.weather_updata.value);
+        config.weatherUpdate = properties.weather_updata.value;
     }
 
     // 显示语言
     if (properties.weather_lang) {
-        appConfig.setWeatherLang(properties.weather_lang.value);
-        weather_lang_choose();
+        config.weatherLang = properties.weather_lang.value;
     }
 
     // 显示单位
     if (properties.weather_unit) {
-        appConfig.setWeatherUnit(properties.weather_unit.value);
+        config.weatherUnit = properties.weather_unit.value;
         weather_unit_choose();
     }
 
@@ -106,7 +95,7 @@ export function handleWeatherProperties(
     // API选择
     if (properties.freeapi) {
         if (properties.freeapi.value) {
-            appConfig.setWeatherApiChoose("2");
+            config.weatherApiChoose = "2";
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -115,7 +104,7 @@ export function handleWeatherProperties(
 
     if (properties.qweatherapi) {
         if (properties.qweatherapi.value) {
-            appConfig.setWeatherApiChoose("1");
+            config.weatherApiChoose = "1";
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -123,12 +112,12 @@ export function handleWeatherProperties(
     }
 
     if (properties.qweatherapi_paymode) {
-        appConfig.setQweatherApiPaymode(properties.qweatherapi_paymode.value);
+        config.qweatherApiPaymode = properties.qweatherapi_paymode.value;
     }
 
     if (properties.tianqiapi) {
         if (properties.tianqiapi.value) {
-            appConfig.setWeatherApiChoose("3");
+            config.weatherApiChoose = "3";
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -137,7 +126,7 @@ export function handleWeatherProperties(
 
     if (properties.visualcrossingapi) {
         if (properties.visualcrossingapi.value) {
-            appConfig.setWeatherApiChoose("4");
+            config.weatherApiChoose = "4";
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -146,7 +135,7 @@ export function handleWeatherProperties(
 
     if (properties.open_meteoapi) {
         if (properties.open_meteoapi.value) {
-            appConfig.setWeatherApiChoose("5");
+            config.weatherApiChoose = "5";
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -170,55 +159,55 @@ export function handleWeatherProperties(
     // 天气颜色
     if (properties.weather_Color) {
         const c = properties.weather_Color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        bodyElement.style.setProperty("--weather-color", `rgb(${c})`);
-        appConfig.setWeatherColor(c);
+        elements.body.style.setProperty("--weather-color", `rgb(${c})`);
+        config.weatherColor = c;
     }
 
     if (properties.weather_blurcolor_show) {
-        bodyElement.style.setProperty("--weather-blur-enabled", properties.weather_blurcolor_show.value ? '1' : '0');
-        appConfig.setWeatherBlurcolorShow(properties.weather_blurcolor_show.value);
+        elements.body.style.setProperty("--weather-blur-enabled", properties.weather_blurcolor_show.value ? '1' : '0');
+        config.weatherBlurcolorShow = properties.weather_blurcolor_show.value;
     }
 
     if (properties.weather_blurcolor) {
         const c = properties.weather_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        bodyElement.style.setProperty("--weather-blur-color", c.join(', '));
-        appConfig.setWeatherBlurcolor(c);
+        elements.body.style.setProperty("--weather-blur-color", c.join(', '));
+        config.weatherBlurcolor = c;
     }
 
     if (properties.weather_yakeli_show) {
-        bodyElement.style.setProperty("--weather-yakeli-enabled", properties.weather_yakeli_show.value ? '1' : '0');
-        appConfig.setWeatherYakeliShow(properties.weather_yakeli_show.value);
+        elements.body.style.setProperty("--weather-yakeli-enabled", properties.weather_yakeli_show.value ? '1' : '0');
+        config.weatherYakeliShow = properties.weather_yakeli_show.value;
     }
 
     if (properties.weather_yakelicolor) {
         const c = properties.weather_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        bodyElement.style.setProperty("--weather-yakeli-color", c.join(', '));
-        appConfig.setWeatherYakelicColor(c);
+        elements.body.style.setProperty("--weather-yakeli-color", c.join(', '));
+        config.weatherYakelicColor = c;
     }
 
     if (properties.weather_yakeli) {
-        bodyElement.style.setProperty("--weather-yakeli", String(properties.weather_yakeli.value / 100));
-        appConfig.setWeatherYakeli(properties.weather_yakeli.value);
+        elements.body.style.setProperty("--weather-yakeli", String(properties.weather_yakeli.value / 100));
+        config.weatherYakeli = properties.weather_yakeli.value;
     }
 
     if (properties.weather_bluryakeli) {
-        bodyElement.style.setProperty("--weather-blur-yakeli", String(properties.weather_bluryakeli.value) + 'px');
-        appConfig.setWeatherBluryakeli(properties.weather_bluryakeli.value);
+        elements.body.style.setProperty("--weather-blur-yakeli", String(properties.weather_bluryakeli.value) + 'px');
+        config.weatherBluryakeli = properties.weather_bluryakeli.value;
     }
 
     // 天气透明度
     if (properties.weather_timetransparency) {
-        bodyElement.style.setProperty("--weather-opacity", String(properties.weather_timetransparency.value / 100));
+        elements.body.style.setProperty("--weather-opacity", String(properties.weather_timetransparency.value / 100));
     }
 
     // 天气圆角
     if (properties.weather_roundedcorners) {
-        bodyElement.style.setProperty("--weather-roundedcorners", String(properties.weather_roundedcorners.value));
+        elements.body.style.setProperty("--weather-roundedcorners", String(properties.weather_roundedcorners.value));
 
         const updateHeight = () => {
             const height = weather.getBoundingClientRect().height;
             if (!height) return;
-            bodyElement.style.setProperty("--weather-height", height + "px");
+            elements.body.style.setProperty("--weather-height", height + "px");
         };
 
         updateHeight();
@@ -230,30 +219,30 @@ export function handleWeatherProperties(
     // 天气大小
     if (properties.weather_size) {
         const s = properties.weather_size.value;
-        bodyElement.style.setProperty("--weather-font-size", Math.floor(h / 900 * s) + 'px');
+        elements.body.style.setProperty("--weather-font-size", Math.floor(config.screenHeight / 900 * s) + 'px');
     }
 
     if (properties.weather_showwidth) {
         if (properties.weather_showwidth.value === 0) {
-            bodyElement.style.setProperty("--weather-show-width", 'auto');
+            elements.body.style.setProperty("--weather-show-width", 'auto');
         } else {
             const s = properties.weather_showwidth.value / 100;
-            bodyElement.style.setProperty("--weather-show-width", w * s + "px");
+            elements.body.style.setProperty("--weather-show-width", config.screenWidth * s + "px");
         }
     }
 
     // 天气位置
     if (properties.weatherX) {
-        bodyElement.style.setProperty("--weather-left", `${properties.weatherX.value}%`);
+        elements.body.style.setProperty("--weather-left", `${properties.weatherX.value}%`);
     }
 
     if (properties.weatherY) {
-        bodyElement.style.setProperty("--weather-top", `${properties.weatherY.value}%`);
+        elements.body.style.setProperty("--weather-top", `${properties.weatherY.value}%`);
     }
 
     if (FirstLoad) {
         debugLogger.info('[Weather] 天气参数初始化完成');
-        appConfig.setWeatherInitComplete(true);
+        config.weatherInitComplete = true;
     }
 
     return result;

@@ -4,7 +4,7 @@
  */
 
 import { debugLogger } from './logger';
-import { appConfig } from './config';
+import { config } from './config';
 
 // i18n数据接口
 interface I18nData {
@@ -29,7 +29,7 @@ let pendingMutations: MutationRecord[] = [];
  */
 export async function loadI18nData(): Promise<void> {
     try {
-        const language = appConfig.getLanguage();
+        const language = config.language;
         const res = await fetch(`i18n/${language}.json`);
         if (!res.ok) {
             debugLogger.warn(`Language file ${language}.json not found, falling back to en-US`);

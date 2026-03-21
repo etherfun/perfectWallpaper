@@ -10,10 +10,10 @@ export { formatTime, getOpenMeteoIcon, getPrecipTypeFromCode } from './utils';
 
 import type { WeatherData, WeatherAddress, SevenHourlyData } from '../../../types/weather';
 import { qweather, icufree, yiketianqi, visualcrossing, openmeteo } from './api';
-import { wunit, weather_unit_choose } from './units';
+import { wunit } from './units';
 import { i18n } from '../../utils/i18n';
 import { fetch_with_retry } from '../../utils/tool';
-import { appConfig } from '../../utils/config';
+import { config } from '../../utils/config';
 import { timerManager } from '../../utils/timer';
 import { elements } from '../../utils/elementManager';
 import { formatTime } from './utils';
@@ -172,7 +172,7 @@ export async function weather_init(): Promise<void> {
         }
     }
 
-    const handler = apiHandlers[appConfig.getWeatherApiChoose()];
+    const handler = apiHandlers[config.weatherApiChoose];
     if (handler) {
         try {
             await handler(weather_address, weather_data);
@@ -194,7 +194,7 @@ export function autoWeather(): void {
         4: 2700000,
         5: 3600000
     };
-    timerManager.create(autoWeather, intervals[appConfig.getWeatherUpdate()] || 900000, 'updataWeather');
+    timerManager.create(autoWeather, intervals[config.weatherUpdate] || 900000, 'updataWeather');
 }
 
 // 获取空气质量等级文本
@@ -266,7 +266,7 @@ export async function generateWeatherTable(): Promise<void> {
     // 左侧主天气信息
     let leftHTML = `<div class="weather-left">`;
 
-    if ([1, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 4, 5].includes(config.weatherApiChoose)) {
         try {
             const iconRes = await fetch_with_retry(`source/QWeather-Icons/icons/${weather_data.icon}-fill.svg`);
             const iconSvg = await iconRes.text();
@@ -283,11 +283,11 @@ export async function generateWeatherTable(): Promise<void> {
         <div class="weather-text">${weather_data.weathernow || ""}</div>
     `;
 
-    if ([1, 3, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 3, 4, 5].includes(config.weatherApiChoose)) {
         leftHTML += `<div class="weather-feels">${i18n('weather_feels_label')} ${weather_data.feels}${wunit?.temp || "℃"}</div>`;
     }
 
-    if ([1, 2, 3, 4].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 2, 3, 4].includes(config.weatherApiChoose)) {
         leftHTML += `<div class="weather-city">${weather_address.cityname}</div>`;
     }
 
@@ -300,45 +300,45 @@ export async function generateWeatherTable(): Promise<void> {
     rightHTML += `<div class="weather-main-row">`;
     rightHTML += `<div class="weather-info-item temp-range">${weather_data.temperature_max} ~ ${weather_data.temperature_min}℃</div>`;
 
-    if ([1, 3, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 3, 4, 5].includes(config.weatherApiChoose)) {
         rightHTML += `<div class="weather-info-item humidity">${i18n('weather_humidity_label')}${weather_data.humidity}%</div>`;
     }
 
     rightHTML += `<div class="weather-info-item wind-direction">${weather_data.wind}</div>`;
 
-    if ([1, 2].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 2].includes(config.weatherApiChoose)) {
         rightHTML += `<div class="weather-info-item wind-level">${weather_data.windLv}${i18n('weather_wind_level_label')}</div>`;
     }
 
-    if ([1, 3, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 3, 4, 5].includes(config.weatherApiChoose)) {
         rightHTML += `<div class="weather-info-item wind-speed">${weather_data.windSpeed}${wunit?.wind || "km/h"}</div>`;
     }
 
-    if ([1].includes(appConfig.getWeatherApiChoose())) {
+    if ([1].includes(config.weatherApiChoose)) {
         rightHTML += `<div class="weather-info-item visibility">${i18n('weather_visibility_label')}${weather_data.vis}${wunit?.vis || "km"}</div>`;
     }
 
-    if ([1, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 4, 5].includes(config.weatherApiChoose)) {
         rightHTML += `<div class="weather-info-item cloud">${i18n('weather_cloud_label')}${weather_data.cloud}%</div>`;
     }
     rightHTML += `</div>`;
 
     // 第二行：详细信息（UV指数、日出日落、月相）
-    if ([1, 3, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 3, 4, 5].includes(config.weatherApiChoose)) {
         rightHTML += `<div class="weather-detail-row">`;
         rightHTML += `<div class="weather-detail-item uv-index">${i18n('weather_uv_label')}${weather_data.uvindex}</div>`;
 
-        if ([1, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+        if ([1, 4, 5].includes(config.weatherApiChoose)) {
             rightHTML += `<div class="weather-info-item cloud">${i18n('weather_cloud_label')}${weather_data.cloud}%</div>`;
         }
         rightHTML += `<div class="weather-detail-item sunrise">${i18n('weather_sunrise_label')}${formatTime(weather_data.sunrise)}</div>`;
         rightHTML += `<div class="weather-detail-item sunset">${i18n('weather_sunset_label')}${formatTime(weather_data.sunset)}</div>`;
-        if ([1, 4].includes(appConfig.getWeatherApiChoose())) {
+        if ([1, 4].includes(config.weatherApiChoose)) {
             rightHTML += `<div class="weather-detail-item moonphase">${weather_data.moonphase}</div>`;
         }
         rightHTML += `</div>`; // 结束weather-detail-row
 
-        if ([1].includes(appConfig.getWeatherApiChoose())) {
+        if ([1].includes(config.weatherApiChoose)) {
             // 第三行：空气质量
             rightHTML += `<div class="weather-air-row">`;
 
@@ -353,9 +353,9 @@ export async function generateWeatherTable(): Promise<void> {
             rightHTML += `</div>`; // 结束weather-air-row
         }
 
-    } else if ([2].includes(appConfig.getWeatherApiChoose())) {
+    } else if ([2].includes(config.weatherApiChoose)) {
         // API 2 没有详细信息
-    } else if ([3].includes(appConfig.getWeatherApiChoose())) {
+    } else if ([3].includes(config.weatherApiChoose)) {
         // API 3 只有空气质量行
         rightHTML += `<div class="weather-air-row">`;
         const alertsHTML = generateAlertHTML();
@@ -366,7 +366,7 @@ export async function generateWeatherTable(): Promise<void> {
     }
 
     // 降水概率行（动态显示）
-    if ([1, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 4, 5].includes(config.weatherApiChoose)) {
         const showTemp = showTemperatureInsteadOfPrecip;
         const label = showTemp ? i18n('weather_show_temperature') : i18n('weather_show_precipprob');
         const dataValues = showTemp ? weather_data.sevenHourlyData.Temps : weather_data.sevenHourlyData.Pops;
@@ -488,7 +488,7 @@ export function startPrecipTemperatureToggleTimer(): void {
     }
 
     // 仅当有降水行时启动定时器（weather_api_choose 为 1, 4, 5）
-    if ([1, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 4, 5].includes(config.weatherApiChoose)) {
         // 每30秒切换一次显示
         precipTemperatureToggleTimer = window.setInterval(togglePrecipTemperatureDisplay, 20000);
     }
@@ -688,12 +688,12 @@ function attachWeatherAlertTooltip(element: HTMLElement): void {
 
 // 统一绑定所有tooltip事件
 export function tooltip(): void {
-    if ([1].includes(appConfig.getWeatherApiChoose())) {
+    if ([1].includes(config.weatherApiChoose)) {
         document.querySelectorAll(".weather-alert-item").forEach(item => {
             attachWeatherAlertTooltip(item as HTMLElement);
         });
     }
-    if ([1, 4, 5].includes(appConfig.getWeatherApiChoose())) {
+    if ([1, 4, 5].includes(config.weatherApiChoose)) {
         document.querySelectorAll(".precip-time-cell").forEach((el, i) => {
             attachSevenHourlyTooltip(el as HTMLElement, i);
         });
@@ -728,7 +728,3 @@ export default {
     weather_address,
     weather_data
 };
-
-// Attach weather_unit_choose to window for IIFE bundle compatibility
-// Used by weatherPropertyHandler via declare let
-(window as any).weather_unit_choose = weather_unit_choose;

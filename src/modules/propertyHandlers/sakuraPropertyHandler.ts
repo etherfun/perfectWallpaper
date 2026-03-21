@@ -4,7 +4,7 @@
  */
 
 import { WallpaperProperties } from './types';
-import { appConfig } from '../../utils/config';
+import { config } from '../../utils/config';
 import { elements } from '../../utils/elementManager';
 import * as sakuraModule from '../sakura';
 
@@ -27,8 +27,7 @@ export function handleSakuraProperties(
     // 樱花特效
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;
-        appConfig.setShowSakura(showSakura);
-        (window as any).showSakura = showSakura;
+        config.showSakura = showSakura;
 
         if (showSakura) {
             // 开启樱花，全屏樱花
@@ -38,7 +37,7 @@ export function handleSakuraProperties(
                 sakuraModule.makeCanvasFullScreen(canvas, canvasshow);
             }
             sakuraModule.setAnimating(true);
-            (window as any).animate();
+            sakuraModule.animate();
             sakuraModule.removesakura();
         } else {
             // 关闭樱花，隐藏樱花
@@ -54,7 +53,7 @@ export function handleSakuraProperties(
     // 樱花透明度
     if (properties.sakuratransparency) {
         const transparency = properties.sakuratransparency.value / 100;
-        appConfig.setSakuraTransparency(transparency);
+        config.sakuraTransparency = transparency;
         const ctx = elements.sakurashow?.getContext('2d');
         if (ctx) {
             ctx.canvas.style.opacity = String(transparency);
@@ -63,28 +62,28 @@ export function handleSakuraProperties(
 
     // 樱花背景
     if (properties.sakurabackground) {
-        appConfig.setSakuraBackground(properties.sakurabackground.value);
+        config.sakuraBackground = properties.sakurabackground.value;
     }
 
     // 樱花背景色
     if (properties.sakurabackcolor) {
-        appConfig.setSakuraBackColor(properties.sakurabackcolor.value);
+        config.sakuraBackColor = properties.sakurabackcolor.value;
     }
 
     // 樱花反转
     if (properties.sakurareverse) {
-        appConfig.setSakuraReverse(properties.sakurareverse.value);
+        config.sakuraReverse = properties.sakurareverse.value;
     }
 
     // 樱花数量
     if (properties.sakurapointnumber) {
-        appConfig.setSakuraPointNumber(properties.sakurapointnumber.value);
+        config.sakuraPointNumber = properties.sakurapointnumber.value;
         sakuraModule.sakuraResize();
     }
 
     // 背景亮度
     if (properties.sakurabacklight) {
-        appConfig.setSakuraBackLight(properties.sakurabacklight.value / 100);
+        config.sakuraBackLight = properties.sakurabacklight.value / 100;
         sakuraModule.sakuraReLoadEffect();
     }
 

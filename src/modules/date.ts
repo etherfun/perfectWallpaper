@@ -1,5 +1,5 @@
 import { waitAndExecute } from "../utils/tool";
-import { appConfig } from "../utils/config";
+import { config } from "../utils/config";
 import { elements } from "../utils/elementManager";
 
 var oDate = elements.date.container;
@@ -15,7 +15,7 @@ var me_array = new Array("January","February","March","April","May","June","July
 
 // 获取格式化后的年份
 function getFormattedYear(t) {
-    switch(appConfig.getDateFormat().yearFormat) {
+    switch(config.dateFormat.yearFormat) {
         case 1: // YYYY格式
             return t.getFullYear();
         case 2: // YY格式（后两位）
@@ -29,7 +29,7 @@ function getFormattedYear(t) {
 // 获取格式化后的月份
 function getFormattedMonth(t) {
     var month = t.getMonth() + 1;
-    switch(appConfig.getDateFormat().monthFormat) {
+    switch(config.dateFormat.monthFormat) {
         case 1: // 数字格式
             return month;
         case 2: // 英文月份
@@ -45,7 +45,7 @@ function getFormattedMonth(t) {
 // 获取格式化后的日期
 function getFormattedDay(t) {
     var day = t.getDate();
-    switch(appConfig.getDateFormat().dayFormat) {
+    switch(config.dateFormat.dayFormat) {
         case 1: // 数字格式
             return day;
         case 2: // 带前导零
@@ -58,7 +58,7 @@ function getFormattedDay(t) {
 
 // 获取格式化后的星期
 function getFormattedWeek(t) {
-    switch(appConfig.getDateFormat().weekFormat) {
+    switch(config.dateFormat.weekFormat) {
         case 1: // 中文星期
             return w_array[t.getDay()];
         case 2: // 英文星期
@@ -71,7 +71,7 @@ function getFormattedWeek(t) {
 
 // 获取分隔符
 function getSeparator() {
-    switch(appConfig.getDateFormat().separator) {
+    switch(config.dateFormat.separator) {
         case 1: // 无分隔符（用于中文格式）
             return "";
         case 2: // "/"
@@ -95,15 +95,15 @@ function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
     var partTypes: string[] = [];
     
     // 根据顺序添加年份、月份、日期，并记录类型
-    if (appConfig.getDateFormat().order === 1) { // 年月日顺序
+    if (config.dateFormat.order === 1) { // 年月日顺序
         if (year) { parts.push(year); partTypes.push('year'); }
         if (month) { parts.push(month); partTypes.push('month'); }
         if (day) { parts.push(day); partTypes.push('day'); }
-    } else if (appConfig.getDateFormat().order === 2) { // 月日年顺序
+    } else if (config.dateFormat.order === 2) { // 月日年顺序
         if (month) { parts.push(month); partTypes.push('month'); }
         if (day) { parts.push(day); partTypes.push('day'); }
         if (year) { parts.push(year); partTypes.push('year'); }
-    } else if (appConfig.getDateFormat().order === 3) { // 日月年顺序
+    } else if (config.dateFormat.order === 3) { // 日月年顺序
         if (day) { parts.push(day); partTypes.push('day'); }
         if (month) { parts.push(month); partTypes.push('month'); }
         if (year) { parts.push(year); partTypes.push('year'); }
@@ -163,7 +163,7 @@ function autodata(){
 }
 
 waitAndExecute(
-    () => appConfig.getDateInitComplete() === true,
+    () => config.dateInitComplete === true,
     () => autodata()
 );
 

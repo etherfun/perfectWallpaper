@@ -4,14 +4,19 @@
 // Typedef for requestAnimFrame
 type RequestAnimFrameCallback = (time: number) => void;
 
-// Polyfill requestAnimFrame - assign to window with type assertion
+// Polyfill requestAnimFrame
 const requestAnimFramePolyfill: RequestAnimFrameCallback = (function() {
-    return (window as any).requestAnimationFrame ||
-        (window as any).webkitRequestAnimationFrame ||
-        (window as any).mozRequestAnimationFrame ||
-        function(callback: RequestAnimFrameCallback) {
-            window.setTimeout(callback, 1000 / 60);
-        };
+    const vendors = ['webkit', 'moz'];
+    const win = window as typeof window & Record<string, any>;
+    for (let i = 0; i < vendors.length; i++) {
+        const vp = vendors[i] + 'RequestAnimationFrame';
+        if (win[vp]) {
+            return win[vp].bind(win);
+        }
+    }
+    return function(callback: RequestAnimFrameCallback) {
+        window.setTimeout(callback, 1000 / 60);
+    };
 })();
 
 // Use the polyfill
@@ -48,6 +53,8 @@ let points: {
 let num: number = 0;
 let sum: number = 0;
 let mouse: { x: number; y: number } = { x: 0, y: 0 };
+let pAutoTimer: number | null = null;
+let pAutoRunning = false;
 
 /**
  * Point class representing a particle
@@ -258,23 +265,36 @@ export function connect(): void {
  * Main animation loop
  */
 export function auto(): void {
-    CXTPar.clearRect(0, 0, CanPar.width, CanPar.height);
-    drawPoint();
-    if (isShowLine) connect();
-    (requestAnimFrame as any)(auto);
+    if (pAutoRunning) return;
+    pAutoRunning = true;
+    const loop = (): void => {
+        CXTPar.clearRect(0, 0, CanPar.width, CanPar.height);
+        drawPoint();
+        if (isShowLine) connect();
+        pAutoTimer = (requestAnimFrame as any)(loop);
+    };
+    loop();
+}
+
+/** Stop the PWParticles animation loop */
+export function stopAuto(): void {
+    pAutoRunning = false;
+    if (pAutoTimer !== null) {
+        cancelAnimationFrame(pAutoTimer);
+        pAutoTimer = null;
+    }
+}
+
+/** Start the PWParticles animation loop */
+export function startAuto(): void {
+    if (!pAutoRunning) {
+        auto();
+    }
 }
 
 // Initialize
 wResize();
 PWParcreatePoint();
-auto();
-
-// Global exports for backward compatibility
-(window as any).wResize = wResize;
-(window as any).PWParcreatePoint = PWParcreatePoint;
-(window as any).drawP = drawP;
-(window as any).moveP = moveP;
-(window as any).drawPoint = drawPoint;
-(window as any).connect = connect;
-(window as any).auto = auto;
+// Note: auto() is NOT called here. Animation must be explicitly started.
+// This matches the original jQuery plugin behavior where startParticles() was never auto-called.
 

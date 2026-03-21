@@ -30,7 +30,7 @@ import {
     handleFluidEffectProperties,
     FluidEffectPropertyHandlerResult,
 } from './index';
-import { appConfig } from '../../utils/config';
+import { appConfig, config } from '../../utils/config';
 import { debugLogger } from '../../utils/logger';
 import { elements } from '../../utils/elementManager';
 import { removesakura } from '../sakura';
@@ -78,7 +78,7 @@ export function createWallpaperPropertyListener(
 
     // 全局语言设置
     if (properties.global_settings_language) {
-        appConfig.setLanguage(properties.global_settings_language.value);
+        config.language = properties.global_settings_language.value;
         loadI18nData();
     }
 
@@ -104,7 +104,7 @@ export function createWallpaperPropertyListener(
 
     // 如果是首次加载,标记更新初始化完成
     if (FirstLoad) {
-        appConfig.setUpdateInitComplete(true);
+        config.updateInitComplete = true;
     }
 
     try {
@@ -181,8 +181,8 @@ export function createWallpaperPropertyListener(
 
     // 如果是首次加载，在处理完所有属性后将其设置为 false
     if (FirstLoad) {
-        appConfig.setFirstLoad(false);
-        appConfig.setUpdateInitComplete(true);
+        config.firstLoad = false;
+        config.updateInitComplete = true;
     }
 
     return results;
@@ -196,11 +196,14 @@ export function setupWallpaperPropertyListener(): void {
     // 确保 window 对象存在
     if (typeof window !== 'undefined') {
         const runtime = appConfig.runtime;
-        (window as any).wallpaperPropertyListener = {
+        window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
                 // 从 appConfig 获取 FirstLoad 状态
-                const isFirstLoad = appConfig.getFirstLoad();
+                const isFirstLoad = config.firstLoad;
                 createWallpaperPropertyListener(properties as WallpaperProperties, isFirstLoad);
+            },
+            applyGeneralProperties: (_properties: Record<string, any>) => {
+                // General properties are handled by wallpaper engine directly
             },
             userDirectoryFilesAddedOrChanged: (propertyName: string, changedFiles: string[]) => {
                 if (!runtime.files.hasOwnProperty(propertyName)) {
@@ -227,26 +230,26 @@ export function setupWallpaperPropertyListener(): void {
                 const myvideo = elements.myvideo;
                 const myAudio = elements.myAudio;
                 if (isPaused) {
-                    appConfig.setPaused(true);
+                    config.paused = true;
                     myvideo.pause();
                     myAudio.pause();
                 } else {
-                    appConfig.setPaused(false);
+                    config.paused = false;
                     if (!(myvideo.paused && (myvideo.src.slice(-10) === 'twall/null' || myvideo.src.slice(-10) === 'index.html'))) {
                         myvideo.play();
                     }
                     if (!(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
                         myAudio.play();
                     }
-                    if (appConfig.getRGBShow() === true) {
-                        if (appConfig.getWallpaperMode() !== 3) {
+                    if (config.rGBShow === true) {
+                        if (config.wallpaperMode !== 3) {
                             const src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1');
                             background2canvas(src, false);
                         } else {
                             background2canvas(null, true);
                         }
                     }
-                    if (appConfig.getShowSakura() === true) {
+                    if (config.showSakura === true) {
                         removesakura();
                     }
                 }

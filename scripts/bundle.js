@@ -16,8 +16,8 @@ async function build() {
         globalName: 'PerfectWall',
         platform: 'browser',
         target: 'es2020',
-        sourcemap: true,
-        minify: false,
+        sourcemap: false,
+        minify: true,
         logLevel: 'info',
     });
 

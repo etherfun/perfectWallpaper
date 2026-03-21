@@ -3,6 +3,8 @@
  * 类似 DevTools Console 的界面
  */
 
+import { debugLogger } from '../../utils/logger';
+
 /**
  * 复制文本到剪态板
  */
@@ -68,7 +70,7 @@ export function showDebugLogModal(): void {
         document.body.removeChild(existingModal);
     }
 
-    const logs: any[] = (window as any).debugLogger?.logs || [];
+    const logs: any[] = debugLogger?.logs || [];
 
     const modalHTML = `
     <div id="debug-log-modal" class="debug-console-modal">
@@ -232,7 +234,7 @@ function toggleLogDetails(id: number): void {
         expandedLogs.add(id);
     }
     // 重新渲染当前日志列表
-    const logs: any[] = (window as any).debugLogger?.logs || [];
+    const logs: any[] = debugLogger?.logs || [];
     renderLogs(logs);
 }
 
@@ -246,14 +248,14 @@ function bindConsoleEvents(): void {
     // 折叠所有
     document.getElementById('debug-btn-collapse')?.addEventListener('click', () => {
         expandedLogs.clear();
-        const logs: any[] = (window as any).debugLogger?.logs || [];
+        const logs: any[] = debugLogger?.logs || [];
         renderLogs(logs);
     });
 
     // 清空按钮
     document.getElementById('debug-btn-clear')?.addEventListener('click', () => {
-        if ((window as any).debugLogger) {
-            (window as any).debugLogger.clearLogs();
+        if (debugLogger) {
+            debugLogger.clearLogs();
             expandedLogs.clear();
             renderLogs([]);
         }
@@ -261,7 +263,7 @@ function bindConsoleEvents(): void {
 
     // 复制按钮
     document.getElementById('debug-btn-copy')?.addEventListener('click', () => {
-        const logs: any[] = (window as any).debugLogger?.logs || [];
+        const logs: any[] = debugLogger?.logs || [];
         const text = logs.map(log =>
             `[${log.timeString}] [${log.levelName}] ${log.message}` +
             (log.extraData ? `\n${JSON.stringify(log.extraData, null, 2)}` : '')
@@ -280,7 +282,7 @@ function bindConsoleEvents(): void {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.debug-filter-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const logs: any[] = (window as any).debugLogger?.logs || [];
+            const logs: any[] = debugLogger?.logs || [];
             renderLogs(logs);
         });
     });
@@ -288,7 +290,7 @@ function bindConsoleEvents(): void {
     // 搜索输入
     const searchInput = document.getElementById('debug-search-input') as HTMLInputElement;
     searchInput?.addEventListener('input', () => {
-        const logs: any[] = (window as any).debugLogger?.logs || [];
+        const logs: any[] = debugLogger?.logs || [];
         renderLogs(logs);
     });
 
@@ -325,9 +327,7 @@ export function closeDebugLogModal(): void {
     document.removeEventListener('keydown', handleConsoleKeydown);
 }
 
-// 导出到 window
+// 导出到 window - 内联 onclick 处理需要全局访问
 (window as any).showDebugLogModal = showDebugLogModal;
 (window as any).closeDebugLogModal = closeDebugLogModal;
 (window as any).toggleLogDetails = toggleLogDetails;
-
-// 导出供其他模块使用

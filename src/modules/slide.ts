@@ -2,7 +2,7 @@
  * 幻灯片模块 - 背景切换和图片轮播功能
  */
 
-import { appConfig } from "../utils/config";
+import { appConfig, config } from "../utils/config";
 import { elements } from "../utils/elementManager";
 import { background2canvas } from "./RGB";
 import { timerManager } from "@/utils/timer";
@@ -33,6 +33,18 @@ const backgroundLayers = {
 /** 使用两层背景进行渐变切换（支持模糊背景层两层切换） */
 export function transitionBackground(newImageUrl: string): void {
     if (backgroundLayers.isTransitioning) return;
+
+    // 获取当前活动层
+    const activeLayer = backgroundLayers.currentActive === 1 ? backgroundLayers.layer1 : backgroundLayers.layer2;
+
+    // 如果新图片与当前图片相同，跳过切换
+    if (activeLayer && activeLayer.style.backgroundImage) {
+        // 统一引号格式后比较 (backgroundImage 可能用双引号或单引号)
+        const currentBg = activeLayer.style.backgroundImage.replace(/"/g, "'");
+        const newBg = "url('" + newImageUrl + "')";
+        if (currentBg === newBg) return;
+    }
+
     backgroundLayers.isTransitioning = true;
 
     // 获取当前和下一层（主背景层）
@@ -42,36 +54,36 @@ export function transitionBackground(newImageUrl: string): void {
     // 获取当前和下一层（模糊背景层）
     const currentBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer1 : backgroundLayers.blurLayer2;
     const nextBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer2 : backgroundLayers.blurLayer1;
-    
+
     // 设置下一层的背景图片（主背景层）
     nextLayer.style.backgroundImage = "url('" + newImageUrl + "')";
-    
+
     // 设置下一层的背景图片（模糊背景层）
     if (nextBlurLayer) {
         nextBlurLayer.style.backgroundImage = "url('" + newImageUrl + "')";
     }
-    
+
     // 自动应用背景样式到新层
     applyBackgroundStyle();
-    
+
     // 开始渐变过渡
     setTimeout(function() {
         // 淡出当前层（主背景层）
         currentLayer.style.opacity = "0";
-        
+
         // 淡入下一层（主背景层）
         nextLayer.style.opacity = "1";
-        
+
         // 淡出当前层（模糊背景层）
         if (currentBlurLayer) {
             currentBlurLayer.style.opacity = "0";
         }
-        
+
         // 淡入下一层（模糊背景层）
         if (nextBlurLayer) {
             nextBlurLayer.style.opacity = "1";
         }
-        
+
         // 切换活动层
         backgroundLayers.currentActive = backgroundLayers.currentActive === 1 ? 2 : 1;
         backgroundLayers.blurCurrentActive = backgroundLayers.blurCurrentActive === 1 ? 2 : 1;
@@ -128,13 +140,13 @@ function calculate(t: number): number {
 
 /** 变换背景 */
 export function changeBackground(): void {
-    switch (appConfig.getWallpaperMode()) {
+    switch (config.wallpaperMode) {
         case 1: // 单一壁纸模式
             shouldShow();
             break;
         case 2: // 随机模式
             if (appConfig.runtime.myList.length) {
-                if (appConfig.getRandom()) {
+                if (config.random) {
                     // 随机模式
                     nextImage(true);
                 } else {
@@ -145,7 +157,7 @@ export function changeBackground(): void {
                 shouldShow();
             }
             timerManager.remove('backgroundChange');
-            timerManager.create(changeBackground, calculate(appConfig.getSpeed()), 'backgroundChange');
+            timerManager.create(changeBackground, calculate(config.speed), 'backgroundChange');
             break;
         case 3: // 视频模式
             shouldShow();
@@ -158,27 +170,27 @@ export function changeBackground(): void {
         case 5: // Lorem Picsum
             shouldShow();
             timerManager.remove('backgroundChange');
-            timerManager.create(changeBackground, calculate(appConfig.getSpeed()), 'backgroundChange');
+            timerManager.create(changeBackground, calculate(config.speed), 'backgroundChange');
             break;
         case 6: // NASA
             shouldShow();
             timerManager.remove('backgroundChange');
-            timerManager.create(changeBackground, calculate(appConfig.getSpeed()), 'backgroundChange');
+            timerManager.create(changeBackground, calculate(config.speed), 'backgroundChange');
             break;
         case 7: // 次元api
             shouldShow();
             timerManager.remove('backgroundChange');
-            timerManager.create(changeBackground, calculate(appConfig.getSpeed()), 'backgroundChange');
+            timerManager.create(changeBackground, calculate(config.speed), 'backgroundChange');
             break;
         case 8: // Windows聚焦
             shouldShow();
             timerManager.remove('backgroundChange');
-            timerManager.create(changeBackground, calculate(appConfig.getSpeed()), 'backgroundChange');
+            timerManager.create(changeBackground, calculate(config.speed), 'backgroundChange');
             break;
         case 9: // 自定义
             shouldShow();
             timerManager.remove('backgroundChange');
-            timerManager.create(changeBackground, calculate(appConfig.getSpeed()), 'backgroundChange');
+            timerManager.create(changeBackground, calculate(config.speed), 'backgroundChange');
             break;
         default:
     }
@@ -222,7 +234,7 @@ export function nextImage(rands: boolean): void {
 export function shouldShow(): void {
     document.body.style.backgroundImage = "";
 
-    switch (appConfig.getWallpaperMode()) {
+    switch (config.wallpaperMode) {
         case 1: // 单一壁纸模式
             // 关闭视频
             (elements.myvideo as HTMLVideoElement).src = "";
@@ -231,10 +243,10 @@ export function shouldShow(): void {
             document.body.style.backgroundImage = "";
             
             let imageUrl: string;
-            if (appConfig.getCustom()) {
-                imageUrl = 'file:///' + appConfig.getCustom();
+            if (config.custom) {
+                imageUrl = 'file:///' + config.custom;
             } else {
-                imageUrl = appConfig.getBackgroundRoute().replace(/^url\("(.+?)"\)$/, '$1');
+                imageUrl = config.backgroundRoute.replace(/^url\("(.+?)"\)$/, '$1');
             }
             
             // 使用两层背景系统进行渐变切换
@@ -242,7 +254,7 @@ export function shouldShow(): void {
             
             clearpicturesinfo();
             pictures.picture_info.style.display = "none";
-            if (appConfig.getRGBShow()) {
+            if (config.RGBShow) {
                 appConfig.runtime.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(imageUrl, false);
@@ -264,7 +276,7 @@ export function shouldShow(): void {
             }
             clearpicturesinfo();
             pictures.picture_info.style.display = "none";
-            if (appConfig.getRGBShow()) {
+            if (config.RGBShow) {
                 appConfig.runtime.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(appConfig.runtime.photo.currentImg!, false);
@@ -278,7 +290,7 @@ export function shouldShow(): void {
             clearpicturesinfo();
             backgroundLayers.container.style.display = "none"; // 视频模式下隐藏背景层
             pictures.picture_info.style.display = "none";
-            if (appConfig.getRGBShow()) {
+            if (config.RGBShow) {
                 appConfig.runtime.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(undefined, true);
@@ -288,14 +300,14 @@ export function shouldShow(): void {
             break;
             
         case 4: // Bing壁纸
-            if (appConfig.getPicturesInfoShow() && pictures.picture_info.style.display == "none") {
+            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             // 关闭视频
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
-            fetch("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + appConfig.getLanguage())
+            fetch("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + config.language)
                 .then(response => response.json())
                 .then((get: any) => {
                     appConfig.runtime.photo.infomation.title = get.images[0].title;
@@ -322,7 +334,7 @@ export function shouldShow(): void {
                     img.onload = function () {
                         transitionBackground(img.src);
 
-                        if (appConfig.getRGBShow()) {
+                        if (config.RGBShow) {
                             appConfig.runtime.photo.nextphoto = true;
                             setTimeout(function () {
                                 background2canvas(img.src, false);
@@ -345,7 +357,7 @@ export function shouldShow(): void {
             loremImg.onload = function () {
                 transitionBackground(loremImg.src);
 
-                if (appConfig.getRGBShow()) {
+                if (config.RGBShow) {
                     appConfig.runtime.photo.nextphoto = true;
                     setTimeout(function () {
                         background2canvas(loremImg.src, false);
@@ -358,14 +370,14 @@ export function shouldShow(): void {
             break;
 
         case 6: // NASA星空
-            if (appConfig.getPicturesInfoShow() && pictures.picture_info.style.display == "none") {
+            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             // 关闭视频
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
-            const galaxyapi = appConfig.getGalaxyapi();
+            const galaxyapi = config.galaxyapi;
 
             switch (galaxyapi) {
                 case 2:
@@ -429,7 +441,7 @@ export function shouldShow(): void {
                 img.onload = function () {
                     transitionBackground(img.src);
 
-                    if (appConfig.getRGBShow()) {
+                    if (config.RGBShow) {
                         appConfig.runtime.photo.nextphoto = true;
                         setTimeout(function () {
                             background2canvas(img.src, false);
@@ -445,7 +457,7 @@ export function shouldShow(): void {
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
-            fetch(appConfig.getChiyuanapi())
+            fetch(config.chiyuanapi)
                 .then(response => response.text())
                 .then((getchiyuan: any) => {
                     const img = new Image();
@@ -454,7 +466,7 @@ export function shouldShow(): void {
                     img.onload = function () {
                         transitionBackground(img.src);
 
-                        if (appConfig.getRGBShow()) {
+                        if (config.RGBShow) {
                             appConfig.runtime.photo.nextphoto = true;
                             setTimeout(function () {
                                 background2canvas(img.src, false);
@@ -468,16 +480,16 @@ export function shouldShow(): void {
             break;
 
         case 8: // Windows聚焦
-            if (appConfig.getPicturesInfoShow() && pictures.picture_info.style.display == "none") {
+            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             // 关闭视频
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block"; // 确保背景层可见
 
-            const city = appConfig.getLanguage().slice(3);
+            const city = config.language.slice(3);
 
-            fetch(`https://fd.api.iris.microsoft.com/v4/api/selection?&placement=88000820&bcnt=1&country=${city}&locale=${appConfig.getLanguage()}&fmt=json`)
+            fetch(`https://fd.api.iris.microsoft.com/v4/api/selection?&placement=88000820&bcnt=1&country=${city}&locale=${config.language}&fmt=json`)
                 .then(response => response.json())
                 .then((get: any) => {
                     const rawjson = JSON.parse(get.batchrsp.items[0].item);
@@ -500,7 +512,7 @@ export function shouldShow(): void {
                     img.onload = function () {
                         transitionBackground(img.src);
 
-                        if (appConfig.getRGBShow()) {
+                        if (config.RGBShow) {
                             appConfig.runtime.photo.nextphoto = true;
                             setTimeout(function () {
                                 background2canvas(img.src, false);
@@ -512,19 +524,19 @@ export function shouldShow(): void {
             break;
 
         case 9: // 自定义
-            if (appConfig.getPicturesInfoShow() && pictures.picture_info.style.display == "none") {
+            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             // 关闭视频
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block"; // 确保背景层可见
             const customImg = new Image();
-            customImg.src = appConfig.getPicturesUrl();
+            customImg.src = config.picturesUrl;
 
             customImg.onload = function () {
                 transitionBackground(customImg.src);
 
-                if (appConfig.getRGBShow()) {
+                if (config.RGBShow) {
                     appConfig.runtime.photo.nextphoto = true;
                     setTimeout(function () {
                         background2canvas(customImg.src, false);
@@ -571,7 +583,7 @@ export function picturesinfo_showrl(title: string, author: string, where: string
 
     let title_w: Element | null, author_w: Element | null, where_w: Element | null;
 
-    if ((window as any).picturesinfo_showRorL) {
+    if (config.picturesInfoShowRorL) {
         title_w = document.querySelector("#picture_info .title .right");
         author_w = document.querySelector("#picture_info .author .right");
         where_w = document.querySelector("#picture_info .location .right");
@@ -591,10 +603,10 @@ export function picturesinfo_showrl(title: string, author: string, where: string
 export function TransitionSwith(): void {
     let transitionValue = "";
 
-    const TransitionMode = (window as any).TransitionMode || 0;
-    const TransitionMode_choose_0 = (window as any).TransitionMode_choose_0 || 0;
-    const TransitionMode_choose_1 = (window as any).TransitionMode_choose_1 || 0;
-    const TransitionMode_choose_4 = (window as any).TransitionMode_choose_4 || "";
+    const TransitionMode = config.transitionMode;
+    const TransitionMode_choose_0 = config.transitionModeChoose_0;
+    const TransitionMode_choose_1 = config.transitionModeChoose_1;
+    const TransitionMode_choose_4 = config.transitionModeChoose_4;
 
     switch (TransitionMode) {
         case 0:
@@ -661,9 +673,15 @@ export function applyBackgroundStyle(): void {
     backgroundLayers.layer1.style.transform = "";
     backgroundLayers.layer2.style.transform = "";
     backgroundLayers.container.style.backgroundColor = "";
+            backgroundLayers.layer1.style.backgroundRepeat = "";
+            backgroundLayers.layer2.style.backgroundRepeat = "";
+            backgroundLayers.layer1.style.backgroundSize = "";
+            backgroundLayers.layer2.style.backgroundSize = "";
+            backgroundLayers.layer1.style.backgroundPosition = "";
+            backgroundLayers.layer2.style.backgroundPosition = "";
 
     // 单壁纸样式
-    switch (appConfig.getBgStyle()) {
+    switch (config.bgStyle) {
         case 1:
             // 填充
             backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
@@ -694,7 +712,6 @@ export function applyBackgroundStyle(): void {
             // 显示当前活动的模糊背景层填充空白区域
             if (currentBlurLayer) {
                 currentBlurLayer.style.opacity = "1";
-                // 模糊背景层使用cover模式填充整个屏幕
                 currentBlurLayer.style.backgroundSize = "cover";
                 currentBlurLayer.style.backgroundPosition = "center";
                 currentBlurLayer.style.backgroundRepeat = "no-repeat";
@@ -730,10 +747,10 @@ export function applyBackgroundStyle(): void {
             // 自由模式：自定义大小和位置，空白区域显示模糊背景
             backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
             backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
-            backgroundLayers.layer1.style.backgroundSize = appConfig.getBgs() || "100% 100%";
-            backgroundLayers.layer2.style.backgroundSize = appConfig.getBgs() || "100% 100%";
-            backgroundLayers.layer1.style.backgroundPosition = appConfig.getBgx() + "% " + appConfig.getBgy() + "%";
-            backgroundLayers.layer2.style.backgroundPosition = appConfig.getBgx() + "% " + appConfig.getBgy() + "%";
+            backgroundLayers.layer1.style.backgroundSize = config.bgs || "100% 100%";
+            backgroundLayers.layer2.style.backgroundSize = config.bgs || "100% 100%";
+            backgroundLayers.layer1.style.backgroundPosition = config.bgx + "% " + config.bgy + "%";
+            backgroundLayers.layer2.style.backgroundPosition = config.bgx + "% " + config.bgy + "%";
 
             // 显示当前活动的模糊背景层填充空白区域
             if (currentBlurLayer) {

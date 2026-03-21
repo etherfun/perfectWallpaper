@@ -27,10 +27,6 @@ let hue9 = 200;
 let hue10 = 225;
 let hue = 0;
 
-// Visualizer state
-declare let audioArray: number[];
-declare let visual_audio_model: number;
-
 // PWLine parameters
 interface PWLineParamType {
     arr1: { x: number; y: number }[];
@@ -376,12 +372,3 @@ export function PWLineStyle3(): void {
     }
 }
 
-// Global exports for backward compatibility
-(window as any).PWLineInit = PWLineInit;
-(window as any).setCTXLine = setCTXLine;
-(window as any).getColor = getColor;
-(window as any).PWLineCreatePoint = PWLineCreatePoint;
-(window as any).getLineXY = getLineXY;
-(window as any).PWLineStyle1 = PWLineStyle1;
-(window as any).PWLineStyle2 = PWLineStyle2;
-(window as any).PWLineStyle3 = PWLineStyle3;

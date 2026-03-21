@@ -14,12 +14,6 @@ let circleY: number = 0;
 let roh: number = 0;
 let rainRad: number = 0;
 
-// Visualizer state - audioArray and visual_audio_model injected by wallpaper engine
-declare let audioArray: number[];
-declare let visual_audio_model: number;
-declare let TimeColorRhythm: boolean;
-declare let CTXLine: CanvasRenderingContext2D;
-
 // PWCircle parameters
 interface ParamType {
     arr1: { x: number; y: number }[];
@@ -141,9 +135,8 @@ export function setCan(): void {
                 rainbow.addColorStop(0.75, "yellow");
                 rainbow.addColorStop(1.0, "red");
             }
-            (window as any).color = rainbow;
-            ctx.fillStyle = (window as any).color;
-            ctx.strokeStyle = (window as any).color;
+            ctx.fillStyle = rainbow;
+            ctx.strokeStyle = rainbow;
             ctx.shadowColor = appConfig.runtime.param.blurColor;
             break;
     }
@@ -293,7 +286,7 @@ export function createPoint(arr: number[]): void {
     }
 
     if (appConfig.runtime.param.rotation) {
-        appConfig.runtime.param.offsetAngle += appConfig.runtime.param.rotation / (window as any).Polygon;
+        appConfig.runtime.param.offsetAngle += appConfig.runtime.param.rotation / appConfig.runtime.param.Polygon;
         if (appConfig.runtime.param.offsetAngle >= 360) {
             appConfig.runtime.param.offsetAngle = 0;
         } else if (appConfig.runtime.param.offsetAngle <= 0) {
@@ -418,17 +411,4 @@ export function style3(): void {
     }
     ctx.stroke();
 }
-
-/**
- * Set time-based color (for color rhythm mode)
- */
-declare function setTimeColor(): void;
-// Global exports for backward compatibility
-(window as any).resize = resize;
-(window as any).setCan = setCan;
-(window as any).createPoint = createPoint;
-(window as any).getXY = getXY;
-(window as any).style1 = style1;
-(window as any).style2 = style2;
-(window as any).style3 = style3;
 

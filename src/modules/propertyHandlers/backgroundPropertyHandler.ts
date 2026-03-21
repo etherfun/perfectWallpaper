@@ -4,7 +4,7 @@
  */
 
 import { WallpaperProperties } from './types';
-import { appConfig } from '../../utils/config';
+import { config } from '../../utils/config';
 import { debugLogger } from '../../utils/logger';
 import { timerManager } from '../../utils/timer';
 import {
@@ -15,25 +15,6 @@ import {
 } from '../slide';
 import { ChangeVideoModel, ChangeAudioModel } from '../video';
 import { elements } from '@/utils/elementManager';
-
-declare let custom: any;
-declare let galaxyapi: number;
-declare let chiyuanapi: string;
-declare let pictures_URL: string;
-declare let selectvideo: any;
-declare let cusvideoRoute: string;
-declare let wallpapermode: number;
-declare let speed: number;
-declare let TransitionMode: number;
-declare let TransitionMode_choose_0: number;
-declare let TransitionMode_choose_1: number;
-declare let TransitionMode_choose_4: string;
-declare let random: boolean;
-declare let bgStyle: number;
-declare let bodyElement: HTMLElement;
-declare let h: number;
-declare let w: number;
-declare let myvideo: HTMLVideoElement;
 
 export interface BackgroundPropertyHandlerResult {
     // bgInitComplate 现在通过 appConfig 管理
@@ -53,7 +34,7 @@ export function handleBackgroundProperties(
 
     // 自定义壁纸
     if (properties.image) {
-        custom = properties.image.value;
+        config.custom = properties.image.value;
         if (FirstLoad === false) {
             shouldShow();
         }
@@ -61,7 +42,7 @@ export function handleBackgroundProperties(
 
     // 星河图片api选择
     if (properties.galaxyapi) {
-        appConfig.setGalaxyapi(properties.galaxyapi.value);
+        config.galaxyapi = properties.galaxyapi.value;
     }
 
     // 次元api
@@ -85,7 +66,7 @@ export function handleBackgroundProperties(
                 apiUrl = "https://t.alcy.cc/fj/?json";
                 break;
         }
-        appConfig.setChiyuanapi(apiUrl);
+        config.chiyuanapi = apiUrl;
         if (FirstLoad === false) {
             shouldShow();
         }
@@ -102,7 +83,7 @@ export function handleBackgroundProperties(
     // 监听幻灯开关变化
     if (properties.wallpapermode) {
         timerManager.remove('backgroundChange');
-        appConfig.setWallpaperMode(properties.wallpapermode.value);
+        config.wallpaperMode = properties.wallpapermode.value;
         if (FirstLoad) {
             setTimeout(function () {
                 changeBackground();
@@ -114,46 +95,42 @@ export function handleBackgroundProperties(
 
     // 幻灯片特效
     if (properties.TransitionMode) {
-        appConfig.setTransitionMode(properties.TransitionMode.value);
-        (window as any).TransitionMode = properties.TransitionMode.value;
+        config.transitionMode = properties.TransitionMode.value;
         TransitionSwith();
     }
 
     if (properties.TransitionMode_choose_0) {
-        appConfig.setTransitionModeChoose_0(properties.TransitionMode_choose_0.value);
-        (window as any).TransitionMode_choose_0 = properties.TransitionMode_choose_0.value;
+        config.transitionModeChoose_0 = properties.TransitionMode_choose_0.value;
         TransitionSwith();
     }
 
     if (properties.TransitionMode_choose_1) {
-        appConfig.setTransitionModeChoose_1(properties.TransitionMode_choose_1.value);
-        (window as any).TransitionMode_choose_1 = properties.TransitionMode_choose_1.value;
+        config.transitionModeChoose_1 = properties.TransitionMode_choose_1.value;
         TransitionSwith();
     }
 
     if (properties.TransitionMode_choose_4) {
-        appConfig.setTransitionModeChoose_4(properties.TransitionMode_choose_4.value);
-        (window as any).TransitionMode_choose_4 = properties.TransitionMode_choose_4.value;
+        config.transitionModeChoose_4 = properties.TransitionMode_choose_4.value;
         TransitionSwith();
     }
 
     if (properties.background_wallpapermode_9_URL) {
-        appConfig.setPicturesUrl(properties.background_wallpapermode_9_URL.value);
-        if (appConfig.getWallpaperMode() == 9) {
+        config.picturesUrl = properties.background_wallpapermode_9_URL.value;
+        if (config.wallpaperMode == 9) {
             changeBackground();
         }
     }
 
     // 自定义视频
     if (properties.selectvideo) {
-        appConfig.setSelectvideo(properties.selectvideo.value);
+        config.selectvideo = properties.selectvideo.value;
 
         if (properties.selectvideo.value) {
-            appConfig.setCusvideoRoute('file:///' + properties.selectvideo.value);
+            config.cusvideoRoute = 'file:///' + properties.selectvideo.value;
         } else {
-            appConfig.setCusvideoRoute("");
+            config.cusvideoRoute = "";
         }
-        if (appConfig.getWallpaperMode() == 3) {
+        if (config.wallpaperMode == 3) {
             ChangeVideoModel();
         }
     }
@@ -165,11 +142,11 @@ export function handleBackgroundProperties(
 
     // 自定义音乐
     if (properties.selectmusic) {
-        appConfig.setSelectmusic(properties.selectmusic.value);
+        config.selectmusic = properties.selectmusic.value;
         if (properties.selectmusic.value) {
-            appConfig.setCusaudioRoute('file:///' + properties.selectmusic.value);
+            config.cusaudioRoute = 'file:///' + properties.selectmusic.value;
         } else {
-            appConfig.setCusaudioRoute("");
+            config.cusaudioRoute = "";
         }
         ChangeAudioModel();
     }
@@ -181,12 +158,12 @@ export function handleBackgroundProperties(
 
     // 监听随机模式开关变化
     if (properties.random) {
-        appConfig.setRandom(properties.random.value);
+        config.random = properties.random.value;
     }
 
     // 更改幻灯切换时间
     if (properties.imageswitchtimes) {
-        appConfig.setSpeed(properties.imageswitchtimes.value);
+        config.speed = properties.imageswitchtimes.value;
         if (FirstLoad === false) {
             changeBackground();
         }
@@ -195,24 +172,24 @@ export function handleBackgroundProperties(
     // 自由变换
     if (properties.bgy) {
         const y = properties.bgy.value;
-        appConfig.setBgy(h * ((y - 50) / 50) + "px");
+        config.bgy = config.screenHeight * ((y - 50) / 50) + "px";
         applyBackgroundStyle();
     }
 
     if (properties.bgx) {
         const x = properties.bgx.value;
-        appConfig.setBgx(w * ((x - 50) / 50) + "px");
+        config.bgx = config.screenWidth * ((x - 50) / 50) + "px";
         applyBackgroundStyle();
     }
 
     if (properties.bgs) {
-        appConfig.setBgs(properties.bgs.value + "%");
+        config.bgs = properties.bgs.value + "%";
         applyBackgroundStyle();
     }
 
     // 更改背景展示样式
     if (properties.imagedisplaystlye) {
-        appConfig.setBgStyle(properties.imagedisplaystlye.value);
+        config.bgStyle = properties.imagedisplaystlye.value;
         applyBackgroundStyle();
     }
 
@@ -220,7 +197,7 @@ export function handleBackgroundProperties(
 
     // 图片信息语言
     if (properties.picturesinfo_language) {
-        appConfig.setPicturesInfoLanguage(properties.picturesinfo_language.value);
+        config.picturesInfoLanguage = properties.picturesinfo_language.value;
     }
 
     // 图片信息Y轴位置
@@ -238,14 +215,14 @@ export function handleBackgroundProperties(
     // 图片信息字体大小
     if (properties.picturesinfo_size) {
         const s = properties.picturesinfo_size.value;
-        elements.body.style.setProperty("--picture-info-font-size", Math.floor(h / 600 * s) + 'px');
-        elements.body.style.setProperty("--picture-info-line-height", Math.floor(h / 1140 * s) + 'px');
+        elements.body.style.setProperty("--picture-info-font-size", Math.floor(config.screenHeight / 600 * s) + 'px');
+        elements.body.style.setProperty("--picture-info-line-height", Math.floor(config.screenHeight / 1140 * s) + 'px');
     }
 
     // 图片信息显示开关
     if (properties.picturesinfo_show) {
         const show = properties.picturesinfo_show.value;
-        appConfig.setPicturesInfoShow(show);
+        config.picturesInfoShow = show;
         elements.body.style.setProperty("--picture-info-display", show ? 'flex' : 'none');
         elements.body.style.setProperty("--picture-info-visibility", show ? 'visible' : 'hidden');
     }
@@ -253,51 +230,51 @@ export function handleBackgroundProperties(
     // 图片信息文字颜色
     if (properties.picturesinfo_color) {
         const color = properties.picturesinfo_color.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
-        appConfig.setPicturesInfoColor(color);
+        config.picturesInfoColor = color;
         elements.body.style.setProperty("--picture-info-color", color.join(', '));
     }
 
     // 图片信息模糊背景开关
     if (properties.picturesinfo_blurcolor_show) {
         const show = properties.picturesinfo_blurcolor_show.value;
-        appConfig.setPicturesInfoBlurcolorShow(show);
+        config.picturesInfoBlurcolorShow = show;
         elements.body.style.setProperty("--picture-info-blur-enabled", show ? '1' : '0');
     }
 
     // 图片信息模糊背景颜色
     if (properties.picturesinfo_blurcolor) {
         const color = properties.picturesinfo_blurcolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
-        appConfig.setPicturesInfoBlurcolor(color);
+        config.picturesInfoBlurcolor = color;
         elements.body.style.setProperty("--picture-info-blur-color", color.join(', '));
     }
 
     // 图片信息亚克力效果开关
     if (properties.picturesinfo_yakeli_show) {
         const show = properties.picturesinfo_yakeli_show.value;
-        appConfig.setPicturesInfoYakeliShow(show);
+        config.picturesInfoYakeliShow = show;
         elements.body.style.setProperty("--picture-info-yakeli-enabled", show ? '1' : '0');
     }
 
     // 图片信息亚克力效果颜色
     if (properties.picturesinfo_yakelicolor) {
         const color = properties.picturesinfo_yakelicolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
-        appConfig.setPicturesInfoYakelicColor(color);
+        config.picturesInfoYakelicColor = color;
         elements.body.style.setProperty("--picture-info-yakeli-color", color.join(', '));
     }
 
     // 图片信息亚克力效果强度
     if (properties.picturesinfo_yakeli) {
         const yakeli = properties.picturesinfo_yakeli.value / 100;
-        appConfig.setPicturesInfoYakeli(yakeli);
+        config.picturesInfoYakeli = yakeli;
         elements.body.style.setProperty("--picture-info-yakeli", String(yakeli));
     }
 
     // 图片信息模糊亚克力效果
     if (properties.picturesinfo_bluryakeli) {
         const blur = properties.picturesinfo_bluryakeli.value;
-        appConfig.setPicturesInfoBluryakeli(blur);
+        config.picturesInfoBluryakeli = blur;
         elements.body.style.setProperty("--picture-info-blur-yakeli", `${blur}px`);
-        appConfig.setFristPicturesinfo(false);
+        config.fristPicturesinfo = false;
     }
 
     // 图片信息时间透明度
@@ -333,7 +310,7 @@ export function handleBackgroundProperties(
     // 图片信息文字对齐方向
     if (properties.picturesinfo_showRorL) {
         const rorL = properties.picturesinfo_showRorL.value;
-        appConfig.setPicturesInfoShowRorL(rorL);
+        config.picturesInfoShowRorL = rorL;
         elements.body.style.setProperty("--picture-info-text-align", rorL ? "right" : "left");
     }
 
@@ -344,7 +321,7 @@ export function handleBackgroundProperties(
             elements.body.style.setProperty("--picture-info-show-width", 'auto');
         } else {
             const s = width / 100;
-            elements.body.style.setProperty("--picture-info-show-width", w * s + "px");
+            elements.body.style.setProperty("--picture-info-show-width", config.screenWidth * s + "px");
         }
     }
 
@@ -356,7 +333,7 @@ export function handleBackgroundProperties(
 
     if (FirstLoad) {
         debugLogger.info('[Background] 壁纸参数初始化完成');
-        appConfig.setBgInitComplete(true);
+        config.bgInitComplete = true;
     }
 
     return result;

@@ -1,6 +1,6 @@
 // 播放器控制模块 - 从 player_control.js 迁移
 
-import { appConfig } from '../utils/config';
+import { appConfig, config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 import { debugLogger } from '../utils/logger';
 import {
@@ -8,9 +8,7 @@ import {
     initFullscreenFluidEffect,
     updateFullscreenFluidSource
 } from './fluid_control';
-
-// ColorThief 全局声明
-declare const ColorThief: any;
+import { getColor, getPalette } from 'colorthief';
 
 // 进度条定时器
 let timelineTimer: any = null;
@@ -32,11 +30,8 @@ const player_control_albumTitle = elements.playerControl.albumTitle;
 const player_control_timeline = elements.playerControl.timeline;
 const player_control_aubar = elements.playerControl.aubar;
 
-// 运行时状态现在通过 appConfig.runtime.playerInfo 管理
-
 // 检查是否有播放内容的函数
 export function hasPlaybackContent(): boolean {
-    const w = (window as any);
     const { singtitle } = appConfig.runtime.playerInfo;
 
     const hasSongInfo = singtitle &&
@@ -49,7 +44,7 @@ export function hasPlaybackContent(): boolean {
         return false;
     }
 
-    if (!w.wallpaperMediaIntegration) {
+    if (window.wallpaperMediaIntegration) {
         return false;
     }
 
@@ -64,17 +59,19 @@ export function hasPlaybackContent(): boolean {
 }
 
 /*msct封面*/
-function wallpaperMediaThumbnailListener(event: any): void {
-    if (event && appConfig.getPlayerControlShow()) {
+async function wallpaperMediaThumbnailListener(event: any): Promise<void> {
+    if (event && config.playerControlShow) {
         player_control_thumbnail.src = event.thumbnail;
 
         const img = elements.playerControl.thumbnail;
-        img.onload = function () {
-            const colorThief = new ColorThief();
-            const palette = colorThief.getPalette(player_control_thumbnail, 3);
+        img.onload = async function () {
+            const [palette, dominantColor] = await Promise.all([
+                getPalette(player_control_thumbnail, { colorCount: 3 }),
+                getColor(player_control_thumbnail)
+            ]);
 
-            const playerControlYakelicColor = appConfig.getPlayerControlYakelicColor();
-            const playerControlColor = appConfig.getPlayerControlColor();
+            const playerControlYakelicColor = config.playerControlYakelicColor;
+            const playerControlColor = config.playerControlColor;
 
             appConfig.runtime.playerInfo.colorGroup = [
                 [
@@ -84,16 +81,14 @@ function wallpaperMediaThumbnailListener(event: any): void {
                     hexToRgb(event.highContrastColor),
                 ],
                 [
-                    colorThief.getColor(player_control_thumbnail),
-                    palette[0],
-                    palette[1],
-                    palette[2]
+                    dominantColor,
+                    palette ? palette[0] : null,
+                    palette ? palette[1] : null,
+                    palette ? palette[2] : null
                 ],
                 playerControlYakelicColor,
                 playerControlColor
             ];
-
-            debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
 
             // 初始化或更新流体效果（只在有播放内容时）
             if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.enabled) {
@@ -158,8 +153,9 @@ function wallpaperMediaTimelineListener(event: any): void {
 
 /*msct监听*/
 function wallpaperMediaPropertiesListener(event: any): void {
-    const w = (window as any);
     if (event) {
+        debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
+
         appConfig.runtime.playerInfo.singtitle = event.title || '';
         appConfig.runtime.playerInfo.singartist = event.artist || '';
         appConfig.runtime.playerInfo.singalbumTitle = event.albumTitle || '';
@@ -168,7 +164,7 @@ function wallpaperMediaPropertiesListener(event: any): void {
         player_control_aubar.width = 0;
         player_control_aubar.height = 0;
 
-        const playerControlShow = appConfig.getPlayerControlShow();
+        const playerControlShow = config.playerControlShow;
         if (playerControlShow && appConfig.runtime.playerInfo.singtitle && appConfig.runtime.playerInfo.singtitle !== '') {
             player_control.style.display = 'flex';
         } else {
@@ -178,12 +174,12 @@ function wallpaperMediaPropertiesListener(event: any): void {
         player_control.style.display = 'none';
     }
 
-    const playerControlShow = appConfig.getPlayerControlShow();
+    const playerControlShow = config.playerControlShow;
     if (!playerControlShow || appConfig.runtime.playerInfo.singtitle === undefined || appConfig.runtime.playerInfo.singtitle === '') return;
 
     playertitle();
 
-    const playerControlVisualaudiobar = appConfig.getPlayerControlVisualaudiobar();
+    const playerControlVisualaudiobar = config.playerControlVisualaudiobar;
     if (playerControlVisualaudiobar) pc_aubar();
 }
 
@@ -191,10 +187,10 @@ export function playertitle(): void {
     let titleToShow = appConfig.runtime.playerInfo.singtitle || '';
     let artistToShow = appConfig.runtime.playerInfo.singartist || '';
     let albumToShow = appConfig.runtime.playerInfo.singalbumTitle || '';
-    const playerControlAutohide = appConfig.getPlayerControlAutohide();
-    const playerControlShow = appConfig.getPlayerControlShow();
-    const playerControlThumbnailrorl = appConfig.getPlayerControlThumbnailrorl();
-    const playerControlSamealbumTitle = appConfig.getPlayerControlSamealbumTitle();
+    const playerControlAutohide = config.playerControlAutohide;
+    const playerControlShow = config.playerControlShow;
+    const playerControlThumbnailrorl = config.playerControlThumbnailrorl;
+    const playerControlSamealbumTitle = config.playerControlSamealbumTitle;
 
     if ((!titleToShow || titleToShow === "loading...") && !playerControlAutohide && playerControlShow) {
         titleToShow = "✧ପ(๑･ω･)੭";
@@ -231,15 +227,14 @@ export function playertitle(): void {
 
 /*msct状态*/
 function wallpaperMediaPlaybackListener(event: any): void {
-    const w = (window as any);
     if (event) {
         // 获取新状态
         let newState = -1;
-        if (event.state === w.wallpaperMediaIntegration?.PLAYBACK_PLAYING) {
+        if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_PLAYING) {
             newState = 1;
-        } else if (event.state === w.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
+        } else if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
             newState = 2;
-        } else if (event.state === w.wallpaperMediaIntegration?.PLAYBACK_STOPPED) {
+        } else if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_STOPPED) {
             newState = 0;
         }
 
@@ -250,30 +245,30 @@ function wallpaperMediaPlaybackListener(event: any): void {
             // 同步更新 appConfig.runtime.playerInfo.playerState
             if (newState === 1) {
                 appConfig.runtime.playerInfo.playerState = 1;
-                appConfig.setPlaybackState(1);
+                config.playbackState = 1;
                 debugLogger.info('[Player] 播放');
             } else if (newState === 2) {
                 appConfig.runtime.playerInfo.playerState = 2;
-                appConfig.setPlaybackState(2);
+                config.playbackState = 2;
                 debugLogger.info('[Player] 暂停');
             } else if (newState === 0) {
                 appConfig.runtime.playerInfo.playerState = 0;
-                appConfig.setPlaybackState(0);
+                config.playbackState = 0;
                 debugLogger.info('[Player] 停止');
             }
         }
     }
 
-    const playerControlShow = appConfig.getPlayerControlShow();
-    const playerControlAutohide = appConfig.getPlayerControlAutohide();
-    const playerControlThumbnailRotation = appConfig.getPlayerControlThumbnailRotation();
-    const playerControlThumbnailRotationSpeed = appConfig.getPlayerControlThumbnailRotationSpeed();
+    const playerControlShow = config.playerControlShow;
+    const playerControlAutohide = config.playerControlAutohide;
+    const playerControlThumbnailRotation = config.playerControlThumbnailRotation;
+    const playerControlThumbnailRotationSpeed = config.playerControlThumbnailRotationSpeed;
 
     if (playerControlShow) {
-        if (event.state === w.wallpaperMediaIntegration?.PLAYBACK_PLAYING ||
-            event.state === w.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
+        if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_PLAYING ||
+            event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
             player_control.style.display = "flex";
-        } else if (event.state === w.wallpaperMediaIntegration?.PLAYBACK_STOPPED) {
+        } else if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_STOPPED) {
             player_control.style.display = playerControlAutohide ? "none" : "flex";
         }
     } else {
@@ -284,8 +279,8 @@ function wallpaperMediaPlaybackListener(event: any): void {
 
     if (!playerControlThumbnailRotation) return;
 
-    if (event.state === w.wallpaperMediaIntegration?.PLAYBACK_STOPPED ||
-        event.state === w.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
+    if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_STOPPED ||
+        event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
         player_control_thumbnail.style.animationPlayState = 'paused';
     } else {
         player_control_thumbnail.style.borderRadius = '50%';
@@ -298,26 +293,25 @@ function wallpaperMediaPlaybackListener(event: any): void {
 
 // 控制流体效果播放状态
 function controlFluidEffectPlayback(playbackState: any): void {
-    const w = (window as any);
     if (!appConfig.runtime.FluidEffectConfig || appConfig.runtime.FluidEffectConfig.enabled === undefined) return;
-    if (!w.wallpaperMediaIntegration) return;
+    if (!window.wallpaperMediaIntegration) return;
 
     if (appConfig.runtime.FluidEffectConfig.enabled && !appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
-        if (playbackState === w.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+        if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             resumeFluidEffect();
-        } else if (playbackState === w.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
+        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
             pauseFluidEffect();
-        } else if (playbackState === w.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
+        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
             stopFluidEffect();
         }
     }
 
     if (appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
-        if (playbackState === w.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+        if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             resumeFullscreenFluidEffect();
-        } else if (playbackState === w.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
+        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
             pauseFullscreenFluidEffect();
-        } else if (playbackState === w.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
+        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
             stopFullscreenFluidEffect();
         }
     }
@@ -368,11 +362,11 @@ function stopFullscreenFluidEffect(): void {
 export function thumbnailsue(): void {
     if (!appConfig.runtime.playerInfo.colorGroup) return;
 
-    const colorPickupMethod = appConfig.getColorPickupMethod();
-    const playerControlYakelibgusetb = appConfig.getPlayerControlYakelibgusetb();
-    const playerControlFontusetb = appConfig.getPlayerControlFontusetb();
-    const playerControlYakeli = appConfig.getPlayerControlYakeli();
-    const playerControlColor = appConfig.getPlayerControlColor();
+    const colorPickupMethod = config.colorPickupMethod;
+    const playerControlYakelibgusetb = config.playerControlYakelibgusetb;
+    const playerControlFontusetb = config.playerControlFontusetb;
+    const playerControlYakeli = config.playerControlYakeli;
+    const playerControlColor = config.playerControlColor;
 
     let thumbnailcolor: any;
 
@@ -442,15 +436,15 @@ export function pc_aubar(): void {
 
         for (let i = 0, l = 64; i < 64; ++i, ++l) {
             const bar = (currentAudioArr[i] + currentAudioArr[l]) / 2;
-            const targetHeight = aubar.height * Math.min(bar, 1) * appConfig.getPlayerControlScalefactor();
+            const targetHeight = aubar.height * Math.min(bar, 1) * config.playerControlScalefactor;
             const actualHeight = Math.min(targetHeight, aubar.height);
 
-            barHeights[i] = lerp(barHeights[i], actualHeight, appConfig.getPlayerControlHdong());
+            barHeights[i] = lerp(barHeights[i], actualHeight, config.playerControlHdong);
 
             rgbbg.fillRect(barWidth * i, aubar.height - barHeights[i], barWidth, barHeights[i]);
         }
 
-        if (!appConfig.runtime.playerInfo.aubarstop && appConfig.getPlayerControlVisualaudiobar() && appConfig.runtime.playerInfo.playerState !== 0) {
+        if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {
             requestAnimationFrame(draw);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
@@ -473,11 +467,11 @@ export function pc_aubar(): void {
 
         for (let i = 0, l = 64; i < 64; ++i, ++l) {
             const amplitude = (currentAudioArr[i] + currentAudioArr[l]) / 2;
-            let targetHeight = aubar.height - aubar.height * Math.min(amplitude, 1) * appConfig.getPlayerControlScalefactor();
+            let targetHeight = aubar.height - aubar.height * Math.min(amplitude, 1) * config.playerControlScalefactor;
 
             targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
 
-            previousHeights[i] = lerp(previousHeights[i], targetHeight, appConfig.getPlayerControlHdong());
+            previousHeights[i] = lerp(previousHeights[i], targetHeight, config.playerControlHdong);
 
             x = spacing * i;
             y = previousHeights[i];
@@ -505,15 +499,15 @@ export function pc_aubar(): void {
         }
         rgbbg.stroke();
 
-        if (!appConfig.runtime.playerInfo.aubarstop && appConfig.getPlayerControlVisualaudiobar() && appConfig.runtime.playerInfo.playerState !== 0) {
+        if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {
             requestAnimationFrame(drawline);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         }
     };
 
-    const playerControlBarline = appConfig.getPlayerControlBarline();
-    const playerControlVisualaudiobar = appConfig.getPlayerControlVisualaudiobar();
+    const playerControlBarline = config.playerControlBarline;
+    const playerControlVisualaudiobar = config.playerControlVisualaudiobar;
 
     if (playerControlVisualaudiobar && playerControlBarline == 2) {
         drawline();
@@ -523,10 +517,10 @@ export function pc_aubar(): void {
 }
 
 // 注册Wallpaper Engine媒体监听器
-(window as any).wallpaperRegisterMediaThumbnailListener(wallpaperMediaThumbnailListener);
-(window as any).wallpaperRegisterMediaTimelineListener(wallpaperMediaTimelineListener);
-(window as any).wallpaperRegisterMediaPropertiesListener(wallpaperMediaPropertiesListener);
-(window as any).wallpaperRegisterMediaPlaybackListener(wallpaperMediaPlaybackListener);
+window.wallpaperRegisterMediaThumbnailListener?.(wallpaperMediaThumbnailListener);
+window.wallpaperRegisterMediaTimelineListener?.(wallpaperMediaTimelineListener);
+window.wallpaperRegisterMediaPropertiesListener?.(wallpaperMediaPropertiesListener);
+window.wallpaperRegisterMediaPlaybackListener?.(wallpaperMediaPlaybackListener);
 
 // 辅助函数
 function hexToRgb(hex: string): [number, number, number] {

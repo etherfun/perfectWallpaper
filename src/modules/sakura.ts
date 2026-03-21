@@ -3,7 +3,7 @@
  * WebGL实现的樱花飘落效果
  */
 
-import { appConfig } from '../utils/config';
+import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 
 // 片段着色器
@@ -454,7 +454,7 @@ function createPointFlowers(): void {
     pointFlower.offset = new Float32Array([0.0, 0.0, 0.0]);
     pointFlower.fader = Vector3.create(0.0, 10.0, 0.0);
 
-    pointFlower.numFlowers = appConfig.getSakuraPointNumber();
+    pointFlower.numFlowers = config.sakuraPointNumber;
     pointFlower.particles = new Array(pointFlower.numFlowers);
     pointFlower.dataArray = new Float32Array(pointFlower.numFlowers * (3 + 3 + 2));
     pointFlower.positionArrayOffset = 0;
@@ -524,7 +524,7 @@ function renderPointFlowers(): void {
     if (!gl || !pointFlower.program) return;
 
     const PI2 = Math.PI * 2.0;
-    const sakuraReverse = appConfig.getSakuraReverse();
+    const sakuraReverse = config.sakuraReverse;
 
     const repeatPos = function (prt: BlossomParticle, cmp: number, limitVal: number) {
         if (Math.abs(prt.position[cmp]) - prt.size * 0.5 > limitVal) {
@@ -680,13 +680,13 @@ function createEffectLib(): void {
 
     // final composite
     const vtxsrc = (document.getElementById("pp_final_vsh") as HTMLScriptElement).textContent || '';
-    const sakuraBackLight = appConfig.getSakuraBackLight();
+    const sakuraBackLight = config.sakuraBackLight;
     frgsrc = pp_final_fsh + 'gl_FragColor = vec4(col.rgb, ' + (1.1 - sakuraBackLight).toFixed(2) + ');        gl_FragColor.a = ' + (1.1 - sakuraBackLight).toFixed(2) + ';    }';
     effectLib.finalComp = createEffectProgram(vtxsrc, frgsrc, ['uBloom'], undefined);
 }
 
 function renderBackground(): void {
-    if (!gl || !appConfig.getSakuraBackground() || !effectLib.sceneBg) return;
+    if (!gl || !config.sakuraBackground || !effectLib.sceneBg) return;
 
     gl.disable(gl.DEPTH_TEST);
     useEffect(effectLib.sceneBg, null);
@@ -784,7 +784,7 @@ function renderScene(): void {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderSpec.mainRT!.frameBuffer);
     gl.viewport(0, 0, renderSpec.mainRT!.width, renderSpec.mainRT!.height);
-    if (appConfig.getSakuraBackColor()) {
+    if (config.sakuraBackColor) {
         gl.clearColor(0.005, 0, 0.05, 0);
     } else {
         gl.clearColor(0, 0, 0, 0);
@@ -844,7 +844,7 @@ export function stepAnimation(): void {
     if (!animating) animate();
 }
 
-function animate(): void {
+export function animate(): void {
     const curdate = new Date();
     timeInfo.elapsed = (curdate.getTime() - timeInfo.start.getTime()) / 1000.0;
     timeInfo.delta = (curdate.getTime() - timeInfo.prev.getTime()) / 1000.0;
@@ -942,13 +942,13 @@ export function removesakura(): void {
     const nowCtx = ctx;
 
     function draw() {
-        if (raw.width > 0 && appConfig.getShowSakura()) {
+        if (raw.width > 0 && config.showSakura) {
             nowCtx.drawImage(raw, 0, 0, width, height, 0, 0, width, height);
             requestAnimationFrame(draw);
         }
     }
 
-    if (appConfig.getShowSakura()) {
+    if (config.showSakura) {
         requestAnimationFrame(draw);
     }
 }
@@ -972,29 +972,12 @@ export function initSakura(): void {
 // ==================== Apply Transparency ====================
 
 export function applySakuraTransparency(): void {
-    const transparency = appConfig.getSakuraTransparency();
+    const transparency = config.sakuraTransparency;
     const ctx = elements.sakurashow.getContext('2d');
     if (ctx) {
         ctx.canvas.style.opacity = String(transparency);
     }
 }
-
-// ==================== Expose to Window ====================
-
-// 这些函数需要暴露到window上以保持向后兼容性
-(window as any).makeCanvasFullScreen = makeCanvasFullScreen;
-(window as any).makeCanvasHide = makeCanvasHide;
-(window as any).sakuraReLoadEffect = sakuraReLoadEffect;
-(window as any).sakuraResize = sakuraResize;
-(window as any).sakuraLoad = sakuraLoad;
-(window as any).removesakura = removesakura;
-(window as any).animate = animate;
-(window as any).animating = true; // This will be updated by the property handler
-(window as any).toggleAnimation = toggleAnimation;
-(window as any).stepAnimation = stepAnimation;
-(window as any).applySakuraTransparency = applySakuraTransparency;
-(window as any).getSakuraAnimating = getAnimating;
-(window as any).setSakuraAnimating = setAnimating;
 
 // ==================== Export ====================
 

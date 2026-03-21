@@ -4,7 +4,7 @@
  */
 
 import { elements } from '../utils/elementManager';
-import { appConfig } from '../utils/config';
+import { appConfig, config } from '../utils/config';
 import { FluidEffect2 } from './fluid_effect2';
 import { hasPlaybackContent } from './player_control';
 import { debugLogger } from '../utils/logger';
@@ -13,6 +13,10 @@ import { timerManager } from '../utils/timer';
 // 使用 appConfig.runtime 存储流体效果实例
 appConfig.runtime.fluidEffect = null;
 appConfig.runtime.fullscreenFluidEffect = null;
+
+// 内部状态标志
+appConfig.runtime.fullscreenFluidEnabled = false;
+appConfig.runtime.pictureInfoHideStyleAdded = false;
 
 // fluidEffect 和 fullscreenFluidEffect 直接使用 appConfig.runtime 访问
 
@@ -255,7 +259,7 @@ export function initFullscreenFluidEffect(): void {
         return;
     }
 
-    if ((window as unknown as { fullscreenFluidEffect?: FluidEffect2 }).fullscreenFluidEffect) {
+    if (appConfig.runtime.fullscreenFluidEffect) {
         return;
     }
 
@@ -264,12 +268,12 @@ export function initFullscreenFluidEffect(): void {
     }
 
     let isPaused = false;
-    const playbackState = appConfig.getPlaybackState();
+    const playbackState = config.playbackState;
     if (playbackState === 2) {
         isPaused = true;
     }
 
-    (window as unknown as { fullscreenFluidEnabled: boolean }).fullscreenFluidEnabled = true;
+    appConfig.runtime.fullscreenFluidEnabled = true;
     addPictureInfoHideStyle();
 
     const container = document.body;
@@ -291,8 +295,7 @@ export function initFullscreenFluidEffect(): void {
         }
 
         const thumbnail = elements.playerControl.thumbnail as HTMLImageElement | undefined;
-        const globalThumbnail = (window as unknown as { player_control_thumbnail?: HTMLImageElement }).player_control_thumbnail;
-        const imgSrc = thumbnail?.src || globalThumbnail?.src;
+        const imgSrc = thumbnail?.src;
 
         if (imgSrc && imgSrc !== '') {
             const img = new Image();
@@ -331,7 +334,7 @@ export function destroyFullscreenFluidEffect(): void {
         timerManager.resume('backgroundChange');
     }
 
-    (window as unknown as { fullscreenFluidEnabled: boolean }).fullscreenFluidEnabled = false;
+    appConfig.runtime.fullscreenFluidEnabled = false;
     removePictureInfoHideStyle();
 
     const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
@@ -377,7 +380,7 @@ function addPictureInfoHideStyle(): void {
     if (pictureInfo) {
         pictureInfo.classList.add('fluid-hidden');
     }
-    (window as unknown as { pictureInfoHideStyleAdded: boolean }).pictureInfoHideStyleAdded = true;
+    appConfig.runtime.pictureInfoHideStyleAdded = true;
 }
 
 function removePictureInfoHideStyle(): void {
@@ -385,11 +388,11 @@ function removePictureInfoHideStyle(): void {
     if (pictureInfo) {
         pictureInfo.classList.remove('fluid-hidden');
     }
-    (window as unknown as { pictureInfoHideStyleAdded: boolean }).pictureInfoHideStyleAdded = false;
+    appConfig.runtime.pictureInfoHideStyleAdded = false;
 }
 
 function initPictureInfoControl(): void {
-    if ((window as unknown as { fullscreenFluidEnabled?: boolean }).fullscreenFluidEnabled) {
+    if (appConfig.runtime.fullscreenFluidEnabled) {
         addPictureInfoHideStyle();
     }
 }
@@ -445,7 +448,7 @@ export function initFluidEffect(): void {
         appConfig.runtime.fluidEffect!.start();
     }
 
-    const currentPlaybackState = appConfig.getPlaybackState();
+    const currentPlaybackState = config.playbackState;
     if (currentPlaybackState === 2) {
         if (appConfig.runtime.fluidEffect?.setPlayState) {
             appConfig.runtime.fluidEffect!.setPlayState(false);

@@ -1,6 +1,6 @@
 // 版本模块
 import { waitAndExecute, fetch_with_retry } from "../utils/tool";
-import { appConfig } from "../utils/config";
+import { appConfig, config } from "../utils/config";
 import { i18n } from "../utils/i18n";
 
 // 版本历史数据Promise
@@ -1161,7 +1161,7 @@ appConfig.runtime.versionManager = versionManagerInstance;
 // 等待初始化完成
 waitAndExecute(
     () => {
-        const complete = appConfig.getUpdateInitComplete() === true;
+        const complete = config.updateInitComplete === true;
         return complete;
     },
     () => {
@@ -1181,13 +1181,6 @@ waitAndExecute(
         }, 2000);
     },
     500, 15000);
-
-// 提供手动显示版本信息的方法
-(window as any).showVersionInfo = function () {
-    if (appConfig.runtime.versionManager) {
-        appConfig.runtime.versionManager.showVersionInfo();
-    }
-};
 
 // 导出
 export { versionManager, SimpleMarkdown };

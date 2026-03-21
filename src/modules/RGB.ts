@@ -3,7 +3,7 @@
  * 将视频/图片/樱花/粒子/音频可视化效果合成为LED灯光数据
  */
 
-import { appConfig } from '../utils/config';
+import { appConfig, config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 import { debugLogger } from '../utils/logger';
 
@@ -81,20 +81,20 @@ export function background2canvas(src?: string, videoORimages?: boolean): void {
     let time = 0;
 
     function drawLayers(): void {
-        const sakuraRGB = appConfig.getSakuraRGB();
+        const sakuraRGB = config.sakuraRGB;
         const sakurause = (sakuraRGB && ((sakura.width === window.screen.width) && (sakura.height === window.screen.height)));
-        const opacitySaRGB = appConfig.getOpacitySaRGB();
-        const particlesRGB = appConfig.getParticlesRGB();
-        const audiobarRGB = appConfig.getAudiobarRGB();
-        const audiobarrainbowcolor = appConfig.getAudiobarrainbowcolor();
-        const rainbowmove = appConfig.getRainbowmove();
-        const rainbowmovespeed = appConfig.getRainbowmovespeed();
-        const aurgbcolor = appConfig.getAurgbcolor();
-        const aurgbhigh = appConfig.getAurgbhigh();
-        const RGBRefresh = appConfig.getRGBRefresh();
-        const RGBShow = appConfig.getRGBShow();
-        const nextphoto = appConfig.getNextphoto();
-        const isPaused = appConfig.getPaused();
+        const opacitySaRGB = config.opacitySaRGB;
+        const particlesRGB = config.particlesRGB;
+        const audiobarRGB = config.audiobarRGB;
+        const audiobarrainbowcolor = config.audiobarrainbowcolor;
+        const rainbowmove = config.rainbowmove;
+        const rainbowmovespeed = config.rainbowmovespeed;
+        const aurgbcolor = config.aurgbcolor;
+        const aurgbhigh = config.aurgbhigh;
+        const RGBRefresh = config.rGBRefresh;
+        const RGBShow = config.rGBShow;
+        const nextphoto = config.nextphoto;
+        const isPaused = config.paused;
 
         rgbbg.save();
         rgbbg.globalAlpha = opacitySaRGB;
@@ -180,7 +180,7 @@ export function background2canvas(src?: string, videoORimages?: boolean): void {
     }
 
     function drawbackground(): void {
-        const backgroundRGB = appConfig.getBackgroundRGB();
+        const backgroundRGB = config.backgroundRGB;
 
         if (backgroundRGB) {
             if (videoORimages) {
@@ -222,14 +222,14 @@ export function background2canvas(src?: string, videoORimages?: boolean): void {
  * 启用RGB效果
  */
 export function enableRGB(): void {
-    appConfig.setRGBShow(true);
+    config.rGBShow = true;
 }
 
 /**
  * 禁用RGB效果
  */
 export function disableRGB(): void {
-    appConfig.setRGBShow(false);
+    config.rGBShow = false;
 }
 
 /**

@@ -104,10 +104,6 @@ export class DebugLogger {
     private originalConsole: { [key: string]: Function } = {};
     
     constructor() {
-        // 绑定到全局对象以便其他文件访问
-        (window as any).DebugLogger = DebugLogger;
-        (window as any).debugLogger = this;
-        
         // 初始化控制台捕获
         this.initConsoleCapture();
         

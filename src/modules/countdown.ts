@@ -1,6 +1,6 @@
 // 倒计时模块
 import { elements } from '../utils/elementManager';
-import { appConfig } from '../utils/config';
+import { config } from '../utils/config';
 import { timerManager } from '@/utils/timer';
 
 const countdown_webtext = elements.countdown.webtext;
@@ -14,7 +14,7 @@ function add0(num: number): string {
 }
 
 export function setcountdown(): void {
-    const examDate = new Date(appConfig.getCountdownYear(), appConfig.getCountdownMonth() - 1, appConfig.getCountdownDay());
+    const examDate = new Date(config.countdownYear, config.countdownMonth - 1, config.countdownDay);
     const now = new Date();
     const distance = examDate.getTime() - now.getTime();
 
@@ -23,7 +23,7 @@ export function setcountdown(): void {
     const minutes = Math.ceil((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
-    countdown_webtext.innerHTML = appConfig.getCountdownTxt() + (days - 1) + ":" + add0(hours - 1) + ":" + add0(minutes - 1) + ":" + add0(seconds) + appConfig.getCountdownTxt1();
+    countdown_webtext.innerHTML = config.countdownTxt + (days - 1) + ":" + add0(hours - 1) + ":" + add0(minutes - 1) + ":" + add0(seconds) + config.countdownTxt1;
 }
 
 // 定时更新倒计时

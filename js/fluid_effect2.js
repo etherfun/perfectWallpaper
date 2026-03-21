@@ -162,7 +162,7 @@ class FluidEffect2 {
             // 设置canvas样式（通过CSS类）
             // 获取上下文并设置模糊
             const ctx = canvas.getContext('2d');
-            ctx.filter = `blur(${this.options.blurAmount}px)`;
+            //ctx.filter = `blur(${this.options.blurAmount}px)`;
 
             this.canvases.push(canvas);
             this.canvasContexts.push(ctx);

@@ -38,6 +38,18 @@
     </div>
 
     <div id="weather">
+        <div class="weather-container">
+            <div class="weather-left">
+                <div class="weather-icon" id="weatherIcon"></div>
+                <div class="weather-temp" id="weatherTemp"></div>
+                <div class="weather-text" id="weatherText"></div>
+                <div class="weather-feels" id="weatherFeels"></div>
+                <div class="weather-city" id="weatherCity"></div>
+            </div>
+            <div class="weather-right">
+                <!-- 天气信息将由JavaScript动态生成 -->
+            </div>
+        </div>
     </div>
 
     <div id="weatherAlertTooltip" class="weather-tooltip">
@@ -525,28 +537,9 @@
     <script src="js/lib/jquery-3.2.1.min.js"></script>
     <script src="js/lib/jquery.particles.js"></script>
     <script src="js/lib/jquery.audiovisualizer.js"></script>
-    <script src="js/utils.js"></script>
     <script src="js/lib/color_thief.js"></script>
 
-    <script src="js/main.js"></script>
-
-    <script src="js/version.js"></script>
-    
-    <script src="js/PWLine.js"></script>
-    <script src="js/PWCircle.js"></script>
-
-    <script src="js/sakura.js"></script>
-    <script src="js/slide.js"></script>
-    <script src="js/video.js"></script>
-    <script src="js/time.js"></script>
-    <script src="js/date.js"></script>
-    <script src="js/weather.js"></script>
-    <script src="js/hitokoto.js"></script>
-    <script src="js/countdown.js"></script>
-    <script src="js/fluid_effect2.js"></script>
-    <script src="js/fluid_control.js"></script>
-    <script src="js/player_control.js"></script>
-    <script src="js/RGB.js"></script>
+    <script src="dist/bundle.js"></script>
 </body>
 
 </html>

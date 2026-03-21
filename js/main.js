@@ -781,7 +781,7 @@ window.wallpaperPropertyListener = {
         }
         if (properties.weather_daliy_tip) {
             weather_daliy_tip = properties.weather_daliy_tip.value
-            if (FirstLoad == false) weather.innerHTML = await generateWeatherTable();
+            if (FirstLoad == false) await generateWeatherTable();
         }
         if (properties.weather_lat_latitude) {
             weather_address.latitude = properties.weather_lat_latitude.value
@@ -1855,6 +1855,7 @@ window.wallpaperPropertyListener = {
             player_control_thumbnail_size_value = properties.player_control_thumbnail_size_value.value;
             var ss = (s * (player_control_thumbnail_size_value / 100));
             if (player_control_thumbnail_size) {
+                player_control_thumbnailWrap.style.width = s + 'px'
                 player_control_thumbnail.style.width = ss + 'px';
                 player_control_thumbnail.style.height = ss + 'px';
             }
@@ -1879,7 +1880,7 @@ window.wallpaperPropertyListener = {
             updateCorners();
 
             // 当缩略图尺寸变化时自动更新
-            const observer = new ResizeObserver(updateCorners);
+            const observer = new ResizeObserver(() => { if (player_control_thumbnail_rotation == false) updateCorners() });
             observer.observe(player_control_thumbnail);
         }
         //封面旋转

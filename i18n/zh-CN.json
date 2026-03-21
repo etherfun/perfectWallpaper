@@ -83,6 +83,7 @@
     "weather_visualcrossing_type_8": "雾",
     "weather_visualcrossing_type_9": "冻毛毛雨",
     "weather_show_precipprob": "降水\n概率",
+    "weather_show_temperature": "气温",
     "error_get_weather_data": "获取天气数据出错：",
     "error_get_weather_data_over_usage": "天气数据获取超出使用次数限制",
     "weather_openmeteo_0": "万里无云",

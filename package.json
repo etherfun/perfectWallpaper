@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc && node scripts/bundle.js",
     "watch": "tsc --watch",
-    "dev": "tsc --watch --preserveWatchOutput",
+    "watch:bundle": "node scripts/bundle.js --watch",
     "check-types": "tsc --noEmit",
     "clean": "rm -rf dist",
     "bundle": "node scripts/bundle.js",

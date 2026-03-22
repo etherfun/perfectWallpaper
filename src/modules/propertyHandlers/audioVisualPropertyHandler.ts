@@ -6,9 +6,6 @@
 import { appConfig, config } from '@/utils/config';
 import { WallpaperProperties } from './types';
 
-export interface AudioVisualPropertyHandlerResult {
-    // empty for now
-}
 
 /**
  * 获取圆圈可视化canvas的2D上下文

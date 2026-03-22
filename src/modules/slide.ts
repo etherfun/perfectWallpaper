@@ -6,9 +6,9 @@ import { appConfig, config } from "../utils/config";
 import { elements } from "../utils/elementManager";
 import { background2canvas } from "./RGB";
 import { timerManager } from "@/utils/timer";
+import { ChangeVideoModel } from "./video";
 
 // DOM 元素
-const RGBuse = elements.slide.RGBuse;
 const pictures = {
     picture_info: elements.slide.picture_info,
     info: elements.slide.info,
@@ -17,7 +17,7 @@ const pictures = {
     where: elements.slide.location,
     text: elements.slide.description
 };
-
+//
 // 背景层相关变量 (DOM元素)
 const backgroundLayers = {
     container: elements.background.container,
@@ -32,6 +32,11 @@ const backgroundLayers = {
 
 /** 使用两层背景进行渐变切换（支持模糊背景层两层切换） */
 export function transitionBackground(newImageUrl: string): void {
+    // 如果图片URL无效，跳过
+    if (!newImageUrl || newImageUrl === 'null' || newImageUrl === 'undefined') {
+        return;
+    }
+
     if (backgroundLayers.isTransitioning) return;
 
     // 获取当前活动层
@@ -673,12 +678,12 @@ export function applyBackgroundStyle(): void {
     backgroundLayers.layer1.style.transform = "";
     backgroundLayers.layer2.style.transform = "";
     backgroundLayers.container.style.backgroundColor = "";
-            backgroundLayers.layer1.style.backgroundRepeat = "";
-            backgroundLayers.layer2.style.backgroundRepeat = "";
-            backgroundLayers.layer1.style.backgroundSize = "";
-            backgroundLayers.layer2.style.backgroundSize = "";
-            backgroundLayers.layer1.style.backgroundPosition = "";
-            backgroundLayers.layer2.style.backgroundPosition = "";
+    backgroundLayers.layer1.style.backgroundRepeat = "";
+    backgroundLayers.layer2.style.backgroundRepeat = "";
+    backgroundLayers.layer1.style.backgroundSize = "";
+    backgroundLayers.layer2.style.backgroundSize = "";
+    backgroundLayers.layer1.style.backgroundPosition = "";
+    backgroundLayers.layer2.style.backgroundPosition = "";
 
     // 单壁纸样式
     switch (config.bgStyle) {
@@ -724,6 +729,10 @@ export function applyBackgroundStyle(): void {
             // 平铺
             backgroundLayers.layer1.style.backgroundRepeat = "repeat";
             backgroundLayers.layer2.style.backgroundRepeat = "repeat";
+            backgroundLayers.layer1.style.backgroundSize = "contain";
+            backgroundLayers.layer2.style.backgroundSize = "contain";
+            backgroundLayers.layer1.style.backgroundPosition = "center";
+            backgroundLayers.layer2.style.backgroundPosition = "center";
             break;
         case 5:
             // 居中模式：图片居中显示，空白区域显示模糊背景
@@ -749,8 +758,8 @@ export function applyBackgroundStyle(): void {
             backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";
             backgroundLayers.layer1.style.backgroundSize = config.bgs || "100% 100%";
             backgroundLayers.layer2.style.backgroundSize = config.bgs || "100% 100%";
-            backgroundLayers.layer1.style.backgroundPosition = config.bgx + "% " + config.bgy + "%";
-            backgroundLayers.layer2.style.backgroundPosition = config.bgx + "% " + config.bgy + "%";
+            backgroundLayers.layer1.style.backgroundPosition = config.bgx + " " + config.bgy;
+            backgroundLayers.layer2.style.backgroundPosition = config.bgx + " " + config.bgy;
 
             // 显示当前活动的模糊背景层填充空白区域
             if (currentBlurLayer) {

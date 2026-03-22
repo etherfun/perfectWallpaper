@@ -6,21 +6,15 @@
 import { config } from '../../utils/config';
 import { WallpaperProperties } from './types';
 
-export interface RGBPropertyHandlerResult {
-    // empty for now
-}
-
 /**
  * 处理RGB灯光效果相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleRGBProperties(
     properties: WallpaperProperties,
     _FirstLoad: boolean
-): RGBPropertyHandlerResult {
-    const result: RGBPropertyHandlerResult = {};
+): void {
 
     // RGB FPS刷新率
     if (properties.rgb_fps) {
@@ -91,6 +85,4 @@ export function handleRGBProperties(
     if (properties.rgb_color_rainbow_movespeed) {
         config.rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value;
     }
-
-    return result;
 }

@@ -21,21 +21,15 @@ const player_control_albumTitle = elements.playerControl.albumTitle;
 let player_control_show = false;
 let player_control_thumbnail_size_value = 100;
 
-export interface PlayerControlPropertyHandlerResult {
-    // empty for now
-}
-
 /**
  * 处理播放器相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handlePlayerControlProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): PlayerControlPropertyHandlerResult {
-    const result: PlayerControlPropertyHandlerResult = {};
+): void {
 
     if (properties.player_control_show) {
         config.playerControlShow = properties.player_control_show.value;
@@ -328,6 +322,4 @@ export function handlePlayerControlProperties(
     if (properties.player_control_hdong) {
         config.playerControlHdong = properties.player_control_hdong.value / 500;
     }
-
-    return result;
 }

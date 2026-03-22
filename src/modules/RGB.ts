@@ -7,29 +7,8 @@ import { appConfig, config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 import { debugLogger } from '../utils/logger';
 
-// 壁纸设置接口
-interface WallpaperSettings {
-    ledPlugin: boolean;
-    cuePlugin: boolean;
-}
-
-// 壁纸插件监听器
-declare global {
-    interface Window {
-        wallpaperPluginListener?: {
-            onPluginLoaded: (name: string, version: string) => void;
-        };
-        wpPlugins?: {
-            led?: {
-                setAllDevicesByImageData: (imageData: string, width: number, height: number) => void;
-            };
-        };
-        smoothedAudioArray?: number[];
-    }
-}
-
 // 壁纸设置状态
-const wallpaperSettings: WallpaperSettings = {
+const wallpaperSettings = {
     ledPlugin: false,
     cuePlugin: false
 };
@@ -69,7 +48,7 @@ function startRGBInternal(canvas: HTMLCanvasElement): void {
  * @param src 背景图片路径
  * @param videoORimages 是否为视频模式
  */
-export function background2canvas(src?: string, videoORimages?: boolean): void {
+export function background2canvas(src?: string | null, videoORimages?: boolean): void {
     let Frist = true;
     const sakura = elements.sakura;
     const particles = document.getElementById('canvas-particles') as HTMLCanvasElement | null;
@@ -218,34 +197,6 @@ export function background2canvas(src?: string, videoORimages?: boolean): void {
     requestAnimationFrame(drawbackground);
 }
 
-/**
- * 启用RGB效果
- */
-export function enableRGB(): void {
-    config.rGBShow = true;
-}
-
-/**
- * 禁用RGB效果
- */
-export function disableRGB(): void {
-    config.rGBShow = false;
-}
-
-/**
- * 检查LED插件是否可用
- */
-export function isLEDPluginAvailable(): boolean {
-    return wallpaperSettings.ledPlugin;
-}
-
-/**
- * 检查CUE插件是否可用
- */
-export function isCUEPluginAvailable(): boolean {
-    return wallpaperSettings.cuePlugin;
-}
-
 // 壁纸插件监听器
 window.wallpaperPluginListener = {
     onPluginLoaded: function (name: string, _version: string) {
@@ -259,9 +210,6 @@ window.wallpaperPluginListener = {
         }
     }
 };
-
-// 全局导出
-(window as unknown as { wallpaperSettings: WallpaperSettings }).wallpaperSettings = wallpaperSettings;
 
 debugLogger.info('[RGB] RGB 模块初始化完成');
 

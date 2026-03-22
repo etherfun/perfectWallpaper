@@ -8,13 +8,11 @@ import { config } from '../../utils/config';
 import { debugLogger } from '../../utils/logger';
 import { elements } from '@/utils/elementManager';
 import { getdate } from '../date';
+import { startDateColorRhythmLoop, stopDateColorRhythmLoop } from '../date';
 
 // 获取日期元素
 const oDate = elements.date.container as HTMLElement;
 
-export interface DatePropertyHandlerResult {
-    // dateInitComplate 现在通过 appConfig 管理
-}
 
 /**
  * 处理日期相关属性
@@ -25,14 +23,23 @@ export interface DatePropertyHandlerResult {
 export function handleDateProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): DatePropertyHandlerResult {
-    const result: DatePropertyHandlerResult = {};
+) {
+    // 日期颜色律动
+    if (properties.odateColorhythm) {
+        config.dateColorRhythm = properties.odateColorhythm.value;
+        if (properties.odateColorhythm.value) {
+            startDateColorRhythmLoop();
+        } else {
+            stopDateColorRhythmLoop();
+        }
+    }
 
     // 是否显示日期
     if (properties.showDate) {
         const oDate_show = properties.showDate.value;
         elements.body.style.setProperty("--date-display", oDate_show ? 'flex' : 'none');
         elements.body.style.setProperty("--date-visibility", oDate_show ? 'visible' : 'hidden');
+        if (!oDate_show) stopDateColorRhythmLoop();
     }
 
     // 日期圆角
@@ -49,7 +56,6 @@ export function handleDateProperties(
         const observer = new ResizeObserver(updateHeight);
         if (oDate) observer.observe(oDate);
     }
-
     // 日期颜色
     if (properties.odate_color) {
         config.oDateColor = properties.odate_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
@@ -166,6 +172,4 @@ export function handleDateProperties(
         debugLogger.info('[Date] 日期参数初始化完成');
         config.dateInitComplete = true;
     }
-
-    return result;
 }

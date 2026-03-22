@@ -7,7 +7,7 @@ import { WallpaperProperties } from './types';
 import { config } from '../../utils/config';
 import { debugLogger } from '../../utils/logger';
 import { elements } from '@/utils/elementManager';
-import { getTime_sec } from '../time';
+import { getTime_sec, startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
 
 // 局部变量
 let tStyle = true;
@@ -16,27 +16,32 @@ let tStyle = true;
 const oClock_webtext_ti = elements.clock.indicators;
 const oClock = elements.clock.container;
 
-export interface TimePropertyHandlerResult {
-    // empty for now
-}
-
 /**
  * 处理时间/时钟相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleTimeProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): TimePropertyHandlerResult {
-    const result: TimePropertyHandlerResult = {};
+): void {
+
+    // 时钟颜色律动
+    if (properties.time_color_rhythm) {
+        config.timeColorRhythm = properties.time_color_rhythm.value;
+        if (properties.time_color_rhythm.value) {
+            startTimeColorRhythmLoop();
+        } else {
+            stopTimeColorRhythmLoop();
+        }
+    }
 
     // 是否显示时间
     if (properties.showTime) {
         const oClock_show = properties.showTime.value;
         elements.body.style.setProperty("--clock-display", oClock_show ? 'flex' : 'none');
         elements.body.style.setProperty("--clock-visibility", oClock_show ? 'visible' : 'hidden');
+        if (!oClock_show) stopTimeColorRhythmLoop();
     }
 
     // 是否显示秒
@@ -76,13 +81,6 @@ export function handleTimeProperties(
         updateHeight();
         const observer = new ResizeObserver(updateHeight);
         observer.observe(oClock);
-    }
-
-    // 颜色律动
-    if (properties.TimeColorRhythm) {
-        config.timeColorRhythm = properties.TimeColorRhythm.value;
-        elements.body.style.setProperty("--clock-color-rhythm", config.timeColorRhythm ? '1' : '0');
-        elements.body.style.setProperty("--date-color-rhythm", config.timeColorRhythm ? '1' : '0');
     }
 
     // 时间颜色
@@ -153,6 +151,4 @@ export function handleTimeProperties(
         const datetransparency = properties.datetransparency.value / 100;
         elements.body.style.setProperty("--date-opacity", String(datetransparency));
     }
-
-    return result;
 }

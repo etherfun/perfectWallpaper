@@ -3,11 +3,11 @@
  * Provides the same interface as: ($('body').particles({}).audiovisualizer({}))
  */
 
-import { NativeParticles } from './NativeParticles';
-import { NativeAudioVisualizer } from './NativeAudioVisualizer';
+import { NativeParticles } from '../utils/NativeParticles';
+import { NativeAudioVisualizer } from '../utils/NativeAudioVisualizer';
 import { stopAuto as stopPWParticlesAuto } from './PWParticles';
 
-export class WallpaperController {
+export class WallpaperEffectController {
     private _particles: NativeParticles;
     private _audiovisualizer: NativeAudioVisualizer;
 
@@ -21,7 +21,7 @@ export class WallpaperController {
      * Call particle methods: wallpaper.particles('startParticles')
      * or chain: wallpaper.particles('clearCanvas').particles('stopParticles')
      */
-    particles(method: string, ...args: unknown[]): WallpaperController {
+    particles(method: string, ...args: unknown[]): WallpaperEffectController {
         switch (method) {
             case 'startParticles':
                 // Stop PWParticles animation to avoid conflicts
@@ -55,7 +55,7 @@ export class WallpaperController {
      * Call audiovisualizer methods: wallpaper.audiovisualizer('drawCanvas', audioData)
      * or chain: wallpaper.audiovisualizer('clearCanvas')
      */
-    audiovisualizer(method: string, ...args: unknown[]): WallpaperController {
+    audiovisualizer(method: string, ...args: unknown[]): WallpaperEffectController {
         switch (method) {
             case 'clearCanvas':
                 this._audiovisualizer.clearCanvas();

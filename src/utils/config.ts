@@ -276,6 +276,8 @@ const DEFAULTS = {
   timeColorRhythm: false,
   timeColor: "rgb(255, 255, 255)",
   timeBlurColor: "0 0 20px rgb(255, 255, 255)",
+  dateColorRhythm: false,
+  dateColor: [255, 255, 255],
 
   // 日期透明度
   dateTransparency: 0.8,
@@ -327,6 +329,15 @@ const DEFAULTS = {
   fluidEffectCanvasDisplacement: 0,
   fluidEffectDarkOverlayStrength: 50,
   fluidEffectBackdropFilterStrength: 10,
+
+  // 全屏歌词配置
+  fullscreenLyricsEnabled: false,
+  fullscreenLyricsShowTranslation: true,
+  fullscreenLyricsShowRoman: false,
+  fullscreenLyricsDelay: 0,
+  fullscreenLyricsEnableBlur: true,
+  fullscreenLyricsHideOther: true,
+  fullscreenLyricsShowClock: false,
 };
 
 // 运行时数据（存储动态变化的数据）
@@ -1194,6 +1205,14 @@ class AppConfig {
   public getTimeBlurColor(): string { return this._values.get('timeBlurColor') as string; }
   public setTimeBlurColor(value: string): void { this._setValue('timeBlurColor', value); }
 
+  // ==================== 日期颜色律动配置方法 ====================
+
+  public getDateColorRhythm(): boolean { return this._values.get('dateColorRhythm') as boolean; }
+  public setDateColorRhythm(value: boolean): void { this._setValue('dateColorRhythm', value); }
+
+  public getDateColor(): number[] { return this._values.get('dateColor') as number[]; }
+  public setDateColor(value: number[]): void { this._setValue('dateColor', value); }
+
   // ==================== 日期透明度配置方法 ====================
 
   public getDateTransparency(): number { return this._values.get('dateTransparency') as number; }
@@ -1371,6 +1390,29 @@ class AppConfig {
 
   public getFluidEffectBackdropFilterStrength(): number { return this._values.get('fluidEffectBackdropFilterStrength') as number; }
   public setFluidEffectBackdropFilterStrength(value: number): void { this._setValue('fluidEffectBackdropFilterStrength', value); }
+
+  // ==================== 全屏歌词配置 ====================
+
+  public getFullscreenLyricsEnabled(): boolean { return this._values.get('fullscreenLyricsEnabled') as boolean; }
+  public setFullscreenLyricsEnabled(value: boolean): void { this._setValue('fullscreenLyricsEnabled', value); }
+
+  public getFullscreenLyricsShowTranslation(): boolean { return this._values.get('fullscreenLyricsShowTranslation') as boolean; }
+  public setFullscreenLyricsShowTranslation(value: boolean): void { this._setValue('fullscreenLyricsShowTranslation', value); }
+
+  public getFullscreenLyricsShowRoman(): boolean { return this._values.get('fullscreenLyricsShowRoman') as boolean; }
+  public setFullscreenLyricsShowRoman(value: boolean): void { this._setValue('fullscreenLyricsShowRoman', value); }
+
+  public getFullscreenLyricsDelay(): number { return this._values.get('fullscreenLyricsDelay') as number; }
+  public setFullscreenLyricsDelay(value: number): void { this._setValue('fullscreenLyricsDelay', value); }
+
+  public getFullscreenLyricsEnableBlur(): boolean { return this._values.get('fullscreenLyricsEnableBlur') as boolean; }
+  public setFullscreenLyricsEnableBlur(value: boolean): void { this._setValue('fullscreenLyricsEnableBlur', value); }
+
+  public getFullscreenLyricsHideOther(): boolean { return this._values.get('fullscreenLyricsHideOther') as boolean; }
+  public setFullscreenLyricsHideOther(value: boolean): void { this._setValue('fullscreenLyricsHideOther', value); }
+
+  public getFullscreenLyricsShowClock(): boolean { return this._values.get('fullscreenLyricsShowClock') as boolean; }
+  public setFullscreenLyricsShowClock(value: boolean): void { this._setValue('fullscreenLyricsShowClock', value); }
 
   // ==================== 内部方法 ====================
 

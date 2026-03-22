@@ -8,21 +8,15 @@ import { config } from '../../utils/config';
 import { elements } from '../../utils/elementManager';
 import * as sakuraModule from '../sakura';
 
-export interface SakuraPropertyHandlerResult {
-    // empty for now
-}
-
 /**
  * 处理樱花效果相关属性
  * @param properties 属性对象
  * @param _FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleSakuraProperties(
     properties: WallpaperProperties,
     _FirstLoad: boolean
-): SakuraPropertyHandlerResult {
-    const result: SakuraPropertyHandlerResult = {};
+): void {
 
     // 樱花特效
     if (properties.showSakura) {
@@ -86,6 +80,4 @@ export function handleSakuraProperties(
         config.sakuraBackLight = properties.sakurabacklight.value / 100;
         sakuraModule.sakuraReLoadEffect();
     }
-
-    return result;
 }

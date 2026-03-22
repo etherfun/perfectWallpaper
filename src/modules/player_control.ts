@@ -59,7 +59,7 @@ export function hasPlaybackContent(): boolean {
 }
 
 /*msct封面*/
-async function wallpaperMediaThumbnailListener(event: any): Promise<void> {
+async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {
     if (event && config.playerControlShow) {
         player_control_thumbnail.src = event.thumbnail;
 
@@ -73,6 +73,12 @@ async function wallpaperMediaThumbnailListener(event: any): Promise<void> {
             const playerControlYakelicColor = config.playerControlYakelicColor;
             const playerControlColor = config.playerControlColor;
 
+            // ColorImpl 对象转换为 RGB 数组
+            const colorToRgb = (color: any): [number, number, number] | null => {
+                if (!color) return null;
+                return [color._r ?? color.r ?? 0, color._g ?? color.g ?? 0, color._b ?? color.b ?? 0];
+            };
+
             appConfig.runtime.playerInfo.colorGroup = [
                 [
                     hexToRgb(event.primaryColor),
@@ -81,10 +87,10 @@ async function wallpaperMediaThumbnailListener(event: any): Promise<void> {
                     hexToRgb(event.highContrastColor),
                 ],
                 [
-                    dominantColor,
-                    palette ? palette[0] : null,
-                    palette ? palette[1] : null,
-                    palette ? palette[2] : null
+                    colorToRgb(dominantColor),
+                    colorToRgb(palette?.[0]),
+                    colorToRgb(palette?.[1]),
+                    colorToRgb(palette?.[2])
                 ],
                 playerControlYakelicColor,
                 playerControlColor
@@ -112,7 +118,7 @@ async function wallpaperMediaThumbnailListener(event: any): Promise<void> {
 }
 
 /*msct进度*/
-function wallpaperMediaTimelineListener(event: any): void {
+function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
     const { position: pos, duration: dur } = event;
 
     waitingForData = false;
@@ -152,7 +158,7 @@ function wallpaperMediaTimelineListener(event: any): void {
 }
 
 /*msct监听*/
-function wallpaperMediaPropertiesListener(event: any): void {
+function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     if (event) {
         debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
 
@@ -226,7 +232,7 @@ export function playertitle(): void {
 }
 
 /*msct状态*/
-function wallpaperMediaPlaybackListener(event: any): void {
+function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
     if (event) {
         // 获取新状态
         let newState = -1;
@@ -292,7 +298,7 @@ function wallpaperMediaPlaybackListener(event: any): void {
 }
 
 // 控制流体效果播放状态
-function controlFluidEffectPlayback(playbackState: any): void {
+function controlFluidEffectPlayback(playbackState: number): void {
     if (!appConfig.runtime.FluidEffectConfig || appConfig.runtime.FluidEffectConfig.enabled === undefined) return;
     if (!window.wallpaperMediaIntegration) return;
 
@@ -462,41 +468,46 @@ export function pc_aubar(): void {
 
         rgbbg.beginPath();
 
-        let x: number, y: number, prevX: number, prevY: number;
-        const cornerRadius = 4;
-
+        // 计算所有高度点
+        const heights: number[] = [];
         for (let i = 0, l = 64; i < 64; ++i, ++l) {
             const amplitude = (currentAudioArr[i] + currentAudioArr[l]) / 2;
             let targetHeight = aubar.height - aubar.height * Math.min(amplitude, 1) * config.playerControlScalefactor;
-
             targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
-
             previousHeights[i] = lerp(previousHeights[i], targetHeight, config.playerControlHdong);
-
-            x = spacing * i;
-            y = previousHeights[i];
-
-            if (i === 0) {
-                rgbbg.moveTo(x, y);
-            } else {
-                prevX = spacing * (i - 1);
-                prevY = previousHeights[i - 1];
-
-                const dx = x - prevX;
-                const dy = y - prevY;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-
-                if (distance > cornerRadius * 2) {
-                    const controlX = prevX + (x - prevX) / 2;
-                    const controlY = prevY + (y - prevY) / 2;
-
-                    rgbbg.quadraticCurveTo(prevX, prevY, controlX, controlY);
-                    rgbbg.quadraticCurveTo(controlX, controlY, x, y);
-                } else {
-                    rgbbg.lineTo(x, y);
-                }
-            }
+            heights[i] = previousHeights[i];
         }
+
+        if (heights.length < 2) {
+            if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {
+                requestAnimationFrame(drawline);
+            }
+            return;
+        }
+
+        // 起始点
+        rgbbg.moveTo(0, heights[0]);
+
+        // 使用三次贝塞尔曲线连接所有点，实现真正的平滑
+        for (let i = 0; i < heights.length - 1; i++) {
+            const x0 = i > 0 ? spacing * (i - 1) : 0;
+            const y0 = heights[i - 1] ?? heights[0];
+            const x1 = spacing * i;
+            const y1 = heights[i];
+            const x2 = spacing * (i + 1);
+            const y2 = heights[i + 1];
+            const x3 = i < heights.length - 2 ? spacing * (i + 2) : x2;
+            const y3 = heights[i + 2] ?? y2;
+
+            // Catmull-Rom 样条转贝塞尔曲线控制点
+            const cp1x = x1 + (x2 - x0) / 6;
+            const cp1y = y1 + (y2 - y0) / 6;
+            const cp2x = x2 - (x3 - x1) / 6;
+            const cp2y = y2 - (y3 - y1) / 6;
+
+            rgbbg.bezierCurveTo(cp1x, cp1y, cp2x, cp2y, x2, y2);
+        }
+
         rgbbg.stroke();
 
         if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {

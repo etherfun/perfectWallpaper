@@ -23,3 +23,4 @@ import './modules/PWLine';
 import './modules/PWCircle';
 import './modules/PWParticles';
 import './modules/weather';
+import './modules/WallpaperEffectController'

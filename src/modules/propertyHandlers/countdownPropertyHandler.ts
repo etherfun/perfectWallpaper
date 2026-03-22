@@ -13,21 +13,15 @@ import { setcountdown_a } from '../countdown';
 const bodyElement = elements.body;
 const countdown = elements.countdown.container;
 
-export interface CountdownPropertyHandlerResult {
-    // empty for now
-}
-
 /**
  * 处理倒计时相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleCountdownProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): CountdownPropertyHandlerResult {
-    const result: CountdownPropertyHandlerResult = {};
+): void {
 
     // 倒计时位置
     if (properties.countdownY) {
@@ -138,6 +132,4 @@ export function handleCountdownProperties(
         const observer = new ResizeObserver(updateHeight);
         observer.observe(countdown);
     }
-
-    return result;
 }

@@ -4,24 +4,18 @@
  */
 
 import { WallpaperProperties } from './types';
-import { appConfig } from '@/utils/config';
+import { appConfig, config } from '@/utils/config';
 import { shouldShow } from '../slide';
-
-export interface ParticlePropertyHandlerResult {
-    // empty for now
-}
 
 /**
  * 处理粒子效果相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleParticleProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): ParticlePropertyHandlerResult {
-    const result: ParticlePropertyHandlerResult = {};
+): void {
 
     const wallpaper = appConfig.runtime.wallpaper;
 
@@ -66,9 +60,16 @@ export function handleParticleProperties(
         wallpaper.particles('set', 'shadowBlur', properties.particles_shadowBlur.value);
     }
 
+    // 粒子图片路由
+    let cusmapRoute: string | null = null;
+
     // 自定义粒子图片
     if (properties.particles_image) {
-        shouldShow();
+        cusmapRoute = properties.particles_image.value;
+        // 设置粒子图片
+        if (wallpaper && typeof wallpaper.particles === 'function') {
+            wallpaper.particles('particlesImage', cusmapRoute, 'false');
+        }
     }
 
     // 粒子类型
@@ -88,7 +89,14 @@ export function handleParticleProperties(
                 break;
             case 5:
                 wallpaper.particles('set', 'shapeType', 'image');
-                shouldShow();
+                // 设置粒子图片
+                if (wallpaper && typeof wallpaper.particles === 'function') {
+                    if (cusmapRoute) {
+                        wallpaper.particles('particlesImage', cusmapRoute, 'false');
+                    } else {
+                        wallpaper.particles('particlesImage', config.mapRoute, 'true');
+                    }
+                }
                 break;
             default:
                 wallpaper.particles('set', 'shapeType', 'circle');
@@ -97,7 +105,12 @@ export function handleParticleProperties(
 
     // 默认图片
     if (properties.particles_picdef) {
-        shouldShow();
+        const mapRoute = 'map/' + properties.particles_picdef.value + '.png';
+        config.mapRoute = mapRoute;
+        // 设置粒子图片
+        if (wallpaper && typeof wallpaper.particles === 'function') {
+            wallpaper.particles('particlesImage', mapRoute, 'true');
+        }
     }
 
     // 粒子大小
@@ -209,6 +222,4 @@ export function handleParticleProperties(
                 wallpaper.particles('set', 'moveOutMode', 'out');
         }
     }
-
-    return result;
 }

@@ -6,9 +6,10 @@
 const esbuild = require('esbuild');
 const path = require('path');
 
+const isWatch = process.argv.includes('--watch');
+
 async function build() {
-    // Bundle all TypeScript modules into a single file
-    const result = await esbuild.build({
+    const options = {
         entryPoints: ['src/bundle.ts'],
         bundle: true,
         outfile: 'dist/bundle.js',
@@ -16,12 +17,20 @@ async function build() {
         globalName: 'PerfectWall',
         platform: 'browser',
         target: 'es2020',
-        sourcemap: false,
-        minify: true,
+        sourcemap: isWatch ? 'inline' : false,
+        minify: !isWatch,
         logLevel: 'info',
-    });
+        legalComments: 'none'
+    };
 
-    console.log('Bundle built successfully to dist/bundle.js');
+    if (isWatch) {
+        const ctx = await esbuild.context(options);
+        await ctx.watch();
+        console.log('Watching for changes...');
+    } else {
+        await esbuild.build(options);
+        console.log('Bundle built successfully to dist/bundle.js');
+    }
 }
 
 build().catch((err) => {

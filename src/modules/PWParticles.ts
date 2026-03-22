@@ -295,6 +295,3 @@ export function startAuto(): void {
 // Initialize
 wResize();
 PWParcreatePoint();
-// Note: auto() is NOT called here. Animation must be explicitly started.
-// This matches the original jQuery plugin behavior where startParticles() was never auto-called.
-

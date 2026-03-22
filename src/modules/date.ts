@@ -2,16 +2,55 @@ import { waitAndExecute } from "../utils/tool";
 import { config } from "../utils/config";
 import { elements } from "../utils/elementManager";
 
-var oDate = elements.date.container;
-var oDate_webtext = elements.date.webtext;
+let oDate = elements.date.container as HTMLElement;
+let oDate_webtext = elements.date.webtext as HTMLElement;
+
+// 日期彩色律动状态
+let dateHue = 0;
+let dateTag = 1;
+
+// 日期彩色律动
+export function setDateColor(): void {
+    if (dateHue > 255) { dateTag *= -1; dateHue = 255; }
+    if (dateHue < 0) { dateTag *= -1; dateHue = 0; }
+    const dateColor = 'hsl(' + dateHue + ',90%,50%)';
+    dateHue += dateTag / 1;
+
+    oDate.style.color = dateColor;
+    dateAnimationFrameId = setTimeout(() => dateColorRhythmLoop(), 16.6);
+}
+
+// 日期彩色律动动画循环
+let dateAnimationFrameId: NodeJS.Timeout | null = null;
+
+function dateColorRhythmLoop(): void {
+    if (config.dateColorRhythm) {
+        setDateColor();
+    }
+}
+
+export function startDateColorRhythmLoop(): void {
+    if (dateAnimationFrameId !== null) {
+        clearTimeout(dateAnimationFrameId);
+    }
+    dateColorRhythmLoop();
+}
+
+export function stopDateColorRhythmLoop(): void {
+    if (dateAnimationFrameId !== null) {
+        clearTimeout(dateAnimationFrameId);
+        dateAnimationFrameId = null;
+        oDate.style.color = "";
+    }
+}
 
 // 星期数组
-var w_array = new Array("星期天","星期一","星期二","星期三","星期四","星期五","星期六");
-var we_array = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
+let w_array = new Array("星期天","星期一","星期二","星期三","星期四","星期五","星期六");
+let we_array = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday");
 
 // 月份数组
-var m_array = new Array("一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月");
-var me_array = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
+let m_array = new Array("一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月");
+let me_array = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
 // 获取格式化后的年份
 function getFormattedYear(t) {
@@ -28,7 +67,7 @@ function getFormattedYear(t) {
 
 // 获取格式化后的月份
 function getFormattedMonth(t) {
-    var month = t.getMonth() + 1;
+    let month = t.getMonth() + 1;
     switch(config.dateFormat.monthFormat) {
         case 1: // 数字格式
             return month;
@@ -44,7 +83,7 @@ function getFormattedMonth(t) {
 
 // 获取格式化后的日期
 function getFormattedDay(t) {
-    var day = t.getDate();
+    let day = t.getDate();
     switch(config.dateFormat.dayFormat) {
         case 1: // 数字格式
             return day;
@@ -91,8 +130,8 @@ function getSeparator() {
 
 // 构建日期字符串
 function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
-    var parts: any[] = [];
-    var partTypes: string[] = [];
+    let parts: any[] = [];
+    let partTypes: string[] = [];
     
     // 根据顺序添加年份、月份、日期，并记录类型
     if (config.dateFormat.order === 1) { // 年月日顺序
@@ -110,18 +149,18 @@ function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
     }
     
     // 处理分隔符
-    var result = "";
+    let result = "";
     if (sep === "" || typeof sep === "string") {
         // 简单分隔符
-        for (var i = 0; i < parts.length; i++) {
+        for (let i = 0; i < parts.length; i++) {
             if (i > 0) result += sep;
             result += parts[i];
         }
     } else if (typeof sep === "object") {
         // 中文分隔符（年/月/日）- 根据实际类型添加正确的分隔符
-        for (var i = 0; i < parts.length; i++) {
+        for (let i = 0; i < parts.length; i++) {
             result += parts[i];
-            var partType = partTypes[i];
+            let partType = partTypes[i];
             if (partType === 'year' && sep.year) result += sep.year;
             else if (partType === 'month' && sep.month) result += sep.month;
             else if (partType === 'day' && sep.day) result += sep.day;
@@ -138,18 +177,18 @@ function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
 }
 
 // 主函数：获取并显示日期
-function getdate() {
-    var t = new Date();
+export function getdate() {
+    let t = new Date();
     
     // 获取各个部分的格式化值
-    var year = getFormattedYear(t);
-    var month = getFormattedMonth(t);
-    var day = getFormattedDay(t);
-    var week = getFormattedWeek(t);
-    var sep = getSeparator();
+    let year = getFormattedYear(t);
+    let month = getFormattedMonth(t);
+    let day = getFormattedDay(t);
+    let week = getFormattedWeek(t);
+    let sep = getSeparator();
     
     // 构建完整的日期字符串
-    var dateString = buildDateString(year, month, day, week, sep);
+    let dateString = buildDateString(year, month, day, week, sep);
     
     // 显示日期
     if (oDate_webtext) {
@@ -166,6 +205,3 @@ waitAndExecute(
     () => config.dateInitComplete === true,
     () => autodata()
 );
-
-// 导出函数
-export { getdate };

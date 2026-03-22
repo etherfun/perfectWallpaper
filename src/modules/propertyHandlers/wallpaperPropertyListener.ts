@@ -6,29 +6,18 @@
 import { WallpaperProperties } from './types';
 import {
     handleDateProperties,
-    DatePropertyHandlerResult,
     handleTimeProperties,
-    TimePropertyHandlerResult,
     handleBackgroundProperties,
-    BackgroundPropertyHandlerResult,
     handleWeatherProperties,
-    WeatherPropertyHandlerResult,
     handleHitokotoProperties,
-    HitokotoPropertyHandlerResult,
     handleCountdownProperties,
-    CountdownPropertyHandlerResult,
     handlePlayerControlProperties,
-    PlayerControlPropertyHandlerResult,
     handleRGBProperties,
-    RGBPropertyHandlerResult,
     handleParticleProperties,
-    ParticlePropertyHandlerResult,
     handleAudioVisualProperties,
-    AudioVisualPropertyHandlerResult,
     handleSakuraProperties,
-    SakuraPropertyHandlerResult,
     handleFluidEffectProperties,
-    FluidEffectPropertyHandlerResult,
+    handleLyricsProperties,
 } from './index';
 import { appConfig, config } from '../../utils/config';
 import { debugLogger } from '../../utils/logger';
@@ -36,42 +25,21 @@ import { elements } from '../../utils/elementManager';
 import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
 import { showDebugLogModal } from './debugModal';
-
-// 导入 version 模块以确保 versionManager 已初始化
 import '../../modules/version';
 import { loadI18nData } from '../../utils/i18n';
-
-/**
- * 所有 handler 结果的联合类型
- */
-export interface WallpaperPropertyHandlerResults {
-    date?: DatePropertyHandlerResult;
-    time?: TimePropertyHandlerResult;
-    background?: BackgroundPropertyHandlerResult;
-    weather?: WeatherPropertyHandlerResult;
-    hitokoto?: HitokotoPropertyHandlerResult;
-    countdown?: CountdownPropertyHandlerResult;
-    playerControl?: PlayerControlPropertyHandlerResult;
-    rgb?: RGBPropertyHandlerResult;
-    particles?: ParticlePropertyHandlerResult;
-    audioVisual?: AudioVisualPropertyHandlerResult;
-    sakura?: SakuraPropertyHandlerResult;
-    fluidEffect?: FluidEffectPropertyHandlerResult;
-}
+import { background2canvas } from '../RGB';
 
 /**
  * 创建壁纸属性监听器
  * 统一调用所有 property handlers 并整合结果
- * 
+ *
  * @param properties WallpaperProperties - 壁纸属性对象
  * @param FirstLoad boolean - 是否为首次加载
- * @returns WallpaperPropertyHandlerResults - 包含所有 handler 结果的对象
  */
 export function createWallpaperPropertyListener(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): WallpaperPropertyHandlerResults {
-    const results: WallpaperPropertyHandlerResults = {};
+): void {
 
     // ========== 版本更新和调试相关处理 ==========
     // 注意: 这些处理不在其他 handler 中,以确保最早执行
@@ -109,73 +77,79 @@ export function createWallpaperPropertyListener(
 
     try {
         // 处理日期相关属性
-        results.date = handleDateProperties(properties, FirstLoad);
+        handleDateProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理时间相关属性
-        results.time = handleTimeProperties(properties, FirstLoad);
+        handleTimeProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理背景/壁纸相关属性
-        results.background = handleBackgroundProperties(properties, FirstLoad);
+        handleBackgroundProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理天气相关属性
-        results.weather = handleWeatherProperties(properties, FirstLoad);
+        handleWeatherProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理一言相关属性
-        results.hitokoto = handleHitokotoProperties(properties, FirstLoad);
+        handleHitokotoProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理倒计时相关属性
-        results.countdown = handleCountdownProperties(properties, FirstLoad);
+        handleCountdownProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理播放器控制相关属性
-        results.playerControl = handlePlayerControlProperties(properties, FirstLoad);
+        handlePlayerControlProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理RGB灯光效果相关属性
-        results.rgb = handleRGBProperties(properties, FirstLoad);
+        handleRGBProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理粒子效果相关属性
-        results.particles = handleParticleProperties(properties, FirstLoad);
+        handleParticleProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理音频可视化相关属性
-        results.audioVisual = handleAudioVisualProperties(properties, FirstLoad);
+        handleAudioVisualProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理樱花效果相关属性
-        results.sakura = handleSakuraProperties(properties, FirstLoad);
+        handleSakuraProperties(properties, FirstLoad);
     } catch (e) {
     }
 
     try {
         // 处理流体效果相关属性
-        results.fluidEffect = handleFluidEffectProperties(properties, FirstLoad);
+        handleFluidEffectProperties(properties, FirstLoad);
+    } catch (e) {
+    }
+
+    try {
+        // 处理全屏歌词相关属性
+        handleLyricsProperties(properties, FirstLoad);
     } catch (e) {
     }
 
@@ -184,8 +158,6 @@ export function createWallpaperPropertyListener(
         config.firstLoad = false;
         config.updateInitComplete = true;
     }
-
-    return results;
 }
 
 /**

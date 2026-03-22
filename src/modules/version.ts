@@ -424,24 +424,25 @@ class versionManager {
     async initUpdateModal(): Promise<void> {
         if (this.isInitialized) return;
 
+        // 如果不是新版本且没有手动触发，则不创建弹窗
+        if (!this.isNewVersion) return;
+
         try {
             // 加载版本历史
             versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
-            
+
             // 创建弹窗HTML
             this.createModalHTML();
-            
+
             // 绑定事件
             this.bindEvents();
-            
+
             this.isInitialized = true;
-            
-            // 如果需要显示，则显示弹窗
-            if (this.isNewVersion) {
-                setTimeout(() => {
-                    this.showModal();
-                }, 2000);
-            }
+
+            // 显示弹窗
+            setTimeout(() => {
+                this.showModal();
+            }, 2000);
         } catch (error) {
             console.error("初始化版本弹窗失败:", error);
         }
@@ -891,9 +892,18 @@ class versionManager {
     }
 
     // 手动显示版本信息
-    showVersionInfo(): void {
+    async showVersionInfo(): Promise<void> {
+        // 如果从未初始化过，先加载版本历史
         if (!this.isInitialized) {
-            this.createModalHTML();
+            try {
+                versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
+                this.createModalHTML();
+                this.bindEvents();
+                this.isInitialized = true;
+            } catch (error) {
+                console.error("初始化版本弹窗失败:", error);
+                return;
+            }
         }
         this.showModal();
     }

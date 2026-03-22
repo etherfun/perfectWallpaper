@@ -14,21 +14,15 @@ import { debounce } from '../../utils/timer';
 // 获取天气元素
 const weather = elements.weather.weather as HTMLElement;
 
-export interface WeatherPropertyHandlerResult {
-    // weatherInitComplate 现在通过 appConfig 管理
-}
-
 /**
  * 处理天气相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleWeatherProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): WeatherPropertyHandlerResult {
-    const result: WeatherPropertyHandlerResult = {};
+): void {
 
     // 获取key 和风天气api
     if (properties.getcitykey_qweather) {
@@ -244,6 +238,4 @@ export function handleWeatherProperties(
         debugLogger.info('[Weather] 天气参数初始化完成');
         config.weatherInitComplete = true;
     }
-
-    return result;
 }

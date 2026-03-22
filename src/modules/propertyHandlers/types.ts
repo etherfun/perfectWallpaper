@@ -157,6 +157,7 @@ export interface WallpaperProperties {
     showDate?: { value: boolean };
     odate_roundedcorners?: { value: number };
     odate_color?: { value: string };
+    odateColorhythm?: { value: boolean };
     odate_blurcolor_show?: { value: boolean };
     odate_blurcolor?: { value: string };
     odate_yakeli_show?: { value: boolean };
@@ -185,7 +186,7 @@ export interface WallpaperProperties {
     TimeY?: { value: number };
     tSize?: { value: number };
     oclock_roundedcorners?: { value: number };
-    TimeColorRhythm?: { value: boolean };
+    time_color_rhythm?: { value: boolean };
     TimeColor?: { value: string };
     TimeBlurColor?: { value: string };
     tStyle?: { value: boolean };
@@ -499,4 +500,13 @@ export interface WallpaperProperties {
     fluidEffectCanvasDisplacement?: { value: number };
     fluidEffect_DarkOverlayStrength?: { value: number };
     fluidEffect_backdropFilterStrength?: { value: number };
+
+    // 全屏歌词参数
+    fullscreen_lyrics_enabled?: { value: boolean };
+    fullscreen_lyrics_show_translation?: { value: boolean };
+    fullscreen_lyrics_show_roman?: { value: boolean };
+    fullscreen_lyrics_delay?: { value: number };
+    fullscreen_lyrics_enable_blur?: { value: boolean };
+    fullscreen_lyrics_hide_other?: { value: boolean };
+    fullscreen_lyrics_show_clock?: { value: boolean };
 }

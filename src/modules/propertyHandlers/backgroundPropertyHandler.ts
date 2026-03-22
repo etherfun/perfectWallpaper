@@ -16,21 +16,15 @@ import {
 import { ChangeVideoModel, ChangeAudioModel } from '../video';
 import { elements } from '@/utils/elementManager';
 
-export interface BackgroundPropertyHandlerResult {
-    // bgInitComplate 现在通过 appConfig 管理
-}
-
 /**
  * 处理壁纸/背景相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleBackgroundProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): BackgroundPropertyHandlerResult {
-    const result: BackgroundPropertyHandlerResult = {};
+): void {
 
     // 自定义壁纸
     if (properties.image) {
@@ -172,13 +166,13 @@ export function handleBackgroundProperties(
     // 自由变换
     if (properties.bgy) {
         const y = properties.bgy.value;
-        config.bgy = config.screenHeight * ((y - 50) / 50) + "px";
+        config.bgy = ((y - 50) * 2) + "%";
         applyBackgroundStyle();
     }
 
     if (properties.bgx) {
         const x = properties.bgx.value;
-        config.bgx = config.screenWidth * ((x - 50) / 50) + "px";
+        config.bgx = ((x - 50) * 2) + "%";
         applyBackgroundStyle();
     }
 
@@ -335,6 +329,4 @@ export function handleBackgroundProperties(
         debugLogger.info('[Background] 壁纸参数初始化完成');
         config.bgInitComplete = true;
     }
-
-    return result;
 }

@@ -15,21 +15,15 @@ let hitokotoInit = false;
 // 获取一言元素
 const hitokoto = elements.hitokoto.container as HTMLElement;
 
-export interface HitokotoPropertyHandlerResult {
-    // empty for now
-}
-
 /**
  * 处理一言相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
- * @returns 处理结果
  */
 export function handleHitokotoProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
-): HitokotoPropertyHandlerResult {
-    const result: HitokotoPropertyHandlerResult = {};
+): void {
 
     // 一言更新时间
     if (properties.hitokoto_updata) {
@@ -179,6 +173,4 @@ export function handleHitokotoProperties(
     if (properties.hitokotoY) {
         elements.body.style.setProperty("--hitokoto-top", `${properties.hitokotoY.value}%`);
     }
-
-    return result;
 }

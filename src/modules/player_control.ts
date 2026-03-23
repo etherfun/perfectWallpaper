@@ -44,10 +44,6 @@ export function hasPlaybackContent(): boolean {
         return false;
     }
 
-    if (window.wallpaperMediaIntegration) {
-        return false;
-    }
-
     const isPlaying = appConfig.runtime.playerInfo.playerState === 1;
     const isPaused = appConfig.runtime.playerInfo.playerState === 2;
 

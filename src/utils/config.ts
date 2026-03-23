@@ -15,6 +15,7 @@ const DEFAULTS = {
   dateInitComplete: false,
   bgInitComplete: false,
   weatherInitComplete: false,
+  fluidEffectInitComplete: false,
   updateInitComplete: false,
 
   // 路径配置
@@ -596,6 +597,9 @@ class AppConfig {
 
   public getWeatherInitComplete(): boolean { return this._values.get('weatherInitComplete') as boolean; }
   public setWeatherInitComplete(value: boolean): void { this._setValue('weatherInitComplete', value); }
+
+  public getFluidEffectInitComplete(): boolean { return this._values.get('fluidEffectInitComplete') as boolean; }
+  public setFluidEffectInitComplete(value: boolean): void { this._setValue('fluidEffectInitComplete', value); }
 
   public getUpdateInitComplete(): boolean { return this._values.get('updateInitComplete') as boolean; }
   public setUpdateInitComplete(value: boolean): void { this._setValue('updateInitComplete', value); }

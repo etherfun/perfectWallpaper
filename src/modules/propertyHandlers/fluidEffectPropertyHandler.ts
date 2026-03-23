@@ -6,9 +6,7 @@
 import { WallpaperProperties } from './types';
 import { elements } from '../../utils/elementManager';
 import { appConfig, config } from '@/utils/config';
-
-// 全屏启用状态记忆
-let fullscreenFluidEffectValue = false;
+import { FluidEffectConfig } from '../fluid_control';
 
 /**
  * 处理流体效果相关属性
@@ -21,81 +19,58 @@ export function handleFluidEffectProperties(
 ): void {
     const bodyElement = elements.body;
 
-    // ========== FluidEffect2 配置处理 ==========
+    if (FirstLoad) appConfig.runtime.FluidEffectConfig = new FluidEffectConfig();
+
+    const cfg = appConfig.runtime.FluidEffectConfig;
 
     // 全屏启用
     if (properties.fluidEffectEnabledFullscreen) {
-        if (!appConfig.runtime.FluidEffectConfig || !appConfig.runtime.FluidEffectConfig.set) {
-            return;
-        }
-
-        if (properties.fluidEffectEnabledFullscreen.value) {
-            appConfig.runtime.FluidEffectConfig.set('fullscreenEnabled', true);
-        } else {
-            appConfig.runtime.FluidEffectConfig.set('fullscreenEnabled', false);
-        }
+        cfg.set('fullscreenEnabled', properties.fluidEffectEnabledFullscreen.value);
         config.fluidEffectEnabledFullscreen = properties.fluidEffectEnabledFullscreen.value;
     }
 
     // 启用
     if (properties.fluidEffectEnabled) {
-        if (!appConfig.runtime.FluidEffectConfig || !appConfig.runtime.FluidEffectConfig.set) {
-            return;
-        }
-
-        if (properties.fluidEffectEnabled.value) {
-            appConfig.runtime.FluidEffectConfig.set('enabled', true);
-            if (config.fluidEffectEnabledFullscreen) {
-                appConfig.runtime.FluidEffectConfig.set('fullscreenEnabled', true);
-            }
-        } else {
-            appConfig.runtime.FluidEffectConfig.set('enabled', false);
-            appConfig.runtime.FluidEffectConfig.set('fullscreenEnabled', false);
+        cfg.set('enabled', properties.fluidEffectEnabled.value);
+        if (properties.fluidEffectEnabled.value && config.fluidEffectEnabledFullscreen) {
+            cfg.set('fullscreenEnabled', true);
         }
     }
 
     // 分辨率
     if (properties.fluidEffectResolution) {
-        if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.set) {
-            appConfig.runtime.FluidEffectConfig.set('resolution', properties.fluidEffectResolution.value);
-        }
+        cfg.set('resolution', properties.fluidEffectResolution.value);
     }
 
     // 模糊程度
     if (properties.fluidEffectBlurAmount) {
-        if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.set) {
-            appConfig.runtime.FluidEffectConfig.set('blurAmount', properties.fluidEffectBlurAmount.value);
-        }
+        cfg.set('blurAmount', properties.fluidEffectBlurAmount.value);
     }
 
     // 置换图缩放
     if (properties.fluidEffectDisplacementScale) {
-        if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.set) {
-            appConfig.runtime.FluidEffectConfig.set('displacementScale', properties.fluidEffectDisplacementScale.value);
-        }
+        cfg.set('displacementScale', properties.fluidEffectDisplacementScale.value);
     }
 
     // 湍流八度
     if (properties.fluidEffectTurbulenceOctaves) {
-        if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.set) {
-            appConfig.runtime.FluidEffectConfig.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
-        }
+        cfg.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
     }
 
     // 画布位移幅度
     if (properties.fluidEffectCanvasDisplacement) {
-        if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.set) {
-            appConfig.runtime.FluidEffectConfig.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
-        }
+        cfg.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
     }
 
     // 暗化
-    if (properties.fluidEffect_DarkOverlayStrength) {
+    if (properties.fluidEffect_DarkOverlayStrength && bodyElement) {
         bodyElement.style.setProperty("--fluidEffect-dark-overlay-strength", String(properties.fluidEffect_DarkOverlayStrength.value / 100));
     }
 
     // 模糊
-    if (properties.fluidEffect_backdropFilterStrength) {
+    if (properties.fluidEffect_backdropFilterStrength && bodyElement) {
         bodyElement.style.setProperty("--fluidEffect-backdrop-filter-strength", `${properties.fluidEffect_backdropFilterStrength.value}px`);
     }
+
+    if (FirstLoad) config.fluidEffectInitComplete = true;
 }

@@ -16,20 +16,11 @@
   height: 100%;
   pointer-events: none;
   overflow: hidden;
+  will-change: transform;
+  contain: strict layout paint;
 
+  // Combined overlay layer: dark background + blur in single pseudo-element
   &::after {
-    content: "";
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 1;
-    backdrop-filter: blur(var(--fluidEffect-backdrop-filter-strength));
-  }
-
-  &::before {
     content: "";
     position: absolute;
     display: block;
@@ -40,18 +31,12 @@
     z-index: 1;
     background: $color-black;
     opacity: var(--fluidEffect-dark-overlay-strength);
+    backdrop-filter: blur(var(--fluidEffect-backdrop-filter-strength));
   }
 
-  // Special handling for player control in fluid effect
-  &:not(#player_control .fluid-effect-wrapper) {
-    &::after {
-      backdrop-filter: blur(calc(var(--fluidEffect-backdrop-filter-strength) * 3)) !important;
-    }
-
-    &::before {
-      background: $color-black;
-      opacity: var(--fluidEffect-dark-overlay-strength);
-    }
+  // Fullscreen mode uses 2x blur (reduced from 3x for performance)
+  &.fullscreen::after {
+    backdrop-filter: blur(calc(var(--fluidEffect-backdrop-filter-strength) * 2));
   }
 
   &.paused {

@@ -20,6 +20,7 @@ export class FluidEffect2 {
         turbulenceFrequency: number;
         turbulenceOctaves: number;
         canvasDisplacementAmplitude: number;
+        fullscreen?: boolean;
     };
 
     /** 4个canvas元素 */
@@ -67,6 +68,7 @@ export class FluidEffect2 {
         turbulenceFrequency?: number;
         turbulenceOctaves?: number;
         canvasDisplacementAmplitude?: number;
+        fullscreen?: boolean;
     } = {}) {
         this.container = container;
         this.options = {
@@ -114,10 +116,10 @@ export class FluidEffect2 {
 
         const filter = document.createElementNS(svgNS, 'filter');
         filter.setAttribute('id', 'fluid-filter-2');
-        filter.setAttribute('x', '-20%');
-        filter.setAttribute('y', '-20%');
-        filter.setAttribute('width', '140%');
-        filter.setAttribute('height', '140%');
+        filter.setAttribute('x', '-10%');
+        filter.setAttribute('y', '-10%');
+        filter.setAttribute('width', '120%');
+        filter.setAttribute('height', '120%');
         filter.setAttribute('filterUnits', 'objectBoundingBox');
         filter.setAttribute('primitiveUnits', 'userSpaceOnUse');
         filter.setAttribute('color-interpolation-filters', 'sRGB');
@@ -146,6 +148,9 @@ export class FluidEffect2 {
     private createCanvases(): void {
         this.fluidWrapper = document.createElement('div');
         this.fluidWrapper.className = 'fluid-effect-wrapper';
+        if (this.options.fullscreen) {
+            this.fluidWrapper.classList.add('fullscreen');
+        }
 
         this.fluidRect = document.createElement('div');
         this.fluidRect.className = 'fluid-effect-rect';
@@ -193,7 +198,8 @@ export class FluidEffect2 {
         const canvasSize = viewSize * 0.707;
 
         const displaySize = Math.max(1, Math.round(canvasSize));
-        const dpr = window.devicePixelRatio || 1;
+        // Limit DPR to max 1.5 to reduce GPU pixel fill rate while maintaining visual quality
+        const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
         this._lastDisplaySize = displaySize;
         this._lastDpr = dpr;
 

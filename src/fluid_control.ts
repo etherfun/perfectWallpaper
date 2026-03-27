@@ -263,7 +263,8 @@ export function initFullscreenFluidEffect(): void {
             displacementScale: appConfig.runtime.FluidEffectConfig.displacementScale,
             turbulenceFrequency: appConfig.runtime.FluidEffectConfig.turbulenceFrequency,
             turbulenceOctaves: appConfig.runtime.FluidEffectConfig.turbulenceOctaves,
-            canvasDisplacementAmplitude: appConfig.runtime.FluidEffectConfig.canvasDisplacementAmplitude
+            canvasDisplacementAmplitude: appConfig.runtime.FluidEffectConfig.canvasDisplacementAmplitude,
+            fullscreen: true
         });
         appConfig.runtime.fullscreenFluidEffect = newFullscreenFluidEffect;;
         appConfig.runtime.fullscreenFluidEffect!.start();

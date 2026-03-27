@@ -31,6 +31,17 @@ import { loadI18nData } from '../utils/i18n';
 import { background2canvas } from '../RGB';
 
 /**
+ * 安全执行属性处理函数,捕获并记录错误
+ */
+function safeHandle<T extends (...args: any[]) => void>(handler: T, properties: WallpaperProperties, firstLoad: boolean, name: string): void {
+    try {
+        handler(properties, firstLoad);
+    } catch (e) {
+        debugLogger.error(`[PropertyHandler] ${name} failed`, e);
+    }
+}
+
+/**
  * 创建壁纸属性监听器
  * 统一调用所有 property handlers 并整合结果
  *
@@ -76,89 +87,21 @@ export function createWallpaperPropertyListener(
         config.updateInitComplete = true;
     }
 
-    try {
-        // 处理日期相关属性
-        handleDateProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理时间相关属性
-        handleTimeProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理背景/壁纸相关属性
-        handleBackgroundProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理天气相关属性
-        handleWeatherProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理一言相关属性
-        handleHitokotoProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理倒计时相关属性
-        handleCountdownProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理播放器控制相关属性
-        handlePlayerControlProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理RGB灯光效果相关属性
-        handleRGBProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理粒子效果相关属性
-        handleParticleProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理音频可视化相关属性
-        handleAudioVisualProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理樱花效果相关属性
-        handleSakuraProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理流体效果相关属性
-        handleFluidEffectProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理全屏歌词相关属性
-        handleLyricsProperties(properties, FirstLoad);
-    } catch (e) {
-    }
-
-    try {
-        // 处理系统监控相关属性
-        handleSystemMonitorProperties(properties, FirstLoad);
-    } catch (e) {
-    }
+    // 处理所有属性(使用safeHandle捕获错误)
+    safeHandle(handleDateProperties, properties, FirstLoad, 'handleDateProperties');
+    safeHandle(handleTimeProperties, properties, FirstLoad, 'handleTimeProperties');
+    safeHandle(handleBackgroundProperties, properties, FirstLoad, 'handleBackgroundProperties');
+    safeHandle(handleWeatherProperties, properties, FirstLoad, 'handleWeatherProperties');
+    safeHandle(handleHitokotoProperties, properties, FirstLoad, 'handleHitokotoProperties');
+    safeHandle(handleCountdownProperties, properties, FirstLoad, 'handleCountdownProperties');
+    safeHandle(handlePlayerControlProperties, properties, FirstLoad, 'handlePlayerControlProperties');
+    safeHandle(handleRGBProperties, properties, FirstLoad, 'handleRGBProperties');
+    safeHandle(handleParticleProperties, properties, FirstLoad, 'handleParticleProperties');
+    safeHandle(handleAudioVisualProperties, properties, FirstLoad, 'handleAudioVisualProperties');
+    safeHandle(handleSakuraProperties, properties, FirstLoad, 'handleSakuraProperties');
+    safeHandle(handleFluidEffectProperties, properties, FirstLoad, 'handleFluidEffectProperties');
+    safeHandle(handleLyricsProperties, properties, FirstLoad, 'handleLyricsProperties');
+    safeHandle(handleSystemMonitorProperties, properties, FirstLoad, 'handleSystemMonitorProperties');
 
     // 如果是首次加载，在处理完所有属性后将其设置为 false
     if (FirstLoad) {

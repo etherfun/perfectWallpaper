@@ -10,35 +10,35 @@ let dateHue = 0;
 let dateTag = 1;
 
 // 日期彩色律动
-export function setDateColor(): void {
+function updateDateColor(): void {
     if (dateHue > 255) { dateTag *= -1; dateHue = 255; }
     if (dateHue < 0) { dateTag *= -1; dateHue = 0; }
     const dateColor = 'hsl(' + dateHue + ',90%,50%)';
     dateHue += dateTag / 1;
 
     oDate.style.color = dateColor;
-    dateAnimationFrameId = setTimeout(() => dateColorRhythmLoop(), 16.6);
 }
 
 // 日期彩色律动动画循环
-let dateAnimationFrameId: NodeJS.Timeout | null = null;
+let dateAnimationFrameId: number | null = null;
 
 function dateColorRhythmLoop(): void {
     if (config.dateColorRhythm) {
-        setDateColor();
+        updateDateColor();
+        dateAnimationFrameId = requestAnimationFrame(dateColorRhythmLoop);
     }
 }
 
 export function startDateColorRhythmLoop(): void {
     if (dateAnimationFrameId !== null) {
-        clearTimeout(dateAnimationFrameId);
+        cancelAnimationFrame(dateAnimationFrameId);
     }
-    dateColorRhythmLoop();
+    dateAnimationFrameId = requestAnimationFrame(dateColorRhythmLoop);
 }
 
 export function stopDateColorRhythmLoop(): void {
     if (dateAnimationFrameId !== null) {
-        clearTimeout(dateAnimationFrameId);
+        cancelAnimationFrame(dateAnimationFrameId);
         dateAnimationFrameId = null;
         oDate.style.color = "";
     }

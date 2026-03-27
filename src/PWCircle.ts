@@ -205,18 +205,9 @@ function getColor(casev: number): string {
 /**
  * Create circle visualization points based on audio data
  */
-let _createPointLogged = false;
 export function createPoint(arr: number[]): void {
     appConfig.runtime.param.arr1 = [];
     appConfig.runtime.param.arr2 = [];
-
-    if (!_createPointLogged) {
-        _createPointLogged = true;
-        console.log('[PWCircle.createPoint] w:', w, 'h:', h, 'minW:', minW);
-        console.log('[PWCircle.createPoint] param.r:', appConfig.runtime.param.r, 'param.cX:', appConfig.runtime.param.cX, 'param.cY:', appConfig.runtime.param.cY);
-        console.log('[PWCircle.createPoint] showSemiCircle:', appConfig.runtime.param.showSemiCircle, 'SemiCircledirection:', appConfig.runtime.param.SemiCircledirection, 'PolygonAngle:', appConfig.runtime.param.Polygon, 'offsetAngle:', appConfig.runtime.param.offsetAngle);
-        console.log('[PWCircle.createPoint] arr sample:', arr.slice(0, 10));
-    }
 
     for (let i = 0; i < 120; i++) {
         let deg: number;
@@ -276,11 +267,6 @@ export function createPoint(arr: number[]): void {
         const p1 = getXY(offset1, deg);
         const p2 = getXY(offset2, deg);
 
-        if (!_createPointLogged && i < 3) {
-            console.log('[PWCircle.createPoint] i:', i, 'offset1:', offset1, 'offset2:', offset2, 'deg:', deg);
-            console.log('[PWCircle.createPoint] p1:', p1, 'p2:', p2);
-        }
-
         appConfig.runtime.param.arr1.push({ x: p1.x, y: p1.y });
         appConfig.runtime.param.arr2.push({ x: p2.x, y: p2.y });
     }
@@ -298,18 +284,9 @@ export function createPoint(arr: number[]): void {
 /**
  * Calculate XY coordinates for a circle point
  */
-let _getXYLogged = false;
 export function getXY(offset: number, deg: number): { x: number; y: number } {
     const x = Math.cos(deg) * offset + appConfig.runtime.param.cX * w;
     const y = Math.sin(deg) * offset + appConfig.runtime.param.cY * h;
-
-    if (!_getXYLogged) {
-        _getXYLogged = true;
-        console.log('[PWCircle.getXY] offset:', offset, 'deg:', deg);
-        console.log('[PWCircle.getXY] cos(deg):', Math.cos(deg), 'sin(deg):', Math.sin(deg));
-        console.log('[PWCircle.getXY] cX:', appConfig.runtime.param.cX, 'cY:', appConfig.runtime.param.cY, 'w:', w, 'h:', h);
-        console.log('[PWCircle.getXY] result x:', x, 'y:', y);
-    }
 
     return { x, y };
 }
@@ -317,13 +294,8 @@ export function getXY(offset: number, deg: number): { x: number; y: number } {
 /**
  * Draw style 1 - Radial lines from center
  */
-let _style1Logged = false;
 export function style1(): void {
     if (!ctx) return;
-    if (!_style1Logged) {
-        _style1Logged = true;
-        console.log('[PWCircle.style1] Drawing! arr1[0]:', appConfig.runtime.param.arr1[0]);
-    }
     ctx.beginPath();
     for (let i = 0; i < 120; i++) {
         ctx.moveTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);

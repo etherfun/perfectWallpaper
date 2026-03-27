@@ -19,47 +19,41 @@ var clockTag = 1;
 
 
 // 时钟彩色律动
-export function setTimeColor(): void {
+function updateClockColor(): void {
     if (clockHue > 255) { clockTag *= -1; clockHue = 255; }
     if (clockHue < 0) { clockTag *= -1; clockHue = 0; }
     const clockColor = 'hsl(' + clockHue + ',90%,50%)';
     clockHue += clockTag / 1;
 
     oClock.style.color = clockColor;
-
-    clockAnimationFrameId = setTimeout(() => {clockColorRhythmLoop()}, 16.6);
 }
 
 // 时钟彩色律动动画循环
-let clockAnimationFrameId: NodeJS.Timeout | null = null;
+let clockAnimationFrameId: number | null = null;
 
 function clockColorRhythmLoop(): void {
     if (config.timeColorRhythm) {
-        setTimeColor();
+        updateClockColor();
+        clockAnimationFrameId = requestAnimationFrame(clockColorRhythmLoop);
     }
 }
 
 export function startTimeColorRhythmLoop(): void {
     if (clockAnimationFrameId !== null) {
-        clearTimeout(clockAnimationFrameId);
+        cancelAnimationFrame(clockAnimationFrameId);
     }
-    clockColorRhythmLoop();
+    clockAnimationFrameId = requestAnimationFrame(clockColorRhythmLoop);
 }
 
 export function stopTimeColorRhythmLoop(): void {
     if (clockAnimationFrameId !== null) {
-        clearTimeout(clockAnimationFrameId);
+        cancelAnimationFrame(clockAnimationFrameId);
         clockAnimationFrameId = null;
         oClock.style.color = "";
     }
 }
 
-function autoTime() {
-    getTime_sec();
-    setTimeout(autoTime, 1000);
-}
-
-autoTime();
+setInterval(getTime_sec, 1000);
 
 export function getTime_sec() {
     var t = new Date();

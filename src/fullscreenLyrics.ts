@@ -387,16 +387,6 @@ export class FullscreenLyrics {
         // 确保计时器在运行
         this.startWordHighlightUpdate();
 
-        // 调试日志
-        console.log('[FullscreenLyrics] fullyrics received:', {
-            lineIndex: data.lineIndex,
-            currentTime: data.currentTime,
-            hasDynamic: data.hasDynamic,
-            currentLineTime: data.currentLine?.time,
-            currentLineDuration: data.currentLine?.duration,
-            dynamicLyric: data.currentLine?.dynamicLyric?.slice(0, 3)
-        });
-
         // 如果行索引变化，触发动画
         if (previousLineIndex !== this.currentLineIndex) {
             this.animateToNewLine(previousLineIndex, this.currentLineIndex);
@@ -419,14 +409,6 @@ export class FullscreenLyrics {
         this.currentData.currentLine = data.currentLine;
         this.currentData.playing = data.playing;
 
-        // 调试日志
-        console.log('[FullscreenLyrics] currentlyric received:', {
-            lineIndex: data.lineIndex,
-            currentTime: data.currentTime,
-            currentLineTime: data.currentLine?.time,
-            dynamicLyric: data.currentLine?.dynamicLyric?.slice(0, 3)
-        });
-
         const previousLineIndex = this.currentLineIndex;
         this.currentLineIndex = data.lineIndex;
 
@@ -445,16 +427,6 @@ export class FullscreenLyrics {
 
         const currentLine = data.currentLine;
         if (!currentLine) return;
-
-        // 调试日志
-        console.log('[FullscreenLyrics] updateCurrentLyric:', {
-            lineIndex: data.lineIndex,
-            currentTime: data.currentTime,
-            hasDynamic: data.hasDynamic,
-            currentLineTime: currentLine.time,
-            currentLineDuration: currentLine.duration,
-            dynamicLyricCount: currentLine.dynamicLyric?.length
-        });
 
         // 更新当前行元素的歌词内容
         const currentEl = this.lineElements.get(data.lineIndex);
@@ -507,14 +479,6 @@ export class FullscreenLyrics {
                     currentWordIndex = i; // 记录最后一个唱完的字
                 }
             }
-
-            // 调试日志
-            console.log('[FullscreenLyrics] Word highlight:', {
-                currentTime,
-                currentWordIndex,
-                wordCount: words.length,
-                dynamicWordCount: line.dynamicLyric.length
-            });
 
             // 更新每个字的高亮状态
             words.forEach((wordEl, i) => {

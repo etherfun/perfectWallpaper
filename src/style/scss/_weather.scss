@@ -1,0 +1,291 @@
+// ============================================
+// Weather Component
+// ============================================
+@use 'config' as *;
+
+#weather {
+  visibility: hidden;
+  @include component-position('weather');
+  font-size: var(--weather-font-size);
+  line-height: var(--weather-font-size);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  opacity: var(--weather-opacity);
+  overflow: hidden;
+  z-index: $z-weather;
+  @include yakeli-effect('weather');
+  width: var(--weather-show-width);
+  color: var(--weather-color);
+
+  .text {
+    font-size: 0.5em;
+    z-index: $z-weather;
+    @include yakeli-effect('weather');
+    width: var(--weather-show-width);
+    color: var(--weather-color);
+  }
+
+  .weather-container {
+    display: flex;
+    gap: 1em;
+    padding: 0.5em;
+  }
+
+  .weather-left {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .weather-temp {
+    font-size: calc(var(--weather-font-size) * 1.2);
+    font-weight: bold;
+    margin-top: 0.4em;
+  }
+
+  .weather-text {
+    opacity: 0.9;
+    margin-top: 0.25em;
+  }
+
+  .weather-city {
+    opacity: 0.7;
+    margin-top: 0.4em;
+  }
+
+  .weather-feels {
+    opacity: 0.7;
+    margin-top: 0.25em;
+  }
+
+  .weather-right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .weather-icon {
+    padding-top: 16px;
+    width: 100%;
+    height: 64px;
+    display: block;
+
+    svg {
+      color: white;
+      width: 100%;
+      height: 100%;
+    }
+  }
+}
+
+// Weather icon in hourly tooltip
+#weatherHourlyTooltip .big-icon #pIconImg,
+#weather .weather-icon {
+  padding-top: 16px;
+  width: 100%;
+  height: 64px;
+  display: block;
+
+  svg {
+    color: white;
+    width: 100%;
+    height: 100%;
+  }
+}
+
+// Air quality cells - used in weather hourly tooltip
+.air-title-cell {
+  text-align: center;
+  font-weight: bold;
+}
+
+.air-value-cell {
+  font-weight: bold;
+}
+
+.warning-cell {
+  text-align: right;
+  padding-right: 8px;
+}
+
+// Weather alert scrolling items
+.weather-alert-items-warp {
+  max-width: 82%;
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.weather-alert-items {
+  animation: scroll 5s alternate infinite;
+  float: left;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+}
+
+// ============================================
+// Weather Content Styles (hourly forecast)
+// ============================================
+
+.precip-probs {
+  display: flex;
+  background: rgba(255, 0, 0, 0.1);
+}
+
+.weather-left {
+  white-space: nowrap;
+}
+
+.weather-right-content {
+  width: 100%;
+  font-size: 0.9em;
+}
+
+.weather-main-row,
+.weather-detail-row,
+.weather-air-row,
+.weather-greeting {
+  justify-content: space-evenly;
+  display: flex;
+  flex-wrap: nowrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 0;
+  align-items: center;
+}
+
+.weather-precip-container {
+  display: flex;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 6px 0;
+  align-items: stretch;
+}
+
+.weather-precip-container:last-child,
+.weather-greeting:last-child {
+  border-bottom: none;
+}
+
+.weather-info-item,
+.weather-detail-item,
+.weather-air-item {
+  padding: 0px 0.3em;
+  flex: 0 0 auto;
+  text-align: center;
+  white-space: nowrap;
+  overflow: visible;
+}
+
+.weather-alert-container {
+  display: flex;
+  max-width: 60%;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.weather-alert-items {
+  display: inline-block;
+}
+
+// Precipitation probability row styles
+.precip-label {
+  width: 3em;
+  text-align: center;
+  transition: all 0.3s ease;
+  padding: 4px 8px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &.animate {
+    animation: precip-text-pulse 0.3s ease;
+  }
+}
+
+.precip-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.precip-times {
+  flex: 1;
+  font-size: 0.85em;
+  text-align: center;
+  letter-spacing: 1px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  display: flex;
+  margin-left: 0;
+}
+
+.precip-time-cell {
+  padding: 0.5em;
+  flex: 1;
+  text-align: center;
+}
+
+.precip-values {
+  flex: 1;
+  font-size: 0.85em;
+  text-align: center;
+  letter-spacing: 1px;
+  display: flex;
+}
+
+.precip-text,
+.dice-icon {
+  width: 35px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.precip-times,
+.precip-probs {
+  font-size: 0.85em;
+  text-align: center;
+  letter-spacing: 1px;
+  display: flex;
+}
+
+.precip-prob-cell {
+  padding-top: 0.5em;
+  flex: 1;
+  text-align: center;
+  transition: all 0.3s ease;
+  opacity: 1;
+  transform: translateY(0);
+
+  &.fade-out {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+
+  &.fade-in {
+    opacity: 0;
+    transform: translateY(5px);
+    animation: fadeInUp 0.3s ease forwards;
+  }
+}
+
+.weather-greeting {
+  font-style: italic;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.95em;
+  border-top: 2px solid rgba(255, 255, 255, 0.3);
+  justify-content: center;
+}
+
+.greeting-cell {
+  font-style: italic;
+  padding: 10px 8px;
+  text-align: center;
+  font-size: 0.95em;
+  border-top: 2px solid rgba(255, 255, 255, 0.3);
+}

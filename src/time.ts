@@ -1,0 +1,87 @@
+import { add0 } from './utils/tool';
+import { config } from './utils/config';
+import { elements } from './utils/elementManager';
+import { getdate } from './date';
+
+var oClock = elements.clock.container;
+var oClock_block = elements.clock.block;
+var oClock_webtext_min = elements.clock.min;
+var oClock_webtext_ti = elements.clock.indicators;
+var oClock_webtext_sec = elements.clock.sec;
+var oClock_webtext_st = elements.clock.st;
+
+var oDate = elements.date.container as HTMLElement;
+var tStyle = true;
+
+// 时钟彩色律动状态
+var clockHue = 0;
+var clockTag = 1;
+
+
+// 时钟彩色律动
+export function setTimeColor(): void {
+    if (clockHue > 255) { clockTag *= -1; clockHue = 255; }
+    if (clockHue < 0) { clockTag *= -1; clockHue = 0; }
+    const clockColor = 'hsl(' + clockHue + ',90%,50%)';
+    clockHue += clockTag / 1;
+
+    oClock.style.color = clockColor;
+
+    clockAnimationFrameId = setTimeout(() => {clockColorRhythmLoop()}, 16.6);
+}
+
+// 时钟彩色律动动画循环
+let clockAnimationFrameId: NodeJS.Timeout | null = null;
+
+function clockColorRhythmLoop(): void {
+    if (config.timeColorRhythm) {
+        setTimeColor();
+    }
+}
+
+export function startTimeColorRhythmLoop(): void {
+    if (clockAnimationFrameId !== null) {
+        clearTimeout(clockAnimationFrameId);
+    }
+    clockColorRhythmLoop();
+}
+
+export function stopTimeColorRhythmLoop(): void {
+    if (clockAnimationFrameId !== null) {
+        clearTimeout(clockAnimationFrameId);
+        clockAnimationFrameId = null;
+        oClock.style.color = "";
+    }
+}
+
+function autoTime() {
+    getTime_sec();
+    setTimeout(autoTime, 1000);
+}
+
+autoTime();
+
+export function getTime_sec() {
+    var t = new Date();
+    oClock_webtext_sec.innerHTML = add0(t.getSeconds());
+
+    if (tStyle == false) {
+        //h = t.getHours()
+        oClock_webtext_min.innerHTML = add0(t.getHours() >= 12 ? t.getHours() - 12 : t.getHours()) + " : " + add0(t.getMinutes());
+        oClock_webtext_st.style.display = "flex";
+        var str = t.getHours() <= 12 ? "AM" : "PM";
+        oClock_webtext_st.innerHTML = str;
+    } else {
+        oClock_webtext_min.innerHTML = add0(t.getHours()) + " : " + add0(t.getMinutes());
+        oClock_webtext_st.style.display = "none";
+    }
+
+    if (tStyle == false) {
+        var str = t.getHours() < 12 ? "AM" : "PM";
+        oClock_webtext_st.innerHTML = str;
+    }
+
+    if (t.getHours() === 0 && t.getMinutes() === 0 && t.getSeconds() === 0) {
+        getdate();
+    }
+}

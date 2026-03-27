@@ -1,7 +1,7 @@
 {
 	"contentrating" : "Everyone",
 	"description" : "有bug欢迎上报 尽可能会在一周内修复\r\n(如果可以请使用上方的 \" 讨论 \" 板块反馈问题或者提问 方便管理以及回复)\r\n这个壁纸也有可能会更新我自己的功能 \r\n也可以提出一些功能 有空就会加入进来\r\n\r\n如果原作者认为这个壁纸侵犯了你的权利 留言后会在一周内删除",
-	"file" : "index.html",
+	"file" : "dist/index.html",
 	"general" : 
 	{
 		"localization" : 
@@ -200,9 +200,9 @@
 				"ui_countdown_txt_after" : "Display text in front of the countdown",
 				"ui_countdown_txt_befor" : "Display text behind the countdown",
 				"ui_countdown_year" : "Year",
-                "ui_date_dateColorhythm":"Color Rhythm",
 				"ui_date_DateFormat" : "Date Format",
 				"ui_date_TimeColorRhythm" : "Color Rhythm",
+				"ui_date_dateColorhythm" : "Color Rhythm",
 				"ui_date_dayFormat" : "Day Format",
 				"ui_date_dayFormat_1" : "Abbreviation - 7",
 				"ui_date_dayFormat_2" : "Full - 07",
@@ -256,14 +256,6 @@
 				"ui_effect_AliceParticles_particles_opacityRandom" : "Opacity Random",
 				"ui_effect_AliceParticles_particles_picdef" : "Default Picture",
 				"ui_effect_AliceParticles_particles_picdef_1" : "Love",
-				"ui_effect_AliceParticles_particles_picdef_2" : "Meteor",
-				"ui_effect_AliceParticles_particles_picdef_3" : "Cat Face",
-				"ui_effect_AliceParticles_particles_picdef_4" : "Fighting",
-				"ui_effect_AliceParticles_particles_picdef_5" : "Cry Laugh",
-				"ui_effect_AliceParticles_particles_picdef_6" : "Dog Hug Fish",
-				"ui_effect_AliceParticles_particles_picdef_7" : "Nose Pick",
-				"ui_effect_AliceParticles_particles_picdef_8" : "Butterfly",
-				"ui_effect_AliceParticles_particles_picdef_9" : "GOGE",
 				"ui_effect_AliceParticles_particles_picdef_10" : "Smile",
 				"ui_effect_AliceParticles_particles_picdef_11" : "Yo?",
 				"ui_effect_AliceParticles_particles_picdef_12" : "Panda",
@@ -274,12 +266,20 @@
 				"ui_effect_AliceParticles_particles_picdef_17" : "Native Dog 2",
 				"ui_effect_AliceParticles_particles_picdef_18" : "Native Dog Black",
 				"ui_effect_AliceParticles_particles_picdef_19" : "Native Dog Gray",
+				"ui_effect_AliceParticles_particles_picdef_2" : "Meteor",
 				"ui_effect_AliceParticles_particles_picdef_20" : "Fat DOGE Black",
 				"ui_effect_AliceParticles_particles_picdef_21" : "Fat DOGE Bordered",
 				"ui_effect_AliceParticles_particles_picdef_22" : "Fat DOGE Borderless",
 				"ui_effect_AliceParticles_particles_picdef_23" : "Pikachu",
 				"ui_effect_AliceParticles_particles_picdef_24" : "Vomiting Cat",
 				"ui_effect_AliceParticles_particles_picdef_25" : "Hilarious",
+				"ui_effect_AliceParticles_particles_picdef_3" : "Cat Face",
+				"ui_effect_AliceParticles_particles_picdef_4" : "Fighting",
+				"ui_effect_AliceParticles_particles_picdef_5" : "Cry Laugh",
+				"ui_effect_AliceParticles_particles_picdef_6" : "Dog Hug Fish",
+				"ui_effect_AliceParticles_particles_picdef_7" : "Nose Pick",
+				"ui_effect_AliceParticles_particles_picdef_8" : "Butterfly",
+				"ui_effect_AliceParticles_particles_picdef_9" : "GOGE",
 				"ui_effect_AliceParticles_particles_shadowBlur" : "Particles Blur Size",
 				"ui_effect_AliceParticles_particles_shadowColor" : "Particles Blur Color",
 				"ui_effect_AliceParticles_particles_shapeType" : "Particles Shape Type",
@@ -330,6 +330,13 @@
 				"ui_friendlink_weathercategory_2" : "<h6>TianQi API || tianqiapi.com</h6><small>A weather provider with a diverse range of clients, including major companies such as Huawei, Apple, multiple government websites, and more.</small>",
 				"ui_friendlink_weathercategory_3" : "<h6>Visual Crossing API || visualcrossing.com</h6><small>A comprehensive API with a large volume of data supports global weather (although some regions may be occupied by regions with the same name, which can be troublesome), historical weather, multi-language support, automatic unit conversion, and multiple data types in one API request, such as: request 15-day daily weather, 24-hour hourly forecasts, current weather, meteorological disaster warnings, and meteorological events. It can be said that it is very powerful, and has a daily limit of 10,000 requests.</small>",
 				"ui_friendlink_weathercategory_4" : "<h6>Open Meteo ApI || open-meteo.com</h6><small>An Open Historical Weather API With Multiple Regional Weather Sources</small>",
+				"ui_fullscreen_lyrics_delay" : "Lyrics Delay",
+				"ui_fullscreen_lyrics_enable_blur" : "Enable Blur Effect",
+				"ui_fullscreen_lyrics_enabled" : "Enable Fullscreen Lyrics",
+				"ui_fullscreen_lyrics_hide_other" : "Hide Other Elements",
+				"ui_fullscreen_lyrics_show_clock" : "Show Clock",
+				"ui_fullscreen_lyrics_show_roman" : "Show Romanization",
+				"ui_fullscreen_lyrics_show_translation" : "Show Translation",
 				"ui_getAPIHOST_qweather" : "The API Host",
 				"ui_global_settings_language" : "Language Settings",
 				"ui_global_settings_language_tip" : "<small>★ Requires reload after setting</small>",
@@ -403,6 +410,25 @@
 				"ui_setting_showaway" : "The right side is the X-axis origin(For example, 0 becomes 100 and vice versa)",
 				"ui_setting_x-asis" : "X-Asis site",
 				"ui_setting_y-asis" : "Y-Asis site",
+				"ui_sysmon_color" : "Color",
+				"ui_sysmon_cpu_mode" : "CPU Display Mode",
+				"ui_sysmon_gpu_mode" : "GPU Display Mode",
+				"ui_sysmon_header" : "● System Monitor",
+				"ui_sysmon_memory_mode" : "Memory Display Mode",
+				"ui_sysmon_mode_bar" : "Bar",
+				"ui_sysmon_mode_curve" : "Curve",
+				"ui_sysmon_mode_none" : "None",
+				"ui_sysmon_mode_text" : "Text",
+				"ui_sysmon_network_mode" : "Network Display Mode",
+				"ui_sysmon_server_url" : "Server URL",
+				"ui_sysmon_show_cpu" : "Show CPU",
+				"ui_sysmon_show_gpu" : "Show GPU",
+				"ui_sysmon_show_memory" : "Show Memory",
+				"ui_sysmon_show_network" : "Show Network",
+				"ui_sysmon_size" : "Font Size",
+				"ui_sysmon_update_interval" : "Update Interval (sec)",
+				"ui_sysmon_x" : "X Position",
+				"ui_sysmon_y" : "Y Position",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
 				"ui_ui_global_settings_language" : "Language setting",
@@ -633,8 +659,8 @@
 				"ui_countdown_txt_befor" : "倒计时前方显示文字",
 				"ui_countdown_year" : "年",
 				"ui_date_DateFormat" : "日期格式",
-                "ui_date_dateColorhythm":"颜色律动",
 				"ui_date_TimeColorRhythm" : "颜色律动",
+				"ui_date_dateColorhythm" : "颜色律动",
 				"ui_date_dayFormat" : "日期格式",
 				"ui_date_dayFormat_1" : "缩写 - 7",
 				"ui_date_dayFormat_2" : "完整 - 07",
@@ -696,14 +722,6 @@
 				"ui_effect_AliceParticles_particles_opacityRandom" : "随机不透明度",
 				"ui_effect_AliceParticles_particles_picdef" : "默认图片",
 				"ui_effect_AliceParticles_particles_picdef_1" : "爱心",
-				"ui_effect_AliceParticles_particles_picdef_2" : "流星",
-				"ui_effect_AliceParticles_particles_picdef_3" : "猫脸",
-				"ui_effect_AliceParticles_particles_picdef_4" : "Fighting",
-				"ui_effect_AliceParticles_particles_picdef_5" : "哭笑",
-				"ui_effect_AliceParticles_particles_picdef_6" : "狗抱鱼",
-				"ui_effect_AliceParticles_particles_picdef_7" : "抠鼻",
-				"ui_effect_AliceParticles_particles_picdef_8" : "蝴蝶",
-				"ui_effect_AliceParticles_particles_picdef_9" : "GOGE",
 				"ui_effect_AliceParticles_particles_picdef_10" : "笑脸",
 				"ui_effect_AliceParticles_particles_picdef_11" : "约么",
 				"ui_effect_AliceParticles_particles_picdef_12" : "熊猫",
@@ -714,12 +732,20 @@
 				"ui_effect_AliceParticles_particles_picdef_17" : "土狗2",
 				"ui_effect_AliceParticles_particles_picdef_18" : "土狗黑",
 				"ui_effect_AliceParticles_particles_picdef_19" : "土狗灰",
+				"ui_effect_AliceParticles_particles_picdef_2" : "流星",
 				"ui_effect_AliceParticles_particles_picdef_20" : "肥DOGE黑",
 				"ui_effect_AliceParticles_particles_picdef_21" : "肥DOGE有边",
 				"ui_effect_AliceParticles_particles_picdef_22" : "肥DOGE无边",
 				"ui_effect_AliceParticles_particles_picdef_23" : "皮卡丘",
 				"ui_effect_AliceParticles_particles_picdef_24" : "呕吐猫",
 				"ui_effect_AliceParticles_particles_picdef_25" : "滑稽",
+				"ui_effect_AliceParticles_particles_picdef_3" : "猫脸",
+				"ui_effect_AliceParticles_particles_picdef_4" : "Fighting",
+				"ui_effect_AliceParticles_particles_picdef_5" : "哭笑",
+				"ui_effect_AliceParticles_particles_picdef_6" : "狗抱鱼",
+				"ui_effect_AliceParticles_particles_picdef_7" : "抠鼻",
+				"ui_effect_AliceParticles_particles_picdef_8" : "蝴蝶",
+				"ui_effect_AliceParticles_particles_picdef_9" : "GOGE",
 				"ui_effect_AliceParticles_particles_shadowBlur" : "粒子模糊程度",
 				"ui_effect_AliceParticles_particles_shadowColor" : "粒子模糊颜色",
 				"ui_effect_AliceParticles_particles_shapeType" : "粒子形状",
@@ -770,6 +796,13 @@
 				"ui_friendlink_weathercategory_2" : "<h6>天气API || tianqiapi.com</h6><small>一个十分多样的天气提供商多家大头企业也是他的客户 如:华为,苹果,多个政府网站等等</small>",
 				"ui_friendlink_weathercategory_3" : "<h6>Visual Crossing API || visualcrossing.com</h6><small>一个量大管饱的API 支持全球天气(但是有的地区可能会被重名地区名占用,会有点麻烦),历史天气,多语言支持,自动换算单位,一次API请求多种数据等,如:同时请求15天整天天气,24小时小时预报,当前天气,气象灾害预警,气象事件.可以说十分强大,而且每日限额10000次</small>",
 				"ui_friendlink_weathercategory_4" : "<h6>Open Meteo API || open-meteo.com</h6><small>支持多地区天气数据的开放历史天气 API</small>",
+				"ui_fullscreen_lyrics_delay" : "歌词延迟",
+				"ui_fullscreen_lyrics_enable_blur" : "启用模糊效果",
+				"ui_fullscreen_lyrics_enabled" : "启用全屏歌词",
+				"ui_fullscreen_lyrics_hide_other" : "隐藏其他元素",
+				"ui_fullscreen_lyrics_show_clock" : "显示时钟",
+				"ui_fullscreen_lyrics_show_roman" : "显示罗马音",
+				"ui_fullscreen_lyrics_show_translation" : "显示翻译",
 				"ui_getAPIHOST_qweather" : "获得的API Host",
 				"ui_global_settings_language" : "语言设置",
 				"ui_global_settings_language_tip" : "<small>★ 设置后需要重载壁纸</small>",
@@ -843,6 +876,25 @@
 				"ui_setting_showaway" : "右侧为X轴原点(例如0变100反之亦然)",
 				"ui_setting_x-asis" : "X轴位置",
 				"ui_setting_y-asis" : "Y轴位置",
+				"ui_sysmon_color" : "颜色",
+				"ui_sysmon_cpu_mode" : "CPU显示模式",
+				"ui_sysmon_gpu_mode" : "GPU显示模式",
+				"ui_sysmon_header" : "● 系统监控",
+				"ui_sysmon_memory_mode" : "内存显示模式",
+				"ui_sysmon_mode_bar" : "条形",
+				"ui_sysmon_mode_curve" : "曲线",
+				"ui_sysmon_mode_none" : "不显示",
+				"ui_sysmon_mode_text" : "文字",
+				"ui_sysmon_network_mode" : "网络显示模式",
+				"ui_sysmon_server_url" : "服务器地址",
+				"ui_sysmon_show_cpu" : "显示CPU",
+				"ui_sysmon_show_gpu" : "显示GPU",
+				"ui_sysmon_show_memory" : "显示内存",
+				"ui_sysmon_show_network" : "显示网络",
+				"ui_sysmon_size" : "字体大小",
+				"ui_sysmon_update_interval" : "更新间隔 (秒)",
+				"ui_sysmon_x" : "X位置",
+				"ui_sysmon_y" : "Y位置",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
 				"ui_ui_global_settings_language" : "语言设置",
@@ -2397,8 +2449,8 @@
 			},
 			"debugger_copy" : 
 			{
-				"index" : 371,
-				"order" : 471,
+				"index" : 372,
+				"order" : 472,
 				"text" : "ui_debugger_copy",
 				"type" : "bool",
 				"value" : true
@@ -2564,6 +2616,71 @@
 				"order" : 454,
 				"text" : "●  友情链接  Friend Links",
 				"type" : "group",
+				"value" : true
+			},
+			"fullscreen_lyrics_delay" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true",
+				"index" : 375,
+				"max" : 5000,
+				"min" : 0,
+				"order" : 475,
+				"text" : "ui_fullscreen_lyrics_delay",
+				"type" : "slider",
+				"value" : 0
+			},
+			"fullscreen_lyrics_enable_blur" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true",
+				"index" : 376,
+				"order" : 476,
+				"text" : "ui_fullscreen_lyrics_enable_blur",
+				"type" : "bool",
+				"value" : true
+			},
+			"fullscreen_lyrics_enabled" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true",
+				"index" : 371,
+				"order" : 471,
+				"text" : "ui_fullscreen_lyrics_enabled",
+				"type" : "bool",
+				"value" : false
+			},
+			"fullscreen_lyrics_hide_other" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true",
+				"index" : 377,
+				"order" : 477,
+				"text" : "ui_fullscreen_lyrics_hide_other",
+				"type" : "bool",
+				"value" : true
+			},
+			"fullscreen_lyrics_show_clock" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true && fullscreen_lyrics_hide_other.value == true",
+				"index" : 378,
+				"order" : 478,
+				"text" : "ui_fullscreen_lyrics_show_clock",
+				"type" : "bool",
+				"value" : false
+			},
+			"fullscreen_lyrics_show_roman" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true",
+				"index" : 374,
+				"order" : 474,
+				"text" : "ui_fullscreen_lyrics_show_roman",
+				"type" : "bool",
+				"value" : false
+			},
+			"fullscreen_lyrics_show_translation" : 
+			{
+				"condition" : "fullscreen_lyrics_enabled.value == true",
+				"index" : 373,
+				"order" : 473,
+				"text" : "ui_fullscreen_lyrics_show_translation",
+				"type" : "bool",
 				"value" : true
 			},
 			"functioncategory" : 
@@ -3129,15 +3246,6 @@
 				"text" : "ui_music_musictext",
 				"type" : "text"
 			},
-			"odateColorhythm" : 
-			{
-				"condition" : "showDate.value == true",
-				"index" : 199,
-				"order" : 299,
-				"text" : "ui_date_dateColorhythm",
-				"type" : "bool",
-				"value" : true
-			},
 			"oclock_blurcolor" : 
 			{
 				"condition" : "showTime.value == true && oclock_blurcolor_show.value == true",
@@ -3209,6 +3317,15 @@
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
+			},
+			"odateColorhythm" : 
+			{
+				"condition" : "showDate.value == true",
+				"index" : 199,
+				"order" : 299,
+				"text" : "ui_date_dateColorhythm",
+				"type" : "bool",
+				"value" : false
 			},
 			"odate_blurcolor" : 
 			{
@@ -3505,7 +3622,7 @@
 			{
 				"condition" : "particles_shapeType.value == 5 && particles_isParticles.value == true",
 				"index" : 71,
-				"options" :
+				"options" : 
 				[
 					{
 						"label" : "ui_effect_AliceParticles_particles_picdef_1",
@@ -4621,6 +4738,209 @@
 				"text" : "ui_audio_wave_style",
 				"type" : "combo",
 				"value" : 1
+			},
+			"sysmon_color" : 
+			{
+				"index" : 393,
+				"order" : 493,
+				"text" : "ui_audio_color",
+				"type" : "color",
+				"value" : "1 1 1"
+			},
+			"sysmon_cpu_mode" : 
+			{
+				"index" : 382,
+				"options" : 
+				[
+					{
+						"label" : "ui_sysmon_mode_none",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_mode_text",
+						"value" : 1
+					},
+					{
+						"label" : "ui_sysmon_mode_bar",
+						"value" : 2
+					},
+					{
+						"label" : "ui_sysmon_mode_curve",
+						"value" : 3
+					}
+				],
+				"order" : 482,
+				"text" : "ui_sysmon_cpu_mode",
+				"type" : "combo",
+				"value" : 1
+			},
+			"sysmon_gpu_mode" : 
+			{
+				"index" : 383,
+				"options" : 
+				[
+					{
+						"label" : "ui_sysmon_mode_none",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_mode_text",
+						"value" : 1
+					},
+					{
+						"label" : "ui_sysmon_mode_bar",
+						"value" : 2
+					},
+					{
+						"label" : "ui_sysmon_mode_curve",
+						"value" : 3
+					}
+				],
+				"order" : 483,
+				"text" : "ui_sysmon_gpu_mode",
+				"type" : "combo",
+				"value" : 1
+			},
+			"sysmon_header" : 
+			{
+				"index" : 379,
+				"order" : 479,
+				"text" : "ui_sysmon_header",
+				"type" : "group"
+			},
+			"sysmon_memory_mode" : 
+			{
+				"index" : 384,
+				"options" : 
+				[
+					{
+						"label" : "ui_sysmon_mode_none",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_mode_text",
+						"value" : 1
+					},
+					{
+						"label" : "ui_sysmon_mode_bar",
+						"value" : 2
+					},
+					{
+						"label" : "ui_sysmon_mode_curve",
+						"value" : 3
+					}
+				],
+				"order" : 484,
+				"text" : "ui_sysmon_memory_mode",
+				"type" : "combo",
+				"value" : 1
+			},
+			"sysmon_network_mode" : 
+			{
+				"index" : 385,
+				"options" : 
+				[
+					{
+						"label" : "ui_sysmon_mode_none",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_mode_text",
+						"value" : 1
+					},
+					{
+						"label" : "ui_sysmon_mode_bar",
+						"value" : 2
+					},
+					{
+						"label" : "ui_sysmon_mode_curve",
+						"value" : 3
+					}
+				],
+				"order" : 485,
+				"text" : "ui_sysmon_network_mode",
+				"type" : "combo",
+				"value" : 0
+			},
+			"sysmon_server_url" : 
+			{
+				"index" : 380,
+				"order" : 480,
+				"text" : "ui_sysmon_server_url",
+				"type" : "textinput",
+				"value" : "http://localhost:3842/api/system"
+			},
+			"sysmon_show_cpu" : 
+			{
+				"index" : 386,
+				"order" : 486,
+				"text" : "ui_sysmon_show_cpu",
+				"type" : "bool",
+				"value" : true
+			},
+			"sysmon_show_gpu" : 
+			{
+				"index" : 387,
+				"order" : 487,
+				"text" : "ui_sysmon_show_gpu",
+				"type" : "bool",
+				"value" : true
+			},
+			"sysmon_show_memory" : 
+			{
+				"index" : 388,
+				"order" : 488,
+				"text" : "ui_sysmon_show_memory",
+				"type" : "bool",
+				"value" : true
+			},
+			"sysmon_show_network" : 
+			{
+				"index" : 389,
+				"order" : 489,
+				"text" : "ui_sysmon_show_network",
+				"type" : "bool",
+				"value" : false
+			},
+			"sysmon_size" : 
+			{
+				"index" : 392,
+				"max" : 30,
+				"min" : 8,
+				"order" : 492,
+				"text" : "ui_color_size",
+				"type" : "slider",
+				"value" : 14
+			},
+			"sysmon_update_interval" : 
+			{
+				"index" : 381,
+				"max" : 10,
+				"min" : 1,
+				"order" : 481,
+				"text" : "ui_sysmon_update_interval",
+				"type" : "slider",
+				"value" : 2
+			},
+			"sysmon_x" : 
+			{
+				"index" : 390,
+				"max" : 100,
+				"min" : 0,
+				"order" : 490,
+				"text" : "ui_setting_x-asis",
+				"type" : "slider",
+				"value" : 95
+			},
+			"sysmon_y" : 
+			{
+				"index" : 391,
+				"max" : 100,
+				"min" : 0,
+				"order" : 491,
+				"text" : "ui_setting_y-asis",
+				"type" : "slider",
+				"value" : 5
 			},
 			"tShowSencends" : 
 			{

@@ -1,0 +1,267 @@
+// ============================================
+// Weather Tooltip Styles
+// ============================================
+@use 'config' as *;
+
+// Weather Alert Tooltip
+#weatherAlertTooltip.weather-tooltip {
+  position: fixed;
+  display: none;
+  pointer-events: none;
+  max-width: 90vw;
+  max-height: 80vh;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--weather-color);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  opacity: 0;
+  transform: translateY(10px);
+  z-index: $z-notification;
+
+  &.glow {
+    border: 2px solid var(--alert-color);
+    animation: borderGlowInset 2s infinite alternate;
+  }
+
+  &.show {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  // Tooltip cards container
+  .tooltip-cards-container {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  // Tooltip card
+  .tooltip-card {
+    flex: 0 0 auto;
+    width: 320px;
+    min-height: 200px;
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+    border-radius: calc((var(--weather-height) / 2) * (var(--weather-roundedcorners) / 100) / 4);
+    background-color: rgba(var(--weather-yakeli-color), calc(calc(var(--weather-yakeli)*1.5) * var(--weather-yakeli-enabled)));
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(calc(var(--weather-blur-yakeli)*3));
+
+    &.glow {
+      border: 2px solid var(--alert-color);
+      animation: borderGlowInset 2s infinite alternate;
+    }
+  }
+
+  // Card header
+  .tooltip-header {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    border-left: 4px solid rgb(var(--alert-color));
+    padding: 8px;
+    padding-left: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+  }
+
+  // Triangle warning icon
+  .tooltip-icon {
+    flex: 0 0 100px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-left: 8px;
+    cursor: default;
+
+    svg {
+      width: 100%;
+      height: 100%;
+      color: rgb(var(--alert-color));
+    }
+  }
+
+  // Card title
+  .tooltip-title {
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(var(--alert-color));
+  }
+
+  // Sender
+  .sender {
+    font-weight: bold;
+    font-size: 15px;
+    margin-top: 4px;
+  }
+
+  // Time
+  .tooltip-time {
+    font-size: 12px;
+    margin-top: 4px;
+    opacity: 0.8;
+  }
+
+  // Event
+  .tooltip-event {
+    margin-bottom: 4px;
+    margin-top: 2px;
+  }
+
+  // Event severity
+  .event-severity {
+    font-size: 14px;
+    color: color-mix(in srgb, rgb(var(--alert-color)) 80%, white);
+  }
+
+  // Headline
+  .tooltip-headline {
+    font-weight: bold;
+    font-size: 14px;
+    margin-bottom: 6px;
+    color: rgb(var(--alert-color));
+  }
+
+  // Description
+  .tooltip-description {
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  // Instructions
+  .tooltip-instructions {
+    font-size: 13px;
+    margin-bottom: 8px;
+    line-height: 1.4;
+
+    ol {
+      padding-left: 16px;
+      margin: 4px 0;
+    }
+
+    li {
+      margin-bottom: 4px;
+      font-size: 13px;
+    }
+  }
+
+  // Source
+  .tooltip-source {
+    font-size: 11px;
+    color: $color-gray-dark;
+    margin-top: 6px;
+    text-align: right;
+  }
+
+  // Common text styles
+  .text,
+  .state,
+  .time {
+    display: inline;
+  }
+}
+
+// Weather Hourly Tooltip
+#weatherHourlyTooltip {
+  width: min(480px, 96%);
+  display: none;
+  padding: 12px;
+  position: fixed;
+  z-index: $z-notification;
+  color: var(--weather-color);
+  border-radius: calc((var(--weather-height) / 2) * (var(--weather-roundedcorners) / 100) / 4);
+  background-color: rgba(var(--weather-yakeli-color), calc(var(--weather-yakeli) * var(--weather-yakeli-enabled)));
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(var(--weather-blur-yakeli));
+  transition: opacity 0.5s ease, transform 0.4s ease;
+  opacity: 0;
+  transform: translateY(10px);
+
+  &.show {
+    display: block !important;
+    opacity: 1 !important;
+    transform: translateY(0) !important;
+  }
+
+  .popup-sub {
+    font-size: 23px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  .popup-main {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 14px;
+    margin-top: 14px;
+  }
+
+  .big-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 8px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+
+    img {
+      width: 64px;
+      height: 64px;
+    }
+
+    svg {
+      color: white;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  .big-temp {
+    font-size: 28px;
+    font-weight: 700;
+    margin-top: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .detail-item {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+    padding: 10px;
+    border-radius: 8px;
+  }
+
+  .detail-label {
+    font-size: 12px;
+    color: color-mix(in srgb, var(--weather-color), #aaa 40%);
+  }
+
+  .detail-value {
+    font-weight: 600;
+    margin-top: 6px;
+  }
+
+  #pIconImg svg {
+    color: white;
+    width: 100%;
+    height: 100%;
+  }
+
+  // Common text styles
+  .text,
+  .state,
+  .time {
+    display: inline;
+  }
+}

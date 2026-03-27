@@ -1,0 +1,203 @@
+// ============================================
+// Base Styles - Reset and Globals
+// ============================================
+@use 'config' as *;
+
+// HTML and Body base
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /* 流体效果 CSS 变量默认值 */
+  --fluidEffect-backdrop-filter-strength: 10px;
+  --fluidEffect-dark-overlay-strength: 0.5;
+}
+
+// Body specific styles
+body {
+  background-color: $color-black;
+  font-family: $font-family-default;
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+// Universal reset
+* {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+// Links and images
+a,
+img {
+  border: 0;
+}
+
+// Video element
+video {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  overflow: hidden;
+}
+
+// Canvas element
+canvas {
+  padding: 0;
+  margin: 0;
+  opacity: 1;
+  pointer-events: none;
+}
+
+// i18n text handling
+[data-i18n] {
+  white-space: pre-line;
+}
+
+// Global scrollbar hiding utility
+.hide-scrollbar {
+  @include hide-scrollbar;
+}
+
+// ============================================
+// Component CSS Variables (on body)
+// These are set as defaults and can be overridden at runtime
+// ============================================
+
+body {
+  // Clock Component CSS Variables
+  --clock-left: 50%;
+  --clock-top: 50%;
+  --clock-font-size: 200px;
+  --clock-line-height: 260px;
+  --clock-opacity: 0.8;
+  --clock-color: 255, 255, 255;
+  --clock-blur-enabled: 0;
+  --clock-blur-color: 255, 255, 255;
+  --clock-yakeli-enabled: 0;
+  --clock-yakeli-color: 255, 255, 255;
+  --clock-yakeli: 0;
+  --clock-blur-yakeli: 0px;
+  --clock-roundedcorners: 0;
+  --clock-height: auto;
+  --clock-show-width: auto;
+  --clock-display: flex;
+  --clock-visibility: visible;
+  --clock-color-rhythm: 1;
+
+  // Date Component CSS Variables
+  --date-left: 50%;
+  --date-top: 45%;
+  --date-font-size: 100px;
+  --date-line-height: 190px;
+  --date-opacity: 0.8;
+  --date-color: 255, 255, 255;
+  --date-blur-enabled: 0;
+  --date-blur-color: 255, 255, 255;
+  --date-yakeli-enabled: 0;
+  --date-yakeli-color: 255, 255, 255;
+  --date-yakeli: 0;
+  --date-blur-yakeli: 0px;
+  --date-roundedcorners: 0;
+  --date-height: auto;
+  --date-show-width: auto;
+  --date-display: flex;
+  --date-visibility: visible;
+  --date-color-rhythm: 1;
+
+  // Hitokoto Component CSS Variables
+  --hitokoto-left: 50%;
+  --hitokoto-top: 50%;
+  --hitokoto-font-size: 100px;
+  --hitokoto-line-height: 190px;
+  --hitokoto-opacity: 0.8;
+  --hitokoto-color: 255, 255, 255;
+  --hitokoto-blur-enabled: 0;
+  --hitokoto-blur-color: 255, 255, 255;
+  --hitokoto-yakeli-enabled: 0;
+  --hitokoto-yakeli-color: 255, 255, 255;
+  --hitokoto-yakeli: 0;
+  --hitokoto-blur-yakeli: 0px;
+  --hitokoto-roundedcorners: 0;
+  --hitokoto-height: auto;
+  --hitokoto-show-width: auto;
+  --hitokoto-display: flex;
+  --hitokoto-visibility: visible;
+
+  // Countdown Component CSS Variables
+  --countdown-left: 50%;
+  --countdown-top: 50%;
+  --countdown-font-size: 100px;
+  --countdown-opacity: 0.8;
+  --countdown-color: 255, 255, 255;
+  --countdown-blur-enabled: 0;
+  --countdown-blur-color: 255, 255, 255;
+  --countdown-yakeli-enabled: 0;
+  --countdown-yakeli-color: 255, 255, 255;
+  --countdown-yakeli: 0;
+  --countdown-blur-yakeli: 0px;
+  --countdown-roundedcorners: 0;
+  --countdown-height: auto;
+  --countdown-show-width: auto;
+  --countdown-display: flex;
+  --countdown-visibility: visible;
+
+  // Player Component CSS Variables
+  --player-left: 50%;
+  --player-top: 50%;
+  --player-font-size: 100px;
+  --player-line-height: 190px;
+  --player-opacity: 0.8;
+  --player-color: 255, 255, 255;
+  --player-visibility: hidden;
+  --player-blur-enabled: 0;
+  --player-blur-color: 255, 255, 255;
+  --player-yakeli-enabled: 0;
+  --player-yakeli-color: 255, 255, 255;
+  --player-yakeli: 0;
+  --player-blur-yakeli: 0px;
+  --player-roundedcorners: 0;
+  --player-height: auto;
+  --player-show-width: auto;
+  --player-size-value: 200px;
+  --player-thumbnail-size: 100%;
+  --player-thumbnail-rotation-speed: 5s;
+
+  // Picture Info Component CSS Variables
+  --picture-info-left: 50%;
+  --picture-info-top: 50%;
+  --picture-info-font-size: 50px;
+  --picture-info-line-height: 95px;
+  --picture-info-opacity: 0.8;
+  --picture-info-color: 255, 255, 255;
+  --picture-info-blur-enabled: 0;
+  --picture-info-blur-color: 255, 255, 255;
+  --picture-info-yakeli-enabled: 0;
+  --picture-info-yakeli-color: 255, 255, 255;
+  --picture-info-yakeli: 0;
+  --picture-info-blur-yakeli: 0px;
+  --picture-info-roundedcorners: 0;
+  --picture-info-height: auto;
+  --picture-info-show-width: auto;
+  --picture-info-display: flex;
+  --picture-info-visibility: visible;
+  --picture-info-text-align: left;
+  --picture-info-transform: translate(0, 0);
+  --picture-info-description-display: none;
+
+  // Fluid Effect CSS Variables
+  --fluidEffect-backdrop-filter-strength: 10px;
+  --fluidEffect-dark-overlay-strength: 0.5;
+}
+
+// Utility class for loading text animation
+.loading-text {
+  animation: pulse $duration-pulse infinite;
+}

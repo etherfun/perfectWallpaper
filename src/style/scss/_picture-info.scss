@@ -1,0 +1,63 @@
+// ============================================
+// Picture Info Component
+// ============================================
+@use 'config' as *;
+
+#picture_info {
+  visibility: var(--picture-info-visibility);
+  display: var(--picture-info-display);
+  @include component-position('picture-info');
+  text-align: var(--picture-info-text-align);
+  color: rgb(var(--picture-info-color));
+  font-size: var(--picture-info-font-size);
+  line-height: var(--picture-info-line-height);
+  white-space: nowrap;
+  opacity: var(--picture-info-opacity);
+  transform: var(--picture-info-transform);
+
+  .title {
+    .right,
+    .left {
+      font-size: 1.5em;
+      font-weight: 1000;
+    }
+  }
+
+  .info {
+    font-size: 0.5em;
+    display: flex;
+    flex-direction: column;
+    @include yakeli-effect('picture-info');
+    width: var(--picture-info-show-width);
+  }
+
+  .description {
+    white-space: normal;
+    display: var(--picture-info-description-display);
+  }
+
+  // Icon positioning hacks
+  .titleicon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    @include icon-position-hide;
+    overflow: hidden;
+    filter: drop-shadow(0 10237px rgb(var(--picture-info-color)));
+  }
+
+  .authoricon,
+  .locationicon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    @include icon-position-hide;
+    overflow: hidden;
+    filter: drop-shadow(0 10240px rgb(var(--picture-info-color)));
+  }
+}
+
+// Fluid effect hiding picture_info
+#picture_info.fluid-hidden {
+  display: none !important;
+}

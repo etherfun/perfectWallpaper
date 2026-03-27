@@ -4,7 +4,7 @@
     "module": "ESNext",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "allowJs": true,
-    "checkJs": true,
+    "checkJs": false,
     "outDir": "dist",
     "rootDir": "./src",
     "strict": true,
@@ -23,9 +23,9 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@types/*": ["types/*"]
+      "@types/*": ["src/types/*"]
     }
   },
-  "include": ["src/**/*", "types/**/*"],
+  "include": ["src/**/*", "src/types/**/*"],
   "exclude": ["node_modules", "dist", "js/lib", "js/**/*.js"]
 }

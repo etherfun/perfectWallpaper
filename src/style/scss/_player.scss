@@ -1,0 +1,94 @@
+// ============================================
+// Player Control Component
+// ============================================
+@use 'config' as *;
+
+#player_control {
+  visibility: var(--player-visibility, hidden);
+  z-index: $z-component;
+  overflow: hidden;
+  position: absolute;
+  top: var(--player-top, 50%);
+  left: var(--player-left, 50%);
+  text-align: center;
+  color: rgb(var(--player-color));
+  font-size: var(--player-font-size, 100px);
+  line-height: var(--player-line-height, 190px);
+  opacity: var(--player-opacity, 0.8);
+  justify-content: space-around;
+
+  .thumbnail {
+    background-size: cover;
+    flex-shrink: 0;
+  }
+
+  .background {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: rgba(var(--player-yakeli-color), calc(var(--player-yakeli) * var(--player-yakeli-enabled)));
+    backdrop-filter: blur(calc(var(--player-blur-yakeli) * var(--player-yakeli-enabled)));
+    text-shadow: 0 0 20px rgba(var(--player-blur-color), var(--player-blur-enabled));
+  }
+
+  .info {
+    white-space: nowrap;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .title {
+    padding-top: 0.1em;
+    font-size: 0.45em;
+  }
+
+  .artist {
+    font-size: 0.3em;
+  }
+
+  .albumTitle {
+    font-size: 0.3em;
+  }
+
+  .timeline {
+    width: 100%;
+    background-color: #ddd;
+  }
+
+  .progress-bar {
+    height: 5px;
+    width: 0%;
+  }
+
+  .info-container {
+    height: 100%;
+    display: flex;
+    flex-grow: 1;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-right: 10px;
+    z-index: 5;
+  }
+
+  .thumbnail-wrap {
+    z-index: 5;
+  }
+
+  .titleicon {
+    width: 0.7332em;
+    height: 0.7332em;
+    vertical-align: middle;
+    @include icon-position-hide;
+    overflow: hidden;
+  }
+
+  .artisticon,
+  .albumTitleicon {
+    width: 1em;
+    height: 1em;
+    vertical-align: middle;
+    @include icon-position-hide;
+    overflow: hidden;
+  }
+}

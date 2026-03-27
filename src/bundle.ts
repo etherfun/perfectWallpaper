@@ -5,22 +5,22 @@
 
 // IMPORTANT: main.ts must be imported FIRST to set up globals before other modules
 // that depend on them (like PWLine, PWCircle, PWParticles) are loaded.
-import './modules/main';
+import './main';
 
-import './modules/version';
-import './modules/sakura';
-import './modules/slide';
-import './modules/video';
-import './modules/time';
-import './modules/date';
-import './modules/hitokoto';
-import './modules/countdown';
-import './modules/fluid_effect2';
-import './modules/player_control';
-import './modules/fluid_control';
-import './modules/RGB';
-import './modules/PWLine';
-import './modules/PWCircle';
-import './modules/PWParticles';
-import './modules/weather';
-import './modules/WallpaperEffectController'
+import './version';
+import './sakura';
+import './slide';
+import './video';
+import './time';
+import './date';
+import './hitokoto';
+import './countdown';
+import './fluid_effect2';
+import './player_control';
+import './fluid_control';
+import './RGB';
+import './PWLine';
+import './PWCircle';
+import './PWParticles';
+import './weather';
+import './WallpaperEffectController'

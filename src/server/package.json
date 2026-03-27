@@ -1,0 +1,17 @@
+{
+  "name": "perfectwall-server",
+  "version": "1.0.0",
+  "description": "System info server for Wallpaper Engine",
+  "main": "dist/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

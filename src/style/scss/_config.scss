@@ -1,0 +1,12 @@
+// ============================================
+// SCSS Configuration Module
+// For Dart Sass 3.0.0 compatibility
+// ============================================
+// This file aggregates all variables and mixins
+// Use @use 'config' in each partial file
+
+// Forward variables
+@forward 'variables';
+
+// Forward mixins
+@forward 'mixins';

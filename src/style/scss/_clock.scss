@@ -1,0 +1,51 @@
+// ============================================
+// Clock Component
+// ============================================
+@use 'config' as *;
+
+#clock {
+  visibility: var(--clock-visibility);
+  display: var(--clock-display);
+  @include component-position('clock');
+  color: rgb(var(--clock-color));
+  font-size: var(--clock-font-size);
+  line-height: var(--clock-line-height);
+  opacity: var(--clock-opacity);
+
+  .block {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: 1fr;
+    align-items: start;
+    @include yakeli-effect('clock');
+    width: var(--clock-show-width);
+
+    .min {
+      grid-column: 1;
+      white-space: nowrap;
+    }
+
+    .time-indicators {
+      display: flex;
+      justify-content: flex-end;
+      justify-content: space-between;
+      grid-column: 2;
+      height: 100%;
+      flex-direction: column;
+      margin-left: 10px;
+
+      .sec {
+        font-size: 0.5em;
+        line-height: 0.9;
+        position: relative;
+      }
+
+      .st {
+        justify-content: space-around;
+        position: relative;
+        font-size: 0.25em;
+        line-height: 1;
+      }
+    }
+  }
+}

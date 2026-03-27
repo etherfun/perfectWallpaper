@@ -1,0 +1,135 @@
+/**
+ * Countdown Property Handler
+ * 处理倒计时相关的属性监听
+ */
+
+import { config } from '../utils/config';
+import { WallpaperProperties } from './types';
+import { timerManager } from '../utils/timer';
+import { elements } from '@/utils/elementManager';
+import { setcountdown_a } from '../countdown';
+
+// 方便访问
+const bodyElement = elements.body;
+const countdown = elements.countdown.container;
+
+/**
+ * 处理倒计时相关属性
+ * @param properties 属性对象
+ * @param FirstLoad 是否首次加载
+ */
+export function handleCountdownProperties(
+    properties: WallpaperProperties,
+    FirstLoad: boolean
+): void {
+
+    // 倒计时位置
+    if (properties.countdownY) {
+        bodyElement.style.setProperty("--countdown-top", `${properties.countdownY.value}%`);
+    }
+
+    if (properties.countdownX) {
+        bodyElement.style.setProperty("--countdown-left", `${properties.countdownX.value}%`);
+    }
+
+    // 倒计时大小
+    if (properties.countdown_size) {
+        const s = properties.countdown_size.value;
+        bodyElement.style.setProperty("--countdown-font-size", Math.floor(config.screenHeight / 300 * s) + 'px');
+        //bodyElement.style.setProperty("--countdown-line-height", Math.floor(config.screenHeight / 570 * s) + 'px');
+    }
+
+    // 倒计时文本
+    if (properties.countdown_txt) {
+        config.countdownTxt = properties.countdown_txt.value;
+    }
+
+    if (properties.countdown_txt1) {
+        config.countdownTxt1 = properties.countdown_txt1.value;
+    }
+
+    // 是否显示倒计时
+    if (properties.countdown_show) {
+        timerManager.remove('updataCountdown');
+        bodyElement.style.setProperty("--countdown-display", properties.countdown_show.value ? 'flex' : 'none');
+        bodyElement.style.setProperty("--countdown-visibility", properties.countdown_show.value ? 'visible' : 'hidden');
+        if (properties.countdown_show.value) {
+            setcountdown_a();
+        }
+    }
+
+    // 倒计时目标日期
+    if (properties.countdown_year) {
+        config.countdownYear = properties.countdown_year.value;
+    }
+
+    if (properties.countdown_month) {
+        config.countdownMonth = properties.countdown_month.value;
+    }
+
+    if (properties.countdown_day) {
+        config.countdownDay = properties.countdown_day.value;
+    }
+
+    // 倒计时颜色
+    if (properties.countdown_color) {
+        const color = properties.countdown_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.countdownColor = color;
+        bodyElement.style.setProperty("--countdown-color", color.join(', '));
+    }
+
+    if (properties.countdown_blurcolor_show) {
+        config.countdownBlurcolorShow = properties.countdown_blurcolor_show.value;
+        bodyElement.style.setProperty("--countdown-blur-enabled", properties.countdown_blurcolor_show.value ? '1' : '0');
+    }
+
+    if (properties.countdown_blurcolor) {
+        const color = properties.countdown_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.countdownBlurcolor = color;
+        bodyElement.style.setProperty("--countdown-blur-color", color.join(', '));
+    }
+
+    if (properties.countdown_yakeli_show) {
+        config.countdownYakeliShow = properties.countdown_yakeli_show.value;
+        bodyElement.style.setProperty("--countdown-yakeli-enabled", properties.countdown_yakeli_show.value ? '1' : '0');
+    }
+
+    if (properties.countdown_yakelicolor) {
+        const color = properties.countdown_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.countdownYakelicColor = color;
+        bodyElement.style.setProperty("--countdown-yakeli-color", color.join(', '));
+    }
+
+    if (properties.countdown_yakeli) {
+        const value = properties.countdown_yakeli.value / 100;
+        config.countdownYakeli = value;
+        bodyElement.style.setProperty("--countdown-yakeli", String(value));
+    }
+
+    if (properties.countdown_bluryakeli) {
+        config.countdownBluryakeli = properties.countdown_bluryakeli.value;
+        config.firstLoadCountdown = false;
+        bodyElement.style.setProperty("--countdown-blur-yakeli", String(properties.countdown_bluryakeli.value) + 'px');
+    }
+
+    // 倒计时透明度
+    if (properties.countdown_timetransparency) {
+        const t = properties.countdown_timetransparency.value / 100;
+        bodyElement.style.setProperty("--countdown-opacity", String(t));
+    }
+
+    // 倒计时圆角
+    if (properties.countdown_roundedcorners) {
+        bodyElement.style.setProperty("--countdown-roundedcorners", String(properties.countdown_roundedcorners.value));
+
+        const updateHeight = () => {
+            const height = countdown.getBoundingClientRect().height;
+            if (!height) return;
+            bodyElement.style.setProperty("--countdown-height", height + "px");
+        };
+
+        updateHeight();
+        const observer = new ResizeObserver(updateHeight);
+        observer.observe(countdown);
+    }
+}

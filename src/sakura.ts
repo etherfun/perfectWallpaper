@@ -838,6 +838,13 @@ let animating = true;
 
 function render(): void {
     renderScene();
+
+    // Copy WebGL canvas to 2D canvas for display (merged from removesakura RAF loop)
+    const raw = elements.sakura;
+    const ctx = elements.sakurashow.getContext('2d');
+    if (ctx && raw && raw.width > 0 && config.showSakura) {
+        ctx.drawImage(raw, 0, 0, window.innerWidth, window.innerHeight, 0, 0, window.innerWidth, window.innerHeight);
+    }
 }
 
 export function stepAnimation(): void {
@@ -926,30 +933,18 @@ export function sakuraLoad(): void {
     timeInfo.prev = timeInfo.start;
 
     animate();
-
-    removesakura();
 }
 
 // ==================== Remove Sakura (Copy to 2D Canvas) ====================
-
+// Note: The RAF loop has been removed - canvas copy is now handled in render()
+// This function is kept for API compatibility and does a single immediate copy
 export function removesakura(): void {
     const raw = elements.sakura;
     const ctx = elements.sakurashow.getContext('2d');
     if (!ctx || !raw) return;
 
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const nowCtx = ctx;
-
-    function draw() {
-        if (raw.width > 0 && config.showSakura) {
-            nowCtx.drawImage(raw, 0, 0, width, height, 0, 0, width, height);
-            requestAnimationFrame(draw);
-        }
-    }
-
-    if (config.showSakura) {
-        requestAnimationFrame(draw);
+    if (raw.width > 0 && config.showSakura) {
+        ctx.drawImage(raw, 0, 0, window.innerWidth, window.innerHeight, 0, 0, window.innerWidth, window.innerHeight);
     }
 }
 

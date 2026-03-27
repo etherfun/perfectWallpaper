@@ -149,7 +149,9 @@ async function build() {
         sourcemap: isWatch ? 'inline' : false,
         minify: !isWatch,
         logLevel: 'info',
-        legalComments: 'none'
+        legalComments: 'none',
+        // 防止 Node.js 包被打包到浏览器 bundle
+        external: ['express', 'systeminformation']
     };
 
     if (isWatch) {

@@ -9,7 +9,6 @@ export { getWeatherTips } from './tips';
 export { formatTime, getOpenMeteoIcon, getPrecipTypeFromCode } from './utils';
 
 import type { WeatherData, WeatherAddress, SevenHourlyData } from '../types/weather';
-import { qweather, icufree, yiketianqi, visualcrossing, openmeteo } from './api';
 import { wunit } from './units';
 import { i18n } from '../utils/i18n';
 import { fetch_with_retry } from '../utils/tool';
@@ -149,13 +148,13 @@ export function showWeatherError(message: string): void {
     leftContainer.innerHTML = `<div class="weather-error" style="color: #ff6b6b;">${message}</div>`;
 }
 
-// API选择器映射
-const apiHandlers: { [key: number]: (addr: WeatherAddress, data: WeatherData) => Promise<void> } = {
-    1: qweather,
-    2: icufree,
-    3: yiketianqi,
-    4: visualcrossing,
-    5: openmeteo
+// API选择器映射 - 使用动态导入实现懒加载
+const apiHandlers: { [key: number]: () => Promise<(addr: WeatherAddress, data: WeatherData) => Promise<void>> } = {
+    1: () => import('./api/qweather').then(m => m.qweather),
+    2: () => import('./api/icufree').then(m => m.icufree),
+    3: () => import('./api/yiketianqi').then(m => m.yiketianqi),
+    4: () => import('./api/visualcrossing').then(m => m.visualcrossing),
+    5: () => import('./api/openmeteo').then(m => m.openmeteo)
 };
 
 // 天气初始化
@@ -172,9 +171,10 @@ export async function weather_init(): Promise<void> {
         }
     }
 
-    const handler = apiHandlers[config.weatherApiChoose];
-    if (handler) {
+    const handlerFactory = apiHandlers[config.weatherApiChoose];
+    if (handlerFactory) {
         try {
+            const handler = await handlerFactory();
             await handler(weather_address, weather_data);
             await generateWeatherTable();
         } catch (error) {

@@ -559,7 +559,7 @@ export class FullscreenLyrics {
             if (this.currentData && this.isVisible) {
                 this.updateWordHighlightFromTime();
             }
-        }, 50); // 每50ms更新一次
+        }, 100); // 每100ms更新一次 (10fps足够)
     }
 
     // 停止逐字高亮更新
@@ -1079,8 +1079,3 @@ function onPlayerStateChange(key: string, value: unknown): void {
 
 // 注册播放器状态监听器
 appConfig.addListener(onPlayerStateChange);
-
-// 备用检查：每隔 3 秒检查一次（防止遗漏）
-setInterval(() => {
-    fullscreenLyrics.checkPlayerState();
-}, 3000);

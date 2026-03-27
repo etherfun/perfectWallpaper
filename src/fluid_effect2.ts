@@ -40,7 +40,6 @@ export class FluidEffect2 {
 
     /** 状态 */
     private isRunning = false;
-    private animationId: number | null = null;
     private currentImage: HTMLImageElement | null = null;
 
     /** 音频相关 */
@@ -318,15 +317,8 @@ export class FluidEffect2 {
     }
 
     /**
-     * 动画循环
-     */
-    private animate(): void {
-        if (!this.isRunning) return;
-        this.animationId = requestAnimationFrame(() => this.animate());
-    }
-
-    /**
      * 启动效果
+     * 注意: 动画效果由CSS animation处理，无需RAF循环
      */
     start(): void {
         if (this.isRunning) {
@@ -336,24 +328,19 @@ export class FluidEffect2 {
 
         this.isRunning = true;
         debugLogger.info('[FluidEffect2] 流体效果已启动');
-        this.animate();
     }
 
     /**
      * 停止效果
      */
     stop(): void {
-        if (!this.isRunning && !this.animationId) {
+        if (!this.isRunning) {
             debugLogger.warn('FluidEffect2 已经停止，无需再次停止');
             return;
         }
 
         this.isRunning = false;
         debugLogger.info('[FluidEffect2] 流体效果已停止');
-        if (this.animationId) {
-            cancelAnimationFrame(this.animationId);
-            this.animationId = null;
-        }
     }
 
     /**

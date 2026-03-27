@@ -6,6 +6,9 @@
  * - yiketianqi: 一刻天气API
  * - visualcrossing: Visual Crossing API
  * - openmeteo: Open-Meteo API
+ *
+ * All API handler signatures are validated via WeatherAPIHandler in weather/index.ts
+ * where the apiHandlers map is typed as { [key: number]: () => Promise<WeatherAPIHandler> }.
  */
 
 export { qweather, default as qweatherApi } from './qweather';

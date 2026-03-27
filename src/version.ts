@@ -2,6 +2,14 @@
 import { waitAndExecute, fetch_with_retry } from "./utils/tool";
 import { appConfig, config } from "./utils/config";
 import { i18n } from "./utils/i18n";
+import { truncateUrl } from "./utils/string";
+import {
+    parseMarkdown,
+    processInlineMarkdown,
+    renderListHtml,
+    renderList,
+    type ListItem
+} from "./utils/markdown";
 
 // 版本历史数据Promise
 const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res => res.json());
@@ -44,207 +52,22 @@ const versionConfig = {
     }
 };
 
-// 增强版Markdown解析器
+// 增强版Markdown解析器（委托给工具函数）
 class SimpleMarkdown {
     static parse(text: string): string {
-        if (!text) return '';
-
-        // 处理代码块（多行）
-        const codeBlockRegex = /```(\w*)\n([\s\S]*?)\n```/g;
-        let processedText = text;
-        const codeBlocks: Array<{placeholder: string, html: string}> = [];
-        let match: RegExpExecArray | null;
-        let blockIndex = 0;
-
-        // 提取并替换代码块
-        while ((match = codeBlockRegex.exec(text)) !== null) {
-            const language = match[1] || '';
-            const code = match[2];
-            const placeholder = `__CODE_BLOCK_${blockIndex}__`;
-            codeBlocks.push({
-                placeholder,
-                html: `<pre class="md-code-block"><code class="language-${language}">${this.escapeHtml(code)}</code></pre>`
-            });
-            processedText = processedText.replace(match[0], placeholder);
-            blockIndex++;
-        }
-
-        // 按行处理
-        const lines = processedText.split('\n');
-        let inList = false;
-        let listItems: Array<{indent: number, content: string}> = [];
-        let result = '';
-
-        for (let i = 0; i < lines.length; i++) {
-            const line = lines[i];
-            const trimmedLine = line.trim();
-
-            // 空行
-            if (trimmedLine === '') {
-                if (inList && listItems.length > 0) {
-                    result += this.renderListHtml(listItems);
-                    listItems = [];
-                    inList = false;
-                }
-                result += '<div class="md-empty-line"></div>';
-                continue;
-            }
-
-            // 标题
-            if (trimmedLine.startsWith('## ')) {
-                if (inList && listItems.length > 0) {
-                    result += this.renderListHtml(listItems);
-                    listItems = [];
-                    inList = false;
-                }
-                result += `<h3 class="md-title">${this.processInlineMarkdown(trimmedLine.substring(3))}</h3>`;
-                continue;
-            }
-            if (trimmedLine.startsWith('### ')) {
-                if (inList && listItems.length > 0) {
-                    result += this.renderListHtml(listItems);
-                    listItems = [];
-                    inList = false;
-                }
-                result += `<h4 class="md-subtitle">${this.processInlineMarkdown(trimmedLine.substring(4))}</h4>`;
-                continue;
-            }
-
-            // 列表项（支持多种标记：-, *, + 以及 --, --- 等嵌套标记）
-            // 注意：这里使用原始行(line)而不是trimmedLine来获取前导空格
-            const listMatch = line.match(/^([\s]*)([-*+]+)\s+(.*)$/);
-            if (listMatch) {
-                const spaces = listMatch[1].length;
-                const markers = listMatch[2];  // 可能是 -、--、---、*、**、*** 等
-                const content = listMatch[3];
-
-                // 计算缩进级别
-                let indentLevel: number;
-
-                if (markers.length === 1) {
-                    // 单个标记：使用空格缩进
-                    // 每2个空格算一级缩进
-                    indentLevel = Math.floor(spaces / 2);
-                } else {
-                    // 多个标记：使用标记数量表示层级
-                    // 例如：-- 表示一级缩进，--- 表示两级缩进
-                    indentLevel = markers.length - 1;
-
-                    // 如果还有空格缩进，也加上
-                    if (spaces > 0) {
-                        indentLevel += Math.floor(spaces / 2);
-                    }
-                }
-
-                // 新的列表项
-                if (!inList) {
-                    inList = true;
-                }
-                listItems.push({
-                    indent: indentLevel,
-                    content: this.processInlineMarkdown(content.trim())
-                });
-                continue;
-            }
-
-            // 普通段落
-            if (inList && listItems.length > 0) {
-                result += this.renderListHtml(listItems);
-                listItems = [];
-                inList = false;
-            }
-
-            // 处理段落中的内联标记
-            const processedLine = this.processInlineMarkdown(trimmedLine);
-            result += `<p class="md-paragraph">${processedLine}</p>`;
-        }
-
-        // 处理最后可能存在的列表
-        if (inList && listItems.length > 0) {
-            result += this.renderListHtml(listItems);
-        }
-
-        // 恢复代码块
-        codeBlocks.forEach(block => {
-            result = result.replace(block.placeholder, block.html);
-        });
-
-        return result;
+        return parseMarkdown(text);
     }
 
-    // 处理内联Markdown（粗体、删除线、行内代码、链接）
     static processInlineMarkdown(text: string): string {
-        if (!text) return '';
-
-        // 转义HTML特殊字符
-        let processed = this.escapeHtml(text);
-
-        // 处理链接 [文本](url) - 点击复制链接并弹窗提示
-        processed = processed.replace(/\[([^\[\]]+)\]\(([^\)]+)\)/g, '<a href="javascript:void(0)" class="md-link" data-url="$2" onclick="SimpleMarkdown.copyLink(this)">$1</a>');
-
-        // 处理行内代码 `code`
-        processed = processed.replace(/`([^`]+)`/g, '<code class="md-inline-code">$1</code>');
-
-        // 处理粗体 **bold**
-        processed = processed.replace(/\*\*([^*]+)\*\*/g, '<strong class="md-bold">$1</strong>');
-
-        // 处理删除线 ~~strikethrough~~
-        processed = processed.replace(/~~([^~]+)~~/g, '<del class="md-strikethrough">$1</del>');
-
-        return processed;
+        return processInlineMarkdown(text);
     }
 
-    // 渲染列表HTML（支持嵌套）
-    static renderListHtml(items: Array<{indent: number, content: string}>): string {
-        if (!items || items.length === 0) return '';
-
-        let html = '<ul class="md-list">';
-        let currentIndent = 0;
-
-        for (let i = 0; i < items.length; i++) {
-            const item = items[i];
-
-            // 处理嵌套
-            if (item.indent > currentIndent) {
-                // 开始嵌套列表
-                html += '<ul class="md-nested-list">';
-                currentIndent = item.indent;
-            } else if (item.indent < currentIndent) {
-                // 结束嵌套列表
-                html += '</ul>';
-                currentIndent = item.indent;
-            }
-
-            html += `<li class="md-list-item">${item.content}</li>`;
-        }
-
-        // 关闭所有嵌套列表
-        while (currentIndent > 0) {
-            html += '</ul>';
-            currentIndent--;
-        }
-
-        html += '</ul>';
-        return html;
+    static renderListHtml(items: ListItem[]): string {
+        return renderListHtml(items);
     }
 
-    // 转义HTML特殊字符
-    static escapeHtml(text: string): string {
-        if (!text) return '';
-        return text
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    // 向后兼容的renderList方法
     static renderList(items: string[]): string {
-        if (!items || !Array.isArray(items)) return '';
-        return `<ul class="md-list">${items.map(item =>
-            `<li class="md-list-item">${this.processInlineMarkdown(item)}</li>`
-        ).join('')}</ul>`;
+        return renderList(items);
     }
 
     // 复制链接并显示提示
@@ -311,7 +134,7 @@ class SimpleMarkdown {
                 <div class="notification-icon">📋</div>
                 <div class="notification-text">
                     <div class="notification-title">${i18n("already_copy")}</div>
-                    <div class="notification-url">${this.truncateUrl(url, 40)}</div>
+                    <div class="notification-url">${truncateUrl(url, 40)}</div>
                     <div class="notification-hint">${i18n("already_copy_tip")}</div>
                 </div>
                 <button class="notification-close">&times;</button>

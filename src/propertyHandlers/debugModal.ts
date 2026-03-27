@@ -4,6 +4,7 @@
  */
 
 import { debugLogger } from '../utils/logger';
+import { escapeHtml } from '../utils/string';
 
 /**
  * 复制文本到剪态板
@@ -25,15 +26,6 @@ function clipboardCopy(text: string): void {
         }
         document.body.removeChild(textarea);
     }
-}
-
-/**
- * 转义HTML特殊字符
- */
-function escapeHtml(text: string): string {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
 }
 
 /**

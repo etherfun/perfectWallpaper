@@ -6,7 +6,7 @@
 import { elements } from './utils/elementManager';
 import { appConfig, config } from './utils/config';
 import { FluidEffect2 } from './fluid_effect2';
-import { hasPlaybackContent } from './player_control';
+import { hasPlaybackContent } from './utils/playback';
 import { debugLogger } from './utils/logger';
 import { timerManager, waitAndExecute } from './utils/timer';
 

@@ -9,6 +9,7 @@ export { getWeatherTips } from './tips';
 export { formatTime, getOpenMeteoIcon, getPrecipTypeFromCode } from './utils';
 
 import type { WeatherData, WeatherAddress, SevenHourlyData } from '../types/weather';
+import type { WeatherAPIHandler } from './api/base';
 import { wunit } from './units';
 import { i18n } from '../utils/i18n';
 import { fetch_with_retry } from '../utils/tool';
@@ -149,7 +150,7 @@ export function showWeatherError(message: string): void {
 }
 
 // API选择器映射 - 使用动态导入实现懒加载
-const apiHandlers: { [key: number]: () => Promise<(addr: WeatherAddress, data: WeatherData) => Promise<void>> } = {
+const apiHandlers: { [key: number]: () => Promise<WeatherAPIHandler> } = {
     1: () => import('./api/qweather').then(m => m.qweather),
     2: () => import('./api/icufree').then(m => m.icufree),
     3: () => import('./api/yiketianqi').then(m => m.yiketianqi),

@@ -5,13 +5,11 @@ declare class SimpleMarkdown {
     static copyLink(linkElement: HTMLElement): void;
     static copyToClipboard(text: string): boolean;
     static showCopyNotification(url: string): void;
-    static truncateUrl(url: string, maxLength: number): string;
     static hideNotification(notification: HTMLElement): void;
     static removeNotification(notification: HTMLElement): void;
     static parse(text: string): string;
     static processInlineMarkdown(text: string): string;
     static renderListHtml(items: Array<{ indent: number; content: string }>): string;
-    static escapeHtml(text: string): string;
     static renderList(items: string[]): string;
 }
 

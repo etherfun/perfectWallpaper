@@ -8,6 +8,7 @@ import {
     initFullscreenFluidEffect,
     updateFullscreenFluidSource
 } from './fluid_control';
+import { hasPlaybackContent } from './utils/playback';
 import { getColor, getPalette } from 'colorthief';
 
 // 进度条定时器
@@ -30,29 +31,6 @@ const player_control_albumTitle = elements.playerControl.albumTitle;
 const player_control_timeline = elements.playerControl.timeline;
 const player_control_aubar = elements.playerControl.aubar;
 
-// 检查是否有播放内容的函数
-export function hasPlaybackContent(): boolean {
-    const { singtitle } = appConfig.runtime.playerInfo;
-
-    const hasSongInfo = singtitle &&
-        singtitle !== '' &&
-        singtitle !== 'loading...' &&
-        singtitle !== '✧ପ(๑･ω･)੭' &&
-        singtitle !== '٩(๑❛ᴗ❛๑)۶';
-
-    if (!hasSongInfo) {
-        return false;
-    }
-
-    const isPlaying = appConfig.runtime.playerInfo.playerState === 1;
-    const isPaused = appConfig.runtime.playerInfo.playerState === 2;
-
-    if (!isPlaying && !isPaused) {
-        return false;
-    }
-
-    return true;
-}
 
 /*msct封面*/
 async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {

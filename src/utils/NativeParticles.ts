@@ -1,6 +1,18 @@
 /**
- * Native Particles - jQuery-free particle system
- * Ported from jquery.particles.js
+ * jQuery Particles plugin v0.0.2
+ *
+ * Based on:
+ * particles.js by Vincent Garreau
+ * Project: http://github.com/VincentGarreau/particles.js
+ * Original author: Vincent Garreau
+ * Copyright (c) 2015 Vincent Garreau
+ * Licensed under the MIT License
+ *
+ * Distributed via Steam by Alice
+ * Project: http://steamcommunity.com/sharedfiles/filedetails/?id=921617616&searchtext=
+ * Copyright (c) 2017 Alice
+ *
+ * Refactored to TypeScript and modified by etherfun
  */
 
 type Direction = 'none' | 'top' | 'top-right' | 'right' | 'bottom-right' | 'bottom' | 'bottom-left' | 'left' | 'top-left';

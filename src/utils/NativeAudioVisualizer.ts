@@ -1,6 +1,14 @@
 /**
  * Native AudioVisualizer - jQuery-free audio visualizer
- * Ported from jquery.audiovisualizer.js
+ *
+ * Based on:
+ * jQuery AudioVisualizer plugin v0.0.1
+ * Original author: Alice
+ * Project: http://steamcommunity.com/sharedfiles/filedetails/?id=921617616&searchtext=
+ * Copyright (c) 2017 Alice
+ * Licensed under the MIT License
+ *
+ * Refactored to TypeScript and modified by etherfun
  */
 
 interface AudioVisualizerOptions {

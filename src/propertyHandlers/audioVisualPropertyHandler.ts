@@ -36,8 +36,6 @@ export function handleAudioVisualProperties(
     const PWLineParam = config.runtime.PWLineParam;
     const wallpaper = config.runtime.wallpaper;
 
-    // ========== 音频可视化模式控制 ==========
-
     if (properties.visual_audio_model) {
         const model = properties.visual_audio_model.value;
         config.visualAudioModel = model;
@@ -142,9 +140,6 @@ export function handleAudioVisualProperties(
         }
     }
 
-    // ========== 圆圈可视化参数 ==========
-
-    // 样式
     if (properties.style && param) {
         param.style = properties.style.value;
         config.pwCircleStyle = properties.style.value;
@@ -239,9 +234,6 @@ export function handleAudioVisualProperties(
         config.pwCircleDirection = properties.direction.value;
     }
 
-    // ========== 波浪可视化参数 ==========
-
-    // 可视化音频透明度
     if (properties.wavetransparency && ctx && param) {
         param.wavetransparency = properties.wavetransparency.value / 100;
         ctx.globalAlpha = param.wavetransparency;
@@ -267,9 +259,6 @@ export function handleAudioVisualProperties(
         config.pwCircleSemiCircledirection = properties.SemiCircledirection.value;
     }
 
-    // ========== PWLine参数 ==========
-
-    // 直线位置
     if (properties.PWLinePosition && PWLineParam) {
         PWLineParam.LinePosition = properties.PWLinePosition.value;
         config.pwLinePosition = properties.PWLinePosition.value;
@@ -382,9 +371,6 @@ export function handleAudioVisualProperties(
         config.pwLineGradientRate = properties.PWLineGradientRate.value;
     }
 
-    // ========== 音频参数(wallpaper.audiovisualizer) ==========
-
-    // 音频振幅
     if (properties.audio_amplitude) {
         config.audioAmplitude = properties.audio_amplitude.value;
         if (wallpaper) {

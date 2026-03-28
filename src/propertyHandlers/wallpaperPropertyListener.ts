@@ -47,9 +47,6 @@ export function createWallpaperPropertyListener(
     FirstLoad: boolean
 ): void {
 
-    // ========== 版本更新和调试相关处理 ==========
-    // 注意: 这些处理不在其他 handler 中,以确保最早执行
-
     // 全局语言设置
     if (properties.global_settings_language) {
         config.language = properties.global_settings_language.value;

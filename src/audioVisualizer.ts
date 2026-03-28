@@ -9,8 +9,6 @@ import { debugLogger } from './utils/logger';
 
 // PWCircle 绘制函数
 
-// ========== 音频数据平滑处理 ==========
-
 /** 上一帧的音频数据（用于时序平滑） */
 let _prevAudioData: number[] | null = null;
 

@@ -182,9 +182,6 @@ export function handleBackgroundProperties(
         applyBackgroundStyle();
     }
 
-    // ========== 图片信息(picturesinfo_*)处理 ==========
-
-    // 图片信息语言
     if (properties.picturesinfo_language) {
         config.picturesInfoLanguage = properties.picturesinfo_language.value;
     }

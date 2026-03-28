@@ -124,13 +124,10 @@ export function showDebugLogModal(): void {
 
     document.body.insertAdjacentHTML('beforeend', modalHTML);
 
-    // 渲染初始日志
     renderLogs(logs);
 
-    // 绑定事件
     bindConsoleEvents();
 
-    // 键盘事件
     document.addEventListener('keydown', handleConsoleKeydown);
 }
 
@@ -145,12 +142,10 @@ function renderLogs(logs: any[]): void {
 
     if (!logList) return;
 
-    // 获取过滤条件
     const activeFilter = document.querySelector('.debug-filter-btn.active') as HTMLElement;
     const filterLevel = activeFilter ? parseInt(activeFilter.dataset.level || '-1') : -1;
     const searchText = (document.getElementById('debug-search-input') as HTMLInputElement)?.value.toLowerCase() || '';
 
-    // 过滤日志
     let filteredLogs = logs;
     if (filterLevel >= 0) {
         filteredLogs = filteredLogs.filter(log => log.level === filterLevel);
@@ -162,7 +157,6 @@ function renderLogs(logs: any[]): void {
         );
     }
 
-    // 更新计数
     logCount.textContent = `${logs.length} 条日志`;
     const searchCount = document.getElementById('debug-search-count');
     if (searchCount) {
@@ -170,7 +164,6 @@ function renderLogs(logs: any[]): void {
     }
     statusInfo.textContent = searchText ? `找到 ${filteredLogs.length} 条匹配` : `共 ${logs.length} 条`;
 
-    // 更新空状态
     if (filteredLogs.length === 0) {
         emptyState.style.display = 'flex';
         emptyState.querySelector('span')!.textContent = searchText ? '无匹配结果' : '暂无日志';
@@ -180,7 +173,6 @@ function renderLogs(logs: any[]): void {
 
     emptyState.style.display = 'none';
 
-    // 渲染日志
     logList.innerHTML = filteredLogs.map((log, idx) => {
         const colors = getLevelColor(log.level);
         const hasExtra = log.extraData && Object.keys(log.extraData).length > 0;
@@ -204,7 +196,6 @@ function renderLogs(logs: any[]): void {
         `;
     }).join('');
 
-    // 自动滚动
     const body = document.getElementById('debug-console-body');
     const autoScroll = document.getElementById('debug-auto-scroll') as HTMLInputElement;
     if (autoScroll?.checked && body) {
@@ -212,7 +203,6 @@ function renderLogs(logs: any[]): void {
     }
 }
 
-// 存储展开状态的Set
 const expandedLogs = new Set<number>();
 
 function isLogExpanded(id: number): boolean {
@@ -225,26 +215,19 @@ function toggleLogDetails(id: number): void {
     } else {
         expandedLogs.add(id);
     }
-    // 重新渲染当前日志列表
     const logs: any[] = debugLogger?.logs || [];
     renderLogs(logs);
 }
 
-/**
- * 绑定控制台事件
- */
 function bindConsoleEvents(): void {
-    // 关闭按钮
     document.getElementById('debug-btn-close')?.addEventListener('click', closeDebugLogModal);
 
-    // 折叠所有
     document.getElementById('debug-btn-collapse')?.addEventListener('click', () => {
         expandedLogs.clear();
         const logs: any[] = debugLogger?.logs || [];
         renderLogs(logs);
     });
 
-    // 清空按钮
     document.getElementById('debug-btn-clear')?.addEventListener('click', () => {
         if (debugLogger) {
             debugLogger.clearLogs();
@@ -253,7 +236,6 @@ function bindConsoleEvents(): void {
         }
     });
 
-    // 复制按钮
     document.getElementById('debug-btn-copy')?.addEventListener('click', () => {
         const logs: any[] = debugLogger?.logs || [];
         const text = logs.map(log =>
@@ -269,7 +251,6 @@ function bindConsoleEvents(): void {
         }
     });
 
-    // 过滤按钮
     document.querySelectorAll('.debug-filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
             document.querySelectorAll('.debug-filter-btn').forEach(b => b.classList.remove('active'));
@@ -279,14 +260,12 @@ function bindConsoleEvents(): void {
         });
     });
 
-    // 搜索输入
     const searchInput = document.getElementById('debug-search-input') as HTMLInputElement;
     searchInput?.addEventListener('input', () => {
         const logs: any[] = debugLogger?.logs || [];
         renderLogs(logs);
     });
 
-    // 阻止点击遮罩关闭
     document.querySelector('.debug-console-overlay')?.addEventListener('click', e => e.stopPropagation());
 }
 

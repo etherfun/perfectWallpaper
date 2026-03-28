@@ -14,10 +14,8 @@ import { SimpleMarkdown } from './simple-markdown';
 export const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res => res.json());
 
 export const versionConfig = {
-    // 当前版本号
     CURRENT_VERSION: "1.7.3",
 
-    // 弹窗尺寸设置
     MODAL_SIZE: {
         width: "65%",
         height: "93%",
@@ -25,13 +23,10 @@ export const versionConfig = {
         maxHeight: "95%",
     },
 
-    // 版本更新历史
     VERSION_HISTORY: [] as any[],
 
-    // 本地存储键名
     STORAGE_KEY: "perfectwall_version",
 
-    // 弹窗显示设置
     SHOW_SETTINGS: {
         autoCloseDelay: 60000,
         animationDuration: 400,
@@ -42,7 +37,6 @@ export const versionConfig = {
         defaultView: "current"
     },
 
-    // 图片设置
     IMAGE_SETTINGS: {
         maxHeight: "40vh",
         borderRadius: "12px",
@@ -51,7 +45,6 @@ export const versionConfig = {
     }
 };
 
-// 版本管理器类
 class versionManager {
     private updateModal: HTMLElement | null = null;
     private isInitialized = false;
@@ -74,7 +67,6 @@ class versionManager {
         this.lastMouseMoveTime = Date.now();
     }
 
-    // 检查版本更新
     private checkVersionUpdate(): boolean {
         const storedVersion = localStorage.getItem(versionConfig.STORAGE_KEY);
         if (!storedVersion) {
@@ -90,7 +82,6 @@ class versionManager {
         return isNewVersion && versionConfig.SHOW_SETTINGS.showOnUpdate;
     }
 
-    // 初始化更新弹窗
     async initUpdateModal(): Promise<void> {
         if (this.isInitialized) return;
 

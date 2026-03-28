@@ -42,6 +42,9 @@ const htmlPathReplacements = [
 ];
 
 async function copyFile(src, dest) {
+    if (fs.existsSync(dest)) {
+        return; // Skip if destination already exists
+    }
     const destDir = path.dirname(dest);
     if (!fs.existsSync(destDir)) {
         fs.mkdirSync(destDir, { recursive: true });
@@ -60,9 +63,8 @@ async function copyDirectory(src, dest) {
         const destPath = path.join(dest, entry.name);
         if (entry.isDirectory()) {
             await copyDirectory(srcPath, destPath);
-        } else {
+        } else if (!fs.existsSync(destPath)) {
             fs.copyFileSync(srcPath, destPath);
-            console.log(`  Copy: ${path.relative(srcDir, srcPath)} -> ${path.relative(srcDir, destPath)}`);
         }
     }
 }
@@ -176,7 +178,12 @@ async function build() {
     await copyAssets();
     await processHtml();
 
+    // Output bundle size
+    const bundleSize = fs.statSync(bundlePath).size;
+    const sizeKB = (bundleSize / 1024).toFixed(2);
+
     console.log('Build complete!');
+    console.log(`  Bundle size: ${sizeKB} KB`);
 }
 
 build().catch((err) => {

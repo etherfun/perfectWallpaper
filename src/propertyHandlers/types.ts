@@ -490,6 +490,11 @@ export interface WallpaperProperties {
     audio_ballSize?: { value: number };
     audio_ballRotation?: { value: number };
 
+    // 音频平滑参数
+    audioSmoothEnabled?: { value: boolean };
+    audioSmoothFactor?: { value: number };
+    audioSpatialWindow?: { value: number };
+
     // 流体效果参数
     fluidEffectEnabledFullscreen?: { value: boolean };
     fluidEffectEnabled?: { value: boolean };

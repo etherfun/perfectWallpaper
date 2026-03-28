@@ -209,24 +209,24 @@ export function createPoint(arr: number[]): void {
     appConfig.runtime.param.arr1 = [];
     appConfig.runtime.param.arr2 = [];
 
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 128; i++) {
         let deg: number;
         if (appConfig.runtime.param.showSemiCircle) {
             switch (appConfig.runtime.param.SemiCircledirection) {
                 case 1: // Top
-                    deg = Math.PI / 120 * (i + appConfig.runtime.param.offsetAngle + 0.5) * -1;
+                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 0.5) * -1;
                     break;
                 case 2: // Bottom
-                    deg = Math.PI / 120 * (i + appConfig.runtime.param.offsetAngle + 0.5);
+                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 0.5);
                     break;
                 case 3: // Left
-                    deg = Math.PI / 120 * (i + appConfig.runtime.param.offsetAngle - 179.5);
+                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle - 179.5);
                     break;
                 case 4: // Right
-                    deg = Math.PI / 120 * (i + appConfig.runtime.param.offsetAngle + 180.5);
+                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 180.5);
                     break;
                 default:
-                    deg = Math.PI / 120 * (i + appConfig.runtime.param.offsetAngle + 0.5) * -1;
+                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 0.5) * -1;
             }
         } else {
             // 全圆角度: 与原始 JS 版本一致
@@ -297,7 +297,7 @@ export function getXY(offset: number, deg: number): { x: number; y: number } {
 export function style1(): void {
     if (!ctx) return;
     ctx.beginPath();
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 128; i++) {
         ctx.moveTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
         ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
     }
@@ -313,7 +313,7 @@ export function style2(): void {
     // Outer circle
     ctx.beginPath();
     ctx.moveTo(appConfig.runtime.param.arr1[0].x, appConfig.runtime.param.arr1[0].y);
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 128; i++) {
         ctx.lineTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
     }
     if (!appConfig.runtime.param.showSemiCircle) {
@@ -325,12 +325,12 @@ export function style2(): void {
     ctx.beginPath();
     if (appConfig.runtime.param.showSemiCircle) {
         ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 128; i++) {
             ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
         }
     } else {
         ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 128; i++) {
             ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
         }
     }
@@ -341,7 +341,7 @@ export function style2(): void {
 
     // Connecting lines
     ctx.beginPath();
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 128; i++) {
         ctx.moveTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
         ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
     }
@@ -357,7 +357,7 @@ export function style3(): void {
     // Outer circle
     ctx.beginPath();
     ctx.moveTo(appConfig.runtime.param.arr1[0].x, appConfig.runtime.param.arr1[0].y);
-    for (let i = 0; i < 120; i++) {
+    for (let i = 0; i < 128; i++) {
         ctx.lineTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
     }
     if (!appConfig.runtime.param.showSemiCircle) {
@@ -369,12 +369,12 @@ export function style3(): void {
     ctx.beginPath();
     if (appConfig.runtime.param.showSemiCircle) {
         ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 128; i++) {
             ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
         }
     } else {
         ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
-        for (let i = 0; i < 120; i++) {
+        for (let i = 0; i < 128; i++) {
             ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
         }
     }

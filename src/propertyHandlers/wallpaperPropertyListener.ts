@@ -23,10 +23,11 @@ import { debugLogger } from '../utils/logger';
 import { elements } from '../utils/elementManager';
 import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
-import { showDebugLogModal } from './debugModal';
+import { showDebugLogModal } from '../debugModal';
 import '../version';
 import { loadI18nData } from '../utils/i18n';
 import { background2canvas } from '../RGB';
+import { audioDataListener } from '../audioVisualizer';
 
 /**
  * 安全执行属性处理函数,捕获并记录错误
@@ -167,5 +168,8 @@ export function setupWallpaperPropertyListener(): void {
                 }
             }
         };
+
+        // 注册 Wallpaper Engine 音频监听器
+        window.wallpaperRegisterAudioListener?.(audioDataListener);
     }
 }

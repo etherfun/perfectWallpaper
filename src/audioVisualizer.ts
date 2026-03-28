@@ -5,6 +5,114 @@
  */
 
 import { appConfig, config } from './utils/config';
+import { debugLogger } from './utils/logger';
+
+// PWCircle 绘制函数
+
+// ========== 音频数据平滑处理 ==========
+
+/** 上一帧的音频数据（用于时序平滑） */
+let _prevAudioData: number[] | null = null;
+
+/**
+ * 对数组应用空间平滑（相邻频段平均）
+ * 消除孤立的单波峰，使频谱更加连贯
+ * 使用循环平滑，头尾相连（适用于圆环可视化）
+ */
+function spatialSmooth(data: number[], windowSize: number): number[] {
+    const result = new Array(data.length);
+    const halfWindow = Math.floor(windowSize / 2);
+    const len = data.length;
+
+    for (let i = 0; i < len; i++) {
+        let sum = 0;
+
+        // 循环平滑：使用取模运算实现头尾相连
+        for (let j = -halfWindow; j <= halfWindow; j++) {
+            // 使用 ((i + j) % len + len) % len 实现正确的负数取模
+            const idx = ((i + j) % len + len) % len;
+            sum += data[idx];
+        }
+
+        result[i] = sum / windowSize;
+    }
+
+    return result;
+}
+
+/**
+ * 对数组应用时序平滑（指数移动平均）
+ * 基于上一帧数据平滑过渡，避免突变
+ */
+function temporalSmooth(data: number[], prevData: number[] | null, smoothFactor: number): number[] {
+    if (!prevData || prevData.length !== data.length) {
+        return data;
+    }
+
+    return data.map((value, i) => {
+        const prev = prevData[i] ?? 0;
+        // 指数移动平均：new = old * factor + prev * (1 - factor)
+        return value * smoothFactor + prev * (1 - smoothFactor);
+    });
+}
+
+/**
+ * 限制音频值在合理范围内
+ * 根据文档，有些频率可能超过 1.0，需要限制
+ */
+function clampAudioData(data: number[]): number[] {
+    return data.map(v => Math.min(1.0, Math.max(0.0, v)));
+}
+
+/**
+ * 平滑音频数据
+ * 1. 先限制值范围
+ * 2. 空间平滑（消除孤立峰值）
+ * 3. 时序平滑（帧间过渡平滑）
+ */
+function smoothAudioData(rawData: number[]): number[] {
+    // 始终先限制范围
+    let processed = clampAudioData(rawData);
+
+    // 检查是否启用平滑
+    if (!config.audioSmoothEnabled) {
+        _prevAudioData = null; // 重置时序数据
+        return processed;
+    }
+
+    // 从配置读取平滑参数
+    const smoothFactor = (config.audioSmoothFactor as number) / 100;
+    const spatialWindow = config.audioSpatialWindow as number;
+
+    // 验证平滑因子有效性
+    if (isNaN(smoothFactor) || smoothFactor <= 0 || smoothFactor >= 1) {
+        return processed;
+    }
+
+    // Step 2: 空间平滑
+    processed = spatialSmooth(processed, spatialWindow);
+
+    // Step 3: 时序平滑
+    processed = temporalSmooth(processed, _prevAudioData, smoothFactor);
+
+    // 更新上一帧数据
+    _prevAudioData = [...processed];
+
+    return processed;
+}
+
+/**
+ * 验证音频数据有效性，确保没有 NaN 或无效值
+ */
+function validateAudioData(data: number[]): boolean {
+    if (!data || data.length === 0) return false;
+    for (const v of data) {
+        if (isNaN(v) || !isFinite(v)) {
+            return false;
+        }
+    }
+    return true;
+}
 
 // PWCircle 绘制函数
 import { setCan, createPoint, style1, style2, style3 } from './PWCircle';
@@ -12,107 +120,126 @@ import { setCan, createPoint, style1, style2, style3 } from './PWCircle';
 // PWLine 绘制函数
 import { setCTXLine, PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3 } from './PWLine';
 
+// 样式函数映射
+const circleStyles = [style1, style2, style3] as const;
+const lineStyles = [PWLineStyle1, PWLineStyle2, PWLineStyle3] as const;
+
+// 缓存的 Canvas Context（避免每帧查询）
+let _circleCtx: CanvasRenderingContext2D | null = null;
+let _lineCtx: CanvasRenderingContext2D | null = null;
+
 /**
- * 获取圆圈可视化canvas的2D上下文
+ * 初始化 Canvas Context 缓存
  */
-function getCircleCtx(): CanvasRenderingContext2D | null {
+function initCanvasContexts(): void {
     const can = document.querySelector("#can") as HTMLCanvasElement | null;
-    return can?.getContext("2d") ?? null;
-}
+    _circleCtx = can?.getContext("2d") ?? null;
 
-/**
- * 获取直线可视化canvas的2D上下文
- */
-function getLineCtx(): CanvasRenderingContext2D | null {
     const canLine = document.querySelector("#CanLine") as HTMLCanvasElement | null;
-    return canLine?.getContext("2d") ?? null;
+    _lineCtx = canLine?.getContext("2d") ?? null;
 }
 
 /**
- * 音频监听回调函数
- * 由 Wallpaper Engine 调用，约30fps
+ * 清除画布
  */
-let _audioInitLogged = false;
-function wallpaperAudioListener(audioData: number[]): void {
-    // 只在第一次调用时打印初始化信息
-    if (!_audioInitLogged) {
-        _audioInitLogged = true;
-    }
-
-    // 更新到 appConfig.runtime
-    appConfig.runtime.playerInfo.audioArray = audioData;
-
-    // 获取 canvas context
-    const ctx = getCircleCtx();
-    const CTXLine = getLineCtx();
-
-    // 获取参数
-    const param = appConfig.runtime.param;
-    const PWLineParam = appConfig.runtime.PWLineParam;
+function clearCanvases(): void {
     const wallpaper = appConfig.runtime.wallpaper;
 
-    // 清除画布
-    if (wallpaper) {
-        wallpaper.audiovisualizer('clearCanvas');
-    }
-    if (CTXLine) {
-        CTXLine.clearRect(0, 0, window.innerWidth, window.innerHeight);
-    }
-    if (ctx) {
-        ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    wallpaper?.audiovisualizer('clearCanvas');
+    _lineCtx?.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    _circleCtx?.clearRect(0, 0, window.innerWidth, window.innerHeight);
+}
+
+/**
+ * 渲染圆圈可视化
+ */
+function renderCircle(audioData: number[]): void {
+    const ctx = _circleCtx;
+    const param = appConfig.runtime.param;
+
+    if (!ctx || !param || !param.showCircle) return;
+
+    setCan();
+    createPoint(audioData);
+    circleStyles[param.style - 1]?.();
+}
+
+/**
+ * 渲染直线可视化
+ */
+function renderLine(audioData: number[]): void {
+    const ctx = _lineCtx;
+    const param = appConfig.runtime.PWLineParam;
+
+    if (!ctx || !param || !param.showLine) return;
+
+    setCTXLine();
+    PWLineCreatePoint(audioData);
+    lineStyles[param.style - 1]?.();
+}
+
+/**
+ * 音频数据监听回调
+ * 仅负责将音频数据存储到 appConfig.runtime
+ * 由 Wallpaper Engine 调用，约30fps
+ */
+export function audioDataListener(audioData: number[]): void {
+    // 调试日志
+    debugLogger.info(`[AudioVisual] Listener called, data length: ${audioData?.length}`);
+
+    // 验证原始数据有效性
+    if (!validateAudioData(audioData)) {
+        debugLogger.warn('[AudioVisual] Invalid audio data, skipping');
+        return;
     }
 
-    // 获取当前可视化模式
-    const model = config.visualAudioModel;
+    // 应用平滑处理，使波形更加连贯美观
+    const smoothedData = smoothAudioData(audioData);
 
-    switch (model) {
-        case 1: // 完美圆圈
-            if (ctx && param) {
-                setCan();
-                createPoint(audioData);
-                if (param.showCircle) {
-                    switch (param.style) {
-                        case 1:
-                            style1();
-                            break;
-                        case 2:
-                            style2();
-                            break;
-                        case 3:
-                            style3();
-                            break;
-                    }
-                }
-            }
+    // 再次验证处理后的数据
+    if (!validateAudioData(smoothedData)) {
+        debugLogger.warn('[AudioVisual] Smoothed data invalid, skipping');
+        return;
+    }
+
+    // 存储处理后的音频数据
+    appConfig.runtime.playerInfo.audioArray = smoothedData;
+
+    // 触发渲染（渲染函数会自行判断当前模式）
+    renderAudioVisualization();
+}
+
+/**
+ * 音频可视化渲染函数
+ * 从 appConfig.runtime 读取音频数据并渲染到 Canvas
+ */
+export function renderAudioVisualization(): void {
+    const audioData = appConfig.runtime.playerInfo.audioArray;
+    if (!audioData?.length) {
+        debugLogger.info('[AudioVisual] No audio data to render');
+        return;
+    }
+
+    debugLogger.info(`[AudioVisual] Rendering, mode: ${config.visualAudioModel}`);
+
+    // 首次调用时初始化 Canvas Context
+    if (!_circleCtx) {
+        initCanvasContexts();
+        debugLogger.info(`[AudioVisual] Canvas contexts initialized, circle: ${!!_circleCtx}, line: ${!!_lineCtx}`);
+    }
+
+    clearCanvases();
+
+    switch (config.visualAudioModel) {
+        case 1:
+            renderCircle(audioData);
             break;
-        case 2: // 完美直线
-            if (CTXLine && PWLineParam) {
-                setCTXLine();
-                PWLineCreatePoint(audioData);
-                if (PWLineParam.showLine) {
-                    switch (PWLineParam.style) {
-                        case 1:
-                            PWLineStyle1();
-                            break;
-                        case 2:
-                            PWLineStyle2();
-                            break;
-                        case 3:
-                            PWLineStyle3();
-                            break;
-                    }
-                }
-            }
+        case 2:
+            renderLine(audioData);
             break;
-        case 3: // 内置可视化
-            if (wallpaper) {
-                wallpaper.audiovisualizer('drawCanvas', audioData);
-            }
+        case 3:
+            appConfig.runtime.wallpaper?.audiovisualizer('drawCanvas', audioData);
             break;
     }
 }
 
-// 注册音频监听器
-(window as unknown as { wallpaperRegisterAudioListener: (callback: (audioData: number[]) => void) => void }).wallpaperRegisterAudioListener(wallpaperAudioListener);
-
-export { };

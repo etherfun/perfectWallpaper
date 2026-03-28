@@ -6,7 +6,6 @@
 import { appConfig, config } from '@/utils/config';
 import { WallpaperProperties } from './types';
 
-
 /**
  * 获取圆圈可视化canvas的2D上下文
  */
@@ -557,6 +556,26 @@ export function handleAudioVisualProperties(
     if (properties.audio_ballRotation) {
         config.audioBallRotation = properties.audio_ballRotation.value;
         wallpaper?.audiovisualizer('set', 'ballRotation', properties.audio_ballRotation.value);
+    }
+
+    // ========== 音频平滑参数 ==========
+
+    // 启用平滑效果
+    if (properties.audioSmoothEnabled) {
+        config.audioSmoothEnabled = properties.audioSmoothEnabled.value;
+        console.log(config.audioSmoothEnabled)
+    }
+
+    // 平滑强度
+    if (properties.audioSmoothFactor) {
+        config.audioSmoothFactor = properties.audioSmoothFactor.value;
+    }
+
+    // 空间窗口大小
+    if (properties.audioSpatialWindow) {
+        const windowValue = properties.audioSpatialWindow.value;
+        // 确保窗口大小为奇数
+        config.audioSpatialWindow = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
     }
 
     return result;

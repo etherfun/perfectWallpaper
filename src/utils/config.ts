@@ -64,6 +64,9 @@ const DEFAULTS = {
 
   // 音频可视化配置
   visualAudioModel: 1,
+  audioSmoothEnabled: true,
+  audioSmoothFactor: 70,
+  audioSpatialWindow: 3,
   pwCircleShowBool: true,
   pwLineShowBool: true,
 

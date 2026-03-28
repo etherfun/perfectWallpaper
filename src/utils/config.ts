@@ -375,7 +375,7 @@ type AppConfigRuntime = {
   FluidEffect2: any;
   fluidEffect: any;
   fullscreenFluidEffect: any;
-  FluidEffectConfig: any;
+  FluidEffect: any;
   fullscreenFluidEnabled: boolean;
   pictureInfoHideStyleAdded: boolean;
   files: Record<string, string[]>;
@@ -426,7 +426,7 @@ class AppConfig {
       FluidEffect2: undefined,
       fluidEffect: undefined,
       fullscreenFluidEffect: undefined,
-      FluidEffectConfig: undefined,
+      FluidEffect: undefined,
       fullscreenFluidEnabled: false,
       pictureInfoHideStyleAdded: false,
       files: {},

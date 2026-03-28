@@ -1,11 +1,7 @@
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
-import {
-    initFluidEffect,
-    initFullscreenFluidEffect,
-    updateFullscreenFluidSource
-} from './fluid_control';
+import { FluidEffect } from './fluid';
 import { hasPlaybackContent } from './utils/playback';
 import { getColor, getPalette } from 'colorthief';
 
@@ -69,19 +65,19 @@ async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Prom
             ];
 
             // 初始化或更新流体效果（只在有播放内容时）
-            if (config.runtime.FluidEffectConfig && config.runtime.FluidEffectConfig.enabled) {
+            if (config.runtime.FluidEffect && config.runtime.FluidEffect.enabled) {
                 const hasContent = hasPlaybackContent();
                 if (hasContent) {
-                    initFluidEffect();
-                    if (config.runtime.playerInfo.playerState === 2 && config.runtime.fluidEffect?.setPlayState) {
-                        config.runtime.fluidEffect.setPlayState(false);
+                    config.runtime.FluidEffect.initNormalEffect();
+                    if (config.runtime.playerInfo.playerState === 2 && config.runtime.FluidEffect.normalEffect?.setPlayState) {
+                        config.runtime.FluidEffect.normalEffect.setPlayState(false);
                     }
                 }
             }
 
             // 更新全屏流体效果
-            if (config.runtime.FluidEffectConfig?.fullscreenEnabled && hasPlaybackContent()) {
-                updateFullscreenFluidSource();
+            if (config.runtime.FluidEffect?.fullscreenEnabled && hasPlaybackContent()) {
+                config.runtime.FluidEffect.updateFullscreenSource();
             }
 
             setTimeout(() => thumbnailsue(), 50);
@@ -271,10 +267,10 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
 
 // 控制流体效果播放状态
 function controlFluidEffectPlayback(playbackState: number): void {
-    if (!config.runtime.FluidEffectConfig || config.runtime.FluidEffectConfig.enabled === undefined) return;
+    if (!config.runtime.FluidEffect || config.runtime.FluidEffect.enabled === undefined) return;
     if (!window.wallpaperMediaIntegration) return;
 
-    if (config.runtime.FluidEffectConfig.enabled && !config.runtime.FluidEffectConfig.fullscreenEnabled) {
+    if (config.runtime.FluidEffect.enabled && !config.runtime.FluidEffect.fullscreenEnabled) {
         if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             resumeFluidEffect();
         } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
@@ -284,7 +280,7 @@ function controlFluidEffectPlayback(playbackState: number): void {
         }
     }
 
-    if (config.runtime.FluidEffectConfig.fullscreenEnabled) {
+    if (config.runtime.FluidEffect.fullscreenEnabled) {
         if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             resumeFullscreenFluidEffect();
         } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
@@ -297,43 +293,41 @@ function controlFluidEffectPlayback(playbackState: number): void {
 
 function resumeFluidEffect(): void {
     if (!hasPlaybackContent()) return;
-    // 使用 config.runtime.fluidEffect（来自 fluid_control.ts）
-    if (!config.runtime.fluidEffect && config.runtime.FluidEffectConfig?.enabled) {
-        initFluidEffect();
+    // 使用 config.runtime.FluidEffect（来自 fluid.ts）
+    if (!config.runtime.FluidEffect.normalEffect && config.runtime.FluidEffect?.enabled) {
+        config.runtime.FluidEffect.initNormalEffect();
     }
-    if (config.runtime.fluidEffect?.setPlayState) config.runtime.fluidEffect.setPlayState(true);
+    if (config.runtime.FluidEffect.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(true);
 }
 
 function pauseFluidEffect(): void {
-    if (config.runtime.fluidEffect?.setPlayState) config.runtime.fluidEffect.setPlayState(false);
+    if (config.runtime.FluidEffect.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(false);
 }
 
 function stopFluidEffect(): void {
-    if (config.runtime.fluidEffect) {
-        if (config.runtime.fluidEffect.stop) config.runtime.fluidEffect.stop();
-        if (config.runtime.fluidEffect.destroy) config.runtime.fluidEffect.destroy();
-        config.runtime.fluidEffect = null;
+    if (config.runtime.FluidEffect) {
+        if (config.runtime.FluidEffect.normalEffect?.stop) config.runtime.FluidEffect.normalEffect.stop();
+        config.runtime.FluidEffect.destroyNormalEffect();
     }
 }
 
 function resumeFullscreenFluidEffect(): void {
     if (!hasPlaybackContent()) return;
-    if (config.runtime.fullscreenFluidEffect?.setPlayState) {
-        config.runtime.fullscreenFluidEffect.setPlayState(true);
-    } else if (config.runtime.FluidEffectConfig?.fullscreenEnabled) {
-        initFullscreenFluidEffect();
+    if (config.runtime.FluidEffect.fullscreenEffect?.setPlayState) {
+        config.runtime.FluidEffect.fullscreenEffect.setPlayState(true);
+    } else if (config.runtime.FluidEffect?.fullscreenEnabled) {
+        config.runtime.FluidEffect.initFullscreenEffect();
     }
 }
 
 function pauseFullscreenFluidEffect(): void {
-    if (config.runtime.fullscreenFluidEffect?.setPlayState) config.runtime.fullscreenFluidEffect.setPlayState(false);
+    if (config.runtime.FluidEffect.fullscreenEffect?.setPlayState) config.runtime.FluidEffect.fullscreenEffect.setPlayState(false);
 }
 
 function stopFullscreenFluidEffect(): void {
-    if (config.runtime.fullscreenFluidEffect) {
-        if (config.runtime.fullscreenFluidEffect.stop) config.runtime.fullscreenFluidEffect.stop();
-        if (config.runtime.fullscreenFluidEffect.destroy) config.runtime.fullscreenFluidEffect.destroy();
-        config.runtime.fullscreenFluidEffect = null;
+    if (config.runtime.FluidEffect) {
+        if (config.runtime.FluidEffect.fullscreenEffect?.stop) config.runtime.FluidEffect.fullscreenEffect.stop();
+        config.runtime.FluidEffect.destroyFullscreenEffect();
     }
 }
 

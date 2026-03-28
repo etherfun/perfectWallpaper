@@ -1,7 +1,7 @@
 import { WallpaperProperties } from './types';
 import { elements } from '../utils/elementManager';
 import { config } from '@/utils/config';
-import { FluidEffectConfig } from '../fluid_control';
+import { FluidEffect } from '../fluid';
 import { debugLogger } from '@/utils/logger';
 
 /**
@@ -15,9 +15,9 @@ export function handleFluidEffectProperties(
 ): void {
     const bodyElement = elements.body;
 
-    if (FirstLoad) config.runtime.FluidEffectConfig = new FluidEffectConfig();
+    if (FirstLoad) config.runtime.FluidEffect = FluidEffect.create();
 
-    const cfg = config.runtime.FluidEffectConfig;
+    const cfg = config.runtime.FluidEffect;
 
     // 全屏启用
     if (properties.fluidEffectEnabledFullscreen) {

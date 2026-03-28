@@ -4,8 +4,6 @@
  */
 
 import { debugLogger } from './logger';
-import { i18n, updateAllI18nElements } from './i18n';
-import { debounce, throttle, waitAndExecute } from './timer';
 
 // 全局变量声明
 declare global {
@@ -14,52 +12,6 @@ declare global {
         get_i18n_text?: (key: string) => string;
         error_get_weather_data?: string;
         VC_ICON_TO_QWEATHER?: { [key: string]: { day: number; night: number } };
-    }
-}
-
-/**
- * 给元素添加颜色效果
- * @param TorF - 是否启用发光效果
- * @param Element - 目标元素
- * @param Element_color - RGB颜色字符串，格式："r,g,b"
- * @param Element_blurcolor - 发光颜色字符串，格式："r,g,b"
- */
-export function Element_effects_color(
-    TorF: boolean, 
-    Element: HTMLElement, 
-    Element_color: string, 
-    Element_blurcolor: string
-): void {
-    Element.style.color = 'rgb(' + Element_color + ')';
-
-    if (TorF) {
-        Element.style.textShadow = '0 0 20px rgb(' + Element_blurcolor + ')';
-    } else {
-        Element.style.textShadow = '';
-    }
-}
-
-/**
- * 给元素添加亚克力效果
- * @param TorF - 是否启用亚克力效果
- * @param Element - 目标元素
- * @param Element_yakeli - 透明度 (0-1)
- * @param Element_yakelicolor - RGB颜色字符串，格式："r,g,b"
- * @param Element_bluryakeli - 模糊半径(像素)
- */
-export function Element_effects_yakeli(
-    TorF: boolean, 
-    Element: HTMLElement, 
-    Element_yakeli: number, 
-    Element_yakelicolor: string, 
-    Element_bluryakeli: number
-): void {
-    if (TorF) {
-        Element.style.background = "rgba(" + Element_yakelicolor + "," + Element_yakeli + ")";
-        Element.style.backdropFilter = "blur(" + Element_bluryakeli + "px)";
-    } else {
-        Element.style.background = "";
-        Element.style.backdropFilter = "";
     }
 }
 
@@ -230,11 +182,3 @@ export function isNightTime(nowTime: string, sunrise: string, sunset: string): b
     return now < rise || now > set;
 }
 
-// 导出所有函数
-export {
-    i18n,
-    updateAllI18nElements,
-    debounce,
-    throttle,
-    waitAndExecute
-};

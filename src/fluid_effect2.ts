@@ -81,7 +81,6 @@ export class FluidEffect2 {
             canvasDisplacementAmplitude: options.canvasDisplacementAmplitude ?? 200,
         };
 
-
         this.init();
     }
 

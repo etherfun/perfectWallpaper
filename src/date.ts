@@ -1,4 +1,4 @@
-import { waitAndExecute } from "./utils/tool";
+import { waitAndExecute } from "./utils/timer";
 import { config } from "./utils/config";
 import { elements } from "./utils/elementManager";
 

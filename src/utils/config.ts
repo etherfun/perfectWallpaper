@@ -1,9 +1,3 @@
-/**
- * AppConfig - 应用程序运行时配置管理
- * 支持 config.xxx 属性访问 (通过 Proxy → get/set 方法)
- * 特殊配置 (getLanguageCode, getScreenHeight 等) 直接在 appConfig 上定义
- */
-
 // 默认配置值
 const DEFAULTS = {
   // 核心运行时配置
@@ -530,8 +524,6 @@ class AppConfig {
     return AppConfig._instance;
   }
 
-  // ==================== 监听器管理 ====================
-
   public addListener(listener: ConfigListener): void {
     this._listeners.add(listener);
   }
@@ -569,9 +561,6 @@ class AppConfig {
     }
   }
 
-
-  // ==================== 特殊配置方法 ====================
-
   // 派生值：取语言代码的前两位
   public getLanguageCode(): string {
     return (this._values.get('language') as string).slice(0, 2);
@@ -592,8 +581,6 @@ class AppConfig {
   public getMyList(): string[] { return this.runtime.myList; }
   public setMyList(list: string[]): void { this.runtime.myList = list; }
 
-  // ==================== 内部方法 ====================
-
   private _setValue(key: string, value: ConfigValue): void {
     if (!this._values.has(key)) return;
 
@@ -609,8 +596,6 @@ class AppConfig {
       Promise.resolve().then(() => this._notify());
     }
   }
-
-  // ==================== 通用配置方法 ====================
 
   public get(key: string): ConfigValue | undefined {
     return this._values.get(key);
@@ -635,8 +620,6 @@ class AppConfig {
     this._initDefaults();
   }
 }
-
-// ==================== 导出 ====================
 
 // 直接导出 AppConfig 单例
 const appConfig = AppConfig.getInstance();
@@ -665,12 +648,20 @@ interface ConfigProxy {
 // config.xxx = value → 先查 setXxx() 方法存在则调用，否则 appConfig.set('xxx', value)
 export const config = new Proxy({} as ConfigProxy, {
   get(_, prop: string) {
+    // runtime 属性直接返回 appConfig.runtime
+    if (prop === 'runtime') {
+      return appConfig.runtime;
+    }
     // 内部属性和方法直接返回
     if (prop === 'has' || prop === 'keys' || prop === 'reset' ||
         prop === 'addListener' || prop === 'removeListener' || prop === 'batchSet' ||
-        prop === 'getInstance' || prop === 'runtime' || prop === 'constructor' ||
+        prop === 'getInstance' || prop === 'constructor' ||
         prop === 'get' || prop === 'set') {
-      return (appConfig as any)[prop];
+      const val = (appConfig as any)[prop];
+      if (typeof val === 'function') {
+        return val.bind(appConfig);
+      }
+      return val;
     }
     // 直接方法名调用 (getScreenHeight, setFiles 等)
     if (typeof (appConfig as any)[prop] === 'function') {
@@ -709,6 +700,4 @@ export const config = new Proxy({} as ConfigProxy, {
   }
 });
 
-// 保持向后兼容
-export { appConfig };
 export { AppConfig, DEFAULTS };

@@ -1,25 +1,16 @@
 /**
  * Slide module - Background switching and image carousel
- * Re-exports all slide-related functionality
  */
 
-// Re-export transition functions
-export { transitionBackground, updateFileList } from './transition';
-
-// Re-export source functions
-export { shouldShow, clearpicturesinfo, picturesinfo_showrl } from './sources';
-
-// Re-export style functions
-export { calculate, TransitionSwith, applyBackgroundStyle } from './styles';
-
-// Re-export types and backgroundLayers
-export { backgroundLayers, pictures, WALLPAPER_MODE } from './types';
+// Re-export functions used by other modules
+export { shouldShow } from './sources';
+export { applyBackgroundStyle, TransitionSwith } from './styles';
+export { updateFileList } from './transition';
 
 import { config } from "../utils/config";
 import { timerManager } from "@/utils/timer";
-import { shouldShow, clearpicturesinfo } from "./sources";
-import { calculate, TransitionSwith, applyBackgroundStyle } from "./styles";
-import { transitionBackground } from "./transition";
+import { shouldShow } from "./sources";
+import { applyBackgroundStyle, calculate, TransitionSwith } from "./styles";
 
 /** Change background based on mode */
 export function changeBackground(): void {

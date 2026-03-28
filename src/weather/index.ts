@@ -3,9 +3,7 @@
  * 整合所有天气相关的API、工具函数和UI
  */
 
-export { weather_unit_choose, wunit } from './units';
-export { getWeatherTips } from './tips';
-export { formatTime, getOpenMeteoIcon, getPrecipTypeFromCode } from './utils';
+export { weather_unit_choose } from './units';
 
 import type { WeatherData, WeatherAddress, SevenHourlyData } from './types';
 import type { WeatherAPIHandler } from './api/base';
@@ -31,7 +29,6 @@ export let weather_address: WeatherAddress = {
 
 export let weather_data: WeatherData = createEmptyWeatherData();
 
-export let weather_daliy_tip: string;
 export let showTemperatureInsteadOfPrecip = false;
 export let precipTemperatureToggleTimer: number | null = null;
 export let isAnimatingPrecipToggle = false;
@@ -384,11 +381,6 @@ export async function generateWeatherTable(): Promise<void> {
         rightHTML += `</div>`;
         rightHTML += `</div>`;
         rightHTML += `</div>`;
-    }
-
-    // 提示信息行
-    if (weather_daliy_tip) {
-        rightHTML += `<div class="weather-row weather-tip">${weather_daliy_tip}</div>`;
     }
 
     rightHTML += `</div>`;

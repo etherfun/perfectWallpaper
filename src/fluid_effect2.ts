@@ -5,7 +5,7 @@
  */
 
 import { debugLogger } from './utils/logger';
-import { appConfig } from './utils/config';
+import { config } from './utils/config';
 
 export class FluidEffect2 {
     /** 容器元素 */
@@ -444,5 +444,5 @@ export class FluidEffect2 {
     }
 }
 
-// 挂载到 appConfig.runtime
-appConfig.runtime.FluidEffect2 = FluidEffect2;
+// 挂载到 config.runtime
+config.runtime.FluidEffect2 = FluidEffect2;

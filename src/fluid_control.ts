@@ -4,21 +4,21 @@
  */
 
 import { elements } from './utils/elementManager';
-import { appConfig, config } from './utils/config';
+import { config } from './utils/config';
 import { FluidEffect2 } from './fluid_effect2';
 import { hasPlaybackContent } from './utils/playback';
 import { debugLogger } from './utils/logger';
 import { timerManager, waitAndExecute } from './utils/timer';
 
-// 使用 appConfig.runtime 存储流体效果实例
-appConfig.runtime.fluidEffect = null;
-appConfig.runtime.fullscreenFluidEffect = null;
+// 使用 config.runtime 存储流体效果实例
+config.runtime.fluidEffect = null;
+config.runtime.fullscreenFluidEffect = null;
 
 // 内部状态标志
-appConfig.runtime.fullscreenFluidEnabled = false;
-appConfig.runtime.pictureInfoHideStyleAdded = false;
+config.runtime.fullscreenFluidEnabled = false;
+config.runtime.pictureInfoHideStyleAdded = false;
 
-// fluidEffect 和 fullscreenFluidEffect 直接使用 appConfig.runtime 访问
+// fluidEffect 和 fullscreenFluidEffect 直接使用 config.runtime 访问
 
 // FluidEffectConfig 类定义
 export class FluidEffectConfig {
@@ -125,9 +125,9 @@ export class FluidEffectConfig {
     enableFullscreen() {
         this.fullscreenEnabled = true;
         document.querySelector('.fluid-effect-wrapper')?.remove();
-        if (appConfig.runtime.fluidEffect) {
-            appConfig.runtime.fluidEffect!.destroy();
-            appConfig.runtime.fluidEffect = null;
+        if (config.runtime.fluidEffect) {
+            config.runtime.fluidEffect!.destroy();
+            config.runtime.fluidEffect = null;
         }
         // 重新初始化全屏流体效果
         if (this.enabled) {
@@ -186,39 +186,39 @@ export class FluidEffectConfig {
                 this._inSetOperation = false;
             }
 
-            if (this.enabled && appConfig.runtime.fluidEffect?.updateOptions) {
+            if (this.enabled && config.runtime.fluidEffect?.updateOptions) {
                 if (key === 'resolution') {
-                    appConfig.runtime.fluidEffect!.updateOptions({ resolution: Number(value) });
+                    config.runtime.fluidEffect!.updateOptions({ resolution: Number(value) });
                     const thumbnail = elements.playerControl.thumbnail;
                     if (thumbnail instanceof HTMLImageElement && thumbnail.complete) {
-                        appConfig.runtime.fluidEffect!.setSourceFromImage(thumbnail);
+                        config.runtime.fluidEffect!.setSourceFromImage(thumbnail);
                     }
                 } else if (key === 'blurAmount') {
-                    appConfig.runtime.fluidEffect!.updateOptions({ blurAmount: Number(value) });
+                    config.runtime.fluidEffect!.updateOptions({ blurAmount: Number(value) });
                 } else if (key === 'displacementScale') {
-                    appConfig.runtime.fluidEffect!.updateOptions({ displacementScale: Number(value) });
+                    config.runtime.fluidEffect!.updateOptions({ displacementScale: Number(value) });
                 } else if (key === 'turbulenceFrequency') {
-                    appConfig.runtime.fluidEffect!.updateOptions({ turbulenceFrequency: Number(value) });
+                    config.runtime.fluidEffect!.updateOptions({ turbulenceFrequency: Number(value) });
                 } else if (key === 'turbulenceOctaves') {
-                    appConfig.runtime.fluidEffect!.updateOptions({ turbulenceOctaves: Number(value) });
+                    config.runtime.fluidEffect!.updateOptions({ turbulenceOctaves: Number(value) });
                 } else if (key === 'canvasDisplacementAmplitude') {
-                    appConfig.runtime.fluidEffect!.updateOptions({ canvasDisplacementAmplitude: Number(value) });
+                    config.runtime.fluidEffect!.updateOptions({ canvasDisplacementAmplitude: Number(value) });
                 }
             }
 
-            if (this.fullscreenEnabled && appConfig.runtime.fullscreenFluidEffect) {
+            if (this.fullscreenEnabled && config.runtime.fullscreenFluidEffect) {
                 if (key === 'resolution') {
-                    appConfig.runtime.fullscreenFluidEffect!.updateOptions({ resolution: Number(value) });
+                    config.runtime.fullscreenFluidEffect!.updateOptions({ resolution: Number(value) });
                 } else if (key === 'blurAmount') {
-                    appConfig.runtime.fullscreenFluidEffect!.updateOptions({ blurAmount: Number(value) });
+                    config.runtime.fullscreenFluidEffect!.updateOptions({ blurAmount: Number(value) });
                 } else if (key === 'displacementScale') {
-                    appConfig.runtime.fullscreenFluidEffect!.updateOptions({ displacementScale: Number(value) });
+                    config.runtime.fullscreenFluidEffect!.updateOptions({ displacementScale: Number(value) });
                 } else if (key === 'turbulenceFrequency') {
-                    appConfig.runtime.fullscreenFluidEffect!.updateOptions({ turbulenceFrequency: Number(value) });
+                    config.runtime.fullscreenFluidEffect!.updateOptions({ turbulenceFrequency: Number(value) });
                 } else if (key === 'turbulenceOctaves') {
-                    appConfig.runtime.fullscreenFluidEffect!.updateOptions({ turbulenceOctaves: Number(value) });
+                    config.runtime.fullscreenFluidEffect!.updateOptions({ turbulenceOctaves: Number(value) });
                 } else if (key === 'canvasDisplacementAmplitude') {
-                    appConfig.runtime.fullscreenFluidEffect!.updateOptions({ canvasDisplacementAmplitude: Number(value) });
+                    config.runtime.fullscreenFluidEffect!.updateOptions({ canvasDisplacementAmplitude: Number(value) });
                 }
             }
 
@@ -229,15 +229,15 @@ export class FluidEffectConfig {
 }
 
 export function initFullscreenFluidEffect(): void {
-    if (!appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
-        if (appConfig.runtime.fullscreenFluidEffect) {
-            appConfig.runtime.fullscreenFluidEffect!.destroy();
-            appConfig.runtime.fullscreenFluidEffect = null;
+    if (!config.runtime.FluidEffectConfig.fullscreenEnabled) {
+        if (config.runtime.fullscreenFluidEffect) {
+            config.runtime.fullscreenFluidEffect!.destroy();
+            config.runtime.fullscreenFluidEffect = null;
         }
         return;
     }
 
-    if (appConfig.runtime.fullscreenFluidEffect) {
+    if (config.runtime.fullscreenFluidEffect) {
         return;
     }
 
@@ -251,26 +251,26 @@ export function initFullscreenFluidEffect(): void {
         isPaused = true;
     }
 
-    appConfig.runtime.fullscreenFluidEnabled = true;
+    config.runtime.fullscreenFluidEnabled = true;
     addPictureInfoHideStyle();
 
     const container = document.body;
 
     try {
         const newFullscreenFluidEffect = new FluidEffect2(container, {
-            resolution: appConfig.runtime.FluidEffectConfig.resolution,
-            blurAmount: appConfig.runtime.FluidEffectConfig.blurAmount,
-            displacementScale: appConfig.runtime.FluidEffectConfig.displacementScale,
-            turbulenceFrequency: appConfig.runtime.FluidEffectConfig.turbulenceFrequency,
-            turbulenceOctaves: appConfig.runtime.FluidEffectConfig.turbulenceOctaves,
-            canvasDisplacementAmplitude: appConfig.runtime.FluidEffectConfig.canvasDisplacementAmplitude,
+            resolution: config.runtime.FluidEffectConfig.resolution,
+            blurAmount: config.runtime.FluidEffectConfig.blurAmount,
+            displacementScale: config.runtime.FluidEffectConfig.displacementScale,
+            turbulenceFrequency: config.runtime.FluidEffectConfig.turbulenceFrequency,
+            turbulenceOctaves: config.runtime.FluidEffectConfig.turbulenceOctaves,
+            canvasDisplacementAmplitude: config.runtime.FluidEffectConfig.canvasDisplacementAmplitude,
             fullscreen: true
         });
-        appConfig.runtime.fullscreenFluidEffect = newFullscreenFluidEffect;
-        appConfig.runtime.fullscreenFluidEffect!.start();
+        config.runtime.fullscreenFluidEffect = newFullscreenFluidEffect;
+        config.runtime.fullscreenFluidEffect!.start();
 
         if (isPaused) {
-            appConfig.runtime.fullscreenFluidEffect!.setPlayState(false);
+            config.runtime.fullscreenFluidEffect!.setPlayState(false);
         }
 
         const thumbnail = elements.playerControl.thumbnail as HTMLImageElement | undefined;
@@ -280,8 +280,8 @@ export function initFullscreenFluidEffect(): void {
             const img = new Image();
             img.crossOrigin = 'Anonymous';
             img.onload = () => {
-                if (appConfig.runtime.fullscreenFluidEffect) {
-                    appConfig.runtime.fullscreenFluidEffect!.setSourceFromImage(img);
+                if (config.runtime.fullscreenFluidEffect) {
+                    config.runtime.fullscreenFluidEffect!.setSourceFromImage(img);
                     const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
                     if (wrapper) {
                         wrapper.style.backgroundImage = `url('${imgSrc}')`;
@@ -307,13 +307,13 @@ export function initFullscreenFluidEffect(): void {
 }
 
 export function destroyFullscreenFluidEffect(): void {
-    if (appConfig.runtime.fullscreenFluidEffect) {
-        appConfig.runtime.fullscreenFluidEffect!.destroy();
-        appConfig.runtime.fullscreenFluidEffect = null;
+    if (config.runtime.fullscreenFluidEffect) {
+        config.runtime.fullscreenFluidEffect!.destroy();
+        config.runtime.fullscreenFluidEffect = null;
         timerManager.resume('backgroundChange');
     }
 
-    appConfig.runtime.fullscreenFluidEnabled = false;
+    config.runtime.fullscreenFluidEnabled = false;
     removePictureInfoHideStyle();
 
     const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
@@ -323,12 +323,12 @@ export function destroyFullscreenFluidEffect(): void {
 }
 
 export function updateFullscreenFluidSource(): void {
-    if (!appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
+    if (!config.runtime.FluidEffectConfig.fullscreenEnabled) {
         return;
     }
 
     // If fullscreenFluidEffect doesn't exist, try to initialize it
-    if (!appConfig.runtime.fullscreenFluidEffect) {
+    if (!config.runtime.fullscreenFluidEffect) {
         initFullscreenFluidEffect();
         // Don't return early - continue to load thumbnail to ensure source is set
         // If initFullscreenFluidEffect created a new effect, its img.onload will set the source
@@ -343,8 +343,8 @@ export function updateFullscreenFluidSource(): void {
     const img = new Image();
     img.crossOrigin = 'Anonymous';
     img.onload = () => {
-        if (appConfig.runtime.fullscreenFluidEffect?.setSourceFromImage) {
-            appConfig.runtime.fullscreenFluidEffect!.setSourceFromImage(img);
+        if (config.runtime.fullscreenFluidEffect?.setSourceFromImage) {
+            config.runtime.fullscreenFluidEffect!.setSourceFromImage(img);
             const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
             if (fluidWrapper) {
                 fluidWrapper.style.backgroundImage = `url('${thumbnail.src}')`;
@@ -362,7 +362,7 @@ function addPictureInfoHideStyle(): void {
     if (pictureInfo) {
         pictureInfo.classList.add('fluid-hidden');
     }
-    appConfig.runtime.pictureInfoHideStyleAdded = true;
+    config.runtime.pictureInfoHideStyleAdded = true;
 }
 
 function removePictureInfoHideStyle(): void {
@@ -370,21 +370,21 @@ function removePictureInfoHideStyle(): void {
     if (pictureInfo) {
         pictureInfo.classList.remove('fluid-hidden');
     }
-    appConfig.runtime.pictureInfoHideStyleAdded = false;
+    config.runtime.pictureInfoHideStyleAdded = false;
 }
 
 function initPictureInfoControl(): void {
-    if (appConfig.runtime.fullscreenFluidEnabled) {
+    if (config.runtime.fullscreenFluidEnabled) {
         addPictureInfoHideStyle();
     }
 }
 
 export function initFluidEffect(): void {
-    if (!appConfig.runtime.FluidEffectConfig) {
+    if (!config.runtime.FluidEffectConfig) {
         return;
     }
 
-    if (appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
+    if (config.runtime.FluidEffectConfig.fullscreenEnabled) {
         return;
     }
 
@@ -392,9 +392,9 @@ export function initFluidEffect(): void {
         return;
     }
 
-    if (appConfig.runtime.fluidEffect) {
-        appConfig.runtime.fluidEffect.destroy();
-        appConfig.runtime.fluidEffect = null;
+    if (config.runtime.fluidEffect) {
+        config.runtime.fluidEffect.destroy();
+        config.runtime.fluidEffect = null;
     }
 
     const container = document.querySelector('#player_control .background') as HTMLElement | null;
@@ -404,39 +404,39 @@ export function initFluidEffect(): void {
 
     try {
         const newFluidEffect = new FluidEffect2(container, {
-            resolution: appConfig.runtime.FluidEffectConfig.resolution,
-            blurAmount: appConfig.runtime.FluidEffectConfig.blurAmount,
-            displacementScale: appConfig.runtime.FluidEffectConfig.displacementScale,
-            turbulenceFrequency: appConfig.runtime.FluidEffectConfig.turbulenceFrequency,
-            turbulenceOctaves: appConfig.runtime.FluidEffectConfig.turbulenceOctaves,
-            canvasDisplacementAmplitude: appConfig.runtime.FluidEffectConfig.canvasDisplacementAmplitude
+            resolution: config.runtime.FluidEffectConfig.resolution,
+            blurAmount: config.runtime.FluidEffectConfig.blurAmount,
+            displacementScale: config.runtime.FluidEffectConfig.displacementScale,
+            turbulenceFrequency: config.runtime.FluidEffectConfig.turbulenceFrequency,
+            turbulenceOctaves: config.runtime.FluidEffectConfig.turbulenceOctaves,
+            canvasDisplacementAmplitude: config.runtime.FluidEffectConfig.canvasDisplacementAmplitude
         });
-        appConfig.runtime.fluidEffect = newFluidEffect;
+        config.runtime.fluidEffect = newFluidEffect;
     } catch (error) {
         return;
     }
 
     const thumbnail = elements.playerControl.thumbnail as HTMLImageElement | undefined;
-    if (thumbnail?.complete && appConfig.runtime.fluidEffect?.setSourceFromImage) {
-        appConfig.runtime.fluidEffect!.setSourceFromImage(thumbnail);
+    if (thumbnail?.complete && config.runtime.fluidEffect?.setSourceFromImage) {
+        config.runtime.fluidEffect!.setSourceFromImage(thumbnail);
         const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
         if (wrapper && thumbnail.src) {
             wrapper.style.backgroundImage = `url('${thumbnail.src}')`;
         }
     }
 
-    if (appConfig.runtime.fluidEffect?.start) {
-        appConfig.runtime.fluidEffect!.start();
+    if (config.runtime.fluidEffect?.start) {
+        config.runtime.fluidEffect!.start();
     }
 
     const currentPlaybackState = config.playbackState;
     if (currentPlaybackState === 2) {
-        if (appConfig.runtime.fluidEffect?.setPlayState) {
-            appConfig.runtime.fluidEffect!.setPlayState(false);
+        if (config.runtime.fluidEffect?.setPlayState) {
+            config.runtime.fluidEffect!.setPlayState(false);
         }
     } else if (currentPlaybackState === 1) {
-        if (appConfig.runtime.fluidEffect?.setPlayState) {
-            appConfig.runtime.fluidEffect!.setPlayState(true);
+        if (config.runtime.fluidEffect?.setPlayState) {
+            config.runtime.fluidEffect!.setPlayState(true);
         }
     }
 
@@ -445,14 +445,14 @@ export function initFluidEffect(): void {
 }
 
 export function destroyFluidEffect(): void {
-    const cfg = appConfig.runtime.FluidEffectConfig;
+    const cfg = config.runtime.FluidEffectConfig;
     if (cfg?.fullscreenEnabled) {
         return;
     }
 
-    if (appConfig.runtime.fluidEffect) {
-        appConfig.runtime.fluidEffect!.destroy();
-        appConfig.runtime.fluidEffect = null;
+    if (config.runtime.fluidEffect) {
+        config.runtime.fluidEffect!.destroy();
+        config.runtime.fluidEffect = null;
 
         const background = elements.playerControl.background;
         if (background) {
@@ -472,7 +472,7 @@ waitAndExecute(
     () => config.fluidEffectInitComplete === true,
     () => {
         // 实际初始化在 handleFluidEffectProperties 的 markPropertiesApplied() 中进行
-        appConfig.runtime.FluidEffectConfig.markPropertiesApplied();
+        config.runtime.FluidEffectConfig.markPropertiesApplied();
     },
     500,
     15000

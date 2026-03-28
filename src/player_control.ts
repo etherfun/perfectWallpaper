@@ -1,6 +1,6 @@
 // 播放器控制模块 - 从 player_control.js 迁移
 
-import { appConfig, config } from './utils/config';
+import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
 import {
@@ -53,7 +53,7 @@ async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Prom
                 return [color._r ?? color.r ?? 0, color._g ?? color.g ?? 0, color._b ?? color.b ?? 0];
             };
 
-            appConfig.runtime.playerInfo.colorGroup = [
+            config.runtime.playerInfo.colorGroup = [
                 [
                     hexToRgb(event.primaryColor),
                     hexToRgb(event.secondaryColor),
@@ -71,18 +71,18 @@ async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Prom
             ];
 
             // 初始化或更新流体效果（只在有播放内容时）
-            if (appConfig.runtime.FluidEffectConfig && appConfig.runtime.FluidEffectConfig.enabled) {
+            if (config.runtime.FluidEffectConfig && config.runtime.FluidEffectConfig.enabled) {
                 const hasContent = hasPlaybackContent();
                 if (hasContent) {
                     initFluidEffect();
-                    if (appConfig.runtime.playerInfo.playerState === 2 && appConfig.runtime.fluidEffect?.setPlayState) {
-                        appConfig.runtime.fluidEffect.setPlayState(false);
+                    if (config.runtime.playerInfo.playerState === 2 && config.runtime.fluidEffect?.setPlayState) {
+                        config.runtime.fluidEffect.setPlayState(false);
                     }
                 }
             }
 
             // 更新全屏流体效果
-            if (appConfig.runtime.FluidEffectConfig?.fullscreenEnabled && hasPlaybackContent()) {
+            if (config.runtime.FluidEffectConfig?.fullscreenEnabled && hasPlaybackContent()) {
                 updateFullscreenFluidSource();
             }
 
@@ -106,8 +106,8 @@ function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
     function updateTimeline(): void {
         if (waitingForData) return;
 
-        if (appConfig.runtime.playerInfo.playerState === 0 ||
-            appConfig.runtime.playerInfo.playerState === 2) {
+        if (config.runtime.playerInfo.playerState === 0 ||
+            config.runtime.playerInfo.playerState === 2) {
             timelineTimer = setTimeout(updateTimeline, 500);
             return;
         }
@@ -136,16 +136,16 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     if (event) {
         debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
 
-        appConfig.runtime.playerInfo.singtitle = event.title || '';
-        appConfig.runtime.playerInfo.singartist = event.artist || '';
-        appConfig.runtime.playerInfo.singalbumTitle = event.albumTitle || '';
-        appConfig.runtime.playerInfo.aubarstop = true;
+        config.runtime.playerInfo.singtitle = event.title || '';
+        config.runtime.playerInfo.singartist = event.artist || '';
+        config.runtime.playerInfo.singalbumTitle = event.albumTitle || '';
+        config.runtime.playerInfo.aubarstop = true;
 
         player_control_aubar.width = 0;
         player_control_aubar.height = 0;
 
         const playerControlShow = config.playerControlShow;
-        if (playerControlShow && appConfig.runtime.playerInfo.singtitle && appConfig.runtime.playerInfo.singtitle !== '') {
+        if (playerControlShow && config.runtime.playerInfo.singtitle && config.runtime.playerInfo.singtitle !== '') {
             player_control.style.display = 'flex';
         } else {
             player_control.style.display = 'none';
@@ -155,7 +155,7 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     }
 
     const playerControlShow = config.playerControlShow;
-    if (!playerControlShow || appConfig.runtime.playerInfo.singtitle === undefined || appConfig.runtime.playerInfo.singtitle === '') return;
+    if (!playerControlShow || config.runtime.playerInfo.singtitle === undefined || config.runtime.playerInfo.singtitle === '') return;
 
     playertitle();
 
@@ -164,9 +164,9 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
 }
 
 export function playertitle(): void {
-    let titleToShow = appConfig.runtime.playerInfo.singtitle || '';
-    let artistToShow = appConfig.runtime.playerInfo.singartist || '';
-    let albumToShow = appConfig.runtime.playerInfo.singalbumTitle || '';
+    let titleToShow = config.runtime.playerInfo.singtitle || '';
+    let artistToShow = config.runtime.playerInfo.singartist || '';
+    let albumToShow = config.runtime.playerInfo.singalbumTitle || '';
     const playerControlAutohide = config.playerControlAutohide;
     const playerControlShow = config.playerControlShow;
     const playerControlThumbnailrorl = config.playerControlThumbnailrorl;
@@ -222,17 +222,17 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
         if (newState !== lastPlaybackState && newState !== -1) {
             lastPlaybackState = newState;
 
-            // 同步更新 appConfig.runtime.playerInfo.playerState
+            // 同步更新 config.runtime.playerInfo.playerState
             if (newState === 1) {
-                appConfig.runtime.playerInfo.playerState = 1;
+                config.runtime.playerInfo.playerState = 1;
                 config.playbackState = 1;
                 debugLogger.info('[Player] 播放');
             } else if (newState === 2) {
-                appConfig.runtime.playerInfo.playerState = 2;
+                config.runtime.playerInfo.playerState = 2;
                 config.playbackState = 2;
                 debugLogger.info('[Player] 暂停');
             } else if (newState === 0) {
-                appConfig.runtime.playerInfo.playerState = 0;
+                config.runtime.playerInfo.playerState = 0;
                 config.playbackState = 0;
                 debugLogger.info('[Player] 停止');
             }
@@ -273,10 +273,10 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
 
 // 控制流体效果播放状态
 function controlFluidEffectPlayback(playbackState: number): void {
-    if (!appConfig.runtime.FluidEffectConfig || appConfig.runtime.FluidEffectConfig.enabled === undefined) return;
+    if (!config.runtime.FluidEffectConfig || config.runtime.FluidEffectConfig.enabled === undefined) return;
     if (!window.wallpaperMediaIntegration) return;
 
-    if (appConfig.runtime.FluidEffectConfig.enabled && !appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
+    if (config.runtime.FluidEffectConfig.enabled && !config.runtime.FluidEffectConfig.fullscreenEnabled) {
         if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             resumeFluidEffect();
         } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
@@ -286,7 +286,7 @@ function controlFluidEffectPlayback(playbackState: number): void {
         }
     }
 
-    if (appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
+    if (config.runtime.FluidEffectConfig.fullscreenEnabled) {
         if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
             resumeFullscreenFluidEffect();
         } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
@@ -299,48 +299,48 @@ function controlFluidEffectPlayback(playbackState: number): void {
 
 function resumeFluidEffect(): void {
     if (!hasPlaybackContent()) return;
-    // 使用 appConfig.runtime.fluidEffect（来自 fluid_control.ts）
-    if (!appConfig.runtime.fluidEffect && appConfig.runtime.FluidEffectConfig?.enabled) {
+    // 使用 config.runtime.fluidEffect（来自 fluid_control.ts）
+    if (!config.runtime.fluidEffect && config.runtime.FluidEffectConfig?.enabled) {
         initFluidEffect();
     }
-    if (appConfig.runtime.fluidEffect?.setPlayState) appConfig.runtime.fluidEffect.setPlayState(true);
+    if (config.runtime.fluidEffect?.setPlayState) config.runtime.fluidEffect.setPlayState(true);
 }
 
 function pauseFluidEffect(): void {
-    if (appConfig.runtime.fluidEffect?.setPlayState) appConfig.runtime.fluidEffect.setPlayState(false);
+    if (config.runtime.fluidEffect?.setPlayState) config.runtime.fluidEffect.setPlayState(false);
 }
 
 function stopFluidEffect(): void {
-    if (appConfig.runtime.fluidEffect) {
-        if (appConfig.runtime.fluidEffect.stop) appConfig.runtime.fluidEffect.stop();
-        if (appConfig.runtime.fluidEffect.destroy) appConfig.runtime.fluidEffect.destroy();
-        appConfig.runtime.fluidEffect = null;
+    if (config.runtime.fluidEffect) {
+        if (config.runtime.fluidEffect.stop) config.runtime.fluidEffect.stop();
+        if (config.runtime.fluidEffect.destroy) config.runtime.fluidEffect.destroy();
+        config.runtime.fluidEffect = null;
     }
 }
 
 function resumeFullscreenFluidEffect(): void {
     if (!hasPlaybackContent()) return;
-    if (appConfig.runtime.fullscreenFluidEffect?.setPlayState) {
-        appConfig.runtime.fullscreenFluidEffect.setPlayState(true);
-    } else if (appConfig.runtime.FluidEffectConfig?.fullscreenEnabled) {
+    if (config.runtime.fullscreenFluidEffect?.setPlayState) {
+        config.runtime.fullscreenFluidEffect.setPlayState(true);
+    } else if (config.runtime.FluidEffectConfig?.fullscreenEnabled) {
         initFullscreenFluidEffect();
     }
 }
 
 function pauseFullscreenFluidEffect(): void {
-    if (appConfig.runtime.fullscreenFluidEffect?.setPlayState) appConfig.runtime.fullscreenFluidEffect.setPlayState(false);
+    if (config.runtime.fullscreenFluidEffect?.setPlayState) config.runtime.fullscreenFluidEffect.setPlayState(false);
 }
 
 function stopFullscreenFluidEffect(): void {
-    if (appConfig.runtime.fullscreenFluidEffect) {
-        if (appConfig.runtime.fullscreenFluidEffect.stop) appConfig.runtime.fullscreenFluidEffect.stop();
-        if (appConfig.runtime.fullscreenFluidEffect.destroy) appConfig.runtime.fullscreenFluidEffect.destroy();
-        appConfig.runtime.fullscreenFluidEffect = null;
+    if (config.runtime.fullscreenFluidEffect) {
+        if (config.runtime.fullscreenFluidEffect.stop) config.runtime.fullscreenFluidEffect.stop();
+        if (config.runtime.fullscreenFluidEffect.destroy) config.runtime.fullscreenFluidEffect.destroy();
+        config.runtime.fullscreenFluidEffect = null;
     }
 }
 
 export function thumbnailsue(): void {
-    if (!appConfig.runtime.playerInfo.colorGroup) return;
+    if (!config.runtime.playerInfo.colorGroup) return;
 
     const colorPickupMethod = config.colorPickupMethod;
     const playerControlYakelibgusetb = config.playerControlYakelibgusetb;
@@ -351,21 +351,21 @@ export function thumbnailsue(): void {
     let thumbnailcolor: any;
 
     if (playerControlYakelibgusetb !== 5) {
-        thumbnailcolor = appConfig.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlYakelibgusetb - 1];
+        thumbnailcolor = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlYakelibgusetb - 1];
     } else {
         thumbnailcolor = playerControlYakeli;
     }
 
     if (playerControlFontusetb !== 5) {
-        appConfig.runtime.playerInfo.fontcolor = appConfig.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlFontusetb - 1];
+        config.runtime.playerInfo.fontcolor = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlFontusetb - 1];
     } else {
-        appConfig.runtime.playerInfo.fontcolor = playerControlColor;
+        config.runtime.playerInfo.fontcolor = playerControlColor;
     }
 
     player_control_background.style.background = "rgba(" + thumbnailcolor + "," + playerControlYakeli + ")";
-    player_control_info.style.color = "rgb(" + appConfig.runtime.playerInfo.fontcolor + ")";
-    player_iconcolor(appConfig.runtime.playerInfo.fontcolor);
-    player_control_timeline.style.backgroundColor = "rgb(" + appConfig.runtime.playerInfo.fontcolor + ")";
+    player_control_info.style.color = "rgb(" + config.runtime.playerInfo.fontcolor + ")";
+    player_iconcolor(config.runtime.playerInfo.fontcolor);
+    player_control_timeline.style.backgroundColor = "rgb(" + config.runtime.playerInfo.fontcolor + ")";
 
     const timelineEl = elements.playerControl.timeline?.parentElement;
     if (timelineEl) timelineEl.style.backgroundColor = "rgba(" + [255, 255, 255] + "," + (playerControlYakeli + 0.4) + ")";
@@ -397,7 +397,7 @@ export function pc_aubar(): void {
     aubar.width = width;
     aubar.height = height;
 
-    appConfig.runtime.playerInfo.aubarstop = false;
+    config.runtime.playerInfo.aubarstop = false;
 
     const previousHeights = new Array(64).fill(aubar.height);
     const barHeights = new Array(64).fill(0);
@@ -409,10 +409,10 @@ export function pc_aubar(): void {
     const draw = (): void => {
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         const barWidth = aubar.width / 64;
-        rgbbg.fillStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
+        rgbbg.fillStyle = 'rgb(' + config.runtime.playerInfo.fontcolor + ')';
 
         // 每次绘制时获取最新的音频数据
-        const currentAudioArr = appConfig.runtime.playerInfo.audioArray;
+        const currentAudioArr = config.runtime.playerInfo.audioArray;
 
         for (let i = 0, l = 64; i < 64; ++i, ++l) {
             const bar = (currentAudioArr[i] + currentAudioArr[l]) / 2;
@@ -424,7 +424,7 @@ export function pc_aubar(): void {
             rgbbg.fillRect(barWidth * i, aubar.height - barHeights[i], barWidth, barHeights[i]);
         }
 
-        if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {
+        if (!config.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && config.runtime.playerInfo.playerState !== 0) {
             requestAnimationFrame(draw);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
@@ -434,11 +434,11 @@ export function pc_aubar(): void {
     const drawline = (): void => {
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         rgbbg.lineWidth = 2;
-        rgbbg.strokeStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
+        rgbbg.strokeStyle = 'rgb(' + config.runtime.playerInfo.fontcolor + ')';
         const spacing = aubar.width / 64;
 
         // 每次绘制时获取最新的音频数据
-        const currentAudioArr = appConfig.runtime.playerInfo.audioArray;
+        const currentAudioArr = config.runtime.playerInfo.audioArray;
 
         rgbbg.beginPath();
 
@@ -453,7 +453,7 @@ export function pc_aubar(): void {
         }
 
         if (heights.length < 2) {
-            if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {
+            if (!config.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && config.runtime.playerInfo.playerState !== 0) {
                 requestAnimationFrame(drawline);
             }
             return;
@@ -484,7 +484,7 @@ export function pc_aubar(): void {
 
         rgbbg.stroke();
 
-        if (!appConfig.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && appConfig.runtime.playerInfo.playerState !== 0) {
+        if (!config.runtime.playerInfo.aubarstop && config.playerControlVisualaudiobar && config.runtime.playerInfo.playerState !== 0) {
             requestAnimationFrame(drawline);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);

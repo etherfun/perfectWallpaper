@@ -1,10 +1,10 @@
 /**
  * 音频可视化模块
- * 注册 Wallpaper Engine 音频监听器，将音频数据存储到 appConfig.runtime
+ * 注册 Wallpaper Engine 音频监听器，将音频数据存储到 config.runtime
  * 并在音频数据到达时触发 PWCircle 和 PWLine 的绘制
  */
 
-import { appConfig, config } from './utils/config';
+import { config } from './utils/config';
 import { debugLogger } from './utils/logger';
 
 // PWCircle 绘制函数
@@ -143,7 +143,7 @@ function initCanvasContexts(): void {
  * 清除画布
  */
 function clearCanvases(): void {
-    const wallpaper = appConfig.runtime.wallpaper;
+    const wallpaper = config.runtime.wallpaper;
 
     wallpaper?.audiovisualizer('clearCanvas');
     _lineCtx?.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -155,7 +155,7 @@ function clearCanvases(): void {
  */
 function renderCircle(audioData: number[]): void {
     const ctx = _circleCtx;
-    const param = appConfig.runtime.param;
+    const param = config.runtime.param;
 
     if (!ctx || !param || !param.showCircle) return;
 
@@ -169,7 +169,7 @@ function renderCircle(audioData: number[]): void {
  */
 function renderLine(audioData: number[]): void {
     const ctx = _lineCtx;
-    const param = appConfig.runtime.PWLineParam;
+    const param = config.runtime.PWLineParam;
 
     if (!ctx || !param || !param.showLine) return;
 
@@ -180,7 +180,7 @@ function renderLine(audioData: number[]): void {
 
 /**
  * 音频数据监听回调
- * 仅负责将音频数据存储到 appConfig.runtime
+ * 仅负责将音频数据存储到 config.runtime
  * 由 Wallpaper Engine 调用，约30fps
  */
 export function audioDataListener(audioData: number[]): void {
@@ -203,7 +203,7 @@ export function audioDataListener(audioData: number[]): void {
     }
 
     // 存储处理后的音频数据
-    appConfig.runtime.playerInfo.audioArray = smoothedData;
+    config.runtime.playerInfo.audioArray = smoothedData;
 
     // 触发渲染（渲染函数会自行判断当前模式）
     renderAudioVisualization();
@@ -211,10 +211,10 @@ export function audioDataListener(audioData: number[]): void {
 
 /**
  * 音频可视化渲染函数
- * 从 appConfig.runtime 读取音频数据并渲染到 Canvas
+ * 从 config.runtime 读取音频数据并渲染到 Canvas
  */
 export function renderAudioVisualization(): void {
-    const audioData = appConfig.runtime.playerInfo.audioArray;
+    const audioData = config.runtime.playerInfo.audioArray;
     if (!audioData?.length) {
         debugLogger.info('[AudioVisual] No audio data to render');
         return;
@@ -238,7 +238,7 @@ export function renderAudioVisualization(): void {
             renderLine(audioData);
             break;
         case 3:
-            appConfig.runtime.wallpaper?.audiovisualizer('drawCanvas', audioData);
+            config.runtime.wallpaper?.audiovisualizer('drawCanvas', audioData);
             break;
     }
 }

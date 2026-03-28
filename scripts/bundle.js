@@ -15,12 +15,12 @@ const distDir = path.resolve(srcDir, 'dist');
 
 // Files to copy to project root (for wallpaper engine)
 const copyFiles = [
-    { src: 'index.html', dest: 'index.html' },
-    { src: 'project.json', dest: 'project.json' },
-    { src: 'source/i18n/', dest: 'source/i18n/' },
+    { src: 'index.html', dest: 'index.html', force: true },
+    { src: 'project.json', dest: 'project.json', force: true },
+    { src: 'source/i18n/', dest: 'source/i18n/', force: true  },
     { src: 'source/imgs/', dest: 'source/imgs/' },
     { src: 'source/map/', dest: 'source/map/' },
-    { src: 'update/', dest: 'update/' },
+    { src: 'update/', dest: 'update/', force: true  },
     { src: 'preview.jpg', dest: 'preview.jpg' }
 ];
 
@@ -41,8 +41,8 @@ const htmlPathReplacements = [
     ['src/source/', './source/'],
 ];
 
-async function copyFile(src, dest) {
-    if (fs.existsSync(dest)) {
+async function copyFile(src, dest, force = false) {
+    if (!force && fs.existsSync(dest)) {
         return; // Skip if destination already exists
     }
     const destDir = path.dirname(dest);
@@ -98,7 +98,7 @@ async function copyAssets() {
         if (stat.isDirectory()) {
             await copyDirectory(srcPath, destPath);
         } else {
-            await copyFile(srcPath, destPath);
+            await copyFile(srcPath, destPath, item.force);
         }
     }
 

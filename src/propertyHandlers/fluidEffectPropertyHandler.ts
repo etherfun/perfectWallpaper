@@ -1,12 +1,8 @@
-/**
- * Fluid Effect Property Handler
- * 处理流体效果相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { elements } from '../utils/elementManager';
-import { appConfig, config } from '@/utils/config';
+import { config } from '@/utils/config';
 import { FluidEffectConfig } from '../fluid_control';
+import { debugLogger } from '@/utils/logger';
 
 /**
  * 处理流体效果相关属性
@@ -19,9 +15,9 @@ export function handleFluidEffectProperties(
 ): void {
     const bodyElement = elements.body;
 
-    if (FirstLoad) appConfig.runtime.FluidEffectConfig = new FluidEffectConfig();
+    if (FirstLoad) config.runtime.FluidEffectConfig = new FluidEffectConfig();
 
-    const cfg = appConfig.runtime.FluidEffectConfig;
+    const cfg = config.runtime.FluidEffectConfig;
 
     // 全屏启用
     if (properties.fluidEffectEnabledFullscreen) {
@@ -72,5 +68,9 @@ export function handleFluidEffectProperties(
         bodyElement.style.setProperty("--fluidEffect-backdrop-filter-strength", `${properties.fluidEffect_backdropFilterStrength.value}px`);
     }
 
-    if (FirstLoad) config.fluidEffectInitComplete = true;
+
+    if (FirstLoad) {
+        debugLogger.info('[FluidEffect] 流体参数初始化完成');
+        config.fluidEffectInitComplete = true;
+    }
 }

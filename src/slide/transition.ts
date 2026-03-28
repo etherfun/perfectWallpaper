@@ -4,7 +4,7 @@
  */
 
 import { background2canvas } from "../RGB";
-import { appConfig } from "../utils/config";
+import { config } from "../utils/config";
 import { backgroundLayers } from "./types";
 import { applyBackgroundStyle } from "./styles";
 
@@ -77,8 +77,8 @@ export function transitionBackground(newImageUrl: string): void {
 /** Update playlist */
 export function updateFileList(currentFiles: string[]): void {
     for (let i = 0; i < currentFiles.length; ++i) {
-        if (appConfig.runtime.myList.indexOf(currentFiles[i]) === -1) {
-            appConfig.runtime.myList.push(currentFiles[i]);
+        if (config.runtime.myList.indexOf(currentFiles[i]) === -1) {
+            config.runtime.myList.push(currentFiles[i]);
         }
     }
 }

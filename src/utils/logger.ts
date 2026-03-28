@@ -3,7 +3,7 @@
  * 用于保存报错日志到变量中，包含时间戳和重要等级
  */
 
-import { appConfig } from './config';
+import { config } from './config';
 
 // 日志条目接口
 interface LogEntry {
@@ -754,4 +754,4 @@ export class DebugLogger {
 export const debugLogger = new DebugLogger();
 
 // 挂载到 runtime
-appConfig.runtime.debugLogger = debugLogger;
+config.runtime.debugLogger = debugLogger;

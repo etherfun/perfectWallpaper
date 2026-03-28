@@ -6,7 +6,7 @@ export { SimpleMarkdown } from './simple-markdown';
 
 import { waitAndExecute } from "../utils/timer";
 import { fetch_with_retry } from "../utils/tool";
-import { appConfig, config } from "../utils/config";
+import { config } from "../utils/config";
 import { i18n } from "../utils/i18n";
 import { SimpleMarkdown } from './simple-markdown';
 
@@ -838,7 +838,7 @@ class versionManager {
 
 // 创建全局版本管理器实例并挂载到 runtime
 const versionManagerInstance = new versionManager();
-appConfig.runtime.versionManager = versionManagerInstance;
+config.runtime.versionManager = versionManagerInstance;
 
 // 暴露 SimpleMarkdown 到全局作用域，使 onclick="SimpleMarkdown.copyLink(this)" 能正常工作
 window.SimpleMarkdown = SimpleMarkdown;
@@ -850,15 +850,15 @@ waitAndExecute(
         return complete;
     },
     () => {
-        if (!appConfig.runtime.versionManager) {
-            appConfig.runtime.versionManager = new versionManager();
+        if (!config.runtime.versionManager) {
+            config.runtime.versionManager = new versionManager();
         }
 
         // 延迟显示，确保其他内容已加载
         setTimeout(async () => {
-            if (appConfig.runtime.versionManager) {
+            if (config.runtime.versionManager) {
                 try {
-                    await appConfig.runtime.versionManager.initUpdateModal();
+                    await config.runtime.versionManager.initUpdateModal();
                 } catch (error) {
                     console.error("初始化版本弹窗失败:", error);
                 }

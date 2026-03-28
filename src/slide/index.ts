@@ -15,7 +15,7 @@ export { calculate, TransitionSwith, applyBackgroundStyle } from './styles';
 // Re-export types and backgroundLayers
 export { backgroundLayers, pictures, WALLPAPER_MODE } from './types';
 
-import { appConfig, config } from "../utils/config";
+import { config } from "../utils/config";
 import { timerManager } from "@/utils/timer";
 import { shouldShow, clearpicturesinfo } from "./sources";
 import { calculate, TransitionSwith, applyBackgroundStyle } from "./styles";
@@ -28,7 +28,7 @@ export function changeBackground(): void {
             shouldShow();
             break;
         case 2: // Random mode
-            if (appConfig.runtime.myList.length) {
+            if (config.runtime.myList.length) {
                 if (config.random) {
                     nextImage(true);
                 } else {
@@ -83,27 +83,27 @@ export function changeBackground(): void {
 
 /** Switch to next image (sequential or random) */
 export function nextImage(rands: boolean): void {
-    const photoInfo = appConfig.runtime.photo;
+    const photoInfo = config.runtime.photo;
     let index = -1;
     let indexNow = -1;
 
     // First is empty
     if (photoInfo.currentImg) {
-        indexNow = appConfig.runtime.myList.indexOf(photoInfo.currentImg);
+        indexNow = config.runtime.myList.indexOf(photoInfo.currentImg);
         index = indexNow;
     }
 
     // Random or sequential
     if (rands) {
         while (index == indexNow) {
-            index = Math.floor(Math.random() * (appConfig.runtime.myList.length));
+            index = Math.floor(Math.random() * (config.runtime.myList.length));
         }
-        photoInfo.currentImg = appConfig.runtime.myList[index];
+        photoInfo.currentImg = config.runtime.myList[index];
     } else {
-        if (index + 1 == appConfig.runtime.myList.length) {
-            photoInfo.currentImg = appConfig.runtime.myList[0];
+        if (index + 1 == config.runtime.myList.length) {
+            photoInfo.currentImg = config.runtime.myList[0];
         } else {
-            photoInfo.currentImg = appConfig.runtime.myList[index + 1];
+            photoInfo.currentImg = config.runtime.myList[index + 1];
         }
     }
     shouldShow();

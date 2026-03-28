@@ -3,7 +3,6 @@
  * 系统监控模块 - 显示CPU、GPU、内存等信息
  */
 
-import { config, appConfig } from '@/utils/config';
 import { elements, getElementAs } from '@/utils/elementManager';
 
 // 配置类型

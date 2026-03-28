@@ -2,7 +2,7 @@
  * Wallpaper sources - Bing, NASA, Lorem Picsum, etc.
  */
 
-import { config, appConfig } from "../utils/config";
+import { config } from "../utils/config";
 import { elements } from "../utils/elementManager";
 import { transitionBackground, updateFileList } from "./transition";
 import { background2canvas } from "../RGB";
@@ -60,10 +60,10 @@ function doNasa(url: string): void {
         transitionBackground(img.src);
 
         if (config.RGBShow) {
-            appConfig.runtime.photo.nextphoto = true;
+            config.runtime.photo.nextphoto = true;
             setTimeout(function () {
                 background2canvas(img.src, false);
-                appConfig.runtime.photo.nextphoto = false;
+                config.runtime.photo.nextphoto = false;
             }, 100);
         }
     };
@@ -91,10 +91,10 @@ export function shouldShow(): void {
             clearpicturesinfo();
             pictures.picture_info.style.display = "none";
             if (config.RGBShow) {
-                appConfig.runtime.photo.nextphoto = true;
+                config.runtime.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(imageUrl, false);
-                    appConfig.runtime.photo.nextphoto = false;
+                    config.runtime.photo.nextphoto = false;
                 }, 100);
             }
             break;
@@ -102,18 +102,18 @@ export function shouldShow(): void {
         case 2: // Random mode
             (elements.myvideo as HTMLVideoElement).src = "";
             backgroundLayers.container.style.display = "block";
-            if (appConfig.runtime.myList.length) {
-                transitionBackground('file:///' + appConfig.runtime.photo.currentImg!);
+            if (config.runtime.myList.length) {
+                transitionBackground('file:///' + config.runtime.photo.currentImg!);
             } else {
                 transitionBackground("imgs/1.jpg");
             }
             clearpicturesinfo();
             pictures.picture_info.style.display = "none";
             if (config.RGBShow) {
-                appConfig.runtime.photo.nextphoto = true;
+                config.runtime.photo.nextphoto = true;
                 setTimeout(function () {
-                    background2canvas(appConfig.runtime.photo.currentImg!, false);
-                    appConfig.runtime.photo.nextphoto = false;
+                    background2canvas(config.runtime.photo.currentImg!, false);
+                    config.runtime.photo.nextphoto = false;
                 }, 100);
             }
             break;
@@ -124,10 +124,10 @@ export function shouldShow(): void {
             backgroundLayers.container.style.display = "none";
             pictures.picture_info.style.display = "none";
             if (config.RGBShow) {
-                appConfig.runtime.photo.nextphoto = true;
+                config.runtime.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(undefined, true);
-                    appConfig.runtime.photo.nextphoto = false;
+                    config.runtime.photo.nextphoto = false;
                 }, 100);
             }
             break;
@@ -142,21 +142,21 @@ export function shouldShow(): void {
             fetch("https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=" + config.language)
                 .then(response => response.json())
                 .then((get: any) => {
-                    appConfig.runtime.photo.infomation.title = get.images[0].title;
-                    appConfig.runtime.photo.infomation.text = "";
-                    appConfig.runtime.photo.infomation.copyright = "";
-                    appConfig.runtime.photo.infomation.where = "";
+                    config.runtime.photo.infomation.title = get.images[0].title;
+                    config.runtime.photo.infomation.text = "";
+                    config.runtime.photo.infomation.copyright = "";
+                    config.runtime.photo.infomation.where = "";
                     const match = get.images[0].copyright.match(/\(([^)]+)\)/);
                     if (match) {
-                        appConfig.runtime.photo.infomation.copyright = match[1];
-                        appConfig.runtime.photo.infomation.where = get.images[0].copyright.replace(/\(([^)]+)\)/, '').trim();
+                        config.runtime.photo.infomation.copyright = match[1];
+                        config.runtime.photo.infomation.where = get.images[0].copyright.replace(/\(([^)]+)\)/, '').trim();
                     }
 
                     picturesinfo_showrl(
-                        appConfig.runtime.photo.infomation.title,
-                        appConfig.runtime.photo.infomation.copyright,
-                        appConfig.runtime.photo.infomation.where,
-                        appConfig.runtime.photo.infomation.text
+                        config.runtime.photo.infomation.title,
+                        config.runtime.photo.infomation.copyright,
+                        config.runtime.photo.infomation.where,
+                        config.runtime.photo.infomation.text
                     );
 
                     const bingurl = 'https://www.bing.com' + get.images[0].urlbase;
@@ -167,10 +167,10 @@ export function shouldShow(): void {
                         transitionBackground(img.src);
 
                         if (config.RGBShow) {
-                            appConfig.runtime.photo.nextphoto = true;
+                            config.runtime.photo.nextphoto = true;
                             setTimeout(function () {
                                 background2canvas(img.src, false);
-                                appConfig.runtime.photo.nextphoto = false;
+                                config.runtime.photo.nextphoto = false;
                             }, 100);
                         }
                     };
@@ -189,10 +189,10 @@ export function shouldShow(): void {
                 transitionBackground(loremImg.src);
 
                 if (config.RGBShow) {
-                    appConfig.runtime.photo.nextphoto = true;
+                    config.runtime.photo.nextphoto = true;
                     setTimeout(function () {
                         background2canvas(loremImg.src, false);
-                        appConfig.runtime.photo.nextphoto = false;
+                        config.runtime.photo.nextphoto = false;
                     }, 100);
                 }
             };
@@ -218,15 +218,15 @@ export function shouldShow(): void {
                             const doc = parser.parseFromString(get, 'text/html');
                             const url = "https://apod.nasa.gov/apod/" + doc.querySelector("img")?.getAttribute("src");
 
-                            appConfig.runtime.photo.infomation.title = doc.querySelector('b')?.textContent || "";
-                            appConfig.runtime.photo.infomation.text = doc.querySelectorAll('p')[2]?.textContent || "";
-                            appConfig.runtime.photo.infomation.copyright = doc.querySelectorAll('a')[2]?.textContent || "";
-                            appConfig.runtime.photo.infomation.where = "";
+                            config.runtime.photo.infomation.title = doc.querySelector('b')?.textContent || "";
+                            config.runtime.photo.infomation.text = doc.querySelectorAll('p')[2]?.textContent || "";
+                            config.runtime.photo.infomation.copyright = doc.querySelectorAll('a')[2]?.textContent || "";
+                            config.runtime.photo.infomation.where = "";
                             picturesinfo_showrl(
-                                appConfig.runtime.photo.infomation.title,
-                                appConfig.runtime.photo.infomation.copyright,
-                                appConfig.runtime.photo.infomation.where,
-                                appConfig.runtime.photo.infomation.text
+                                config.runtime.photo.infomation.title,
+                                config.runtime.photo.infomation.copyright,
+                                config.runtime.photo.infomation.where,
+                                config.runtime.photo.infomation.text
                             );
                             doNasa(url);
                         });
@@ -243,19 +243,19 @@ export function shouldShow(): void {
                                 url = get.hdurl;
                             }
 
-                            appConfig.runtime.photo.infomation.title = get.title;
-                            appConfig.runtime.photo.infomation.text = get.explanation;
+                            config.runtime.photo.infomation.title = get.title;
+                            config.runtime.photo.infomation.text = get.explanation;
                             if (get.copyright == undefined) {
-                                appConfig.runtime.photo.infomation.copyright = "";
+                                config.runtime.photo.infomation.copyright = "";
                             } else {
-                                appConfig.runtime.photo.infomation.copyright = get.copyright;
+                                config.runtime.photo.infomation.copyright = get.copyright;
                             }
-                            appConfig.runtime.photo.infomation.where = "";
+                            config.runtime.photo.infomation.where = "";
                             picturesinfo_showrl(
-                                appConfig.runtime.photo.infomation.title,
-                                appConfig.runtime.photo.infomation.copyright,
-                                appConfig.runtime.photo.infomation.where,
-                                appConfig.runtime.photo.infomation.text
+                                config.runtime.photo.infomation.title,
+                                config.runtime.photo.infomation.copyright,
+                                config.runtime.photo.infomation.where,
+                                config.runtime.photo.infomation.text
                             );
 
                             doNasa(url);
@@ -278,10 +278,10 @@ export function shouldShow(): void {
                         transitionBackground(img.src);
 
                         if (config.RGBShow) {
-                            appConfig.runtime.photo.nextphoto = true;
+                            config.runtime.photo.nextphoto = true;
                             setTimeout(function () {
                                 background2canvas(img.src, false);
-                                appConfig.runtime.photo.nextphoto = false;
+                                config.runtime.photo.nextphoto = false;
                             }, 100);
                         }
                     };
@@ -308,25 +308,25 @@ export function shouldShow(): void {
                     const img = new Image();
                     img.src = url;
 
-                    appConfig.runtime.photo.infomation.title = rawjson.ad.title;
-                    appConfig.runtime.photo.infomation.text = rawjson.ad.description;
-                    appConfig.runtime.photo.infomation.copyright = rawjson.ad.copyright;
-                    appConfig.runtime.photo.infomation.where = rawjson.ad.iconHoverText.split(/\r?\n/)[0].trim();
+                    config.runtime.photo.infomation.title = rawjson.ad.title;
+                    config.runtime.photo.infomation.text = rawjson.ad.description;
+                    config.runtime.photo.infomation.copyright = rawjson.ad.copyright;
+                    config.runtime.photo.infomation.where = rawjson.ad.iconHoverText.split(/\r?\n/)[0].trim();
                     picturesinfo_showrl(
-                        appConfig.runtime.photo.infomation.title,
-                        appConfig.runtime.photo.infomation.copyright,
-                        appConfig.runtime.photo.infomation.where,
-                        appConfig.runtime.photo.infomation.text
+                        config.runtime.photo.infomation.title,
+                        config.runtime.photo.infomation.copyright,
+                        config.runtime.photo.infomation.where,
+                        config.runtime.photo.infomation.text
                     );
 
                     img.onload = function () {
                         transitionBackground(img.src);
 
                         if (config.RGBShow) {
-                            appConfig.runtime.photo.nextphoto = true;
+                            config.runtime.photo.nextphoto = true;
                             setTimeout(function () {
                                 background2canvas(img.src, false);
-                                appConfig.runtime.photo.nextphoto = false;
+                                config.runtime.photo.nextphoto = false;
                             }, 100);
                         }
                     };
@@ -346,10 +346,10 @@ export function shouldShow(): void {
                 transitionBackground(customImg.src);
 
                 if (config.RGBShow) {
-                    appConfig.runtime.photo.nextphoto = true;
+                    config.runtime.photo.nextphoto = true;
                     setTimeout(function () {
                         background2canvas(customImg.src, false);
-                        appConfig.runtime.photo.nextphoto = false;
+                        config.runtime.photo.nextphoto = false;
                     }, 100);
                 }
             };

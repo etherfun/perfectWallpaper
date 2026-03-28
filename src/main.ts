@@ -1,4 +1,4 @@
-﻿import { appConfig } from './utils/config';
+﻿import { config } from './utils/config';
 import { debugLogger } from './utils/logger';
 import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { WallpaperEffectController } from './WallpaperEffectController';
@@ -7,7 +7,7 @@ import { resize as pwCircleResize } from './PWCircle';
 import { PWLineInit } from './PWLine';
 import './fullscreenLyrics';
 
-appConfig.runtime.wallpaper = new WallpaperEffectController(document.body);
+config.runtime.wallpaper = new WallpaperEffectController(document.body);
 
 setupWallpaperPropertyListener();
 pwCircleResize();

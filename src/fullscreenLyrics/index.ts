@@ -5,7 +5,7 @@
 
 export * from './types';
 
-import { appConfig, config } from '../utils/config';
+import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import type { LyricLine, LyricsData, FullscreenLyricsConfig } from './types';
 
@@ -584,7 +584,7 @@ export class FullscreenLyrics {
         }
 
         // Check if music is playing (playerState: 1 = playing)
-        const playerState = appConfig.runtime.playerInfo.playerState;
+        const playerState = config.runtime.playerInfo.playerState;
         if ((playerState === 1) && !this.isVisible && config.fullscreenLyrics) {
             this.show();
         } else if ((playerState === null || playerState === 0) && this.isVisible) {
@@ -614,4 +614,4 @@ function onPlayerStateChange(key: string, value: unknown): void {
 export const fullscreenLyrics = new FullscreenLyrics();
 
 // Register player state listener
-appConfig.addListener(onPlayerStateChange);
+config.addListener(onPlayerStateChange);

@@ -1,11 +1,6 @@
-/**
- * Particle Property Handler
- * 处理粒子效果相关的属性监听
- */
-
+import { debugLogger } from '@/utils/logger';
 import { WallpaperProperties } from './types';
-import { appConfig, config } from '@/utils/config';
-import { shouldShow } from '../slide';
+import { config } from '@/utils/config';
 
 /**
  * 处理粒子效果相关属性
@@ -17,7 +12,7 @@ export function handleParticleProperties(
     FirstLoad: boolean
 ): void {
 
-    const wallpaper = appConfig.runtime.wallpaper;
+    const wallpaper = config.runtime.wallpaper;
 
     // 显示粒子
     if (properties.particles_isParticles) {
@@ -221,5 +216,9 @@ export function handleParticleProperties(
             default:
                 wallpaper.particles('set', 'moveOutMode', 'out');
         }
+    }
+
+    if (FirstLoad) {
+        debugLogger.info('[Particles] 粒子效果参数初始化完成');
     }
 }

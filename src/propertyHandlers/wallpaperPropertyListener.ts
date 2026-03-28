@@ -1,8 +1,3 @@
-/**
- * Wallpaper Property Listener
- * 统一的入口点文件，处理 wallpaper engine 的所有属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { handleDateProperties } from './datePropertyHandler';
 import { handleTimeProperties } from './timePropertyHandler';
@@ -18,7 +13,7 @@ import { handleSakuraProperties } from './sakuraPropertyHandler';
 import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
 import { handleLyricsProperties } from './lyricsPropertyHandler';
 import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
-import { appConfig, config } from '../utils/config';
+import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { elements } from '../utils/elementManager';
 import { removesakura } from '../sakura';
@@ -64,10 +59,10 @@ export function createWallpaperPropertyListener(
     // 版本更新检查
     if (properties.wallpaper_updata && FirstLoad !== true) {
         debugLogger.info('[版本窗口] 检测到版本更新请求');
-        if (appConfig.runtime.versionManager) {
-            appConfig.runtime.versionManager.showVersionInfo();
+        if (config.runtime.versionManager) {
+            config.runtime.versionManager.showVersionInfo();
         } else {
-            appConfig.runtime.debugLogger.warn('[版本窗口] versionManager 未初始化');
+            config.runtime.debugLogger.warn('[版本窗口] versionManager 未初始化');
         }
     }
 
@@ -115,7 +110,7 @@ export function createWallpaperPropertyListener(
 export function setupWallpaperPropertyListener(): void {
     // 确保 window 对象存在
     if (typeof window !== 'undefined') {
-        const runtime = appConfig.runtime;
+        const runtime = config.runtime;
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
                 // 从 appConfig 获取 FirstLoad 状态

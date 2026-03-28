@@ -62,7 +62,7 @@ export function handleTimeProperties(
         config.t_size = s;
         elements.body.style.setProperty("--clock-font-size", Math.floor(config.screenHeight / 300 * s) + 'px');
         elements.body.style.setProperty("--clock-line-height", Math.floor(config.screenHeight / 390 * s) + 'px');
-        const indicators = document.querySelector("#clock .block .time-indicators") as HTMLElement | null;
+        const indicators = document.querySelector("#clock .clock-block .time-indicators") as HTMLElement | null;
         if (indicators) indicators.style.marginLeft = s + 'px';
     }
 

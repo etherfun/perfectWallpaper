@@ -14,11 +14,11 @@ const elements = {
     // 时间
     clock: {
         container: document.querySelector("#clock") as HTMLElement,
-        block: document.querySelector("#clock .block") as HTMLElement,
-        min: document.querySelector("#clock .block .min") as HTMLElement,
-        indicators: document.querySelector("#clock .block .time-indicators") as HTMLElement,
-        sec: document.querySelector("#clock .block .time-indicators .sec") as HTMLElement,
-        st: document.querySelector("#clock .block .time-indicators .st") as HTMLElement,
+        block: document.querySelector("#clock .clock-block") as HTMLElement,
+        min: document.querySelector("#clock .clock-block .min") as HTMLElement,
+        indicators: document.querySelector("#clock .clock-block .time-indicators") as HTMLElement,
+        sec: document.querySelector("#clock .clock-block .time-indicators .sec") as HTMLElement,
+        st: document.querySelector("#clock .clock-block .time-indicators .st") as HTMLElement,
     },
 
     // 日期
@@ -225,11 +225,11 @@ function resetElements(): void {
     elements.myAudio = document.getElementById("myAudio") as HTMLAudioElement;
     
     elements.clock.container = document.querySelector("#clock") as HTMLElement;
-    elements.clock.block = document.querySelector("#clock .block") as HTMLElement;
-    elements.clock.min = document.querySelector("#clock .block .min") as HTMLElement;
-    elements.clock.indicators = document.querySelector("#clock .block .time-indicators") as HTMLElement;
-    elements.clock.sec = document.querySelector("#clock .block .time-indicators .sec") as HTMLElement;
-    elements.clock.st = document.querySelector("#clock .block .time-indicators .st") as HTMLElement;
+    elements.clock.block = document.querySelector("#clock .clock-block") as HTMLElement;
+    elements.clock.min = document.querySelector("#clock .clock-block .min") as HTMLElement;
+    elements.clock.indicators = document.querySelector("#clock .clock-block .time-indicators") as HTMLElement;
+    elements.clock.sec = document.querySelector("#clock .clock-block .time-indicators .sec") as HTMLElement;
+    elements.clock.st = document.querySelector("#clock .clock-block .time-indicators .st") as HTMLElement;
     
     elements.date.container = document.querySelector("#oDate");
     elements.date.webtext = document.querySelector("#oDate .text");

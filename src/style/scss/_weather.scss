@@ -289,3 +289,10 @@
   font-size: 0.95em;
   border-top: 2px solid rgba(255, 255, 255, 0.3);
 }
+
+.weather-row.weather-tip {
+  justify-content: center;
+  display: flex;
+  padding: 6px 0;
+  text-align: center;
+}

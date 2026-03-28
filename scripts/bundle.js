@@ -35,10 +35,9 @@ const htmlPathReplacements = [
     // [original, replacement]
     ['./dist/style/', './'],
     ['./dist/', './'],
-    ['./src/source/', './source/'],
     ['dist/style/', './'],
     ['dist/', './'],
-    ['src/source/', './source/'],
+    ['src/source/', 'source/'],
 ];
 
 async function copyFile(src, dest, force = false) {
@@ -81,6 +80,19 @@ async function processHtml() {
 
     fs.writeFileSync(destHtml, content);
     console.log(`  Processed: index.html`);
+}
+
+async function processProjectJson() {
+    const srcJson = path.join(srcDir, 'project.json');
+    const destJson = path.join(distDir, 'project.json');
+    let content = fs.readFileSync(srcJson, 'utf8');
+
+    // 只替换 dist/ 为空 (用于 "file" : "dist/index.html" -> "file" : "index.html")
+    content = content.replaceAll('"dist/', '"');
+    content = content.replaceAll("'dist/", "'");
+
+    fs.writeFileSync(destJson, content);
+    console.log(`  Processed: project.json`);
 }
 
 async function copyAssets() {
@@ -177,6 +189,7 @@ async function build() {
     // Copy assets and process HTML after bundling
     await copyAssets();
     await processHtml();
+    await processProjectJson();
 
     // Output bundle size
     const bundleSize = fs.statSync(bundlePath).size;

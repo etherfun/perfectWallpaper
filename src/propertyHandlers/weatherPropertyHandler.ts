@@ -52,7 +52,8 @@ export function handleWeatherProperties(
     }
 
     if (properties.weather_daliy_tip) {
-        if (FirstLoad === false) {
+        config.weatherDailyTip = properties.weather_daliy_tip.value;
+        if (!FirstLoad) {
             generateWeatherTable();
         }
     }

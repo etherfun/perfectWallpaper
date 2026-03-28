@@ -175,20 +175,20 @@ setInterval(broadcastSystemInfo, 2000);
 app.listen(PORT, () => {
   console.log(`
 ╔════════════════════════════════════════════════════════════╗
-║           PerfectWall System Info Server                    ║
+║           PerfectWall System Info Server                   ║
 ╠════════════════════════════════════════════════════════════╣
-║  HTTP Server running on http://localhost:${PORT}              ║
+║  HTTP Server running on http://localhost:${PORT}           ║
 ╠════════════════════════════════════════════════════════════╣
-║  Endpoints:                                                 ║
-║    GET /api/system   - Full system information              ║
-║    GET /api/cpu      - CPU usage only                       ║
-║    GET /api/memory   - Memory usage only                    ║
-║    GET /api/gpu      - GPU info only                        ║
-║    GET /api/health   - Health check                         ║
-║    GET /api/stream   - SSE real-time updates                ║
+║  Endpoints:                                                ║
+║    GET /api/system   - Full system information             ║
+║    GET /api/cpu      - CPU usage only                      ║
+║    GET /api/memory   - Memory usage only                   ║
+║    GET /api/gpu      - GPU info only                       ║
+║    GET /api/health   - Health check                        ║
+║    GET /api/stream   - SSE real-time updates               ║
 ╠════════════════════════════════════════════════════════════╣
-║  For Wallpaper Engine, use:                                 ║
-║    http://localhost:${PORT}/api/system                       ║
+║  For Wallpaper Engine, use:                                ║
+║    http://localhost:${PORT}/api/system                     ║
 ╚════════════════════════════════════════════════════════════╝
   `);
 });

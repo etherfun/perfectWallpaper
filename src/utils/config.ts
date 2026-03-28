@@ -218,6 +218,7 @@ const DEFAULTS = {
   weatherYakelicColor: [255, 255, 255],
   weatherYakeli: 0,
   weatherBluryakeli: 10,
+  weatherDailyTip: false,
 
   // 倒计时日期配置
   countdownYear: new Date().getFullYear(),

@@ -37,6 +37,20 @@ export let showTemperatureInsteadOfPrecip = false;
 export let precipTemperatureToggleTimer: number | null = null;
 export let isAnimatingPrecipToggle = false;
 
+// SVG 图标缓存
+const iconCache = new Map<string, string>();
+
+// 获取图标（优先使用缓存）
+async function getIconSvg(iconPath: string): Promise<string> {
+    if (iconCache.has(iconPath)) {
+        return iconCache.get(iconPath)!;
+    }
+    const res = await fetch(iconPath);
+    const svg = await res.text();
+    iconCache.set(iconPath, svg);
+    return svg;
+}
+
 // 创建空天气数据
 function createEmptyWeatherData(): WeatherData {
     return {
@@ -385,7 +399,7 @@ export async function generateWeatherTable(): Promise<void> {
 
     // 提示信息行
     weather_daliy_tip = getWeatherTips(weather_data);
-    if (weather_daliy_tip) {
+    if (weather_daliy_tip && config.weatherDailyTip) {
         rightHTML += `<div class="weather-row weather-tip">${weather_daliy_tip}</div>`;
     }
 
@@ -531,8 +545,7 @@ function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number): void
         if (pWindLv) pWindLv.textContent = windLv;
         if (pWindSpeed) pWindSpeed.textContent = `${windSp} ${i18n('weather_tooltip_unit_ms')}`;
 
-        fetch_with_retry(`src/source/QWeather-Icons/icons/${icon}-fill.svg`)
-            .then(res => res.text())
+        getIconSvg(`src/source/QWeather-Icons/icons/${icon}-fill.svg`)
             .then(svg => {
                 if (pIconImg) pIconImg.innerHTML = svg;
             });
@@ -632,8 +645,7 @@ function attachWeatherAlertTooltip(element: HTMLElement): void {
 
             if (tooltipSource) tooltipSource.textContent = alert.source;
 
-            fetch_with_retry(`src/source/QWeather-Icons/icons/${alert.icon}.svg`)
-                .then(res => res.text())
+            getIconSvg(`src/source/QWeather-Icons/icons/${alert.icon}.svg`)
                 .then(svg => {
                     if (tooltipIcon) tooltipIcon.innerHTML = svg;
                 });

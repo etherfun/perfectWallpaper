@@ -525,4 +525,8 @@ export interface WallpaperProperties {
     sysmon_y?: { value: number };
     sysmon_size?: { value: number };
     sysmon_color?: { value: string };
+    sysmon_enabled?: { value: boolean };
+    sysmon_bar_layout?: { value: number };
+    sysmon_position?: { value: number };
+    sysmon_disconnect_timeout?: { value: number };
 }

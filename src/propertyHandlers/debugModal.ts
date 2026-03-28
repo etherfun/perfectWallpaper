@@ -320,6 +320,6 @@ export function closeDebugLogModal(): void {
 }
 
 // 导出到 window - 内联 onclick 处理需要全局访问
-(window as any).showDebugLogModal = showDebugLogModal;
-(window as any).closeDebugLogModal = closeDebugLogModal;
-(window as any).toggleLogDetails = toggleLogDetails;
+window.showDebugLogModal = showDebugLogModal;
+window.closeDebugLogModal = closeDebugLogModal;
+window.toggleLogDetails = toggleLogDetails;

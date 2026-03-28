@@ -16,4 +16,7 @@ declare class SimpleMarkdown {
 // 扩展 Window 接口以支持 window.SimpleMarkdown
 interface Window {
     SimpleMarkdown: typeof SimpleMarkdown;
+    showDebugLogModal: () => void;
+    closeDebugLogModal: () => void;
+    toggleLogDetails: (id: number) => void;
 }

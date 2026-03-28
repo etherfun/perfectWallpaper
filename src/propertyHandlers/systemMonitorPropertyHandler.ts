@@ -122,4 +122,30 @@ export function handleSystemMonitorProperties(
             monitorColor: `rgba(${c.join(',')})`
         });
     }
+
+    // 启用/禁用
+    if (properties.sysmon_enabled !== undefined) {
+        monitor.setEnabled(properties.sysmon_enabled.value);
+    }
+
+    // 条形布局模式
+    if (properties.sysmon_bar_layout) {
+        const layouts: Array<'horizontal' | 'vertical'> = ['horizontal', 'vertical'];
+        const layout = layouts[properties.sysmon_bar_layout.value] || 'horizontal';
+        monitor.updateConfig({ barLayout: layout });
+    }
+
+    // 位置模式
+    if (properties.sysmon_position) {
+        const positions: Array<'left' | 'right'> = ['left', 'right'];
+        const position = positions[properties.sysmon_position.value] || 'right';
+        monitor.updateConfig({ monitorPosition: position });
+    }
+
+    // 断开连接超时时间
+    if (properties.sysmon_disconnect_timeout) {
+        monitor.updateConfig({
+            disconnectTimeout: properties.sysmon_disconnect_timeout.value * 1000
+        });
+    }
 }

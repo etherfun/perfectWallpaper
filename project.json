@@ -420,6 +420,8 @@
 				"ui_sysmon_mode_none" : "None",
 				"ui_sysmon_mode_text" : "Text",
 				"ui_sysmon_network_mode" : "Network Display Mode",
+				"ui_sysmon_label_memory" : "MEM",
+				"ui_sysmon_label_network" : "NET",
 				"ui_sysmon_server_url" : "Server URL",
 				"ui_sysmon_show_cpu" : "Show CPU",
 				"ui_sysmon_show_gpu" : "Show GPU",
@@ -429,6 +431,14 @@
 				"ui_sysmon_update_interval" : "Update Interval (sec)",
 				"ui_sysmon_x" : "X Position",
 				"ui_sysmon_y" : "Y Position",
+				"ui_sysmon_enabled" : "Enable Monitor",
+				"ui_sysmon_bar_layout" : "Bar Layout",
+				"ui_sysmon_layout_horizontal" : "Horizontal",
+				"ui_sysmon_layout_vertical" : "Vertical",
+				"ui_sysmon_position" : "Position",
+				"ui_sysmon_position_left" : "Left",
+				"ui_sysmon_position_right" : "Right",
+				"ui_sysmon_disconnect_timeout" : "Disconnect Timeout (sec)",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
 				"ui_ui_global_settings_language" : "Language setting",
@@ -886,6 +896,8 @@
 				"ui_sysmon_mode_none" : "不显示",
 				"ui_sysmon_mode_text" : "文字",
 				"ui_sysmon_network_mode" : "网络显示模式",
+				"ui_sysmon_label_memory" : "内存",
+				"ui_sysmon_label_network" : "网络",
 				"ui_sysmon_server_url" : "服务器地址",
 				"ui_sysmon_show_cpu" : "显示CPU",
 				"ui_sysmon_show_gpu" : "显示GPU",
@@ -895,6 +907,14 @@
 				"ui_sysmon_update_interval" : "更新间隔 (秒)",
 				"ui_sysmon_x" : "X位置",
 				"ui_sysmon_y" : "Y位置",
+				"ui_sysmon_enabled" : "启用监控",
+				"ui_sysmon_bar_layout" : "条形布局",
+				"ui_sysmon_layout_horizontal" : "水平",
+				"ui_sysmon_layout_vertical" : "垂直",
+				"ui_sysmon_position" : "位置",
+				"ui_sysmon_position_left" : "左侧",
+				"ui_sysmon_position_right" : "右侧",
+				"ui_sysmon_disconnect_timeout" : "断连超时时间 (秒)",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
 				"ui_ui_global_settings_language" : "语言设置",
@@ -4739,18 +4759,20 @@
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_color" : 
+			"sysmon_color" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 393,
 				"order" : 493,
 				"text" : "ui_audio_color",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
-			"sysmon_cpu_mode" : 
+			"sysmon_cpu_mode" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 382,
-				"options" : 
+				"options" :
 				[
 					{
 						"label" : "ui_sysmon_mode_none",
@@ -4774,10 +4796,11 @@
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_gpu_mode" : 
+			"sysmon_gpu_mode" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 383,
-				"options" : 
+				"options" :
 				[
 					{
 						"label" : "ui_sysmon_mode_none",
@@ -4801,17 +4824,18 @@
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_header" : 
+			"sysmon_header" :
 			{
 				"index" : 379,
 				"order" : 479,
 				"text" : "ui_sysmon_header",
 				"type" : "group"
 			},
-			"sysmon_memory_mode" : 
+			"sysmon_memory_mode" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 384,
-				"options" : 
+				"options" :
 				[
 					{
 						"label" : "ui_sysmon_mode_none",
@@ -4835,10 +4859,11 @@
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_network_mode" : 
+			"sysmon_network_mode" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 385,
-				"options" : 
+				"options" :
 				[
 					{
 						"label" : "ui_sysmon_mode_none",
@@ -4862,48 +4887,54 @@
 				"type" : "combo",
 				"value" : 0
 			},
-			"sysmon_server_url" : 
+			"sysmon_server_url" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 380,
 				"order" : 480,
 				"text" : "ui_sysmon_server_url",
 				"type" : "textinput",
 				"value" : "http://localhost:3842/api/system"
 			},
-			"sysmon_show_cpu" : 
+			"sysmon_show_cpu" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 386,
 				"order" : 486,
 				"text" : "ui_sysmon_show_cpu",
 				"type" : "bool",
 				"value" : true
 			},
-			"sysmon_show_gpu" : 
+			"sysmon_show_gpu" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 387,
 				"order" : 487,
 				"text" : "ui_sysmon_show_gpu",
 				"type" : "bool",
 				"value" : true
 			},
-			"sysmon_show_memory" : 
+			"sysmon_show_memory" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 388,
 				"order" : 488,
 				"text" : "ui_sysmon_show_memory",
 				"type" : "bool",
 				"value" : true
 			},
-			"sysmon_show_network" : 
+			"sysmon_show_network" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 389,
 				"order" : 489,
 				"text" : "ui_sysmon_show_network",
 				"type" : "bool",
 				"value" : false
 			},
-			"sysmon_size" : 
+			"sysmon_size" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 392,
 				"max" : 30,
 				"min" : 8,
@@ -4912,8 +4943,9 @@
 				"type" : "slider",
 				"value" : 14
 			},
-			"sysmon_update_interval" : 
+			"sysmon_update_interval" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 381,
 				"max" : 10,
 				"min" : 1,
@@ -4922,8 +4954,9 @@
 				"type" : "slider",
 				"value" : 2
 			},
-			"sysmon_x" : 
+			"sysmon_x" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 390,
 				"max" : 100,
 				"min" : 0,
@@ -4932,8 +4965,9 @@
 				"type" : "slider",
 				"value" : 95
 			},
-			"sysmon_y" : 
+			"sysmon_y" :
 			{
+				"condition" : "sysmon_enabled.value == true",
 				"index" : 391,
 				"max" : 100,
 				"min" : 0,
@@ -4941,6 +4975,65 @@
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 5
+			},
+			"sysmon_enabled" :
+			{
+				"index" : 394,
+				"order" : 494,
+				"text" : "ui_sysmon_enabled",
+				"type" : "bool",
+				"value" : true
+			},
+			"sysmon_bar_layout" :
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 395,
+				"options" :
+				[
+					{
+						"label" : "ui_sysmon_layout_horizontal",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_layout_vertical",
+						"value" : 1
+					}
+				],
+				"order" : 495,
+				"text" : "ui_sysmon_bar_layout",
+				"type" : "combo",
+				"value" : 0
+			},
+			"sysmon_position" :
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 397,
+				"options" :
+				[
+					{
+						"label" : "ui_sysmon_position_left",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_position_right",
+						"value" : 1
+					}
+				],
+				"order" : 497,
+				"text" : "ui_sysmon_position",
+				"type" : "combo",
+				"value" : 1
+			},
+			"sysmon_disconnect_timeout" :
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 396,
+				"max" : 60,
+				"min" : 5,
+				"order" : 496,
+				"text" : "ui_sysmon_disconnect_timeout",
+				"type" : "slider",
+				"value" : 10
 			},
 			"tShowSencends" : 
 			{

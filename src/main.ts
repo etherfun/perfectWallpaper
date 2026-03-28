@@ -1,6 +1,6 @@
 ﻿import { appConfig } from './utils/config';
 import { debugLogger } from './utils/logger';
-import { setupWallpaperPropertyListener } from './propertyHandlers/index';
+import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { WallpaperEffectController } from './WallpaperEffectController';
 import './audioVisualizer';
 import { resize as pwCircleResize } from './PWCircle';

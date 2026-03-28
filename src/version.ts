@@ -987,7 +987,7 @@ class versionManager {
     }
 }
 
-// 创建全局增强版版本管理器实例并挂载到 runtime
+// 创建全局版本管理器实例并挂载到 runtime
 const versionManagerInstance = new versionManager();
 appConfig.runtime.versionManager = versionManagerInstance;
 

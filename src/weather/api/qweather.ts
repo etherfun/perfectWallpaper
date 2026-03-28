@@ -298,4 +298,3 @@ export async function qweather(
     }
 }
 
-export default qweather;

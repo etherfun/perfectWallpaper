@@ -224,4 +224,3 @@ export async function openmeteo(
   }
 }
 
-export default openmeteo;

@@ -35,4 +35,3 @@ export async function icufree(
   weather_data.temperature_min = res.low;
 }
 
-export default icufree;

@@ -713,15 +713,3 @@ function getTime(date: Date | string, showDate: boolean): string {
     return `${hours}:${minutes}:${seconds}`;
 }
 
-// 默认导出
-export default {
-    weather_init,
-    autoWeather,
-    showWeatherLoading,
-    hideWeatherLoading,
-    showWeatherError,
-    generateWeatherTable,
-    getAirQualityText,
-    weather_address,
-    weather_data
-};

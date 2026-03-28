@@ -44,4 +44,3 @@ export async function yiketianqi(
   weather_data.humidity = res.humidity;
 }
 
-export default yiketianqi;

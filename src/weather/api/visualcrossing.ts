@@ -212,4 +212,3 @@ export async function visualcrossing(
   );
 }
 
-export default visualcrossing;

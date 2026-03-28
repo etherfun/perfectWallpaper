@@ -1,7 +1,7 @@
 // PWCircle.ts - Audio circle visualizer module
 // This module provides circular audio visualization effects
 
-import { appConfig } from './utils/config';
+import { config } from './utils/config';
 
 // Global canvas and context - initialized in resize()
 let can: HTMLCanvasElement | null = null;
@@ -75,8 +75,8 @@ export function resize(): void {
     canvasEl.height = h;
 
     if (ctx) {
-        ctx.lineWidth = appConfig.runtime.param.lineWidth;
-        ctx.shadowBlur = appConfig.runtime.param.shadowBlur;
+        ctx.lineWidth = config.runtime.param.lineWidth;
+        ctx.shadowBlur = config.runtime.param.shadowBlur;
     }
     rainRad = Math.sqrt(Math.pow(h, 2) + Math.pow(w, 2));
 }
@@ -87,37 +87,37 @@ export function resize(): void {
 export function setCan(): void {
     if (!ctx) return;
 
-    switch (appConfig.runtime.param.ColorMode) {
+    switch (config.runtime.param.ColorMode) {
         case 1:
-            ctx.strokeStyle = appConfig.runtime.param.color;
-            ctx.shadowColor = appConfig.runtime.param.blurColor;
+            ctx.strokeStyle = config.runtime.param.color;
+            ctx.shadowColor = config.runtime.param.blurColor;
             break;
         case 2:
-            if (hue > 255) { appConfig.runtime.param.TagNow *= -1; hue = 255; }
-            if (hue < 0) { appConfig.runtime.param.TagNow *= -1; hue = 0; }
+            if (hue > 255) { config.runtime.param.TagNow *= -1; hue = 255; }
+            if (hue < 0) { config.runtime.param.TagNow *= -1; hue = 0; }
             const color = `hsl(${hue},90%,50%)`;
-            hue += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue += config.runtime.param.TagNow / config.runtime.param.GradientRate;
 
-            if (appConfig.runtime.param.SolidColorGradient) {
+            if (config.runtime.param.SolidColorGradient) {
                 ctx.strokeStyle = color;
             } else {
-                ctx.strokeStyle = appConfig.runtime.param.color;
+                ctx.strokeStyle = config.runtime.param.color;
             }
-            if (appConfig.runtime.param.BlurColorGradient) {
+            if (config.runtime.param.BlurColorGradient) {
                 ctx.shadowColor = color;
             } else {
-                ctx.shadowColor = appConfig.runtime.param.blurColor;
+                ctx.shadowColor = config.runtime.param.blurColor;
             }
             break;
         case 3:
             const ranX = rainRad / 3 * Math.cos(roh) + w;
             const ranY = rainRad / 3 * Math.sin(roh) + h;
             roh = (roh + (Math.PI / 300)) % (2 * Math.PI);
-            circleX = w * appConfig.runtime.param.cX;
-            circleY = h * appConfig.runtime.param.cY;
+            circleX = w * config.runtime.param.cX;
+            circleY = h * config.runtime.param.cY;
             const rainbow = ctx.createRadialGradient(circleX, circleY, 0, ranX / 2, ranY / 2, w / 3);
 
-            if (appConfig.runtime.param.ColorRhythm) {
+            if (config.runtime.param.ColorRhythm) {
                 rainbow.addColorStop(0.1, getColor(10));
                 rainbow.addColorStop(0.2, getColor(9));
                 rainbow.addColorStop(0.3, getColor(8));
@@ -137,7 +137,7 @@ export function setCan(): void {
             }
             ctx.fillStyle = rainbow;
             ctx.strokeStyle = rainbow;
-            ctx.shadowColor = appConfig.runtime.param.blurColor;
+            ctx.shadowColor = config.runtime.param.blurColor;
             break;
     }
 }
@@ -150,52 +150,52 @@ function getColor(casev: number): string {
     switch (casev) {
         case 1:
             colornow = `hsl(${hue1},90%,50%)`;
-            hue1 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue1 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue1 = hue1 % 255;
             break;
         case 2:
             colornow = `hsl(${hue2},90%,50%)`;
-            hue2 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue2 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue2 = hue2 % 255;
             break;
         case 3:
             colornow = `hsl(${hue3},90%,50%)`;
-            hue3 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue3 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue3 = hue3 % 255;
             break;
         case 4:
             colornow = `hsl(${hue4},90%,50%)`;
-            hue4 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue4 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue4 = hue4 % 255;
             break;
         case 5:
             colornow = `hsl(${hue5},90%,50%)`;
-            hue5 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue5 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue5 = hue5 % 255;
             break;
         case 6:
             colornow = `hsl(${hue6},90%,50%)`;
-            hue6 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue6 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue6 = hue6 % 255;
             break;
         case 7:
             colornow = `hsl(${hue7},90%,50%)`;
-            hue7 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue7 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue7 = hue7 % 255;
             break;
         case 8:
             colornow = `hsl(${hue8},90%,50%)`;
-            hue8 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue8 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue8 = hue8 % 255;
             break;
         case 9:
             colornow = `hsl(${hue9},90%,50%)`;
-            hue9 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue9 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue9 = hue9 % 255;
             break;
         case 10:
             colornow = `hsl(${hue10},90%,50%)`;
-            hue10 += appConfig.runtime.param.TagNow / appConfig.runtime.param.GradientRate;
+            hue10 += config.runtime.param.TagNow / config.runtime.param.GradientRate;
             hue10 = hue10 % 255;
             break;
     }
@@ -206,77 +206,77 @@ function getColor(casev: number): string {
  * Create circle visualization points based on audio data
  */
 export function createPoint(arr: number[]): void {
-    appConfig.runtime.param.arr1 = [];
-    appConfig.runtime.param.arr2 = [];
+    config.runtime.param.arr1 = [];
+    config.runtime.param.arr2 = [];
 
     for (let i = 0; i < 128; i++) {
         let deg: number;
-        if (appConfig.runtime.param.showSemiCircle) {
-            switch (appConfig.runtime.param.SemiCircledirection) {
+        if (config.runtime.param.showSemiCircle) {
+            switch (config.runtime.param.SemiCircledirection) {
                 case 1: // Top
-                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 0.5) * -1;
+                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 0.5) * -1;
                     break;
                 case 2: // Bottom
-                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 0.5);
+                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 0.5);
                     break;
                 case 3: // Left
-                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle - 179.5);
+                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle - 179.5);
                     break;
                 case 4: // Right
-                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 180.5);
+                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 180.5);
                     break;
                 default:
-                    deg = Math.PI / 128 * (i + appConfig.runtime.param.offsetAngle + 0.5) * -1;
+                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 0.5) * -1;
             }
         } else {
             // 全圆角度: 与原始 JS 版本一致
-            deg = Math.PI / appConfig.runtime.param.PolygonAngle * (i + appConfig.runtime.param.offsetAngle) * 3;
+            deg = Math.PI / config.runtime.param.PolygonAngle * (i + config.runtime.param.offsetAngle) * 3;
         }
 
         let w1 = arr[i] ? arr[i] : 0;
         let w2: number;
-        if (appConfig.runtime.param.waveArr[i]) {
-            w2 = appConfig.runtime.param.waveArr[i] - (appConfig.runtime.param.waveArr[i] * 0.25);
+        if (config.runtime.param.waveArr[i]) {
+            w2 = config.runtime.param.waveArr[i] - (config.runtime.param.waveArr[i] * 0.25);
         } else {
             w2 = 0;
         }
         w1 = Math.max(w1, w2);
-        appConfig.runtime.param.waveArr[i] = w1 = Math.min(w1, 1.2);
-        const waveHeight = w1 * appConfig.runtime.param.range * 100;
+        config.runtime.param.waveArr[i] = w1 = Math.min(w1, 1.2);
+        const waveHeight = w1 * config.runtime.param.range * 100;
 
         let offset1: number;
         let offset2: number;
-        switch (appConfig.runtime.param.direction) {
+        switch (config.runtime.param.direction) {
             case 1:
-                offset1 = appConfig.runtime.param.r * minW / 2 + waveHeight + 1;
-                offset2 = appConfig.runtime.param.r * minW / 2;
+                offset1 = config.runtime.param.r * minW / 2 + waveHeight + 1;
+                offset2 = config.runtime.param.r * minW / 2;
                 break;
             case 2:
-                offset1 = appConfig.runtime.param.r * minW / 2;
-                offset2 = appConfig.runtime.param.r * minW / 2 - waveHeight - 1;
+                offset1 = config.runtime.param.r * minW / 2;
+                offset2 = config.runtime.param.r * minW / 2 - waveHeight - 1;
                 break;
             case 3:
-                offset1 = appConfig.runtime.param.r * minW / 2 + waveHeight + 1;
-                offset2 = appConfig.runtime.param.r * minW / 2 - waveHeight - 1;
+                offset1 = config.runtime.param.r * minW / 2 + waveHeight + 1;
+                offset2 = config.runtime.param.r * minW / 2 - waveHeight - 1;
                 break;
             default:
-                offset1 = appConfig.runtime.param.r * minW / 2 + waveHeight + 1;
-                offset2 = appConfig.runtime.param.r * minW / 2 - waveHeight - 1;
+                offset1 = config.runtime.param.r * minW / 2 + waveHeight + 1;
+                offset2 = config.runtime.param.r * minW / 2 - waveHeight - 1;
         }
 
         const p1 = getXY(offset1, deg);
         const p2 = getXY(offset2, deg);
 
-        appConfig.runtime.param.arr1.push({ x: p1.x, y: p1.y });
-        appConfig.runtime.param.arr2.push({ x: p2.x, y: p2.y });
+        config.runtime.param.arr1.push({ x: p1.x, y: p1.y });
+        config.runtime.param.arr2.push({ x: p2.x, y: p2.y });
     }
 
-    if (appConfig.runtime.param.rotation) {
-        appConfig.runtime.param.offsetAngle += appConfig.runtime.param.rotation / appConfig.runtime.param.Polygon;
-        if (appConfig.runtime.param.offsetAngle >= 360) {
-            appConfig.runtime.param.offsetAngle = 0;
-        } else if (appConfig.runtime.param.offsetAngle <= 0) {
-            appConfig.runtime.param.offsetAngle = 360;
+    if (config.runtime.param.rotation) {
+        config.runtime.param.offsetAngle += config.runtime.param.rotation / config.runtime.param.Polygon;
+        if (config.runtime.param.offsetAngle >= 360) {
+            config.runtime.param.offsetAngle = 0;
+        } else if (config.runtime.param.offsetAngle <= 0) {
+            config.runtime.param.offsetAngle = 360;
         }
     }
 }
@@ -285,8 +285,8 @@ export function createPoint(arr: number[]): void {
  * Calculate XY coordinates for a circle point
  */
 export function getXY(offset: number, deg: number): { x: number; y: number } {
-    const x = Math.cos(deg) * offset + appConfig.runtime.param.cX * w;
-    const y = Math.sin(deg) * offset + appConfig.runtime.param.cY * h;
+    const x = Math.cos(deg) * offset + config.runtime.param.cX * w;
+    const y = Math.sin(deg) * offset + config.runtime.param.cY * h;
 
     return { x, y };
 }
@@ -298,8 +298,8 @@ export function style1(): void {
     if (!ctx) return;
     ctx.beginPath();
     for (let i = 0; i < 128; i++) {
-        ctx.moveTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
-        ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
+        ctx.moveTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
+        ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
     }
     ctx.closePath();
     ctx.stroke();
@@ -312,29 +312,29 @@ export function style2(): void {
     if (!ctx) return;
     // Outer circle
     ctx.beginPath();
-    ctx.moveTo(appConfig.runtime.param.arr1[0].x, appConfig.runtime.param.arr1[0].y);
+    ctx.moveTo(config.runtime.param.arr1[0].x, config.runtime.param.arr1[0].y);
     for (let i = 0; i < 128; i++) {
-        ctx.lineTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
+        ctx.lineTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
     }
-    if (!appConfig.runtime.param.showSemiCircle) {
+    if (!config.runtime.param.showSemiCircle) {
         ctx.closePath();
     }
     ctx.stroke();
 
     // Inner circle
     ctx.beginPath();
-    if (appConfig.runtime.param.showSemiCircle) {
-        ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
+    if (config.runtime.param.showSemiCircle) {
+        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
         for (let i = 0; i < 128; i++) {
-            ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
+            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
         }
     } else {
-        ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
+        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
         for (let i = 0; i < 128; i++) {
-            ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
+            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
         }
     }
-    if (!appConfig.runtime.param.showSemiCircle) {
+    if (!config.runtime.param.showSemiCircle) {
         ctx.closePath();
     }
     ctx.stroke();
@@ -342,8 +342,8 @@ export function style2(): void {
     // Connecting lines
     ctx.beginPath();
     for (let i = 0; i < 128; i++) {
-        ctx.moveTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
-        ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
+        ctx.moveTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
+        ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
     }
     ctx.closePath();
     ctx.stroke();
@@ -356,29 +356,29 @@ export function style3(): void {
     if (!ctx) return;
     // Outer circle
     ctx.beginPath();
-    ctx.moveTo(appConfig.runtime.param.arr1[0].x, appConfig.runtime.param.arr1[0].y);
+    ctx.moveTo(config.runtime.param.arr1[0].x, config.runtime.param.arr1[0].y);
     for (let i = 0; i < 128; i++) {
-        ctx.lineTo(appConfig.runtime.param.arr1[i].x, appConfig.runtime.param.arr1[i].y);
+        ctx.lineTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
     }
-    if (!appConfig.runtime.param.showSemiCircle) {
+    if (!config.runtime.param.showSemiCircle) {
         ctx.closePath();
     }
     ctx.stroke();
 
     // Inner circle
     ctx.beginPath();
-    if (appConfig.runtime.param.showSemiCircle) {
-        ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
+    if (config.runtime.param.showSemiCircle) {
+        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
         for (let i = 0; i < 128; i++) {
-            ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
+            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
         }
     } else {
-        ctx.moveTo(appConfig.runtime.param.arr2[0].x, appConfig.runtime.param.arr2[0].y);
+        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
         for (let i = 0; i < 128; i++) {
-            ctx.lineTo(appConfig.runtime.param.arr2[i].x, appConfig.runtime.param.arr2[i].y);
+            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
         }
     }
-    if (!appConfig.runtime.param.showSemiCircle) {
+    if (!config.runtime.param.showSemiCircle) {
         ctx.closePath();
     }
     ctx.stroke();

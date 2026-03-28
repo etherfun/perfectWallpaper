@@ -3,7 +3,7 @@
  * 将视频/图片/樱花/粒子/音频可视化效果合成为LED灯光数据
  */
 
-import { appConfig, config } from './utils/config';
+import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
 
@@ -86,7 +86,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         rgbbg.globalAlpha = 1;
         if (particlesRGB && particles) { rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20); }
 
-        const audioArray = appConfig.runtime.playerInfo.audioArray;
+        const audioArray = config.runtime.playerInfo.audioArray;
         if (audiobarrainbowcolor) {
             if (audiobarRGB && audioArray && audioArray.length > 0) {
                 const barWidth = bg.width / 128;

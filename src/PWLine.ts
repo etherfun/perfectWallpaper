@@ -1,7 +1,7 @@
 // PWLine.ts - Audio line visualizer module
 // This module provides line-based audio visualization effects
 
-import { appConfig } from './utils/config';
+import { config } from './utils/config';
 
 // Global canvas and context
 let w: number;
@@ -65,42 +65,42 @@ export function PWLineInit(): void {
     CanLine.height = h = window.innerHeight;
     minW = Math.min(w, h);
     maxW = Math.max(w, h);
-    CTXLine.lineWidth = appConfig.runtime.PWLineParam.lineWidth;
-    CTXLine.shadowBlur = appConfig.runtime.PWLineParam.shadowBlur;
+    CTXLine.lineWidth = config.runtime.PWLineParam.lineWidth;
+    CTXLine.shadowBlur = config.runtime.PWLineParam.shadowBlur;
 }
 
 /**
  * Set the canvas context style based on color mode
  */
 export function setCTXLine(): void {
-    switch (appConfig.runtime.PWLineParam.ColorMode) {
+    switch (config.runtime.PWLineParam.ColorMode) {
         case 1:
-            CTXLine.strokeStyle = appConfig.runtime.PWLineParam.color;
-            CTXLine.shadowColor = appConfig.runtime.PWLineParam.blurColor;
+            CTXLine.strokeStyle = config.runtime.PWLineParam.color;
+            CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
             break;
         case 2:
-            if (hue > 255) { appConfig.runtime.PWLineParam.TagNow *= -1; hue = 255; }
-            if (hue < 0) { appConfig.runtime.PWLineParam.TagNow *= -1; hue = 0; }
+            if (hue > 255) { config.runtime.PWLineParam.TagNow *= -1; hue = 255; }
+            if (hue < 0) { config.runtime.PWLineParam.TagNow *= -1; hue = 0; }
             color = `hsl(${hue},90%,50%)`;
-            hue += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
 
-            if (appConfig.runtime.PWLineParam.SolidColorGradient) {
+            if (config.runtime.PWLineParam.SolidColorGradient) {
                 CTXLine.strokeStyle = color;
             } else {
-                CTXLine.strokeStyle = appConfig.runtime.PWLineParam.color;
+                CTXLine.strokeStyle = config.runtime.PWLineParam.color;
             }
-            if (appConfig.runtime.PWLineParam.BlurColorGradient) {
+            if (config.runtime.PWLineParam.BlurColorGradient) {
                 CTXLine.shadowColor = color as string;
             } else {
-                CTXLine.shadowColor = appConfig.runtime.PWLineParam.blurColor;
+                CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
             }
             break;
         case 3:
-            originX = maxW * appConfig.runtime.PWLineParam.LineX;
-            originY = minW * appConfig.runtime.PWLineParam.LineY;
+            originX = maxW * config.runtime.PWLineParam.LineX;
+            originY = minW * config.runtime.PWLineParam.LineY;
             const rainbow = CTXLine.createRadialGradient(originX, originY, 0, originX, originY, lineR);
 
-            if (appConfig.runtime.PWLineParam.ColorRhythm) {
+            if (config.runtime.PWLineParam.ColorRhythm) {
                 rainbow.addColorStop(0.1, getColor(10));
                 rainbow.addColorStop(0.2, getColor(9));
                 rainbow.addColorStop(0.3, getColor(8));
@@ -121,7 +121,7 @@ export function setCTXLine(): void {
             color = rainbow;
             CTXLine.fillStyle = color;
             CTXLine.strokeStyle = color;
-            CTXLine.shadowColor = appConfig.runtime.PWLineParam.blurColor;
+            CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
             break;
     }
 }
@@ -134,52 +134,52 @@ export function getColor(casev: number): string {
     switch (casev) {
         case 1:
             colornow = `hsl(${hue1},90%,50%)`;
-            hue1 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue1 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue1 = hue1 % 255;
             break;
         case 2:
             colornow = `hsl(${hue2},90%,50%)`;
-            hue2 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue2 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue2 = hue2 % 255;
             break;
         case 3:
             colornow = `hsl(${hue3},90%,50%)`;
-            hue3 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue3 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue3 = hue3 % 255;
             break;
         case 4:
             colornow = `hsl(${hue4},90%,50%)`;
-            hue4 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue4 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue4 = hue4 % 255;
             break;
         case 5:
             colornow = `hsl(${hue5},90%,50%)`;
-            hue5 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue5 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue5 = hue5 % 255;
             break;
         case 6:
             colornow = `hsl(${hue6},90%,50%)`;
-            hue6 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue6 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue6 = hue6 % 255;
             break;
         case 7:
             colornow = `hsl(${hue7},90%,50%)`;
-            hue7 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue7 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue7 = hue7 % 255;
             break;
         case 8:
             colornow = `hsl(${hue8},90%,50%)`;
-            hue8 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue8 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue8 = hue8 % 255;
             break;
         case 9:
             colornow = `hsl(${hue9},90%,50%)`;
-            hue9 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue9 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue9 = hue9 % 255;
             break;
         case 10:
             colornow = `hsl(${hue10},90%,50%)`;
-            hue10 += appConfig.runtime.PWLineParam.TagNow / appConfig.runtime.PWLineParam.GradientRate;
+            hue10 += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
             hue10 = hue10 % 255;
             break;
     }
@@ -190,31 +190,31 @@ export function getColor(casev: number): string {
  * Create line visualization points based on audio data
  */
 export function PWLineCreatePoint(arr: number[]): void {
-    appConfig.runtime.PWLineParam.arr1 = [];
-    appConfig.runtime.PWLineParam.arr2 = [];
-    const iv = (120 - appConfig.runtime.PWLineParam.LineDensity) / 2;
+    config.runtime.PWLineParam.arr1 = [];
+    config.runtime.PWLineParam.arr2 = [];
+    const iv = (120 - config.runtime.PWLineParam.LineDensity) / 2;
 
-    if (appConfig.runtime.PWLineParam.LinePosition === 1) {
-        sw = (maxW - appConfig.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) / (appConfig.runtime.PWLineParam.LineDensity - 1) * appConfig.runtime.PWLineParam.sw;
+    if (config.runtime.PWLineParam.LinePosition === 1) {
+        sw = (maxW - config.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) / (config.runtime.PWLineParam.LineDensity - 1) * config.runtime.PWLineParam.sw;
     } else {
-        sw = (minW - appConfig.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) / (appConfig.runtime.PWLineParam.LineDensity - 1) * appConfig.runtime.PWLineParam.sw;
+        sw = (minW - config.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) / (config.runtime.PWLineParam.LineDensity - 1) * config.runtime.PWLineParam.sw;
     }
 
-    for (let i = iv, j = 0; i < (appConfig.runtime.PWLineParam.LineDensity + iv); i++, j++) {
+    for (let i = iv, j = 0; i < (config.runtime.PWLineParam.LineDensity + iv); i++, j++) {
         let w1 = arr[i] ? arr[i] : 0;
         let w2: number;
-        if (appConfig.runtime.PWLineParam.waveArr[i]) {
-            w2 = appConfig.runtime.PWLineParam.waveArr[i] - 0.1;
+        if (config.runtime.PWLineParam.waveArr[i]) {
+            w2 = config.runtime.PWLineParam.waveArr[i] - 0.1;
         } else {
             w2 = 0;
         }
         w1 = Math.max(w1, w2);
-        appConfig.runtime.PWLineParam.waveArr[i] = w1 = Math.min(w1, 1.2);
-        const waveHeight = w1 * appConfig.runtime.PWLineParam.range * 100;
+        config.runtime.PWLineParam.waveArr[i] = w1 = Math.min(w1, 1.2);
+        const waveHeight = w1 * config.runtime.PWLineParam.range * 100;
 
         let Deviation1: number;
         let Deviation2: number;
-        switch (appConfig.runtime.PWLineParam.Direction) {
+        switch (config.runtime.PWLineParam.Direction) {
             case 1:
                 Deviation1 = -waveHeight - 1;
                 Deviation2 = 1;
@@ -235,14 +235,14 @@ export function PWLineCreatePoint(arr: number[]): void {
         const p1 = getLineXY(Deviation1, j);
         const p2 = getLineXY(Deviation2, j);
 
-        appConfig.runtime.PWLineParam.arr1.push({ x: p1.x, y: p1.y });
-        appConfig.runtime.PWLineParam.arr2.push({ x: p2.x, y: p2.y });
+        config.runtime.PWLineParam.arr1.push({ x: p1.x, y: p1.y });
+        config.runtime.PWLineParam.arr2.push({ x: p2.x, y: p2.y });
     }
 
-    if (appConfig.runtime.PWLineParam.LinePosition === 1) {
-        lineR = appConfig.runtime.PWLineParam.arr1[(appConfig.runtime.PWLineParam.LineDensity) / 2 - 1].x - appConfig.runtime.PWLineParam.arr1[0].x;
+    if (config.runtime.PWLineParam.LinePosition === 1) {
+        lineR = config.runtime.PWLineParam.arr1[(config.runtime.PWLineParam.LineDensity) / 2 - 1].x - config.runtime.PWLineParam.arr1[0].x;
     } else {
-        lineR = appConfig.runtime.PWLineParam.arr1[(appConfig.runtime.PWLineParam.LineDensity) / 2 - 1].y - appConfig.runtime.PWLineParam.arr1[0].y;
+        lineR = config.runtime.PWLineParam.arr1[(config.runtime.PWLineParam.LineDensity) / 2 - 1].y - config.runtime.PWLineParam.arr1[0].y;
     }
 }
 
@@ -250,13 +250,13 @@ export function PWLineCreatePoint(arr: number[]): void {
  * Calculate XY coordinates for a line point
  */
 export function getLineXY(Deviation: number, i: number): { x: number; y: number } {
-    if (appConfig.runtime.PWLineParam.LinePosition === 1) {
-        const x = maxW * appConfig.runtime.PWLineParam.LineX + (i + 0.5 - appConfig.runtime.PWLineParam.LineDensity / 2) * sw + (i + 0.5 - appConfig.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
-        const y = minW * appConfig.runtime.PWLineParam.LineY;
+    if (config.runtime.PWLineParam.LinePosition === 1) {
+        const x = maxW * config.runtime.PWLineParam.LineX + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * sw + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
+        const y = minW * config.runtime.PWLineParam.LineY;
         return { x: x, y: y + Deviation };
     } else {
-        const x = minW * appConfig.runtime.PWLineParam.LineY + (i + 0.5 - appConfig.runtime.PWLineParam.LineDensity / 2) * sw + (i + 0.5 - appConfig.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
-        const y = maxW * appConfig.runtime.PWLineParam.LineX;
+        const x = minW * config.runtime.PWLineParam.LineY + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * sw + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
+        const y = maxW * config.runtime.PWLineParam.LineX;
         return { x: y + Deviation, y: x };
     }
 }
@@ -267,33 +267,33 @@ export function getLineXY(Deviation: number, i: number): { x: number; y: number 
 export function PWLineStyle1(): void {
     // Draw lines
     CTXLine.beginPath();
-    for (let i = 0; i < appConfig.runtime.PWLineParam.LineDensity; i++) {
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr1[i].x, appConfig.runtime.PWLineParam.arr1[i].y);
-        CTXLine.lineTo(appConfig.runtime.PWLineParam.arr2[i].x, appConfig.runtime.PWLineParam.arr2[i].y);
+    for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+        CTXLine.moveTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
+        CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
     }
     CTXLine.stroke();
 
     // Top middle line
-    if (appConfig.runtime.PWLineParam.Direction === 1 && appConfig.runtime.PWLineParam.MiddleLine) {
+    if (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr2[0].x, appConfig.runtime.PWLineParam.arr2[0].y);
-        CTXLine.lineTo(appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].x, appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].y);
+        CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
+        CTXLine.lineTo(config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x, config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y);
         CTXLine.stroke();
     }
 
     // Bottom middle line
-    if (appConfig.runtime.PWLineParam.Direction === 2 && appConfig.runtime.PWLineParam.MiddleLine) {
+    if (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr1[0].x, appConfig.runtime.PWLineParam.arr1[0].y);
-        CTXLine.lineTo(appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].x, appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].y);
+        CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
+        CTXLine.lineTo(config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x, config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y);
         CTXLine.stroke();
     }
 
     // Bidirectional middle line
-    if (appConfig.runtime.PWLineParam.Direction === 3 && appConfig.runtime.PWLineParam.MiddleLine) {
+    if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo((appConfig.runtime.PWLineParam.arr2[0].x + appConfig.runtime.PWLineParam.arr1[0].x) / 2, (appConfig.runtime.PWLineParam.arr2[0].y + appConfig.runtime.PWLineParam.arr1[0].y) / 2);
-        CTXLine.lineTo((appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].x + appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].x) / 2, (appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].y + appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].y) / 2);
+        CTXLine.moveTo((config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2, (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2);
+        CTXLine.lineTo((config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) / 2, (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) / 2);
         CTXLine.stroke();
     }
 }
@@ -303,38 +303,38 @@ export function PWLineStyle1(): void {
  */
 export function PWLineStyle2(): void {
     // Top line
-    if (appConfig.runtime.PWLineParam.Direction !== 2 || (appConfig.runtime.PWLineParam.Direction === 2 && appConfig.runtime.PWLineParam.MiddleLine)) {
+    if (config.runtime.PWLineParam.Direction !== 2 || (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)) {
         CTXLine.beginPath();
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr1[0].x, appConfig.runtime.PWLineParam.arr1[0].y);
-        for (let i = 0; i < appConfig.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(appConfig.runtime.PWLineParam.arr1[i].x, appConfig.runtime.PWLineParam.arr1[i].y);
+        CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
+        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+            CTXLine.lineTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
         }
         CTXLine.stroke();
     }
 
     // Bottom line
-    if (appConfig.runtime.PWLineParam.Direction !== 1 || (appConfig.runtime.PWLineParam.Direction === 1 && appConfig.runtime.PWLineParam.MiddleLine)) {
+    if (config.runtime.PWLineParam.Direction !== 1 || (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)) {
         CTXLine.beginPath();
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr2[0].x, appConfig.runtime.PWLineParam.arr2[0].y);
-        for (let i = 0; i < appConfig.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(appConfig.runtime.PWLineParam.arr2[i].x, appConfig.runtime.PWLineParam.arr2[i].y);
+        CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
+        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+            CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
         }
         CTXLine.stroke();
     }
 
     // Bidirectional middle line
-    if (appConfig.runtime.PWLineParam.Direction === 3 && appConfig.runtime.PWLineParam.MiddleLine) {
+    if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo((appConfig.runtime.PWLineParam.arr2[0].x + appConfig.runtime.PWLineParam.arr1[0].x) / 2, (appConfig.runtime.PWLineParam.arr2[0].y + appConfig.runtime.PWLineParam.arr1[0].y) / 2);
-        CTXLine.lineTo((appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].x + appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].x) / 2, (appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].y + appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].y) / 2);
+        CTXLine.moveTo((config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2, (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2);
+        CTXLine.lineTo((config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) / 2, (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) / 2);
         CTXLine.stroke();
     }
 
     // Connecting lines
     CTXLine.beginPath();
-    for (let i = 0; i < appConfig.runtime.PWLineParam.LineDensity; i++) {
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr1[i].x, appConfig.runtime.PWLineParam.arr1[i].y);
-        CTXLine.lineTo(appConfig.runtime.PWLineParam.arr2[i].x, appConfig.runtime.PWLineParam.arr2[i].y);
+    for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+        CTXLine.moveTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
+        CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
     }
     CTXLine.stroke();
 }
@@ -344,30 +344,30 @@ export function PWLineStyle2(): void {
  */
 export function PWLineStyle3(): void {
     // Top line
-    if (appConfig.runtime.PWLineParam.Direction !== 2 || (appConfig.runtime.PWLineParam.Direction === 2 && appConfig.runtime.PWLineParam.MiddleLine)) {
+    if (config.runtime.PWLineParam.Direction !== 2 || (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)) {
         CTXLine.beginPath();
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr1[0].x, appConfig.runtime.PWLineParam.arr1[0].y);
-        for (let i = 0; i < appConfig.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(appConfig.runtime.PWLineParam.arr1[i].x, appConfig.runtime.PWLineParam.arr1[i].y);
+        CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
+        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+            CTXLine.lineTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
         }
         CTXLine.stroke();
     }
 
     // Bottom line
-    if (appConfig.runtime.PWLineParam.Direction !== 1 || (appConfig.runtime.PWLineParam.Direction === 1 && appConfig.runtime.PWLineParam.MiddleLine)) {
+    if (config.runtime.PWLineParam.Direction !== 1 || (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)) {
         CTXLine.beginPath();
-        CTXLine.moveTo(appConfig.runtime.PWLineParam.arr2[0].x, appConfig.runtime.PWLineParam.arr2[0].y);
-        for (let i = 0; i < appConfig.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(appConfig.runtime.PWLineParam.arr2[i].x, appConfig.runtime.PWLineParam.arr2[i].y);
+        CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
+        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+            CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
         }
         CTXLine.stroke();
     }
 
     // Bidirectional middle line
-    if (appConfig.runtime.PWLineParam.Direction === 3 && appConfig.runtime.PWLineParam.MiddleLine) {
+    if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo((appConfig.runtime.PWLineParam.arr2[0].x + appConfig.runtime.PWLineParam.arr1[0].x) / 2, (appConfig.runtime.PWLineParam.arr2[0].y + appConfig.runtime.PWLineParam.arr1[0].y) / 2);
-        CTXLine.lineTo((appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].x + appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].x) / 2, (appConfig.runtime.PWLineParam.arr2[appConfig.runtime.PWLineParam.LineDensity - 1].y + appConfig.runtime.PWLineParam.arr1[appConfig.runtime.PWLineParam.LineDensity - 1].y) / 2);
+        CTXLine.moveTo((config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2, (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2);
+        CTXLine.lineTo((config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) / 2, (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) / 2);
         CTXLine.stroke();
     }
 }

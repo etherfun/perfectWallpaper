@@ -850,8 +850,6 @@ export function sakuraLoad(): void {
 }
 
 // ==================== Remove Sakura (Copy to 2D Canvas) ====================
-// Note: The RAF loop has been removed - canvas copy is now handled in render()
-// This function is kept for API compatibility and does a single immediate copy
 export function removesakura(): void {
     const raw = elements.sakura;
     const ctx = elements.sakurashow.getContext('2d');

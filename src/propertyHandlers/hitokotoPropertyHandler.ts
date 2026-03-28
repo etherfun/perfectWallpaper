@@ -1,18 +1,11 @@
-/**
- * Hitokoto Property Handler
- * 处理一言相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
 import { elements } from '@/utils/elementManager';
 import { autoHitokto } from '../hitokoto';
+import { debugLogger } from '@/utils/logger';
 
-// 局部变量
 let hitokotoInit = false;
-
-// 获取一言元素
 const hitokoto = elements.hitokoto.container as HTMLElement;
 
 /**
@@ -172,5 +165,10 @@ export function handleHitokotoProperties(
 
     if (properties.hitokotoY) {
         elements.body.style.setProperty("--hitokoto-top", `${properties.hitokotoY.value}%`);
+    }
+    
+
+    if (FirstLoad) {
+        debugLogger.info('[Hitokoto] 一言参数初始化完成');
     }
 }

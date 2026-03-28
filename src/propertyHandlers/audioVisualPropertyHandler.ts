@@ -1,10 +1,6 @@
-/**
- * Audio Visual Property Handler
- * 处理音频可视化（圆圈、直线）相关的属性监听
- */
-
-import { appConfig, config } from '@/utils/config';
+import { config } from '@/utils/config';
 import { WallpaperProperties } from './types';
+import { debugLogger } from '@/utils/logger';
 
 /**
  * 获取圆圈可视化canvas的2D上下文
@@ -36,9 +32,9 @@ export function handleAudioVisualProperties(
 
     const ctx = getCircleCtx();
     const CTXLine = getLineCtx();
-    const param = appConfig.runtime.param;
-    const PWLineParam = appConfig.runtime.PWLineParam;
-    const wallpaper = appConfig.runtime.wallpaper;
+    const param = config.runtime.param;
+    const PWLineParam = config.runtime.PWLineParam;
+    const wallpaper = config.runtime.wallpaper;
 
     // ========== 音频可视化模式控制 ==========
 
@@ -95,52 +91,52 @@ export function handleAudioVisualProperties(
         // 根据模式设置 PolygonAngle 和 Polygon 值 (与原始JS版本一致)
         switch (mode) {
             case 1:
-                appConfig.runtime.param.PolygonAngle = 1;
-                appConfig.runtime.param.Polygon = 295;
+                config.runtime.param.PolygonAngle = 1;
+                config.runtime.param.Polygon = 295;
                 break;
             case 2:
-                appConfig.runtime.param.PolygonAngle = 2;
-                appConfig.runtime.param.Polygon = 270;
+                config.runtime.param.PolygonAngle = 2;
+                config.runtime.param.Polygon = 270;
                 break;
             case 3:
-                appConfig.runtime.param.PolygonAngle = 4;
-                appConfig.runtime.param.Polygon = 245;
+                config.runtime.param.PolygonAngle = 4;
+                config.runtime.param.Polygon = 245;
                 break;
             case 4:
-                appConfig.runtime.param.PolygonAngle = 5;
-                appConfig.runtime.param.Polygon = 220;
+                config.runtime.param.PolygonAngle = 5;
+                config.runtime.param.Polygon = 220;
                 break;
             case 5:
-                appConfig.runtime.param.PolygonAngle = 7;
-                appConfig.runtime.param.Polygon = 195;
+                config.runtime.param.PolygonAngle = 7;
+                config.runtime.param.Polygon = 195;
                 break;
             case 6:
-                appConfig.runtime.param.PolygonAngle = 9;
-                appConfig.runtime.param.Polygon = 170;
+                config.runtime.param.PolygonAngle = 9;
+                config.runtime.param.Polygon = 170;
                 break;
             case 7:
-                appConfig.runtime.param.PolygonAngle = 10;
-                appConfig.runtime.param.Polygon = 145;
+                config.runtime.param.PolygonAngle = 10;
+                config.runtime.param.Polygon = 145;
                 break;
             case 8:
-                appConfig.runtime.param.PolygonAngle = 12;
-                appConfig.runtime.param.Polygon = 120;
+                config.runtime.param.PolygonAngle = 12;
+                config.runtime.param.Polygon = 120;
                 break;
             case 9:
-                appConfig.runtime.param.PolygonAngle = 30;
-                appConfig.runtime.param.Polygon = 95;
+                config.runtime.param.PolygonAngle = 30;
+                config.runtime.param.Polygon = 95;
                 break;
             case 10:
-                appConfig.runtime.param.PolygonAngle = 60;
-                appConfig.runtime.param.Polygon = 70;
+                config.runtime.param.PolygonAngle = 60;
+                config.runtime.param.Polygon = 70;
                 break;
             case 11:
-                appConfig.runtime.param.PolygonAngle = 90;
-                appConfig.runtime.param.Polygon = 45;
+                config.runtime.param.PolygonAngle = 90;
+                config.runtime.param.Polygon = 45;
                 break;
             case 12:
-                appConfig.runtime.param.PolygonAngle = 180;
-                appConfig.runtime.param.Polygon = 20;
+                config.runtime.param.PolygonAngle = 180;
+                config.runtime.param.Polygon = 20;
                 break;
             default:
         }
@@ -233,7 +229,7 @@ export function handleAudioVisualProperties(
     // 是否旋转
     if (properties.rotation && param) {
         param.rotation = properties.rotation.value;
-        appConfig.runtime.param.rotationcopy = param.rotation;
+        config.runtime.param.rotationcopy = param.rotation;
         config.pwCircleRotation = properties.rotation.value;
     }
 
@@ -257,11 +253,11 @@ export function handleAudioVisualProperties(
         param.showSemiCircle = properties.showSemiCircle.value;
         config.pwCircleShowSemiCircle = properties.showSemiCircle.value;
         if (properties.showSemiCircle.value) {
-            appConfig.runtime.param.rotationcopy = param.rotation;
+            config.runtime.param.rotationcopy = param.rotation;
             param.rotation = 0;
             param.offsetAngle = 0;
         } else {
-            param.rotation = appConfig.runtime.param.rotationcopy;
+            param.rotation = config.runtime.param.rotationcopy;
         }
     }
 
@@ -558,12 +554,9 @@ export function handleAudioVisualProperties(
         wallpaper?.audiovisualizer('set', 'ballRotation', properties.audio_ballRotation.value);
     }
 
-    // ========== 音频平滑参数 ==========
-
     // 启用平滑效果
     if (properties.audioSmoothEnabled) {
         config.audioSmoothEnabled = properties.audioSmoothEnabled.value;
-        console.log(config.audioSmoothEnabled)
     }
 
     // 平滑强度
@@ -578,5 +571,7 @@ export function handleAudioVisualProperties(
         config.audioSpatialWindow = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
     }
 
-    return result;
+    if (FirstLoad) {
+        debugLogger.info('[audioVisualizer] 可视化音频参数初始化完成');
+    }
 }

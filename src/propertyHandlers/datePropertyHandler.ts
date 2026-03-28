@@ -1,8 +1,3 @@
-/**
- * Date Property Handler
- * 处理日期相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
@@ -10,9 +5,7 @@ import { elements } from '@/utils/elementManager';
 import { getdate } from '../date';
 import { startDateColorRhythmLoop, stopDateColorRhythmLoop } from '../date';
 
-// 获取日期元素
 const oDate = elements.date.container as HTMLElement;
-
 
 /**
  * 处理日期相关属性

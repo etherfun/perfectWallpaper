@@ -1,11 +1,7 @@
-/**
- * Fullscreen Lyrics Property Handler
- * 处理全屏歌词相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { fullscreenLyrics } from '../fullscreenLyrics';
+import { debugLogger } from '@/utils/logger';
 
 /**
  * 处理全屏歌词相关属性
@@ -65,7 +61,9 @@ export function handleLyricsProperties(
     }
 
     // 初始化时根据设置显示/隐藏
-    if (FirstLoad && config.fullscreenLyricsEnabled) {
-        fullscreenLyrics.show();
+    if (FirstLoad) {
+        if (config.fullscreenLyricsEnabled) fullscreenLyrics.show();
+        
+        debugLogger.info('[FullscreenLyrics] 全屏歌词参数初始化完成');
     }
 }

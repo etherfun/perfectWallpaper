@@ -1,18 +1,10 @@
-/**
- * Time Property Handler
- * 处理时间/时钟相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { elements } from '@/utils/elementManager';
 import { getTime_sec, startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
 
-// 局部变量
 let tStyle = true;
-
-// 获取时钟指示器元素
 const oClock_webtext_ti = elements.clock.indicators;
 const oClock = elements.clock.container;
 
@@ -150,5 +142,9 @@ export function handleTimeProperties(
     if (properties.datetransparency) {
         const datetransparency = properties.datetransparency.value / 100;
         elements.body.style.setProperty("--date-opacity", String(datetransparency));
+    }
+
+    if (FirstLoad) {
+        debugLogger.info('[Date] 日期参数初始化完成');
     }
 }

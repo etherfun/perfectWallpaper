@@ -1,8 +1,3 @@
-/**
- * Background Property Handler
- * 处理壁纸/背景相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';

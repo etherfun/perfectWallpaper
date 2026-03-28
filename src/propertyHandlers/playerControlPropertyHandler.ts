@@ -1,14 +1,9 @@
-/**
- * Player Control Property Handler
- * 处理音乐播放器相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 import { pc_aubar, thumbnailsue, playertitle } from '../player_control';
+import { debugLogger } from '@/utils/logger';
 
-// DOM 元素引用
 const player_control = elements.playerControl.container;
 const player_control_thumbnail = elements.playerControl.thumbnail;
 const player_control_thumbnailWrap = elements.playerControl.thumbnailWrap;
@@ -17,7 +12,6 @@ const player_control_info = elements.playerControl.info;
 const player_control_artist = elements.playerControl.artist;
 const player_control_albumTitle = elements.playerControl.albumTitle;
 
-// 局部运行时变量
 let player_control_show = false;
 let player_control_thumbnail_size_value = 100;
 
@@ -321,5 +315,9 @@ export function handlePlayerControlProperties(
 
     if (properties.player_control_hdong) {
         config.playerControlHdong = properties.player_control_hdong.value / 500;
+    }
+
+    if (FirstLoad) {
+        debugLogger.info('[PlayerControl] 播放器参数初始化完成');
     }
 }

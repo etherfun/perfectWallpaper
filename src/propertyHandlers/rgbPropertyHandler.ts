@@ -1,8 +1,4 @@
-/**
- * RGB Property Handler
- * 处理RGB灯光效果相关的属性监听
- */
-
+import { debugLogger } from '@/utils/logger';
 import { config } from '../utils/config';
 import { WallpaperProperties } from './types';
 
@@ -13,7 +9,7 @@ import { WallpaperProperties } from './types';
  */
 export function handleRGBProperties(
     properties: WallpaperProperties,
-    _FirstLoad: boolean
+    FirstLoad: boolean
 ): void {
 
     // RGB FPS刷新率
@@ -84,5 +80,9 @@ export function handleRGBProperties(
     // 彩虹移动速度
     if (properties.rgb_color_rainbow_movespeed) {
         config.rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value;
+    }
+
+    if (FirstLoad) {
+        debugLogger.info('[RGB] RGB灯光参数初始化完成');
     }
 }

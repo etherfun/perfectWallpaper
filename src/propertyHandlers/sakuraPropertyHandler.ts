@@ -1,21 +1,17 @@
-/**
- * Sakura Property Handler
- * 处理樱花效果相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 import * as sakuraModule from '../sakura';
+import { debugLogger } from '@/utils/logger';
 
 /**
  * 处理樱花效果相关属性
  * @param properties 属性对象
- * @param _FirstLoad 是否首次加载
+ * @param FirstLoad 是否首次加载
  */
 export function handleSakuraProperties(
     properties: WallpaperProperties,
-    _FirstLoad: boolean
+    FirstLoad: boolean
 ): void {
 
     // 樱花特效
@@ -79,5 +75,9 @@ export function handleSakuraProperties(
     if (properties.sakurabacklight) {
         config.sakuraBackLight = properties.sakurabacklight.value / 100;
         sakuraModule.sakuraReLoadEffect();
+    }
+
+    if (FirstLoad) {
+        debugLogger.info('[Sakura] 樱花效果参数初始化完成');
     }
 }

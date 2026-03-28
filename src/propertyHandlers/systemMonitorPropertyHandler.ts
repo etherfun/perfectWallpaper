@@ -1,11 +1,6 @@
-/**
- * System Monitor Property Handler
- * 处理系统监控相关属性
- */
-
-import { appConfig, config } from '@/utils/config';
 import { getSystemMonitor, initSystemMonitor } from '@/systemMonitor';
 import { WallpaperProperties } from './types';
+import { debugLogger } from '@/utils/logger';
 
 /**
  * 处理系统监控属性
@@ -147,5 +142,9 @@ export function handleSystemMonitorProperties(
         monitor.updateConfig({
             disconnectTimeout: properties.sysmon_disconnect_timeout.value * 1000
         });
+    }
+
+    if (FirstLoad) {
+        debugLogger.info('[Sysmon] 系统性能参数初始化完成');
     }
 }

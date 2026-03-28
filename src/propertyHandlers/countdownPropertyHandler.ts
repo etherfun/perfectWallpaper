@@ -1,15 +1,10 @@
-/**
- * Countdown Property Handler
- * 处理倒计时相关的属性监听
- */
-
 import { config } from '../utils/config';
 import { WallpaperProperties } from './types';
 import { timerManager } from '../utils/timer';
 import { elements } from '@/utils/elementManager';
 import { setcountdown_a } from '../countdown';
+import { debugLogger } from '@/utils/logger';
 
-// 方便访问
 const bodyElement = elements.body;
 const countdown = elements.countdown.container;
 
@@ -131,5 +126,9 @@ export function handleCountdownProperties(
         updateHeight();
         const observer = new ResizeObserver(updateHeight);
         observer.observe(countdown);
+    }
+    
+    if (FirstLoad) {
+        debugLogger.info('[Countdown] 倒计时参数初始化完成');
     }
 }

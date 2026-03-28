@@ -1,8 +1,3 @@
-/**
- * Weather Property Handler
- * 处理天气相关的属性监听
- */
-
 import { WallpaperProperties } from './types';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
@@ -11,7 +6,6 @@ import { elements } from '@/utils/elementManager';
 import { weather_address, weather_init, generateWeatherTable, autoWeather, weather_unit_choose } from '../weather';
 import { debounce } from '../utils/timer';
 
-// 获取天气元素
 const weather = elements.weather.weather as HTMLElement;
 
 /**

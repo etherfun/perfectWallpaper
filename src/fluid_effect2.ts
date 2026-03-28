@@ -54,6 +54,7 @@ export class FluidEffect2 {
     private _lastDisplaySize = 0;
     // @ts-ignore - 保留用于将来可能的高DPI支持
     private _lastDpr = 1;
+    private resizeHandler: (() => void) | null = null;
 
     /**
      * 构造函数
@@ -94,7 +95,8 @@ export class FluidEffect2 {
             this.createCanvases();
             this.setupContainer();
 
-            window.addEventListener('resize', () => this.onResize());
+            this.resizeHandler = () => this.onResize();
+            window.addEventListener('resize', this.resizeHandler);
             this.onResize();
             debugLogger.info('[FluidEffect2] 流体效果初始化完成');
         } catch (error) {
@@ -421,6 +423,11 @@ export class FluidEffect2 {
      */
     destroy(): void {
         this.stop();
+
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
+        }
 
         if (this.fluidWrapper?.parentNode) {
             this.fluidWrapper.parentNode.removeChild(this.fluidWrapper);

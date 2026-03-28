@@ -37,18 +37,33 @@ export let showTemperatureInsteadOfPrecip = false;
 export let precipTemperatureToggleTimer: number | null = null;
 export let isAnimatingPrecipToggle = false;
 
-// SVG 图标缓存
+// SVG 图标缓存（LRU 限制最大 100 条）
+const MAX_ICON_CACHE_SIZE = 100;
 const iconCache = new Map<string, string>();
 
 // 获取图标（优先使用缓存）
 async function getIconSvg(iconPath: string): Promise<string> {
     if (iconCache.has(iconPath)) {
-        return iconCache.get(iconPath)!;
+        // Move to end (most recently used)
+        const value = iconCache.get(iconPath)!;
+        iconCache.delete(iconPath);
+        iconCache.set(iconPath, value);
+        return value;
     }
     const res = await fetch(iconPath);
     const svg = await res.text();
+    // LRU eviction: remove oldest entry if cache is full
+    if (iconCache.size >= MAX_ICON_CACHE_SIZE) {
+        const firstKey = iconCache.keys().next().value;
+        if (firstKey) iconCache.delete(firstKey);
+    }
     iconCache.set(iconPath, svg);
     return svg;
+}
+
+// 清除图标缓存
+export function clearIconCache(): void {
+    iconCache.clear();
 }
 
 // 创建空天气数据
@@ -497,6 +512,14 @@ export function startPrecipTemperatureToggleTimer(): void {
     if ([1, 4, 5].includes(config.weatherApiChoose)) {
         // 每30秒切换一次显示
         precipTemperatureToggleTimer = window.setInterval(togglePrecipTemperatureDisplay, 20000);
+    }
+}
+
+// 清除降水/温度轮换定时器
+export function clearPrecipTemperatureToggleTimer(): void {
+    if (precipTemperatureToggleTimer) {
+        clearInterval(precipTemperatureToggleTimer);
+        precipTemperatureToggleTimer = null;
     }
 }
 

@@ -29,6 +29,9 @@ declare let audioArrayPar: number[];
 let CanPar!: HTMLCanvasElement;
 let CXTPar!: CanvasRenderingContext2D;
 
+// Precompiled regex for color alpha replacement (performance optimization)
+const COLOR_ALPHA_REGEX = /0\.8/g;
+
 // Configuration options
 let ratio: number = 0;
 let isShowLine: boolean = false;
@@ -165,7 +168,7 @@ export function drawP(point: Point): void {
     if (point.r && equalize !== 1) radius = radius * equalize + point.r * (1 - equalize);
 
     CXTPar.beginPath();
-    const pointColor = usePColor ? pColor.replace(/0\.8/, String(point.alpha)) : point.color.all;
+    const pointColor = usePColor ? pColor.replace(COLOR_ALPHA_REGEX, String(point.alpha)) : point.color.all;
     if (pStyle) {
         CXTPar.fillStyle = pointColor;
     } else {
@@ -254,10 +257,10 @@ export function connect(): void {
             if (Math.abs(pointI.x - pointJ.x) <= points.distance && Math.abs(pointI.y - pointJ.y) <= points.distance) {
                 const x = pointI.x - mouse.x;
                 const y = pointI.y - mouse.y;
-                let lineC = 10 / Math.pow((x * x + y * y), 0.5);
+                let lineC = 10 / Math.sqrt(x * x + y * y);
                 lineC = Math.min(lineC, 1);
                 CXTPar.beginPath();
-                const lColor = usePColor ? pColor.replace(/0\.8/, String(lineC)) : mixColor(pointI, pointJ, lineC);
+                const lColor = usePColor ? pColor.replace(COLOR_ALPHA_REGEX, String(lineC)) : mixColor(pointI, pointJ, lineC);
                 CXTPar.strokeStyle = lColor;
                 CXTPar.moveTo(pointI.x, pointI.y);
                 CXTPar.lineTo(pointJ.x, pointJ.y);

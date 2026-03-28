@@ -274,22 +274,22 @@ export async function qweather(
         await qweatherLookupCity(weather_address);
     }
 
+    // 首先获取必要的数据（nowWeather 是必需的，其他可以并行）
     await fetchNowWeather(weather_address, weather_data);
 
+    // 并行获取可选数据
     if (!checkQuota()) {
-        await fetchAirQuality(weather_address, weather_data);
-    }
-
-    if (!checkQuota()) {
-        await fetchWeatherAlert(weather_address, weather_data);
-    }
-
-    if (!checkQuota()) {
-        await fetch24hForecast(weather_address, weather_data);
-    }
-
-    if (!checkQuota()) {
-        await fetch3dForecast(weather_address, weather_data);
+        const [
+            airQualityResult,
+            alertResult,
+            hourlyResult,
+            dailyResult
+        ] = await Promise.all([
+            fetchAirQuality(weather_address, weather_data).catch(() => { /* ignore errors */ }),
+            fetchWeatherAlert(weather_address, weather_data).catch(() => { /* ignore errors */ }),
+            fetch24hForecast(weather_address, weather_data).catch(() => { /* ignore errors */ }),
+            fetch3dForecast(weather_address, weather_data).catch(() => { /* ignore errors */ })
+        ]);
     }
 }
 

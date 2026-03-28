@@ -95,6 +95,7 @@ export class NativeParticles {
 
     private particlesArray: Particle[] = [];
     private timer: number | null = null;
+    private resizeHandler: (() => void) | null = null;
 
     // Options
     number = DEFAULTS.number;
@@ -170,10 +171,22 @@ export class NativeParticles {
     }
 
     private setupPointerEvents(): void {
-        window.addEventListener('resize', () => {
+        this.resizeHandler = () => {
             this.canvasWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
             this.canvasHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
-        });
+        };
+        window.addEventListener('resize', this.resizeHandler);
+    }
+
+    destroy(): void {
+        this.stopParticles();
+        if (this.resizeHandler) {
+            window.removeEventListener('resize', this.resizeHandler);
+            this.resizeHandler = null;
+        }
+        if (this.canvas?.parentNode) {
+            this.canvas.parentNode.removeChild(this.canvas);
+        }
     }
 
     private getDist(x1: number, y1: number, x2: number, y2: number): number {

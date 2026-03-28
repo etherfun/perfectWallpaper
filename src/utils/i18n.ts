@@ -39,8 +39,7 @@ export async function loadI18nData(): Promise<void> {
         } else {
             i18n_data = await res.json();
         }
-        
-        // 初始化i18n更新
+
         initI18nUpdate();
     } catch (error) {
         debugLogger.error('Failed to load i18n data:', error);
@@ -64,13 +63,10 @@ export function i18n(key: string): string {
  * 初始化i18n更新系统
  */
 function initI18nUpdate(): void {
-    // 立即更新现有元素
     updateAllI18nElements();
-    
-    // 初始化MutationObserver监听DOM变化
+
     initI18nObserver();
-    
-    // 添加一个延迟的二次更新，确保所有动态内容都已加载
+
     setTimeout(() => {
         updateAllI18nElements();
     }, 5000);

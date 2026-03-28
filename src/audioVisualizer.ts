@@ -114,13 +114,9 @@ function validateAudioData(data: number[]): boolean {
     return true;
 }
 
-// PWCircle 绘制函数
 import { setCan, createPoint, style1, style2, style3 } from './PWCircle';
-
-// PWLine 绘制函数
 import { setCTXLine, PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3 } from './PWLine';
 
-// 样式函数映射
 const circleStyles = [style1, style2, style3] as const;
 const lineStyles = [PWLineStyle1, PWLineStyle2, PWLineStyle3] as const;
 

@@ -39,24 +39,20 @@ export function handlePlayerControlProperties(
             player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
 
             setTimeout(function () {
-                // 检查播放器是否应该显示
                 if (!player_control_show) {
                     player_control.style.display = "none";
                     return;
                 }
 
-                // 检查是否有歌曲信息
                 const leftTitle = document.querySelector("#player_control .title .left") as HTMLElement | null;
                 const rightTitle = document.querySelector("#player_control .title .right") as HTMLElement | null;
                 const isTitleLoading = (leftTitle && leftTitle.innerText == "loading...") ||
                     (rightTitle && rightTitle.innerText == "loading...");
 
-                // 如果有歌曲信息，保持显示
                 if (!isTitleLoading) {
                     return;
                 }
 
-                // 没有歌曲信息，根据 autohide 设置处理
                 if (config.playerControlAutohide) {
                     player_control.style.display = "none";
                 } else {
@@ -92,7 +88,6 @@ export function handlePlayerControlProperties(
         player_control.style.left = properties.playerx.value + "%";
     }
 
-    // 外观
     if (properties.player_control_color) {
         const color = properties.player_control_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.playerControlColor = color;
@@ -132,7 +127,6 @@ export function handlePlayerControlProperties(
         elements.body.style.setProperty("--player-blur-yakeli", `${properties.player_control_bluryakeli.value}px`);
     }
 
-    // 封面相对大小
     if (properties.player_control_thumbnail_size) {
         config.playerControlThumbnailSize = properties.player_control_thumbnail_size.value;
         if (properties.player_control_thumbnail_size.value) {
@@ -145,7 +139,6 @@ export function handlePlayerControlProperties(
         }
     }
 
-    // 大小
     if (properties.player_control_size) {
         const s = properties.player_control_size.value;
         config.playerControlSizeValue = Math.floor(config.screenHeight / 150 * s);
@@ -167,7 +160,6 @@ export function handlePlayerControlProperties(
         }
     }
 
-    // 封面相对大小
     if (properties.player_control_thumbnail_size_value) {
         const s = config.playerControlSizeValue;
         config.playerControlThumbnailSizeValue = properties.player_control_thumbnail_size_value.value;
@@ -180,7 +172,6 @@ export function handlePlayerControlProperties(
         }
     }
 
-    // 圆角
     if (properties.player_control_roundedcorners) {
         const rounded = properties.player_control_roundedcorners.value;
 
@@ -204,7 +195,6 @@ export function handlePlayerControlProperties(
         observer.observe(player_control_thumbnail);
     }
 
-    // 封面旋转
     if (properties.player_control_thumbnail_rotation) {
         config.playerControlThumbnailRotation = properties.player_control_thumbnail_rotation.value;
         if (properties.player_control_thumbnail_rotation.value === false) {
@@ -222,7 +212,6 @@ export function handlePlayerControlProperties(
         }
     }
 
-    // 透明度
     if (properties.player_control_timetransparency) {
         config.playerControlTimetransparency = properties.player_control_timetransparency.value;
         player_control.style.opacity = String(properties.player_control_timetransparency.value / 100);

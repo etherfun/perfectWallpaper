@@ -52,7 +52,6 @@ let we_array = new Array("Sunday","Monday","Tuesday","Wednesday","Thursday","Fri
 let m_array = new Array("一月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月");
 let me_array = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
-// 获取格式化后的年份
 function getFormattedYear(t) {
     switch(config.dateFormat.yearFormat) {
         case 1: // YYYY格式
@@ -65,7 +64,6 @@ function getFormattedYear(t) {
     }
 }
 
-// 获取格式化后的月份
 function getFormattedMonth(t) {
     let month = t.getMonth() + 1;
     switch(config.dateFormat.monthFormat) {
@@ -81,7 +79,6 @@ function getFormattedMonth(t) {
     }
 }
 
-// 获取格式化后的日期
 function getFormattedDay(t) {
     let day = t.getDate();
     switch(config.dateFormat.dayFormat) {
@@ -95,7 +92,6 @@ function getFormattedDay(t) {
     }
 }
 
-// 获取格式化后的星期
 function getFormattedWeek(t) {
     switch(config.dateFormat.weekFormat) {
         case 1: // 中文星期
@@ -108,7 +104,6 @@ function getFormattedWeek(t) {
     }
 }
 
-// 获取分隔符
 function getSeparator() {
     switch(config.dateFormat.separator) {
         case 1: // 无分隔符（用于中文格式）
@@ -179,18 +174,15 @@ function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
 // 主函数：获取并显示日期
 export function getdate() {
     let t = new Date();
-    
-    // 获取各个部分的格式化值
+
     let year = getFormattedYear(t);
     let month = getFormattedMonth(t);
     let day = getFormattedDay(t);
     let week = getFormattedWeek(t);
     let sep = getSeparator();
-    
-    // 构建完整的日期字符串
+
     let dateString = buildDateString(year, month, day, week, sep);
-    
-    // 显示日期
+
     if (oDate_webtext) {
         oDate_webtext.innerHTML = dateString;
     }

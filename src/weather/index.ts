@@ -198,7 +198,6 @@ export function autoWeather(): void {
     timerManager.create(autoWeather, intervals[config.weatherUpdate] || 900000, 'updataWeather');
 }
 
-// 获取空气质量等级文本
 export function getAirQualityText(airValue: string | number): string {
     if (!airValue || airValue === "") return "";
 
@@ -334,10 +333,9 @@ export async function generateWeatherTable(): Promise<void> {
         if ([1, 4].includes(config.weatherApiChoose)) {
             rightHTML += `<div class="weather-detail-item moonphase">${weather_data.moonphase}</div>`;
         }
-        rightHTML += `</div>`; // 结束weather-detail-row
+        rightHTML += `</div>`;
 
         if ([1].includes(config.weatherApiChoose)) {
-            // 第三行：空气质量
             rightHTML += `<div class="weather-air-row">`;
 
             rightHTML += `<div class="weather-air-item air-quality">${i18n('weather_air_quality_label')}</div>`;
@@ -348,13 +346,11 @@ export async function generateWeatherTable(): Promise<void> {
                 rightHTML += `<div class="weather-alert-container">${i18n('weather_alert_label')}<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div></div></div>`;
             }
 
-            rightHTML += `</div>`; // 结束weather-air-row
+            rightHTML += `</div>`;
         }
 
     } else if ([2].includes(config.weatherApiChoose)) {
-        // API 2 没有详细信息
     } else if ([3].includes(config.weatherApiChoose)) {
-        // API 3 只有空气质量行
         rightHTML += `<div class="weather-air-row">`;
         const alertsHTML = generateAlertHTML();
         if (alertsHTML) {
@@ -395,16 +391,13 @@ export async function generateWeatherTable(): Promise<void> {
 
     rightHTML += `</div>`;
 
-    // 更新DOM
     const weatherEl = elements.weather.container;
     if (weatherEl) {
         weatherEl.innerHTML = leftHTML + rightHTML;
     }
 
-    // 调用tooltip函数以绑定事件
     tooltip();
 
-    // 启动降水/温度轮换显示定时器（仅当有降水行时）
     startPrecipTemperatureToggleTimer();
 }
 

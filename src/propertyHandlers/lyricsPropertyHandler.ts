@@ -13,7 +13,6 @@ export function handleLyricsProperties(
     FirstLoad: boolean
 ): void {
 
-    // 全屏歌词开关
     if (properties.fullscreen_lyrics_enabled) {
         config.fullscreenLyricsEnabled = properties.fullscreen_lyrics_enabled.value;
 
@@ -24,46 +23,39 @@ export function handleLyricsProperties(
         }
     }
 
-    // 显示翻译
     if (properties.fullscreen_lyrics_show_translation) {
         config.fullscreenLyricsShowTranslation = properties.fullscreen_lyrics_show_translation.value;
         fullscreenLyrics.setConfig({ showTranslation: config.fullscreenLyricsShowTranslation });
     }
 
-    // 显示罗马音
     if (properties.fullscreen_lyrics_show_roman) {
         config.fullscreenLyricsShowRoman = properties.fullscreen_lyrics_show_roman.value;
         fullscreenLyrics.setConfig({ showRoman: config.fullscreenLyricsShowRoman });
     }
 
-    // 延迟设置
     if (properties.fullscreen_lyrics_delay) {
         config.fullscreenLyricsDelay = properties.fullscreen_lyrics_delay.value;
         fullscreenLyrics.setConfig({ delay: config.fullscreenLyricsDelay });
     }
 
-    // 启用模糊效果
     if (properties.fullscreen_lyrics_enable_blur) {
         config.fullscreenLyricsEnableBlur = properties.fullscreen_lyrics_enable_blur.value;
         fullscreenLyrics.setConfig({ enableBlur: config.fullscreenLyricsEnableBlur });
     }
 
-    // 隐藏其他元素
     if (properties.fullscreen_lyrics_hide_other) {
         config.fullscreenLyricsHideOther = properties.fullscreen_lyrics_hide_other.value;
         fullscreenLyrics.setConfig({ hideOtherElements: config.fullscreenLyricsHideOther });
     }
 
-    // 显示时钟
     if (properties.fullscreen_lyrics_show_clock) {
         config.fullscreenLyricsShowClock = properties.fullscreen_lyrics_show_clock.value;
         fullscreenLyrics.setConfig({ showClock: config.fullscreenLyricsShowClock });
     }
 
-    // 初始化时根据设置显示/隐藏
     if (FirstLoad) {
         if (config.fullscreenLyricsEnabled) fullscreenLyrics.show();
-        
+
         debugLogger.info('[FullscreenLyrics] 全屏歌词参数初始化完成');
     }
 }

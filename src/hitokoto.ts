@@ -6,7 +6,6 @@ const hitokoto = elements.hitokoto.container;
 const hitokoto_webtext = elements.hitokoto.webtext;
 const hitokotoRuntime = config.runtime.hitokoto;
 
-// 获取一言数据
 async function getHitokoto_input(strHtml1: string): Promise<void> {
     const params = config.hitCategories.join("");
 
@@ -23,7 +22,6 @@ async function getHitokoto_input(strHtml1: string): Promise<void> {
     hitokoto_webtext.innerHTML = formatHitokoto(strHtml1);
 }
 
-// 格式化一言文本
 function formatHitokoto(strHtml: string): string {
     const { hitokoto_text, from_who_text, from_text } = hitokotoRuntime;
     const unknownAuthors = ["未知", "佚名"];
@@ -37,7 +35,6 @@ function formatHitokoto(strHtml: string): string {
         .replace("{出处}", source);
 }
 
-// 根据格式获取一言
 export function getHitokoto(): void {
     const templates: Record<number, string> = {
         1: "<div class='text1'>{一言}</div><div class='text2'>——{作者}{出处}</div>",
@@ -50,5 +47,4 @@ export function getHitokoto(): void {
     }
 }
 
-// 自动获取一言
 export const autoHitokto = getHitokoto;

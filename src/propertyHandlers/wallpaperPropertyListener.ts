@@ -113,7 +113,6 @@ export function setupWallpaperPropertyListener(): void {
         const runtime = config.runtime;
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
-                // 从 appConfig 获取 FirstLoad 状态
                 const isFirstLoad = config.firstLoad;
                 createWallpaperPropertyListener(properties as WallpaperProperties, isFirstLoad);
             },

@@ -18,17 +18,14 @@ export function handleWeatherProperties(
     FirstLoad: boolean
 ): void {
 
-    // 获取key 和风天气api
     if (properties.getcitykey_qweather) {
         config.cityKey = properties.getcitykey_qweather.value;
     }
 
-    // 获取API host 和风天气api
     if (properties.getAPIHOST_qweather) {
         config.apiHost = properties.getAPIHOST_qweather.value;
     }
 
-    // 获取appid&appsecret 天气api
     if (properties.getcityappid_tianqiapi) {
         config.weatherAppId = properties.getcityappid_tianqiapi.value;
     }
@@ -37,22 +34,18 @@ export function handleWeatherProperties(
         config.weatherAppSecret = properties.getcityappsecret_tianqiapi.value;
     }
 
-    // VisualCrossing_Key
     if (properties.getcitykey_visualcrossing) {
         config.visualCrossingKey = properties.getcitykey_visualcrossing.value;
     }
 
-    // 天气更新时间
     if (properties.weather_updata) {
         config.weatherUpdate = properties.weather_updata.value;
     }
 
-    // 显示语言
     if (properties.weather_lang) {
         config.weatherLang = properties.weather_lang.value;
     }
 
-    // 显示单位
     if (properties.weather_unit) {
         config.weatherUnit = properties.weather_unit.value;
         weather_unit_choose();
@@ -74,13 +67,11 @@ export function handleWeatherProperties(
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
-    // 获取天气城市优先获取
     if (properties.weather_CityText) {
         weather_address.cityname = properties.weather_CityText.value;
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
-    // API选择
     if (properties.freeapi) {
         if (properties.freeapi.value) {
             config.weatherApiChoose = "2";

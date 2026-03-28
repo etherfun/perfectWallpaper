@@ -3,7 +3,6 @@
 import { elements } from '@/utils/elementManager';
 import { config } from './utils/config';
 
-// 获取DOM元素
 const myvideo = elements.myvideo;
 const myAudio = elements.myAudio;
 

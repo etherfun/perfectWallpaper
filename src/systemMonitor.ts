@@ -76,7 +76,6 @@ class SystemMonitor {
     }
 
     private createElements(): void {
-        // 创建容器
         this.container = document.createElement('div');
         this.container.id = 'system-monitor';
         const isLeft = this.config.monitorPosition === 'left';
@@ -95,7 +94,6 @@ class SystemMonitor {
             font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
         `;
 
-        // 添加样式以固定文本宽度
         const style = document.createElement('style');
         style.textContent = `
             #system-monitor .sysmon-label { min-width: 36px; }
@@ -161,7 +159,6 @@ class SystemMonitor {
     }
 
     private updateDisplay(data: any): void {
-        // 更新CPU
         if (this.config.showCpu) {
             const cpuUsage = Math.round(data.cpu?.usage || 0);
             this.pushHistory(this.cpuHistory, cpuUsage);
@@ -170,7 +167,6 @@ class SystemMonitor {
             this.cpuElement!.style.display = 'none';
         }
 
-        // 更新GPU
         if (this.config.showGpu && data.gpu?.length > 0) {
             const gpu = data.gpu[0];
             const gpuUsage = Math.round(gpu.utilization || 0);
@@ -181,7 +177,6 @@ class SystemMonitor {
             this.gpuElement!.style.display = 'none';
         }
 
-        // 更新内存
         if (this.config.showMemory) {
             const memUsed = Math.round(data.memory?.usedPercent || 0);
             const memTotal = this.formatBytes(data.memory?.total || 0);
@@ -191,7 +186,6 @@ class SystemMonitor {
             this.memoryElement!.style.display = 'none';
         }
 
-        // 更新网络
         if (this.config.showNetwork) {
             const rx = this.formatBytes(data.network?.rx || 0) + '/s';
             const tx = this.formatBytes(data.network?.tx || 0) + '/s';
@@ -360,7 +354,6 @@ class SystemMonitor {
         return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
     }
 
-    // 更新配置
     public updateConfig(newConfig: Partial<SystemMonitorConfig>): void {
         const wasEnabled = this.config.enabled;
         this.config = { ...this.config, ...newConfig };

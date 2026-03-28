@@ -274,25 +274,20 @@ export async function qweather(
         await qweatherLookupCity(weather_address);
     }
 
-    // 获取实时天气
     await fetchNowWeather(weather_address, weather_data);
 
-    // 获取空气质量
     if (!checkQuota()) {
         await fetchAirQuality(weather_address, weather_data);
     }
 
-    // 获取天气预警
     if (!checkQuota()) {
         await fetchWeatherAlert(weather_address, weather_data);
     }
 
-    // 获取24小时预报
     if (!checkQuota()) {
         await fetch24hForecast(weather_address, weather_data);
     }
 
-    // 获取3天预报
     if (!checkQuota()) {
         await fetch3dForecast(weather_address, weather_data);
     }

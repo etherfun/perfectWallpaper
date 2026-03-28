@@ -14,7 +14,6 @@ export function getWeatherTips(weatherData: WeatherData): string {
     const isAfternoon = hour >= 12 && hour < 18;
     const isEvening = hour >= 18 && hour < 22;
 
-    // 获取天气数据
     const weatherText = weatherData.weathernow || "";
     const windScale = parseInt(weatherData.windLv) || 0;
     const airQuality = parseInt(weatherData.air) || 0;

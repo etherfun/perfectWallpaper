@@ -1,5 +1,3 @@
-// 播放器控制模块 - 从 player_control.js 迁移
-
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';

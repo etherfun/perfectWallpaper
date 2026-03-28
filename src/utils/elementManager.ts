@@ -1,9 +1,3 @@
-/**
- * 元素管理器 - 集中管理所有 DOM 元素
- */
-
-import { appConfig } from './config';
-
 // DOM 元素集合
 const elements = {
     // 主体

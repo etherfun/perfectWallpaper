@@ -6,8 +6,6 @@ import { timerManager } from '@/utils/timer';
 const countdown_webtext = elements.countdown.webtext;
 const countdown = elements.countdown.container;
 
-let examDate: Date;
-
 // 添加前导零
 function add0(num: number): string {
     return num < 10 ? "0" + num : num.toString();

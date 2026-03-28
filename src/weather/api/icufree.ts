@@ -1,4 +1,4 @@
-import type { WeatherAddress, WeatherData } from '../../types/weather';
+import type { WeatherAddress, WeatherData } from '../types';
 import { fetch_with_retry } from '../../utils/tool';
 
 interface IcuFreeResponse {

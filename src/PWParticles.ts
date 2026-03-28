@@ -231,29 +231,38 @@ export function drawPoint(): void {
 
 /**
  * Connect particles with lines based on proximity
+ * Optimized: pre-filter particles within mouse radius to avoid redundant checks
  */
 export function connect(): void {
     CXTPar.save();
     CXTPar.lineWidth = 1;
 
+    // Pre-filter particles within mouse radius (O(n) instead of checking in inner loop)
+    const particlesInRadius: Point[] = [];
     for (let i = 0; i < num; i++) {
         const pointI = points.arr[i];
-        for (let j = 0; j < num; j++) {
-            const pointJ = points.arr[j];
-            if (Math.abs(pointI.x - mouse.x) <= points.mRadius && Math.abs(pointI.y - mouse.y) <= points.mRadius) {
-                if (Math.abs(pointI.x - pointJ.x) <= points.distance && Math.abs(pointI.y - pointJ.y) <= points.distance) {
-                    const x = pointI.x - mouse.x;
-                    const y = pointI.y - mouse.y;
-                    let lineC = 10 / Math.pow((x * x + y * y), 0.5);
-                    lineC = Math.min(lineC, 1);
-                    CXTPar.beginPath();
-                    const lColor = usePColor ? pColor.replace(/0\.8/, String(lineC)) : mixColor(pointI, pointJ, lineC);
-                    CXTPar.strokeStyle = lColor;
-                    CXTPar.moveTo(pointI.x, pointI.y);
-                    CXTPar.lineTo(pointJ.x, pointJ.y);
-                    CXTPar.closePath();
-                    CXTPar.stroke();
-                }
+        if (Math.abs(pointI.x - mouse.x) <= points.mRadius && Math.abs(pointI.y - mouse.y) <= points.mRadius) {
+            particlesInRadius.push(pointI);
+        }
+    }
+
+    // Only process particles within mouse radius (k = particlesInRadius.length, typically k << n)
+    for (let i = 0; i < particlesInRadius.length; i++) {
+        const pointI = particlesInRadius[i];
+        for (let j = 0; j < particlesInRadius.length; j++) {
+            const pointJ = particlesInRadius[j];
+            if (Math.abs(pointI.x - pointJ.x) <= points.distance && Math.abs(pointI.y - pointJ.y) <= points.distance) {
+                const x = pointI.x - mouse.x;
+                const y = pointI.y - mouse.y;
+                let lineC = 10 / Math.pow((x * x + y * y), 0.5);
+                lineC = Math.min(lineC, 1);
+                CXTPar.beginPath();
+                const lColor = usePColor ? pColor.replace(/0\.8/, String(lineC)) : mixColor(pointI, pointJ, lineC);
+                CXTPar.strokeStyle = lColor;
+                CXTPar.moveTo(pointI.x, pointI.y);
+                CXTPar.lineTo(pointJ.x, pointJ.y);
+                CXTPar.closePath();
+                CXTPar.stroke();
             }
         }
     }

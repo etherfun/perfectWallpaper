@@ -105,8 +105,13 @@ export function weather_paymode(): boolean {
     const currentMonth = today.getMonth();
     const currentDate = today.getDate();
 
-    const usageDataStr = localStorage.getItem('UsageData') || '{}';
-    const usageData = JSON.parse(usageDataStr);
+    let usageData: { count?: number; month?: number } = {};
+    try {
+        const usageDataStr = localStorage.getItem('UsageData') || '{}';
+        usageData = JSON.parse(usageDataStr);
+    } catch {
+        debugLogger.warn('Failed to parse UsageData, resetting');
+    }
     localStorage.removeItem('UseNumber');
 
     if (currentDate === 1 || usageData.month !== currentMonth) {
@@ -114,12 +119,12 @@ export function weather_paymode(): boolean {
         usageData.month = currentMonth;
     }
 
-    if (usageData.count >= 50000) {
+    if ((usageData.count ?? 0) >= 50000) {
         debugLogger.warn('Weather api over Usage');
         return true; // 需要付费
     }
 
-    usageData.count = (usageData.count || 0) + 1;
+    usageData.count = (usageData.count ?? 0) + 1;
     localStorage.setItem('UsageData', JSON.stringify(usageData));
     return false;
 }

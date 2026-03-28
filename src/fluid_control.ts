@@ -127,7 +127,7 @@ export class FluidEffectConfig {
         document.querySelector('.fluid-effect-wrapper')?.remove();
         if (appConfig.runtime.fluidEffect) {
             appConfig.runtime.fluidEffect!.destroy();
-            appConfig.runtime.fluidEffect = null;;
+            appConfig.runtime.fluidEffect = null;
         }
         // 重新初始化全屏流体效果
         if (this.enabled) {
@@ -232,7 +232,7 @@ export function initFullscreenFluidEffect(): void {
     if (!appConfig.runtime.FluidEffectConfig.fullscreenEnabled) {
         if (appConfig.runtime.fullscreenFluidEffect) {
             appConfig.runtime.fullscreenFluidEffect!.destroy();
-            appConfig.runtime.fullscreenFluidEffect = null;;
+            appConfig.runtime.fullscreenFluidEffect = null;
         }
         return;
     }
@@ -266,7 +266,7 @@ export function initFullscreenFluidEffect(): void {
             canvasDisplacementAmplitude: appConfig.runtime.FluidEffectConfig.canvasDisplacementAmplitude,
             fullscreen: true
         });
-        appConfig.runtime.fullscreenFluidEffect = newFullscreenFluidEffect;;
+        appConfig.runtime.fullscreenFluidEffect = newFullscreenFluidEffect;
         appConfig.runtime.fullscreenFluidEffect!.start();
 
         if (isPaused) {
@@ -309,7 +309,7 @@ export function initFullscreenFluidEffect(): void {
 export function destroyFullscreenFluidEffect(): void {
     if (appConfig.runtime.fullscreenFluidEffect) {
         appConfig.runtime.fullscreenFluidEffect!.destroy();
-        appConfig.runtime.fullscreenFluidEffect = null;;
+        appConfig.runtime.fullscreenFluidEffect = null;
         timerManager.resume('backgroundChange');
     }
 
@@ -411,7 +411,7 @@ export function initFluidEffect(): void {
             turbulenceOctaves: appConfig.runtime.FluidEffectConfig.turbulenceOctaves,
             canvasDisplacementAmplitude: appConfig.runtime.FluidEffectConfig.canvasDisplacementAmplitude
         });
-        appConfig.runtime.fluidEffect = newFluidEffect;;
+        appConfig.runtime.fluidEffect = newFluidEffect;
     } catch (error) {
         return;
     }
@@ -452,7 +452,7 @@ export function destroyFluidEffect(): void {
 
     if (appConfig.runtime.fluidEffect) {
         appConfig.runtime.fluidEffect!.destroy();
-        appConfig.runtime.fluidEffect = null;;
+        appConfig.runtime.fluidEffect = null;
 
         const background = elements.playerControl.background;
         if (background) {

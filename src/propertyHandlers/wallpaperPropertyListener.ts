@@ -4,22 +4,20 @@
  */
 
 import { WallpaperProperties } from './types';
-import {
-    handleDateProperties,
-    handleTimeProperties,
-    handleBackgroundProperties,
-    handleWeatherProperties,
-    handleHitokotoProperties,
-    handleCountdownProperties,
-    handlePlayerControlProperties,
-    handleRGBProperties,
-    handleParticleProperties,
-    handleAudioVisualProperties,
-    handleSakuraProperties,
-    handleFluidEffectProperties,
-    handleLyricsProperties,
-    handleSystemMonitorProperties,
-} from './index';
+import { handleDateProperties } from './datePropertyHandler';
+import { handleTimeProperties } from './timePropertyHandler';
+import { handleBackgroundProperties } from './backgroundPropertyHandler';
+import { handleWeatherProperties } from './weatherPropertyHandler';
+import { handleHitokotoProperties } from './hitokotoPropertyHandler';
+import { handleCountdownProperties } from './countdownPropertyHandler';
+import { handlePlayerControlProperties } from './playerControlPropertyHandler';
+import { handleRGBProperties } from './rgbPropertyHandler';
+import { handleParticleProperties } from './particlePropertyHandler';
+import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
+import { handleSakuraProperties } from './sakuraPropertyHandler';
+import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
+import { handleLyricsProperties } from './lyricsPropertyHandler';
+import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
 import { appConfig, config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { elements } from '../utils/elementManager';
@@ -106,7 +104,6 @@ export function createWallpaperPropertyListener(
     // 如果是首次加载，在处理完所有属性后将其设置为 false
     if (FirstLoad) {
         config.firstLoad = false;
-        config.updateInitComplete = true;
     }
 }
 
@@ -136,16 +133,9 @@ export function setupWallpaperPropertyListener(): void {
                 updateFileList(runtime.files[propertyName]);
             },
             userDirectoryFilesRemoved: (propertyName: string, removedFiles: string[]) => {
-                for (let i = 0; i < removedFiles.length; i++) {
-                    const index = runtime.files[propertyName].indexOf(removedFiles[i]);
-                    const myindex = runtime.myList.indexOf(removedFiles[i]);
-                    if (index >= 0) {
-                        runtime.files[propertyName].splice(index, 1);
-                    }
-                    if (myindex >= 0) {
-                        runtime.myList.splice(myindex, 1);
-                    }
-                }
+                const removedSet = new Set(removedFiles);
+                runtime.files[propertyName] = runtime.files[propertyName].filter(file => !removedSet.has(file));
+                runtime.myList = runtime.myList.filter(file => !removedSet.has(file));
                 updateFileList(runtime.files[propertyName]);
             },
             setPaused: (isPaused: boolean) => {

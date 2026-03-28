@@ -1,4 +1,4 @@
-import type { WeatherAddress, WeatherData, SevenHourlyData } from '../../types/weather';
+import type { WeatherAddress, WeatherData, SevenHourlyData } from '../types';
 import { fetch_with_retry } from '../../utils/tool';
 import { wunit } from '../units';
 import { i18n } from '../../utils/i18n';

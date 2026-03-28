@@ -1,4 +1,4 @@
-import type { WeatherAddress, WeatherData } from '../../types/weather';
+import type { WeatherAddress, WeatherData } from '../types';
 import { fetch_with_retry, isNightTime, getQWeatherIcon } from '../../utils/tool';
 import { i18n } from '../../utils/i18n';
 import { config } from '../../utils/config';
@@ -201,14 +201,6 @@ export async function visualcrossing(
       .map(c => i18n(`weather_visualcrossing_${c}`))
       .join(" <br/> ");
   });
-  weather_data.sevenHourlyData.Wind360s = resHourly.map(hour => hour.winddir.toString());
-  weather_data.sevenHourlyData.WindSpeeds = resHourly.map(hour => hour.windspeed);
-  weather_data.sevenHourlyData.Winds = resHourly.map(hour => {
-    const index = Math.floor((hour.winddir + 22.5) / 45) % 8;
-    return i18n(DIRECTIONS[index] ?? "weather_no_data");
-  });
-  weather_data.sevenHourlyData.preciptype = resHourly.map(hour => Array.isArray(hour.preciptype) ? hour.preciptype.join(",") : hour.preciptype || "");
-  weather_data.sevenHourlyData.Times = resHourly.map(hour => hour.datetime.slice(0, 5));
   weather_data.sevenHourlyData.Wind360s = resHourly.map(hour => hour.winddir.toString());
   weather_data.sevenHourlyData.WindSpeeds = resHourly.map(hour => hour.windspeed);
   weather_data.sevenHourlyData.Winds = resHourly.map(hour => {

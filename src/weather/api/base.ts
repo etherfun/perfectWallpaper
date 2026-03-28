@@ -3,7 +3,7 @@
  * Common interface for all weather API implementations
  */
 
-import type { WeatherAddress, WeatherData } from '../../types/weather';
+import type { WeatherAddress, WeatherData } from '../types';
 
 /**
  * Weather API handler interface

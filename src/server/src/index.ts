@@ -2,11 +2,12 @@ import express from 'express';
 import { getSystemInfo, getCpuUsage, getMemoryInfo, getGpuInfo, SystemInfo } from './systemInfo.js';
 
 const app = express();
-const PORT = 3842;
+const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3842;
+const ALLOWED_ORIGIN = process.env.ALLOWED_ORIGIN || 'http://localhost:*';
 
-// Enable CORS for Wallpaper Engine
+// Enable CORS for Wallpaper Engine (restricted to allowed origin)
 app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Origin', ALLOWED_ORIGIN);
   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') {
@@ -120,7 +121,7 @@ app.get('/api/stream', (req, res) => {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     'Connection': 'keep-alive',
-    'Access-Control-Allow-Origin': '*'
+    'Access-Control-Allow-Origin': ALLOWED_ORIGIN
   });
 
   // Send initial connection message

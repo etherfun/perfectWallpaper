@@ -3,12 +3,11 @@
  * 整合所有天气相关的API、工具函数和UI
  */
 
-export * from './api';
 export { weather_unit_choose, wunit } from './units';
 export { getWeatherTips } from './tips';
 export { formatTime, getOpenMeteoIcon, getPrecipTypeFromCode } from './utils';
 
-import type { WeatherData, WeatherAddress, SevenHourlyData } from '../types/weather';
+import type { WeatherData, WeatherAddress, SevenHourlyData } from './types';
 import type { WeatherAPIHandler } from './api/base';
 import { wunit } from './units';
 import { i18n } from '../utils/i18n';

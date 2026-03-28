@@ -1,4 +1,4 @@
-import type { WeatherAddress, WeatherData, SevenHourlyData } from '../../types/weather';
+import type { SevenHourlyData } from '../types';
 
 /**
  * 城市查找响应 (和风天气)

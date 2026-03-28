@@ -57,6 +57,10 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
     if (!rgbbgCtx) return;
     const rgbbg = rgbbgCtx;
 
+    // Image cache to avoid creating new Image objects every frame
+    let cachedSrc: string | null = null;
+    let cachedImg: HTMLImageElement | null = null;
+
     let time = 0;
 
     function drawLayers(): void {
@@ -171,21 +175,25 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 }
             } else {
                 if (src) {
-                    const img = new Image();
-                    img.src = src;
-                    img.onload = () => {
+                    // Use cached image to avoid creating new Image objects every frame
+                    if (cachedSrc !== src || !cachedImg) {
+                        cachedSrc = src;
+                        cachedImg = new Image();
+                        cachedImg.src = src;
+                    }
+                    if (cachedImg.complete && cachedImg.naturalWidth > 0) {
                         if (Frist === true) {
                             setTimeout(() => {
-                                rgbbg.drawImage(img, 0, 0, 100, 20);
+                                rgbbg.drawImage(cachedImg!, 0, 0, 100, 20);
                                 drawLayers();
                                 Frist = false;
                             }, 500);
                         } else {
-                            rgbbg.drawImage(img, 0, 0, 100, 20);
+                            rgbbg.drawImage(cachedImg!, 0, 0, 100, 20);
                             drawLayers();
                             Frist = false;
                         }
-                    };
+                    }
                 }
             }
         } else {

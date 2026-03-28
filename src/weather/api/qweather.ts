@@ -1,4 +1,4 @@
-import type { WeatherAddress, WeatherData } from '../../types/weather';
+import type { WeatherAddress, WeatherData } from '../types';
 import { fetch_with_retry, weather_paymode } from '../../utils/tool';
 import { i18n } from '../../utils/i18n';
 import { config } from '../../utils/config';
@@ -138,33 +138,33 @@ async function fetchWeatherAlert(
 
     if (alertData && alertData.alerts && alertData.alerts.length > 0) {
         weather_data.weatherAlert = alertData.alerts.map(alertList => ({
-            alert: alertList.eventType?.name,
-            title: alertList.headline,
-            id: alertList.id,
+            alert: alertList.eventType?.name ?? "",
+            title: alertList.headline ?? "",
+            id: alertList.id ?? "",
             releaseTime: new Date(
-                parseInt(alertList.id.substring(0, 4)),
-                parseInt(alertList.id.substring(4, 6)) - 1,
-                parseInt(alertList.id.substring(6, 8)),
-                parseInt(alertList.id.substring(8, 10)),
-                parseInt(alertList.id.substring(10, 12)),
-                parseInt(alertList.id.substring(12, 14))
+                parseInt(alertList.id?.substring(0, 4) ?? "0"),
+                parseInt(alertList.id?.substring(4, 6) ?? "1") - 1,
+                parseInt(alertList.id?.substring(6, 8) ?? "1"),
+                parseInt(alertList.id?.substring(8, 10) ?? "0"),
+                parseInt(alertList.id?.substring(10, 12) ?? "0"),
+                parseInt(alertList.id?.substring(12, 14) ?? "0")
             ),
             startTime: new Date(alertList.onsetTime || Date.now()),
             endTime: new Date(alertList.expireTime || Date.now()),
-            level: alertList.severity,
-            urgency: alertList.urgency,
-            color: `${alertList.color?.red}, ${alertList.color?.green}, ${alertList.color?.blue}`,
-            sender: alertList.senderName,
-            description: alertList.description,
-            instruction: alertList.instruction,
-            criteria: alertList.criteria,
+            level: alertList.severity ?? "",
+            urgency: alertList.urgency ?? "",
+            color: `${alertList.color?.red ?? 0}, ${alertList.color?.green ?? 0}, ${alertList.color?.blue ?? 0}`,
+            sender: alertList.senderName ?? "",
+            description: alertList.description ?? "",
+            instruction: alertList.instruction ?? "",
+            criteria: alertList.criteria ?? "",
             source: typeof alertData.metadata?.attributions?.[0] === 'string'
                 ? alertData.metadata.attributions[0]
                 : (alertData.metadata?.attributions?.[0] as { name?: string; source?: string } | undefined)?.name
                     || (alertData.metadata?.attributions?.[0] as { name?: string; source?: string } | undefined)?.source
                     || "",
-            icon: alertList.icon,
-            status: alertList.messageType?.code
+            icon: alertList.icon ?? "",
+            status: alertList.messageType?.code ?? ""
         }));
     }
 }

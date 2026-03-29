@@ -11,6 +11,9 @@ import {
 import { ChangeVideoModel, ChangeAudioModel } from '../video';
 import { elements } from '@/utils/elementManager';
 
+// ResizeObserver for picture info height tracking
+let pictureInfoResizeObserver: ResizeObserver | null = null;
+
 /**
  * 处理壁纸/背景相关属性
  * @param properties 属性对象

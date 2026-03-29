@@ -5,6 +5,9 @@ import { elements } from '@/utils/elementManager';
 import { autoHitokto } from '../hitokoto';
 import { debugLogger } from '@/utils/logger';
 
+// ResizeObserver for hitokoto height tracking
+let hitokotoResizeObserver: ResizeObserver | null = null;
+
 let hitokotoInit = false;
 const hitokoto = elements.hitokoto.container as HTMLElement;
 

@@ -5,6 +5,9 @@ import { elements } from '@/utils/elementManager';
 import { getdate } from '../date';
 import { startDateColorRhythmLoop, stopDateColorRhythmLoop } from '../date';
 
+// ResizeObserver for date height tracking
+let dateResizeObserver: ResizeObserver | null = null;
+
 const oDate = elements.date.container as HTMLElement;
 
 /**

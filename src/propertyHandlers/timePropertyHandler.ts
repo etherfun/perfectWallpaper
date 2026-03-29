@@ -4,6 +4,9 @@ import { debugLogger } from '../utils/logger';
 import { elements } from '@/utils/elementManager';
 import { getTime_sec, startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
 
+// ResizeObserver for clock height tracking
+let clockResizeObserver: ResizeObserver | null = null;
+
 let tStyle = true;
 const oClock_webtext_ti = elements.clock.indicators;
 const oClock = elements.clock.container;

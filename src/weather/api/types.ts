@@ -116,62 +116,6 @@ export interface QWeatherAlertResponse {
 }
 
 /**
- * Open-Meteo 天气代码到和风天气图标的映射
- */
-export const OPEN_METEO_TO_QWEATHER: { [key: number]: { day: number; night: number } } = {
-    // 晴 (0)
-    0: { day: 100, night: 150 },
-
-    // 多云 (1, 2, 3)
-    1: { day: 101, night: 151 },
-    2: { day: 101, night: 151 },
-    3: { day: 101, night: 151 },
-
-    // 雾 (45, 48)
-    45: { day: 501, night: 501 },
-    48: { day: 501, night: 501 },
-
-    // 毛毛雨 (51, 53, 55)
-    51: { day: 300, night: 350 },
-    53: { day: 300, night: 350 },
-    55: { day: 300, night: 350 },
-
-    // 冰冻毛毛雨 (56, 57)
-    56: { day: 399, night: 399 },
-    57: { day: 399, night: 399 },
-
-    // 雨 (61, 63, 65)
-    61: { day: 302, night: 302 },
-    63: { day: 302, night: 302 },
-    65: { day: 302, night: 302 },
-
-    // 冻雨 (67)
-    67: { day: 399, night: 399 },
-
-    // 雪 (71, 73, 75)
-    71: { day: 407, night: 457 },
-    73: { day: 407, night: 457 },
-    75: { day: 407, night: 457 },
-
-    // 冰雹 (77)
-    77: { day: 499, night: 499 },
-
-    // 阵雨 (80, 81, 82)
-    80: { day: 302, night: 302 },
-    81: { day: 302, night: 302 },
-    82: { day: 302, night: 302 },
-
-    // 阵雪 (85, 86)
-    85: { day: 407, night: 457 },
-    86: { day: 407, night: 457 },
-
-    // 雷暴 (95, 96, 99)
-    95: { day: 302, night: 302 },
-    96: { day: 302, night: 302 },
-    99: { day: 302, night: 302 }
-};
-
-/**
  * 初始化七小时数据结构
  */
 export function initSevenHourlyData(): SevenHourlyData {

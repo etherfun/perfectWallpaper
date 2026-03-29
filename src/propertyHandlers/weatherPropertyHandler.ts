@@ -4,7 +4,7 @@ import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { elements } from '@/utils/elementManager';
 import { weather_address, weather_init, generateWeatherTable, autoWeather, weather_unit_choose } from '../weather';
-import { debounce } from '../utils/timer';
+import { debounce } from '../utils/tool';
 
 // ResizeObserver for weather height tracking
 let weatherResizeObserver: ResizeObserver | null = null;

@@ -10,6 +10,7 @@ import type { WeatherData, WeatherAddress, SevenHourlyData } from './types';
 import type { WeatherAPIHandler } from './api/base';
 import { wunit } from './units';
 import { i18n } from '../utils/i18n';
+import { escapeHtml } from '../utils/string';
 import { fetch_with_retry } from '../utils/tool';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
@@ -175,7 +176,11 @@ export function showWeatherError(message: string): void {
     leftContainer.style.alignItems = 'center';
     rightContainer.style.display = 'none';
 
-    leftContainer.innerHTML = `<div class="weather-error" style="color: #ff6b6b;">${message}</div>`;
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'weather-error';
+    errorDiv.style.color = '#ff6b6b';
+    errorDiv.textContent = message;
+    leftContainer.appendChild(errorDiv);
 }
 
 // API选择器映射 - 使用动态导入实现懒加载
@@ -558,7 +563,7 @@ function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number): void
         const pIconImg = card.querySelector("#pIconImg");
 
         if (pTemp) pTemp.textContent = `${temp}${i18n('weather_tooltip_unit_degree')}`;
-        if (pText) pText.innerHTML = text;
+        if (pText) pText.textContent = text;
         if (pHumidity) pHumidity.textContent = `${hum}${i18n('weather_tooltip_unit_percent')}`;
         if (pPrecip) pPrecip.textContent = `${pop} / ${precip}${i18n('weather_tooltip_unit_mm')}`;
         if (pPressure) pPressure.textContent = `${pres}${i18n('weather_tooltip_unit_hpa')}`;

@@ -355,8 +355,10 @@ function createPointFlowers(): void {
     const prm = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
     renderSpec.pointSize = { min: prm[0], max: prm[1] };
 
-    const vtxsrc = (document.getElementById("sakura_point_vsh") as HTMLScriptElement).textContent || '';
-    const frgsrc = (document.getElementById("sakura_point_fsh") as HTMLScriptElement).textContent || '';
+    const vtxsrcEl = document.getElementById("sakura_point_vsh") as HTMLScriptElement | null;
+    const frgsrcEl = document.getElementById("sakura_point_fsh") as HTMLScriptElement | null;
+    const vtxsrc = vtxsrcEl?.textContent || '';
+    const frgsrc = frgsrcEl?.textContent || '';
 
     pointFlower.program = createShader(
         vtxsrc, frgsrc,

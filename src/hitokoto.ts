@@ -1,6 +1,7 @@
 // 一言模块
 import { elements } from './utils/elementManager';
 import { config } from './utils/config';
+import { escapeHtml } from './utils/string';
 
 const hitokoto = elements.hitokoto.container;
 const hitokoto_webtext = elements.hitokoto.webtext;
@@ -9,17 +10,21 @@ const hitokotoRuntime = config.runtime.hitokoto;
 async function getHitokoto_input(strHtml1: string): Promise<void> {
     const params = config.hitCategories.join("");
 
-    const res = await fetch(`https://v1.hitokoto.cn/?${params}`).then(res => res.json()) as {
-        hitokoto: string;
-        from: string;
-        from_who: string | null;
-    };
+    try {
+        const res = await fetch(`https://v1.hitokoto.cn/?${params}`).then(res => res.json()) as {
+            hitokoto: string;
+            from: string;
+            from_who: string | null;
+        };
 
-    hitokotoRuntime.hitokoto_text = res.hitokoto;
-    hitokotoRuntime.from_text = res.from;
-    hitokotoRuntime.from_who_text = res.from_who ?? "未获取";
+        hitokotoRuntime.hitokoto_text = res.hitokoto;
+        hitokotoRuntime.from_text = res.from;
+        hitokotoRuntime.from_who_text = res.from_who ?? "未获取";
 
-    hitokoto_webtext.innerHTML = formatHitokoto(strHtml1);
+        hitokoto_webtext.innerHTML = formatHitokoto(strHtml1);
+    } catch (error) {
+        console.error('Failed to fetch hitokoto:', error);
+    }
 }
 
 function formatHitokoto(strHtml: string): string {
@@ -30,9 +35,9 @@ function formatHitokoto(strHtml: string): string {
     const source = from_text === from_who_text ? "" : `《${from_text}》`;
 
     return strHtml
-        .replace("{一言}", hitokoto_text)
-        .replace("{作者}", author)
-        .replace("{出处}", source);
+        .replace("{一言}", escapeHtml(hitokoto_text))
+        .replace("{作者}", escapeHtml(author))
+        .replace("{出处}", escapeHtml(source));
 }
 
 export function getHitokoto(): void {

@@ -62,7 +62,10 @@ let hue10 = 225;
  * Handle window resize
  */
 export function resize(): void {
-    const canvasEl = document.querySelector("#can") as HTMLCanvasElement;
+    const canvasEl = document.querySelector("#can") as HTMLCanvasElement | null;
+    if (!canvasEl) {
+        return;
+    }
     can = canvasEl;
     ctx = canvasEl.getContext("2d");
 

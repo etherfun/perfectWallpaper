@@ -58,8 +58,12 @@ interface PWLineParamType {
  * Initialize the PWLine canvas and context
  */
 export function PWLineInit(): void {
-    CanLine = document.querySelector("#CanLine") as HTMLCanvasElement;
-    CTXLine = CanLine.getContext("2d")!;
+    const canvasEl = document.querySelector("#CanLine") as HTMLCanvasElement | null;
+    if (!canvasEl) {
+        return;
+    }
+    CanLine = canvasEl;
+    CTXLine = canvasEl.getContext("2d")!;
 
     CanLine.width = w = window.innerWidth;
     CanLine.height = h = window.innerHeight;

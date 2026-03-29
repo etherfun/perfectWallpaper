@@ -13,6 +13,17 @@ import { SimpleMarkdown } from './simple-markdown';
 // 版本历史数据Promise
 export const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res => res.json());
 
+/**
+ * Version history entry structure
+ */
+export interface VersionHistoryEntry {
+    version: string;
+    date: string;
+    titleKey?: string;
+    title?: string;
+    changes?: string[];
+}
+
 export const versionConfig = {
     CURRENT_VERSION: "1.7.3",
 
@@ -23,7 +34,7 @@ export const versionConfig = {
         maxHeight: "95%",
     },
 
-    VERSION_HISTORY: [] as any[],
+    VERSION_HISTORY: [] as VersionHistoryEntry[],
 
     STORAGE_KEY: "perfectwall_version",
 
@@ -674,7 +685,7 @@ class versionManager {
     private renderVersionList(): string {
         const allHistory = this.getAllVersionHistory();
 
-        return allHistory.map((history: any) => {
+        return allHistory.map((history: VersionHistoryEntry) => {
             const versionInfo = this.getVersionInfo(history.version);
             const isCurrent = history.version === this.currentVersion;
             const isSelected = history.version === this.selectedVersion;
@@ -692,7 +703,7 @@ class versionManager {
                         </div>
                     </div>
                     <div class="version-item-title">
-                        ${versionInfo?.title || i18n(history.titleKey) || i18n('version_fallback_title_with_version') + ' ' + history.version}
+                        ${versionInfo?.title || (history.titleKey ? i18n(history.titleKey) : '') || i18n('version_fallback_title_with_version') + ' ' + history.version}
                     </div>
                 </div>
             `;
@@ -711,7 +722,7 @@ class versionManager {
             return null;
         }
 
-        const rawInfo = versionConfig.VERSION_HISTORY.find((info: any) => info.version === targetVersion);
+        const rawInfo = versionConfig.VERSION_HISTORY.find((info: VersionHistoryEntry) => info.version === targetVersion);
 
         if (!rawInfo) {
             return null;

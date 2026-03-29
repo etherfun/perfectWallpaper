@@ -7,6 +7,7 @@ export * from './types';
 
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
+import { escapeHtml } from '../utils/string';
 import type { LyricLine, LyricsData, FullscreenLyricsConfig } from './types';
 
 // Lyrics API configuration
@@ -29,6 +30,7 @@ export class FullscreenLyrics {
     private animationFrameId: number | null = null;
     private scrollContainer: HTMLElement | null = null;
     private highlightInterval: number | null = null;
+    private clockInterval: number | null = null;
 
     constructor() {
         this.config = {
@@ -174,7 +176,7 @@ export class FullscreenLyrics {
             }
         };
         updateClock();
-        setInterval(updateClock, 1000);
+        this.clockInterval = setInterval(updateClock, 1000) as unknown as number;
     }
 
     public setConfig(newConfig: Partial<FullscreenLyricsConfig>): void {
@@ -305,6 +307,10 @@ export class FullscreenLyrics {
         if (this.httpPollInterval) {
             clearInterval(this.httpPollInterval);
             this.httpPollInterval = null;
+        }
+        if (this.clockInterval) {
+            clearInterval(this.clockInterval);
+            this.clockInterval = null;
         }
         if (this.animationFrameId) {
             cancelAnimationFrame(this.animationFrameId);
@@ -489,9 +495,9 @@ export class FullscreenLyrics {
             originalEl.className = 'original';
 
             if (this.currentData?.hasDynamic && line.dynamicLyric) {
-                // Split into words for dynamic highlight
+                // Split into words for dynamic highlight - escape HTML to prevent XSS
                 originalEl.innerHTML = this.splitLyricsToWords(line.originalLyric)
-                    .map((word, i) => `<span class="word">${word}</span>`)
+                    .map((word, i) => `<span class="word">${escapeHtml(word)}</span>`)
                     .join('');
             } else {
                 originalEl.textContent = line.originalLyric;

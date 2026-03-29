@@ -94,6 +94,7 @@ export async function getSystemInfo(): Promise<SystemInfo> {
 
   return {
     cpu: {
+      // systeminformation types are incomplete - using type assertion for runtime properties
       manufacturer: (cpuData as any).manufacturer || 'Unknown',
       brand: (cpuData as any).brand || 'Unknown',
       speed: cpuSpeed.avg || 0,
@@ -110,6 +111,7 @@ export async function getSystemInfo(): Promise<SystemInfo> {
     gpu: gpus,
     network: networkSpeed,
     system: {
+      // systeminformation types are incomplete - using type assertion for runtime properties
       hostname: (systemData as any).hostname || 'Unknown',
       platform: (systemData as any).platform || 'Unknown',
       distro: (systemData as any).distro || 'Unknown',

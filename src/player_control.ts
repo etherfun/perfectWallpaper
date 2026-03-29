@@ -6,7 +6,7 @@ import { hasPlaybackContent } from './utils/playback';
 import { getColor, getPalette } from 'colorthief';
 
 // 进度条定时器
-let timelineTimer: any = null;
+let timelineTimer: ReturnType<typeof setTimeout> | null = null;
 let currentPosition = 0;
 let waitingForData = false;
 
@@ -42,9 +42,14 @@ async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Prom
             const playerControlColor = config.playerControlColor;
 
             // ColorImpl 对象转换为 RGB 数组
-            const colorToRgb = (color: any): [number, number, number] | null => {
+            const colorToRgb = (color: [number, number, number] | { rgb(): { r: number; g: number; b: number } } | null | undefined): [number, number, number] | null => {
                 if (!color) return null;
-                return [color._r ?? color.r ?? 0, color._g ?? color.g ?? 0, color._b ?? color.b ?? 0];
+                if (Array.isArray(color)) {
+                    return color as [number, number, number];
+                }
+                // colorthief Color object with rgb() method
+                const rgb = color.rgb();
+                return [rgb.r, rgb.g, rgb.b];
             };
 
             config.runtime.playerInfo.colorGroup = [
@@ -340,7 +345,7 @@ export function thumbnailsue(): void {
     const playerControlYakeli = config.playerControlYakeli;
     const playerControlColor = config.playerControlColor;
 
-    let thumbnailcolor: any;
+    let thumbnailcolor: [number, number, number] | string | null;
 
     if (playerControlYakelibgusetb !== 5) {
         thumbnailcolor = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlYakelibgusetb - 1];
@@ -363,7 +368,7 @@ export function thumbnailsue(): void {
     if (timelineEl) timelineEl.style.backgroundColor = "rgba(" + [255, 255, 255] + "," + (playerControlYakeli + 0.4) + ")";
 }
 
-function player_iconcolor(rgb: any): void {
+function player_iconcolor(rgb: [number, number, number] | string | null): void {
     const titleicon = elements.playerControl.title?.querySelector('.titleicon');
     const artisticon = elements.playerControl.artist?.querySelector('.artisticon');
     const albumTitleicon = elements.playerControl.albumTitle?.querySelector('.albumTitleicon');

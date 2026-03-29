@@ -19,4 +19,5 @@ interface Window {
     showDebugLogModal: () => void;
     closeDebugLogModal: () => void;
     toggleLogDetails: (id: number) => void;
+    smoothedAudioArray: number[] | undefined;
 }

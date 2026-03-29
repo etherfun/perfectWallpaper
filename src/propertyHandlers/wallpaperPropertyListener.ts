@@ -108,8 +108,13 @@ export function setupWallpaperPropertyListener(): void {
     // 确保 window 对象存在
     if (typeof window !== 'undefined') {
         const runtime = config.runtime;
+
+        // 标记是否已接收到 Wallpaper Engine 属性
+        let propertiesReceived = false;
+
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
+                propertiesReceived = true;
                 const isFirstLoad = config.firstLoad;
                 createWallpaperPropertyListener(properties as WallpaperProperties, isFirstLoad);
             },
@@ -162,5 +167,27 @@ export function setupWallpaperPropertyListener(): void {
 
         // 注册 Wallpaper Engine 音频监听器
         window.wallpaperRegisterAudioListener?.(audioDataListener);
+
+        // 注册壁纸插件监听器
+        window.wallpaperPluginListener = {
+            onPluginLoaded: (name: string, _version: string) => {
+                if (name === 'led') {
+                    config.wallpaperSettings.ledPlugin = true;
+                    debugLogger.info('[RGB] LED 插件已加载');
+                }
+                if (name === 'cue') {
+                    config.wallpaperSettings.cuePlugin = true;
+                    debugLogger.info('[RGB] CUE 插件已加载');
+                }
+            }
+        };
+
+        // 5秒超时：如果 Wallpaper Engine 没有在5秒内发送配置，则使用 localStorage 的配置初始化
+        setTimeout(() => {
+            if (!propertiesReceived) {
+                debugLogger.warn('[PropertyHandler] Wallpaper Engine 未在5秒内发送配置，使用 localStorage 配置初始化');
+                createWallpaperPropertyListener({} as WallpaperProperties, true);
+            }
+        }, 5000);
     }
 }

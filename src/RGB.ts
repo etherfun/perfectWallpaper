@@ -7,12 +7,6 @@ import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
 
-// 壁纸设置状态
-const wallpaperSettings = {
-    ledPlugin: false,
-    cuePlugin: false
-};
-
 // RAF chain tracking to prevent memory leaks
 let currentRafId: number | null = null;
 
@@ -39,7 +33,7 @@ function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
  * 发送RGB数据到LED设备
  */
 function startRGBInternal(canvas: HTMLCanvasElement): void {
-    if (!wallpaperSettings.ledPlugin) return;
+    if (!config.wallpaperSettings.ledPlugin) return;
     const encodedImageData = getEncodedCanvasImageData(canvas);
     if (window.wpPlugins?.led) {
         window.wpPlugins.led.setAllDevicesByImageData(encodedImageData, canvas.width, canvas.height);
@@ -154,7 +148,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         rgbbg.restore();
         startRGBInternal(bg);
 
-        if (wallpaperSettings.ledPlugin && !nextphoto && !isPaused && RGBShow && (videoORimages || (sakurause || particlesRGB || audiobarRGB))) {
+        if (config.wallpaperSettings.ledPlugin && !nextphoto && !isPaused && RGBShow && (videoORimages || (sakurause || particlesRGB || audiobarRGB))) {
             if (RGBRefresh !== 'free') {
                 setTimeout(() => {
                     requestAnimationFrame(drawbackground);
@@ -211,20 +205,3 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
     }
     currentRafId = requestAnimationFrame(drawbackground);
 }
-
-// 壁纸插件监听器
-window.wallpaperPluginListener = {
-    onPluginLoaded: function (name: string, _version: string) {
-        if (name === 'led') {
-            wallpaperSettings.ledPlugin = true;
-            debugLogger.info(`[RGB] LED 插件已加载`);
-        }
-        if (name === 'cue') {
-            wallpaperSettings.cuePlugin = true;
-            debugLogger.info(`[RGB] CUE 插件已加载`);
-        }
-    }
-};
-
-debugLogger.info('[RGB] RGB 模块初始化完成');
-

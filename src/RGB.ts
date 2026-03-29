@@ -13,6 +13,9 @@ const wallpaperSettings = {
     cuePlugin: false
 };
 
+// RAF chain tracking to prevent memory leaks
+let currentRafId: number | null = null;
+
 /**
  * 获取编码的Canvas图像数据
  */
@@ -202,7 +205,11 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         }
     }
 
-    requestAnimationFrame(drawbackground);
+    // Cancel any existing RAF chain before starting new one
+    if (currentRafId !== null) {
+        cancelAnimationFrame(currentRafId);
+    }
+    currentRafId = requestAnimationFrame(drawbackground);
 }
 
 // 壁纸插件监听器

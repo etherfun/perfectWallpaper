@@ -21,7 +21,9 @@ export function setcountdown(): void {
     const minutes = Math.ceil((distance % (1000 * 60 * 60)) / (1000 * 60));
     const seconds = Math.ceil((distance % (1000 * 60)) / 1000);
 
-    countdown_webtext.innerHTML = config.countdownTxt + (days - 1) + ":" + add0(hours - 1) + ":" + add0(minutes - 1) + ":" + add0(seconds) + config.countdownTxt1;
+    if (countdown_webtext) {
+        countdown_webtext.innerHTML = config.countdownTxt + (days - 1) + ":" + add0(hours - 1) + ":" + add0(minutes - 1) + ":" + add0(seconds) + config.countdownTxt1;
+    }
 }
 
 // 定时更新倒计时
@@ -29,4 +31,3 @@ export function setcountdown_a(): void {
     setcountdown();
     timerManager.create(setcountdown_a, 1000, 'updataCountdown');
 }
-

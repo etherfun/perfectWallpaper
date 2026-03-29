@@ -3,7 +3,8 @@ import { config } from "./utils/config";
 import { elements } from "./utils/elementManager";
 
 let oDate = elements.date.container as HTMLElement;
-let oDate_webtext = elements.date.webtext as HTMLElement;
+// Null check for oDate_webtext - elements.date.webtext may be null if DOM is not ready
+let oDate_webtext: HTMLElement | null = elements.date.webtext as HTMLElement | null;
 
 // 日期彩色律动状态
 let dateHue = 0;
@@ -16,7 +17,9 @@ function updateDateColor(): void {
     const dateColor = 'hsl(' + dateHue + ',90%,50%)';
     dateHue += dateTag / 1;
 
-    oDate.style.color = dateColor;
+    if (oDate) {
+        oDate.style.color = dateColor;
+    }
 }
 
 // 日期彩色律动动画循环
@@ -40,7 +43,9 @@ export function stopDateColorRhythmLoop(): void {
     if (dateAnimationFrameId !== null) {
         cancelAnimationFrame(dateAnimationFrameId);
         dateAnimationFrameId = null;
-        oDate.style.color = "";
+        if (oDate) {
+            oDate.style.color = "";
+        }
     }
 }
 

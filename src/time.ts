@@ -25,11 +25,14 @@ function updateClockColor(): void {
     const clockColor = 'hsl(' + clockHue + ',90%,50%)';
     clockHue += clockTag / 1;
 
-    oClock.style.color = clockColor;
+    if (oClock) {
+        oClock.style.color = clockColor;
+    }
 }
 
 // 时钟彩色律动动画循环
 let clockAnimationFrameId: number | null = null;
+let timeIntervalId: ReturnType<typeof setInterval> | null = null;
 
 function clockColorRhythmLoop(): void {
     if (config.timeColorRhythm) {
@@ -49,30 +52,53 @@ export function stopTimeColorRhythmLoop(): void {
     if (clockAnimationFrameId !== null) {
         cancelAnimationFrame(clockAnimationFrameId);
         clockAnimationFrameId = null;
-        oClock.style.color = "";
+        if (oClock) {
+            oClock.style.color = "";
+        }
     }
 }
 
-setInterval(getTime_sec, 1000);
+export function stopTimeUpdate(): void {
+    if (timeIntervalId !== null) {
+        clearInterval(timeIntervalId);
+        timeIntervalId = null;
+    }
+}
+
+timeIntervalId = setInterval(getTime_sec, 1000);
 
 export function getTime_sec() {
     var t = new Date();
-    oClock_webtext_sec.innerHTML = add0(t.getSeconds());
+    if (oClock_webtext_sec) {
+        oClock_webtext_sec.innerHTML = add0(t.getSeconds());
+    }
 
     if (tStyle == false) {
         //h = t.getHours()
-        oClock_webtext_min.innerHTML = add0(t.getHours() >= 12 ? t.getHours() - 12 : t.getHours()) + " : " + add0(t.getMinutes());
-        oClock_webtext_st.style.display = "flex";
+        if (oClock_webtext_min) {
+            oClock_webtext_min.innerHTML = add0(t.getHours() >= 12 ? t.getHours() - 12 : t.getHours()) + " : " + add0(t.getMinutes());
+        }
+        if (oClock_webtext_st) {
+            oClock_webtext_st.style.display = "flex";
+        }
         var str = t.getHours() <= 12 ? "AM" : "PM";
-        oClock_webtext_st.innerHTML = str;
+        if (oClock_webtext_st) {
+            oClock_webtext_st.innerHTML = str;
+        }
     } else {
-        oClock_webtext_min.innerHTML = add0(t.getHours()) + " : " + add0(t.getMinutes());
-        oClock_webtext_st.style.display = "none";
+        if (oClock_webtext_min) {
+            oClock_webtext_min.innerHTML = add0(t.getHours()) + " : " + add0(t.getMinutes());
+        }
+        if (oClock_webtext_st) {
+            oClock_webtext_st.style.display = "none";
+        }
     }
 
     if (tStyle == false) {
         var str = t.getHours() < 12 ? "AM" : "PM";
-        oClock_webtext_st.innerHTML = str;
+        if (oClock_webtext_st) {
+            oClock_webtext_st.innerHTML = str;
+        }
     }
 
     if (t.getHours() === 0 && t.getMinutes() === 0 && t.getSeconds() === 0) {

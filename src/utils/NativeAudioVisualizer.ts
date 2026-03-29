@@ -205,9 +205,7 @@ export class NativeAudioVisualizer {
 
     private rotation(angle: number, deg: number): number {
         angle += Math.PI / 180 * deg;
-        if (angle >= 360 && angle <= 360) {
-            angle = 0;
-        }
+        angle = angle % (2 * Math.PI);
         return angle;
     }
 

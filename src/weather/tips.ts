@@ -158,7 +158,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
 
     // 按优先级排序，取优先级最高的
     if (tips.length > 0) {
-        tips.sort((a, b) => b.priority - a.priority);
+        tips.sort((a, b) => a.priority - b.priority);
         return tips[0].text;
     }
 

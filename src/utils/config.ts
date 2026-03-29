@@ -1,4 +1,10 @@
 // 默认配置值
+import { debounce } from './tool';
+import { debugLogger } from './logger';
+
+// localStorage 存储键名
+const LOCALSTORAGE_KEY = 'perfectwall_config';
+
 const DEFAULTS = {
   // 核心运行时配置
   language: "zh-CN",
@@ -305,6 +311,10 @@ const DEFAULTS = {
   oClockBluryakeli: 10,
 
   // RGB灯光效果配置
+  wallpaperSettings: {
+    ledPlugin: false,
+    cuePlugin: false,
+  },
   backgroundRGB: false,
   sakuraRGB: false,
   particlesRGB: false,
@@ -410,12 +420,25 @@ class AppConfig {
   private _changeBuffer: Map<string, ConfigValue>;
   private _flushScheduled: boolean = false;
   public runtime: AppConfigRuntime;
+  private _debouncedSave: () => void;
 
   private constructor() {
     this._values = new Map();
     this._listeners = new Set();
     this._changeBuffer = new Map();
     this._flushScheduled = false;
+
+    // 创建防抖保存函数，避免频繁写入 localStorage
+    this._debouncedSave = debounce(() => this._saveToLocalStorage(), 500);
+
+    // 注册配置变更监听器，自动保存到 localStorage
+    this.addListener(() => {
+      this._debouncedSave();
+    });
+
+    // 尝试从 localStorage 加载配置
+    this._loadFromLocalStorage();
+
     this.runtime = {
       playerInfo: {
         ...RUNTIME_DEFAULTS.playerInfo,
@@ -595,6 +618,44 @@ class AppConfig {
     if (!this._flushScheduled) {
       this._flushScheduled = true;
       Promise.resolve().then(() => this._notify());
+    }
+  }
+
+  /**
+   * 将配置保存到 localStorage
+   * 使用防抖避免频繁写入
+   */
+  private _saveToLocalStorage(): void {
+    try {
+      const data: Record<string, ConfigValue> = {};
+      for (const [key, value] of this._values) {
+        data[key] = value;
+      }
+      localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
+    } catch (e) {
+      debugLogger.error('[Config] 保存配置到 localStorage 失败', e);
+    }
+  }
+
+  /**
+   * 从 localStorage 加载配置
+   * 仅在首次加载时调用
+   */
+  private _loadFromLocalStorage(): void {
+    try {
+      const stored = localStorage.getItem(LOCALSTORAGE_KEY);
+      if (!stored) return;
+
+      const data = JSON.parse(stored);
+      for (const [key, value] of Object.entries(data)) {
+        // 跳过 firstLoad，它必须始终为 true
+        if (key === 'firstLoad') continue;
+        if (this._values.has(key)) {
+          this._values.set(key, this._clone(value as ConfigValue));
+        }
+      }
+    } catch (e) {
+      debugLogger.error('[Config] 从 localStorage 加载配置失败', e);
     }
   }
 

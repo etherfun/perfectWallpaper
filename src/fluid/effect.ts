@@ -38,8 +38,6 @@ class FluidEffect2Renderer {
     private _currentImageUrl: string = '';
     private _canvasOffsets: { dx: number; dy: number }[] = [];
     private _lastDisplaySize = 0;
-    // @ts-ignore - 保留用于将来可能的高DPI支持
-    private _lastDpr = 1;
     private resizeHandler: (() => void) | null = null;
 
     constructor(container: HTMLElement, options: FluidEffectOptions = {}) {
@@ -160,7 +158,6 @@ class FluidEffect2Renderer {
         const displaySize = Math.max(1, Math.round(canvasSize));
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
         this._lastDisplaySize = displaySize;
-        this._lastDpr = dpr;
 
         for (let x = 0; x <= 1; x++) {
             for (let y = 0; y <= 1; y++) {

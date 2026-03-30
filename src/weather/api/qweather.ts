@@ -14,6 +14,26 @@ import type {
 // 和风天气 API 实现
 // Case 1: qweatherapi
 
+// 风向映射：API返回值 -> i18n key
+const WIND_DIR_MAP: Record<string, string> = {
+    "N": "weather_wind_north",
+    "NNE": "weather_wind_north",
+    "NE": "weather_wind_northeast",
+    "ENE": "weather_wind_east",
+    "E": "weather_wind_east",
+    "ESE": "weather_wind_east",
+    "SE": "weather_wind_southeast",
+    "SSE": "weather_wind_south",
+    "S": "weather_wind_south",
+    "SSW": "weather_wind_south",
+    "SW": "weather_wind_southwest",
+    "WSW": "weather_wind_west",
+    "W": "weather_wind_west",
+    "WNW": "weather_wind_west",
+    "NW": "weather_wind_northwest",
+    "NNW": "weather_wind_northwest"
+};
+
 /**
  * 获取城市编号
  */
@@ -64,7 +84,7 @@ async function fetchNowWeather(
     weather_data.temperature = res.now.temp;
     weather_data.feels = res.now.feelsLike;
     weather_data.weathernow = res.now.text;
-    weather_data.wind = res.now.windDir;
+    weather_data.wind = i18n(WIND_DIR_MAP[res.now.windDir] || "weather_wind_north");
     weather_data.windLv = res.now.windScale;
     weather_data.precip = res.now.precip;
     weather_data.cloud = res.now.cloud;

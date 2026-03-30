@@ -42,7 +42,8 @@ import type { WeatherAPIHandler } from './api/base';
 import { fetch_with_retry } from '../utils/tool';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
-import { showWeatherLoading } from './ui/states';
+import { i18n } from '../utils/i18n';
+import { showWeatherLoading, showWeatherError } from './ui/states';
 import { generateWeatherTable } from './ui/generateWeatherTable';
 
 // 导出类型
@@ -84,31 +85,43 @@ const apiHandlers: { [key: number]: () => Promise<WeatherAPIHandler> } = {
     5: () => import('./api/openmeteo').then(m => m.openmeteo)
 };
 
+let isWeatherInitRunning = false;
+
 export async function weather_init(): Promise<void> {
-    showWeatherLoading();
-
-    const { weather_address } = await import('./weatherState');
-    if (weather_address.cityname === "") {
-        try {
-            const citydata = await fetch_with_retry("http://i.tianqi.com/index.php?c=code&id=11", {});
-            const text = await citydata.text();
-            weather_address.cityname = text.split("</strong>")[1].split(" ")[0];
-        } catch (e) {
-            console.error("Failed to get city:", e);
-        }
+    // 防止并发调用
+    if (isWeatherInitRunning) {
+        return;
     }
+    isWeatherInitRunning = true;
 
-    const handlerFactory = apiHandlers[config.weatherApiChoose];
-    if (handlerFactory) {
-        try {
-            const handler = await handlerFactory();
-            const { weather_data } = await import('./weatherState');
-            await handler(weather_address, weather_data);
-            await generateWeatherTable();
-        } catch (error) {
-            console.error("Weather fetch error:", error);
-            showWeatherLoading();
+    try {
+        showWeatherLoading();
+
+        const { weather_address } = await import('./weatherState');
+        if (weather_address.cityname === "") {
+            try {
+                const citydata = await fetch_with_retry("http://i.tianqi.com/index.php?c=code&id=11", {});
+                const text = await citydata.text();
+                weather_address.cityname = text.split("</strong>")[1].split(" ")[0];
+            } catch (e) {
+                console.error("Failed to get city:", e);
+            }
         }
+
+        const handlerFactory = apiHandlers[config.weatherApiChoose];
+        if (handlerFactory) {
+            try {
+                const handler = await handlerFactory();
+                const { weather_data } = await import('./weatherState');
+                await handler(weather_address, weather_data);
+                await generateWeatherTable();
+            } catch (error) {
+                console.error("Weather fetch error:", error);
+                showWeatherError(i18n('weather_error_loading') || 'Failed to load weather data');
+            }
+        }
+    } finally {
+        isWeatherInitRunning = false;
     }
 }
 

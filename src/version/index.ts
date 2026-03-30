@@ -850,7 +850,7 @@ window.SimpleMarkdown = SimpleMarkdown;
 // 等待初始化完成
 waitAndExecute(
     () => {
-        const complete = config.updateInitComplete === true;
+        const complete = config.update_init_complete === true;
         return complete;
     },
     () => {

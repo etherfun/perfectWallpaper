@@ -14,7 +14,7 @@ import { applyBackgroundStyle, calculate, TransitionSwith } from "./styles";
 
 /** Change background based on mode */
 export function changeBackground(): void {
-    switch (config.wallpaperMode) {
+    switch (config.wallpaper_mode) {
         case 1: // Single wallpaper mode
             shouldShow();
             break;

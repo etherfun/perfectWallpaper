@@ -22,40 +22,40 @@ export function handleWeatherProperties(
 ): void {
 
     if (properties.getcitykey_qweather) {
-        config.cityKey = properties.getcitykey_qweather.value;
+        config.city_key = properties.getcitykey_qweather.value;
     }
 
     if (properties.getAPIHOST_qweather) {
-        config.apiHost = properties.getAPIHOST_qweather.value;
+        config.api_host = properties.getAPIHOST_qweather.value;
     }
 
     if (properties.getcityappid_tianqiapi) {
-        config.weatherAppId = properties.getcityappid_tianqiapi.value;
+        config.weather_app_id = properties.getcityappid_tianqiapi.value;
     }
 
     if (properties.getcityappsecret_tianqiapi) {
-        config.weatherAppSecret = properties.getcityappsecret_tianqiapi.value;
+        config.weather_app_secret = properties.getcityappsecret_tianqiapi.value;
     }
 
     if (properties.getcitykey_visualcrossing) {
-        config.visualCrossingKey = properties.getcitykey_visualcrossing.value;
+        config.visual_crossing_key = properties.getcitykey_visualcrossing.value;
     }
 
     if (properties.weather_updata) {
-        config.weatherUpdate = properties.weather_updata.value;
+        config.weather_update = properties.weather_updata.value;
     }
 
     if (properties.weather_lang) {
-        config.weatherLang = properties.weather_lang.value;
+        config.weather_lang = properties.weather_lang.value;
     }
 
     if (properties.weather_unit) {
-        config.weatherUnit = properties.weather_unit.value;
+        config.weather_unit = properties.weather_unit.value;
         weather_unit_choose();
     }
 
     if (properties.weather_daliy_tip) {
-        config.weatherDailyTip = properties.weather_daliy_tip.value;
+        config.weather_daily_tip = properties.weather_daliy_tip.value;
         if (!FirstLoad) {
             generateWeatherTable();
         }
@@ -63,22 +63,25 @@ export function handleWeatherProperties(
 
     if (properties.weather_lat_latitude) {
         weather_address.latitude = String(properties.weather_lat_latitude.value);
+        config.weather_latitude = properties.weather_lat_latitude.value;
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
     if (properties.weather_lat_longitude) {
         weather_address.longitude = String(properties.weather_lat_longitude.value);
+        config.weather_longitude = properties.weather_lat_longitude.value;
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
     if (properties.weather_CityText) {
         weather_address.cityname = properties.weather_CityText.value;
+        config.weather_city_text = properties.weather_CityText.value;
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
     if (properties.freeapi) {
         if (properties.freeapi.value) {
-            config.weatherApiChoose = "2";
+            config.weather_api_choose = 2;
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -87,7 +90,7 @@ export function handleWeatherProperties(
 
     if (properties.qweatherapi) {
         if (properties.qweatherapi.value) {
-            config.weatherApiChoose = "1";
+            config.weather_api_choose = 1;
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -95,12 +98,12 @@ export function handleWeatherProperties(
     }
 
     if (properties.qweatherapi_paymode) {
-        config.qweatherApiPaymode = properties.qweatherapi_paymode.value;
+        config.qweather_api_paymode = properties.qweatherapi_paymode.value;
     }
 
     if (properties.tianqiapi) {
         if (properties.tianqiapi.value) {
-            config.weatherApiChoose = "3";
+            config.weather_api_choose = 3;
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -109,7 +112,7 @@ export function handleWeatherProperties(
 
     if (properties.visualcrossingapi) {
         if (properties.visualcrossingapi.value) {
-            config.weatherApiChoose = "4";
+            config.weather_api_choose = 4;
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -118,7 +121,7 @@ export function handleWeatherProperties(
 
     if (properties.open_meteoapi) {
         if (properties.open_meteoapi.value) {
-            config.weatherApiChoose = "5";
+            config.weather_api_choose = 5;
             if (FirstLoad === false) {
                 debounce(weather_init, 1500);
             }
@@ -143,49 +146,51 @@ export function handleWeatherProperties(
     if (properties.weather_Color) {
         const c = properties.weather_Color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
         elements.body.style.setProperty("--weather-color", `rgb(${c})`);
-        config.weatherColor = c;
+        config.weather_color = c;
     }
 
     if (properties.weather_blurcolor_show) {
         elements.body.style.setProperty("--weather-blur-enabled", properties.weather_blurcolor_show.value ? '1' : '0');
-        config.weatherBlurcolorShow = properties.weather_blurcolor_show.value;
+        config.weather_blurcolor_show = properties.weather_blurcolor_show.value;
     }
 
     if (properties.weather_blurcolor) {
         const c = properties.weather_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
         elements.body.style.setProperty("--weather-blur-color", c.join(', '));
-        config.weatherBlurcolor = c;
+        config.weather_blurcolor = c;
     }
 
     if (properties.weather_yakeli_show) {
         elements.body.style.setProperty("--weather-yakeli-enabled", properties.weather_yakeli_show.value ? '1' : '0');
-        config.weatherYakeliShow = properties.weather_yakeli_show.value;
+        config.weather_yakeli_show = properties.weather_yakeli_show.value;
     }
 
     if (properties.weather_yakelicolor) {
         const c = properties.weather_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
         elements.body.style.setProperty("--weather-yakeli-color", c.join(', '));
-        config.weatherYakelicColor = c;
+        config.weather_yakelic_color = c;
     }
 
     if (properties.weather_yakeli) {
         elements.body.style.setProperty("--weather-yakeli", String(properties.weather_yakeli.value / 100));
-        config.weatherYakeli = properties.weather_yakeli.value;
+        config.weather_yakeli = properties.weather_yakeli.value;
     }
 
     if (properties.weather_bluryakeli) {
         elements.body.style.setProperty("--weather-blur-yakeli", String(properties.weather_bluryakeli.value) + 'px');
-        config.weatherBluryakeli = properties.weather_bluryakeli.value;
+        config.weather_bluryakeli = properties.weather_bluryakeli.value;
     }
 
     // 天气透明度
     if (properties.weather_timetransparency) {
         elements.body.style.setProperty("--weather-opacity", String(properties.weather_timetransparency.value / 100));
+        config.weather_timetransparency = properties.weather_timetransparency.value;
     }
 
     // 天气圆角
     if (properties.weather_roundedcorners) {
         elements.body.style.setProperty("--weather-roundedcorners", String(properties.weather_roundedcorners.value));
+        config.weather_roundedcorners = properties.weather_roundedcorners.value;
 
         const updateHeight = () => {
             const height = weather.getBoundingClientRect().height;
@@ -203,6 +208,7 @@ export function handleWeatherProperties(
     if (properties.weather_size) {
         const s = properties.weather_size.value;
         elements.body.style.setProperty("--weather-font-size", Math.floor(config.screenHeight / 900 * s) + 'px');
+        config.weather_size = s;
     }
 
     if (properties.weather_showwidth) {
@@ -212,19 +218,22 @@ export function handleWeatherProperties(
             const s = properties.weather_showwidth.value / 100;
             elements.body.style.setProperty("--weather-show-width", config.screenWidth * s + "px");
         }
+        config.weather_showwidth = properties.weather_showwidth.value;
     }
 
     // 天气位置
     if (properties.weatherX) {
         elements.body.style.setProperty("--weather-left", `${properties.weatherX.value}%`);
+        config.weather_x = properties.weatherX.value;
     }
 
     if (properties.weatherY) {
         elements.body.style.setProperty("--weather-top", `${properties.weatherY.value}%`);
+        config.weather_y = properties.weatherY.value;
     }
 
     if (FirstLoad) {
         debugLogger.info('[Weather] 天气参数初始化完成');
-        config.weatherInitComplete = true;
+        config.weather_init_complete = true;
     }
 }

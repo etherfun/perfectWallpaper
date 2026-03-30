@@ -73,7 +73,7 @@ function doNasa(url: string): void {
 export function shouldShow(): void {
     document.body.style.backgroundImage = "";
 
-    switch (config.wallpaperMode) {
+    switch (config.wallpaper_mode) {
         case 1: // Single wallpaper mode
             (elements.myvideo as HTMLVideoElement).src = "";
             backgroundLayers.container.style.display = "block";

@@ -97,7 +97,7 @@ export function startPrecipTemperatureToggleTimer(): void {
     clearPrecipTimer();
 
     // 仅当有降水行时启动定时器（weather_api_choose 为 1, 4, 5）
-    if ([1, 4, 5].includes(config.weatherApiChoose)) {
+    if ([1, 4, 5].includes(config.weather_api_choose)) {
         // 每30秒切换一次显示
         setPrecipTemperatureToggleTimer(window.setInterval(togglePrecipTemperatureDisplay, 20000));
     }

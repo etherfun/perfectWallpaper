@@ -22,7 +22,7 @@ export function handleDateProperties(
 ) {
     // 日期颜色律动
     if (properties.odateColorhythm) {
-        config.dateColorRhythm = properties.odateColorhythm.value;
+        config.date_color_rhythm = properties.odateColorhythm.value;
         if (properties.odateColorhythm.value) {
             startDateColorRhythmLoop();
         } else {
@@ -32,6 +32,7 @@ export function handleDateProperties(
 
     // 是否显示日期
     if (properties.showDate) {
+        config.show_date = properties.showDate.value;
         const oDate_show = properties.showDate.value;
         elements.body.style.setProperty("--date-display", oDate_show ? 'flex' : 'none');
         elements.body.style.setProperty("--date-visibility", oDate_show ? 'visible' : 'hidden');
@@ -40,6 +41,7 @@ export function handleDateProperties(
 
     // 日期圆角
     if (properties.odate_roundedcorners) {
+        config.odate_roundedcorners = properties.odate_roundedcorners.value;
         elements.body.style.setProperty("--date-roundedcorners", String(properties.odate_roundedcorners.value));
 
         const updateHeight = () => {
@@ -54,118 +56,120 @@ export function handleDateProperties(
     }
     // 日期颜色
     if (properties.odate_color) {
-        config.oDateColor = properties.odate_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        elements.body.style.setProperty("--date-color", config.oDateColor.join(', '));
+        config.odate_color = properties.odate_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        elements.body.style.setProperty("--date-color", config.odate_color.join(', '));
     }
 
     if (properties.odate_blurcolor_show) {
-        config.oDateBlurcolorShow = properties.odate_blurcolor_show.value;
-        elements.body.style.setProperty("--date-blur-enabled", config.oDateBlurcolorShow ? '1' : '0');
+        config.odate_blurcolor_show = properties.odate_blurcolor_show.value;
+        elements.body.style.setProperty("--date-blur-enabled", config.odate_blurcolor_show ? '1' : '0');
     }
 
     if (properties.odate_blurcolor) {
-        config.oDateBlurcolor = properties.odate_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        elements.body.style.setProperty("--date-blur-color", config.oDateBlurcolor.join(', '));
+        config.odate_blurcolor = properties.odate_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        elements.body.style.setProperty("--date-blur-color", config.odate_blurcolor.join(', '));
     }
 
     if (properties.odate_yakeli_show) {
-        config.oDateYakeliShow = properties.odate_yakeli_show.value;
-        elements.body.style.setProperty("--date-yakeli-enabled", config.oDateYakeliShow ? '1' : '0');
+        config.odate_yakeli_show = properties.odate_yakeli_show.value;
+        elements.body.style.setProperty("--date-yakeli-enabled", config.odate_yakeli_show ? '1' : '0');
     }
 
     if (properties.odate_yakelicolor) {
-        config.oDateYakelicColor = properties.odate_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        elements.body.style.setProperty("--date-yakeli-color", config.oDateYakelicColor.join(', '));
+        config.odate_yakelic_color = properties.odate_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        elements.body.style.setProperty("--date-yakeli-color", config.odate_yakelic_color.join(', '));
     }
 
     if (properties.odate_yakeli) {
-        config.oDateYakeli = properties.odate_yakeli.value / 100;
-        elements.body.style.setProperty("--date-yakeli", String(config.oDateYakeli));
+        config.odate_yakeli = properties.odate_yakeli.value / 100;
+        elements.body.style.setProperty("--date-yakeli", String(config.odate_yakeli));
     }
 
     if (properties.odate_bluryakeli) {
-        config.oDateBluryakeli = properties.odate_bluryakeli.value;
-        elements.body.style.setProperty("--date-blur-yakeli", `${config.oDateBluryakeli}px`);
+        config.odate_bluryakeli = properties.odate_bluryakeli.value;
+        elements.body.style.setProperty("--date-blur-yakeli", `${config.odate_bluryakeli}px`);
     }
 
     // 日期位置
     if (properties.DateX) {
-        config.dateX = properties.DateX.value;
-        elements.body.style.setProperty("--date-left", `${config.dateX}%`);
+        config.date_x = properties.DateX.value;
+        elements.body.style.setProperty("--date-left", `${config.date_x}%`);
     }
 
     if (properties.DateY) {
-        config.dateY = properties.DateY.value;
-        elements.body.style.setProperty("--date-top", `${config.dateY}%`);
+        config.date_y = properties.DateY.value;
+        elements.body.style.setProperty("--date-top", `${config.date_y}%`);
     }
 
     // 日期大小
     if (properties.DateSize) {
+        config.date_size = properties.DateSize.value;
         const s = properties.DateSize.value;
-        elements.body.style.setProperty("--date-font-size", Math.floor(config.screenHeight / 300 * s) + 'px');
-        elements.body.style.setProperty("--date-line-height", Math.floor(config.screenHeight / 570 * s) + 'px');
+        elements.body.style.setProperty("--date-font-size", Math.floor(config.screen_height / 300 * s) + 'px');
+        elements.body.style.setProperty("--date-line-height", Math.floor(config.screen_height / 570 * s) + 'px');
     }
 
     if (properties.date_showwidth) {
+        config.date_showwidth = properties.date_showwidth.value;
         if (properties.date_showwidth.value === 0) {
             elements.body.style.setProperty("--date-show-width", 'auto');
         } else {
             const s = properties.date_showwidth.value / 100;
-            elements.body.style.setProperty("--date-show-width", config.screenWidth * s + "px");
+            elements.body.style.setProperty("--date-show-width", config.screen_width * s + "px");
         }
     }
 
     if (properties.date_separator) {
-        const dateFormat = config.dateFormat;
-        dateFormat.separator = properties.date_separator.value;
-        config.dateFormat = dateFormat;
+        const date_format = config.date_format;
+        date_format.separator = properties.date_separator.value;
+        config.date_format = date_format;
         if (!FirstLoad) getdate();
     }
 
     if (properties.date_order) {
-        const dateFormat = config.dateFormat;
-        dateFormat.order = properties.date_order.value;
-        config.dateFormat = dateFormat;
+        const date_format = config.date_format;
+        date_format.order = properties.date_order.value;
+        config.date_format = date_format;
         if (!FirstLoad) getdate();
     }
 
     if (properties.date_yearFormat) {
-        const dateFormat = config.dateFormat;
-        dateFormat.yearFormat = properties.date_yearFormat.value;
-        config.dateFormat = dateFormat;
+        const date_format = config.date_format;
+        date_format.year_format = properties.date_yearFormat.value;
+        config.date_format = date_format;
         if (!FirstLoad) getdate();
     }
 
     if (properties.date_monthFormat) {
-        const dateFormat = config.dateFormat;
-        dateFormat.monthFormat = properties.date_monthFormat.value;
-        config.dateFormat = dateFormat;
+        const date_format = config.date_format;
+        date_format.month_format = properties.date_monthFormat.value;
+        config.date_format = date_format;
         if (!FirstLoad) getdate();
     }
 
     if (properties.date_dayFormat) {
-        const dateFormat = config.dateFormat;
-        dateFormat.dayFormat = properties.date_dayFormat.value;
-        config.dateFormat = dateFormat;
+        const date_format = config.date_format;
+        date_format.day_format = properties.date_dayFormat.value;
+        config.date_format = date_format;
         if (!FirstLoad) getdate();
     }
 
     if (properties.date_weekFormat) {
-        const dateFormat = config.dateFormat;
-        dateFormat.weekFormat = properties.date_weekFormat.value;
-        config.dateFormat = dateFormat;
+        const date_format = config.date_format;
+        date_format.week_format = properties.date_weekFormat.value;
+        config.date_format = date_format;
         if (!FirstLoad) getdate();
     }
 
     // 日期透明度
     if (properties.datetransparency) {
         const transparency = properties.datetransparency.value / 100;
-        config.dateTransparency = transparency;
+        config.date_transparency = transparency;
         elements.body.style.setProperty("--date-opacity", String(transparency));
     }
 
     if (FirstLoad) {
         debugLogger.info('[Date] 日期参数初始化完成');
-        config.dateInitComplete = true;
+        config.date_init_complete = true;
     }
 }

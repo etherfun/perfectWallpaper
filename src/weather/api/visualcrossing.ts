@@ -122,7 +122,7 @@ export async function visualcrossing(
   const sevenDate = nowDate + 7 * 24 * 60 * 60;
 
   const response = await fetch_with_retry(
-    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(weather_address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${config.weatherUnit}&key=${config.visualCrossingKey}&contentType=json&lang=id`,
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(weather_address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${config.weather_unit}&key=${config.visual_crossing_key}&contentType=json&lang=id`,
     {},
     3
   );

@@ -370,7 +370,7 @@ function createPointFlowers(): void {
     pointFlower.offset = new Float32Array([0.0, 0.0, 0.0]);
     pointFlower.fader = Vector3.create(0.0, 10.0, 0.0);
 
-    pointFlower.numFlowers = config.sakuraPointNumber;
+    pointFlower.numFlowers = config.sakura_point_number;
     pointFlower.particles = new Array(pointFlower.numFlowers);
     pointFlower.dataArray = new Float32Array(pointFlower.numFlowers * (3 + 3 + 2));
     pointFlower.positionArrayOffset = 0;
@@ -440,7 +440,7 @@ function renderPointFlowers(): void {
     if (!gl || !pointFlower.program) return;
 
     const PI2 = Math.PI * 2.0;
-    const sakuraReverse = config.sakuraReverse;
+    const sakuraReverse = config.sakura_reverse;
 
     const repeatPos = function (prt: BlossomParticle, cmp: number, limitVal: number) {
         if (Math.abs(prt.position[cmp]) - prt.size * 0.5 > limitVal) {
@@ -596,13 +596,13 @@ function createEffectLib(): void {
 
     // final composite
     const vtxsrc = (document.getElementById("pp_final_vsh") as HTMLScriptElement).textContent || '';
-    const sakuraBackLight = config.sakuraBackLight;
+    const sakuraBackLight = config.sakura_back_light;
     frgsrc = pp_final_fsh + 'gl_FragColor = vec4(col.rgb, ' + (1.1 - sakuraBackLight).toFixed(2) + ');        gl_FragColor.a = ' + (1.1 - sakuraBackLight).toFixed(2) + ';    }';
     effectLib.finalComp = createEffectProgram(vtxsrc, frgsrc, ['uBloom'], undefined);
 }
 
 function renderBackground(): void {
-    if (!gl || !config.sakuraBackground || !effectLib.sceneBg) return;
+    if (!gl || !config.sakura_background || !effectLib.sceneBg) return;
 
     gl.disable(gl.DEPTH_TEST);
     useEffect(effectLib.sceneBg, null);
@@ -700,7 +700,7 @@ function renderScene(): void {
 
     gl.bindFramebuffer(gl.FRAMEBUFFER, renderSpec.mainRT!.frameBuffer);
     gl.viewport(0, 0, renderSpec.mainRT!.width, renderSpec.mainRT!.height);
-    if (config.sakuraBackColor) {
+    if (config.sakura_back_color) {
         gl.clearColor(0.005, 0, 0.05, 0);
     } else {
         gl.clearColor(0, 0, 0, 0);
@@ -758,7 +758,7 @@ function render(): void {
     // Copy WebGL canvas to 2D canvas for display (merged from removesakura RAF loop)
     const raw = elements.sakura;
     const ctx = elements.sakurashow.getContext('2d');
-    if (ctx && raw && raw.width > 0 && config.showSakura) {
+    if (ctx && raw && raw.width > 0 && config.show_sakura) {
         ctx.drawImage(raw, 0, 0, window.innerWidth, window.innerHeight, 0, 0, window.innerWidth, window.innerHeight);
     }
 }
@@ -857,7 +857,7 @@ export function removesakura(): void {
     const ctx = elements.sakurashow.getContext('2d');
     if (!ctx || !raw) return;
 
-    if (raw.width > 0 && config.showSakura) {
+    if (raw.width > 0 && config.show_sakura) {
         ctx.drawImage(raw, 0, 0, window.innerWidth, window.innerHeight, 0, 0, window.innerWidth, window.innerHeight);
     }
 }
@@ -881,7 +881,7 @@ export function initSakura(): void {
 // ==================== Apply Transparency ====================
 
 export function applySakuraTransparency(): void {
-    const transparency = config.sakuraTransparency;
+    const transparency = config.sakura_transparency;
     const ctx = elements.sakurashow.getContext('2d');
     if (ctx) {
         ctx.canvas.style.opacity = String(transparency);

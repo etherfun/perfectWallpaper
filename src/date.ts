@@ -26,7 +26,7 @@ function updateDateColor(): void {
 let dateAnimationFrameId: number | null = null;
 
 function dateColorRhythmLoop(): void {
-    if (config.dateColorRhythm) {
+    if (config.date_color_rhythm) {
         updateDateColor();
         dateAnimationFrameId = requestAnimationFrame(dateColorRhythmLoop);
     }
@@ -58,7 +58,7 @@ let m_array = new Array("一月","二月","三月","四月","五月","六月","�
 let me_array = new Array("January","February","March","April","May","June","July","August","September","October","November","December");
 
 function getFormattedYear(t) {
-    switch(config.dateFormat.yearFormat) {
+    switch(config.date_format.year_format) {
         case 1: // YYYY格式
             return t.getFullYear();
         case 2: // YY格式（后两位）
@@ -71,7 +71,7 @@ function getFormattedYear(t) {
 
 function getFormattedMonth(t) {
     let month = t.getMonth() + 1;
-    switch(config.dateFormat.monthFormat) {
+    switch(config.date_format.month_format) {
         case 1: // 数字格式
             return month;
         case 2: // 英文月份
@@ -86,7 +86,7 @@ function getFormattedMonth(t) {
 
 function getFormattedDay(t) {
     let day = t.getDate();
-    switch(config.dateFormat.dayFormat) {
+    switch(config.date_format.day_format) {
         case 1: // 数字格式
             return day;
         case 2: // 带前导零
@@ -98,7 +98,7 @@ function getFormattedDay(t) {
 }
 
 function getFormattedWeek(t) {
-    switch(config.dateFormat.weekFormat) {
+    switch(config.date_format.week_format) {
         case 1: // 中文星期
             return w_array[t.getDay()];
         case 2: // 英文星期
@@ -110,7 +110,7 @@ function getFormattedWeek(t) {
 }
 
 function getSeparator() {
-    switch(config.dateFormat.separator) {
+    switch(config.date_format.separator) {
         case 1: // 无分隔符（用于中文格式）
             return "";
         case 2: // "/"
@@ -134,15 +134,15 @@ function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
     let partTypes: string[] = [];
     
     // 根据顺序添加年份、月份、日期，并记录类型
-    if (config.dateFormat.order === 1) { // 年月日顺序
+    if (config.date_format.order === 1) { // 年月日顺序
         if (year) { parts.push(year); partTypes.push('year'); }
         if (month) { parts.push(month); partTypes.push('month'); }
         if (day) { parts.push(day); partTypes.push('day'); }
-    } else if (config.dateFormat.order === 2) { // 月日年顺序
+    } else if (config.date_format.order === 2) { // 月日年顺序
         if (month) { parts.push(month); partTypes.push('month'); }
         if (day) { parts.push(day); partTypes.push('day'); }
         if (year) { parts.push(year); partTypes.push('year'); }
-    } else if (config.dateFormat.order === 3) { // 日月年顺序
+    } else if (config.date_format.order === 3) { // 日月年顺序
         if (day) { parts.push(day); partTypes.push('day'); }
         if (month) { parts.push(month); partTypes.push('month'); }
         if (year) { parts.push(year); partTypes.push('year'); }
@@ -199,6 +199,6 @@ function autodata(){
 }
 
 waitAndExecute(
-    () => config.dateInitComplete === true,
+    () => config.date_init_complete === true,
     () => autodata()
 );

@@ -66,6 +66,7 @@ export function handleBackgroundProperties(
 
     // 自定义目录
     if (properties.customdirectory) {
+        config.customdirectory = properties.customdirectory.value;
         timerManager.remove('backgroundChange');
         if (properties.customdirectory && FirstLoad === false) {
             changeBackground();
@@ -75,7 +76,7 @@ export function handleBackgroundProperties(
     // 监听幻灯开关变化
     if (properties.wallpapermode) {
         timerManager.remove('backgroundChange');
-        config.wallpaperMode = properties.wallpapermode.value;
+        config.wallpaper_mode = properties.wallpapermode.value;
         if (FirstLoad) {
             setTimeout(function () {
                 changeBackground();
@@ -87,28 +88,28 @@ export function handleBackgroundProperties(
 
     // 幻灯片特效
     if (properties.TransitionMode) {
-        config.transitionMode = properties.TransitionMode.value;
+        config.transition_mode = properties.TransitionMode.value;
         TransitionSwith();
     }
 
     if (properties.TransitionMode_choose_0) {
-        config.transitionModeChoose_0 = properties.TransitionMode_choose_0.value;
+        config.transition_mode_choose_0 = properties.TransitionMode_choose_0.value;
         TransitionSwith();
     }
 
     if (properties.TransitionMode_choose_1) {
-        config.transitionModeChoose_1 = properties.TransitionMode_choose_1.value;
+        config.transition_mode_choose_1 = properties.TransitionMode_choose_1.value;
         TransitionSwith();
     }
 
     if (properties.TransitionMode_choose_4) {
-        config.transitionModeChoose_4 = properties.TransitionMode_choose_4.value;
+        config.transition_mode_choose_4 = properties.TransitionMode_choose_4.value;
         TransitionSwith();
     }
 
     if (properties.background_wallpapermode_9_URL) {
-        config.picturesUrl = properties.background_wallpapermode_9_URL.value;
-        if (config.wallpaperMode == 9) {
+        config.pictures_url = properties.background_wallpapermode_9_URL.value;
+        if (config.wallpaper_mode == 9) {
             changeBackground();
         }
     }
@@ -118,34 +119,36 @@ export function handleBackgroundProperties(
         config.selectvideo = properties.selectvideo.value;
 
         if (properties.selectvideo.value) {
-            config.cusvideoRoute = 'file:///' + properties.selectvideo.value;
+            config.cusvideo_route = 'file:///' + properties.selectvideo.value;
         } else {
-            config.cusvideoRoute = "";
+            config.cusvideo_route = "";
         }
-        if (config.wallpaperMode == 3) {
+        if (config.wallpaper_mode == 3) {
             ChangeVideoModel();
         }
     }
 
     // 音量
     if (properties.VideoVolume) {
-        elements.myvideo.volume = properties.VideoVolume.value / 100;
+        config.video_volume = properties.VideoVolume.value / 100;
+        elements.myvideo.volume = config.video_volume;
     }
 
     // 自定义音乐
     if (properties.selectmusic) {
         config.selectmusic = properties.selectmusic.value;
         if (properties.selectmusic.value) {
-            config.cusaudioRoute = 'file:///' + properties.selectmusic.value;
+            config.cusaudio_route = 'file:///' + properties.selectmusic.value;
         } else {
-            config.cusaudioRoute = "";
+            config.cusaudio_route = "";
         }
         ChangeAudioModel();
     }
 
     // 音量
     if (properties.MuiscVolume) {
-        elements.myAudio.volume = properties.MuiscVolume.value / 100;
+        config.music_volume = properties.MuiscVolume.value / 100;
+        elements.myAudio.volume = config.music_volume;
     }
 
     // 监听随机模式开关变化
@@ -181,29 +184,28 @@ export function handleBackgroundProperties(
 
     // 更改背景展示样式
     if (properties.imagedisplaystlye) {
-        config.bgStyle = properties.imagedisplaystlye.value;
+        config.bg_style = properties.imagedisplaystlye.value;
         applyBackgroundStyle();
-    }
-
-    if (properties.picturesinfo_language) {
-        config.picturesInfoLanguage = properties.picturesinfo_language.value;
     }
 
     // 图片信息Y轴位置
     if (properties.picturesinfoY) {
         const y = properties.picturesinfoY.value;
+        config.pictures_info_y = y;
         elements.body.style.setProperty("--picture-info-top", `${y}%`);
     }
 
     // 图片信息X轴位置
     if (properties.picturesinfoX) {
         const x = properties.picturesinfoX.value;
+        config.pictures_info_x = x;
         elements.body.style.setProperty("--picture-info-left", `${x}%`);
     }
 
     // 图片信息字体大小
     if (properties.picturesinfo_size) {
         const s = properties.picturesinfo_size.value;
+        config.pictures_info_size = s;
         elements.body.style.setProperty("--picture-info-font-size", Math.floor(config.screenHeight / 600 * s) + 'px');
         elements.body.style.setProperty("--picture-info-line-height", Math.floor(config.screenHeight / 1140 * s) + 'px');
     }
@@ -211,7 +213,7 @@ export function handleBackgroundProperties(
     // 图片信息显示开关
     if (properties.picturesinfo_show) {
         const show = properties.picturesinfo_show.value;
-        config.picturesInfoShow = show;
+        config.pictures_info_show = show;
         elements.body.style.setProperty("--picture-info-display", show ? 'flex' : 'none');
         elements.body.style.setProperty("--picture-info-visibility", show ? 'visible' : 'hidden');
     }
@@ -219,64 +221,67 @@ export function handleBackgroundProperties(
     // 图片信息文字颜色
     if (properties.picturesinfo_color) {
         const color = properties.picturesinfo_color.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
-        config.picturesInfoColor = color;
+        config.pictures_info_color = color;
         elements.body.style.setProperty("--picture-info-color", color.join(', '));
     }
 
     // 图片信息模糊背景开关
     if (properties.picturesinfo_blurcolor_show) {
         const show = properties.picturesinfo_blurcolor_show.value;
-        config.picturesInfoBlurcolorShow = show;
+        config.pictures_info_blurcolor_show = show;
         elements.body.style.setProperty("--picture-info-blur-enabled", show ? '1' : '0');
     }
 
     // 图片信息模糊背景颜色
     if (properties.picturesinfo_blurcolor) {
         const color = properties.picturesinfo_blurcolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
-        config.picturesInfoBlurcolor = color;
+        config.pictures_info_blurcolor = color;
         elements.body.style.setProperty("--picture-info-blur-color", color.join(', '));
     }
 
     // 图片信息亚克力效果开关
     if (properties.picturesinfo_yakeli_show) {
         const show = properties.picturesinfo_yakeli_show.value;
-        config.picturesInfoYakeliShow = show;
+        config.pictures_info_yakeli_show = show;
         elements.body.style.setProperty("--picture-info-yakeli-enabled", show ? '1' : '0');
     }
 
     // 图片信息亚克力效果颜色
     if (properties.picturesinfo_yakelicolor) {
         const color = properties.picturesinfo_yakelicolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
-        config.picturesInfoYakelicColor = color;
+        config.pictures_info_yakelic_color = color;
         elements.body.style.setProperty("--picture-info-yakeli-color", color.join(', '));
     }
 
     // 图片信息亚克力效果强度
     if (properties.picturesinfo_yakeli) {
         const yakeli = properties.picturesinfo_yakeli.value / 100;
-        config.picturesInfoYakeli = yakeli;
+        config.pictures_info_yakeli = yakeli;
         elements.body.style.setProperty("--picture-info-yakeli", String(yakeli));
     }
 
     // 图片信息模糊亚克力效果
     if (properties.picturesinfo_bluryakeli) {
         const blur = properties.picturesinfo_bluryakeli.value;
-        config.picturesInfoBluryakeli = blur;
+        config.pictures_info_bluryakeli = blur;
         elements.body.style.setProperty("--picture-info-blur-yakeli", `${blur}px`);
-        config.fristPicturesinfo = false;
+        config.frist_picturesinfo = false;
     }
 
     // 图片信息时间透明度
     if (properties.picturesinfo_timetransparency) {
+        config.pictures_info_timetransparency = properties.picturesinfo_timetransparency.value;
         const t = properties.picturesinfo_timetransparency.value / 100;
         elements.body.style.setProperty("--picture-info-opacity", String(t));
     }
 
     // 图片信息圆角
     if (properties.picturesinfo_roundedcorners) {
+        const roundedcorners = properties.picturesinfo_roundedcorners.value;
+        config.pictures_info_roundedcorners = roundedcorners;
         elements.body.style.setProperty(
             "--picture-info-roundedcorners",
-            String(properties.picturesinfo_roundedcorners.value)
+            String(roundedcorners)
         );
 
         const updateHeight = () => {
@@ -293,19 +298,21 @@ export function handleBackgroundProperties(
     // 图片信息划出动画方向
     if (properties.picturesinfo_showaway) {
         const showaway = properties.picturesinfo_showaway.value;
+        config.pictures_info_showaway = showaway;
         elements.body.style.setProperty("--picture-info-transform", showaway ? 'translate(-100%, 0)' : 'translate(0, 0)');
     }
 
     // 图片信息文字对齐方向
     if (properties.picturesinfo_showRorL) {
         const rorL = properties.picturesinfo_showRorL.value;
-        config.picturesInfoShowRorL = rorL;
+        config.pictures_info_show_ror_l = rorL;
         elements.body.style.setProperty("--picture-info-text-align", rorL ? "right" : "left");
     }
 
     // 图片信息显示宽度
     if (properties.picturesinfo_showwidth) {
         const width = properties.picturesinfo_showwidth.value;
+        config.pictures_info_showwidth = width;
         if (width === 0) {
             elements.body.style.setProperty("--picture-info-show-width", 'auto');
         } else {
@@ -317,11 +324,12 @@ export function handleBackgroundProperties(
     // 图片信息描述显示
     if (properties.picturesinfo_description) {
         const desc = properties.picturesinfo_description.value;
+        config.pictures_info_description = desc;
         elements.body.style.setProperty("--picture-info-description-display", desc ? "block" : "none");
     }
 
     if (FirstLoad) {
         debugLogger.info('[Background] 壁纸参数初始化完成');
-        config.bgInitComplete = true;
+        config.bg_init_complete = true;
     }
 }

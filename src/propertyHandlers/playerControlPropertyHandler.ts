@@ -26,7 +26,7 @@ export function handlePlayerControlProperties(
 ): void {
 
     if (properties.player_control_show) {
-        config.playerControlShow = properties.player_control_show.value;
+        config.player_control_show = properties.player_control_show.value;
         player_control_show = properties.player_control_show.value;
         if (FirstLoad === false) {
             player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
@@ -53,7 +53,7 @@ export function handlePlayerControlProperties(
                     return;
                 }
 
-                if (config.playerControlAutohide) {
+                if (config.player_control_autohide) {
                     player_control.style.display = "none";
                 } else {
                     const titleElement = leftTitle || rightTitle;
@@ -77,94 +77,96 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_scalefactor) {
-        config.playerControlScalefactor = properties.player_control_scalefactor.value;
+        config.player_control_scalefactor = properties.player_control_scalefactor.value;
     }
 
     if (properties.playery) {
+        config.playery = properties.playery.value;
         player_control.style.top = properties.playery.value + "%";
     }
 
     if (properties.playerx) {
+        config.playerx = properties.playerx.value;
         player_control.style.left = properties.playerx.value + "%";
     }
 
     if (properties.player_control_color) {
         const color = properties.player_control_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.playerControlColor = color;
+        config.player_control_color = color;
         elements.body.style.setProperty("--player-color", color.join(', '));
     }
 
     if (properties.player_control_blurcolor_show) {
-        config.playerControlBlurcolorShow = properties.player_control_blurcolor_show.value;
+        config.player_control_blurcolor_show = properties.player_control_blurcolor_show.value;
         elements.body.style.setProperty("--player-blur-enabled", properties.player_control_blurcolor_show.value ? '1' : '0');
     }
 
     if (properties.player_control_blurcolor) {
         const blurcolor = properties.player_control_blurcolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.playerControlBlurcolor = blurcolor;
+        config.player_control_blurcolor = blurcolor;
         elements.body.style.setProperty("--player-blur-color", blurcolor.join(', '));
     }
 
     if (properties.player_control_yakeli_show) {
-        config.playerControlYakeliShow = properties.player_control_yakeli_show.value;
+        config.player_control_yakeli_show = properties.player_control_yakeli_show.value;
         elements.body.style.setProperty("--player-yakeli-enabled", properties.player_control_yakeli_show.value ? '1' : '0');
     }
 
     if (properties.player_control_yakelicolor) {
         const yakeliccolor = properties.player_control_yakelicolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.playerControlYakelicColor = yakeliccolor;
+        config.player_control_yakelic_color = yakeliccolor;
         elements.body.style.setProperty("--player-yakeli-color", yakeliccolor.join(', '));
     }
 
     if (properties.player_control_yakeli) {
         const yakeli = properties.player_control_yakeli.value / 100;
-        config.playerControlYakeli = yakeli;
+        config.player_control_yakeli = yakeli;
         elements.body.style.setProperty("--player-yakeli", String(yakeli));
     }
 
     if (properties.player_control_bluryakeli) {
-        config.playerControlBluryakeli = properties.player_control_bluryakeli.value;
+        config.player_control_bluryakeli = properties.player_control_bluryakeli.value;
         elements.body.style.setProperty("--player-blur-yakeli", `${properties.player_control_bluryakeli.value}px`);
     }
 
     if (properties.player_control_thumbnail_size) {
-        config.playerControlThumbnailSize = properties.player_control_thumbnail_size.value;
+        config.player_control_thumbnail_size = properties.player_control_thumbnail_size.value;
         if (properties.player_control_thumbnail_size.value) {
             player_control_thumbnailWrap.style.display = 'flex';
             player_control_thumbnailWrap.style.alignItems = 'center';
             player_control_thumbnailWrap.style.justifyContent = 'center';
         } else {
-            player_control_thumbnail.style.width = config.playerControlSizeValue + 'px';
-            player_control_thumbnail.style.height = config.playerControlSizeValue + 'px';
+            player_control_thumbnail.style.width = config.player_control_size_value + 'px';
+            player_control_thumbnail.style.height = config.player_control_size_value + 'px';
         }
     }
 
     if (properties.player_control_size) {
         const s = properties.player_control_size.value;
-        config.playerControlSizeValue = Math.floor(config.screenHeight / 150 * s);
+        config.player_control_size_value = Math.floor(config.screenHeight / 150 * s);
         player_control.style.fontSize = Math.floor(config.screenHeight / 300 * s) + 'px';
         player_control.style.lineHeight = Math.floor(config.screenHeight / 700 * s) + 'px';
         player_control_artist.style.lineHeight = Math.floor(config.screenHeight / 1000 * s) + 'px';
         player_control_albumTitle.style.lineHeight = Math.floor(config.screenHeight / 1000 * s) + 'px';
-        if (config.playerControlThumbnailSize) {
-            player_control_thumbnailWrap.style.width = config.playerControlSizeValue + 'px';
-            player_control_thumbnailWrap.style.height = config.playerControlSizeValue + 'px';
+        if (config.player_control_thumbnail_size) {
+            player_control_thumbnailWrap.style.width = config.player_control_size_value + 'px';
+            player_control_thumbnailWrap.style.height = config.player_control_size_value + 'px';
             if (FirstLoad === false) {
-                const ss = (config.playerControlSizeValue * (player_control_thumbnail_size_value / 100));
+                const ss = (config.player_control_size_value * (player_control_thumbnail_size_value / 100));
                 player_control_thumbnail.style.width = ss + 'px';
                 player_control_thumbnail.style.height = ss + 'px';
             }
         } else {
-            player_control_thumbnail.style.width = config.playerControlSizeValue + 'px';
-            player_control_thumbnail.style.height = config.playerControlSizeValue + 'px';
+            player_control_thumbnail.style.width = config.player_control_size_value + 'px';
+            player_control_thumbnail.style.height = config.player_control_size_value + 'px';
         }
     }
 
     if (properties.player_control_thumbnail_size_value) {
-        const s = config.playerControlSizeValue;
-        config.playerControlThumbnailSizeValue = properties.player_control_thumbnail_size_value.value;
+        const s = config.player_control_size_value;
+        config.player_control_thumbnail_size_value = properties.player_control_thumbnail_size_value.value;
         const ss = (s * (properties.player_control_thumbnail_size_value.value / 100));
-        if (config.playerControlThumbnailSize) {
+        if (config.player_control_thumbnail_size) {
             player_control_thumbnailWrap.style.width = s + 'px';
             player_control_thumbnailWrap.style.height = s + 'px';
             player_control_thumbnail.style.width = ss + 'px';
@@ -173,6 +175,7 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_roundedcorners) {
+        config.player_control_roundedcorners = properties.player_control_roundedcorners.value;
         const rounded = properties.player_control_roundedcorners.value;
 
         const updateCorners = () => {
@@ -190,35 +193,35 @@ export function handlePlayerControlProperties(
         updateCorners();
 
         const observer = new ResizeObserver(() => {
-            if (config.playerControlThumbnailRotation === false) updateCorners();
+            if (config.player_control_thumbnail_rotation === false) updateCorners();
         });
         observer.observe(player_control_thumbnail);
     }
 
     if (properties.player_control_thumbnail_rotation) {
-        config.playerControlThumbnailRotation = properties.player_control_thumbnail_rotation.value;
+        config.player_control_thumbnail_rotation = properties.player_control_thumbnail_rotation.value;
         if (properties.player_control_thumbnail_rotation.value === false) {
             player_control_thumbnail.style.animation = '';
         } else {
-            player_control_thumbnail.style.animation = `spin ${config.playerControlThumbnailRotationSpeed}s linear infinite`;
+            player_control_thumbnail.style.animation = `spin ${config.player_control_thumbnail_rotation_speed}s linear infinite`;
             player_control_thumbnail.style.borderRadius = '50%';
         }
     }
 
     if (properties.player_control_thumbnail_rotation_speed) {
-        config.playerControlThumbnailRotationSpeed = 10 - properties.player_control_thumbnail_rotation_speed.value;
+        config.player_control_thumbnail_rotation_speed = 10 - properties.player_control_thumbnail_rotation_speed.value;
         if (player_control_thumbnail.style.animation) {
-            player_control_thumbnail.style.animationDuration = config.playerControlThumbnailRotationSpeed + 's';
+            player_control_thumbnail.style.animationDuration = config.player_control_thumbnail_rotation_speed + 's';
         }
     }
 
     if (properties.player_control_timetransparency) {
-        config.playerControlTimetransparency = properties.player_control_timetransparency.value;
+        config.player_control_timetransparency = properties.player_control_timetransparency.value;
         player_control.style.opacity = String(properties.player_control_timetransparency.value / 100);
     }
 
     if (properties.player_control_showwidth) {
-        config.playerControlShowwidth = properties.player_control_showwidth.value;
+        config.player_control_showwidth = properties.player_control_showwidth.value;
         if (properties.player_control_showwidth.value === 0) {
             player_control_background.style.width = 'auto';
         } else {
@@ -228,21 +231,21 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_yakelibgusetb) {
-        config.playerControlYakelibgusetb = properties.player_control_yakelibgusetb.value;
+        config.player_control_yakelibgusetb = properties.player_control_yakelibgusetb.value;
         if (FirstLoad === false) {
             thumbnailsue();
         }
     }
 
     if (properties.player_control_fontusetb) {
-        config.playerControlFontusetb = properties.player_control_fontusetb.value;
+        config.player_control_fontusetb = properties.player_control_fontusetb.value;
         if (FirstLoad === false) {
             thumbnailsue();
         }
     }
 
     if (properties.player_control_thumbnailrorl) {
-        config.playerControlThumbnailrorl = properties.player_control_thumbnailrorl.value;
+        config.player_control_thumbnailrorl = properties.player_control_thumbnailrorl.value;
         if (properties.player_control_thumbnailrorl.value === true) {
             setTimeout(function () {
                 player_control_background.style.flexDirection = 'row-reverse';
@@ -267,6 +270,7 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_showaway) {
+        config.player_control_showaway = properties.player_control_showaway.value;
         if (properties.player_control_showaway.value === true) {
             player_control.style.transform = 'translate(-100%, 0)';
         } else {
@@ -275,35 +279,35 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_samealbumtitle) {
-        config.playerControlSamealbumTitle = properties.player_control_samealbumtitle.value;
+        config.player_control_samealbum_title = properties.player_control_samealbumtitle.value;
         if (FirstLoad === false) {
             playertitle();
         }
     }
 
     if (properties.player_control_visualaudiobar) {
-        config.playerControlVisualaudiobar = properties.player_control_visualaudiobar.value;
+        config.player_control_visualaudiobar = properties.player_control_visualaudiobar.value;
         if (FirstLoad === false) {
             pc_aubar();
         }
     }
 
     if (properties.player_control_barline) {
-        config.playerControlBarline = properties.player_control_barline.value;
+        config.player_control_barline = properties.player_control_barline.value;
         if (FirstLoad === false) {
             pc_aubar();
         }
     }
 
     if (properties.player_control_getcolor) {
-        config.colorPickupMethod = properties.player_control_getcolor.value;
+        config.color_pickup_method = properties.player_control_getcolor.value;
         if (FirstLoad === false) {
             thumbnailsue();
         }
     }
 
     if (properties.player_control_hdong) {
-        config.playerControlHdong = properties.player_control_hdong.value / 500;
+        config.player_control_hdong = properties.player_control_hdong.value / 500;
     }
 
     if (FirstLoad) {

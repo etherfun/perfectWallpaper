@@ -41,11 +41,11 @@ export async function qweatherLookupCity(
     weather_address: WeatherAddress
 ): Promise<WeatherAddress> {
     const response = await fetch_with_retry(
-        `https://${config.apiHost}/geo//v2/city/lookup?location=${weather_address.cityname}`,
+        `https://${config.api_host}/geo//v2/city/lookup?location=${weather_address.cityname}`,
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.cityKey,
+                'X-QW-Api-Key': config.city_key,
             }
         }
     );
@@ -68,11 +68,11 @@ async function fetchNowWeather(
     weather_data: WeatherData
 ): Promise<void> {
     const response = await fetch_with_retry(
-        `https://${config.apiHost}/v7/weather/now?location=${weather_address.citynumber}&lang=${config.languageCode}`,
+        `https://${config.api_host}/v7/weather/now?location=${weather_address.citynumber}&lang=${config.language_code}`,
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.cityKey,
+                'X-QW-Api-Key': config.city_key,
             }
         }
     );
@@ -102,11 +102,11 @@ async function fetchAirQuality(
     weather_data: WeatherData
 ): Promise<void> {
     const response = await fetch_with_retry(
-        `https://${config.apiHost}/airquality/v1/daily/${weather_address.latitude}/${weather_address.longitude}?lang=${config.languageCode}`,
+        `https://${config.api_host}/airquality/v1/daily/${weather_address.latitude}/${weather_address.longitude}?lang=${config.language_code}`,
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.cityKey,
+                'X-QW-Api-Key': config.city_key,
             }
         }
     );
@@ -146,11 +146,11 @@ async function fetchWeatherAlert(
     weather_data: WeatherData
 ): Promise<void> {
     const response = await fetch_with_retry(
-        `https://${config.apiHost}/weatheralert/v1/current/${weather_address.latitude}/${weather_address.longitude}?lang=${config.languageCode}`,
+        `https://${config.api_host}/weatheralert/v1/current/${weather_address.latitude}/${weather_address.longitude}?lang=${config.language_code}`,
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.cityKey,
+                'X-QW-Api-Key': config.city_key,
             }
         }
     );
@@ -197,11 +197,11 @@ async function fetch24hForecast(
     weather_data: WeatherData
 ): Promise<void> {
     const response = await fetch_with_retry(
-        `https://${config.apiHost}/v7/weather/24h?location=${weather_address.citynumber}&lang=${config.languageCode}`,
+        `https://${config.api_host}/v7/weather/24h?location=${weather_address.citynumber}&lang=${config.language_code}`,
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.cityKey,
+                'X-QW-Api-Key': config.city_key,
             }
         }
     );
@@ -243,11 +243,11 @@ async function fetch3dForecast(
     weather_data: WeatherData
 ): Promise<void> {
     const response = await fetch_with_retry(
-        `https://${config.apiHost}/v7/weather/3d?location=${weather_address.citynumber}&lang=${config.languageCode}`,
+        `https://${config.api_host}/v7/weather/3d?location=${weather_address.citynumber}&lang=${config.language_code}`,
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.cityKey,
+                'X-QW-Api-Key': config.city_key,
             }
         }
     );
@@ -275,7 +275,7 @@ async function fetch3dForecast(
  * 检查是否超出免费额度
  */
 function checkQuota(): boolean {
-    return !config.qweatherApiPaymode && weather_paymode();
+    return !config.qweather_api_paymode && weather_paymode();
 }
 
 /**

@@ -14,7 +14,7 @@ export function ChangeVideoModel(): void {
         myvideo.src = config.cusvideoRoute;
         myvideo.play();
     } else {
-        myvideo.src = config.videoRoute;
+        myvideo.src = config.video_route;
         myvideo.play();
     }
 }

@@ -152,6 +152,7 @@ export interface WallpaperProperties {
     wallpaper_updata?: { value: number };
     wallpaper_updata_open_on_update?: { value: boolean };
     debugger_copy?: { value: boolean };
+    fontSetting?: { value: string };
     
     // 日期相关
     showDate?: { value: boolean };
@@ -342,7 +343,6 @@ export interface WallpaperProperties {
     MuiscVolume?: { value: number };
     
     // 图片信息相关
-    picturesinfo_language?: { value: number };
     picturesinfoY?: { value: number };
     picturesinfoX?: { value: number };
     picturesinfo_size?: { value: number };
@@ -369,6 +369,7 @@ export interface WallpaperProperties {
     countdown_txt?: { value: string };
     countdown_txt1?: { value: string };
     countdown_show?: { value: boolean };
+    countdown_showwidth?: { value: number };
     countdown_year?: { value: number };
     countdown_month?: { value: number };
     countdown_day?: { value: number };

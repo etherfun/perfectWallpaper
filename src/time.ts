@@ -35,7 +35,7 @@ let clockAnimationFrameId: number | null = null;
 let timeIntervalId: ReturnType<typeof setInterval> | null = null;
 
 function clockColorRhythmLoop(): void {
-    if (config.timeColorRhythm) {
+    if (config.time_color_rhythm) {
         updateClockColor();
         clockAnimationFrameId = requestAnimationFrame(clockColorRhythmLoop);
     }

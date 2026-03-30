@@ -73,14 +73,14 @@ function smoothAudioData(rawData: number[]): number[] {
     let processed = clampAudioData(rawData);
 
     // 检查是否启用平滑
-    if (!config.audioSmoothEnabled) {
+    if (!config.audio_smooth_enabled) {
         _prevAudioData = null; // 重置时序数据
         return processed;
     }
 
     // 从配置读取平滑参数
-    const smoothFactor = (config.audioSmoothFactor as number) / 100;
-    const spatialWindow = config.audioSpatialWindow as number;
+    const smoothFactor = (config.audio_smooth_factor as number) / 100;
+    const spatialWindow = config.audio_spatial_window as number;
 
     // 验证平滑因子有效性
     if (isNaN(smoothFactor) || smoothFactor <= 0 || smoothFactor >= 1) {
@@ -220,7 +220,7 @@ export function renderAudioVisualization(): void {
 
     clearCanvases();
 
-    switch (config.visualAudioModel) {
+    switch (config.visual_audio_model) {
         case 1:
             renderCircle(audioData);
             break;

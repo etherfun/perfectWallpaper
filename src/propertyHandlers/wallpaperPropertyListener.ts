@@ -50,6 +50,7 @@ export function createWallpaperPropertyListener(
     // 全局语言设置
     if (properties.global_settings_language) {
         config.language = properties.global_settings_language.value;
+        config.language_code = properties.global_settings_language.value.slice(0, 2);
         loadI18nData();
     }
 
@@ -73,9 +74,18 @@ export function createWallpaperPropertyListener(
         showDebugLogModal();
     }
 
+    // 自定义字体设置
+    if (properties.fontSetting) {
+        config.font_setting = properties.fontSetting.value;
+        const fonts = properties.fontSetting.value.split(';').map(f => f.trim()).filter(f => f).join(', ');
+        if (fonts) {
+            document.body.style.setProperty('--custom-font-family', fonts);
+        }
+    }
+
     // 如果是首次加载,标记更新初始化完成
     if (FirstLoad) {
-        config.updateInitComplete = true;
+        config.update_init_complete = true;
     }
 
     // 处理所有属性(使用safeHandle捕获错误)
@@ -96,7 +106,7 @@ export function createWallpaperPropertyListener(
 
     // 如果是首次加载，在处理完所有属性后将其设置为 false
     if (FirstLoad) {
-        config.firstLoad = false;
+        config.first_load = false;
     }
 }
 
@@ -115,7 +125,8 @@ export function setupWallpaperPropertyListener(): void {
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
                 propertiesReceived = true;
-                const isFirstLoad = config.firstLoad;
+                const isFirstLoad = config.first_load;
+                console.log(properties)
                 createWallpaperPropertyListener(properties as WallpaperProperties, isFirstLoad);
             },
             applyGeneralProperties: (_properties: Record<string, any>) => {
@@ -150,15 +161,15 @@ export function setupWallpaperPropertyListener(): void {
                     if (!(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
                         myAudio.play();
                     }
-                    if (config.rGBShow === true) {
-                        if (config.wallpaperMode !== 3) {
+                    if (config.rgb_show === true) {
+                        if (config.wallpaper_mode !== 3) {
                             const src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1');
                             background2canvas(src, false);
                         } else {
                             background2canvas(null, true);
                         }
                     }
-                    if (config.showSakura === true) {
+                    if (config.show_sakura === true) {
                         removesakura();
                     }
                 }

@@ -22,38 +22,38 @@ export function handleRGBProperties(
         };
         const fps = properties.rgb_fps.value;
         if (fpsMap[fps] !== undefined) {
-            config.rGBRefresh = fpsMap[fps];
+            config.rgb_refresh = fpsMap[fps];
         }
     }
 
     // 是否显示RGB效果
     if (properties.rgb_show) {
-        config.rGBShow = properties.rgb_show.value;
+        config.rgb_show = properties.rgb_show.value;
     }
 
     // 背景RGB开关
     if (properties.rgb_bg) {
-        config.backgroundRGB = properties.rgb_bg.value;
+        config.background_rgb = properties.rgb_bg.value;
     }
 
     // 樱花RGB开关
     if (properties.rgb_sa) {
-        config.sakuraRGB = properties.rgb_sa.value;
+        config.sakura_rgb = properties.rgb_sa.value;
     }
 
     // 粒子RGB开关
     if (properties.rgb_pa) {
-        config.particlesRGB = properties.rgb_pa.value;
+        config.particles_rgb = properties.rgb_pa.value;
     }
 
     // 音频条RGB开关
     if (properties.rgb_au) {
-        config.audiobarRGB = properties.rgb_au.value;
+        config.audiobar_rgb = properties.rgb_au.value;
     }
 
     // 樱花不透明度
     if (properties.rgb_sa_op) {
-        config.opacitySaRGB = properties.rgb_sa_op.value / 100;
+        config.opacity_sa_rgb = properties.rgb_sa_op.value / 100;
     }
 
     // 音频条高度

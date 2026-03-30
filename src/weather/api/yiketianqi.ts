@@ -25,7 +25,7 @@ export async function yiketianqi(
   weather_data: WeatherData
 ): Promise<void> {
   const response = await fetch_with_retry(
-    `https://v1.yiketianqi.com/free/day?appid=${config.weatherAppId}&appsecret=${config.weatherAppSecret}&unescape=1&city=${weather_address.cityname}`,
+    `https://v1.yiketianqi.com/free/day?appid=${config.weather_app_id}&appsecret=${config.weather_app_secret}&unescape=1&city=${weather_address.cityname}`,
     {},
     3
   );

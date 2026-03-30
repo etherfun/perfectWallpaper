@@ -14,9 +14,9 @@ export function handleLyricsProperties(
 ): void {
 
     if (properties.fullscreen_lyrics_enabled) {
-        config.fullscreenLyricsEnabled = properties.fullscreen_lyrics_enabled.value;
+        config.fullscreen_lyrics_enabled = properties.fullscreen_lyrics_enabled.value;
 
-        if (config.fullscreenLyricsEnabled) {
+        if (config.fullscreen_lyrics_enabled) {
             fullscreenLyrics.show();
         } else {
             fullscreenLyrics.hide();
@@ -24,37 +24,37 @@ export function handleLyricsProperties(
     }
 
     if (properties.fullscreen_lyrics_show_translation) {
-        config.fullscreenLyricsShowTranslation = properties.fullscreen_lyrics_show_translation.value;
-        fullscreenLyrics.setConfig({ showTranslation: config.fullscreenLyricsShowTranslation });
+        config.fullscreen_lyrics_show_translation = properties.fullscreen_lyrics_show_translation.value;
+        fullscreenLyrics.setConfig({ showTranslation: config.fullscreen_lyrics_show_translation });
     }
 
     if (properties.fullscreen_lyrics_show_roman) {
-        config.fullscreenLyricsShowRoman = properties.fullscreen_lyrics_show_roman.value;
-        fullscreenLyrics.setConfig({ showRoman: config.fullscreenLyricsShowRoman });
+        config.fullscreen_lyrics_show_roman = properties.fullscreen_lyrics_show_roman.value;
+        fullscreenLyrics.setConfig({ showRoman: config.fullscreen_lyrics_show_roman });
     }
 
     if (properties.fullscreen_lyrics_delay) {
-        config.fullscreenLyricsDelay = properties.fullscreen_lyrics_delay.value;
-        fullscreenLyrics.setConfig({ delay: config.fullscreenLyricsDelay });
+        config.fullscreen_lyrics_delay = properties.fullscreen_lyrics_delay.value;
+        fullscreenLyrics.setConfig({ delay: config.fullscreen_lyrics_delay });
     }
 
     if (properties.fullscreen_lyrics_enable_blur) {
-        config.fullscreenLyricsEnableBlur = properties.fullscreen_lyrics_enable_blur.value;
-        fullscreenLyrics.setConfig({ enableBlur: config.fullscreenLyricsEnableBlur });
+        config.fullscreen_lyrics_enable_blur = properties.fullscreen_lyrics_enable_blur.value;
+        fullscreenLyrics.setConfig({ enableBlur: config.fullscreen_lyrics_enable_blur });
     }
 
     if (properties.fullscreen_lyrics_hide_other) {
-        config.fullscreenLyricsHideOther = properties.fullscreen_lyrics_hide_other.value;
-        fullscreenLyrics.setConfig({ hideOtherElements: config.fullscreenLyricsHideOther });
+        config.fullscreen_lyrics_hide_other = properties.fullscreen_lyrics_hide_other.value;
+        fullscreenLyrics.setConfig({ hideOtherElements: config.fullscreen_lyrics_hide_other });
     }
 
     if (properties.fullscreen_lyrics_show_clock) {
-        config.fullscreenLyricsShowClock = properties.fullscreen_lyrics_show_clock.value;
-        fullscreenLyrics.setConfig({ showClock: config.fullscreenLyricsShowClock });
+        config.fullscreen_lyrics_show_clock = properties.fullscreen_lyrics_show_clock.value;
+        fullscreenLyrics.setConfig({ showClock: config.fullscreen_lyrics_show_clock });
     }
 
     if (FirstLoad) {
-        if (config.fullscreenLyricsEnabled) fullscreenLyrics.show();
+        if (config.fullscreen_lyrics_enabled) fullscreenLyrics.show();
 
         debugLogger.info('[FullscreenLyrics] 全屏歌词参数初始化完成');
     }

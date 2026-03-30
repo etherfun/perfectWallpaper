@@ -591,7 +591,7 @@ export class FullscreenLyrics {
 
         // Check if music is playing (playerState: 1 = playing)
         const playerState = config.runtime.playerInfo.playerState;
-        if ((playerState === 1) && !this.isVisible && config.fullscreenLyrics) {
+        if ((playerState === 1) && !this.isVisible && config.fullscreen_lyrics_enabled) {
             this.show();
         } else if ((playerState === null || playerState === 0) && this.isVisible) {
             this.hide();

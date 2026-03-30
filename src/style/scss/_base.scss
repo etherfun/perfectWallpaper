@@ -18,7 +18,7 @@ body {
 // Body specific styles
 body {
   background-color: $color-black;
-  font-family: $font-family-default;
+  font-family: var(--custom-font-family, $font-family-default);
   padding: 0;
   margin: 0;
   overflow: hidden;

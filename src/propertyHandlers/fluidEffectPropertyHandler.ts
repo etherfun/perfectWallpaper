@@ -21,41 +21,41 @@ export function handleFluidEffectProperties(
 
     // 全屏启用
     if (properties.fluidEffectEnabledFullscreen) {
-        cfg.set('fullscreenEnabled', properties.fluidEffectEnabledFullscreen.value);
+        cfg?.set('fullscreenEnabled', properties.fluidEffectEnabledFullscreen.value);
         config.fluidEffectEnabledFullscreen = properties.fluidEffectEnabledFullscreen.value;
     }
 
     // 启用
     if (properties.fluidEffectEnabled) {
-        cfg.set('enabled', properties.fluidEffectEnabled.value);
+        cfg?.set('enabled', properties.fluidEffectEnabled.value);
         if (properties.fluidEffectEnabled.value && config.fluidEffectEnabledFullscreen) {
-            cfg.set('fullscreenEnabled', true);
+            cfg?.set('fullscreenEnabled', true);
         }
     }
 
     // 分辨率
     if (properties.fluidEffectResolution) {
-        cfg.set('resolution', properties.fluidEffectResolution.value);
+        cfg?.set('resolution', properties.fluidEffectResolution.value);
     }
 
     // 模糊程度
     if (properties.fluidEffectBlurAmount) {
-        cfg.set('blurAmount', properties.fluidEffectBlurAmount.value);
+        cfg?.set('blurAmount', properties.fluidEffectBlurAmount.value);
     }
 
     // 置换图缩放
     if (properties.fluidEffectDisplacementScale) {
-        cfg.set('displacementScale', properties.fluidEffectDisplacementScale.value);
+        cfg?.set('displacementScale', properties.fluidEffectDisplacementScale.value);
     }
 
     // 湍流八度
     if (properties.fluidEffectTurbulenceOctaves) {
-        cfg.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
+        cfg?.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
     }
 
     // 画布位移幅度
     if (properties.fluidEffectCanvasDisplacement) {
-        cfg.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
+        cfg?.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
     }
 
     // 暗化

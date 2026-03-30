@@ -299,14 +299,14 @@ function controlFluidEffectPlayback(playbackState: number): void {
 function resumeFluidEffect(): void {
     if (!hasPlaybackContent()) return;
     // 使用 config.runtime.FluidEffect（来自 fluid.ts）
-    if (!config.runtime.FluidEffect.normalEffect && config.runtime.FluidEffect?.enabled) {
+    if (!config.runtime.FluidEffect?.normalEffect && config.runtime.FluidEffect?.enabled) {
         config.runtime.FluidEffect.initNormalEffect();
     }
-    if (config.runtime.FluidEffect.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(true);
+    if (config.runtime.FluidEffect?.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(true);
 }
 
 function pauseFluidEffect(): void {
-    if (config.runtime.FluidEffect.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(false);
+    if (config.runtime.FluidEffect?.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(false);
 }
 
 function stopFluidEffect(): void {
@@ -318,7 +318,7 @@ function stopFluidEffect(): void {
 
 function resumeFullscreenFluidEffect(): void {
     if (!hasPlaybackContent()) return;
-    if (config.runtime.FluidEffect.fullscreenEffect?.setPlayState) {
+    if (config.runtime.FluidEffect?.fullscreenEffect?.setPlayState) {
         config.runtime.FluidEffect.fullscreenEffect.setPlayState(true);
     } else if (config.runtime.FluidEffect?.fullscreenEnabled) {
         config.runtime.FluidEffect.initFullscreenEffect();
@@ -326,7 +326,7 @@ function resumeFullscreenFluidEffect(): void {
 }
 
 function pauseFullscreenFluidEffect(): void {
-    if (config.runtime.FluidEffect.fullscreenEffect?.setPlayState) config.runtime.FluidEffect.fullscreenEffect.setPlayState(false);
+    if (config.runtime.FluidEffect?.fullscreenEffect?.setPlayState) config.runtime.FluidEffect.fullscreenEffect.setPlayState(false);
 }
 
 function stopFullscreenFluidEffect(): void {

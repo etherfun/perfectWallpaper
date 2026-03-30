@@ -59,7 +59,7 @@ export function createWallpaperPropertyListener(
         if (config.runtime.versionManager) {
             config.runtime.versionManager.showVersionInfo();
         } else {
-            config.runtime.debugLogger.warn('[版本窗口] versionManager 未初始化');
+            config.runtime.debugLogger?.warn('[版本窗口] versionManager 未初始化');
         }
     }
 

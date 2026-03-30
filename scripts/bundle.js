@@ -8,6 +8,7 @@ const esbuild = require('esbuild');
 const fs = require('fs');
 const path = require('path');
 const { execSync } = require('child_process');
+const chokidar = require('chokidar');
 
 const isWatch = process.argv.includes('--watch');
 const srcDir = path.resolve(__dirname, '..');
@@ -169,14 +170,46 @@ async function build() {
     };
 
     if (isWatch) {
+        // Watch source files and trigger post-processing on changes
+        const srcWatcher = chokidar.watch(['src/**/*', 'index.html', 'project.json'], {
+            persistent: true,
+            ignoreInitial: true,
+            awaitWriteFinish: { stabilityThreshold: 100, pollInterval: 50 }
+        });
+
+        srcWatcher.on('all', async (event, filePath) => {
+            console.log(`\nChange detected: ${event} - ${path.relative(srcDir, filePath)}`);
+
+            // Rebuild bundle
+            await esbuild.build(options);
+
+            // Post-processing after each rebuild
+            await postProcess();
+
+            const bundlePath = path.join(distDir, 'bundle.js');
+            const bundleSize = fs.statSync(bundlePath).size;
+            console.log(`  Bundle size: ${(bundleSize / 1024).toFixed(2)} KB`);
+        });
+
+        // Initial build with esbuild context for live reload
         const ctx = await esbuild.context(options);
         await ctx.watch();
         console.log('Bundle built successfully (watching for changes)...');
+
+        // Initial post-processing
+        await postProcess();
     } else {
         await esbuild.build(options);
         console.log('Bundle built successfully to dist/bundle.js');
-    }
+        await postProcess();
 
+        const bundlePath = path.join(distDir, 'bundle.js');
+        const bundleSize = fs.statSync(bundlePath).size;
+        console.log(`  Bundle size: ${(bundleSize / 1024).toFixed(2)} KB`);
+    }
+}
+
+async function postProcess() {
     // 替换 bundle.js 中的路径
     const bundlePath = path.join(distDir, 'bundle.js');
     if (fs.existsSync(bundlePath)) {
@@ -190,13 +223,6 @@ async function build() {
     await copyAssets();
     await processHtml();
     await processProjectJson();
-
-    // Output bundle size
-    const bundleSize = fs.statSync(bundlePath).size;
-    const sizeKB = (bundleSize / 1024).toFixed(2);
-
-    console.log('Build complete!');
-    console.log(`  Bundle size: ${sizeKB} KB`);
 }
 
 build().catch((err) => {

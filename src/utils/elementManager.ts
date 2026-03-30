@@ -65,6 +65,38 @@ const elements = {
         container: document.querySelector("#weather .weather-container") as HTMLElement,
         leftContainer: document.querySelector('.weather-left') as HTMLElement | null,
         rightContainer: document.querySelector('.weather-right') as HTMLElement | null,
+        // 左侧元素
+        icon: document.getElementById('weatherIcon') as HTMLElement,
+        temp: document.getElementById('weatherTemp') as HTMLElement,
+        text: document.getElementById('weatherText') as HTMLElement,
+        feels: document.getElementById('weatherFeels') as HTMLElement,
+        city: document.getElementById('weatherCity') as HTMLElement,
+        // 右侧主行
+        tempRange: document.getElementById('weatherTempRange') as HTMLElement,
+        humidity: document.getElementById('weatherHumidity') as HTMLElement,
+        windDirection: document.getElementById('weatherWindDirection') as HTMLElement,
+        windLevel: document.getElementById('weatherWindLevel') as HTMLElement,
+        windSpeed: document.getElementById('weatherWindSpeed') as HTMLElement,
+        visibility: document.getElementById('weatherVisibility') as HTMLElement,
+        // 详情行
+        detailRow: document.getElementById('weatherDetailRow') as HTMLElement,
+        uvIndex: document.getElementById('weatherUvIndex') as HTMLElement,
+        cloud: document.getElementById('weatherCloud') as HTMLElement,
+        sunrise: document.getElementById('weatherSunrise') as HTMLElement,
+        sunset: document.getElementById('weatherSunset') as HTMLElement,
+        moonphase: document.getElementById('weatherMoonphase') as HTMLElement,
+        // 空气质量行
+        airRow: document.getElementById('weatherAirRow') as HTMLElement,
+        airQuality: document.getElementById('weatherAirQuality') as HTMLElement,
+        airValue: document.getElementById('weatherAirValue') as HTMLElement,
+        alertContainer: document.getElementById('weatherAlertContainer') as HTMLElement,
+        // 降水容器
+        precipContainer: document.getElementById('weatherPrecipContainer') as HTMLElement,
+        precipLabel: document.getElementById('weatherPrecipLabel') as HTMLElement,
+        precipTimes: document.getElementById('weatherPrecipTimes') as HTMLElement,
+        precipValues: document.getElementById('weatherPrecipValues') as HTMLElement,
+        // 提示
+        tip: document.getElementById('weatherTip') as HTMLElement,
     },
 
     // 音乐播放器
@@ -129,6 +161,13 @@ type ElementPath =
     | 'slide.RGBuse' | 'slide.picture_info' | 'slide.info' | 'slide.title' | 'slide.author' | 'slide.location' | 'slide.description'
     | 'background.container' | 'background.layer1' | 'background.layer2' | 'background.blurLayer1' | 'background.blurLayer2'
     | 'weather.container' | 'weather.leftContainer' | 'weather.rightContainer'
+    | 'weather.icon' | 'weather.temp' | 'weather.text' | 'weather.feels' | 'weather.city'
+    | 'weather.tempRange' | 'weather.humidity' | 'weather.windDirection' | 'weather.windLevel'
+    | 'weather.windSpeed' | 'weather.visibility' | 'weather.detailRow'
+    | 'weather.uvIndex' | 'weather.cloud' | 'weather.sunrise' | 'weather.sunset' | 'weather.moonphase'
+    | 'weather.airRow' | 'weather.airQuality' | 'weather.airValue' | 'weather.alertContainer'
+    | 'weather.precipContainer' | 'weather.precipLabel' | 'weather.precipTimes' | 'weather.precipValues'
+    | 'weather.tip'
     | 'player.control' | 'player.title' | 'player.artist' | 'player.album' | 'player.progress' | 'player.progressBar'
     | 'player.currentTime' | 'player.totalTime' | 'player.playButton' | 'player.pauseButton'
     | 'player.nextButton' | 'player.prevButton' | 'player.thumbnail'
@@ -219,6 +258,32 @@ function resetElements(): void {
     elements.weather.container = document.querySelector("#weather .weather-container") as HTMLElement;
     elements.weather.leftContainer = document.querySelector('.weather-left') as HTMLElement | null;
     elements.weather.rightContainer = document.querySelector('.weather-right') as HTMLElement | null;
+    elements.weather.icon = document.getElementById('weatherIcon') as HTMLElement;
+    elements.weather.temp = document.getElementById('weatherTemp') as HTMLElement;
+    elements.weather.text = document.getElementById('weatherText') as HTMLElement;
+    elements.weather.feels = document.getElementById('weatherFeels') as HTMLElement;
+    elements.weather.city = document.getElementById('weatherCity') as HTMLElement;
+    elements.weather.tempRange = document.getElementById('weatherTempRange') as HTMLElement;
+    elements.weather.humidity = document.getElementById('weatherHumidity') as HTMLElement;
+    elements.weather.windDirection = document.getElementById('weatherWindDirection') as HTMLElement;
+    elements.weather.windLevel = document.getElementById('weatherWindLevel') as HTMLElement;
+    elements.weather.windSpeed = document.getElementById('weatherWindSpeed') as HTMLElement;
+    elements.weather.visibility = document.getElementById('weatherVisibility') as HTMLElement;
+    elements.weather.detailRow = document.getElementById('weatherDetailRow') as HTMLElement;
+    elements.weather.uvIndex = document.getElementById('weatherUvIndex') as HTMLElement;
+    elements.weather.cloud = document.getElementById('weatherCloud') as HTMLElement;
+    elements.weather.sunrise = document.getElementById('weatherSunrise') as HTMLElement;
+    elements.weather.sunset = document.getElementById('weatherSunset') as HTMLElement;
+    elements.weather.moonphase = document.getElementById('weatherMoonphase') as HTMLElement;
+    elements.weather.airRow = document.getElementById('weatherAirRow') as HTMLElement;
+    elements.weather.airQuality = document.getElementById('weatherAirQuality') as HTMLElement;
+    elements.weather.airValue = document.getElementById('weatherAirValue') as HTMLElement;
+    elements.weather.alertContainer = document.getElementById('weatherAlertContainer') as HTMLElement;
+    elements.weather.precipContainer = document.getElementById('weatherPrecipContainer') as HTMLElement;
+    elements.weather.precipLabel = document.getElementById('weatherPrecipLabel') as HTMLElement;
+    elements.weather.precipTimes = document.getElementById('weatherPrecipTimes') as HTMLElement;
+    elements.weather.precipValues = document.getElementById('weatherPrecipValues') as HTMLElement;
+    elements.weather.tip = document.getElementById('weatherTip') as HTMLElement;
     
     elements.player.control = document.getElementById('player_control');
     elements.player.title = document.getElementById('player_title');

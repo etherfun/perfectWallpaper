@@ -47,7 +47,52 @@
                 <div class="weather-city" id="weatherCity"></div>
             </div>
             <div class="weather-right">
-                <!-- 天气信息将由JavaScript动态生成 -->
+                <div class="weather-right-content">
+                    <div class="weather-main-row">
+                        <div class="weather-info-item temp-range" id="weatherTempRange">-- ~ --℃</div>
+                        <div class="weather-info-item humidity" id="weatherHumidity" style="display:none;"></div>
+                        <div class="weather-info-item wind-direction" id="weatherWindDirection"></div>
+                        <div class="weather-info-item wind-level" id="weatherWindLevel" style="display:none;"></div>
+                        <div class="weather-info-item wind-speed" id="weatherWindSpeed" style="display:none;"></div>
+                        <div class="weather-info-item visibility" id="weatherVisibility" style="display:none;"></div>
+                    </div>
+                    <div class="weather-detail-row" id="weatherDetailRow" style="display:none;">
+                        <div class="weather-detail-item uv-index" id="weatherUvIndex"></div>
+                        <div class="weather-info-item cloud" id="weatherCloud" style="display:none;"></div>
+                        <div class="weather-detail-item sunrise" id="weatherSunrise"></div>
+                        <div class="weather-detail-item sunset" id="weatherSunset"></div>
+                        <div class="weather-detail-item moonphase" id="weatherMoonphase" style="display:none;"></div>
+                    </div>
+                    <div class="weather-air-row" id="weatherAirRow" style="display:none;">
+                        <div class="weather-air-item air-quality" id="weatherAirQuality"></div>
+                        <div class="weather-air-item air-value" id="weatherAirValue"></div>
+                        <div class="weather-alert-container" id="weatherAlertContainer" style="display:none;"></div>
+                    </div>
+                    <div class="weather-precip-container" id="weatherPrecipContainer" style="display:none;">
+                        <div class="precip-label" id="weatherPrecipLabel" data-display-type="precipitation" data-i18n="weather_show_precipprob"></div>
+                        <div class="precip-content">
+                            <div class="precip-times" id="weatherPrecipTimes">
+                                <span class="precip-time-cell" id="weatherPrecipTime0">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime1">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime2">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime3">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime4">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime5">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime6">--:--</span>
+                            </div>
+                            <div class="precip-values" id="weatherPrecipValues">
+                                <span class="precip-prob-cell" id="weatherPrecipValue0" data-hour-index="0">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue1" data-hour-index="1">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue2" data-hour-index="2">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue3" data-hour-index="3">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue4" data-hour-index="4">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue5" data-hour-index="5">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue6" data-hour-index="6">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weather-row weather-tip" id="weatherTip" style="display:none;"></div>
+                </div>
             </div>
         </div>
     </div>

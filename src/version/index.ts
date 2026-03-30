@@ -840,7 +840,9 @@ class versionManager {
 
 // 创建全局版本管理器实例并挂载到 runtime
 const versionManagerInstance = new versionManager();
-config.runtime.versionManager = versionManagerInstance;
+if (config.runtime) {
+    config.runtime.versionManager = versionManagerInstance;
+}
 
 // 暴露 SimpleMarkdown 到全局作用域，使 onclick="SimpleMarkdown.copyLink(this)" 能正常工作
 window.SimpleMarkdown = SimpleMarkdown;

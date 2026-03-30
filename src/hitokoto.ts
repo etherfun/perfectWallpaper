@@ -5,7 +5,7 @@ import { escapeHtml } from './utils/string';
 
 const hitokoto = elements.hitokoto.container;
 const hitokoto_webtext = elements.hitokoto.webtext;
-const hitokotoRuntime = config.runtime.hitokoto;
+const hitokotoRuntime = config.runtime?.hitokoto ?? { hitokoto_text: "", from_text: "", from_who_text: "" };
 
 async function getHitokoto_input(strHtml1: string): Promise<void> {
     const params = config.hitCategories.join("");

@@ -3,7 +3,8 @@
  * 用于保存报错日志到变量中，包含时间戳和重要等级
  */
 
-import { config } from './config';
+// 注意：不从这里导入 config，避免循环依赖
+// debugLogger 的注册通过 registerDebugLogger 函数在 config.ts 初始化后调用
 
 // 日志条目接口
 interface LogEntry {
@@ -753,5 +754,12 @@ export class DebugLogger {
 // 全局调试日志实例
 export const debugLogger = new DebugLogger();
 
-// 挂载到 runtime
-config.runtime.debugLogger = debugLogger;
+/**
+ * 将 debugLogger 注册到 config.runtime
+ * 在模块初始化后由 config.ts 调用，避免循环依赖问题
+ */
+export function registerDebugLogger(cfg: { runtime: { debugLogger: typeof debugLogger } }): void {
+    if (cfg?.runtime) {
+        cfg.runtime.debugLogger = debugLogger;
+    }
+}

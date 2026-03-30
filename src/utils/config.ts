@@ -1,6 +1,6 @@
 // 默认配置值
 import { debounce } from './tool';
-import { debugLogger } from './logger';
+import { debugLogger, registerDebugLogger } from './logger';
 
 // localStorage 存储键名
 const LOCALSTORAGE_KEY = 'perfectwall_config';
@@ -526,6 +526,8 @@ class AppConfig {
         from_who_text: "未获取"
       }
     };
+    // 在 runtime 初始化后注册 debugLogger，避免循环依赖
+    registerDebugLogger(this);
     this._initDefaults();
   }
 

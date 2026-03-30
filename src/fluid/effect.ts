@@ -792,8 +792,10 @@ export class FluidEffect {
 // 初始化
 // ============================================================
 
-// 初始化运行时状态
-config.runtime.fluidEffect = null;
-config.runtime.fullscreenFluidEffect = null;
-config.runtime.fullscreenFluidEnabled = false;
-config.runtime.pictureInfoHideStyleAdded = false;
+// 初始化运行时状态（检查 runtime 是否已初始化）
+if (config.runtime) {
+    config.runtime.fluidEffect = null;
+    config.runtime.fullscreenFluidEffect = null;
+    config.runtime.fullscreenFluidEnabled = false;
+    config.runtime.pictureInfoHideStyleAdded = false;
+}

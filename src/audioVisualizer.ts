@@ -178,8 +178,6 @@ function renderLine(audioData: number[]): void {
  * 由 Wallpaper Engine 调用，约30fps
  */
 export function audioDataListener(audioData: number[]): void {
-    // 调试日志
-    debugLogger.info(`[AudioVisual] Listener called, data length: ${audioData?.length}`);
 
     // 验证原始数据有效性
     if (!validateAudioData(audioData)) {
@@ -213,8 +211,6 @@ export function renderAudioVisualization(): void {
         debugLogger.info('[AudioVisual] No audio data to render');
         return;
     }
-
-    debugLogger.info(`[AudioVisual] Rendering, mode: ${config.visualAudioModel}`);
 
     // 首次调用时初始化 Canvas Context
     if (!_circleCtx) {

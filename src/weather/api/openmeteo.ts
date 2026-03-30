@@ -20,7 +20,7 @@ interface OpenMeteoCurrent {
 
 interface OpenMeteoDaily {
   temperature_2m_max: string[];
-  temperature_2p_min: string[];
+  temperature_2m_min: string[];
   apparent_temperature_max: string[];
   apparent_temperature_min: string[];
   sunrise: string[];
@@ -117,7 +117,7 @@ export async function openmeteo(
   weather_data.updateTime = res.current.time;
   weather_data.temperature = res.current.temperature_2m;
   weather_data.temperature_max = res.daily.temperature_2m_max[0];
-  weather_data.temperature_min = res.daily.temperature_2p_min?.[0] || res.daily.temperature_2m_max[0];
+  weather_data.temperature_min = res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0];
   weather_data.feels = res.current.apparent_temperature;
   weather_data.humidity = res.current.relative_humidity_2m;
   weather_data.windSpeed = res.current.wind_speed_10m;
@@ -135,9 +135,9 @@ export async function openmeteo(
   weather_data.cloud = res.current.cloud_cover;
   weather_data.pressure = res.current.pressure_msl;
   weather_data.obstime = res.current.time.replace("T", " ");
-  weather_data.rangetemperature = `${res.daily.temperature_2p_min?.[0] || res.daily.temperature_2m_max[0]}~${res.daily.temperature_2m_max[0]}`;
+  weather_data.rangetemperature = `${res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0]}~${res.daily.temperature_2m_max[0]}`;
   weather_data.uvindex = res.daily.uv_index_max?.[0] || i18n("weather_no_data");
-  weather_data.rangefeelstemperature = `${res.daily.apparent_temperature_min?.[0] || res.daily.temperature_2p_min?.[0] || res.daily.temperature_2m_max[0]}~${res.daily.apparent_temperature_max?.[0] || res.daily.temperature_2m_max[0]}`;
+  weather_data.rangefeelstemperature = `${res.daily.apparent_temperature_min?.[0] || res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0]}~${res.daily.apparent_temperature_max?.[0] || res.daily.temperature_2m_max[0]}`;
   // @ts-ignore - rain属性用于Open-Meteo特定数据
   weather_data.rain = res.current.rain || "0";
   weather_data.icon = getOpenMeteoIcon(res.current.weather_code, res.current.time).toString();

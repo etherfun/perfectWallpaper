@@ -1,12 +1,8 @@
 // 默认配置值
-import { debounce } from './tool';
 import { debugLogger, registerDebugLogger, DebugLogger } from './logger';
 import { FluidEffect } from '../fluid';
 import { WallpaperEffectController } from '../WallpaperEffectController';
 import { versionManager } from '../version';
-
-// localStorage 存储键名
-const LOCALSTORAGE_KEY = 'perfectwall_config';
 
 // ============== 类型定义 ==============
 
@@ -549,21 +545,12 @@ class AppConfig {
     private _changeBuffer: Map<string, ConfigValue>;
     private _flushScheduled = false;
     public runtime: RuntimeData;
-    private _debouncedSave: () => void;
 
     private constructor() {
         this._values = new Map();
         this._listeners = new Set();
         this._changeBuffer = new Map();
         this._flushScheduled = false;
-
-        // 创建防抖保存函数
-        this._debouncedSave = debounce(() => this._saveToLocalStorage(), 500);
-
-        // 注册配置变更监听器
-        this.addListener(() => {
-            this._debouncedSave();
-        });
 
         // 初始化默认配置
         this._initDefaults();
@@ -573,9 +560,6 @@ class AppConfig {
 
         // 注册 debugLogger
         registerDebugLogger(this as unknown as { runtime: { debugLogger: typeof debugLogger } });
-
-        // 尝试从 localStorage 加载配置
-        this._loadFromLocalStorage();
     }
 
     private _createRuntime(): RuntimeData {
@@ -781,43 +765,6 @@ class AppConfig {
         if (!this._flushScheduled) {
             this._flushScheduled = true;
             Promise.resolve().then(() => this._notify());
-        }
-    }
-
-    /**
-     * 将配置保存到 localStorage
-     */
-    private _saveToLocalStorage(): void {
-        try {
-            const data: Record<string, ConfigValue> = {};
-            for (const [key, value] of this._values) {
-                data[key] = value;
-            }
-            localStorage.setItem(LOCALSTORAGE_KEY, JSON.stringify(data));
-        } catch (e) {
-            debugLogger.error('[Config] 保存配置到 localStorage 失败', e);
-        }
-    }
-
-    /**
-     * 从 localStorage 加载配置
-     */
-    private _loadFromLocalStorage(): void {
-        try {
-            const stored = localStorage.getItem(LOCALSTORAGE_KEY);
-            if (!stored) return;
-
-            const data = JSON.parse(stored) as Record<string, ConfigValue>;
-
-            for (const [key, value] of Object.entries(data)) {
-                // 跳过 first_load，它必须始终为 true
-                if (key === 'first_load') continue;
-                if (this._values.has(key)) {
-                    this._values.set(key, this._clone(value));
-                }
-            }
-        } catch (e) {
-            debugLogger.error('[Config] 从 localStorage 加载配置失败', e);
         }
     }
 

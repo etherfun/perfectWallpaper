@@ -36,6 +36,26 @@ function safeHandle<T extends (...args: any[]) => void>(handler: T, properties: 
 }
 
 /**
+ * 将属性对象的值提取并保存到 localStorage
+ * 保留 value 嵌套结构，去除 condition, index, order, text, type 等元数据
+ * 合并已有配置，支持完整初始化和单个配置更新
+ */
+function savePropertiesToLocalStorage(properties: Record<string, any>): void {
+    // 获取已有配置
+    const existingConfigStr = localStorage.getItem('perfectwall_user_properties');
+    const existingConfig: Record<string, any> = existingConfigStr ? JSON.parse(existingConfigStr) : {};
+
+    // 提取新属性的 { value } 结构并合并
+    for (const [key, prop] of Object.entries(properties)) {
+        if (prop && typeof prop === 'object' && 'value' in prop) {
+            existingConfig[key] = { value: prop.value };
+        }
+    }
+
+    localStorage.setItem('perfectwall_user_properties', JSON.stringify(existingConfig));
+}
+
+/**
  * 创建壁纸属性监听器
  * 统一调用所有 property handlers 并整合结果
  *
@@ -108,7 +128,7 @@ export function createWallpaperPropertyListener(
     if (FirstLoad) {
         config.first_load = false;
     }
-}
+}[].length
 
 /**
  * 设置壁纸引擎属性监听器
@@ -119,14 +139,19 @@ export function setupWallpaperPropertyListener(): void {
     if (typeof window !== 'undefined') {
         const runtime = config.runtime;
 
-        // 标记是否已接收到 Wallpaper Engine 属性
         let propertiesReceived = false;
+        let restoredFromLocalStorage = false;
 
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
+                if (properties.length == 0) return;
+
                 propertiesReceived = true;
                 const isFirstLoad = config.first_load;
-                console.log(properties)
+                if (!restoredFromLocalStorage) {
+                    savePropertiesToLocalStorage(properties);
+                }
+                restoredFromLocalStorage = false;
                 createWallpaperPropertyListener(properties as WallpaperProperties, isFirstLoad);
             },
             applyGeneralProperties: (_properties: Record<string, any>) => {
@@ -197,7 +222,14 @@ export function setupWallpaperPropertyListener(): void {
         setTimeout(() => {
             if (!propertiesReceived) {
                 debugLogger.warn('[PropertyHandler] Wallpaper Engine 未在5秒内发送配置，使用 localStorage 配置初始化');
-                createWallpaperPropertyListener({} as WallpaperProperties, true);
+                const savedConfigStr = localStorage.getItem('perfectwall_user_properties');
+                if (savedConfigStr) {
+                    restoredFromLocalStorage = true;
+                    const savedConfig = JSON.parse(savedConfigStr);
+                    createWallpaperPropertyListener(savedConfig as WallpaperProperties, true);
+                } else {
+                    createWallpaperPropertyListener({} as WallpaperProperties, true);
+                }
             }
         }, 5000);
     }

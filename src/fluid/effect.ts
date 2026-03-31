@@ -608,7 +608,7 @@ export class FluidEffect {
                 effect.start();
             }
 
-            const currentPlaybackState = config.playbackState;
+            const currentPlaybackState = config.playback_state;
             if (currentPlaybackState === 2) {
                 effect.setPlayState?.(false);
             } else if (currentPlaybackState === 1) {
@@ -652,7 +652,7 @@ export class FluidEffect {
         }
 
         let isPaused = false;
-        const playbackState = config.playbackState;
+        const playbackState = config.playback_state;
         if (playbackState === 2) {
             isPaused = true;
         }

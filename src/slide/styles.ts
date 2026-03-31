@@ -37,10 +37,10 @@ export function calculate(t: number): number {
 export function TransitionSwith(): void {
     let transitionValue = "";
 
-    const TransitionMode = config.transitionMode;
-    const TransitionMode_choose_0 = config.transitionModeChoose_0;
-    const TransitionMode_choose_1 = config.transitionModeChoose_1;
-    const TransitionMode_choose_4 = config.transitionModeChoose_4;
+    const TransitionMode = config.transition_mode;
+    const TransitionMode_choose_0 = config.transition_mode_choose_0;
+    const TransitionMode_choose_1 = config.transition_mode_choose_1;
+    const TransitionMode_choose_4 = config.transition_mode_choose_4;
 
     switch (TransitionMode) {
         case 0:
@@ -113,7 +113,7 @@ export function applyBackgroundStyle(): void {
     backgroundLayers.layer2.style.backgroundPosition = "";
 
     // Apply style based on bgStyle setting
-    switch (config.bgStyle) {
+    switch (config.bg_style) {
         case 1: // Fill
             backgroundLayers.layer1.style.backgroundRepeat = "no-repeat";
             backgroundLayers.layer2.style.backgroundRepeat = "no-repeat";

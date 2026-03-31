@@ -63,7 +63,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
     function drawLayers(): void {
         const sakuraRGB = config.sakura_rgb;
         const sakurause = (sakuraRGB && ((sakura.width === window.screen.width) && (sakura.height === window.screen.height)));
-        const opacitySaRGB = config.opacitySaRGB;
+        const opacitySaRGB = config.opacity_sa_rgb;
         const particlesRGB = config.particles_rgb;
         const audiobarRGB = config.audiobar_rgb;
         const audiobarrainbowcolor = config.audiobarrainbowcolor;
@@ -71,8 +71,8 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         const rainbowmovespeed = config.rainbowmovespeed;
         const aurgbcolor = config.aurgbcolor;
         const aurgbhigh = config.aurgbhigh;
-        const RGBRefresh = config.rGBRefresh;
-        const RGBShow = config.rGBShow;
+        const RGBRefresh = config.rgb_refresh;
+        const RGBShow = config.rgb_show;
         const nextphoto = config.nextphoto;
         const isPaused = config.paused;
 

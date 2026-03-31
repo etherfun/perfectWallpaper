@@ -224,15 +224,15 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
             // 同步更新 config.runtime.playerInfo.playerState
             if (newState === 1) {
                 config.runtime.playerInfo.playerState = 1;
-                config.playbackState = 1;
+                config.playback_state = 1;
                 debugLogger.info('[Player] 播放');
             } else if (newState === 2) {
                 config.runtime.playerInfo.playerState = 2;
-                config.playbackState = 2;
+                config.playback_state = 2;
                 debugLogger.info('[Player] 暂停');
             } else if (newState === 0) {
                 config.runtime.playerInfo.playerState = 0;
-                config.playbackState = 0;
+                config.playback_state = 0;
                 debugLogger.info('[Player] 停止');
             }
         }

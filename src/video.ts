@@ -10,12 +10,11 @@ const myAudio = elements.myAudio;
  * 切换视频模式
  */
 export function ChangeVideoModel(): void {
-    if (config.cusvideoRoute != "") {
-        myvideo.src = config.cusvideoRoute;
+    if (config.cusvideo_route != "") {
+        myvideo.src = config.cusvideo_route;
         myvideo.play();
     } else {
-        myvideo.src = config.video_route;
-        myvideo.play();
+        myvideo.src = "";
     }
 }
 
@@ -23,11 +22,10 @@ export function ChangeVideoModel(): void {
  * 切换音频模式
  */
 export function ChangeAudioModel(): void {
-    if (config.cusaudioRoute != "") {
-        myAudio.src = config.cusaudioRoute;
+    if (config.cusaudio_route != "") {
+        myAudio.src = config.cusaudio_route;
         myAudio.play();
     } else {
         myAudio.src = "";
-        myAudio.play();
     }
 }

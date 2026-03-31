@@ -584,7 +584,7 @@ export class FullscreenLyrics {
     }
 
     public checkPlayerState(): void {
-        if (!config.lyricsEnabled) {
+        if (!config.fullscreen_lyrics_enabled) {
             this.hide();
             return;
         }

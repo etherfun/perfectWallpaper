@@ -36,7 +36,7 @@ export function picturesinfo_showrl(title: string, author: string, where: string
 
     let title_w: Element | null, author_w: Element | null, where_w: Element | null;
 
-    if (config.picturesInfoShowRorL) {
+    if (config.pictures_info_show_ror_l) {
         title_w = document.querySelector("#picture_info .title .right");
         author_w = document.querySelector("#picture_info .author .right");
         where_w = document.querySelector("#picture_info .location .right");
@@ -83,7 +83,7 @@ export function shouldShow(): void {
             if (config.custom) {
                 imageUrl = 'file:///' + config.custom;
             } else {
-                imageUrl = config.backgroundRoute.replace(/^url\("(.+?)"\)$/, '$1');
+                imageUrl = config.background_route.replace(/^url\("(.+?)"\)$/, '$1');
             }
 
             transitionBackground(imageUrl);
@@ -133,7 +133,7 @@ export function shouldShow(): void {
             break;
 
         case 4: // Bing wallpaper
-            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
+            if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             elements.myvideo.src = "";
@@ -201,7 +201,7 @@ export function shouldShow(): void {
             break;
 
         case 6: // NASA
-            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
+            if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             elements.myvideo.src = "";
@@ -291,7 +291,7 @@ export function shouldShow(): void {
             break;
 
         case 8: // Windows聚焦
-            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
+            if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             elements.myvideo.src = "";
@@ -334,13 +334,13 @@ export function shouldShow(): void {
             break;
 
         case 9: // Custom
-            if (config.picturesInfoShow && pictures.picture_info.style.display == "none") {
+            if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block";
             const customImg = new Image();
-            customImg.src = config.picturesUrl;
+            customImg.src = config.pictures_url;
 
             customImg.onload = function () {
                 transitionBackground(customImg.src);

@@ -97,9 +97,20 @@ export function createWallpaperPropertyListener(
     // 自定义字体设置
     if (properties.fontSetting) {
         config.font_setting = properties.fontSetting.value;
-        const fonts = properties.fontSetting.value.split(';').map(f => f.trim()).filter(f => f).join(', ');
-        if (fonts) {
-            document.body.style.setProperty('--custom-font-family', fonts);
+        const fontSetting = properties.fontSetting.value.trim();
+        const fontGroup = fontSetting
+            .split(';')
+            .map(font => {
+                const trimmedFont = font.trim();
+                if (trimmedFont.includes(' ') && !trimmedFont.startsWith('"') && !trimmedFont.startsWith("'")) {
+                    return `"${trimmedFont}"`;
+                }
+                return trimmedFont;
+            })
+            .filter(font => font !== '')
+            .join(', ');
+        if (fontGroup) {
+            document.body.style.fontFamily = fontGroup;
         }
     }
 
@@ -180,10 +191,10 @@ export function setupWallpaperPropertyListener(): void {
                     myAudio.pause();
                 } else {
                     config.paused = false;
-                    if (!(myvideo.paused && (myvideo.src.slice(-10) === 'twall/null' || myvideo.src.slice(-10) === 'index.html'))) {
+                    if (myvideo.src && !(myvideo.paused && (myvideo.src.slice(-10) === 'twall/null' || myvideo.src.slice(-10) === 'index.html'))) {
                         myvideo.play();
                     }
-                    if (!(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
+                    if (myAudio.src && !(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
                         myAudio.play();
                     }
                     if (config.rgb_show === true) {

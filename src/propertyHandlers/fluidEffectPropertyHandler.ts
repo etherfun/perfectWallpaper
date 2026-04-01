@@ -3,6 +3,7 @@ import { elements } from '../utils/elementManager';
 import { config } from '@/utils/config';
 import { FluidEffect } from '../fluid';
 import { debugLogger } from '@/utils/logger';
+import { hasPlaybackContent } from '@/utils/playback';
 
 /**
  * 处理流体效果相关属性
@@ -30,6 +31,15 @@ export function handleFluidEffectProperties(
         cfg?.set('enabled', properties.fluidEffectEnabled.value);
         if (properties.fluidEffectEnabled.value && config.fluid_effect_enabled_fullscreen) {
             cfg?.set('fullscreenEnabled', true);
+        }
+
+        // 初始化或更新流体效果（确保在 PropertiesListener 时也能初始化）
+        if (!FirstLoad && config.runtime.FluidEffect?.enabled) {
+            const hasContent = hasPlaybackContent();
+            if (hasContent) {
+                config.runtime.FluidEffect.initNormalEffect();
+                console.log('[Player] Fluid effect initialized from PropertiesListener');
+            }
         }
     }
 

@@ -1,6 +1,7 @@
 import express from 'express';
 import { getSystemInfo, getCpuUsage, getMemoryInfo, getGpuInfo } from './systemInfo.js';
 import filesRouter from './files.js';
+import { mediaKeyPlayPause, mediaKeyNext, mediaKeyPrev, mediaKeyStop } from './mediaKeys.js';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3842;
@@ -110,6 +111,52 @@ app.get('/api/health', (req, res) => {
 
 // Files API router
 app.use('/api/files', filesRouter);
+
+// External Media Player Control API
+// Simulates media keys to control external players (MPC-HC, VLC, etc.)
+app.post('/api/player/play-pause', async (_req, res) => {
+  try {
+    const result = await mediaKeyPlayPause();
+    res.json({ success: result.success, error: result.error });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Player API] play-pause error:', message);
+    res.status(500).json({ success: false, error: message });
+  }
+});
+
+app.post('/api/player/next', async (_req, res) => {
+  try {
+    const result = await mediaKeyNext();
+    res.json({ success: result.success, error: result.error });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Player API] next error:', message);
+    res.status(500).json({ success: false, error: message });
+  }
+});
+
+app.post('/api/player/prev', async (_req, res) => {
+  try {
+    const result = await mediaKeyPrev();
+    res.json({ success: result.success, error: result.error });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Player API] prev error:', message);
+    res.status(500).json({ success: false, error: message });
+  }
+});
+
+app.post('/api/player/stop', async (_req, res) => {
+  try {
+    const result = await mediaKeyStop();
+    res.json({ success: result.success, error: result.error });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    console.error('[Player API] stop error:', message);
+    res.status(500).json({ success: false, error: message });
+  }
+});
 
 // SSE endpoint for real-time updates (for Wallpaper Engine)
 interface SseClient {

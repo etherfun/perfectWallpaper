@@ -13,6 +13,21 @@ let audioEndedListenerBound = false;
 // 服务器端口
 const SERVER_PORT = 3842;
 
+// 外部播放器控制 API 前缀
+const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/player`;
+
+/**
+ * 控制外部播放器 (发送媒体按键)
+ * 播放器无关，适用于任何支持系统媒体键的播放器
+ */
+async function controlExternalPlayer(action: 'play-pause' | 'next' | 'prev' | 'stop'): Promise<void> {
+    try {
+        await fetch(`${EXTERNAL_PLAYER_API}/${action}`, { method: 'POST' });
+    } catch (error) {
+        console.warn('[External Player] Control failed:', error);
+    }
+}
+
 // 音频元数据结构
 interface AudioMetadata {
     title: string;
@@ -150,6 +165,7 @@ function playNextTrack(): void {
     myAudio.src = config.cusaudio_route;
     myAudio.play();
     updatePlayerInfo(playlist[index]);
+    controlExternalPlayer('next');
 }
 
 /**
@@ -181,6 +197,7 @@ function playPrevTrack(): void {
     myAudio.src = config.cusaudio_route;
     myAudio.play();
     updatePlayerInfo(playlist[index]);
+    controlExternalPlayer('prev');
 }
 
 /**
@@ -270,6 +287,22 @@ export async function updateMusicPlaylist(): Promise<void> {
         config.music_playlist_index = initialIndex;
         config.cusaudio_route = getAudioStreamUrl(files[initialIndex]);
         console.log('[DEBUG] Playing index:', initialIndex, files[initialIndex]);
+
+        // 设置标志表示内置播放器正在初始化
+        // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
+        config.runtime.playerInfo.builtInPlayerInitializing = true;
+        setTimeout(() => {
+            config.runtime.playerInfo.builtInPlayerInitializing = false;
+            console.log('[DEBUG] builtInPlayerInitializing set to false');
+        }, 500);
+
+        // 如果外部媒体已激活，不启动内置播放器
+        if (config.runtime.playerInfo.externalMediaActive) {
+            console.log('[DEBUG] External media is active, skipping built-in player start');
+            updatePlayerInfo(files[initialIndex]);
+            return;
+        }
+
         ChangeAudioModel();
         updatePlayerInfo(files[initialIndex]);
     } else {
@@ -302,13 +335,66 @@ export function TogglePlayPause(): void {
         myAudio.pause();
         config.runtime.playerInfo.playerState = 2;
     }
+    controlExternalPlayer('play-pause');
+}
+
+/**
+ * 暂停内置播放器（当外部媒体源激活时调用）
+ */
+export function pauseBuiltInPlayer(): void {
+    // 如果内置播放器正在初始化，不暂停
+    if (config.runtime.playerInfo.builtInPlayerInitializing) {
+        console.log('[Built-in Player] Skipping pause - still initializing');
+        return;
+    }
+    if (!myAudio.paused) {
+        myAudio.pause();
+        console.log('[Built-in Player] Paused due to external media source');
+    }
+}
+
+/**
+ * 恢复内置播放器（当外部媒体源停止时调用）
+ */
+export function resumeBuiltInPlayer(): void {
+    if (myAudio.paused && myAudio.src) {
+        myAudio.play().catch(() => {
+            // Ignore autoplay errors
+        });
+        console.log('[Built-in Player] Resumed after external media stopped');
+    }
+}
+
+/**
+ * 检查内置播放器是否正在播放
+ */
+export function isBuiltInPlayerPlaying(): boolean {
+    return !myAudio.paused && !!myAudio.src;
+}
+
+/**
+ * 检查是否应该允许内置播放器播放
+ * 如果外部媒体源正在播放，则不允许
+ */
+export function shouldBuiltInPlayerPlay(): boolean {
+    return !config.runtime.playerInfo.externalMediaActive;
+}
+
+/**
+ * 设置外部媒体活跃状态
+ */
+export function setExternalMediaActive(active: boolean): void {
+    if (config.runtime.playerInfo.externalMediaActive !== active) {
+        config.runtime.playerInfo.externalMediaActive = active;
+        console.log(`[Video] externalMediaActive changed to: ${active}`);
+    }
 }
 
 // 监听音频播放状态变化，同步到 config
 myAudio.addEventListener('play', () => {
-    config.playback_state = 1;
+    config.runtime.playerInfo.playerState = 1;
 });
 
 myAudio.addEventListener('pause', () => {
-    config.playback_state = 2;
+    config.runtime.playerInfo.playerState = 2;
 });

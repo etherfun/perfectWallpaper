@@ -21,6 +21,8 @@ interface RuntimeData {
         aubarstop: boolean;
         colorGroup: ([number, number, number] | string | null)[][] | null;
         fontcolor: string | [number, number, number] | null;
+        externalMediaActive: boolean;
+        builtInPlayerInitializing: boolean;
     };
     versionManager: versionManager | undefined;
     debugLogger: DebugLogger | undefined;
@@ -116,7 +118,6 @@ const SYNC_DEFAULTS = {
     font_setting: "",
     first_load: true,
     paused: false,
-    playback_state: 0,
 
     // 初始化状态配置
     date_init_complete: false,
@@ -578,6 +579,8 @@ class AppConfig {
                 aubarstop: true,
                 colorGroup: null,
                 fontcolor: null,
+                externalMediaActive: false,
+                builtInPlayerInitializing: false,
             },
             versionManager: undefined,
             debugLogger: undefined,

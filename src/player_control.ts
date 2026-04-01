@@ -4,7 +4,7 @@ import { debugLogger } from './utils/logger';
 import { FluidEffect } from './fluid';
 import { hasPlaybackContent } from './utils/playback';
 import { getColor, getPalette } from 'colorthief';
-import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from './video';
+import { PlayNextTrack, PlayPrevTrack, TogglePlayPause, pauseBuiltInPlayer, resumeBuiltInPlayer, setExternalMediaActive } from './video';
 
 // 进度条定时器
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;
@@ -82,8 +82,19 @@ function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
 
 /*msct监听*/
 function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
+    console.log(`[Player] PropertiesListener called: event=${!!event}, title="${event?.title || ''}", externalActive=${config.runtime.playerInfo.externalMediaActive}, initializing=${config.runtime.playerInfo.builtInPlayerInitializing}`);
+
     if (event) {
         debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
+
+        // 外部媒体源激活（收到歌曲信息）
+        // 设置标志
+        if (!config.runtime.playerInfo.externalMediaActive) {
+            console.log('[Player] External media active');
+            setExternalMediaActive(true);
+            // 如果内置播放器正在播放，暂停它
+            pauseBuiltInPlayer();
+        }
 
         config.runtime.playerInfo.singtitle = event.title || '';
         config.runtime.playerInfo.singartist = event.artist || '';
@@ -100,6 +111,7 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
             player_control.style.display = 'none';
         }
     } else {
+        // Wallpaper Engine 没有媒体信息（event 为空或无效）
         player_control.style.display = 'none';
     }
 
@@ -290,16 +302,20 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
             // 同步更新 config.runtime.playerInfo.playerState
             if (newState === 1) {
                 config.runtime.playerInfo.playerState = 1;
-                config.playback_state = 1;
                 debugLogger.info('[Player] 播放');
             } else if (newState === 2) {
                 config.runtime.playerInfo.playerState = 2;
-                config.playback_state = 2;
                 debugLogger.info('[Player] 暂停');
             } else if (newState === 0) {
                 config.runtime.playerInfo.playerState = 0;
-                config.playback_state = 0;
                 debugLogger.info('[Player] 停止');
+
+                // Wallpaper Engine 停止，恢复内置播放器（优先级逻辑）
+                if (config.runtime.playerInfo.externalMediaActive) {
+                    console.log('[Player] External media stopped, resuming built-in player');
+                    setExternalMediaActive(false);
+                    resumeBuiltInPlayer();
+                }
             }
         }
     }
@@ -626,7 +642,7 @@ function initPlayerControls(): void {
 function updatePlayPauseButton(): void {
     if (!player_control_playPauseBtn) return;
 
-    const isPlaying = config.playback_state === 1;
+    const isPlaying = config.runtime.playerInfo.playerState === 1;
     if (isPlaying) {
         player_control_playPauseBtn.classList.add('playing');
     } else {
@@ -636,7 +652,7 @@ function updatePlayPauseButton(): void {
 
 // 更新暂停图标显示
 function updatePauseOverlay(): void {
-    const isPaused = config.playback_state === 2;
+    const isPaused = config.runtime.playerInfo.playerState === 2;
     if (isPaused) {
         player_control?.classList.add('paused');
     } else {

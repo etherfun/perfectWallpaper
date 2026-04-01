@@ -74,6 +74,11 @@ async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | nul
  * 更新播放器信息
  */
 async function updatePlayerInfo(filePath: string): Promise<void> {
+    // 如果外部媒体已激活，不更新播放器信息（由外部媒体数据决定）
+    if (config.runtime.playerInfo.externalMediaActive) {
+        return;
+    }
+
     const metadata = await fetchAudioMetadata(filePath);
     if (metadata) {
         config.runtime.playerInfo.singtitle = metadata.title;

@@ -82,15 +82,12 @@ function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
 
 /*msct监听*/
 function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
-    console.log(`[Player] PropertiesListener called: event=${!!event}, title="${event?.title || ''}", externalActive=${config.runtime.playerInfo.externalMediaActive}, initializing=${config.runtime.playerInfo.builtInPlayerInitializing}`);
-
     if (event) {
         debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
 
         // 外部媒体源激活（收到歌曲信息）
         // 设置标志
         if (!config.runtime.playerInfo.externalMediaActive) {
-            console.log('[Player] External media active');
             setExternalMediaActive(true);
             // 如果内置播放器正在播放，暂停它
             pauseBuiltInPlayer();
@@ -228,8 +225,23 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
         const hasContent = hasPlaybackContent();
         if (hasContent) {
             config.runtime.FluidEffect.initNormalEffect();
-            if (config.runtime.playerInfo.playerState === 2 && config.runtime.FluidEffect.normalEffect?.setPlayState) {
-                config.runtime.FluidEffect.normalEffect.setPlayState(false);
+            // 根据当前播放状态设置流体效果播放状态，而不仅仅是暂停状态
+            if (config.runtime.FluidEffect.normalEffect?.setPlayState) {
+                config.runtime.FluidEffect.normalEffect.setPlayState(
+                    config.runtime.playerInfo.playerState === 1
+                );
+            }
+            // 如果效果已存在但需要更新缩略图（比如外部媒体新曲目）
+            const existingEffect = config.runtime.FluidEffect.normalEffect;
+            if (existingEffect && event?.thumbnail) {
+                const img = elements.playerControl.thumbnail;
+                if (img?.complete && img?.naturalWidth) {
+                    existingEffect.setSourceFromImage(img);
+                    const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+                    if (wrapper && img.src) {
+                        wrapper.style.backgroundImage = `url('${img.src}')`;
+                    }
+                }
             }
         }
     }
@@ -312,7 +324,6 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
 
                 // Wallpaper Engine 停止，恢复内置播放器（优先级逻辑）
                 if (config.runtime.playerInfo.externalMediaActive) {
-                    console.log('[Player] External media stopped, resuming built-in player');
                     setExternalMediaActive(false);
                     resumeBuiltInPlayer();
                 }

@@ -38,7 +38,6 @@ export function handleFluidEffectProperties(
             const hasContent = hasPlaybackContent();
             if (hasContent) {
                 config.runtime.FluidEffect.initNormalEffect();
-                console.log('[Player] Fluid effect initialized from PropertiesListener');
             }
         }
     }

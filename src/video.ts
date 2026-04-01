@@ -58,7 +58,6 @@ async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | nul
         const url = `http://localhost:${SERVER_PORT}/api/files/metadata?path=${encodeURIComponent(filePath)}`;
         const response = await fetch(url);
         if (!response.ok) {
-            console.error('[DEBUG] Metadata fetch failed:', response.status);
             return null;
         }
         const result = await response.json();
@@ -67,7 +66,6 @@ async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | nul
         }
         return null;
     } catch (error) {
-        console.error('[DEBUG] Error fetching metadata:', error);
         return null;
     }
 }
@@ -81,7 +79,6 @@ async function updatePlayerInfo(filePath: string): Promise<void> {
         config.runtime.playerInfo.singtitle = metadata.title;
         config.runtime.playerInfo.singartist = metadata.artist;
         config.runtime.playerInfo.singalbumTitle = metadata.album;
-        console.log('[DEBUG] Updated player info:', metadata.title, '-', metadata.artist);
 
         // 更新封面图片
         if (metadata.picture) {
@@ -111,22 +108,18 @@ async function fetchAudioFilesFromServer(directory: string): Promise<string[]> {
     try {
         const filter = 'mp3,ogg,wav,flac,m4a,aac';
         const url = `http://localhost:${SERVER_PORT}/api/files?directory=${encodeURIComponent(directory)}&filter=${filter}`;
-        console.log('[DEBUG] Fetching audio files from:', url);
 
         const response = await fetch(url);
         if (!response.ok) {
-            console.error('[DEBUG] Server returned:', response.status, response.statusText);
             return [];
         }
 
         const result = await response.json();
         if (result.success && result.data && result.data.files) {
-            console.log('[DEBUG] Got files from server:', result.data.files.length);
             return result.data.files.map((f: { path: string }) => f.path);
         }
         return [];
     } catch (error) {
-        console.error('[DEBUG] Error fetching audio files:', error);
         return [];
     }
 }
@@ -266,10 +259,8 @@ export function ChangeAudioModel(): void {
  */
 export async function updateMusicPlaylist(): Promise<void> {
     const directory = config.musicdirectory;
-    console.log('[DEBUG] updateMusicPlaylist called, directory:', directory);
 
     if (!directory) {
-        console.log('[DEBUG] No music directory set');
         return;
     }
 
@@ -286,27 +277,22 @@ export async function updateMusicPlaylist(): Promise<void> {
         }
         config.music_playlist_index = initialIndex;
         config.cusaudio_route = getAudioStreamUrl(files[initialIndex]);
-        console.log('[DEBUG] Playing index:', initialIndex, files[initialIndex]);
 
         // 设置标志表示内置播放器正在初始化
         // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
         config.runtime.playerInfo.builtInPlayerInitializing = true;
         setTimeout(() => {
             config.runtime.playerInfo.builtInPlayerInitializing = false;
-            console.log('[DEBUG] builtInPlayerInitializing set to false');
         }, 500);
 
         // 如果外部媒体已激活，不启动内置播放器
         if (config.runtime.playerInfo.externalMediaActive) {
-            console.log('[DEBUG] External media is active, skipping built-in player start');
             updatePlayerInfo(files[initialIndex]);
             return;
         }
 
         ChangeAudioModel();
         updatePlayerInfo(files[initialIndex]);
-    } else {
-        console.log('[DEBUG] No audio files found in directory');
     }
 }
 
@@ -391,10 +377,15 @@ export function setExternalMediaActive(active: boolean): void {
 }
 
 // 监听音频播放状态变化，同步到 config
+// 注意：当外部媒体激活时，不更新 playerState（由外部播放器状态决定）
 myAudio.addEventListener('play', () => {
-    config.runtime.playerInfo.playerState = 1;
+    if (!config.runtime.playerInfo.externalMediaActive) {
+        config.runtime.playerInfo.playerState = 1;
+    }
 });
 
 myAudio.addEventListener('pause', () => {
-    config.runtime.playerInfo.playerState = 2;
+    if (!config.runtime.playerInfo.externalMediaActive) {
+        config.runtime.playerInfo.playerState = 2;
+    }
 });

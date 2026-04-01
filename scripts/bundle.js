@@ -141,7 +141,7 @@ async function build() {
     }
 
     // Compile SCSS (if source exists)
-    const scssPath = path.resolve(srcDir, 'src/style/scss/main.scss');
+    const scssPath = path.resolve(srcDir, 'src/scss/main.scss');
     if (fs.existsSync(scssPath)) {
         console.log('Compiling SCSS...');
         execSync(

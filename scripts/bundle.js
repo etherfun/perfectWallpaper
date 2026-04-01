@@ -223,6 +223,40 @@ async function postProcess() {
     await copyAssets();
     await processHtml();
     await processProjectJson();
+    await generateThirdPartyLicenses();
+}
+
+async function generateThirdPartyLicenses() {
+    console.log('Generating third-party licenses...');
+
+    const srcLicense = path.join(srcDir, 'THIRD_PARTY_LICENSES');
+    const destLicense = path.join(distDir, 'THIRD_PARTY_LICENSES');
+
+    // 复制根目录的 THIRD_PARTY_LICENSES 到 dist
+    if (fs.existsSync(srcLicense)) {
+        if (!fs.existsSync(destLicense)) {
+            fs.mkdirSync(destLicense, { recursive: true });
+        }
+        const entries = fs.readdirSync(srcLicense, { withFileTypes: true });
+        for (const entry of entries) {
+            const srcPath = path.join(srcLicense, entry.name);
+            const destPath = path.join(destLicense, entry.name);
+            if (entry.isDirectory()) {
+                await copyDirectory(srcPath, destPath);
+            } else {
+                fs.copyFileSync(srcPath, destPath);
+            }
+        }
+        console.log('  Copied root THIRD_PARTY_LICENSES to dist');
+    }
+
+    // 使用 license-checker-rseidelsohn 汇集依赖许可证 (markdown 格式)
+    const licensesPath = path.join(distDir, 'THIRD_PARTY_LICENSES', 'DEPENDENCIES.md');
+    execSync(
+        `npx license-checker-rseidelsohn --markdown --out "${licensesPath}" --production`,
+        { cwd: srcDir, stdio: 'inherit' }
+    );
+    console.log('  Generated DEPENDENCIES.md from license-checker-rseidelsohn');
 }
 
 build().catch((err) => {

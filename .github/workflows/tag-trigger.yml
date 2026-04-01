@@ -25,6 +25,11 @@ jobs:
       - name: Build
         run: yarn build
 
+      - name: Create zip archive
+        run: |
+          tag=$(echo ${{ github.ref_name }} | sed 's/^v//')
+          zip -r "perfectwallpaper-${tag}.zip" dist/
+
       - name: Extract release notes
         id: release-notes
         run: |
@@ -71,5 +76,7 @@ jobs:
           name: ${{ steps.set-title.outputs.name }}
           body_path: RELEASE_NOTES.md
           draft: false
+          files: |
+            perfectwallpaper-*.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

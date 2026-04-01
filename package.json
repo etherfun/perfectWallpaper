@@ -11,9 +11,9 @@
     "watch:scss": "sass --watch --style=expanded scss/main.scss dist/default.css",
     "check-types": "tsc --noEmit",
     "bundle": "node scripts/bundle.js",
-    "prepare": "npm run build",
-    "dev:server": "tsx server/src/index.ts",
-    "start:server": "dev:server && node server/dist/index.js",
+    "prepare": "yarn run build",
+    "dev:server": "tsc -p src/server",
+    "start:server": "yarn run dev:server && node src/server/dist/index.js",
     "test:e2e": "playwright test --project=chromium",
     "test:e2e:ui": "playwright test --project=chromium --ui"
   },

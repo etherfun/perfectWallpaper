@@ -333,11 +333,6 @@ export function TogglePlayPause(): void {
  * 暂停内置播放器（当外部媒体源激活时调用）
  */
 export function pauseBuiltInPlayer(): void {
-    // 如果内置播放器正在初始化，不暂停
-    if (config.runtime.playerInfo.builtInPlayerInitializing) {
-        console.log('[Built-in Player] Skipping pause - still initializing');
-        return;
-    }
     if (!myAudio.paused) {
         myAudio.pause();
         console.log('[Built-in Player] Paused due to external media source');

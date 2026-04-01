@@ -96,8 +96,8 @@
           font-size: 0.45em;
 
           .titleicon {
-            width: 0.7332em;
-            height: 0.7332em;
+            width: 0.9em;
+            height: 0.9em;
             vertical-align: middle;
             @include icon-position-hide;
             overflow: hidden;
@@ -108,8 +108,8 @@
           font-size: 0.3em;
 
           .artisticon {
-            width: 1em;
-            height: 1em;
+            width: 1.2em;
+            height: 1.2em;
             vertical-align: middle;
             @include icon-position-hide;
             overflow: hidden;
@@ -120,8 +120,8 @@
           font-size: 0.3em;
 
           .albumTitleicon {
-            width: 1em;
-            height: 1em;
+            width: 1.2em;
+            height: 1.2em;
             vertical-align: middle;
             @include icon-position-hide;
             overflow: hidden;
@@ -159,7 +159,7 @@
           display: flex;
           justify-content: center;
           align-items: center;
-          gap: 0.5em;
+          gap: clamp(0.2em, 5%, 0.5em);
           opacity: 0;
           pointer-events: none;
           transition: opacity 0.3s ease;
@@ -178,8 +178,10 @@
             justify-content: center;
             align-items: center;
             transition: transform 0.2s, background 0.2s;
-            width: 3.5em;
-            height: 3.5em;
+            width: min(2em, 70%);
+            aspect-ratio: 1;
+            min-width: 1.5em;
+            min-height: 1.5em;
 
             &:hover {
               background: rgba(255, 255, 255, 0.4);

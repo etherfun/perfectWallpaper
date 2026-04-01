@@ -175,6 +175,11 @@ const SYNC_DEFAULTS = {
     music_model: 0,
     music_volume: 0.5,
     selectmusic: {} as Record<string, string>,
+    musicdirectory: "",
+    music_playlist: [] as string[],
+    music_playlist_index: 0,
+    music_playlist_random: false,
+    music_playlist_repeat: 0, // 0: none, 1: all, 2: one
 
     // 音频可视化配置
     visual_audio_model: 1,

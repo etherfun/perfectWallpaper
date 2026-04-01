@@ -8,7 +8,7 @@ import {
     applyBackgroundStyle,
     TransitionSwith
 } from '../slide';
-import { ChangeVideoModel, ChangeAudioModel } from '../video';
+import { ChangeVideoModel, ChangeAudioModel, updateMusicPlaylist } from '../video';
 import { elements } from '@/utils/elementManager';
 
 // ResizeObserver for picture info height tracking
@@ -143,6 +143,23 @@ export function handleBackgroundProperties(
             config.cusaudio_route = "";
         }
         ChangeAudioModel();
+    }
+
+    // 音乐目录（播放列表）
+    if (properties.musicdirectory) {
+        config.musicdirectory = properties.musicdirectory.value;
+        // 通过服务器获取目录中的音频文件
+        updateMusicPlaylist();
+    }
+
+    // 播放列表随机模式
+    if (properties.musicPlaylistRandom) {
+        config.music_playlist_random = properties.musicPlaylistRandom.value;
+    }
+
+    // 播放列表循环模式
+    if (properties.musicPlaylistRepeat) {
+        config.music_playlist_repeat = properties.musicPlaylistRepeat.value;
     }
 
     // 音量

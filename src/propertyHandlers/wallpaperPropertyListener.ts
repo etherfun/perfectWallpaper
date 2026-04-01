@@ -194,7 +194,8 @@ export function setupWallpaperPropertyListener(): void {
                     if (myvideo.src && !(myvideo.paused && (myvideo.src.slice(-10) === 'twall/null' || myvideo.src.slice(-10) === 'index.html'))) {
                         myvideo.play();
                     }
-                    if (myAudio.src && !(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
+                    // 只有当用户没有手动暂停时才恢复音频
+                    if (config.runtime.playerInfo.playerState !== 2 && myAudio.src && !(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
                         myAudio.play();
                     }
                     if (config.rgb_show === true) {

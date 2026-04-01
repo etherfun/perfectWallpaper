@@ -4,6 +4,7 @@ import { debugLogger } from './utils/logger';
 import { FluidEffect } from './fluid';
 import { hasPlaybackContent } from './utils/playback';
 import { getColor, getPalette } from 'colorthief';
+import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from './video';
 
 // 进度条定时器
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;
@@ -33,58 +34,7 @@ async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Prom
 
         const img = elements.playerControl.thumbnail;
         img.onload = async function () {
-            const [palette, dominantColor] = await Promise.all([
-                getPalette(player_control_thumbnail, { colorCount: 3 }),
-                getColor(player_control_thumbnail)
-            ]);
-
-            const playerControlYakelicColor = config.player_control_yakelic_color;
-            const playerControlColor = config.player_control_color;
-
-            // ColorImpl 对象转换为 RGB 数组
-            const colorToRgb = (color: [number, number, number] | { rgb(): { r: number; g: number; b: number } } | null | undefined): [number, number, number] | null => {
-                if (!color) return null;
-                if (Array.isArray(color)) {
-                    return color as [number, number, number];
-                }
-                // colorthief Color object with rgb() method
-                const rgb = color.rgb();
-                return [rgb.r, rgb.g, rgb.b];
-            };
-
-            config.runtime.playerInfo.colorGroup = [
-                [
-                    hexToRgb(event.primaryColor),
-                    hexToRgb(event.secondaryColor),
-                    hexToRgb(event.tertiaryColor),
-                    hexToRgb(event.highContrastColor),
-                ],
-                [
-                    colorToRgb(dominantColor),
-                    colorToRgb(palette?.[0]),
-                    colorToRgb(palette?.[1]),
-                    colorToRgb(palette?.[2])
-                ],
-                playerControlYakelicColor,
-                playerControlColor
-            ];
-
-            // 初始化或更新流体效果（只在有播放内容时）
-            if (config.runtime.FluidEffect && config.runtime.FluidEffect.enabled) {
-                const hasContent = hasPlaybackContent();
-                if (hasContent) {
-                    config.runtime.FluidEffect.initNormalEffect();
-                    if (config.runtime.playerInfo.playerState === 2 && config.runtime.FluidEffect.normalEffect?.setPlayState) {
-                        config.runtime.FluidEffect.normalEffect.setPlayState(false);
-                    }
-                }
-            }
-
-            // 更新全屏流体效果
-            if (config.runtime.FluidEffect?.fullscreenEnabled && hasPlaybackContent()) {
-                config.runtime.FluidEffect.updateFullscreenSource();
-            }
-
+            await extractColorsFromThumbnail(event);
             setTimeout(() => thumbnailsue(), 50);
         };
     }
@@ -160,6 +110,122 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
 
     const playerControlVisualaudiobar = config.player_control_visualaudiobar;
     if (playerControlVisualaudiobar) pc_aubar();
+}
+
+/**
+ * 刷新播放器标题显示（供外部调用）
+ */
+export function refreshPlayerDisplay(): void {
+    playertitle();
+    pc_aubar();
+}
+
+/**
+ * 更新播放器封面及颜色（供外部调用）
+ */
+export function updatePlayerThumbnail(dataUrl: string | null): void {
+    if (dataUrl) {
+        player_control_thumbnail.src = dataUrl;
+
+        // 等待图片加载完成后提取颜色
+        const img = elements.playerControl.thumbnail;
+        img.onload = async function () {
+            await extractColorsFromThumbnail(null);
+            setTimeout(() => thumbnailsue(), 50);
+        };
+    } else {
+        player_control_thumbnail.src = '';
+        config.runtime.playerInfo.colorGroup = null;
+    }
+}
+
+/**
+ * 从封面图片提取颜色（供外部调用）
+ */
+export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | null): Promise<void> {
+    const img = elements.playerControl.thumbnail;
+    if (!img || !img.complete || !img.naturalWidth) return;
+
+    const playerControlYakelicColor = config.player_control_yakelic_color;
+    const playerControlColor = config.player_control_color;
+
+    // ColorImpl 对象转换为 RGB 数组
+    const colorToRgb = (color: [number, number, number] | { rgb(): { r: number; g: number; b: number } } | null | undefined): [number, number, number] | null => {
+        if (!color) return null;
+        if (Array.isArray(color)) {
+            return color as [number, number, number];
+        }
+        const rgb = color.rgb();
+        return [rgb.r, rgb.g, rgb.b];
+    };
+
+    let palette: Awaited<ReturnType<typeof getPalette>> | null = null;
+    let dominantColor: Awaited<ReturnType<typeof getColor>> | null = null;
+
+    try {
+        const [paletteResult, dominantResult] = await Promise.all([
+            getPalette(player_control_thumbnail, { colorCount: 3 }),
+            getColor(player_control_thumbnail)
+        ]);
+        palette = paletteResult;
+        dominantColor = dominantResult;
+    } catch (e) {
+        console.warn('[Player] Color extraction failed:', e);
+    }
+
+    // 如果有 Wallpaper Engine 的事件颜色，使用它
+    if (event) {
+        config.runtime.playerInfo.colorGroup = [
+            [
+                hexToRgb(event.primaryColor),
+                hexToRgb(event.secondaryColor),
+                hexToRgb(event.tertiaryColor),
+                hexToRgb(event.highContrastColor),
+            ],
+            [
+                colorToRgb(dominantColor),
+                colorToRgb(palette?.[0]),
+                colorToRgb(palette?.[1]),
+                colorToRgb(palette?.[2])
+            ],
+            playerControlYakelicColor,
+            playerControlColor
+        ];
+    } else {
+        // 自定义封面只用 colorthief 提取的颜色
+        config.runtime.playerInfo.colorGroup = [
+            [
+                colorToRgb(dominantColor) || [0, 0, 0],
+                colorToRgb(palette?.[0]) || [0, 0, 0],
+                colorToRgb(palette?.[1]) || [0, 0, 0],
+                colorToRgb(palette?.[2]) || [0, 0, 0]
+            ],
+            [
+                colorToRgb(dominantColor) || [0, 0, 0],
+                colorToRgb(palette?.[0]) || [0, 0, 0],
+                colorToRgb(palette?.[1]) || [0, 0, 0],
+                colorToRgb(palette?.[2]) || [0, 0, 0]
+            ],
+            playerControlYakelicColor,
+            playerControlColor
+        ];
+    }
+
+    // 初始化或更新流体效果
+    if (config.runtime.FluidEffect && config.runtime.FluidEffect.enabled) {
+        const hasContent = hasPlaybackContent();
+        if (hasContent) {
+            config.runtime.FluidEffect.initNormalEffect();
+            if (config.runtime.playerInfo.playerState === 2 && config.runtime.FluidEffect.normalEffect?.setPlayState) {
+                config.runtime.FluidEffect.normalEffect.setPlayState(false);
+            }
+        }
+    }
+
+    // 更新全屏流体效果
+    if (config.runtime.FluidEffect?.fullscreenEnabled && hasPlaybackContent()) {
+        config.runtime.FluidEffect.updateFullscreenSource();
+    }
 }
 
 export function playertitle(): void {
@@ -262,7 +328,7 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
         event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
         player_control_thumbnail.style.animationPlayState = 'paused';
     } else {
-        player_control_thumbnail.style.borderRadius = '50%';
+        player_control_thumbnailWrap.classList.add('circular');
         if (!player_control_thumbnail.style.animation.includes('spin')) {
             player_control_thumbnail.style.animation = `spin ${playerControlThumbnailRotationSpeed}s linear infinite`;
         }
@@ -513,3 +579,76 @@ function hexToRgb(hex: string): [number, number, number] {
         parseInt(result[3], 16)
     ] : [0, 0, 0];
 }
+
+// ==================== 播放器控制按钮 ====================
+
+// DOM元素
+const player_control_aubarWrapper = player_control?.querySelector('.aubar-wrapper') as HTMLElement | null;
+const player_control_aubarControls = player_control?.querySelector('.aubar-controls') as HTMLElement | null;
+const player_control_playPauseBtn = player_control?.querySelector('.play-pause') as HTMLElement | null;
+
+// 显示/隐藏控制按钮
+function showControls(): void {
+    player_control_aubarControls?.classList.add('visible');
+}
+
+function hideControls(): void {
+    player_control_aubarControls?.classList.remove('visible');
+}
+
+// 初始化控制按钮事件
+function initPlayerControls(): void {
+    if (!player_control_aubarWrapper || !player_control_aubarControls) return;
+
+    // 鼠标进入aubar-wrapper时显示控制按钮
+    player_control_aubarWrapper.addEventListener('mouseenter', showControls);
+    player_control_aubarWrapper.addEventListener('mouseleave', hideControls);
+
+    // 上一首
+    const prevBtn = player_control_aubarControls.querySelector('.prev');
+    prevBtn?.addEventListener('click', () => {
+        PlayPrevTrack();
+    });
+
+    // 下一首
+    const nextBtn = player_control_aubarControls.querySelector('.next');
+    nextBtn?.addEventListener('click', () => {
+        PlayNextTrack();
+    });
+
+    // 播放/暂停
+    player_control_playPauseBtn?.addEventListener('click', () => {
+        TogglePlayPause();
+    });
+}
+
+// 更新播放/暂停按钮状态
+function updatePlayPauseButton(): void {
+    if (!player_control_playPauseBtn) return;
+
+    const isPlaying = config.playback_state === 1;
+    if (isPlaying) {
+        player_control_playPauseBtn.classList.add('playing');
+    } else {
+        player_control_playPauseBtn.classList.remove('playing');
+    }
+}
+
+// 更新暂停图标显示
+function updatePauseOverlay(): void {
+    const isPaused = config.playback_state === 2;
+    if (isPaused) {
+        player_control?.classList.add('paused');
+    } else {
+        player_control?.classList.remove('paused');
+    }
+}
+
+// 初始化
+initPlayerControls();
+
+// 监听播放状态变化，更新UI
+setInterval(() => {
+    updatePlayPauseButton();
+    updatePauseOverlay();
+}, 200);

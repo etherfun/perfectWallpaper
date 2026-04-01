@@ -340,7 +340,10 @@ export interface WallpaperProperties {
     bgs?: { value: number };
     imagedisplaystlye?: { value: number };
     selectmusic?: { value: any };
+    musicdirectory?: { value: any };
     MuiscVolume?: { value: number };
+    musicPlaylistRandom?: { value: boolean };
+    musicPlaylistRepeat?: { value: number };
     
     // 图片信息相关
     picturesinfoY?: { value: number };

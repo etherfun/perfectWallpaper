@@ -1,5 +1,6 @@
 import express from 'express';
-import { getSystemInfo, getCpuUsage, getMemoryInfo, getGpuInfo, SystemInfo } from './systemInfo.js';
+import { getSystemInfo, getCpuUsage, getMemoryInfo, getGpuInfo } from './systemInfo.js';
+import filesRouter from './files.js';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT) : 3842;
@@ -107,6 +108,9 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Files API router
+app.use('/api/files', filesRouter);
+
 // SSE endpoint for real-time updates (for Wallpaper Engine)
 interface SseClient {
   id: number;
@@ -185,6 +189,7 @@ app.listen(PORT, () => {
 ║    GET /api/memory   - Memory usage only                   ║
 ║    GET /api/gpu      - GPU info only                       ║
 ║    GET /api/health   - Health check                        ║
+║    GET /api/files    - Read directory files                ║
 ║    GET /api/stream   - SSE real-time updates               ║
 ╠════════════════════════════════════════════════════════════╣
 ║  For Wallpaper Engine, use:                                ║

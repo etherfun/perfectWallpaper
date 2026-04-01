@@ -186,8 +186,13 @@ export function handlePlayerControlProperties(
             const padding = (height / 2) * (rounded / 200);
 
             player_control.style.borderRadius = radius + 'px';
-            player_control_thumbnail.style.borderRadius = radius + 'px';
             player_control_background.style.paddingRight = padding + 'px';
+
+            // 只有当旋转功能关闭时才设置圆角
+            if (config.player_control_thumbnail_rotation !== true) {
+                player_control_thumbnailWrap.style.borderRadius = radius + 'px';
+                player_control_thumbnailWrap.classList.remove('circular');
+            }
         };
 
         updateCorners();
@@ -202,9 +207,10 @@ export function handlePlayerControlProperties(
         config.player_control_thumbnail_rotation = properties.player_control_thumbnail_rotation.value;
         if (properties.player_control_thumbnail_rotation.value === false) {
             player_control_thumbnail.style.animation = '';
+            player_control_thumbnailWrap.classList.remove('circular');
         } else {
             player_control_thumbnail.style.animation = `spin ${config.player_control_thumbnail_rotation_speed}s linear infinite`;
-            player_control_thumbnail.style.borderRadius = '50%';
+            player_control_thumbnailWrap.classList.add('circular');
         }
     }
 

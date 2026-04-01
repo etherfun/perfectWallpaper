@@ -9,7 +9,9 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "music-metadata": "^10.7.2"
+  },
   "devDependencies": {},
   "engines": {
     "node": ">=18.0.0"

@@ -5,15 +5,15 @@
   "main": "index.html",
   "scripts": {
     "build": "tsc --noEmit && node scripts/bundle.js",
-    "build:scss": "sass --style=compressed --no-source-map src/source/style/scss/main.scss dist/default.css",
+    "build:scss": "sass --style=compressed --no-source-map src/source/scss/main.scss dist/default.css",
     "watch": "tsc --watch",
     "watch:bundle": "node scripts/bundle.js --watch",
-    "watch:scss": "sass --watch --style=expanded style/scss/main.scss dist/default.css",
+    "watch:scss": "sass --watch --style=expanded scss/main.scss dist/default.css",
     "check-types": "tsc --noEmit",
     "bundle": "node scripts/bundle.js",
     "prepare": "npm run build",
     "dev:server": "tsx server/src/index.ts",
-    "start:server": "node server/dist/index.js",
+    "start:server": "dev:server && node server/dist/index.js",
     "test:e2e": "playwright test --project=chromium",
     "test:e2e:ui": "playwright test --project=chromium --ui"
   },

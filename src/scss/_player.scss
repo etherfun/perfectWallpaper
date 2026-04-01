@@ -1,0 +1,215 @@
+// ============================================
+// Player Control Component
+// ============================================
+@use 'config' as *;
+
+#player_control {
+  visibility: var(--player-visibility, hidden);
+  z-index: $z-component;
+  overflow: hidden;
+  position: absolute;
+  top: var(--player-top, 50%);
+  left: var(--player-left, 50%);
+  text-align: center;
+  color: rgb(var(--player-color));
+  font-size: var(--player-font-size, 100px);
+  line-height: var(--player-line-height, 190px);
+  opacity: var(--player-opacity, 0.8);
+  justify-content: space-around;
+
+  &.paused .pause-overlay {
+    display: flex !important;
+  }
+  
+  &.paused .thumbnail {
+    animation-play-state: paused !important;
+  }
+
+  .background {
+    display: flex;
+    justify-content: space-between;
+    align-items: stretch;
+    background: rgba(var(--player-yakeli-color), calc(var(--player-yakeli) * var(--player-yakeli-enabled)));
+    backdrop-filter: blur(calc(var(--player-blur-yakeli) * var(--player-yakeli-enabled)));
+    text-shadow: 0 0 20px rgba(var(--player-blur-color), var(--player-blur-enabled));
+
+    .thumbnail-wrap {
+      z-index: 5;
+      position: relative;
+      overflow: hidden;
+      flex-shrink: 0;
+
+      .thumbnail {
+        background-size: cover;
+      }
+
+      .pause-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        justify-content: center;
+        align-items: center;
+
+        svg {
+          width: 50%;
+          height: 50%;
+          filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+        }
+      }
+
+      &.circular {
+        border-radius: 50%;
+
+        .thumbnail {
+          border-radius: 50%;
+        }
+
+        .pause-overlay {
+          border-radius: 50%;
+        }
+      }
+    }
+
+    .info-container {
+      height: 100%;
+      display: flex;
+      flex-grow: 1;
+      flex-direction: column;
+      margin-left: 10px;
+      margin-right: 10px;
+      z-index: 5;
+      position: relative;
+
+      .info {
+        white-space: nowrap;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        flex-shrink: 0;
+
+        .title {
+          padding-top: 0.1em;
+          font-size: 0.45em;
+
+          .titleicon {
+            width: 0.7332em;
+            height: 0.7332em;
+            vertical-align: middle;
+            @include icon-position-hide;
+            overflow: hidden;
+          }
+        }
+
+        .artist {
+          font-size: 0.3em;
+
+          .artisticon {
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+            @include icon-position-hide;
+            overflow: hidden;
+          }
+        }
+
+        .albumTitle {
+          font-size: 0.3em;
+
+          .albumTitleicon {
+            width: 1em;
+            height: 1em;
+            vertical-align: middle;
+            @include icon-position-hide;
+            overflow: hidden;
+          }
+        }
+
+        .timeline {
+          width: 100%;
+          background-color: #ddd;
+
+          .progress-bar {
+            height: 5px;
+            width: 0%;
+          }
+        }
+      }
+
+      .aubar-wrapper {
+        position: relative;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+
+        .aubar {
+          flex-grow: 1;
+          display: block;
+        }
+
+        .aubar-controls {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: 0.5em;
+          opacity: 0;
+          pointer-events: none;
+          transition: opacity 0.3s ease;
+          
+          &.visible {
+            opacity: 1;
+            pointer-events: auto;
+          }
+
+          .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: transform 0.2s, background 0.2s;
+            width: 3.5em;
+            height: 3.5em;
+
+            &:hover {
+              background: rgba(255, 255, 255, 0.4);
+              transform: scale(1.1);
+            }
+
+            svg {
+              width: 50%;
+              height: 50%;
+              fill: currentColor;
+            }
+          }
+
+          .play-pause {
+            .pause-icon {
+              display: none;
+            }
+
+            &.playing {
+              .play-icon {
+                display: none;
+              }
+
+              .pause-icon {
+                display: block;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

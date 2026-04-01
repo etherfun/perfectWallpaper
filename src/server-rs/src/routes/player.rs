@@ -3,83 +3,76 @@ use axum::{
     Json,
 };
 
+#[cfg(windows)]
+const VK_MEDIA_PLAY_PAUSE: u8 = 0xB3;
+#[cfg(windows)]
+const VK_MEDIA_NEXT_TRACK: u8 = 0xB0;
+#[cfg(windows)]
+const VK_MEDIA_PREV_TRACK: u8 = 0xB1;
+#[cfg(windows)]
+const VK_MEDIA_STOP: u8 = 0xB2;
+#[cfg(windows)]
+const KEYEVENTF_KEYUP: u32 = 0x0002;
+
+#[cfg(windows)]
+extern "system" {
+    fn keybd_event(bVk: u8, bScan: u8, dwFlags: u32, dwExtraInfo: usize);
+}
+
+#[cfg(windows)]
+fn send_media_key(key: u8) {
+    unsafe {
+        keybd_event(key, 0, 0, 0);
+        keybd_event(key, 0, KEYEVENTF_KEYUP, 0);
+    }
+}
+
 pub async fn media_control(
     Path(action): Path<String>,
 ) -> impl axum::response::IntoResponse {
-    let (vbs_file, cleanup) = match action.as_str() {
-        "play-pause" => ("media_play_pause.vbs", "del"),
-        "next" => ("media_next.vbs", "del"),
-        "prev" => ("media_prev.vbs", "del"),
-        "stop" => ("media_stop.vbs", "del"),
+    match action.as_str() {
+        #[cfg(windows)]
+        "play-pause" => {
+            send_media_key(VK_MEDIA_PLAY_PAUSE);
+            Json(serde_json::json!({
+                "success": true,
+                "data": null,
+                "timestamp": chrono::Utc::now().timestamp_millis()
+            }))
+        }
+        #[cfg(windows)]
+        "next" => {
+            send_media_key(VK_MEDIA_NEXT_TRACK);
+            Json(serde_json::json!({
+                "success": true,
+                "data": null,
+                "timestamp": chrono::Utc::now().timestamp_millis()
+            }))
+        }
+        #[cfg(windows)]
+        "prev" => {
+            send_media_key(VK_MEDIA_PREV_TRACK);
+            Json(serde_json::json!({
+                "success": true,
+                "data": null,
+                "timestamp": chrono::Utc::now().timestamp_millis()
+            }))
+        }
+        #[cfg(windows)]
+        "stop" => {
+            send_media_key(VK_MEDIA_STOP);
+            Json(serde_json::json!({
+                "success": true,
+                "data": null,
+                "timestamp": chrono::Utc::now().timestamp_millis()
+            }))
+        }
         _ => {
-            return Json(serde_json::json!({
+            Json(serde_json::json!({
                 "success": false,
                 "error": "Unknown action",
                 "timestamp": chrono::Utc::now().timestamp_millis()
-            }));
-        }
-    };
-
-    let vbs_content = match action.as_str() {
-        "play-pause" => r#"Set WshShell = CreateObject("WScript.Shell")
-WshShell.SendKeys "{MEDIASTOP}"
-WScript.Sleep 200
-WshShell.SendKeys "{MEDIAPLAYPAUSE}""#,
-        "next" => r#"Set WshShell = CreateObject("WScript.Shell")
-WshShell.SendKeys "{MEDIANEXTTRACK}""#,
-        "prev" => r#"Set WshShell = CreateObject("WScript.Shell")
-WshShell.SendKeys "{MEDIAPREVTRACK}""#,
-        "stop" => r#"Set WshShell = CreateObject("WScript.Shell")
-WshShell.SendKeys "{MEDIASTOP}""#,
-        _ => return Json(serde_json::json!({
-            "success": false,
-            "error": "Unknown action",
-            "timestamp": chrono::Utc::now().timestamp_millis()
-        }))
-    };
-
-    #[cfg(windows)]
-    {
-        use std::io::Write;
-
-        // Write VBS file to temp
-        let temp_dir = std::env::temp_dir();
-        let vbs_path = temp_dir.join(vbs_file);
-
-        if let Ok(mut file) = std::fs::File::create(&vbs_path) {
-            let _ = file.write_all(vbs_content.as_bytes());
-        }
-
-        // Run VBS script
-        let output = std::process::Command::new("cscript")
-            .args(["//Nologo", &vbs_path.to_string_lossy()])
-            .output();
-
-        // Cleanup
-        let _ = std::fs::remove_file(&vbs_path);
-
-        match output {
-            Ok(out) => {
-                if out.status.success() {
-                    Json(serde_json::json!({
-                        "success": true,
-                        "data": null,
-                        "timestamp": chrono::Utc::now().timestamp_millis()
-                    }))
-                } else {
-                    let err = String::from_utf8_lossy(&out.stderr);
-                    Json(serde_json::json!({
-                        "success": false,
-                        "error": if err.is_empty() { "Failed to send media key".to_string() } else { err.to_string() },
-                        "timestamp": chrono::Utc::now().timestamp_millis()
-                    }))
-                }
-            }
-            Err(e) => Json(serde_json::json!({
-                "success": false,
-                "error": e.to_string(),
-                "timestamp": chrono::Utc::now().timestamp_millis()
-            })),
+            }))
         }
     }
 

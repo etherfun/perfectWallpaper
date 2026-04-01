@@ -9,6 +9,7 @@
     "start": "node dist/index.js",
     "dev": "tsx src/index.ts"
   },
+  "license": "GPL-3.0-only",
   "dependencies": {
     "music-metadata": "^10.7.2"
   },

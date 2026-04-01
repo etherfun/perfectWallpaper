@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
-import * as musicMetadata from 'music-metadata';
+import { parseFile } from 'music-metadata';
 
 const router = Router();
 
@@ -239,7 +239,7 @@ router.get('/metadata', async (req, res) => {
     }
 
     // Parse metadata
-    const metadata = await musicMetadata.parseFile(decodedPath);
+    const metadata = await parseFile(decodedPath);
     const common = metadata.common;
 
     res.json({

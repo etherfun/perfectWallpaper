@@ -520,7 +520,8 @@ export interface WallpaperProperties {
     fullscreen_lyrics_show_clock?: { value: boolean };
 
     // 系统监控参数
-    sysmon_server_url?: { value: string };
+    sysmon_server_port?: { value: number };
+    sysmon_auto_start?: { value: boolean };
     sysmon_update_interval?: { value: number };
     sysmon_cpu_mode?: { value: number };
     sysmon_gpu_mode?: { value: number };

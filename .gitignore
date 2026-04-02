@@ -4,3 +4,4 @@ dist/
 .idea/
 .claude/
 test-results
+src/server-rs/target

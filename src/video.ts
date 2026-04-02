@@ -3,6 +3,7 @@
 import { elements } from '@/utils/elementManager';
 import { config } from './utils/config';
 import { pc_aubar, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
+import { debounce } from './utils/tool';
 
 const myvideo = elements.myvideo;
 const myAudio = elements.myAudio;
@@ -106,6 +107,9 @@ async function updatePlayerInfo(filePath: string): Promise<void> {
     refreshPlayerDisplay();
 }
 
+// 防抖版本的更新播放器信息
+const debouncedUpdatePlayerInfo = debounce(updatePlayerInfo, 500, true);
+
 /**
  * 从服务器获取目录中的音频文件列表
  */
@@ -128,6 +132,12 @@ async function fetchAudioFilesFromServer(directory: string): Promise<string[]> {
         return [];
     }
 }
+
+// 防抖版本的获取音频文件列表
+const debouncedFetchAudioFiles = debounce(fetchAudioFilesFromServer, 1000, true);
+
+// 防止并发请求的标志
+let isPlaylistUpdating = false;
 
 /**
  * 获取当前音乐播放列表
@@ -162,7 +172,7 @@ function playNextTrack(): void {
     config.cusaudio_route = getAudioStreamUrl(playlist[index]);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
-    updatePlayerInfo(playlist[index]);
+    debouncedUpdatePlayerInfo(playlist[index]);
     controlExternalPlayer('next');
 }
 
@@ -194,7 +204,7 @@ function playPrevTrack(): void {
     config.cusaudio_route = getAudioStreamUrl(playlist[index]);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
-    updatePlayerInfo(playlist[index]);
+    debouncedUpdatePlayerInfo(playlist[index]);
     controlExternalPlayer('prev');
 }
 
@@ -265,39 +275,45 @@ export function ChangeAudioModel(): void {
 export async function updateMusicPlaylist(): Promise<void> {
     const directory = config.musicdirectory;
 
-    if (!directory) {
+    if (!directory || isPlaylistUpdating) {
         return;
     }
 
-    // 通过服务器获取目录中的音频文件
-    const files = await fetchAudioFilesFromServer(directory);
-    if (files && files.length > 0) {
-        // 保存到 runtime.files 以便后续使用
-        config.runtime.files['musicdirectory'] = files;
+    isPlaylistUpdating = true;
 
-        // 计算初始播放索引（随机模式）
-        let initialIndex = 0;
-        if (config.music_playlist_random) {
-            initialIndex = Math.floor(Math.random() * files.length);
-        }
-        config.music_playlist_index = initialIndex;
-        config.cusaudio_route = getAudioStreamUrl(files[initialIndex]);
+    try {
+        // 通过服务器获取目录中的音频文件（使用防抖版本）
+        const files = await debouncedFetchAudioFiles(directory);
+        if (files && files.length > 0) {
+            // 保存到 runtime.files 以便后续使用
+            config.runtime.files['musicdirectory'] = files;
 
-        // 设置标志表示内置播放器正在初始化
-        // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
-        config.runtime.playerInfo.builtInPlayerInitializing = true;
-        setTimeout(() => {
-            config.runtime.playerInfo.builtInPlayerInitializing = false;
-        }, 500);
+            // 计算初始播放索引（随机模式）
+            let initialIndex = 0;
+            if (config.music_playlist_random) {
+                initialIndex = Math.floor(Math.random() * files.length);
+            }
+            config.music_playlist_index = initialIndex;
+            config.cusaudio_route = getAudioStreamUrl(files[initialIndex]);
 
-        // 如果外部媒体已激活，不启动内置播放器
-        if (config.runtime.playerInfo.externalMediaActive) {
+            // 设置标志表示内置播放器正在初始化
+            // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
+            config.runtime.playerInfo.builtInPlayerInitializing = true;
+            setTimeout(() => {
+                config.runtime.playerInfo.builtInPlayerInitializing = false;
+            }, 500);
+
+            // 如果外部媒体已激活，不启动内置播放器
+            if (config.runtime.playerInfo.externalMediaActive) {
+                updatePlayerInfo(files[initialIndex]);
+                return;
+            }
+
+            ChangeAudioModel();
             updatePlayerInfo(files[initialIndex]);
-            return;
         }
-
-        ChangeAudioModel();
-        updatePlayerInfo(files[initialIndex]);
+    } finally {
+        isPlaylistUpdating = false;
     }
 }
 

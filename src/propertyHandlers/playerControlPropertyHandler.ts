@@ -129,18 +129,6 @@ export function handlePlayerControlProperties(
         elements.body.style.setProperty("--player-blur-yakeli", `${properties.player_control_bluryakeli.value}px`);
     }
 
-    if (properties.player_control_thumbnail_size) {
-        config.player_control_thumbnail_size = properties.player_control_thumbnail_size.value;
-        if (properties.player_control_thumbnail_size.value) {
-            player_control_thumbnailWrap.style.display = 'flex';
-            player_control_thumbnailWrap.style.alignItems = 'center';
-            player_control_thumbnailWrap.style.justifyContent = 'center';
-        } else {
-            player_control_thumbnail.style.width = config.player_control_size_value + 'px';
-            player_control_thumbnail.style.height = config.player_control_size_value + 'px';
-        }
-    }
-
     if (properties.player_control_size) {
         const s = properties.player_control_size.value;
         config.player_control_size_value = Math.floor(config.screenHeight / 150 * s);
@@ -148,7 +136,15 @@ export function handlePlayerControlProperties(
         player_control.style.lineHeight = Math.floor(config.screenHeight / 700 * s) + 'px';
         player_control_artist.style.lineHeight = Math.floor(config.screenHeight / 1000 * s) + 'px';
         player_control_albumTitle.style.lineHeight = Math.floor(config.screenHeight / 1000 * s) + 'px';
+       
+    }
+
+    if (properties.player_control_thumbnail_size) {
+        config.player_control_thumbnail_size = properties.player_control_thumbnail_size.value;
         if (config.player_control_thumbnail_size) {
+            player_control_thumbnailWrap.style.display = 'flex';
+            player_control_thumbnailWrap.style.alignItems = 'center';
+            player_control_thumbnailWrap.style.justifyContent = 'center';
             player_control_thumbnailWrap.style.width = config.player_control_size_value + 'px';
             player_control_thumbnailWrap.style.height = config.player_control_size_value + 'px';
             if (FirstLoad === false) {
@@ -159,6 +155,8 @@ export function handlePlayerControlProperties(
         } else {
             player_control_thumbnail.style.width = config.player_control_size_value + 'px';
             player_control_thumbnail.style.height = config.player_control_size_value + 'px';
+            player_control_thumbnailWrap.style.width = config.player_control_size_value + 'px';
+            player_control_thumbnailWrap.style.height = config.player_control_size_value + 'px';
         }
     }
 
@@ -190,7 +188,7 @@ export function handlePlayerControlProperties(
 
             // 只有当旋转功能关闭时才设置圆角
             if (config.player_control_thumbnail_rotation !== true) {
-                player_control_thumbnailWrap.style.borderRadius = radius + 'px';
+                player_control_thumbnail.style.borderRadius = radius + 'px';
                 player_control_thumbnailWrap.classList.remove('circular');
             }
         };

@@ -115,18 +115,14 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     const playerControlShow = config.player_control_show;
     if (!playerControlShow || config.runtime.playerInfo.singtitle === undefined || config.runtime.playerInfo.singtitle === '') return;
 
-    playertitle();
-
-    const playerControlVisualaudiobar = config.player_control_visualaudiobar;
-    if (playerControlVisualaudiobar) pc_aubar();
+    playertitle(config.player_control_visualaudiobar);
 }
 
 /**
  * 刷新播放器标题显示（供外部调用）
  */
 export function refreshPlayerDisplay(): void {
-    playertitle();
-    pc_aubar();
+    playertitle(true);
 }
 
 /**
@@ -252,7 +248,7 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
     }
 }
 
-export function playertitle(): void {
+export function playertitle(visualaudiobar: boolean = false): void {
     let titleToShow = config.runtime.playerInfo.singtitle || '';
     let artistToShow = config.runtime.playerInfo.singartist || '';
     let albumToShow = config.runtime.playerInfo.singalbumTitle || '';
@@ -292,6 +288,8 @@ export function playertitle(): void {
     } else {
         player_control_albumTitle.style.display = 'none';
     }
+
+    if (visualaudiobar) pc_aubar();
 }
 
 /*msct状态*/
@@ -473,19 +471,23 @@ function player_iconcolor(rgb: [number, number, number] | string | null): void {
 }
 
 export function pc_aubar(): void {
-    const full = elements.playerControl.info?.parentElement;
+    const full = elements.playerControl.thumbnailWrap;
     const usage = elements.playerControl.info;
     const aubar = elements.playerControl.aubar;
+    const calculatedHeight = (full?.clientHeight ?? 0) - usage.clientHeight;
+    console.log(`[pc_aubar] full.clientHeight: ${full?.clientHeight}, usage.clientHeight: ${usage.clientHeight}, aubar.clientHeight: ${aubar?.clientHeight}, calculatedHeight: ${calculatedHeight}`);
     if (!aubar || !full || !usage) return;
 
     const rgbbg = aubar.getContext('2d');
     if (!rgbbg) return;
 
     const height = full.clientHeight - usage.clientHeight;
-    const width = full.clientWidth;
+    const width = usage.clientWidth;
 
     aubar.width = width;
     aubar.height = height;
+    aubar.style.width = `${width}px`;
+    aubar.style.height = `${height}px`;
 
     config.runtime.playerInfo.aubarstop = false;
 

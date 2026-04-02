@@ -193,24 +193,46 @@ export function debounce<T extends (...args: any[]) => any>(
     func: T,
     wait: number,
     immediate: boolean = false
-): (...args: Parameters<T>) => void {
+): (...args: Parameters<T>) => Promise<ReturnType<T>> {
     let timeout: number | null = null;
 
-    return function executedFunction(this: any, ...args: Parameters<T>) {
-        const context = this;
-        const later = function() {
-            timeout = null;
-            if (!immediate) func.apply(context, args);
-        };
+    return function executedFunction(this: any, ...args: Parameters<T>): Promise<ReturnType<T>> {
+        return new Promise((resolve, reject) => {
+            const context = this;
 
-        const callNow = immediate && !timeout;
+            const later = async function() {
+                timeout = null;
+                if (!immediate) {
+                    try {
+                        const result = await func.apply(context, args) as ReturnType<T>;
+                        resolve(result);
+                    } catch (err) {
+                        reject(err);
+                    }
+                }
+            };
 
-        if (timeout !== null) {
-            clearTimeout(timeout);
-        }
-        timeout = window.setTimeout(later, wait);
+            const callNow = immediate && !timeout;
 
-        if (callNow) func.apply(context, args);
+            if (timeout !== null) {
+                clearTimeout(timeout);
+            }
+            timeout = window.setTimeout(later, wait);
+
+            if (callNow) {
+                try {
+                    const result = func.apply(context, args);
+                    // Handle both sync and async functions
+                    if (result instanceof Promise) {
+                        result.then(resolve).catch(reject);
+                    } else {
+                        resolve(result as ReturnType<T>);
+                    }
+                } catch (err) {
+                    reject(err);
+                }
+            }
+        });
     };
 }
 

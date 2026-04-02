@@ -2,9 +2,8 @@ use axum::{extract::State, Json};
 use chrono::Utc;
 use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind, System, MINIMUM_CPU_UPDATE_INTERVAL};
 use std::sync::Arc;
-use std::time::Duration;
 
-use super::super::AppState;
+use super::config::AppStateWithConfig;
 
 #[derive(serde::Serialize)]
 pub struct GpuInfo {
@@ -56,7 +55,7 @@ fn get_gpu_info_windows() -> Vec<GpuInfo> {
 }
 
 pub async fn get_system_info(
-    State(state): State<Arc<AppState>>,
+    State(state): State<Arc<AppStateWithConfig>>,
 ) -> impl axum::response::IntoResponse {
     let mut sys = System::new_with_specifics(
         RefreshKind::new()
@@ -94,7 +93,7 @@ pub async fn get_system_info(
 
     // Calculate network speed
     let (last_rx, last_tx, last_time) = {
-        let cached = state.cached_network.read().await;
+        let cached = state.app.cached_network.read().await;
         *cached
     };
 
@@ -113,7 +112,7 @@ pub async fn get_system_info(
     };
 
     {
-        let mut cached = state.cached_network.write().await;
+        let mut cached = state.app.cached_network.write().await;
         *cached = (total_rx, total_tx, now);
     }
 

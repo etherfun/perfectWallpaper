@@ -28,6 +28,9 @@ chrono = "0.4"
 futures-util = "0.3"
 bytes = "1"
 
+# CLI argument parsing
+clap = { version = "4", features = ["derive"] }
+
 # Windows GPU info
 [target.'cfg(windows)'.dependencies]
 windows = { version = "0.52", features = [

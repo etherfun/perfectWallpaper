@@ -2,17 +2,20 @@ use axum::{
     Router,
     routing::{get, post},
 };
+use clap::Parser;
 use std::net::SocketAddr;
-use std::sync::Arc;
 use tokio::sync::RwLock;
 use tower_http::cors::{Any, CorsLayer};
 use chrono::Utc;
 
+mod auto_start;
+mod config;
 mod error;
 mod models;
 mod routes;
 
-use models::*;
+use config::ServerConfig;
+use routes::config::AppStateWithConfig;
 
 pub struct AppState {
     pub cached_network: RwLock<(u64, u64, i64)>,
@@ -47,22 +50,97 @@ impl<T: serde::Serialize> ApiResponse<T> {
     }
 }
 
-#[tokio::main]
-async fn main() {
-    let port = std::env::var("PORT")
-        .unwrap_or_else(|_| "3842".to_string())
-        .parse::<u16>()
-        .unwrap_or(3842);
+/// CLI arguments for the server
+#[derive(Parser, Debug)]
+#[command(name = "perfectwall-server")]
+#[command(about = "PerfectWall System Info Server")]
+struct Args {
+    /// Port to listen on (overrides config file and environment)
+    #[arg(short, long)]
+    port: Option<u16>,
 
+    /// Enable auto-start on Windows login
+    #[arg(long)]
+    auto_start: bool,
+
+    /// Remove auto-start registration
+    #[arg(long)]
+    remove_auto_start: bool,
+
+    /// Don't start the server, just process other commands
+    #[arg(long, default_value = "false")]
+    no_server: bool,
+}
+
+fn main() {
+    let args = Args::parse();
+
+    // Handle auto-start registration commands
+    if args.auto_start {
+        match auto_start::register() {
+            Ok(_) => {
+                println!("Auto-start enabled successfully");
+                std::process::exit(0);
+            }
+            Err(e) => {
+                eprintln!("Failed to enable auto-start: {}", e);
+                std::process::exit(1);
+            }
+        }
+    }
+
+    if args.remove_auto_start {
+        match auto_start::unregister() {
+            Ok(_) => {
+                println!("Auto-start disabled successfully");
+                std::process::exit(0);
+            }
+            Err(e) => {
+                eprintln!("Failed to disable auto-start: {}", e);
+                std::process::exit(1);
+            }
+        }
+    }
+
+    // If no_server is set (and no other action flags), exit
+    if args.no_server && !args.auto_start && !args.remove_auto_start {
+        println!("Server not started (--no-server specified)");
+        std::process::exit(0);
+    }
+
+    // Load configuration from file
+    let mut server_config = ServerConfig::load();
+
+    // CLI arguments override config file
+    if let Some(port) = args.port {
+        if let Err(e) = server_config.update_port(port) {
+            eprintln!("Invalid port from CLI: {}", e);
+            std::process::exit(1);
+        }
+        println!("[Config] Port overridden by CLI: {}", port);
+    }
+
+    // Environment variable overrides everything
+    if let Ok(env_port) = std::env::var("PORT") {
+        if let Ok(port) = env_port.parse::<u16>() {
+            if server_config.update_port(port).is_ok() {
+                println!("[Config] Port overridden by environment: {}", port);
+            }
+        }
+    }
+
+    let port = server_config.port;
     let cors = CorsLayer::new()
         .allow_origin(Any)
         .allow_methods(Any)
         .allow_headers(Any);
 
-    let state = Arc::new(AppState {
+    let app_state = AppState {
         cached_network: RwLock::new((0, 0, 0)),
         cached_cpu: RwLock::new((0.0, 0)),
-    });
+    };
+
+    let state = std::sync::Arc::new(AppStateWithConfig::new(app_state, server_config));
 
     let app = Router::new()
         .route("/api/system", get(routes::system::get_system_info))
@@ -73,12 +151,17 @@ async fn main() {
         .route("/api/files/audio", get(routes::files::stream_audio))
         .route("/api/files/metadata", get(routes::files::get_metadata))
         .route("/api/player/:action", post(routes::player::media_control))
+        .route("/api/config", get(routes::config::get_config))
+        .route("/api/config", post(routes::config::update_config))
         .layer(cors)
         .with_state(state);
 
     let addr = SocketAddr::from(([0, 0, 0, 0], port));
     println!("Server running on http://{}", addr);
 
-    let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
-    axum::serve(listener, app).await.unwrap();
+    let runtime = tokio::runtime::Runtime::new().unwrap();
+    runtime.block_on(async {
+        let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+        axum::serve(listener, app).await.unwrap();
+    });
 }

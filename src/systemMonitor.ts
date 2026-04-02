@@ -12,6 +12,7 @@ interface SystemMonitorConfig {
     monitorPosition: 'left' | 'right';
     disconnectTimeout: number;
     serverUrl: string;
+    serverPort: number;
     updateInterval: number;
     cpuMode: 'text' | 'curve' | 'bar' | 'none';
     gpuMode: 'text' | 'curve' | 'bar' | 'none';
@@ -33,6 +34,7 @@ const DEFAULT_CONFIG: SystemMonitorConfig = {
     monitorPosition: 'right',
     disconnectTimeout: 10000,
     serverUrl: 'http://localhost:3842/api/system',
+    serverPort: 3842,
     updateInterval: 2000,
     cpuMode: 'text',
     gpuMode: 'text',
@@ -85,13 +87,13 @@ class SystemMonitor {
             ${isLeft ? 'left' : 'right'}: ${100 - this.config.monitorX}%;
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: var(--sysmon-gap, 4px);
             font-size: ${this.config.monitorSize}px;
             color: ${this.config.monitorColor};
-            z-index: 9999;
+            z-index: var(--sysmon-z, 9999);
             pointer-events: none;
-            text-shadow: 0 0 5px rgba(0,0,0,0.5);
-            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            text-shadow: var(--sysmon-text-shadow, 0 0 5px rgba(0,0,0,0.5));
+            font-family: var(--sysmon-font-family, 'Segoe UI', 'Microsoft YaHei', sans-serif);
         `;
 
         const style = document.createElement('style');
@@ -357,6 +359,11 @@ class SystemMonitor {
     public updateConfig(newConfig: Partial<SystemMonitorConfig>): void {
         const wasEnabled = this.config.enabled;
         this.config = { ...this.config, ...newConfig };
+
+        // If serverPort changed, rebuild serverUrl
+        if (newConfig.serverPort !== undefined) {
+            this.config.serverUrl = `http://localhost:${this.config.serverPort}/api/system`;
+        }
 
         // Handle enabled state change
         if (newConfig.enabled !== undefined && newConfig.enabled !== wasEnabled) {

@@ -1,0 +1,42 @@
+// ============================================
+// Utility Classes
+// ============================================
+// Common CSS classes for state-based styling
+
+// Display states
+.hidden {
+  display: none !important;
+}
+
+.flex {
+  display: flex !important;
+}
+
+.block {
+  display: block !important;
+}
+
+.flex-center {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+// Visibility
+.invisible {
+  visibility: hidden;
+}
+
+.visible {
+  visibility: visible;
+}
+
+// Direction
+.rtl {
+  flex-direction: row-reverse !important;
+}
+
+// Position
+.show-away {
+  transform: translate(-100%, 0) !important;
+}

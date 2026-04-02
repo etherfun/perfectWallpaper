@@ -3,6 +3,28 @@ import { WallpaperProperties } from './types';
 import { debugLogger } from '@/utils/logger';
 
 /**
+ * Handle auto-start setting change
+ * @param enabled Whether auto-start is enabled
+ */
+async function handleAutoStart(enabled: boolean): Promise<void> {
+    try {
+        const response = await fetch('/api/config', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ auto_start: enabled }),
+        });
+
+        if (!response.ok) {
+            debugLogger.error(`[Sysmon] Failed to update auto-start: ${response.status}`);
+        }
+    } catch (error) {
+        debugLogger.error(`[Sysmon] Error updating auto-start: ${error}`);
+    }
+}
+
+/**
  * 处理系统监控属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
@@ -18,10 +40,14 @@ export function handleSystemMonitorProperties(
     const monitor = getSystemMonitor();
     if (!monitor) return;
 
-    if (properties.sysmon_server_url) {
+    if (properties.sysmon_server_port) {
         monitor.updateConfig({
-            serverUrl: properties.sysmon_server_url.value
+            serverPort: properties.sysmon_server_port.value
         });
+    }
+
+    if (properties.sysmon_auto_start) {
+        handleAutoStart(properties.sysmon_auto_start.value);
     }
 
     if (properties.sysmon_update_interval) {

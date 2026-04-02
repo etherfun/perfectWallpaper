@@ -1,0 +1,30 @@
+// ============================================
+// System Monitor Styles
+// ============================================
+
+:root {
+  --sysmon-gap: 4px;
+  --sysmon-z: 9999;
+  --sysmon-text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  --sysmon-font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+}
+
+// System monitor container
+#system-monitor {
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sysmon-gap);
+  z-index: var(--sysmon-z);
+  pointer-events: none;
+  text-shadow: var(--sysmon-text-shadow);
+  font-family: var(--sysmon-font-family);
+}
+
+// Row layout for sysmon items
+.sysmon-row {
+  display: flex;
+  align-items: center;
+  gap: var(--sysmon-gap);
+  white-space: nowrap;
+}

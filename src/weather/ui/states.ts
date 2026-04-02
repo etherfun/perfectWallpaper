@@ -24,7 +24,7 @@ export function showWeatherLoading(): void {
     leftContainer.style.flexDirection = 'column';
     leftContainer.style.justifyContent = 'center';
     leftContainer.style.alignItems = 'center';
-    rightContainer.style.display = 'none';
+    rightContainer.classList.add('hidden');
 
     // 存储原始子元素用于恢复
     (leftContainer as any)._originalChildren = originalChildren;
@@ -54,7 +54,7 @@ export function hideWeatherLoading(): void {
     leftContainer.style.flexDirection = '';
     leftContainer.style.justifyContent = '';
     leftContainer.style.alignItems = '';
-    rightContainer.style.display = '';
+    rightContainer.classList.remove('hidden');
 }
 
 /**
@@ -72,7 +72,7 @@ export function showWeatherError(message: string): void {
     leftContainer.style.flexDirection = 'column';
     leftContainer.style.justifyContent = 'center';
     leftContainer.style.alignItems = 'center';
-    rightContainer.style.display = 'none';
+    rightContainer.classList.add('hidden');
 
     // 清除之前的内容
     leftContainer.innerHTML = '';

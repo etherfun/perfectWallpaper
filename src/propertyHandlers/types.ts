@@ -522,6 +522,7 @@ export interface WallpaperProperties {
     // 系统监控参数
     sysmon_server_port?: { value: number };
     sysmon_auto_start?: { value: boolean };
+    server_mode?: { value: boolean }; // 启用插件
     sysmon_update_interval?: { value: number };
     sysmon_cpu_mode?: { value: number };
     sysmon_gpu_mode?: { value: number };

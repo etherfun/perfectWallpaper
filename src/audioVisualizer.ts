@@ -21,6 +21,8 @@ function spatialSmooth(data: number[], windowSize: number): number[] {
     const result = new Array(data.length);
     const halfWindow = Math.floor(windowSize / 2);
     const len = data.length;
+    // 实际求和的元素数量（j 从 -halfWindow 到 +halfWindow 共 2*halfWindow+1 个）
+    const actualCount = halfWindow * 2 + 1;
 
     for (let i = 0; i < len; i++) {
         let sum = 0;
@@ -32,7 +34,7 @@ function spatialSmooth(data: number[], windowSize: number): number[] {
             sum += data[idx];
         }
 
-        result[i] = sum / windowSize;
+        result[i] = sum / actualCount;
     }
 
     return result;

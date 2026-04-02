@@ -146,7 +146,7 @@ export function handleBackgroundProperties(
     }
 
     // 音乐目录（播放列表）
-    if (properties.musicdirectory) {
+    if (properties.musicdirectory && config.server_mode) {
         config.musicdirectory = properties.musicdirectory.value;
         // 通过服务器获取目录中的音频文件
         updateMusicPlaylist();

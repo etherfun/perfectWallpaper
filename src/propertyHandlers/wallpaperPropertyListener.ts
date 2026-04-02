@@ -94,6 +94,11 @@ export function createWallpaperPropertyListener(
         showDebugLogModal();
     }
 
+    //启用插件
+    if (properties.server_mode) {
+        config.server_mode = properties.server_mode.value;
+    }
+
     // 自定义字体设置
     if (properties.fontSetting) {
         config.font_setting = properties.fontSetting.value;

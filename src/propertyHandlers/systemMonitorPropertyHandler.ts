@@ -1,6 +1,7 @@
 import { getSystemMonitor, initSystemMonitor } from '@/systemMonitor';
 import { WallpaperProperties } from './types';
 import { debugLogger } from '@/utils/logger';
+import { config } from '@/utils/config';
 
 /**
  * Handle auto-start setting change
@@ -129,7 +130,7 @@ export function handleSystemMonitorProperties(
         });
     }
 
-    if (properties.sysmon_enabled !== undefined) {
+    if (properties.sysmon_enabled !== undefined  && config.server_mode) {
         monitor.setEnabled(properties.sysmon_enabled.value);
     }
 

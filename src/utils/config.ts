@@ -537,6 +537,9 @@ const SYNC_DEFAULTS = {
     particles_is_straight: false,
     particles_is_bounce: false,
     particles_move_out_mode: 1,
+
+    // 插件配置
+    server_mode: false,
 };
 
 // ============== ConfigClass ==============

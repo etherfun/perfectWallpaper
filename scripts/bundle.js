@@ -17,7 +17,7 @@ const distDir = path.resolve(srcDir, 'dist');
 // Files to copy to project root (for wallpaper engine)
 const copyFiles = [
     { src: 'index.html', dest: 'index.html', force: true },
-    { src: 'project.json', dest: 'project.json', force: true },
+    { src: 'project.json', dest: 'project.json' },
     { src: 'source/i18n/', dest: 'source/i18n/', force: true  },
     { src: 'source/imgs/', dest: 'source/imgs/' },
     { src: 'source/map/', dest: 'source/map/' },

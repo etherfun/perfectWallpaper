@@ -177,7 +177,7 @@ const ALL_PROPERTY_CATEGORIES = {
   // System monitor
   systemMonitor: {
     sysmon_enabled: { condition: '', index: 0, key: 'sysmon_enabled', order: 0, text: '', type: 'bool', value: false },
-    sysmon_server_url: { condition: '', index: 0, key: 'sysmon_server_url', order: 0, text: '', type: 'text', value: 'http://localhost:3842' },
+    sysmon_server_port: { condition: '', index: 0, key: 'sysmon_server_port', order: 0, text: '', type: 'number', value: 3842 },
     sysmon_update_interval: { condition: '', index: 0, key: 'sysmon_update_interval', order: 0, text: '', type: 'number', value: 2000 },
   },
 };

@@ -139,24 +139,22 @@ export function handlePlayerControlProperties(
        
     }
 
-    if (properties.player_control_thumbnail_size) {
+    if (properties.player_control_thumbnail_size !== undefined) {
         config.player_control_thumbnail_size = properties.player_control_thumbnail_size.value;
         if (config.player_control_thumbnail_size) {
-            player_control_thumbnailWrap.style.display = 'flex';
-            player_control_thumbnailWrap.style.alignItems = 'center';
-            player_control_thumbnailWrap.style.justifyContent = 'center';
-            player_control_thumbnailWrap.style.width = config.player_control_size_value + 'px';
-            player_control_thumbnailWrap.style.height = config.player_control_size_value + 'px';
+            player_control_thumbnailWrap.classList.add('flex-center');
+            player_control_thumbnailWrap.style.setProperty('--player-thumb-size', config.player_control_size_value + 'px');
             if (FirstLoad === false) {
                 const ss = (config.player_control_size_value * (player_control_thumbnail_size_value / 100));
-                player_control_thumbnail.style.width = ss + 'px';
-                player_control_thumbnail.style.height = ss + 'px';
+                player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', ss + 'px');
+                player_control_thumbnail.style.setProperty('--player-thumb-inner-size', ss + 'px');
             }
         } else {
-            player_control_thumbnail.style.width = config.player_control_size_value + 'px';
-            player_control_thumbnail.style.height = config.player_control_size_value + 'px';
-            player_control_thumbnailWrap.style.width = config.player_control_size_value + 'px';
-            player_control_thumbnailWrap.style.height = config.player_control_size_value + 'px';
+            player_control_thumbnailWrap.classList.remove('flex-center');
+            player_control_thumbnailWrap.style.setProperty('--player-thumb-size', config.player_control_size_value + 'px');
+            // Reset to 100% when scaling is off
+            player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', '100%');
+            player_control_thumbnail.style.setProperty('--player-thumb-inner-size', '100%');
         }
     }
 
@@ -165,10 +163,9 @@ export function handlePlayerControlProperties(
         config.player_control_thumbnail_size_value = properties.player_control_thumbnail_size_value.value;
         const ss = (s * (properties.player_control_thumbnail_size_value.value / 100));
         if (config.player_control_thumbnail_size) {
-            player_control_thumbnailWrap.style.width = s + 'px';
-            player_control_thumbnailWrap.style.height = s + 'px';
-            player_control_thumbnail.style.width = ss + 'px';
-            player_control_thumbnail.style.height = ss + 'px';
+            player_control_thumbnailWrap.style.setProperty('--player-thumb-size', s + 'px');
+            player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', ss + 'px');
+            player_control_thumbnail.style.setProperty('--player-thumb-inner-size', ss + 'px');
         }
     }
 
@@ -188,7 +185,7 @@ export function handlePlayerControlProperties(
 
             // 只有当旋转功能关闭时才设置圆角
             if (config.player_control_thumbnail_rotation !== true) {
-                player_control_thumbnail.style.borderRadius = radius + 'px';
+                player_control_thumbnailWrap.style.setProperty('--player-thumb-radius', radius + 'px');
                 player_control_thumbnailWrap.classList.remove('circular');
             }
         };
@@ -252,7 +249,7 @@ export function handlePlayerControlProperties(
         config.player_control_thumbnailrorl = properties.player_control_thumbnailrorl.value;
         if (properties.player_control_thumbnailrorl.value === true) {
             setTimeout(function () {
-                player_control_background.style.flexDirection = 'row-reverse';
+                player_control_background.classList.add('rtl');
                 const rawpadding = window.getComputedStyle(player_control_background).paddingRight;
                 player_control_background.style.paddingRight = '';
                 player_control_background.style.paddingLeft = rawpadding;
@@ -260,7 +257,7 @@ export function handlePlayerControlProperties(
             }, 2500);
         } else {
             if (FirstLoad === false) {
-                player_control_background.style.flexDirection = 'row';
+                player_control_background.classList.remove('rtl');
                 const rawpadding = window.getComputedStyle(player_control_background).paddingLeft;
                 player_control_background.style.paddingLeft = '';
                 player_control_background.style.paddingRight = rawpadding;
@@ -276,9 +273,9 @@ export function handlePlayerControlProperties(
     if (properties.player_control_showaway) {
         config.player_control_showaway = properties.player_control_showaway.value;
         if (properties.player_control_showaway.value === true) {
-            player_control.style.transform = 'translate(-100%, 0)';
+            player_control.classList.add('show-away');
         } else {
-            player_control.style.transform = 'translate(0, 0)';
+            player_control.classList.remove('show-away');
         }
     }
 

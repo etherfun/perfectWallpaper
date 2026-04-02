@@ -38,11 +38,15 @@
       position: relative;
       overflow: hidden;
       flex-shrink: 0;
+      width: var(--player-thumb-size, 100px);
+      height: var(--player-thumb-size, 100px);
+      border-radius: var(--player-thumb-radius, 0px);
 
       .thumbnail {
         background-size: cover;
-        width: 100%;
-        height: 100%;
+        width: var(--player-thumb-inner-size, 100%);
+        height: var(--player-thumb-inner-size, 100%);
+        border-radius: inherit;
       }
 
       .pause-overlay {
@@ -55,6 +59,7 @@
         display: none;
         justify-content: center;
         align-items: center;
+        border-radius: var(--player-thumb-radius, 0px);
 
         svg {
           width: 50%;
@@ -65,6 +70,7 @@
 
       &.circular {
         border-radius: 50% !important;
+        overflow: hidden;
 
         .thumbnail {
           border-radius: 50%;
@@ -217,5 +223,15 @@
         }
       }
     }
+  }
+
+  // RTL direction (for thumbnailrorl toggle)
+  &.rtl .background {
+    flex-direction: row-reverse;
+  }
+
+  // Show-away position (for showaway toggle)
+  &.show-away {
+    transform: translate(-100%, 0);
   }
 }

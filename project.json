@@ -440,7 +440,8 @@
 				"ui_sysmon_position" : "Position",
 				"ui_sysmon_position_left" : "Left",
 				"ui_sysmon_position_right" : "Right",
-				"ui_sysmon_server_url" : "Server URL",
+				"ui_sysmon_server_port" : "Server Port",
+				"ui_sysmon_auto_start" : "Auto Start with System",
 				"ui_sysmon_show_cpu" : "Show CPU",
 				"ui_sysmon_show_gpu" : "Show GPU",
 				"ui_sysmon_show_memory" : "Show Memory",
@@ -926,7 +927,8 @@
 				"ui_sysmon_position" : "位置",
 				"ui_sysmon_position_left" : "左侧",
 				"ui_sysmon_position_right" : "右侧",
-				"ui_sysmon_server_url" : "服务器地址",
+				"ui_sysmon_server_port" : "服务器端口",
+				"ui_sysmon_auto_start" : "开机自启动",
 				"ui_sysmon_show_cpu" : "显示CPU",
 				"ui_sysmon_show_gpu" : "显示GPU",
 				"ui_sysmon_show_memory" : "显示内存",
@@ -5032,14 +5034,25 @@
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_server_url" : 
+			"sysmon_server_port" :
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 388,
-				"order" : 488,
-				"text" : "ui_sysmon_server_url",
-				"type" : "textinput",
-				"value" : "http://localhost:3842/api/system"
+				"index" : 5100,
+				"max" : 65535,
+				"min" : 1024,
+				"order" : 5100,
+				"text" : "ui_sysmon_server_port",
+				"type" : "slider",
+				"value" : 3842
+			},
+			"sysmon_auto_start" :
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 5101,
+				"order" : 5101,
+				"text" : "ui_sysmon_auto_start",
+				"type" : "bool",
+				"value" : false
 			},
 			"sysmon_show_cpu" : 
 			{

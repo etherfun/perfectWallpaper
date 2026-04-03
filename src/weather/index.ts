@@ -95,9 +95,12 @@ export async function weather_init(): Promise<void> {
     isWeatherInitRunning = true;
 
     try {
-        showWeatherLoading();
+        const { weather_address, weather_data } = await import('./weatherState');
 
-        const { weather_address } = await import('./weatherState');
+        // 仅在无数据时显示加载状态
+        if (weather_data.temperature === "" && weather_data.weathernow === "") {
+            showWeatherLoading();
+        }
         if (weather_address.cityname === "") {
             try {
                 const citydata = await fetch_with_retry("http://i.tianqi.com/index.php?c=code&id=11", {});
@@ -112,7 +115,6 @@ export async function weather_init(): Promise<void> {
         if (handlerFactory) {
             try {
                 const handler = await handlerFactory();
-                const { weather_data } = await import('./weatherState');
                 await handler(weather_address, weather_data);
                 await generateWeatherTable();
             } catch (error) {

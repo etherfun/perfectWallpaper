@@ -14,8 +14,10 @@ export function showWeatherLoading(): void {
     const rightContainer = elements.weather.rightContainer;
     if (!leftContainer || !rightContainer) return;
 
-    // 保存原始子元素
-    const originalChildren = Array.from(leftContainer.children);
+    // 保存原始子元素（仅在尚未保存时保存，避免覆盖错误状态）
+    if (!(leftContainer as any)._originalChildren) {
+        (leftContainer as any)._originalChildren = Array.from(leftContainer.children);
+    }
 
     leftContainer.style.flex = '1';
     leftContainer.style.minWidth = 'auto';
@@ -25,9 +27,6 @@ export function showWeatherLoading(): void {
     leftContainer.style.justifyContent = 'center';
     leftContainer.style.alignItems = 'center';
     rightContainer.classList.add('hidden');
-
-    // 存储原始子元素用于恢复
-    (leftContainer as any)._originalChildren = originalChildren;
 
     leftContainer.innerHTML = `<div class="weather-loading">${i18n('weather_loading')}</div>`;
 }
@@ -64,6 +63,11 @@ export function showWeatherError(message: string): void {
     const leftContainer = elements.weather.leftContainer;
     const rightContainer = elements.weather.rightContainer;
     if (!leftContainer || !rightContainer) return;
+
+    // 保存当前子元素状态（以便后续恢复）
+    if (!(leftContainer as any)._originalChildren) {
+        (leftContainer as any)._originalChildren = Array.from(leftContainer.children);
+    }
 
     leftContainer.style.flex = '1';
     leftContainer.style.minWidth = 'auto';

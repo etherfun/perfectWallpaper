@@ -5052,11 +5052,9 @@
 			{
 				"condition" : "server_mode.value == true",
 				"index" : 15,
-				"max" : 65535,
-				"min" : 1024,
 				"order" : 115,
-				"text" : "sysmon_server_port",
-				"type" : "slider",
+				"text" : "ui_sysmon_server_port",
+				"type" : "textinput",
 				"value" : 3842
 			},
 			"sysmon_show_cpu" : 

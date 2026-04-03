@@ -7,7 +7,7 @@ on:
 
 jobs:
   triggered:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -19,16 +19,24 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build
         run: yarn build
 
+      - name: Build server
+        run: yarn build:server:rust
+
       - name: Create zip archive
         run: |
-          tag=$(echo ${{ github.ref_name }} | sed 's/^v//')
-          zip -r "perfectwallpaper-${tag}.zip" dist/
+          $tag = ${{ github.ref_name }} -replace '^v',''
+          Compress-Archive -Path dist\* -DestinationPath "perfectwallpaper-${tag}.zip"
 
       - name: Extract release notes
         id: release-notes
@@ -67,7 +75,9 @@ jobs:
 
       - name: Set release title output
         id: set-title
-        run: echo "name=$(cat RELEASE_TITLE.txt)" >> $GITHUB_OUTPUT
+        run: |
+          $title = Get-Content RELEASE_TITLE.txt -Raw
+          echo "name=$title" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2

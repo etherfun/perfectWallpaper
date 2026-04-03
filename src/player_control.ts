@@ -115,7 +115,7 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     const playerControlShow = config.player_control_show;
     if (!playerControlShow || config.runtime.playerInfo.singtitle === undefined || config.runtime.playerInfo.singtitle === '') return;
 
-    playertitle(config.player_control_visualaudiobar);
+    playertitle(Boolean(config.player_control_visualaudiobar));
 }
 
 /**
@@ -193,8 +193,8 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
                 colorToRgb(palette?.[1]),
                 colorToRgb(palette?.[2])
             ],
-            playerControlYakelicColor,
-            playerControlColor
+            [playerControlYakelicColor],
+            [playerControlColor]
         ];
     } else {
         // 自定义封面只用 colorthief 提取的颜色
@@ -211,8 +211,8 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
                 colorToRgb(palette?.[1]) || [0, 0, 0],
                 colorToRgb(palette?.[2]) || [0, 0, 0]
             ],
-            playerControlYakelicColor,
-            playerControlColor
+            [playerControlYakelicColor],
+            [playerControlColor]
         ];
     }
 
@@ -434,6 +434,7 @@ export function thumbnailsue(): void {
     const playerControlYakelibgusetb = config.player_control_yakelibgusetb;
     const playerControlFontusetb = config.player_control_fontusetb;
     const playerControlYakeli = config.player_control_yakeli;
+    const playerControlYakelicColor = config.player_control_yakelic_color;
     const playerControlColor = config.player_control_color;
 
     let thumbnailcolor: [number, number, number] | string | null;
@@ -441,7 +442,7 @@ export function thumbnailsue(): void {
     if (playerControlYakelibgusetb !== 5) {
         thumbnailcolor = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlYakelibgusetb - 1];
     } else {
-        thumbnailcolor = playerControlYakeli;
+        thumbnailcolor = playerControlYakelicColor;
     }
 
     if (playerControlFontusetb !== 5) {

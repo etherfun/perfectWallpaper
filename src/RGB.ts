@@ -33,7 +33,7 @@ function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
  * 发送RGB数据到LED设备
  */
 function startRGBInternal(canvas: HTMLCanvasElement): void {
-    if (!config.wallpaperSettings.ledPlugin) return;
+    if (!config.wallpaper_settings.ledPlugin) return;
     const encodedImageData = getEncodedCanvasImageData(canvas);
     if (window.wpPlugins?.led) {
         window.wpPlugins.led.setAllDevicesByImageData(encodedImageData, canvas.width, canvas.height);
@@ -66,9 +66,9 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         const opacitySaRGB = config.opacity_sa_rgb;
         const particlesRGB = config.particles_rgb;
         const audiobarRGB = config.audiobar_rgb;
-        const audiobarrainbowcolor = config.audiobarrainbowcolor;
-        const rainbowmove = config.rainbowmove;
-        const rainbowmovespeed = config.rainbowmovespeed;
+        const audiobarRainbowColor = config.audiobar_rainbow_color;
+        const rainbowMove = config.rainbow_move;
+        const rainbowMoveSpeed = config.rainbow_move_speed;
         const aurgbcolor = config.aurgbcolor;
         const aurgbhigh = config.aurgbhigh;
         const RGBRefresh = config.rgb_refresh;
@@ -84,7 +84,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         if (particlesRGB && particles) { rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20); }
 
         const audioArray = config.runtime.playerInfo.audioArray;
-        if (audiobarrainbowcolor) {
+        if (audiobarRainbowColor) {
             if (audiobarRGB && audioArray && audioArray.length > 0) {
                 const barWidth = bg.width / 128;
                 const scaleFactor = aurgbhigh;
@@ -115,8 +115,8 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                     rgbbg.fillStyle = rgbColor;
                     rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
                 }
-                if (rainbowmove) {
-                    time += rainbowmovespeed;
+                if (rainbowMove) {
+                    time += rainbowMoveSpeed;
                 }
             }
         } else {
@@ -148,8 +148,8 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         rgbbg.restore();
         startRGBInternal(bg);
 
-        if (config.wallpaperSettings.ledPlugin && !nextphoto && !isPaused && RGBShow && (videoORimages || (sakurause || particlesRGB || audiobarRGB))) {
-            if (RGBRefresh !== 'free') {
+        if (config.wallpaper_settings.ledPlugin && !nextphoto && !isPaused && RGBShow && (videoORimages || (sakurause || particlesRGB || audiobarRGB))) {
+            if (RGBRefresh > 0) {
                 setTimeout(() => {
                     requestAnimationFrame(drawbackground);
                 }, RGBRefresh as number);

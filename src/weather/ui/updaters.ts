@@ -21,7 +21,7 @@ export async function updateMainWeatherDisplay(): Promise<void> {
     const e = elements.weather;
 
     // 图标
-    if ([1, 4, 5].includes(config.weather_api_choose)) {
+    if ([1, 4, 5].includes(config.weather_api_choose ?? 0)) {
         try {
             const iconRes = await fetch_with_retry(`src/source/QWeather-Icons/icons/${weather_data.icon}-fill.svg`);
             const iconSvg = await iconRes.text();
@@ -38,7 +38,7 @@ export async function updateMainWeatherDisplay(): Promise<void> {
     e.text.textContent = weather_data.weathernow || "";
 
     // 体感温度（条件显示）
-    if ([1, 3, 4, 5].includes(config.weather_api_choose)) {
+    if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.feels.style.display = '';
         e.feels.textContent = `${i18n('weather_feels_label')} ${weather_data.feels}${wunit?.temp || "℃"}`;
     } else {
@@ -46,7 +46,7 @@ export async function updateMainWeatherDisplay(): Promise<void> {
     }
 
     // 城市（条件显示）
-    if ([1, 2, 3, 4].includes(config.weather_api_choose)) {
+    if ([1, 2, 3, 4].includes(config.weather_api_choose ?? 0)) {
         e.city.style.display = '';
         e.city.textContent = weather_address.cityname;
     } else {
@@ -64,7 +64,7 @@ export function updateWeatherDetails(): void {
     e.tempRange.textContent = `${weather_data.temperature_max} ~ ${weather_data.temperature_min}℃`;
 
     // 湿度（条件显示）
-    if ([1, 3, 4, 5].includes(config.weather_api_choose)) {
+    if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.humidity.style.display = '';
         e.humidity.textContent = `${i18n('weather_humidity_label')}${weather_data.humidity}%`;
     } else {
@@ -75,7 +75,7 @@ export function updateWeatherDetails(): void {
     e.windDirection.textContent = weather_data.wind;
 
     // 风级（条件显示）
-    if ([1, 2].includes(config.weather_api_choose)) {
+    if ([1, 2].includes(config.weather_api_choose ?? 0)) {
         e.windLevel.style.display = '';
         e.windLevel.textContent = `${weather_data.windLv}${i18n('weather_wind_level_label')}`;
     } else {
@@ -83,7 +83,7 @@ export function updateWeatherDetails(): void {
     }
 
     // 风速（条件显示）
-    if ([1, 3, 4, 5].includes(config.weather_api_choose)) {
+    if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.windSpeed.style.display = '';
         e.windSpeed.textContent = `${weather_data.windSpeed}${wunit?.wind || "km/h"}`;
     } else {
@@ -91,7 +91,7 @@ export function updateWeatherDetails(): void {
     }
 
     // 能见度（条件显示）
-    if ([1].includes(config.weather_api_choose)) {
+    if ([1].includes(config.weather_api_choose ?? 0)) {
         e.visibility.style.display = '';
         e.visibility.textContent = `${i18n('weather_visibility_label')}${weather_data.vis}${wunit?.vis || "km"}`;
     } else {
@@ -105,12 +105,12 @@ export function updateWeatherDetails(): void {
 export function updateWeatherExtendedInfo(): void {
     const e = elements.weather;
 
-    if ([1, 3, 4, 5].includes(config.weather_api_choose)) {
+    if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.detailRow.style.display = '';
         e.uvIndex.textContent = `${i18n('weather_uv_label')}${weather_data.uvindex}`;
 
         // 云量（条件显示）
-        if ([1, 4, 5].includes(config.weather_api_choose)) {
+        if ([1, 4, 5].includes(config.weather_api_choose ?? 0)) {
             e.cloud.style.display = '';
             e.cloud.textContent = `${i18n('weather_cloud_label')}${weather_data.cloud}%`;
         } else {
@@ -121,15 +121,15 @@ export function updateWeatherExtendedInfo(): void {
         e.sunset.textContent = `${i18n('weather_sunset_label')}${formatTime(weather_data.sunset)}`;
 
         // 月相（条件显示）
-        if ([1, 4].includes(config.weather_api_choose)) {
+        if ([1, 4].includes(config.weather_api_choose ?? 0)) {
             e.moonphase.style.display = '';
             e.moonphase.textContent = weather_data.moonphase;
         } else {
             e.moonphase.style.display = 'none';
         }
-    } else if ([2].includes(config.weather_api_choose)) {
+    } else if ([2].includes(config.weather_api_choose ?? 0)) {
         e.detailRow.style.display = 'none';
-    } else if ([3].includes(config.weather_api_choose)) {
+    } else if ([3].includes(config.weather_api_choose ?? 0)) {
         e.detailRow.style.display = 'none';
     }
 }
@@ -140,7 +140,7 @@ export function updateWeatherExtendedInfo(): void {
 export function updateAirQualityAndAlerts(): void {
     const e = elements.weather;
 
-    if ([1].includes(config.weather_api_choose)) {
+    if ([1].includes(config.weather_api_choose ?? 0)) {
         e.airRow.style.display = '';
         e.airQuality.textContent = i18n('weather_air_quality_label');
         e.airValue.textContent = getAirQualityText(weather_data.air);
@@ -152,7 +152,7 @@ export function updateAirQualityAndAlerts(): void {
         } else {
             e.alertContainer.style.display = 'none';
         }
-    } else if ([2, 3].includes(config.weather_api_choose)) {
+    } else if ([2, 3].includes(config.weather_api_choose ?? 0)) {
         e.airRow.style.display = '';
         e.airQuality.textContent = '';
         e.airValue.textContent = '';
@@ -174,7 +174,7 @@ export function updateAirQualityAndAlerts(): void {
 export function updatePrecipContainer(): void {
     const e = elements.weather;
 
-    if ([1, 4, 5].includes(config.weather_api_choose)) {
+    if ([1, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.precipContainer.style.display = '';
         const showTemp = showTemperatureInsteadOfPrecip;
         const label = showTemp ? i18n('weather_show_temperature') : i18n('weather_show_precipprob');

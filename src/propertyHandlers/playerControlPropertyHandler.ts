@@ -92,7 +92,7 @@ export function handlePlayerControlProperties(
 
     if (properties.player_control_color) {
         const color = properties.player_control_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.player_control_color = color;
+        config.player_control_color = color as [number, number, number];
         elements.body.style.setProperty("--player-color", color.join(', '));
     }
 
@@ -103,7 +103,7 @@ export function handlePlayerControlProperties(
 
     if (properties.player_control_blurcolor) {
         const blurcolor = properties.player_control_blurcolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.player_control_blurcolor = blurcolor;
+        config.player_control_blurcolor = blurcolor as [number, number, number];
         elements.body.style.setProperty("--player-blur-color", blurcolor.join(', '));
     }
 
@@ -114,7 +114,7 @@ export function handlePlayerControlProperties(
 
     if (properties.player_control_yakelicolor) {
         const yakeliccolor = properties.player_control_yakelicolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.player_control_yakelic_color = yakeliccolor;
+        config.player_control_yakelic_color = yakeliccolor as [number, number, number];
         elements.body.style.setProperty("--player-yakeli-color", yakeliccolor.join(', '));
     }
 
@@ -131,11 +131,11 @@ export function handlePlayerControlProperties(
 
     if (properties.player_control_size) {
         const s = properties.player_control_size.value;
-        config.player_control_size_value = Math.floor(config.screenHeight / 150 * s);
-        player_control.style.fontSize = Math.floor(config.screenHeight / 300 * s) + 'px';
-        player_control.style.lineHeight = Math.floor(config.screenHeight / 700 * s) + 'px';
-        player_control_artist.style.lineHeight = Math.floor(config.screenHeight / 1000 * s) + 'px';
-        player_control_albumTitle.style.lineHeight = Math.floor(config.screenHeight / 1000 * s) + 'px';
+        config.player_control_size_value = Math.floor(window.innerHeight / 150 * s);
+        player_control.style.fontSize = Math.floor(window.innerHeight / 300 * s) + 'px';
+        player_control.style.lineHeight = Math.floor(window.innerHeight / 700 * s) + 'px';
+        player_control_artist.style.lineHeight = Math.floor(window.innerHeight / 1000 * s) + 'px';
+        player_control_albumTitle.style.lineHeight = Math.floor(window.innerHeight / 1000 * s) + 'px';
        
     }
 
@@ -227,7 +227,7 @@ export function handlePlayerControlProperties(
             player_control_background.style.width = 'auto';
         } else {
             const s = properties.player_control_showwidth.value / 100;
-            player_control_background.style.width = config.screenWidth * s + 'px';
+            player_control_background.style.width = window.innerWidth * s + 'px';
         }
     }
 

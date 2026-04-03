@@ -60,8 +60,8 @@ export function handleTimeProperties(
     if (properties.tSize) {
         const s = properties.tSize.value;
         config.t_size = s;
-        elements.body.style.setProperty("--clock-font-size", Math.floor(config.screenHeight / 300 * s) + 'px');
-        elements.body.style.setProperty("--clock-line-height", Math.floor(config.screenHeight / 390 * s) + 'px');
+        elements.body.style.setProperty("--clock-font-size", Math.floor(window.innerHeight / 300 * s) + 'px');
+        elements.body.style.setProperty("--clock-line-height", Math.floor(window.innerHeight / 390 * s) + 'px');
         const indicators = document.querySelector("#clock .clock-block .time-indicators") as HTMLElement | null;
         if (indicators) indicators.style.marginLeft = s + 'px';
     }
@@ -126,7 +126,7 @@ export function handleTimeProperties(
     }
 
     if (properties.oclock_blurcolor) {
-        config.oclock_blurcolor = properties.oclock_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.oclock_blurcolor = properties.oclock_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--clock-blur-color", config.oclock_blurcolor.join(', '));
     }
 
@@ -136,7 +136,7 @@ export function handleTimeProperties(
     }
 
     if (properties.oclock_yakelicolor) {
-        config.oclock_yakelic_color = properties.oclock_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.oclock_yakelic_color = properties.oclock_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--clock-yakeli-color", config.oclock_yakelic_color.join(', '));
     }
 

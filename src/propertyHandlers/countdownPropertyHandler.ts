@@ -36,8 +36,8 @@ export function handleCountdownProperties(
     if (properties.countdown_size) {
         config.countdown_size = properties.countdown_size.value;
         const s = properties.countdown_size.value;
-        bodyElement.style.setProperty("--countdown-font-size", Math.floor(config.screenHeight / 300 * s) + 'px');
-        //bodyElement.style.setProperty("--countdown-line-height", Math.floor(config.screenHeight / 570 * s) + 'px');
+        bodyElement.style.setProperty("--countdown-font-size", Math.floor(window.innerHeight / 300 * s) + 'px');
+        //bodyElement.style.setProperty("--countdown-line-height", Math.floor(window.innerHeight / 570 * s) + 'px');
     }
 
     // 倒计时文本
@@ -76,7 +76,7 @@ export function handleCountdownProperties(
     // 倒计时颜色
     if (properties.countdown_color) {
         const color = properties.countdown_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        config.countdown_color = color;
+        config.countdown_color = color as [number, number, number];
         bodyElement.style.setProperty("--countdown-color", color.join(', '));
     }
 
@@ -87,7 +87,7 @@ export function handleCountdownProperties(
 
     if (properties.countdown_blurcolor) {
         const color = properties.countdown_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        config.countdown_blurcolor = color;
+        config.countdown_blurcolor = color as [number, number, number];
         bodyElement.style.setProperty("--countdown-blur-color", color.join(', '));
     }
 
@@ -98,7 +98,7 @@ export function handleCountdownProperties(
 
     if (properties.countdown_yakelicolor) {
         const color = properties.countdown_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
-        config.countdown_yakelic_color = color;
+        config.countdown_yakelic_color = color as [number, number, number];
         bodyElement.style.setProperty("--countdown-yakeli-color", color.join(', '));
     }
 
@@ -144,7 +144,7 @@ export function handleCountdownProperties(
             bodyElement.style.setProperty("--countdown-show-width", 'auto');
         } else {
             const s = properties.countdown_showwidth.value / 100;
-            bodyElement.style.setProperty("--countdown-show-width", config.screenWidth * s + "px");
+            bodyElement.style.setProperty("--countdown-show-width", window.innerWidth * s + "px");
         }
     }
 

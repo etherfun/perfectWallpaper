@@ -69,17 +69,17 @@ export function handleRGBProperties(
 
     // 彩虹颜色模式
     if (properties.rgb_color_rainbow) {
-        config.audiobarrainbowcolor = properties.rgb_color_rainbow.value;
+        config.audiobar_rainbow_color = properties.rgb_color_rainbow.value;
     }
 
     // 彩虹移动
     if (properties.rgb_color_rainbow_move) {
-        config.rainbowmove = properties.rgb_color_rainbow_move.value;
+        config.rainbow_move = properties.rgb_color_rainbow_move.value;
     }
 
     // 彩虹移动速度
     if (properties.rgb_color_rainbow_movespeed) {
-        config.rainbowmovespeed = properties.rgb_color_rainbow_movespeed.value;
+        config.rainbow_move_speed = properties.rgb_color_rainbow_movespeed.value;
     }
 
     if (FirstLoad) {

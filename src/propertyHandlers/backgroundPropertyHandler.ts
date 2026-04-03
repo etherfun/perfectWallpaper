@@ -223,8 +223,8 @@ export function handleBackgroundProperties(
     if (properties.picturesinfo_size) {
         const s = properties.picturesinfo_size.value;
         config.pictures_info_size = s;
-        elements.body.style.setProperty("--picture-info-font-size", Math.floor(config.screenHeight / 600 * s) + 'px');
-        elements.body.style.setProperty("--picture-info-line-height", Math.floor(config.screenHeight / 1140 * s) + 'px');
+        elements.body.style.setProperty("--picture-info-font-size", Math.floor(window.innerHeight / 600 * s) + 'px');
+        elements.body.style.setProperty("--picture-info-line-height", Math.floor(window.innerHeight / 1140 * s) + 'px');
     }
 
     // 图片信息显示开关
@@ -237,7 +237,7 @@ export function handleBackgroundProperties(
 
     // 图片信息文字颜色
     if (properties.picturesinfo_color) {
-        const color = properties.picturesinfo_color.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
+        const color = properties.picturesinfo_color.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
         config.pictures_info_color = color;
         elements.body.style.setProperty("--picture-info-color", color.join(', '));
     }
@@ -251,7 +251,7 @@ export function handleBackgroundProperties(
 
     // 图片信息模糊背景颜色
     if (properties.picturesinfo_blurcolor) {
-        const color = properties.picturesinfo_blurcolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
+        const color = properties.picturesinfo_blurcolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
         config.pictures_info_blurcolor = color;
         elements.body.style.setProperty("--picture-info-blur-color", color.join(', '));
     }
@@ -265,7 +265,7 @@ export function handleBackgroundProperties(
 
     // 图片信息亚克力效果颜色
     if (properties.picturesinfo_yakelicolor) {
-        const color = properties.picturesinfo_yakelicolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255));
+        const color = properties.picturesinfo_yakelicolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
         config.pictures_info_yakelic_color = color;
         elements.body.style.setProperty("--picture-info-yakeli-color", color.join(', '));
     }
@@ -334,7 +334,7 @@ export function handleBackgroundProperties(
             elements.body.style.setProperty("--picture-info-show-width", 'auto');
         } else {
             const s = width / 100;
-            elements.body.style.setProperty("--picture-info-show-width", config.screenWidth * s + "px");
+            elements.body.style.setProperty("--picture-info-show-width", window.innerWidth * s + "px");
         }
     }
 

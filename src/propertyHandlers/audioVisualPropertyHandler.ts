@@ -162,14 +162,14 @@ export function handleAudioVisualProperties(
     if (properties.color && ctx && param) {
         const c = properties.color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
         ctx.strokeStyle = param.color = 'rgba(' + c + ',0.8)';
-        config.pw_circle_color = c;
+        config.pw_circle_color = c as [number, number, number];
     }
 
     // 模糊颜色
     if (properties.blurColor && ctx && param) {
         const c = properties.blurColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
         ctx.shadowColor = param.blurColor = 'rgb(' + c + ')';
-        config.pw_circle_blur_color = c;
+        config.pw_circle_blur_color = c as [number, number, number];
     }
 
     // 圆的位置
@@ -312,14 +312,14 @@ export function handleAudioVisualProperties(
     if (properties.PWLineColor && CTXLine && PWLineParam) {
         const c = properties.PWLineColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
         CTXLine.strokeStyle = PWLineParam.color = 'rgba(' + c + ',0.8)';
-        config.pw_line_color = c;
+        config.pw_line_color = c as [number, number, number];
     }
 
     // 模糊颜色
     if (properties.PWLineBlurColor && CTXLine && PWLineParam) {
         const c = properties.PWLineBlurColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
         CTXLine.shadowColor = PWLineParam.blurColor = 'rgb(' + c + ')';
-        config.pw_line_blur_color = c;
+        config.pw_line_blur_color = c as [number, number, number];
     }
 
     // 圆的位置
@@ -446,14 +446,14 @@ export function handleAudioVisualProperties(
     // 颜色
     if (properties.audio_color) {
         const c = properties.audio_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.audio_color = c;
+        config.audio_color = c as [number, number, number];
         wallpaper?.audiovisualizer('set', 'color', c);
     }
 
     // 模糊颜色
     if (properties.audio_shadowColor) {
         const c = properties.audio_shadowColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.audio_shadow_color = c;
+        config.audio_shadow_color = c as [number, number, number];
         wallpaper?.audiovisualizer('set', 'shadowColor', c);
     }
 

@@ -4,12 +4,59 @@ import { FluidEffect } from '../fluid';
 import { WallpaperEffectController } from '../WallpaperEffectController';
 import { versionManager } from '../version';
 
-// ============== 类型定义 ==============
+// 类型
 
 type ConfigListener = (key: string, value: unknown) => void;
 type ConfigValue = typeof SYNC_DEFAULTS[keyof typeof SYNC_DEFAULTS];
 
-// ============== 运行时数据类型 ==============
+const RUNTIME_DATA_DEFAULTS: RuntimeData = {
+    playerInfo: {
+        audioArray: [],
+        playerState: null,
+        singtitle: '',
+        singartist: '',
+        singalbumTitle: '',
+        aubarstop: true,
+        colorGroup: null,
+        fontcolor: null,
+        externalMediaActive: false,
+        builtInPlayerInitializing: false,
+    },
+    versionManager: undefined,
+    debugLogger: undefined,
+    FluidEffect2: undefined,
+    fluidEffect: undefined,
+    fullscreenFluidEffect: undefined,
+    FluidEffect: undefined,
+    fullscreenFluidEnabled: false,
+    pictureInfoHideStyleAdded: false,
+    files: {},
+    myList: [],
+    photo: {
+        currentImg: null,
+        nextphoto: false,
+        infomation: { title: "", text: "", copyright: "", where: "" },
+    },
+    wallpaper: null,
+    param: {
+        style: 1, r: 0.45, color: "rgba(255,255,255,0.8)", blurColor: "#ffcccc",
+        arr1: [], arr2: [], rotation: 0, rotationcopy: 0, offsetAngle: 0,
+        waveArr: new Array(120), cX: 0.5, cY: 0.5, range: 9, shadowBlur: 15,
+        lineWidth: 9, showCircle: true, wavetransparency: 0.8, showSemiCircle: false,
+        SemiCircledirection: 1, Polygon: 12, PolygonAngle: 0, direction: 1,
+        SolidColorGradient: true, BlurColorGradient: true, ColorRhythm: true,
+        ColorMode: 1, TagNow: 1, GradientRate: 0.5,
+    },
+    PWLineParam: {
+        style: 1, sw: 0.8, lineWidth: 9, waveArr: new Array(120), range: 5,
+        color: "rgba(255,255,255,0.8)", blurColor: "#ffcccc", shadowBlur: 100,
+        arr1: [], arr2: [], arr3: [], LineX: 0.5, LineY: 0.5, showLine: true,
+        LinePosition: 1, Direction: 1, LineDensity: 120, LineTransparency: 0.8,
+        MiddleLine: false, TagNow: 1, SolidColorGradient: true, BlurColorGradient: true,
+        ColorRhythm: true, ColorMode: 1, GradientRate: 0.5,
+    },
+    hitokoto: { hitokoto_text: "未获取", from_text: "未获取", from_who_text: "未获取" },
+};
 
 interface RuntimeData {
     playerInfo: {
@@ -109,41 +156,33 @@ interface RuntimeData {
     };
 }
 
-// ============== 默认配置 ==============
-
 const SYNC_DEFAULTS = {
-    // 核心运行时配置
     language: "zh-CN",
     language_code: "zh",
     font_setting: "",
     first_load: true,
     paused: false,
 
-    // 初始化状态配置
     date_init_complete: false,
     bg_init_complete: false,
     weather_init_complete: false,
     fluid_effect_init_complete: false,
     update_init_complete: false,
 
-    // 路径配置
     background_route: "./src/source/imgs/1.jpg",
     video_route: "",
     cusvideo_route: "",
     cusaudio_route: "",
     map_route: "./src/source/map/1.png",
 
-    // 视频配置
     video_model: 1,
     video_volume: 0.5,
     video_model_now: 1,
     select_video: "",
 
-    // 图片API配置
     galaxy_api: 1,
     chiyuanapi: "https://t.alcy.cc/ycy/?json",
 
-    // 图片背景位置和尺寸配置
     bgy: "512px",
     bgx: "512px",
     bgs: "100%",
@@ -151,7 +190,6 @@ const SYNC_DEFAULTS = {
     custom: "",
     customdirectory: "",
 
-    // 图片信息配置
     frist_picturesinfo: true,
     pictures_info_show_ror_l: null,
     pictures_info_color: null,
@@ -172,7 +210,6 @@ const SYNC_DEFAULTS = {
     pictures_info_showwidth: 0,
     pictures_info_description: false,
 
-    // 音频配置
     music_model: 0,
     music_volume: 0.5,
     selectmusic: {} as Record<string, string>,
@@ -180,9 +217,8 @@ const SYNC_DEFAULTS = {
     music_playlist: [] as string[],
     music_playlist_index: 0,
     music_playlist_random: false,
-    music_playlist_repeat: 0, // 0: none, 1: all, 2: one
+    music_playlist_repeat: 0,
 
-    // 音频可视化配置
     visual_audio_model: 1,
     audio_smooth_enabled: true,
     audio_smooth_factor: 70,
@@ -191,7 +227,6 @@ const SYNC_DEFAULTS = {
     pw_line_show_bool: true,
     polygon_angle: 1,
 
-    // 圆圈可视化配置
     pw_circle_style: 1,
     pw_circle_radius: 50,
     pw_circle_range: 50,
@@ -211,7 +246,6 @@ const SYNC_DEFAULTS = {
     pw_circle_show_semi_circle: false,
     pw_circle_semicircle_direction: 0,
 
-    // 直线可视化配置
     pw_line_position: 50,
     pw_line_style: 1,
     pw_line_direction: 0,
@@ -231,7 +265,6 @@ const SYNC_DEFAULTS = {
     pw_line_color_rhythm: false,
     pw_line_gradient_rate: 10,
 
-    // 音频可视化(wallpaper.audiovisualizer)参数
     audio_amplitude: 50,
     audio_decline: 50,
     audio_is_ring: false,
@@ -258,7 +291,6 @@ const SYNC_DEFAULTS = {
     audio_ball_size: 50,
     audio_ball_rotation: 50,
 
-    // 幻灯片配置
     slide_now: false,
     wallpaper_mode: 1,
     transition_mode: 1,
@@ -269,7 +301,6 @@ const SYNC_DEFAULTS = {
     speed: 1,
     bg_style: 1,
 
-    // 樱花配置
     show_sakura: true,
     sakura_transparency: 0.15,
     sakura_background: true,
@@ -278,12 +309,10 @@ const SYNC_DEFAULTS = {
     sakura_point_number: 300,
     sakura_back_light: 1 / 100.0,
 
-    // 时间配置
     time_transparency: 0.8,
     time_x: 50,
     time_y: 50,
 
-    // 日期格式配置
     date_format: {
         year_format: 1,
         month_format: 1,
@@ -293,7 +322,6 @@ const SYNC_DEFAULTS = {
         order: 1,
     },
 
-    // 天气配置
     weather_api_choose: null,
     citynumber: "",
     weather_updata: 3,
@@ -301,7 +329,6 @@ const SYNC_DEFAULTS = {
     weather_lang: "en",
     qweather_api_paymode: false,
 
-    // 一言配置
     hitokoto_update: 6,
     hitokoto_init: false,
     hitokoto_format_test: 1,
@@ -314,7 +341,6 @@ const SYNC_DEFAULTS = {
     hitokoto_x: 50,
     hitokoto_y: 50,
 
-    // 一言分类配置
     hit_a: "",
     hit_b: "",
     hit_c: "",
@@ -328,7 +354,6 @@ const SYNC_DEFAULTS = {
     hit_k: "",
     hit_l: "",
 
-    // 一言颜色配置
     hitokoto_color: [255, 255, 255] as [number, number, number],
     hitokoto_blurcolor_show: false,
     hitokoto_blurcolor: [255, 255, 255] as [number, number, number],
@@ -337,14 +362,12 @@ const SYNC_DEFAULTS = {
     hitokoto_yakeli: 0,
     hitokoto_bluryakeli: 10,
 
-    // 天气API配置
     city_key: "",
     api_host: "",
     visual_crossing_key: "",
     weather_app_id: "",
     weather_app_secret: "",
 
-    // 天气颜色配置
     weather_color: [255, 255, 255] as [number, number, number],
     weather_blurcolor_show: false,
     weather_blurcolor: [255, 255, 255] as [number, number, number],
@@ -354,7 +377,6 @@ const SYNC_DEFAULTS = {
     weather_bluryakeli: 10,
     weather_daily_tip: false,
 
-    // 天气位置和尺寸配置
     weather_latitude: "",
     weather_longitude: "",
     weather_city_text: "",
@@ -365,7 +387,6 @@ const SYNC_DEFAULTS = {
     weather_x: 50,
     weather_y: 50,
 
-    // 倒计时日期配置
     countdown_year: new Date().getFullYear(),
     countdown_month: new Date().getMonth() + 1,
     countdown_day: new Date().getDate(),
@@ -377,12 +398,10 @@ const SYNC_DEFAULTS = {
     countdown_yakeli: 0,
     countdown_bluryakeli: 10,
 
-    // 倒计时文本配置
     countdown_txt: "",
     countdown_txt1: "",
     first_load_countdown: true,
 
-    // 倒计时样式配置
     countdown_y: 80,
     countdown_x: 50,
     countdown_size: 50,
@@ -390,10 +409,8 @@ const SYNC_DEFAULTS = {
     countdown_timetransparency: 80,
     countdown_roundedcorners: 0,
 
-    // 播放器自动隐藏配置
     player_control_autohide: true,
 
-    // 播放器控制配置
     player_control_show: false,
     player_control_scalefactor: 1,
     player_control_color: [255, 255, 255] as [number, number, number],
@@ -424,10 +441,8 @@ const SYNC_DEFAULTS = {
     playerx: 50,
     player_control_roundedcorners: 0,
 
-    // 日期格式测试
     date_format_test: 1,
 
-    // 时间显示配置
     t_show_sencends: true,
     time_color_rhythm: false,
     time_color: "rgb(255, 255, 255)",
@@ -436,27 +451,21 @@ const SYNC_DEFAULTS = {
     time_style: true,
     t_size: 100,
 
-    // 日期圆角配置
     odate_roundedcorners: 0,
     oclock_roundedcorners: 0,
     date_color_rhythm: false,
     date_color: [255, 255, 255] as [number, number, number],
 
-    // 日期透明度
     date_transparency: 0.8,
 
-    // 日期显示配置
     show_date: true,
 
-    // 日期位置
     date_x: 50,
     date_y: 45,
 
-    // 日期大小
     date_size: 100,
     date_showwidth: 0,
 
-    // 日期颜色配置
     odate_color: [255, 255, 255] as [number, number, number],
     odate_blurcolor_show: false,
     odate_blurcolor: [255, 255, 255] as [number, number, number],
@@ -465,7 +474,6 @@ const SYNC_DEFAULTS = {
     odate_yakeli: 0,
     odate_bluryakeli: 10,
 
-    // 时钟颜色配置
     oclock_color: [255, 255, 255] as [number, number, number],
     oclock_blurcolor_show: false,
     oclock_blurcolor: [255, 255, 255] as [number, number, number],
@@ -474,7 +482,6 @@ const SYNC_DEFAULTS = {
     oclock_yakeli: 0,
     oclock_bluryakeli: 10,
 
-    // RGB灯光效果配置
     wallpaper_settings: {
         ledPlugin: false,
         cuePlugin: false,
@@ -493,7 +500,6 @@ const SYNC_DEFAULTS = {
     rainbow_move: false,
     rainbow_move_speed: 1,
 
-    // 流体效果配置
     fluid_effect_enabled: false,
     fluid_effect_enabled_fullscreen: false,
     fluid_effect_resolution: 240,
@@ -504,7 +510,6 @@ const SYNC_DEFAULTS = {
     fluid_effect_dark_overlay_strength: 50,
     fluid_effect_backdrop_filter_strength: 10,
 
-    // 全屏歌词配置
     fullscreen_lyrics_enabled: false,
     fullscreen_lyrics_show_translation: true,
     fullscreen_lyrics_show_roman: false,
@@ -513,7 +518,6 @@ const SYNC_DEFAULTS = {
     fullscreen_lyrics_hide_other: true,
     fullscreen_lyrics_show_clock: false,
 
-    // 粒子效果配置
     particles_is_particles: false,
     particles_number: 100,
     particles_opacity: 100,
@@ -538,15 +542,9 @@ const SYNC_DEFAULTS = {
     particles_is_bounce: false,
     particles_move_out_mode: 1,
 
-    // 插件配置
     server_mode: false,
 };
 
-// ============== ConfigClass ==============
-
-/**
- * AppConfig - 应用程序运行时配置管理类
- */
 class AppConfig {
     private static _instance: AppConfig | null = null;
     private _values: Map<string, ConfigValue>;
@@ -555,120 +553,16 @@ class AppConfig {
     private _flushScheduled = false;
     public runtime: RuntimeData;
 
-    private constructor() {
+    constructor() {
         this._values = new Map();
         this._listeners = new Set();
         this._changeBuffer = new Map();
         this._flushScheduled = false;
 
-        // 初始化默认配置
         this._initDefaults();
+        this.runtime = RUNTIME_DATA_DEFAULTS;
 
-        // 运行时数据
-        this.runtime = this._createRuntime();
-
-        // 注册 debugLogger
         registerDebugLogger(this as unknown as { runtime: { debugLogger: typeof debugLogger } });
-    }
-
-    private _createRuntime(): RuntimeData {
-        return {
-            playerInfo: {
-                audioArray: [],
-                playerState: null,
-                singtitle: '',
-                singartist: '',
-                singalbumTitle: '',
-                aubarstop: true,
-                colorGroup: null,
-                fontcolor: null,
-                externalMediaActive: false,
-                builtInPlayerInitializing: false,
-            },
-            versionManager: undefined,
-            debugLogger: undefined,
-            FluidEffect2: undefined,
-            fluidEffect: undefined,
-            fullscreenFluidEffect: undefined,
-            FluidEffect: undefined,
-            fullscreenFluidEnabled: false,
-            pictureInfoHideStyleAdded: false,
-            files: {},
-            myList: [],
-            photo: {
-                currentImg: null,
-                nextphoto: false,
-                infomation: {
-                    title: "",
-                    text: "",
-                    copyright: "",
-                    where: "",
-                },
-            },
-            wallpaper: null,
-            param: {
-                style: 1,
-                r: 0.45,
-                color: "rgba(255,255,255,0.8)",
-                blurColor: "#ffcccc",
-                arr1: [],
-                arr2: [],
-                rotation: 0,
-                rotationcopy: 0,
-                offsetAngle: 0,
-                waveArr: new Array(120),
-                cX: 0.5,
-                cY: 0.5,
-                range: 9,
-                shadowBlur: 15,
-                lineWidth: 9,
-                showCircle: true,
-                wavetransparency: 0.8,
-                showSemiCircle: false,
-                SemiCircledirection: 1,
-                Polygon: 12,
-                PolygonAngle: 0,
-                direction: 1,
-                SolidColorGradient: true,
-                BlurColorGradient: true,
-                ColorRhythm: true,
-                ColorMode: 1,
-                TagNow: 1,
-                GradientRate: 0.5,
-            },
-            PWLineParam: {
-                style: 1,
-                sw: 0.8,
-                lineWidth: 9,
-                waveArr: new Array(120),
-                range: 5,
-                color: "rgba(255,255,255,0.8)",
-                blurColor: "#ffcccc",
-                shadowBlur: 100,
-                arr1: [],
-                arr2: [],
-                arr3: [],
-                LineX: 0.5,
-                LineY: 0.5,
-                showLine: true,
-                LinePosition: 1,
-                Direction: 1,
-                LineDensity: 120,
-                LineTransparency: 0.8,
-                MiddleLine: false,
-                TagNow: 1,
-                SolidColorGradient: true,
-                BlurColorGradient: true,
-                ColorRhythm: true,
-                ColorMode: 1,
-                GradientRate: 0.5,
-            },
-            hitokoto: {
-                hitokoto_text: "未获取",
-                from_text: "未获取",
-                from_who_text: "未获取",
-            },
-        };
     }
 
     private _initDefaults(): void {
@@ -727,42 +621,6 @@ class AppConfig {
         }
     }
 
-    // 派生值：取语言代码的前两位
-    public getLanguageCode(): string {
-        return (this._values.get('language') as string).slice(0, 2);
-    }
-
-    // 直接读取 window 尺寸
-    public getScreenHeight(): number {
-        return window.innerHeight;
-    }
-
-    public getScreenWidth(): number {
-        return window.innerWidth;
-    }
-
-    // weather_api_choose 有类型转换
-    public getWeatherApiChoose(): number {
-        return Number(this._values.get('weather_api_choose')) || 0;
-    }
-
-    // runtime 属性直接访问
-    public getFiles(): Record<string, string[]> {
-        return this.runtime.files;
-    }
-
-    public setFiles(files: Record<string, string[]>): void {
-        this.runtime.files = files;
-    }
-
-    public getMyList(): string[] {
-        return this.runtime.myList;
-    }
-
-    public setMyList(list: string[]): void {
-        this.runtime.myList = list;
-    }
-
     private _setValue(key: string, value: ConfigValue): void {
         if (!this._values.has(key)) return;
 
@@ -803,83 +661,64 @@ class AppConfig {
     }
 }
 
-// ============== 配置代理 ==============
+// Config
 
-// 直接导出 AppConfig 单例
-const appConfig = AppConfig.getInstance();
+// Keys in SYNC_DEFAULTS that are null but should allow runtime assignment of specific types
+type NullableConfigKeys = {
+    pictures_info_show_ror_l: boolean | null;
+    pictures_info_color: [number, number, number] | null;
+    pictures_info_blurcolor_show: boolean | null;
+    pictures_info_blurcolor: [number, number, number] | null;
+    pictures_info_yakeli_show: boolean | null;
+    pictures_info_yakeli: number | null;
+    pictures_info_yakelic_color: [number, number, number] | null;
+    pictures_info_bluryakeli: number | null;
+    pictures_info_show: boolean | null;
+    weather_api_choose: number | null;
+    hitokoto_size_x_show: number | null;
+};
 
-// 配置代理类型
-interface ConfigProxy {
-    get(key: string): ConfigValue | undefined;
-    set(key: string, value: ConfigValue): void;
-    has(key: string): boolean;
-    keys(): string[];
-    reset(): void;
+// Base type: SYNC_DEFAULTS properties with nullable keys omitted
+type ConfigBase = Omit<typeof SYNC_DEFAULTS, keyof NullableConfigKeys> & NullableConfigKeys;
+
+// Config interface: combines typed properties with runtime data,
+// virtual properties (defined via Object.defineProperties), method signatures, and
+// an index signature for dynamic property access.
+interface Config extends ConfigBase {
+    // 索引签名：兼容动态属性访问
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    [key: string]: unknown;
+
+    // 运行时数据
+    runtime: RuntimeData;
+
+    // AppConfig 方法签名
     addListener(listener: ConfigListener): void;
     removeListener(listener: ConfigListener): void;
     batchSet(settings: Record<string, unknown>): void;
-    runtime: RuntimeData;
-    [prop: string]: any;  // Proxy pattern requires dynamic access
+    has(key: string): boolean;
+    keys(): string[];
+    reset(): void;
+    get(key: string): ConfigValue | undefined;
+    set(key: string, value: ConfigValue): void;
 }
 
-// 导出配置代理
-export const config = new Proxy({} as ConfigProxy, {
-    get(_, prop: string) {
-        if (prop === 'runtime') {
-            return appConfig.runtime;
-        }
-        if (
-            prop === 'has' ||
-            prop === 'keys' ||
-            prop === 'reset' ||
-            prop === 'addListener' ||
-            prop === 'removeListener' ||
-            prop === 'batchSet' ||
-            prop === 'getInstance' ||
-            prop === 'constructor' ||
-            prop === 'get' ||
-            prop === 'set'
-        ) {
-            const val = (appConfig as any)[prop];
-            if (typeof val === 'function') {
-                return val.bind(appConfig);
-            }
-            return val;
-        }
-        // 直接方法名调用 (getScreenHeight, setFiles 等)
-        if (typeof (appConfig as any)[prop] === 'function') {
-            return (appConfig as any)[prop];
-        }
-        // getXxx 命名规范查找 (config.screenHeight → getScreenHeight())
-        const capital = prop.charAt(0).toUpperCase() + prop.slice(1);
-        const getterName = 'get' + capital;
-        if (typeof (appConfig as any)[getterName] === 'function') {
-            return (appConfig as any)[getterName]();
-        }
-        // 普通配置属性：通过通用 get 方法访问
-        return appConfig.get(prop);
-    },
-    set(_, prop: string, value) {
-        if (prop === 'runtime') {
-            (appConfig as any).runtime = value;
-            return true;
-        }
-        // 直接方法名调用 (setFiles 等)
-        if (typeof (appConfig as any)[prop] === 'function') {
-            (appConfig as any)[prop](value);
-            return true;
-        }
-        // setXxx 命名规范查找 (config.xxx = value → setXxx(value))
-        const capital = prop.charAt(0).toUpperCase() + prop.slice(1);
-        const setterName = 'set' + capital;
-        if (typeof (appConfig as any)[setterName] === 'function') {
-            (appConfig as any)[setterName](value);
-            return true;
-        }
-        // 普通配置属性：通过通用 set 方法访问
-        appConfig.set(prop, value as ConfigValue);
-        return true;
-    },
-});
+// config 实例
 
-export { AppConfig, SYNC_DEFAULTS };
+// 获取 AppConfig 单例
+const appConfig = AppConfig.getInstance();
+
+// 使用 Object.defineProperty 在 appConfig 上为所有 SYNC_DEFAULTS key 定义 getter/setter
+for (const key of Object.keys(SYNC_DEFAULTS)) {
+    Object.defineProperty(appConfig, key, {
+        get(this: AppConfig) { return this.get(key); },
+        set(this: AppConfig, value: ConfigValue) { this.set(key, value); },
+        configurable: true,
+        enumerable: true,
+    });
+}
+
+// 导出 config 实例（类型为 Config 接口）
+const config = appConfig as AppConfig & Config;
+
+export { config, AppConfig, SYNC_DEFAULTS };

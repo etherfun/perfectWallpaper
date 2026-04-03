@@ -56,7 +56,7 @@ export function handleDateProperties(
     }
     // 日期颜色
     if (properties.odate_color) {
-        config.odate_color = properties.odate_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.odate_color = properties.odate_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--date-color", config.odate_color.join(', '));
     }
 
@@ -66,7 +66,7 @@ export function handleDateProperties(
     }
 
     if (properties.odate_blurcolor) {
-        config.odate_blurcolor = properties.odate_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.odate_blurcolor = properties.odate_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--date-blur-color", config.odate_blurcolor.join(', '));
     }
 
@@ -76,7 +76,7 @@ export function handleDateProperties(
     }
 
     if (properties.odate_yakelicolor) {
-        config.odate_yakelic_color = properties.odate_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        config.odate_yakelic_color = properties.odate_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--date-yakeli-color", config.odate_yakelic_color.join(', '));
     }
 
@@ -105,8 +105,8 @@ export function handleDateProperties(
     if (properties.DateSize) {
         config.date_size = properties.DateSize.value;
         const s = properties.DateSize.value;
-        elements.body.style.setProperty("--date-font-size", Math.floor(config.screen_height / 300 * s) + 'px');
-        elements.body.style.setProperty("--date-line-height", Math.floor(config.screen_height / 570 * s) + 'px');
+        elements.body.style.setProperty("--date-font-size", Math.floor(window.innerHeight / 300 * s) + 'px');
+        elements.body.style.setProperty("--date-line-height", Math.floor(window.innerHeight / 570 * s) + 'px');
     }
 
     if (properties.date_showwidth) {
@@ -115,7 +115,7 @@ export function handleDateProperties(
             elements.body.style.setProperty("--date-show-width", 'auto');
         } else {
             const s = properties.date_showwidth.value / 100;
-            elements.body.style.setProperty("--date-show-width", config.screen_width * s + "px");
+            elements.body.style.setProperty("--date-show-width", window.innerWidth * s + "px");
         }
     }
 

@@ -8,7 +8,10 @@ const hitokoto_webtext = elements.hitokoto.webtext;
 const hitokotoRuntime = config.runtime?.hitokoto ?? { hitokoto_text: "", from_text: "", from_who_text: "" };
 
 async function getHitokoto_input(strHtml1: string): Promise<void> {
-    const params = config.hit_categories.join("");
+    const params = (['hit_a', 'hit_b', 'hit_c', 'hit_d', 'hit_e', 'hit_f', 'hit_g', 'hit_h', 'hit_i', 'hit_j', 'hit_k', 'hit_l'] as const)
+    .map(k => config[k] as string)
+    .filter(Boolean)
+    .join('');
 
     try {
         const res = await fetch(`https://v1.hitokoto.cn/?${params}`).then(res => res.json()) as {

@@ -85,19 +85,19 @@ export function handleHitokotoProperties(
     // 一言外观
     if (properties.hitokoto_color) {
         const color = properties.hitokoto_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.hitokoto_color = color;
+        config.hitokoto_color = color as [number, number, number];
         elements.body.style.setProperty("--hitokoto-color", color.join(', '));
     }
 
     if (properties.hitokoto_blurcolor) {
         const blurcolor = properties.hitokoto_blurcolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.hitokoto_blurcolor = blurcolor;
+        config.hitokoto_blurcolor = blurcolor as [number, number, number];
         elements.body.style.setProperty("--hitokoto-blur-color", blurcolor.join(', '));
     }
 
     if (properties.hitokoto_yakelicolor) {
         const yakeliccolor = properties.hitokoto_yakelicolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.hitokoto_yakelic_color = yakeliccolor;
+        config.hitokoto_yakelic_color = yakeliccolor as [number, number, number];
         elements.body.style.setProperty("--hitokoto-yakeli-color", yakeliccolor.join(', '));
     }
 
@@ -152,8 +152,8 @@ export function handleHitokotoProperties(
     if (properties.hitokoto_size) {
         const s = properties.hitokoto_size.value;
         config.hitokoto_size = s;
-        elements.body.style.setProperty("--hitokoto-font-size", Math.floor(config.screenHeight / 570 * s) + 'px');
-        elements.body.style.setProperty("--hitokoto-line-height", Math.floor(config.screenHeight / 570 * s) + 'px');
+        elements.body.style.setProperty("--hitokoto-font-size", Math.floor(window.innerHeight / 570 * s) + 'px');
+        elements.body.style.setProperty("--hitokoto-line-height", Math.floor(window.innerHeight / 570 * s) + 'px');
     }
 
     if (properties.hitokoto_showwidth) {
@@ -162,7 +162,7 @@ export function handleHitokotoProperties(
             elements.body.style.setProperty("--hitokoto-show-width", 'auto');
         } else {
             const s = properties.hitokoto_showwidth.value / 100;
-            elements.body.style.setProperty("--hitokoto-show-width", config.screenWidth * s + "px");
+            elements.body.style.setProperty("--hitokoto-show-width", window.innerWidth * s + "px");
         }
     }
 

@@ -63,13 +63,13 @@ export function handleWeatherProperties(
 
     if (properties.weather_lat_latitude) {
         weather_address.latitude = String(properties.weather_lat_latitude.value);
-        config.weather_latitude = properties.weather_lat_latitude.value;
+        config.weather_latitude = String(properties.weather_lat_latitude.value);
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
     if (properties.weather_lat_longitude) {
         weather_address.longitude = String(properties.weather_lat_longitude.value);
-        config.weather_longitude = properties.weather_lat_longitude.value;
+        config.weather_longitude = String(properties.weather_lat_longitude.value);
         if (!FirstLoad) debounce(weather_init, 1500);
     }
 
@@ -144,7 +144,7 @@ export function handleWeatherProperties(
 
     // 天气颜色
     if (properties.weather_Color) {
-        const c = properties.weather_Color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.weather_Color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--weather-color", `rgb(${c})`);
         config.weather_color = c;
     }
@@ -155,7 +155,7 @@ export function handleWeatherProperties(
     }
 
     if (properties.weather_blurcolor) {
-        const c = properties.weather_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.weather_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--weather-blur-color", c.join(', '));
         config.weather_blurcolor = c;
     }
@@ -166,7 +166,7 @@ export function handleWeatherProperties(
     }
 
     if (properties.weather_yakelicolor) {
-        const c = properties.weather_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.weather_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         elements.body.style.setProperty("--weather-yakeli-color", c.join(', '));
         config.weather_yakelic_color = c;
     }
@@ -207,7 +207,7 @@ export function handleWeatherProperties(
     // 天气大小
     if (properties.weather_size) {
         const s = properties.weather_size.value;
-        elements.body.style.setProperty("--weather-font-size", Math.floor(config.screenHeight / 900 * s) + 'px');
+        elements.body.style.setProperty("--weather-font-size", Math.floor(window.innerHeight / 900 * s) + 'px');
         config.weather_size = s;
     }
 
@@ -216,7 +216,7 @@ export function handleWeatherProperties(
             elements.body.style.setProperty("--weather-show-width", 'auto');
         } else {
             const s = properties.weather_showwidth.value / 100;
-            elements.body.style.setProperty("--weather-show-width", config.screenWidth * s + "px");
+            elements.body.style.setProperty("--weather-show-width", window.innerWidth * s + "px");
         }
         config.weather_showwidth = properties.weather_showwidth.value;
     }

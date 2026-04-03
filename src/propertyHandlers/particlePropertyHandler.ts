@@ -39,14 +39,14 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_color) {
-        config.particles_color = properties.particles_color.value;
-        const color = properties.particles_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const color = properties.particles_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        config.particles_color = color;
         wallpaper?.particles('set', 'color', color);
     }
 
     if (properties.particles_shadowColor) {
-        config.particles_shadow_color = properties.particles_shadowColor.value;
-        const color = properties.particles_shadowColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const color = properties.particles_shadowColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        config.particles_shadow_color = color;
         wallpaper?.particles('set', 'shadowColor', color);
     }
 
@@ -129,8 +129,8 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_linkColor) {
-        config.particles_link_color = properties.particles_linkColor.value;
-        const color = properties.particles_linkColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const color = properties.particles_linkColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        config.particles_link_color = color;
         wallpaper?.particles('set', 'linkColor', color);
     }
 

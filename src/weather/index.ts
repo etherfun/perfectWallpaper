@@ -108,7 +108,7 @@ export async function weather_init(): Promise<void> {
             }
         }
 
-        const handlerFactory = apiHandlers[config.weather_api_choose];
+        const handlerFactory = apiHandlers[config.weather_api_choose ?? 0];
         if (handlerFactory) {
             try {
                 const handler = await handlerFactory();
@@ -134,5 +134,5 @@ export function autoWeather(): void {
         4: 2700000,
         5: 3600000
     };
-    timerManager.create(autoWeather, intervals[config.weather_update] || 900000, 'updataWeather');
+    timerManager.create(autoWeather, intervals[config.weather_updata ?? 0] || 900000, 'updataWeather');
 }

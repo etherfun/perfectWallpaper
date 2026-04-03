@@ -225,11 +225,11 @@ export function setupWallpaperPropertyListener(): void {
         window.wallpaperPluginListener = {
             onPluginLoaded: (name: string, _version: string) => {
                 if (name === 'led') {
-                    config.wallpaperSettings.ledPlugin = true;
+                    config.wallpaper_settings.ledPlugin = true;
                     debugLogger.info('[RGB] LED 插件已加载');
                 }
                 if (name === 'cue') {
-                    config.wallpaperSettings.cuePlugin = true;
+                    config.wallpaper_settings.cuePlugin = true;
                     debugLogger.info('[RGB] CUE 插件已加载');
                 }
             }

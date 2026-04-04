@@ -160,9 +160,9 @@
 
 // Weather Hourly Tooltip
 #weatherHourlyTooltip {
-  width: min(480px, 96%);
+  width: min(520px, 98%);
   display: none;
-  padding: 12px;
+  padding: 16px;
   position: fixed;
   z-index: $z-notification;
   color: var(--weather-color);
@@ -182,14 +182,14 @@
 
   .popup-main {
     display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 14px;
-    margin-top: 14px;
+    grid-template-columns: 160px 1fr;
+    gap: 16px;
+    margin-top: 16px;
 
     .big-icon {
-      width: 120px;
-      height: 120px;
-      border-radius: 8px;
+      width: 140px;
+      height: 140px;
+      border-radius: 12px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
       display: flex;
       flex-direction: column;
@@ -197,8 +197,8 @@
       justify-content: flex-start;
 
       img {
-        width: 64px;
-        height: 64px;
+        width: 72px;
+        height: 72px;
       }
 
       svg {
@@ -214,16 +214,16 @@
       }
 
       .big-temp {
-        font-size: 28px;
+        font-size: 32px;
         font-weight: 700;
-        margin-top: 8px;
+        margin-top: 10px;
         display: flex;
         flex-direction: column;
         align-items: center;
       }
 
       .popup-sub {
-        font-size: 23px;
+        font-size: 16px;
         margin-top: 8px;
         text-align: center;
       }
@@ -232,19 +232,20 @@
     .details-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      gap: 12px;
 
       .detail-item {
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
-        padding: 10px;
-        border-radius: 8px;
+        padding: 12px;
+        border-radius: 10px;
 
         .detail-label {
-          font-size: 12px;
+          font-size: 13px;
           color: color-mix(in srgb, var(--weather-color), #aaa 40%);
         }
 
         .detail-value {
+          font-size: 18px;
           font-weight: 600;
           margin-top: 6px;
         }

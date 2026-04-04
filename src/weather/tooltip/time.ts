@@ -1,8 +1,4 @@
 /**
- * 时间格式化工具
- */
-
-/**
  * 获取格式化时间
  */
 export function getTime(date: Date | string, showDate: boolean): string {

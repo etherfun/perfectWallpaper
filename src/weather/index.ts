@@ -55,15 +55,17 @@ const MAX_ICON_CACHE_SIZE = 100;
 const iconCache = new Map<string, string>();
 
 export async function getIconSvg(iconPath: string): Promise<string> {
-    if (iconCache.has(iconPath)) {
-        const value = iconCache.get(iconPath)!;
-        iconCache.delete(iconPath);
-        iconCache.set(iconPath, value);
-        return value;
+    // 直接使用 .get() 查找（Map 在找不到时返回 undefined）
+    const cached = iconCache.get(iconPath);
+    if (cached !== undefined) {
+        return cached;
     }
+
     const res = await fetch(iconPath);
     const svg = await res.text();
+
     if (iconCache.size >= MAX_ICON_CACHE_SIZE) {
+        // 删除最早的条目（Map 按插入顺序迭代）
         const firstKey = iconCache.keys().next().value;
         if (firstKey) iconCache.delete(firstKey);
     }
@@ -127,14 +129,17 @@ export async function weather_init(): Promise<void> {
     }
 }
 
+// 天气更新间隔（毫秒）
+const WEATHER_UPDATE_INTERVALS: Record<number, number> = {
+    1: 15 * 60 * 1000,    // 15 分钟
+    2: 20 * 60 * 1000,    // 20 分钟
+    3: 30 * 60 * 1000,    // 30 分钟
+    4: 45 * 60 * 1000,    // 45 分钟
+    5: 60 * 60 * 1000     // 60 分钟
+};
+const DEFAULT_UPDATE_INTERVAL = 15 * 60 * 1000;
+
 export function autoWeather(): void {
     weather_init();
-    const intervals: { [key: number]: number } = {
-        1: 900000,
-        2: 1200000,
-        3: 1800000,
-        4: 2700000,
-        5: 3600000
-    };
-    timerManager.create(autoWeather, intervals[config.weather_updata ?? 0] || 900000, 'updataWeather');
+    timerManager.create(autoWeather, WEATHER_UPDATE_INTERVALS[config.weather_updata ?? 0] || DEFAULT_UPDATE_INTERVAL, 'updataWeather');
 }

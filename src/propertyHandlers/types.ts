@@ -21,17 +21,22 @@ export interface AudioVisualizerConfig {
 }
 
 // PWCircle 配置
+export interface AudioPoint {
+    x: number;
+    y: number;
+}
+
 export interface PWCircleConfig {
     style: number;
     r: number;
     color: string;
     blurColor: string;
-    arr1: any[];
-    arr2: any[];
+    arr1: AudioPoint[];
+    arr2: AudioPoint[];
     rotation: number;
     rotationcopy: number;
     offsetAngle: number;
-    waveArr: any[];
+    waveArr: number[];
     cX: number;
     cY: number;
     range: number;
@@ -55,14 +60,14 @@ export interface PWLineConfig {
     style: number;
     sw: number;
     lineWidth: number;
-    waveArr: any[];
+    waveArr: number[];
     range: number;
     color: string;
     blurColor: string;
     shadowBlur: number;
-    arr1: any[];
-    arr2: any[];
-    arr3: any[];
+    arr1: AudioPoint[];
+    arr2: AudioPoint[];
+    arr3: AudioPoint[];
     LineX: number;
     LineY: number;
     showLine: boolean;

@@ -234,7 +234,7 @@ export function drawPoint(): void {
 
 /**
  * Connect particles with lines based on proximity
- * Optimized: pre-filter particles within mouse radius to avoid redundant checks
+ * Optimized: pre-filter particles within mouse radius, avoid duplicate pair checks
  */
 export function connect(): void {
     CXTPar.save();
@@ -249,12 +249,21 @@ export function connect(): void {
         }
     }
 
+    // Pre-compute distance threshold squared (avoid sqrt in inner loop)
+    const distThreshold = points.distance;
+    const distThresholdSq = distThreshold * distThreshold;
+
     // Only process particles within mouse radius (k = particlesInRadius.length, typically k << n)
-    for (let i = 0; i < particlesInRadius.length; i++) {
+    // Use j = i + 1 to skip self-checks and duplicate pair checks (50% reduction)
+    const len = particlesInRadius.length;
+    for (let i = 0; i < len; i++) {
         const pointI = particlesInRadius[i];
-        for (let j = 0; j < particlesInRadius.length; j++) {
+        for (let j = i + 1; j < len; j++) {
             const pointJ = particlesInRadius[j];
-            if (Math.abs(pointI.x - pointJ.x) <= points.distance && Math.abs(pointI.y - pointJ.y) <= points.distance) {
+            const dx = pointI.x - pointJ.x;
+            const dy = pointI.y - pointJ.y;
+            // Use squared distance comparison (avoids sqrt)
+            if (dx * dx + dy * dy <= distThresholdSq) {
                 const x = pointI.x - mouse.x;
                 const y = pointI.y - mouse.y;
                 let lineC = 10 / Math.sqrt(x * x + y * y);

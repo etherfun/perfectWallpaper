@@ -299,12 +299,7 @@ export async function qweather(
 
     // 并行获取可选数据
     if (!checkQuota()) {
-        const [
-            airQualityResult,
-            alertResult,
-            hourlyResult,
-            dailyResult
-        ] = await Promise.all([
+        await Promise.all([
             fetchAirQuality(weather_address, weather_data).catch(() => { /* ignore errors */ }),
             fetchWeatherAlert(weather_address, weather_data).catch(() => { /* ignore errors */ }),
             fetch24hForecast(weather_address, weather_data).catch(() => { /* ignore errors */ }),

@@ -9,16 +9,37 @@ import { debugLogger } from './utils/logger';
 
 // PWCircle 绘制函数
 
+/** 预分配的缓冲区（避免每帧分配新数组） */
+let _clampBuffer: number[] = [];
+let _spatialBuffer: number[] = [];
 /** 上一帧的音频数据（用于时序平滑） */
 let _prevAudioData: number[] | null = null;
+
+/** 确保缓冲区大小匹配，必要时重新分配 */
+function ensureBufferSize(buffer: number[], size: number): number[] {
+    if (buffer.length !== size) {
+        buffer.length = size;
+    }
+    return buffer;
+}
+
+/**
+ * 限制音频值在合理范围内（原地操作）
+ */
+function clampAudioData(data: number[], output: number[]): number[] {
+    for (let i = 0; i < data.length; i++) {
+        const v = data[i];
+        output[i] = v < 0 ? 0 : v > 1 ? 1 : v;
+    }
+    return output;
+}
 
 /**
  * 对数组应用空间平滑（相邻频段平均）
  * 消除孤立的单波峰，使频谱更加连贯
  * 使用循环平滑，头尾相连（适用于圆环可视化）
  */
-function spatialSmooth(data: number[], windowSize: number): number[] {
-    const result = new Array(data.length);
+function spatialSmooth(data: number[], windowSize: number, output: number[]): number[] {
     const halfWindow = Math.floor(windowSize / 2);
     const len = data.length;
     // 实际求和的元素数量（j 从 -halfWindow 到 +halfWindow 共 2*halfWindow+1 个）
@@ -34,34 +55,27 @@ function spatialSmooth(data: number[], windowSize: number): number[] {
             sum += data[idx];
         }
 
-        result[i] = sum / actualCount;
+        output[i] = sum / actualCount;
     }
 
-    return result;
+    return output;
 }
 
 /**
  * 对数组应用时序平滑（指数移动平均）
  * 基于上一帧数据平滑过渡，避免突变
  */
-function temporalSmooth(data: number[], prevData: number[] | null, smoothFactor: number): number[] {
+function temporalSmooth(data: number[], prevData: number[] | null, smoothFactor: number, output: number[]): number[] {
     if (!prevData || prevData.length !== data.length) {
         return data;
     }
 
-    return data.map((value, i) => {
+    for (let i = 0; i < data.length; i++) {
         const prev = prevData[i] ?? 0;
         // 指数移动平均：new = old * factor + prev * (1 - factor)
-        return value * smoothFactor + prev * (1 - smoothFactor);
-    });
-}
-
-/**
- * 限制音频值在合理范围内
- * 根据文档，有些频率可能超过 1.0，需要限制
- */
-function clampAudioData(data: number[]): number[] {
-    return data.map(v => Math.min(1.0, Math.max(0.0, v)));
+        output[i] = data[i] * smoothFactor + prev * (1 - smoothFactor);
+    }
+    return output;
 }
 
 /**
@@ -71,13 +85,16 @@ function clampAudioData(data: number[]): number[] {
  * 3. 时序平滑（帧间过渡平滑）
  */
 function smoothAudioData(rawData: number[]): number[] {
-    // 始终先限制范围
-    let processed = clampAudioData(rawData);
+    const len = rawData.length;
+
+    // Step 1: 限制范围（原地操作）
+    ensureBufferSize(_clampBuffer, len);
+    clampAudioData(rawData, _clampBuffer);
 
     // 检查是否启用平滑
     if (!config.audio_smooth_enabled) {
         _prevAudioData = null; // 重置时序数据
-        return processed;
+        return _clampBuffer;
     }
 
     // 从配置读取平滑参数
@@ -86,19 +103,27 @@ function smoothAudioData(rawData: number[]): number[] {
 
     // 验证平滑因子有效性
     if (isNaN(smoothFactor) || smoothFactor <= 0 || smoothFactor >= 1) {
-        return processed;
+        return _clampBuffer;
     }
 
-    // Step 2: 空间平滑
-    processed = spatialSmooth(processed, spatialWindow);
+    // Step 2: 空间平滑（原地操作）
+    ensureBufferSize(_spatialBuffer, len);
+    spatialSmooth(_clampBuffer, spatialWindow, _spatialBuffer);
 
-    // Step 3: 时序平滑
-    processed = temporalSmooth(processed, _prevAudioData, smoothFactor);
+    // Step 3: 时序平滑（原地操作）
+    if (_prevAudioData) {
+        temporalSmooth(_spatialBuffer, _prevAudioData, smoothFactor, _spatialBuffer);
+    }
 
-    // 更新上一帧数据
-    _prevAudioData = [...processed];
+    // 更新上一帧数据（原地更新，避免每次分配新数组）
+    if (!_prevAudioData || _prevAudioData.length !== len) {
+        _prevAudioData = new Array(len);
+    }
+    for (let i = 0; i < len; i++) {
+        _prevAudioData[i] = _spatialBuffer[i];
+    }
 
-    return processed;
+    return _spatialBuffer;
 }
 
 /**

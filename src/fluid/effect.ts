@@ -38,7 +38,13 @@ class FluidEffect2Renderer {
     private _currentImageUrl: string = '';
     private _canvasOffsets: { dx: number; dy: number }[] = [];
     private _lastDisplaySize = 0;
+    private _cachedDpr = 1;
+    private _resizeTimer = 0;
     private resizeHandler: (() => void) | null = null;
+
+    // 性能优化：缓存计算结果
+    private _cachedSourceSize = { width: 0, height: 0, sWidth: 0, sHeight: 0 };
+    private _lastRenderImageUrl = '';
 
     constructor(container: HTMLElement, options: FluidEffectOptions = {}) {
         this.container = container;
@@ -62,7 +68,11 @@ class FluidEffect2Renderer {
             this.createCanvases();
             this.setupContainer();
 
-            this.resizeHandler = () => this.onResize();
+            this.resizeHandler = () => {
+                // 添加节流：延迟 100ms 执行，避免频繁调用
+                clearTimeout(this._resizeTimer);
+                this._resizeTimer = window.setTimeout(() => this.onResize(), 100);
+            };
             window.addEventListener('resize', this.resizeHandler);
             this.onResize();
             debugLogger.info('[FluidEffect2] 流体效果初始化完成');
@@ -124,7 +134,8 @@ class FluidEffect2Renderer {
             canvas.width = this.options.resolution;
             canvas.height = this.options.resolution;
 
-            const ctx = canvas.getContext('2d')!;
+            // willReadFrequently: false 优化 Canvas 2D 性能
+            const ctx = canvas.getContext('2d', { willReadFrequently: false })!;
             this.canvases.push(canvas);
             this.canvasContexts.push(ctx);
 
@@ -136,6 +147,9 @@ class FluidEffect2Renderer {
 
             const delays = [0, -5, -10, -15];
             canvas.style.animationDelay = `${delays[i]}s`;
+
+            // 应用 SVG filter (GPU 加速) 替代 canvas context filter
+            canvas.style.filter = `url(#fluid-filter-2)`;
 
             this.fluidRect.appendChild(canvas);
         }
@@ -156,9 +170,14 @@ class FluidEffect2Renderer {
         const canvasSize = viewSize * 0.707;
 
         const displaySize = Math.max(1, Math.round(canvasSize));
+        // DPR 限制在 1.5 以内，平衡画质与性能
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+        this._cachedDpr = dpr;
         this._lastDisplaySize = displaySize;
 
+        const backing = displaySize * dpr;
+
+        // 合并两次循环为一次（计算基础位置 + 应用偏移）
         for (let x = 0; x <= 1; x++) {
             for (let y = 0; y <= 1; y++) {
                 const index = y * 2 + x;
@@ -168,38 +187,25 @@ class FluidEffect2Renderer {
                 canvas.style.width = `${canvasSize}px`;
                 canvas.style.height = `${canvasSize}px`;
 
-                const backing = displaySize * dpr;
                 if (canvas.width !== backing || canvas.height !== backing) {
                     canvas.width = backing;
                     canvas.height = backing;
-                    const ctx = canvas.getContext('2d');
+                    const ctx = canvas.getContext('2d', { willReadFrequently: false });
                     if (ctx) {
                         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                        ctx.filter = `blur(${this.options.blurAmount}px)`;
+                        // 不再设置 ctx.filter，blur 已在 CSS filter 中通过 GPU 加速
                     }
                 }
 
                 const signX = x === 0 ? -1 : 1;
                 const signY = y === 0 ? -1 : 1;
 
-                const left = (width / 2 + signX * canvasSize * 0.35) - canvasSize / 2;
-                const top = (height / 2 + signY * canvasSize * 0.35) - canvasSize / 2;
+                const baseLeft = (width / 2 + signX * canvasSize * 0.35) - canvasSize / 2;
+                const baseTop = (height / 2 + signY * canvasSize * 0.35) - canvasSize / 2;
 
-                canvas.style.left = `${left}px`;
-                canvas.style.top = `${top}px`;
-            }
-        }
-
-        for (let x = 0; x <= 1; x++) {
-            for (let y = 0; y <= 1; y++) {
-                const index = y * 2 + x;
-                const canvas = this.canvases[index];
-                if (!canvas) continue;
                 const offset = this._canvasOffsets[index] ?? { dx: 0, dy: 0 };
-                const leftPx = parseFloat(canvas.style.left || '0');
-                const topPx = parseFloat(canvas.style.top || '0');
-                canvas.style.left = `${leftPx + offset.dx}px`;
-                canvas.style.top = `${topPx + offset.dy}px`;
+                canvas.style.left = `${baseLeft + offset.dx}px`;
+                canvas.style.top = `${baseTop + offset.dy}px`;
             }
         }
 
@@ -218,12 +224,24 @@ class FluidEffect2Renderer {
         }
 
         const imageUrl = image.src || (image as any).currentSrc || '';
+
+        // 脏检查：图片 URL 没变且尺寸没变，跳过重新绘制
+        if (imageUrl === this._lastRenderImageUrl && this._cachedSourceSize.width === image.naturalWidth) {
+            return;
+        }
+
         this.currentImage = image;
+        this._lastRenderImageUrl = imageUrl;
 
         const width = image.naturalWidth || image.width || (image.clientWidth || 0);
         const height = image.naturalHeight || image.height || (image.clientHeight || 0);
         const sWidth = Math.floor(width / 2);
         const sHeight = Math.floor(height / 2);
+
+        // 缓存源图尺寸
+        this._cachedSourceSize = { width, height, sWidth, sHeight };
+
+        const displaySize = this._lastDisplaySize || Math.round(this.options.resolution / (this._cachedDpr || 1));
 
         for (let i = 0; i < 4; i++) {
             const ctx = this.canvasContexts[i];
@@ -235,7 +253,6 @@ class FluidEffect2Renderer {
             const sx = (i % 2 === 0) ? 0 : sWidth;
             const sy = (i < 2) ? 0 : sHeight;
 
-            const displaySize = this._lastDisplaySize || Math.round(canvas.width / (window.devicePixelRatio || 1));
             ctx.drawImage(
                 image,
                 sx, sy, sWidth, sHeight,
@@ -300,8 +317,9 @@ class FluidEffect2Renderer {
         this.options = { ...this.options, ...newOptions };
 
         if (newOptions.blurAmount !== undefined) {
-            this.canvasContexts.forEach(ctx => {
-                ctx.filter = `blur(${newOptions.blurAmount}px)`;
+            // CSS filter 通过 GPU 加速，比 canvas context filter 更快
+            this.canvases.forEach(canvas => {
+                canvas.style.filter = `url(#fluid-filter-2)`;
             });
         }
 
@@ -320,10 +338,13 @@ class FluidEffect2Renderer {
         if (newOptions.canvasDisplacementAmplitude !== undefined) {
             const amp = parseFloat(String(newOptions.canvasDisplacementAmplitude)) || 0;
             this.options.canvasDisplacementAmplitude = amp;
-            this._canvasOffsets = this.canvases.map(() => ({
-                dx: (Math.random() * 2 - 1) * amp,
-                dy: (Math.random() * 2 - 1) * amp
-            }));
+            // 原地更新偏移量，避免重建数组
+            for (let i = 0; i < this._canvasOffsets.length; i++) {
+                this._canvasOffsets[i] = {
+                    dx: (Math.random() * 2 - 1) * amp,
+                    dy: (Math.random() * 2 - 1) * amp
+                };
+            }
             this.onResize();
         }
 
@@ -340,6 +361,7 @@ class FluidEffect2Renderer {
 
     destroy(): void {
         this.stop();
+        clearTimeout(this._resizeTimer);
 
         if (this.resizeHandler) {
             window.removeEventListener('resize', this.resizeHandler);
@@ -394,6 +416,9 @@ export class FluidEffect {
     private _normalEffect: FluidEffect2Renderer | null = null;
     private _fullscreenEffect: FluidEffect2Renderer | null = null;
 
+    // 缓存的 wrapper 引用（避免重复 DOM 查询）
+    private _cachedWrapper: HTMLElement | null = null;
+
     /**
      * 创建流体效果统一实例
      */
@@ -420,6 +445,23 @@ export class FluidEffect {
             return;
         }
         this._applyFullscreenMode();
+    }
+
+    /**
+     * 获取流体效果 wrapper 元素（带缓存）
+     */
+    private _getFluidWrapper(): HTMLElement | null {
+        if (!this._cachedWrapper) {
+            this._cachedWrapper = document.querySelector('.fluid-effect-wrapper');
+        }
+        return this._cachedWrapper;
+    }
+
+    /**
+     * 使缓存失效（wrapper 被移除时调用）
+     */
+    private _invalidateWrapperCache(): void {
+        this._cachedWrapper = null;
     }
 
     /**
@@ -475,7 +517,8 @@ export class FluidEffect {
 
     enableFullscreen(): this {
         this.fullscreenEnabled = true;
-        document.querySelector('.fluid-effect-wrapper')?.remove();
+        this._getFluidWrapper()?.remove();
+        this._invalidateWrapperCache();
         this._normalEffect?.destroy();
         this._normalEffect = null;
         if (this.enabled) {
@@ -496,7 +539,8 @@ export class FluidEffect {
     toggleFullscreen(): boolean {
         this.fullscreenEnabled = !this.fullscreenEnabled;
         if (this.fullscreenEnabled) {
-            document.querySelector('.fluid-effect-wrapper')?.remove();
+            this._getFluidWrapper()?.remove();
+            this._invalidateWrapperCache();
             this._normalEffect?.destroy();
             this._normalEffect = null;
         } else {
@@ -722,10 +766,11 @@ export class FluidEffect {
         config.runtime.fullscreenFluidEnabled = false;
         this._removePictureInfoHideStyle();
 
-        const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+        const fluidWrapper = this._getFluidWrapper();
         if (fluidWrapper) {
             fluidWrapper.style.backgroundImage = 'none';
         }
+        this._invalidateWrapperCache();
     }
 
     /**

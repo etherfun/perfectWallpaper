@@ -144,7 +144,7 @@ export function createWallpaperPropertyListener(
     if (FirstLoad) {
         config.first_load = false;
     }
-}[].length
+}
 
 /**
  * 设置壁纸引擎属性监听器

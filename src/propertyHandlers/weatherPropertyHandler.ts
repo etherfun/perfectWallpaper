@@ -3,7 +3,8 @@ import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { elements } from '@/utils/elementManager';
-import { weather_address, weather_init, generateWeatherTable, autoWeather, weather_unit_choose } from '../weather';
+import { weather_address, weather_init, generateWeatherTable, autoWeather } from '../weather';
+import { setWeatherUnitByName } from '../weather/weatherState';
 import { debounce } from '../utils/tool';
 
 // ResizeObserver for weather height tracking
@@ -51,7 +52,7 @@ export function handleWeatherProperties(
 
     if (properties.weather_unit) {
         config.weather_unit = properties.weather_unit.value;
-        weather_unit_choose();
+        setWeatherUnitByName(config.weather_unit || "metric");
     }
 
     if (properties.weather_daliy_tip) {

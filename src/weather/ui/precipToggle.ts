@@ -4,7 +4,7 @@
  */
 
 import { config } from '../../utils/config';
-import { wunit } from '../units';
+import { getWeatherUnit } from '../weatherState';
 import { i18n } from '../../utils/i18n';
 import {
     weather_data,
@@ -53,7 +53,7 @@ export function togglePrecipTemperatureDisplay(): void {
     const valueCells = document.querySelectorAll('.precip-prob-cell');
     if (valueCells.length === 7) {
         const dataValues = showTemperatureInsteadOfPrecip ? weather_data.sevenHourlyData.Temps : weather_data.sevenHourlyData.Pops;
-        const unit = showTemperatureInsteadOfPrecip ? (wunit?.temp || "℃") : "";
+        const unit = showTemperatureInsteadOfPrecip ? (getWeatherUnit().temp || "℃") : "";
 
         // 第一步：为所有单元格添加淡出动画
         valueCells.forEach(cell => {

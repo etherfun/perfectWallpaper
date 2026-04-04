@@ -71,16 +71,6 @@ export function renderListHtml(items: ListItem[]): string {
     return html;
 }
 
-/**
- * Render list items (backward compatible wrapper)
- */
-export function renderList(items: string[]): string {
-    if (!items || !Array.isArray(items)) return '';
-    return `<ul class="md-list">${items.map(item =>
-        `<li class="md-list-item">${processInlineMarkdown(item)}</li>`
-    ).join('')}</ul>`;
-}
-
 interface CodeBlock {
     placeholder: string;
     html: string;

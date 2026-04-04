@@ -1,6 +1,6 @@
 import type { WeatherAddress, WeatherData, SevenHourlyData } from '../types';
 import { fetch_with_retry } from '../../utils/tool';
-import { wunit } from '../units';
+import { getWeatherUnit } from '../weatherState';
 import { i18n } from '../../utils/i18n';
 import { OPEN_METEO_TO_QWEATHER } from '../types';
 
@@ -107,8 +107,9 @@ export async function openmeteo(
   weather_address: WeatherAddress,
   weather_data: WeatherData
 ): Promise<void> {
+  const unit = getWeatherUnit();
   const response = await fetch_with_retry(
-    `https://api.open-meteo.com/v1/forecast?latitude=${weather_address.latitude}&longitude=${weather_address.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_min,sunrise,sunset,uv_index_max,temperature_2m_max&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto&forecast_days=1&forecast_hours=12&temperature_unit=${wunit.temperature_code}&wind_speed_unit=${wunit.wind_speed_code}&precipitation_unit=${wunit.precipitation_code}`,
+    `https://api.open-meteo.com/v1/forecast?latitude=${weather_address.latitude}&longitude=${weather_address.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_min,sunrise,sunset,uv_index_max,temperature_2m_max&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto&forecast_days=1&forecast_hours=12&temperature_unit=${unit.temperature_code}&wind_speed_unit=${unit.wind_speed_code}&precipitation_unit=${unit.precipitation_code}`,
     {},
     3
   );

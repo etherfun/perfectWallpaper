@@ -10,7 +10,6 @@ declare class SimpleMarkdown {
     static parse(text: string): string;
     static processInlineMarkdown(text: string): string;
     static renderListHtml(items: Array<{ indent: number; content: string }>): string;
-    static renderList(items: string[]): string;
 }
 
 // 扩展 Window 接口以支持 window.SimpleMarkdown

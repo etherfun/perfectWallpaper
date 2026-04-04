@@ -2,7 +2,7 @@ import { i18n } from '../utils/i18n';
 import { WeatherUnit, WeatherLang } from './types';
 
 // 默认单位配置
-const DEFAULT_UNIT: WeatherUnit = {
+export const DEFAULT_UNIT: WeatherUnit = {
     temp: "℃",
     precip: "mm",
     precip_1: "mm/h",
@@ -18,7 +18,7 @@ const DEFAULT_UNIT: WeatherUnit = {
 };
 
 // 单位映射表
-const UNIT_PRESETS: Record<string, WeatherUnit> = {
+export const UNIT_PRESETS: Record<string, WeatherUnit> = {
     metric: { ...DEFAULT_UNIT },
     us: {
         temp: "℉",
@@ -64,20 +64,9 @@ const UNIT_PRESETS: Record<string, WeatherUnit> = {
     }
 };
 
-// 全局单位配置（保持向后兼容）
-export let wunit: WeatherUnit = { ...DEFAULT_UNIT };
-
 /**
- * 根据单位设置更新全局单位配置（保持向后兼容）
- * @param weatherUnit - 单位设置值：metric, us, uk, base
+ * 获取默认单位配置的副本
  */
-export function weather_unit_choose(weatherUnit: string = "metric"): void {
-    wunit = { ...(UNIT_PRESETS[weatherUnit] ?? DEFAULT_UNIT) };
-}
-
-/**
- * 获取当前单位配置的副本
- */
-export function getWunit(): WeatherUnit {
-    return { ...wunit };
+export function getDefaultUnit(): WeatherUnit {
+    return { ...DEFAULT_UNIT };
 }

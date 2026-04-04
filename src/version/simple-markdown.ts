@@ -7,7 +7,6 @@ import {
     parseMarkdown,
     processInlineMarkdown,
     renderListHtml,
-    renderList,
     type ListItem
 } from "../utils/markdown";
 import { truncateUrl } from "../utils/string";
@@ -27,10 +26,6 @@ export class SimpleMarkdown {
 
     static renderListHtml(items: ListItem[]): string {
         return renderListHtml(items);
-    }
-
-    static renderList(items: string[]): string {
-        return renderList(items);
     }
 
     // Copy link and show notification

@@ -6,7 +6,7 @@
 import { fetch_with_retry } from '../../utils/tool';
 import { config } from '../../utils/config';
 import { elements } from '../../utils/elementManager';
-import { wunit } from '../units';
+import { getWeatherUnit } from '../weatherState';
 import { i18n } from '../../utils/i18n';
 import { formatTime } from '../utils';
 import { weather_address, weather_data } from '../weatherState';
@@ -34,13 +34,13 @@ export async function updateMainWeatherDisplay(): Promise<void> {
     }
 
     // 温度和天气文字
-    e.temp.textContent = `${weather_data.temperature}${wunit?.temp || "℃"}`;
+    e.temp.textContent = `${weather_data.temperature}${getWeatherUnit().temp || "℃"}`;
     e.text.textContent = weather_data.weathernow || "";
 
     // 体感温度（条件显示）
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.feels.style.display = '';
-        e.feels.textContent = `${i18n('weather_feels_label')} ${weather_data.feels}${wunit?.temp || "℃"}`;
+        e.feels.textContent = `${i18n('weather_feels_label')} ${weather_data.feels}${getWeatherUnit().temp || "℃"}`;
     } else {
         e.feels.style.display = 'none';
     }
@@ -85,7 +85,7 @@ export function updateWeatherDetails(): void {
     // 风速（条件显示）
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.windSpeed.style.display = '';
-        e.windSpeed.textContent = `${weather_data.windSpeed}${wunit?.wind || "km/h"}`;
+        e.windSpeed.textContent = `${weather_data.windSpeed}${getWeatherUnit().wind || "km/h"}`;
     } else {
         e.windSpeed.style.display = 'none';
     }
@@ -93,7 +93,7 @@ export function updateWeatherDetails(): void {
     // 能见度（条件显示）
     if ([1].includes(config.weather_api_choose ?? 0)) {
         e.visibility.style.display = '';
-        e.visibility.textContent = `${i18n('weather_visibility_label')}${weather_data.vis}${wunit?.vis || "km"}`;
+        e.visibility.textContent = `${i18n('weather_visibility_label')}${weather_data.vis}${getWeatherUnit().vis || "km"}`;
     } else {
         e.visibility.style.display = 'none';
     }
@@ -179,7 +179,7 @@ export function updatePrecipContainer(): void {
         const showTemp = showTemperatureInsteadOfPrecip;
         const label = showTemp ? i18n('weather_show_temperature') : i18n('weather_show_precipprob');
         const dataValues = showTemp ? weather_data.sevenHourlyData.Temps : weather_data.sevenHourlyData.Pops;
-        const unit = showTemp ? (wunit?.temp || "℃") : "";
+        const unit = showTemp ? (getWeatherUnit().temp || "℃") : "";
 
         e.precipLabel.setAttribute('data-display-type', showTemp ? 'temperature' : 'precipitation');
         e.precipLabel.setAttribute('data-i18n', showTemp ? 'weather_show_temperature' : 'weather_show_precipprob');

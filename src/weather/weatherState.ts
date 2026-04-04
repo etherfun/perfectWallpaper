@@ -3,7 +3,8 @@
  * 集中管理所有天气相关的可变状态
  */
 
-import type { WeatherData, WeatherAddress } from './types';
+import type { WeatherData, WeatherAddress, WeatherUnit } from './types';
+import { DEFAULT_UNIT, UNIT_PRESETS } from './units';
 
 // 天气数据
 export let weather_data: WeatherData = createEmptyWeatherData();
@@ -24,6 +25,24 @@ export let weather_daliy_tip: string;
 export let showTemperatureInsteadOfPrecip = false;
 export let precipTemperatureToggleTimer: number | null = null;
 export let isAnimatingPrecipToggle = false;
+
+// 单位配置状态
+let weatherUnit: WeatherUnit = { ...DEFAULT_UNIT };
+
+/**
+ * 根据单位名称设置单位配置
+ * @param unitName - 单位名称：metric, us, uk, base
+ */
+export function setWeatherUnitByName(unitName: string): void {
+    weatherUnit = { ...(UNIT_PRESETS[unitName] ?? DEFAULT_UNIT) };
+}
+
+/**
+ * 获取当前单位配置的副本
+ */
+export function getWeatherUnit(): WeatherUnit {
+    return { ...weatherUnit };
+}
 
 // 创建空天气数据
 function createEmptyWeatherData(): WeatherData {

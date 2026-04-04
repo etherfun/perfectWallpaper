@@ -3,7 +3,6 @@
  * 整合所有天气相关的API、工具函数和UI
  */
 
-export { weather_unit_choose } from './units';
 export { getWeatherTips } from './tips';
 
 // UI 模块导出

@@ -424,6 +424,7 @@
 				"ui_setting_y-asis" : "Y-Asis site",
 				"ui_sysmon_auto_start" : "Auto Start with System",
 				"ui_sysmon_bar_layout" : "Bar Layout",
+				"ui_sysmon_bluryakeli" : "Acrylic blur",
 				"ui_sysmon_color" : "Color",
 				"ui_sysmon_cpu_mode" : "CPU Display Mode",
 				"ui_sysmon_disconnect_timeout" : "Disconnect Timeout (sec)",
@@ -442,6 +443,7 @@
 				"ui_sysmon_position" : "Position",
 				"ui_sysmon_position_left" : "Left",
 				"ui_sysmon_position_right" : "Right",
+				"ui_sysmon_roundedcorners" : "Acrylic rounded corners",
 				"ui_sysmon_server_port" : "Server Port",
 				"ui_sysmon_show_cpu" : "Show CPU",
 				"ui_sysmon_show_gpu" : "Show GPU",
@@ -451,11 +453,9 @@
 				"ui_sysmon_update_interval" : "Update Interval (sec)",
 				"ui_sysmon_x" : "X Position",
 				"ui_sysmon_y" : "Y Position",
-				"ui_sysmon_yakeli_show" : "Acrylic background",
-				"ui_sysmon_bluryakeli" : "Acrylic blur",
 				"ui_sysmon_yakeli" : "Acrylic opacity",
+				"ui_sysmon_yakeli_show" : "Acrylic background",
 				"ui_sysmon_yakelicolor" : "Acrylic color",
-				"ui_sysmon_roundedcorners" : "Acrylic rounded corners",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
 				"ui_ui_global_settings_language" : "Language setting",
@@ -917,6 +917,7 @@
 				"ui_setting_y-asis" : "Y轴位置",
 				"ui_sysmon_auto_start" : "开机自启动",
 				"ui_sysmon_bar_layout" : "条形布局",
+				"ui_sysmon_bluryakeli" : "亚克力模糊程度",
 				"ui_sysmon_color" : "颜色",
 				"ui_sysmon_cpu_mode" : "CPU显示模式",
 				"ui_sysmon_disconnect_timeout" : "断连超时时间 (秒)",
@@ -935,6 +936,7 @@
 				"ui_sysmon_position" : "位置",
 				"ui_sysmon_position_left" : "左侧",
 				"ui_sysmon_position_right" : "右侧",
+				"ui_sysmon_roundedcorners" : "亚克力圆角",
 				"ui_sysmon_server_port" : "插件端口",
 				"ui_sysmon_show_cpu" : "显示CPU",
 				"ui_sysmon_show_gpu" : "显示GPU",
@@ -944,11 +946,9 @@
 				"ui_sysmon_update_interval" : "更新间隔 (秒)",
 				"ui_sysmon_x" : "X位置",
 				"ui_sysmon_y" : "Y位置",
-				"ui_sysmon_yakeli_show" : "亚克力背景",
-				"ui_sysmon_bluryakeli" : "亚克力模糊程度",
 				"ui_sysmon_yakeli" : "亚克力不透明程度",
+				"ui_sysmon_yakeli_show" : "亚克力背景",
 				"ui_sysmon_yakelicolor" : "亚克力颜色",
-				"ui_sysmon_roundedcorners" : "亚克力圆角",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
 				"ui_ui_global_settings_language" : "语言设置",
@@ -1643,7 +1643,7 @@
 				"order" : 109,
 				"text" : "ui_audio_smooth_enabled",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"audioSmoothFactor" : 
 			{
@@ -2525,19 +2525,19 @@
 			},
 			"debugger" : 
 			{
-				"index" : 381,
-				"order" : 481,
+				"index" : 412,
+				"order" : 512,
 				"text" : "● 调试选项 Debugger",
 				"type" : "group",
 				"value" : ""
 			},
 			"debugger_copy" : 
 			{
-				"index" : 383,
-				"order" : 483,
+				"index" : 413,
+				"order" : 513,
 				"text" : "ui_debugger_copy",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"direction" : 
 			{
@@ -2705,10 +2705,10 @@
 			"fullscreen_lyrics_delay" : 
 			{
 				"condition" : "fullscreen_lyrics_enabled.value == true",
-				"index" : 386,
+				"index" : 385,
 				"max" : 5000,
 				"min" : 0,
-				"order" : 486,
+				"order" : 485,
 				"text" : "ui_fullscreen_lyrics_delay",
 				"type" : "slider",
 				"value" : 0
@@ -2716,8 +2716,8 @@
 			"fullscreen_lyrics_enable_blur" : 
 			{
 				"condition" : "fullscreen_lyrics_enabled.value == true",
-				"index" : 387,
-				"order" : 487,
+				"index" : 386,
+				"order" : 486,
 				"text" : "ui_fullscreen_lyrics_enable_blur",
 				"type" : "bool",
 				"value" : true
@@ -2734,8 +2734,8 @@
 			"fullscreen_lyrics_hide_other" : 
 			{
 				"condition" : "fullscreen_lyrics_enabled.value == true",
-				"index" : 388,
-				"order" : 488,
+				"index" : 387,
+				"order" : 487,
 				"text" : "ui_fullscreen_lyrics_hide_other",
 				"type" : "bool",
 				"value" : true
@@ -2743,8 +2743,8 @@
 			"fullscreen_lyrics_show_clock" : 
 			{
 				"condition" : "fullscreen_lyrics_enabled.value == true && fullscreen_lyrics_hide_other.value == true",
-				"index" : 389,
-				"order" : 489,
+				"index" : 388,
+				"order" : 488,
 				"text" : "ui_fullscreen_lyrics_show_clock",
 				"type" : "bool",
 				"value" : false
@@ -2752,8 +2752,8 @@
 			"fullscreen_lyrics_show_roman" : 
 			{
 				"condition" : "fullscreen_lyrics_enabled.value == true",
-				"index" : 385,
-				"order" : 485,
+				"index" : 384,
+				"order" : 484,
 				"text" : "ui_fullscreen_lyrics_show_roman",
 				"type" : "bool",
 				"value" : false
@@ -2761,8 +2761,8 @@
 			"fullscreen_lyrics_show_translation" : 
 			{
 				"condition" : "fullscreen_lyrics_enabled.value == true",
-				"index" : 384,
-				"order" : 484,
+				"index" : 383,
+				"order" : 483,
 				"text" : "ui_fullscreen_lyrics_show_translation",
 				"type" : "bool",
 				"value" : true
@@ -3367,6 +3367,15 @@
 				"order" : 161,
 				"text" : "ui_music_directory_text",
 				"type" : "label"
+			},
+			"newproperty" : 
+			{
+				"condition" : "beta == \"dasfefesfsefcs\"",
+				"index" : 381,
+				"order" : 481,
+				"text" : "● 全屏歌词 Fullscreen Lyrics",
+				"type" : "group",
+				"value" : ""
 			},
 			"oclock_blurcolor" : 
 			{
@@ -4796,6 +4805,22 @@
 				"text" : "ui_background_selectvideo",
 				"type" : "file"
 			},
+			"server_mode" : 
+			{
+				"index" : 12,
+				"order" : 112,
+				"text" : "ui_server_mode",
+				"type" : "bool",
+				"value" : false
+			},
+			"server_mode_tip" : 
+			{
+				"index" : 13,
+				"order" : 113,
+				"text" : "ui_server_mode_tip",
+				"type" : "text",
+				"value" : "1 0 0"
+			},
 			"setting" : 
 			{
 				"index" : 4,
@@ -4873,7 +4898,7 @@
 			"sysmon_bar_layout" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 405,
+				"index" : 404,
 				"options" : 
 				[
 					{
@@ -4885,21 +4910,80 @@
 						"value" : 1
 					}
 				],
-				"order" : 505,
+				"order" : 504,
 				"text" : "ui_sysmon_bar_layout",
 				"type" : "combo",
 				"value" : 0
 			},
+			"sysmon_bluryakeli" : 
+			{
+				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 408,
+				"max" : 50,
+				"min" : 0,
+				"order" : 508,
+				"text" : "ui_color_bluryakeli",
+				"type" : "slider",
+				"value" : 10
+			},
 			"sysmon_color" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 404,
-				"order" : 504,
+				"index" : 403,
+				"order" : 503,
 				"text" : "ui_audio_color",
 				"type" : "color",
 				"value" : "1 1 1"
 			},
 			"sysmon_cpu_mode" : 
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 392,
+				"options" : 
+				[
+					{
+						"label" : "ui_sysmon_mode_none",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_mode_text",
+						"value" : 1
+					},
+					{
+						"label" : "ui_sysmon_mode_bar",
+						"value" : 2
+					},
+					{
+						"label" : "ui_sysmon_mode_curve",
+						"value" : 3
+					}
+				],
+				"order" : 492,
+				"text" : "ui_sysmon_cpu_mode",
+				"type" : "combo",
+				"value" : 1
+			},
+			"sysmon_disconnect_timeout" : 
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 405,
+				"max" : 60,
+				"min" : 5,
+				"order" : 505,
+				"text" : "ui_sysmon_disconnect_timeout",
+				"type" : "slider",
+				"value" : 10
+			},
+			"sysmon_enabled" : 
+			{
+				"index" : 390,
+				"order" : 490,
+				"text" : "ui_sysmon_enabled",
+				"type" : "bool",
+				"value" : false
+			},
+			"sysmon_gpu_mode" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
 				"index" : 393,
@@ -4923,30 +5007,19 @@
 					}
 				],
 				"order" : 493,
-				"text" : "ui_sysmon_cpu_mode",
+				"text" : "ui_sysmon_gpu_mode",
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_disconnect_timeout" : 
+			"sysmon_header" : 
 			{
-				"condition" : "sysmon_enabled.value == true",
-				"index" : 406,
-				"max" : 60,
-				"min" : 5,
-				"order" : 506,
-				"text" : "ui_sysmon_disconnect_timeout",
-				"type" : "slider",
-				"value" : 10
+				"condition" : "server_mode.value == true",
+				"index" : 389,
+				"order" : 489,
+				"text" : "● 系统监控 System Monitor",
+				"type" : "group"
 			},
-			"sysmon_enabled" : 
-			{
-				"index" : 391,
-				"order" : 491,
-				"text" : "ui_sysmon_enabled",
-				"type" : "bool",
-				"value" : true
-			},
-			"sysmon_gpu_mode" : 
+			"sysmon_memory_mode" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
 				"index" : 394,
@@ -4970,19 +5043,11 @@
 					}
 				],
 				"order" : 494,
-				"text" : "ui_sysmon_gpu_mode",
+				"text" : "ui_sysmon_memory_mode",
 				"type" : "combo",
 				"value" : 1
 			},
-			"sysmon_header" : 
-			{
-				"condition" : "server_mode.value == true",
-				"index" : 390,
-				"order" : 490,
-				"text" : "● 系统监控 System Monitor",
-				"type" : "group"
-			},
-			"sysmon_memory_mode" : 
+			"sysmon_network_mode" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
 				"index" : 395,
@@ -5006,34 +5071,6 @@
 					}
 				],
 				"order" : 495,
-				"text" : "ui_sysmon_memory_mode",
-				"type" : "combo",
-				"value" : 1
-			},
-			"sysmon_network_mode" : 
-			{
-				"condition" : "sysmon_enabled.value == true",
-				"index" : 396,
-				"options" : 
-				[
-					{
-						"label" : "ui_sysmon_mode_none",
-						"value" : 0
-					},
-					{
-						"label" : "ui_sysmon_mode_text",
-						"value" : 1
-					},
-					{
-						"label" : "ui_sysmon_mode_bar",
-						"value" : 2
-					},
-					{
-						"label" : "ui_sysmon_mode_curve",
-						"value" : 3
-					}
-				],
-				"order" : 496,
 				"text" : "ui_sysmon_network_mode",
 				"type" : "combo",
 				"value" : 0
@@ -5041,7 +5078,7 @@
 			"sysmon_position" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 407,
+				"index" : 406,
 				"options" : 
 				[
 					{
@@ -5053,10 +5090,22 @@
 						"value" : 1
 					}
 				],
-				"order" : 507,
+				"order" : 506,
 				"text" : "ui_sysmon_position",
 				"type" : "combo",
 				"value" : 1
+			},
+			"sysmon_roundedcorners" : 
+			{
+				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 411,
+				"max" : 100,
+				"min" : 0,
+				"order" : 511,
+				"text" : "ui_color_roundedcorners",
+				"type" : "slider",
+				"value" : 50
 			},
 			"sysmon_server_port" : 
 			{
@@ -5070,35 +5119,35 @@
 			"sysmon_show_cpu" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 397,
-				"order" : 497,
+				"index" : 396,
+				"order" : 496,
 				"text" : "ui_sysmon_show_cpu",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"sysmon_show_gpu" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 398,
-				"order" : 498,
+				"index" : 397,
+				"order" : 497,
 				"text" : "ui_sysmon_show_gpu",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"sysmon_show_memory" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 399,
-				"order" : 499,
+				"index" : 398,
+				"order" : 498,
 				"text" : "ui_sysmon_show_memory",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"sysmon_show_network" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 400,
-				"order" : 500,
+				"index" : 399,
+				"order" : 499,
 				"text" : "ui_sysmon_show_network",
 				"type" : "bool",
 				"value" : false
@@ -5106,10 +5155,10 @@
 			"sysmon_size" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 403,
+				"index" : 402,
 				"max" : 30,
 				"min" : 8,
-				"order" : 503,
+				"order" : 502,
 				"text" : "ui_color_size",
 				"type" : "slider",
 				"value" : 14
@@ -5117,10 +5166,10 @@
 			"sysmon_update_interval" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 392,
+				"index" : 391,
 				"max" : 10,
 				"min" : 1,
-				"order" : 492,
+				"order" : 491,
 				"text" : "ui_sysmon_update_interval",
 				"type" : "slider",
 				"value" : 2
@@ -5128,78 +5177,54 @@
 			"sysmon_x" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 401,
+				"index" : 400,
 				"max" : 100,
 				"min" : 0,
-				"order" : 501,
+				"order" : 500,
 				"text" : "ui_setting_x-asis",
 				"type" : "slider",
 				"value" : 95
 			},
-			"sysmon_y" :
+			"sysmon_y" : 
 			{
 				"condition" : "sysmon_enabled.value == true",
-				"index" : 402,
+				"index" : 401,
 				"max" : 100,
 				"min" : 0,
-				"order" : 502,
+				"order" : 501,
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 5
 			},
-			"sysmon_yakeli_show" :
-			{
-				"condition" : "sysmon_enabled.value == true",
-				"index" : 408,
-				"order" : 508,
-				"text" : "ui_color_yakeli_show",
-				"type" : "bool",
-				"value" : true
-			},
-			"sysmon_bluryakeli" :
+			"sysmon_yakeli" : 
 			{
 				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
 				"fraction" : false,
 				"index" : 409,
-				"max" : 50,
-				"min" : 0,
-				"order" : 509,
-				"text" : "ui_color_bluryakeli",
-				"type" : "slider",
-				"value" : 10
-			},
-			"sysmon_yakeli" :
-			{
-				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 410,
 				"max" : 100,
 				"min" : 0,
-				"order" : 510,
+				"order" : 509,
 				"text" : "ui_color_yakeli",
 				"type" : "slider",
 				"value" : 3
 			},
-			"sysmon_yakelicolor" :
+			"sysmon_yakeli_show" : 
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 407,
+				"order" : 507,
+				"text" : "ui_color_yakeli_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"sysmon_yakelicolor" : 
 			{
 				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
-				"index" : 411,
-				"order" : 511,
+				"index" : 410,
+				"order" : 510,
 				"text" : "ui_color_yakelicolor",
 				"type" : "color",
 				"value" : "0 0 0"
-			},
-			"sysmon_roundedcorners" :
-			{
-				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
-				"fraction" : false,
-				"index" : 412,
-				"max" : 100,
-				"min" : 0,
-				"order" : 512,
-				"text" : "ui_color_roundedcorners",
-				"type" : "slider",
-				"value" : 50
 			},
 			"tShowSencends" : 
 			{
@@ -5347,22 +5372,6 @@
 				"text" : "ui_backgruond_TransitionMode_4_text",
 				"type" : "text",
 				"value" : ""
-			},
-			"server_mode" : 
-			{
-				"index" : 12,
-				"order" : 112,
-				"text" : "ui_server_mode",
-				"type" : "bool",
-				"value" : true
-			},
-			"server_mode_tip" : 
-			{
-				"index" : 13,
-				"order" : 113,
-				"text" : "ui_server_mode_tip",
-				"type" : "text",
-				"value" : "1 0 0"
 			},
 			"updata_log" : 
 			{

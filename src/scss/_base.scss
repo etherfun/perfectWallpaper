@@ -185,6 +185,21 @@ body {
   --picture-info-blur-yakeli: 0px;
   --picture-info-roundedcorners: 0;
   --picture-info-height: auto;
+
+  // System Monitor Component CSS Variables
+  --sysmon-yakeli-enabled: 0;
+  --sysmon-yakeli-color: 255, 255, 255;
+  --sysmon-yakeli: 0;
+  --sysmon-blur-yakeli: 10px;
+  --sysmon-blur-enabled: 0;
+  --sysmon-blur-color: 255, 255, 255;
+  --sysmon-height: 50px;
+  --sysmon-roundedcorners: 50;
+  --picture-info-yakeli-color: 255, 255, 255;
+  --picture-info-yakeli: 0;
+  --picture-info-blur-yakeli: 0px;
+  --picture-info-roundedcorners: 0;
+  --picture-info-height: auto;
   --picture-info-show-width: auto;
   --picture-info-display: flex;
   --picture-info-visibility: visible;

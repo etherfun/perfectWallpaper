@@ -628,7 +628,10 @@ function hideControls(): void {
 
 // 初始化控制按钮事件
 function initPlayerControls(): void {
-    if (!config.server_mode) return;
+    setTimeout(() => {
+        if (!config.server_mode) return;
+    }, 3000)
+    
     if (!player_control_aubarWrapper || !player_control_aubarControls) return;
 
     // 鼠标进入aubar-wrapper时显示控制按钮

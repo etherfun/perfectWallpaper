@@ -13,7 +13,7 @@ pub struct ServerConfig {
 impl Default for ServerConfig {
     fn default() -> Self {
         Self {
-            port: 3842,
+            port: 27420,
             auto_start: false,
             log_level: "info".to_string(),
         }
@@ -108,7 +108,7 @@ mod tests {
     #[test]
     fn test_default_config() {
         let config = ServerConfig::default();
-        assert_eq!(config.port, 3842);
+        assert_eq!(config.port, 27420);
         assert_eq!(config.auto_start, false);
         assert_eq!(config.log_level, "info");
     }

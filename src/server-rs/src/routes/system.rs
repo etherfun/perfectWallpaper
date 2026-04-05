@@ -72,6 +72,9 @@ pub async fn get_system_info(
     // Second CPU refresh - now accurate
     sys.refresh_cpu_usage();
 
+    // Refresh memory info
+    sys.refresh_memory();
+
     // Get memory info
     let total_mem = sys.total_memory();
     let used_mem = sys.used_memory();

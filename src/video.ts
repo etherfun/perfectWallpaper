@@ -12,7 +12,7 @@ const myAudio = elements.myAudio;
 let audioEndedListenerBound = false;
 
 // 服务器端口
-const SERVER_PORT = 3842;
+const SERVER_PORT = 27420;
 
 // 外部播放器控制 API 前缀
 const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/player`;

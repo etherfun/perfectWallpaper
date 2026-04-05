@@ -545,4 +545,9 @@ export interface WallpaperProperties {
     sysmon_bar_layout?: { value: number };
     sysmon_position?: { value: number };
     sysmon_disconnect_timeout?: { value: number };
+    sysmon_yakeli_show?: { value: boolean };
+    sysmon_bluryakeli?: { value: number };
+    sysmon_yakeli?: { value: number };
+    sysmon_yakelicolor?: { value: string };
+    sysmon_roundedcorners?: { value: number };
 }

@@ -8,10 +8,11 @@ use tokio::sync::RwLock;
 use tower_http::cors::{Any, CorsLayer};
 use chrono::Utc;
 
+#[cfg(windows)]
+use windows::Win32::System::Console::AllocConsole;
+
 mod auto_start;
 mod config;
-mod error;
-mod models;
 mod routes;
 
 use config::ServerConfig;
@@ -70,10 +71,21 @@ struct Args {
     /// Don't start the server, just process other commands
     #[arg(long, default_value = "false")]
     no_server: bool,
+
+    /// Enable console window for output (silent by default on Windows)
+    #[arg(long)]
+    console: bool,
 }
 
 fn main() {
     let args = Args::parse();
+
+    // Allocate a console window on Windows when --console is passed
+    #[cfg(windows)]
+    if args.console {
+        // SAFETY: AllocConsole is safe when called once per process
+        unsafe { let _ = AllocConsole(); };
+    }
 
     // Handle auto-start registration commands
     if args.auto_start {

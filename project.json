@@ -451,6 +451,11 @@
 				"ui_sysmon_update_interval" : "Update Interval (sec)",
 				"ui_sysmon_x" : "X Position",
 				"ui_sysmon_y" : "Y Position",
+				"ui_sysmon_yakeli_show" : "Acrylic background",
+				"ui_sysmon_bluryakeli" : "Acrylic blur",
+				"ui_sysmon_yakeli" : "Acrylic opacity",
+				"ui_sysmon_yakelicolor" : "Acrylic color",
+				"ui_sysmon_roundedcorners" : "Acrylic rounded corners",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
 				"ui_ui_global_settings_language" : "Language setting",
@@ -930,7 +935,7 @@
 				"ui_sysmon_position" : "位置",
 				"ui_sysmon_position_left" : "左侧",
 				"ui_sysmon_position_right" : "右侧",
-				"ui_sysmon_server_port" : "服务器端口",
+				"ui_sysmon_server_port" : "插件端口",
 				"ui_sysmon_show_cpu" : "显示CPU",
 				"ui_sysmon_show_gpu" : "显示GPU",
 				"ui_sysmon_show_memory" : "显示内存",
@@ -939,6 +944,11 @@
 				"ui_sysmon_update_interval" : "更新间隔 (秒)",
 				"ui_sysmon_x" : "X位置",
 				"ui_sysmon_y" : "Y位置",
+				"ui_sysmon_yakeli_show" : "亚克力背景",
+				"ui_sysmon_bluryakeli" : "亚克力模糊程度",
+				"ui_sysmon_yakeli" : "亚克力不透明程度",
+				"ui_sysmon_yakelicolor" : "亚克力颜色",
+				"ui_sysmon_roundedcorners" : "亚克力圆角",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
 				"ui_ui_global_settings_language" : "语言设置",
@@ -5055,7 +5065,7 @@
 				"order" : 115,
 				"text" : "ui_sysmon_server_port",
 				"type" : "textinput",
-				"value" : 3842
+				"value" : 27420
 			},
 			"sysmon_show_cpu" : 
 			{
@@ -5126,7 +5136,7 @@
 				"type" : "slider",
 				"value" : 95
 			},
-			"sysmon_y" : 
+			"sysmon_y" :
 			{
 				"condition" : "sysmon_enabled.value == true",
 				"index" : 402,
@@ -5136,6 +5146,60 @@
 				"text" : "ui_setting_y-asis",
 				"type" : "slider",
 				"value" : 5
+			},
+			"sysmon_yakeli_show" :
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 408,
+				"order" : 508,
+				"text" : "ui_color_yakeli_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"sysmon_bluryakeli" :
+			{
+				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 409,
+				"max" : 50,
+				"min" : 0,
+				"order" : 509,
+				"text" : "ui_color_bluryakeli",
+				"type" : "slider",
+				"value" : 10
+			},
+			"sysmon_yakeli" :
+			{
+				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 410,
+				"max" : 100,
+				"min" : 0,
+				"order" : 510,
+				"text" : "ui_color_yakeli",
+				"type" : "slider",
+				"value" : 3
+			},
+			"sysmon_yakelicolor" :
+			{
+				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
+				"index" : 411,
+				"order" : 511,
+				"text" : "ui_color_yakelicolor",
+				"type" : "color",
+				"value" : "0 0 0"
+			},
+			"sysmon_roundedcorners" :
+			{
+				"condition" : "sysmon_enabled.value == true && sysmon_yakeli_show.value == true",
+				"fraction" : false,
+				"index" : 412,
+				"max" : 100,
+				"min" : 0,
+				"order" : 512,
+				"text" : "ui_color_roundedcorners",
+				"type" : "slider",
+				"value" : 50
 			},
 			"tShowSencends" : 
 			{

@@ -11,7 +11,8 @@
     "watch:scss": "sass --watch --style=expanded scss/main.scss dist/default.css",
     "check-types": "tsc --noEmit",
     "bundle": "node scripts/bundle.js",
-    "prepare": "yarn run build"
+    "prepare": "yarn run build",
+    "build:server:rust": "cd src/server-rs && cargo build --release && powershell -Command \"Copy-Item target/release/perfectwall-server.exe ../../dist/\""
   },
   "author": "etherfun",
   "license": "GPL-3.0-only",

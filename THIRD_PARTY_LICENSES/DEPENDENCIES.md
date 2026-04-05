@@ -1,0 +1,3 @@
+- [colorthief@3.3.1](https://github.com/lokesh/color-thief) - MIT
+- [perfectwall@1.0.0](undefined) - GPL-3.0-only
+- [qweather-icons@1.8.0](https://github.com/qwd/Icons) - MIT

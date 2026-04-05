@@ -9,8 +9,14 @@ import { elements } from '@/utils/elementManager';
  * @param enabled Whether auto-start is enabled
  */
 async function handleAutoStart(enabled: boolean): Promise<void> {
+    const monitor = getSystemMonitor();
+    if (!monitor) return;
+
+    const port = monitor['config'].serverPort;
+    const url = `http://localhost:${port}/api/config`;
+
     try {
-        const response = await fetch('/api/config', {
+        const response = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

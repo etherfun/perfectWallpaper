@@ -5,6 +5,7 @@ use tokio::sync::RwLock;
 
 use super::super::config::ServerConfig;
 use super::super::AppState;
+use super::super::auto_start;
 
 /// Request body for updating configuration
 #[derive(Debug, Deserialize)]
@@ -84,8 +85,20 @@ pub async fn update_config(
 
     // Update auto_start if provided
     if let Some(auto_start) = payload.auto_start {
+        let previously_enabled = config.auto_start;
         config.auto_start = auto_start;
         println!("[Config] Auto-start updated to {}", auto_start);
+
+        // Actually register/unregister if the value changed
+        if auto_start && !previously_enabled {
+            if let Err(e) = auto_start::register() {
+                errors.push(format!("Failed to register auto-start: {}", e));
+            }
+        } else if !auto_start && previously_enabled {
+            if let Err(e) = auto_start::unregister() {
+                errors.push(format!("Failed to unregister auto-start: {}", e));
+            }
+        }
     }
 
     // Update log_level if provided

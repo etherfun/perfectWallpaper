@@ -60,6 +60,10 @@ export function handleWeatherProperties(
         if (!FirstLoad) {
             generateWeatherTable();
         }
+        // Toggle border-bottom of precip container based on daily tip visibility
+        if (elements.weather.precipContainer) {
+            elements.weather.precipContainer.style.borderBottomWidth = properties.weather_daliy_tip.value ? '1px' : '0';
+        }
     }
 
     if (properties.weather_lat_latitude) {

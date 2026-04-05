@@ -1,9 +1,9 @@
 /**
  * System Monitor Module
  * 系统监控模块 - 显示CPU、GPU、内存等信息
+ * 布局使用预置HTML结构，JS只负责更新文本内容
  */
 
-import { elements, getElementAs } from '@/utils/elementManager';
 
 // 配置类型
 interface SystemMonitorConfig {
@@ -33,8 +33,8 @@ const DEFAULT_CONFIG: SystemMonitorConfig = {
     barLayout: 'horizontal',
     monitorPosition: 'right',
     disconnectTimeout: 10000,
-    serverUrl: 'http://localhost:3842/api/system',
-    serverPort: 3842,
+    serverUrl: 'http://localhost:27420/api/system',
+    serverPort: 27420,
     updateInterval: 2000,
     cpuMode: 'text',
     gpuMode: 'text',
@@ -51,11 +51,14 @@ const DEFAULT_CONFIG: SystemMonitorConfig = {
 };
 
 class SystemMonitor {
+    // Pre-built DOM elements from index.html
     private container: HTMLElement | null = null;
-    private cpuElement: HTMLElement | null = null;
-    private gpuElement: HTMLElement | null = null;
-    private memoryElement: HTMLElement | null = null;
-    private networkElement: HTMLElement | null = null;
+    private background: HTMLElement | null = null;
+    private cpuRow: HTMLElement | null = null;
+    private gpuRow: HTMLElement | null = null;
+    private memoryRow: HTMLElement | null = null;
+    private networkRow: HTMLElement | null = null;
+
     private pollInterval: number | null = null;
     private cpuHistory: number[] = [];
     private memoryHistory: number[] = [];
@@ -78,58 +81,31 @@ class SystemMonitor {
     }
 
     private createElements(): void {
-        this.container = document.createElement('div');
-        this.container.id = 'system-monitor';
-        const isLeft = this.config.monitorPosition === 'left';
-        this.container.style.cssText = `
-            position: fixed;
-            top: ${this.config.monitorY}%;
-            ${isLeft ? 'left' : 'right'}: ${100 - this.config.monitorX}%;
-            display: flex;
-            flex-direction: column;
-            gap: var(--sysmon-gap, 4px);
-            font-size: ${this.config.monitorSize}px;
-            color: ${this.config.monitorColor};
-            z-index: var(--sysmon-z, 9999);
-            pointer-events: none;
-            text-shadow: var(--sysmon-text-shadow, 0 0 5px rgba(0,0,0,0.5));
-            font-family: var(--sysmon-font-family, 'Segoe UI', 'Microsoft YaHei', sans-serif);
-        `;
+        // Get pre-built DOM elements from index.html
+        this.container = document.getElementById('system-monitor');
+        this.background = this.container?.querySelector('.background') || null;
 
-        const style = document.createElement('style');
-        style.textContent = `
-            #system-monitor .sysmon-label { min-width: 36px; }
-            #system-monitor .sysmon-value { font-variant-numeric: tabular-nums; min-width: 32px; text-align: right; }
-            #system-monitor .sysmon-extra { font-variant-numeric: tabular-nums; }
-        `;
-        this.container.appendChild(style);
+        this.cpuRow = this.container?.querySelector('.sysmon-cpu') || null;
+        this.gpuRow = this.container?.querySelector('.sysmon-gpu') || null;
+        this.memoryRow = this.container?.querySelector('.sysmon-memory') || null;
+        this.networkRow = this.container?.querySelector('.sysmon-network') || null;
 
-        // CPU元素
-        this.cpuElement = document.createElement('div');
-        this.cpuElement.id = 'sysmon-cpu';
-        this.cpuElement.className = 'sysmon-item sysmon-cpu';
+        if (!this.container || !this.background) {
+            console.error('[Sysmon] DOM elements not found in HTML');
+            return;
+        }
 
-        // GPU元素
-        this.gpuElement = document.createElement('div');
-        this.gpuElement.id = 'sysmon-gpu';
-        this.gpuElement.className = 'sysmon-item sysmon-gpu';
+        // Apply initial font styles to each row
+        const rows = [this.cpuRow, this.gpuRow, this.memoryRow, this.networkRow];
+        rows.forEach(row => {
+            if (row) {
+                row.style.fontSize = `${this.config.monitorSize}px`;
+                row.style.color = this.config.monitorColor;
+                row.style.textShadow = 'var(--sysmon-text-shadow, 0 0 5px rgba(0,0,0,0.5))';
+            }
+        });
 
-        // 内存元素
-        this.memoryElement = document.createElement('div');
-        this.memoryElement.id = 'sysmon-memory';
-        this.memoryElement.className = 'sysmon-item sysmon-memory';
-
-        // 网络元素
-        this.networkElement = document.createElement('div');
-        this.networkElement.id = 'sysmon-network';
-        this.networkElement.className = 'sysmon-item sysmon-network';
-
-        this.container.appendChild(this.cpuElement);
-        this.container.appendChild(this.gpuElement);
-        this.container.appendChild(this.memoryElement);
-        this.container.appendChild(this.networkElement);
-
-        document.body.appendChild(this.container);
+        this.applyConfig();
     }
 
     private async pollData(): Promise<void> {
@@ -150,7 +126,7 @@ class SystemMonitor {
             if (json.success) {
                 this.updateDisplay(json.data);
             }
-        } catch (error) {
+        } catch {
             // Start disconnect timer if not already started
             if (!this.disconnectTimer) {
                 this.disconnectTimer = window.setTimeout(() => {
@@ -161,123 +137,172 @@ class SystemMonitor {
     }
 
     private updateDisplay(data: any): void {
+        // CPU
         if (this.config.showCpu) {
             const cpuUsage = Math.round(data.cpu?.usage || 0);
             this.pushHistory(this.cpuHistory, cpuUsage);
-            this.updateItem(this.cpuElement, 'CPU', cpuUsage, this.config.cpuMode);
-        } else {
-            this.cpuElement!.style.display = 'none';
+            this.updateItem(this.cpuRow, 'CPU', cpuUsage, this.config.cpuMode);
+            this.cpuRow!.style.display = '';
+        } else if (this.cpuRow) {
+            this.cpuRow.style.display = 'none';
         }
 
+        // GPU
         if (this.config.showGpu && data.gpu?.length > 0) {
             const gpu = data.gpu[0];
             const gpuUsage = Math.round(gpu.utilization || 0);
             const gpuTemp = gpu.temperature || 0;
             this.pushHistory(this.gpuHistory, gpuUsage);
-            this.updateItem(this.gpuElement, 'GPU', gpuUsage, this.config.gpuMode, `${gpuTemp}°C`);
-        } else {
-            this.gpuElement!.style.display = 'none';
+            this.updateItem(this.gpuRow, 'GPU', gpuUsage, this.config.gpuMode, `${gpuTemp}°C`);
+            this.gpuRow!.style.display = '';
+        } else if (this.gpuRow) {
+            this.gpuRow.style.display = 'none';
         }
 
+        // Memory
         if (this.config.showMemory) {
-            const memUsed = Math.round(data.memory?.usedPercent || 0);
-            const memTotal = this.formatBytes(data.memory?.total || 0);
+            const memUsed = Math.round(data.memory?.used_percent || 0);
+            const memUsedStr = this.formatBytes(data.memory?.used || 0);
+            const memTotalStr = this.formatBytes(data.memory?.total || 0);
             this.pushHistory(this.memoryHistory, memUsed);
-            this.updateItem(this.memoryElement, 'MEM', memUsed, this.config.memoryMode, memTotal);
-        } else {
-            this.memoryElement!.style.display = 'none';
+            this.updateItem(this.memoryRow, 'MEM', memUsed, this.config.memoryMode, `${memUsedStr.slice(0, -3)}/${memTotalStr}`);
+            this.memoryRow!.style.display = '';
+        } else if (this.memoryRow) {
+            this.memoryRow.style.display = 'none';
         }
 
+        // Network
         if (this.config.showNetwork) {
             const rx = this.formatBytes(data.network?.rx || 0) + '/s';
             const tx = this.formatBytes(data.network?.tx || 0) + '/s';
             this.updateNetworkDisplay(rx, tx);
-        } else {
-            this.networkElement!.style.display = 'none';
+            this.networkRow!.style.display = '';
+        } else if (this.networkRow) {
+            this.networkRow.style.display = 'none';
         }
     }
 
-    private updateItem(element: HTMLElement | null, label: string, value: number, mode: string, extra?: string): void {
-        if (!element) return;
+    private updateItem(row: HTMLElement | null, label: string, value: number, mode: string, extra?: string): void {
+        if (!row) return;
+
+        const leftSpan = row.querySelector('.left') as HTMLElement | null;
+        const rightSpan = row.querySelector('.right') as HTMLElement | null;
+        const labelSpan = row.querySelector('.sysmon-label');
+
+        if (!leftSpan || !rightSpan || !labelSpan) return;
 
         const isLeft = this.config.monitorPosition === 'left';
+
+        // left position: label in .left, value in .right (label left, value right)
+        // right position: value in .left, label in .right (value left, label right)
+        if (isLeft) {
+            leftSpan.innerHTML = '';
+            labelSpan.textContent = label;
+            rightSpan.innerHTML = `<span class="sysmon-value">${value}%</span>${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}`;
+        } else {
+            leftSpan.innerHTML = `${extra ? `<span class="sysmon-extra">(${extra})` : ''}</span><span class="sysmon-value">${value}%</span>`;
+            labelSpan.textContent = label;
+            rightSpan.innerHTML = '';
+        }
 
         switch (mode) {
             case 'text':
-                // Left side: "CPU: 0%", Right side: "0%: CPU"
-                if (isLeft) {
-                    element.innerHTML = `<span class="sysmon-label">${label}:</span><span class="sysmon-value">${value}%</span>${extra ? `<span class="sysmon-extra"> (${extra})</span>` : ''}`;
-                } else {
-                    element.innerHTML = `<span class="sysmon-value">${value}%</span><span class="sysmon-label">${label}:</span>${extra ? `<span class="sysmon-extra"> (${extra})</span>` : ''}`;
-                }
-                element.style.display = 'flex';
-                element.style.alignItems = 'center';
-                element.style.gap = '4px';
-                element.style.whiteSpace = 'nowrap';
                 break;
             case 'curve':
-                // Left side: canvas on right, text on left; Right side: text on left, canvas on right
-                if (isLeft) {
-                    element.innerHTML = `
-                        <span>${label}: ${value}%${extra ? ` (${extra})` : ''}</span>
-                        <canvas class="sysmon-canvas" width="100" height="30"></canvas>
-                    `;
-                    element.style.flexDirection = 'row';
-                } else {
-                    element.innerHTML = `
-                        <canvas class="sysmon-canvas" width="100" height="30"></canvas>
-                        <span>${value}%${extra ? ` (${extra})` : ''} ${label}:</span>
-                    `;
-                    element.style.flexDirection = 'row-reverse';
-                }
-                element.style.display = 'flex';
-                element.style.alignItems = 'center';
-                element.style.gap = '4px';
-                const canvas = element.querySelector('.sysmon-canvas') as HTMLCanvasElement;
-                if (canvas) this.drawCurve(canvas, label.toLowerCase() as 'cpu' | 'gpu' | 'memory');
+                this.drawCurveInRow(row, label.toLowerCase() as 'cpu' | 'gpu' | 'memory');
                 break;
             case 'bar':
-                const isVertical = this.config.barLayout === 'vertical';
-                const barSize = isVertical ? 'height' : 'width';
-                // Left side: "CPU: 0% [====]" (label first)
-                // Right side: "[====] 0%: CPU" (value first)
-                const barContent = `
-                    <span>${label}: ${value}%${extra ? ` (${extra})` : ''}</span>
-                    <div class="sysmon-bar-container" style="display: flex; ${isVertical ? 'flex-direction: column;' : 'flex-direction: row;'} ${isVertical ? 'width: 100%;' : 'height: 100%;'} align-items: center; gap: 4px;">
-                        <div class="sysmon-bar" style="${barSize}: ${value}%; background: ${this.getColorForValue(value)}; transition: ${barSize} 0.3s ease; ${isVertical ? 'width: 100%;' : 'height: 8px;'}"></div>
-                    </div>
-                `;
-                const barContentFlipped = `
-                    <div class="sysmon-bar-container" style="display: flex; ${isVertical ? 'flex-direction: column;' : 'flex-direction: row;'} ${isVertical ? 'width: 100%;' : 'height: 100%;'} align-items: center; gap: 4px;">
-                        <div class="sysmon-bar" style="${barSize}: ${value}%; background: ${this.getColorForValue(value)}; transition: ${barSize} 0.3s ease; ${isVertical ? 'width: 100%;' : 'height: 8px;'}"></div>
-                    </div>
-                    <span>${value}%${extra ? ` (${extra})` : ''} ${label}:</span>
-                `;
-                element.innerHTML = isLeft ? barContent : barContentFlipped;
-                element.style.display = 'flex';
-                element.style.flexDirection = isVertical ? 'column' : (isLeft ? 'row' : 'row-reverse');
-                element.style.alignItems = 'center';
-                element.style.gap = '8px';
+                this.drawBarInRow(row, value);
                 break;
             case 'none':
             default:
-                element.style.display = 'none';
+                row.style.display = 'none';
                 break;
         }
     }
 
-    private updateNetworkDisplay(rx: string, tx: string): void {
-        if (!this.networkElement) return;
-        const isLeft = this.config.monitorPosition === 'left';
-        // Left side: "NET: ↓rx ↑tx", Right side: "↓rx ↑tx :NET"
-        if (isLeft) {
-            this.networkElement.innerHTML = `NET: ↓${rx} ↑${tx}`;
+    private drawCurveInRow(row: HTMLElement, type: 'cpu' | 'gpu' | 'memory'): void {
+        const rightSpan = row.querySelector('.right');
+        if (!rightSpan) return;
+
+        // Clear old canvas
+        const oldCanvas = rightSpan.querySelector('canvas');
+        if (oldCanvas) oldCanvas.remove();
+
+        const canvas = document.createElement('canvas');
+        canvas.width = 80;
+        canvas.height = 24;
+        canvas.style.cssText = 'display:inline-block;vertical-align:middle;';
+
+        rightSpan.appendChild(canvas);
+        this.drawCurve(canvas, type);
+    }
+
+    private drawBarInRow(row: HTMLElement, value: number): void {
+        const rightSpan = row.querySelector('.right');
+        if (!rightSpan) return;
+
+        // Clear old bar container
+        const oldBar = rightSpan.querySelector('.sysmon-bar');
+        if (oldBar) oldBar.remove();
+
+        const isVertical = this.config.barLayout === 'vertical';
+
+        // Bar container
+        const barContainer = document.createElement('div');
+        barContainer.className = 'sysmon-bar';
+        if (isVertical) {
+            // Vertical bar: column layout, bar below value
+            barContainer.style.cssText = 'display:flex;flex-direction:column;gap:2px;width:80px;';
         } else {
-            this.networkElement.innerHTML = `↓${rx} ↑${tx} :NET`;
+            // Horizontal bar: row layout, bar after value
+            barContainer.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:4px;';
         }
-        this.networkElement.style.display = 'flex';
-        this.networkElement.style.alignItems = 'center';
-        this.networkElement.style.gap = '4px';
+
+        // Bar track (gray background)
+        const track = document.createElement('div');
+        if (isVertical) {
+            track.style.cssText = 'width:100%;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;';
+        } else {
+            track.style.cssText = 'flex:1;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;';
+        }
+
+        // Bar fill (colored foreground)
+        const fill = document.createElement('div');
+        if (isVertical) {
+            fill.style.cssText = `width:${value}%;height:100%;background:${this.getColorForValue(value)};transition:width 0.3s ease;border-radius:2px;`;
+        } else {
+            fill.style.cssText = `width:${value}%;height:100%;background:${this.getColorForValue(value)};transition:width 0.3s ease;border-radius:2px;`;
+        }
+
+        track.appendChild(fill);
+        barContainer.appendChild(track);
+
+        // Append bar to right span
+        rightSpan.appendChild(barContainer);
+    }
+
+    private updateNetworkDisplay(rx: string, tx: string): void {
+        if (!this.networkRow) return;
+
+        const leftSpan = this.networkRow.querySelector('.left');
+        const rightSpan = this.networkRow.querySelector('.right');
+        if (!leftSpan || !rightSpan) return;
+
+        const isLeft = this.config.monitorPosition === 'left';
+        const labelSpan = this.networkRow.querySelector('.sysmon-label');
+
+        if (!leftSpan || !rightSpan || !labelSpan) return;
+
+        if (isLeft) {
+            leftSpan.innerHTML = '';
+            labelSpan.textContent = 'NET';
+            rightSpan.innerHTML = `<span class="sysmon-value">↓${rx} ↑${tx}</span>`;
+        } else {
+            leftSpan.innerHTML = `<span class="sysmon-value">↓${rx} ↑${tx}</span>`;
+            labelSpan.textContent = 'NET';
+            rightSpan.innerHTML = '';
+        }
     }
 
     private drawCurve(canvas: HTMLCanvasElement, type: 'cpu' | 'gpu' | 'memory'): void {
@@ -286,27 +311,14 @@ class SystemMonitor {
 
         const history = type === 'cpu' ? this.cpuHistory :
                         type === 'gpu' ? this.gpuHistory :
-                        type === 'memory' ? this.memoryHistory : [];
+                        this.memoryHistory;
 
         const width = canvas.width;
         const height = canvas.height;
 
         ctx.clearRect(0, 0, width, height);
-
         if (history.length < 2) return;
 
-        // 绘制背景网格
-        ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-        ctx.lineWidth = 0.5;
-        for (let i = 0; i <= 4; i++) {
-            const y = (height / 4) * i;
-            ctx.beginPath();
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-            ctx.stroke();
-        }
-
-        // 绘制曲线
         ctx.strokeStyle = this.getColorForValue(history[history.length - 1] || 0);
         ctx.lineWidth = 1.5;
         ctx.beginPath();
@@ -326,7 +338,6 @@ class SystemMonitor {
 
         ctx.stroke();
 
-        // 填充
         ctx.lineTo(startX + (history.length - 1) * step, height);
         ctx.lineTo(startX, height);
         ctx.closePath();
@@ -340,11 +351,11 @@ class SystemMonitor {
     private getColorForValue(value: number, alpha?: number): string {
         const a = alpha !== undefined ? alpha : 1;
         if (value < 50) {
-            return `rgba(76, 175, 80, ${a})`; // 绿色
+            return `rgba(76, 175, 80, ${a})`;
         } else if (value < 80) {
-            return `rgba(255, 193, 7, ${a})`; // 黄色
+            return `rgba(255, 193, 7, ${a})`;
         } else {
-            return `rgba(244, 67, 54, ${a})`; // 红色
+            return `rgba(244, 67, 54, ${a})`;
         }
     }
 
@@ -360,12 +371,10 @@ class SystemMonitor {
         const wasEnabled = this.config.enabled;
         this.config = { ...this.config, ...newConfig };
 
-        // If serverPort changed, rebuild serverUrl
         if (newConfig.serverPort !== undefined) {
             this.config.serverUrl = `http://localhost:${this.config.serverPort}/api/system`;
         }
 
-        // Handle enabled state change
         if (newConfig.enabled !== undefined && newConfig.enabled !== wasEnabled) {
             this.setEnabled(newConfig.enabled);
         }
@@ -374,34 +383,49 @@ class SystemMonitor {
     }
 
     private applyConfig(): void {
-        if (!this.container) return;
+        if (!this.container || !this.background) return;
 
         const isLeft = this.config.monitorPosition === 'left';
-        if (isLeft) {
-            this.container.style.left = `${100 - this.config.monitorX}%`;
-            this.container.style.right = 'auto';
-        } else {
-            this.container.style.right = `${100 - this.config.monitorX}%`;
-            this.container.style.left = 'auto';
+
+        // Position
+        if (this.container) {
+            if (isLeft) {
+                this.container.style.left = `${100 - this.config.monitorX}%`;
+                this.container.style.right = 'auto';
+            } else {
+                this.container.style.right = `${100 - this.config.monitorX}%`;
+                this.container.style.left = 'auto';
+            }
+            this.container.style.top = `${this.config.monitorY}%`;
         }
-        this.container.style.top = `${this.config.monitorY}%`;
-        this.container.style.fontSize = `${this.config.monitorSize}px`;
-        this.container.style.color = this.config.monitorColor;
+
+        // Direction class on background (align-items controls all rows)
+        if (this.background) {
+            this.background.classList.toggle('left-side', isLeft);
+            this.background.classList.toggle('right-side', !isLeft);
+            this.background.classList.toggle('horizontal-layout', this.config.barLayout === 'horizontal');
+        }
+
+        // Font styles
+        const rows = [this.cpuRow, this.gpuRow, this.memoryRow, this.networkRow];
+        rows.forEach(row => {
+            if (row) {
+                row.style.fontSize = `${this.config.monitorSize}px`;
+                row.style.color = this.config.monitorColor;
+            }
+        });
     }
 
-    // 销毁
     public destroy(): void {
         this.stopPolling();
         instance = null;
-        this.container?.remove();
     }
 
-    // 切换显示/隐藏
     public toggle(): void {
         this.enabled = !this.enabled;
         if (this.enabled) {
             this.startPolling();
-            if (this.container) this.container.style.display = 'flex';
+            if (this.container) this.container.style.display = '';
         } else {
             this.stopPolling();
             if (this.container) this.container.style.display = 'none';
@@ -416,7 +440,7 @@ class SystemMonitor {
         this.enabled = enabled;
         if (enabled) {
             this.startPolling();
-            if (this.container) this.container.style.display = 'flex';
+            if (this.container) this.container.style.display = '';
         } else {
             this.stopPolling();
             if (this.container) this.container.style.display = 'none';

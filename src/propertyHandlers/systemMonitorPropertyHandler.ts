@@ -2,6 +2,7 @@ import { getSystemMonitor, initSystemMonitor } from '@/systemMonitor';
 import { WallpaperProperties } from './types';
 import { debugLogger } from '@/utils/logger';
 import { config } from '@/utils/config';
+import { elements } from '@/utils/elementManager';
 
 /**
  * Handle auto-start setting change
@@ -150,6 +151,28 @@ export function handleSystemMonitorProperties(
         monitor.updateConfig({
             disconnectTimeout: properties.sysmon_disconnect_timeout.value * 1000
         });
+    }
+
+    // Yakeli (acrylic) effect settings
+    if (properties.sysmon_yakeli_show) {
+        elements.body.style.setProperty("--sysmon-yakeli-enabled", properties.sysmon_yakeli_show.value ? '1' : '0');
+    }
+
+    if (properties.sysmon_bluryakeli) {
+        elements.body.style.setProperty("--sysmon-blur-yakeli", `${properties.sysmon_bluryakeli.value}px`);
+    }
+
+    if (properties.sysmon_yakeli) {
+        elements.body.style.setProperty("--sysmon-yakeli", String(properties.sysmon_yakeli.value/100));
+    }
+
+    if (properties.sysmon_yakelicolor) {
+        const c = properties.sysmon_yakelicolor.value.split(' ').map((v: string) => Math.ceil(parseFloat(v) * 255));
+        elements.body.style.setProperty("--sysmon-yakeli-color", c.join(', '));
+    }
+
+    if (properties.sysmon_roundedcorners) {
+        elements.body.style.setProperty("--sysmon-roundedcorners", String(properties.sysmon_roundedcorners.value));
     }
 
     if (FirstLoad) {

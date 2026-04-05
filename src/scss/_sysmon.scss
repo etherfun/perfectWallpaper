@@ -1,30 +1,68 @@
 // ============================================
 // System Monitor Styles
 // ============================================
+@use 'mixins' as *;
+@use 'config' as *;
 
-:root {
-  --sysmon-gap: 4px;
-  --sysmon-z: 9999;
-  --sysmon-text-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
-  --sysmon-font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-}
-
-// System monitor container
 #system-monitor {
   position: fixed;
-  display: flex;
-  flex-direction: column;
-  gap: var(--sysmon-gap);
-  z-index: var(--sysmon-z);
+  z-index: var(--sysmon-z, 9999);
   pointer-events: none;
-  text-shadow: var(--sysmon-text-shadow);
-  font-family: var(--sysmon-font-family);
-}
+  transform: translate(-50%, -50%);
 
-// Row layout for sysmon items
-.sysmon-row {
-  display: flex;
-  align-items: center;
-  gap: var(--sysmon-gap);
-  white-space: nowrap;
+  .background {
+    @include yakeli-effect(sysmon);
+    display: flex;
+    flex-direction: column;
+    gap: var(--sysmon-gap, 4px);
+    padding: 8px 12px;
+    border-radius: calc(var(--sysmon-height, 50px) / 2 * var(--sysmon-roundedcorners, 50) / 100);
+
+    // Horizontal layout
+    &.horizontal-layout {
+      flex-direction: row;
+    }
+
+    // Left position: all rows left-aligned
+    &.left-side {
+      align-items: flex-start;
+      .sysmon-label {
+        text-align: left;
+      }
+    }
+
+    // Right position: all rows right-aligned
+    &.right-side {
+      align-items: flex-end;
+      .sysmon-label {
+        text-align: right;
+      }
+    }
+  }
+
+  // Each row: [left] [label] [right] with space-between
+  .sysmon-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    white-space: nowrap;
+
+    .sysmon-label {
+      width: 36px;
+      flex-shrink: 0;
+      padding: 0 6px;
+    }
+
+    .sysmon-value {
+      font-variant-numeric: tabular-nums;
+      min-width: 4ch;
+    }
+
+    .sysmon-extra {
+      font-variant-numeric: tabular-nums;
+      opacity: 0.7;
+      padding: 0 0.5em;
+      min-width: 6ch;
+    }
+  }
 }

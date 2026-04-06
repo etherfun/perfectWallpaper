@@ -54,7 +54,7 @@ export function handleSystemMonitorProperties(
         });
     }
 
-    if (properties.sysmon_auto_start) {
+    if (properties.sysmon_auto_start && Object.keys(properties).length === 1) {
         handleAutoStart(properties.sysmon_auto_start.value);
     }
 

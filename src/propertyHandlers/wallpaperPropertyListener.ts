@@ -160,7 +160,7 @@ export function setupWallpaperPropertyListener(): void {
 
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
-                if (properties.length == 0) return;
+                if (Object.keys(properties).length == 0) return;
 
                 propertiesReceived = true;
                 const isFirstLoad = config.first_load;

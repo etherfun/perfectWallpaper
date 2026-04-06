@@ -165,6 +165,9 @@ fn main() {
         .route("/api/player/:action", post(routes::player::media_control))
         .route("/api/config", get(routes::config::get_config))
         .route("/api/config", post(routes::config::update_config))
+        .route("/api/dockbar/open", post(routes::dockbar::open_item))
+        .route("/api/dockbar/select-file", get(routes::dockbar::select_file))
+        .route("/api/dockbar/icon", get(routes::dockbar::get_icon))
         .layer(cors)
         .with_state(state);
 

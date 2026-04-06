@@ -13,6 +13,7 @@ import { handleSakuraProperties } from './sakuraPropertyHandler';
 import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
 import { handleLyricsProperties } from './lyricsPropertyHandler';
 import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
+import { handleDockBarProperties } from './dockbarPropertyHandler';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { elements } from '../utils/elementManager';
@@ -139,6 +140,7 @@ export function createWallpaperPropertyListener(
     safeHandle(handleFluidEffectProperties, properties, FirstLoad, 'handleFluidEffectProperties');
     safeHandle(handleLyricsProperties, properties, FirstLoad, 'handleLyricsProperties');
     safeHandle(handleSystemMonitorProperties, properties, FirstLoad, 'handleSystemMonitorProperties');
+    safeHandle(handleDockBarProperties, properties, FirstLoad, 'handleDockBarProperties');
 
     // 如果是首次加载，在处理完所有属性后将其设置为 false
     if (FirstLoad) {

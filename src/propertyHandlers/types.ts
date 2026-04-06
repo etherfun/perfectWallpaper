@@ -550,4 +550,18 @@ export interface WallpaperProperties {
     sysmon_yakeli?: { value: number };
     sysmon_yakelicolor?: { value: string };
     sysmon_roundedcorners?: { value: number };
+
+    // Dock栏参数
+    dockbar_enabled?: { value: boolean };
+    dockbar_position?: { value: number };
+    dockbar_icon_size?: { value: number };
+    dockbar_spacing?: { value: number };
+    dockbar_yakeli_show?: { value: boolean };
+    dockbar_yakeli?: { value: number };
+    dockbar_bluryakeli?: { value: number };
+    dockbar_yakelicolor?: { value: string };
+    dockbar_roundedcorners?: { value: number };
+    dockbar_x?: { value: number };
+    dockbar_y?: { value: number };
+    dockbar_show_add_btn?: { value: boolean };
 }

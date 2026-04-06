@@ -22,4 +22,5 @@ import './PWLine';
 import './PWCircle';
 import './PWParticles';
 import './weather';
-import './WallpaperEffectController'
+import './WallpaperEffectController';
+import './dockbar';

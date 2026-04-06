@@ -456,6 +456,20 @@
 				"ui_sysmon_yakeli" : "Acrylic opacity",
 				"ui_sysmon_yakeli_show" : "Acrylic background",
 				"ui_sysmon_yakelicolor" : "Acrylic color",
+				"ui_dockbar_enabled" : "Enable DockBar",
+				"ui_dockbar_position" : "Position",
+				"ui_dockbar_pos_bottom" : "Bottom",
+				"ui_dockbar_pos_top" : "Top",
+				"ui_dockbar_pos_left" : "Left",
+				"ui_dockbar_pos_right" : "Right",
+				"ui_dockbar_icon_size" : "Icon Size",
+				"ui_dockbar_spacing" : "Spacing",
+				"ui_dockbar_yakeli_show" : "Acrylic Effect",
+				"ui_dockbar_yakeli" : "Acrylic Opacity",
+				"ui_dockbar_blur" : "Blur Intensity",
+				"ui_dockbar_color" : "Color",
+				"ui_dockbar_roundedcorners" : "Rounded Corners",
+				"ui_dockbar_show_add_btn" : "Show Add Button",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
 				"ui_ui_global_settings_language" : "Language setting",
@@ -949,6 +963,20 @@
 				"ui_sysmon_yakeli" : "亚克力不透明程度",
 				"ui_sysmon_yakeli_show" : "亚克力背景",
 				"ui_sysmon_yakelicolor" : "亚克力颜色",
+				"ui_dockbar_enabled" : "启用Dock栏",
+				"ui_dockbar_position" : "位置",
+				"ui_dockbar_pos_bottom" : "底部",
+				"ui_dockbar_pos_top" : "顶部",
+				"ui_dockbar_pos_left" : "左侧",
+				"ui_dockbar_pos_right" : "右侧",
+				"ui_dockbar_icon_size" : "图标大小",
+				"ui_dockbar_spacing" : "间距",
+				"ui_dockbar_yakeli_show" : "亚克力效果",
+				"ui_dockbar_yakeli" : "亚克力透明度",
+				"ui_dockbar_blur" : "模糊强度",
+				"ui_dockbar_color" : "颜色",
+				"ui_dockbar_roundedcorners" : "圆角",
+				"ui_dockbar_show_add_btn" : "显示添加按钮",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
 				"ui_ui_global_settings_language" : "语言设置",
@@ -4975,13 +5003,162 @@
 				"type" : "slider",
 				"value" : 10
 			},
-			"sysmon_enabled" : 
+			"sysmon_enabled" :
 			{
 				"index" : 390,
 				"order" : 490,
 				"text" : "ui_sysmon_enabled",
 				"type" : "bool",
 				"value" : false
+			},
+			"DockBar" :
+			{
+				"index" : 418,
+				"order" : 518,
+				"text" : "● Dock栏 DockBar",
+				"type" : "group",
+				"value" : ""
+			},
+			"dockbar_enabled" :
+			{
+				"condition" : "",
+				"index" : 419,
+				"order" : 519,
+				"text" : "ui_dockbar_enabled",
+				"type" : "bool",
+				"value" : true
+			},
+			"dockbar_position" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 420,
+				"order" : 520,
+				"options" :
+				[
+					{
+						"label" : "ui_dockbar_pos_bottom",
+						"value" : 0
+					},
+					{
+						"label" : "ui_dockbar_pos_top",
+						"value" : 1
+					},
+					{
+						"label" : "ui_dockbar_pos_left",
+						"value" : 2
+					},
+					{
+						"label" : "ui_dockbar_pos_right",
+						"value" : 3
+					}
+				],
+				"text" : "ui_dockbar_position",
+				"type" : "combo",
+				"value" : 0
+			},
+			"dockbar_icon_size" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 421,
+				"max" : 80,
+				"min" : 24,
+				"order" : 521,
+				"text" : "ui_dockbar_icon_size",
+				"type" : "slider",
+				"value" : 48
+			},
+			"dockbar_spacing" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 422,
+				"max" : 30,
+				"min" : 4,
+				"order" : 522,
+				"text" : "ui_dockbar_spacing",
+				"type" : "slider",
+				"value" : 12
+			},
+			"dockbar_yakeli_show" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 423,
+				"order" : 523,
+				"text" : "ui_dockbar_yakeli_show",
+				"type" : "bool",
+				"value" : true
+			},
+			"dockbar_yakeli" :
+			{
+				"condition" : "dockbar_enabled.value == true && dockbar_yakeli_show.value == true",
+				"index" : 424,
+				"max" : 100,
+				"min" : 10,
+				"order" : 524,
+				"text" : "ui_dockbar_yakeli",
+				"type" : "slider",
+				"value" : 50
+			},
+			"dockbar_bluryakeli" :
+			{
+				"condition" : "dockbar_enabled.value == true && dockbar_yakeli_show.value == true",
+				"index" : 425,
+				"max" : 30,
+				"min" : 1,
+				"order" : 525,
+				"text" : "ui_dockbar_blur",
+				"type" : "slider",
+				"value" : 10
+			},
+			"dockbar_yakelicolor" :
+			{
+				"condition" : "dockbar_enabled.value == true && dockbar_yakeli_show.value == true",
+				"index" : 426,
+				"order" : 526,
+				"text" : "ui_dockbar_color",
+				"type" : "color",
+				"value" : "1 1 1"
+			},
+			"dockbar_roundedcorners" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 427,
+				"max" : 100,
+				"min" : 0,
+				"order" : 527,
+				"text" : "ui_dockbar_roundedcorners",
+				"type" : "slider",
+				"value" : 50
+			},
+			"dockbar_x" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 428,
+				"max" : 100,
+				"min" : 0,
+				"order" : 528,
+				"text" : "ui_setting_x-asis",
+				"type" : "slider",
+				"value" : 50
+			},
+			"dockbar_y" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 429,
+				"max" : 100,
+				"min" : 0,
+				"order" : 529,
+				"text" : "ui_setting_y-asis",
+				"type" : "slider",
+				"value" : 100
+			},
+			"dockbar_show_add_btn" :
+			{
+				"condition" : "dockbar_enabled.value == true",
+				"index" : 430,
+				"order" : 530,
+				"text" : "ui_dockbar_show_add_btn",
+				"type" : "bool",
+				"value" : true
 			},
 			"sysmon_gpu_mode" : 
 			{

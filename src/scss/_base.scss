@@ -210,6 +210,15 @@ body {
   // Fluid Effect CSS Variables
   --fluidEffect-backdrop-filter-strength: 10px;
   --fluidEffect-dark-overlay-strength: 0.5;
+
+  // DockBar Component CSS Variables
+  --dockbar-yakeli-enabled: 1;
+  --dockbar-yakeli-color: 255, 255, 255;
+  --dockbar-yakeli: 0.5;
+  --dockbar-blur-yakeli: 10px;
+  --dockbar-icon-size: 48px;
+  --dockbar-spacing: 12px;
+  --dockbar-roundedcorners: 50;
 }
 
 // Utility class for loading text animation

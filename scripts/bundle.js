@@ -53,7 +53,7 @@ async function copyFile(src, dest, force = false) {
     console.log(`  Copy: ${path.relative(srcDir, src)} -> ${path.relative(srcDir, dest)}`);
 }
 
-async function copyDirectory(src, dest) {
+async function copyDirectory(src, dest, force = false) {
     if (!fs.existsSync(dest)) {
         fs.mkdirSync(dest, { recursive: true });
     }
@@ -62,8 +62,8 @@ async function copyDirectory(src, dest) {
         const srcPath = path.join(src, entry.name);
         const destPath = path.join(dest, entry.name);
         if (entry.isDirectory()) {
-            await copyDirectory(srcPath, destPath);
-        } else if (!fs.existsSync(destPath)) {
+            await copyDirectory(srcPath, destPath, force);
+        } else if (force || !fs.existsSync(destPath)) {
             fs.copyFileSync(srcPath, destPath);
         }
     }
@@ -109,7 +109,7 @@ async function copyAssets() {
 
         const stat = fs.statSync(srcPath);
         if (stat.isDirectory()) {
-            await copyDirectory(srcPath, destPath);
+            await copyDirectory(srcPath, destPath, item.force);
         } else {
             await copyFile(srcPath, destPath, item.force);
         }
@@ -125,7 +125,7 @@ async function copyAssets() {
         }
         const stat = fs.statSync(srcPath);
         if (stat.isDirectory()) {
-            await copyDirectory(srcPath, destPath);
+            await copyDirectory(srcPath, destPath, true);
         } else {
             await copyFile(srcPath, destPath);
         }

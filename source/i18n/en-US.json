@@ -264,19 +264,6 @@
     "version_1_0_0_changes": "## 🎉 First Release\n- Added multiple weather API sources",
     "version_fallback_title": "Version v",
     "version_fallback_title_with_version": "Version",
-    "ui_sysmon_header": "● System Monitor",
-    "ui_sysmon_server_url": "Server URL",
-    "ui_sysmon_update_interval": "Update Interval (sec)",
-    "ui_sysmon_cpu_mode": "CPU Display Mode",
-    "ui_sysmon_gpu_mode": "GPU Display Mode",
-    "ui_sysmon_memory_mode": "Memory Display Mode",
-    "ui_sysmon_network_mode": "Network Display Mode",
-    "ui_sysmon_show_cpu": "Show CPU",
-    "ui_sysmon_show_gpu": "Show GPU",
-    "ui_sysmon_show_memory": "Show Memory",
-    "ui_sysmon_show_network": "Show Network",
-    "ui_sysmon_mode_none": "None",
-    "ui_sysmon_mode_text": "Text",
-    "ui_sysmon_mode_bar": "Bar",
-    "ui_sysmon_mode_curve": "Curve"
+    "sysmon_label_memory": "MEM",
+    "sysmon_label_network": "NET"
 }

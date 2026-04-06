@@ -269,19 +269,6 @@
     "version_no_preview": "无预览内容",
     "version_fallback_title": "版本 v",
     "version_fallback_title_with_version": "版本",
-    "ui_sysmon_header": "● 系统监控",
-    "ui_sysmon_server_url": "服务器地址",
-    "ui_sysmon_update_interval": "更新间隔 (秒)",
-    "ui_sysmon_cpu_mode": "CPU显示模式",
-    "ui_sysmon_gpu_mode": "GPU显示模式",
-    "ui_sysmon_memory_mode": "内存显示模式",
-    "ui_sysmon_network_mode": "网络显示模式",
-    "ui_sysmon_show_cpu": "显示CPU",
-    "ui_sysmon_show_gpu": "显示GPU",
-    "ui_sysmon_show_memory": "显示内存",
-    "ui_sysmon_show_network": "显示网络",
-    "ui_sysmon_mode_none": "不显示",
-    "ui_sysmon_mode_text": "文字",
-    "ui_sysmon_mode_bar": "条形",
-    "ui_sysmon_mode_curve": "曲线"
+    "sysmon_label_memory": "内存",
+    "sysmon_label_network": "网络"
 }

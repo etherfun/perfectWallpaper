@@ -192,18 +192,19 @@ class SystemMonitor {
         if (!leftSpan || !rightSpan || !labelSpan) return;
 
         const isLeft = this.config.monitorPosition === 'left';
+        const mainLine = rightSpan.querySelector('.main-line') as HTMLElement | null;
+        const subLine = rightSpan.querySelector('.sub-line') as HTMLElement | null;
 
-        // left position: label in .left, value in .right (label left, value right)
-        // right position: value in .left, label in .right (value left, label right)
         if (isLeft) {
             leftSpan.innerHTML = '';
-            labelSpan.textContent = label;
-            rightSpan.innerHTML = `<span class="sysmon-value">${value}%</span>${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}`;
+            mainLine!.innerHTML = `<span class="sysmon-value">${value}%</span>${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}`;
         } else {
-            leftSpan.innerHTML = `${extra ? `<span class="sysmon-extra">(${extra})` : ''}</span><span class="sysmon-value">${value}%</span>`;
-            labelSpan.textContent = label;
-            rightSpan.innerHTML = '';
+            leftSpan.innerHTML = `${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}</span><span class="sysmon-value">${value}%</span>`;
+            mainLine!.innerHTML = '';
         }
+
+        if (subLine) subLine.innerHTML = '';
+
 
         switch (mode) {
             case 'text':
@@ -225,8 +226,11 @@ class SystemMonitor {
         const rightSpan = row.querySelector('.right');
         if (!rightSpan) return;
 
+        const mainLine = rightSpan.querySelector('.main-line');
+        if (!mainLine) return;
+
         // Clear old canvas
-        const oldCanvas = rightSpan.querySelector('canvas');
+        const oldCanvas = mainLine.querySelector('canvas');
         if (oldCanvas) oldCanvas.remove();
 
         const canvas = document.createElement('canvas');
@@ -234,7 +238,7 @@ class SystemMonitor {
         canvas.height = 24;
         canvas.style.cssText = 'display:inline-block;vertical-align:middle;';
 
-        rightSpan.appendChild(canvas);
+        mainLine.appendChild(canvas);
         this.drawCurve(canvas, type);
     }
 
@@ -242,9 +246,11 @@ class SystemMonitor {
         const rightSpan = row.querySelector('.right');
         if (!rightSpan) return;
 
+        const subLine = rightSpan.querySelector('.sub-line') as HTMLElement | null;
+        if (!subLine) return;
+
         // Clear old bar container
-        const oldBar = rightSpan.querySelector('.sysmon-bar');
-        if (oldBar) oldBar.remove();
+        subLine.innerHTML = '';
 
         const isVertical = this.config.barLayout === 'vertical';
 
@@ -278,8 +284,8 @@ class SystemMonitor {
         track.appendChild(fill);
         barContainer.appendChild(track);
 
-        // Append bar to right span
-        rightSpan.appendChild(barContainer);
+        // Append bar to sub-line
+        subLine.appendChild(barContainer);
     }
 
     private updateNetworkDisplay(rx: string, tx: string): void {
@@ -294,14 +300,16 @@ class SystemMonitor {
 
         if (!leftSpan || !rightSpan || !labelSpan) return;
 
+        const mainLine = rightSpan.querySelector('.main-line') as HTMLElement | null;
+
         if (isLeft) {
             leftSpan.innerHTML = '';
-            labelSpan.textContent = 'NET';
-            rightSpan.innerHTML = `<span class="sysmon-value">↓${rx} ↑${tx}</span>`;
+            if (!labelSpan.hasAttribute('data-i18n')) labelSpan.textContent = 'NET';
+            mainLine!.innerHTML = `<span class="sysmon-net-down">↓${rx}</span> <span class="sysmon-net-up">↑${tx}</span>`;
         } else {
-            leftSpan.innerHTML = `<span class="sysmon-value">↓${rx} ↑${tx}</span>`;
-            labelSpan.textContent = 'NET';
-            rightSpan.innerHTML = '';
+            leftSpan.innerHTML = `<span class="sysmon-net-down">↓${rx}</span> <span class="sysmon-net-up">↑${tx}</span>`;
+            if (!labelSpan.hasAttribute('data-i18n')) labelSpan.textContent = 'NET';
+            mainLine!.innerHTML = '';
         }
     }
 
@@ -364,7 +372,7 @@ class SystemMonitor {
         const k = 1024;
         const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
         const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+        return (bytes / Math.pow(k, i)).toFixed(1) + ' ' + sizes[i];
     }
 
     public updateConfig(newConfig: Partial<SystemMonitorConfig>): void {

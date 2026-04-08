@@ -13,6 +13,7 @@ use windows::Win32::System::Console::AllocConsole;
 
 mod auto_start;
 mod config;
+pub mod icon_extractor;
 mod routes;
 
 use config::ServerConfig;
@@ -155,19 +156,27 @@ fn main() {
     let state = std::sync::Arc::new(AppStateWithConfig::new(app_state, server_config));
 
     let app = Router::new()
-        .route("/api/system", get(routes::system::get_system_info))
-        .route("/api/cpu", get(routes::system::get_cpu_usage))
-        .route("/api/memory", get(routes::system::get_memory_info))
-        .route("/api/gpu", get(routes::system::get_gpu_info))
+        // System info routes
+        .route("/api/sysinfo", get(routes::sysinfo::get_system_info))
+        .route("/api/sysinfo/cpu", get(routes::sysinfo::get_cpu_usage))
+        .route("/api/sysinfo/memory", get(routes::sysinfo::get_memory_info))
+        .route("/api/sysinfo/gpu", get(routes::sysinfo::get_gpu_info))
+        // File routes
         .route("/api/files", get(routes::files::list_files))
         .route("/api/files/audio", get(routes::files::stream_audio))
         .route("/api/files/metadata", get(routes::files::get_metadata))
-        .route("/api/player/:action", post(routes::player::media_control))
+        .route("/api/files/player/:action", post(routes::files::media_control))
+        // Icon routes
+        .route("/api/icon", get(routes::icon::get_icon))
+        .route("/api/icon/all", get(routes::icon::get_all_icons))
+        .route("/api/icon/upload", post(routes::icon::upload_custom_icon))
+        .route("/api/icon/cache", post(routes::icon::clear_icon_cache))
+        // Config routes
         .route("/api/config", get(routes::config::get_config))
         .route("/api/config", post(routes::config::update_config))
+        // Dockbar routes
         .route("/api/dockbar/open", post(routes::dockbar::open_item))
         .route("/api/dockbar/select-file", get(routes::dockbar::select_file))
-        .route("/api/dockbar/icon", get(routes::dockbar::get_icon))
         .layer(cors)
         .with_state(state);
 

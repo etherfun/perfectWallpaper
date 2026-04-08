@@ -1066,10 +1066,11 @@ dependencies = [
  "serde",
  "serde_json",
  "sysinfo 0.30.13",
+ "thiserror 1.0.69",
  "tokio",
  "tower 0.4.13",
  "tower-http",
- "windows 0.52.0",
+ "windows 0.61.3",
 ]
 
 [[package]]

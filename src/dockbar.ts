@@ -186,7 +186,7 @@ class DockBar {
         // 默认先显示占位图
         imgEl.src = this.getDefaultIcon();
 
-        // URL 类型：直接使用网站的 favicon.ico
+        // URL 类型：尝试获取 SVG 或 ICO favicon
         if (item.type === 'url' && item.url) {
             try {
                 const urlObj = new URL(item.url);
@@ -203,13 +203,24 @@ class DockBar {
                     return;
                 }
 
-                // 直接使用网站的 favicon.ico
-                const faviconUrl = `${urlObj.origin}/favicon.ico`;
-                imgEl.onerror = () => {
-                    imgEl.src = this.getDefaultIcon();
+                // 优先尝试 SVG favicon（现代网站常用）
+                const svgFaviconUrl = `${urlObj.origin}/favicon.svg`;
+                imgEl.onload = () => {
+                    // SVG 加载成功，缓存 SVG URL
+                    localStorage.setItem(cacheKey, svgFaviconUrl);
                 };
-                imgEl.src = faviconUrl;
-                localStorage.setItem(cacheKey, faviconUrl);
+                imgEl.onerror = () => {
+                    // SVG 加载失败，回退到 ICO
+                    const icoFaviconUrl = `${urlObj.origin}/favicon.ico`;
+                    imgEl.onload = () => {
+                        localStorage.setItem(cacheKey, icoFaviconUrl);
+                    };
+                    imgEl.onerror = () => {
+                        imgEl.src = this.getDefaultIcon();
+                    };
+                    imgEl.src = icoFaviconUrl;
+                };
+                imgEl.src = svgFaviconUrl;
             } catch (e) {
                 imgEl.src = this.getDefaultIcon();
             }
@@ -232,8 +243,9 @@ class DockBar {
                 return;
             }
 
-            // 从服务器获取
-            fetch(`${this.serverUrl}/api/dockbar/icon?path=${encodeURIComponent(item.path)}`)
+            // 从服务器获取（使用时间戳强制刷新缓存）
+            const timestamp = Date.now();
+            fetch(`${this.serverUrl}/api/icon?path=${encodeURIComponent(item.path)}&t=${timestamp}`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success && data.data.icon) {
@@ -269,6 +281,25 @@ class DockBar {
         const keys = Object.keys(localStorage).filter(k => k.startsWith('icon_'));
         const toRemove = keys.slice(0, Math.floor(keys.length / 2));
         toRemove.forEach(k => localStorage.removeItem(k));
+    }
+
+    /**
+     * 清除所有图标缓存（包括 localStorage 和服务器端缓存）
+     * 调用方式：DockBar.getInstance().clearAllIconCache()
+     */
+    public async clearAllIconCache(): Promise<void> {
+        // 清除 localStorage 中的所有图标缓存
+        const keys = Object.keys(localStorage).filter(k => k.startsWith('icon_'));
+        keys.forEach(k => localStorage.removeItem(k));
+
+        // 清除服务器端缓存
+        try {
+            const res = await fetch(`${this.serverUrl}/api/icon/cache`, { method: 'POST' });
+            const data = await res.json();
+            console.log('[DockBar] Cleared icon cache:', data.data?.cleared || 0, 'server entries,', keys.length, 'localStorage entries');
+        } catch (e) {
+            console.error('[DockBar] Failed to clear server cache:', e);
+        }
     }
 
     private getDefaultIcon(): string {
@@ -373,6 +404,12 @@ class DockBar {
                     <div class="field" id="path-field">
                         <label>路径</label>
                         <button id="dockbar-browse" class="browse-btn">选择文件...</button>
+                        <div class="icon-selector" id="icon-selector" style="display:none;">
+                            <label>选择图标</label>
+                            <div class="icon-grid" id="icon-grid"></div>
+                            <button id="dockbar-custom-icon" class="browse-btn" style="margin-top:8px;">自定义图标...</button>
+                            <input type="file" id="custom-icon-input" accept="image/*" style="display:none;" />
+                        </div>
                     </div>
                     <div class="field" id="url-field" style="display:none;">
                         <label>网页链接</label>
@@ -381,8 +418,11 @@ class DockBar {
                     </div>
                 </div>
                 <div class="dockbar-dialog-actions">
-                    <button id="dockbar-cancel">取消</button>
-                    <button id="dockbar-add-confirm">添加</button>
+                    <button id="dockbar-clear-cache" title="清除图标缓存">清理缓存</button>
+                    <div class="actions-right">
+                        <button id="dockbar-cancel">取消</button>
+                        <button id="dockbar-add-confirm">添加</button>
+                    </div>
                 </div>
             </div>
         `;
@@ -468,6 +508,8 @@ class DockBar {
             }, 1500);
         });
 
+        let selectedIcon: string | null = null;
+
         // 浏览文件
         browseBtn?.addEventListener('click', async () => {
             browseBtn.textContent = '选择中...';
@@ -479,6 +521,42 @@ class DockBar {
                     selectedPath = data.data.path;
                     browseBtn.textContent = data.data.name || selectedPath.split('\\').pop() || '已选择';
                     browseBtn.classList.add('selected');
+
+                    // 获取所有图标
+                    const iconSelector = overlay.querySelector('#icon-selector') as HTMLElement;
+                    const iconGrid = overlay.querySelector('#icon-grid') as HTMLElement;
+                    iconGrid.innerHTML = '<div class="icon-loading">加载图标中...</div>';
+                    iconSelector.style.display = 'block';
+
+                    try {
+                        const iconsResponse = await fetch(`${this.serverUrl}/api/icon/all?path=${encodeURIComponent(selectedPath)}&t=${Date.now()}`);
+                        const iconsData = await iconsResponse.json();
+
+                        iconGrid.innerHTML = '';
+
+                        if (iconsData.success && iconsData.data && iconsData.data.icons && iconsData.data.icons.length > 0) {
+                            iconsData.data.icons.forEach((iconItem: { icon: string; width: number; height: number }, idx: number) => {
+                                const iconBtn = document.createElement('button');
+                                iconBtn.className = 'icon-option';
+                                if (idx === 0) {
+                                    iconBtn.classList.add('selected');
+                                    selectedIcon = iconItem.icon;
+                                }
+                                iconBtn.innerHTML = `<img src="${iconItem.icon}" alt="${iconItem.width}x${iconItem.height}" title="${iconItem.width}x${iconItem.height}" />`;
+                                iconBtn.addEventListener('click', () => {
+                                    iconGrid.querySelectorAll('.icon-option').forEach(b => b.classList.remove('selected'));
+                                    iconBtn.classList.add('selected');
+                                    selectedIcon = iconItem.icon;
+                                });
+                                iconGrid.appendChild(iconBtn);
+                            });
+                        } else {
+                            iconGrid.innerHTML = '<div class="icon-no-icons">未找到图标</div>';
+                        }
+                    } catch (e) {
+                        console.error('[DockBar] Failed to load icons:', e);
+                        iconGrid.innerHTML = '<div class="icon-no-icons">加载图标失败</div>';
+                    }
                 } else {
                     browseBtn.textContent = '选择文件...';
                 }
@@ -489,7 +567,77 @@ class DockBar {
             browseBtn.disabled = false;
         });
 
+        // 自定义图标上传
+        const customIconBtn = overlay.querySelector('#dockbar-custom-icon') as HTMLButtonElement;
+        const customIconInput = overlay.querySelector('#custom-icon-input') as HTMLInputElement;
+        customIconBtn?.addEventListener('click', () => {
+            customIconInput?.click();
+        });
+        customIconInput?.addEventListener('change', async () => {
+            const file = customIconInput.files?.[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const result = e.target?.result as string;
+                // Extract base64 data without the data:image/...;base64, prefix
+                const base64Match = result.match(/^data:image\/\w+;base64,(.+)$/);
+                if (!base64Match) {
+                    console.error('[DockBar] Invalid image data');
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`${this.serverUrl}/api/icon/upload`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            data: base64Match[1],
+                            type: file.type || 'image/png'
+                        })
+                    });
+                    const data = await response.json();
+                    if (data.success && data.data.icon) {
+                        // Add custom icon to the grid
+                        const iconGrid = overlay.querySelector('#icon-grid') as HTMLElement;
+                        const iconBtn = document.createElement('button');
+                        iconBtn.className = 'icon-option selected';
+                        iconBtn.innerHTML = `<img src="${data.data.icon}" alt="自定义" title="自定义图标" />`;
+                        iconBtn.addEventListener('click', () => {
+                            iconGrid.querySelectorAll('.icon-option').forEach(b => b.classList.remove('selected'));
+                            iconBtn.classList.add('selected');
+                            selectedIcon = data.data.icon;
+                        });
+                        // Clear existing selection and add new
+                        iconGrid.querySelectorAll('.icon-option').forEach(b => b.classList.remove('selected'));
+                        iconGrid.appendChild(iconBtn);
+                        selectedIcon = data.data.icon;
+                    } else {
+                        console.error('[DockBar] Failed to upload custom icon:', data.error);
+                    }
+                } catch (err) {
+                    console.error('[DockBar] Failed to upload custom icon:', err);
+                }
+            };
+            reader.readAsDataURL(file);
+            // Reset input so same file can be selected again
+            customIconInput.value = '';
+        });
+
         cancelBtn?.addEventListener('click', closeDialog);
+
+        // 清理缓存按钮
+        const clearCacheBtn = overlay.querySelector('#dockbar-clear-cache') as HTMLButtonElement;
+        clearCacheBtn?.addEventListener('click', async () => {
+            clearCacheBtn.textContent = '清理中...';
+            clearCacheBtn.disabled = true;
+            await this.clearAllIconCache();
+            clearCacheBtn.textContent = '已清理';
+            setTimeout(() => {
+                clearCacheBtn.textContent = '清理缓存';
+                clearCacheBtn.disabled = false;
+            }, 1500);
+        });
 
         // ========== 排序管理界面 ==========
         const manageSection = document.createElement('div');
@@ -585,7 +733,7 @@ class DockBar {
             const newItem: DockItem = {
                 id: `dock_${Date.now()}`,
                 name,
-                icon: '',
+                icon: selectedIcon || '',
                 type: selectedType as 'app' | 'file' | 'url',
                 path: path || undefined,
                 url: url || undefined

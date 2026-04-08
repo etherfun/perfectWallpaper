@@ -33,7 +33,7 @@ const DEFAULT_CONFIG: SystemMonitorConfig = {
     barLayout: 'horizontal',
     monitorPosition: 'right',
     disconnectTimeout: 10000,
-    serverUrl: 'http://localhost:27420/api/system',
+    serverUrl: 'http://localhost:27420/api/sysinfo',
     serverPort: 27420,
     updateInterval: 2000,
     cpuMode: 'text',
@@ -70,6 +70,7 @@ class SystemMonitor {
     private enabled: boolean = true;
     private disconnectTimer: number | null = null;
     private lastConnectedTime: number = 0;
+    private hasEverConnected: boolean = false;
 
     constructor() {
         this.init();
@@ -116,6 +117,11 @@ class SystemMonitor {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             const json = await response.json();
 
+            // Mark as connected on first success
+            if (!this.hasEverConnected) {
+                this.hasEverConnected = true;
+            }
+
             // Reset disconnect timer on successful connection
             this.lastConnectedTime = Date.now();
             if (this.disconnectTimer) {
@@ -127,8 +133,9 @@ class SystemMonitor {
                 this.updateDisplay(json.data);
             }
         } catch {
-            // Start disconnect timer if not already started
-            if (!this.disconnectTimer) {
+            // Only start disconnect timer if we've ever connected before
+            // This prevents auto-disable on startup when server is still initializing
+            if (this.hasEverConnected && !this.disconnectTimer) {
                 this.disconnectTimer = window.setTimeout(() => {
                     this.destroy();
                 }, this.config.disconnectTimeout);
@@ -380,7 +387,7 @@ class SystemMonitor {
         this.config = { ...this.config, ...newConfig };
 
         if (newConfig.serverPort !== undefined) {
-            this.config.serverUrl = `http://localhost:${this.config.serverPort}/api/system`;
+            this.config.serverUrl = `http://localhost:${this.config.serverPort}/api/sysinfo`;
         }
 
         if (newConfig.enabled !== undefined && newConfig.enabled !== wasEnabled) {

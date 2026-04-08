@@ -118,6 +118,6 @@ mod tests {
         assert!(ServerConfig::validate_port(3842).is_ok());
         assert!(ServerConfig::validate_port(80).is_ok());
         assert!(ServerConfig::validate_port(1023).is_err());
-        assert!(ServerConfig::validate_port(65536).is_err());
+        assert!(ServerConfig::validate_port(0).is_err());
     }
 }

@@ -15,7 +15,7 @@ let audioEndedListenerBound = false;
 const SERVER_PORT = 27420;
 
 // 外部播放器控制 API 前缀
-const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/player`;
+const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/files/player`;
 
 /**
  * 控制外部播放器 (发送媒体按键)

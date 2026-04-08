@@ -3,17 +3,8 @@ use chrono::Utc;
 use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind, System, MINIMUM_CPU_UPDATE_INTERVAL};
 use std::sync::Arc;
 
-use super::config::AppStateWithConfig;
-
-#[derive(serde::Serialize)]
-pub struct GpuInfo {
-    pub id: usize,
-    pub model: String,
-    pub vendor: String,
-    pub vram: u64,
-    pub utilization: f32,
-    pub temperature: f32,
-}
+use super::gpu::GpuInfo;
+use crate::routes::config::AppStateWithConfig;
 
 #[cfg(windows)]
 fn get_gpu_info_windows() -> Vec<GpuInfo> {
@@ -35,7 +26,7 @@ fn get_gpu_info_windows() -> Vec<GpuInfo> {
                     id: idx,
                     model: gpu.model_name,
                     vendor: vendor_str.to_string(),
-                    vram: gpu.memory_mb * 1024 * 1024, // Convert MB to bytes
+                    vram: gpu.memory_mb * 1024 * 1024,
                     utilization: gpu.usage_percent.unwrap_or(0.0),
                     temperature: gpu.temperature.unwrap_or(0.0),
                 }
@@ -180,68 +171,4 @@ pub async fn get_system_info(
     });
 
     Json(response)
-}
-
-pub async fn get_cpu_usage() -> impl axum::response::IntoResponse {
-    let now = Utc::now().timestamp_millis();
-
-    let mut sys = System::new_with_specifics(
-        RefreshKind::new().with_cpu(CpuRefreshKind::everything())
-    );
-
-    sys.refresh_cpu_usage();
-    std::thread::sleep(MINIMUM_CPU_UPDATE_INTERVAL);
-    sys.refresh_cpu_usage();
-
-    let usage = sys.global_cpu_info().cpu_usage();
-
-    Json(serde_json::json!({
-        "success": true,
-        "data": usage,
-        "timestamp": now
-    }))
-}
-
-pub async fn get_memory_info() -> impl axum::response::IntoResponse {
-    let mut sys = System::new_with_specifics(
-        RefreshKind::new().with_memory(MemoryRefreshKind::everything())
-    );
-    sys.refresh_memory();
-    let total = sys.total_memory();
-    let used = sys.used_memory();
-    let now = Utc::now().timestamp_millis();
-
-    Json(serde_json::json!({
-        "success": true,
-        "data": {
-            "total": total,
-            "used": used,
-            "free": total - used,
-            "used_percent": if total > 0 { (used as f32 / total as f32) * 100.0 } else { 0.0 }
-        },
-        "timestamp": now
-    }))
-}
-
-pub async fn get_gpu_info() -> impl axum::response::IntoResponse {
-    let now = Utc::now().timestamp_millis();
-
-    #[cfg(windows)]
-    let gpu = get_gpu_info_windows();
-
-    #[cfg(not(windows))]
-    let gpu = vec![GpuInfo {
-        id: 0,
-        model: "Unknown".to_string(),
-        vendor: "Unknown".to_string(),
-        vram: 0,
-        utilization: 0.0,
-        temperature: 0.0,
-    }];
-
-    Json(serde_json::json!({
-        "success": true,
-        "data": gpu,
-        "timestamp": now
-    }))
 }

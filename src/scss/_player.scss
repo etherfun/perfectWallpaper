@@ -102,14 +102,15 @@
                 align-items: flex-start;
                 flex-shrink: 0;
                 width: min-content;
+                overflow: hidden;
 
                 .title {
                     padding-top: 0.1em;
                     font-size: 0.45em;
 
                     .titleicon {
-                        width: 0.9em;
-                        height: 0.9em;
+                        width: 0.8em;
+                        height: 0.8em;
                         vertical-align: middle;
                         @include icon-position-hide;
                         overflow: hidden;

@@ -310,9 +310,9 @@ export function playertitle(visualaudiobar: boolean = false): void {
         for (let i = 0; i < leftElements.length; i++) leftElements[i].innerHTML = '';
     }
 
-    titleEl.innerHTML = titleToShow;
-    artistEl.innerHTML = artistToShow;
-    albumEl.innerHTML = albumToShow;
+    titleEl.innerHTML = `<span>${titleToShow}</span>`;
+    artistEl.innerHTML = `<span>${artistToShow}</span>`;
+    albumEl.innerHTML = `<span>${albumToShow}</span>`;
 
     if (albumToShow !== titleToShow || playerControlSamealbumTitle === true) {
         player_control_albumTitle.style.display = '';
@@ -711,21 +711,16 @@ function initPlayerControls(): void {
     player_control_aubarWrapper.addEventListener('mouseenter', showControls);
     player_control_aubarWrapper.addEventListener('mouseleave', hideControls);
 
-    // 上一首
-    const prevBtn = player_control_aubarControls.querySelector('.prev');
-    prevBtn?.addEventListener('click', () => {
-        PlayPrevTrack();
-    });
-
-    // 下一首
-    const nextBtn = player_control_aubarControls.querySelector('.next');
-    nextBtn?.addEventListener('click', () => {
-        PlayNextTrack();
-    });
-
-    // 播放/暂停
-    player_control_playPauseBtn?.addEventListener('click', () => {
-        TogglePlayPause();
+    // 事件委托 - 处理上一首/下一首/播放暂停按钮点击
+    player_control_aubarControls.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement;
+        if (target.closest('.prev')) {
+            PlayPrevTrack();
+        } else if (target.closest('.next')) {
+            PlayNextTrack();
+        } else if (target.closest('.play-pause')) {
+            TogglePlayPause();
+        }
     });
 }
 

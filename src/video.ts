@@ -157,6 +157,12 @@ function getMusicPlaylist(): string[] {
  */
 function playNextTrack(): void {
     const playlist = getMusicPlaylist();
+
+    if (!shouldBuiltInPlayerPlay()) {
+        controlExternalPlayer('next');
+        return;
+    }
+
     if (!playlist || playlist.length === 0) return;
 
     const repeat = config.music_playlist_repeat;
@@ -187,6 +193,12 @@ function playNextTrack(): void {
  */
 function playPrevTrack(): void {
     const playlist = getMusicPlaylist();
+
+    if (!shouldBuiltInPlayerPlay()) {
+        controlExternalPlayer('prev');
+        return;
+    }
+
     if (!playlist || playlist.length === 0) return;
 
     const repeat = config.music_playlist_repeat;

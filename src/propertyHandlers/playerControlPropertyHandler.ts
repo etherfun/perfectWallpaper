@@ -266,7 +266,7 @@ export function handlePlayerControlProperties(
     if (properties.player_control_showwidth) {
         config.player_control_showwidth = properties.player_control_showwidth.value;
         if (properties.player_control_showwidth.value === 0) {
-            player_control_info.style.width = 'auto';
+            player_control_info.style.width = '';
         } else {
             const s = properties.player_control_showwidth.value / 100;
             player_control_info.style.width = window.innerWidth * s + 'px';

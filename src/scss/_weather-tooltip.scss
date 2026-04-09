@@ -160,7 +160,6 @@
 
 // Weather Hourly Tooltip
 #weatherHourlyTooltip {
-  width: min(520px, 98%);
   display: none;
   padding: 16px;
   position: fixed;
@@ -187,18 +186,18 @@
     margin-top: 16px;
 
     .big-icon {
-      width: 140px;
-      height: 140px;
+      width: 9em;
       border-radius: 12px;
       background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: flex-start;
+      padding-top: 10px;
 
       img {
-        width: 72px;
-        height: 72px;
+        width: 64px;
+        height: 64px;
       }
 
       svg {
@@ -214,38 +213,38 @@
       }
 
       .big-temp {
-        font-size: 32px;
+        font-size: 26px;
         font-weight: 700;
-        margin-top: 10px;
+        margin-top: 20px;
         display: flex;
         flex-direction: column;
         align-items: center;
       }
 
       .popup-sub {
-        font-size: 16px;
-        margin-top: 8px;
+        font-size: 14px;
+        margin-top: 6px;
         text-align: center;
       }
     }
 
     .details-grid {
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
 
       .detail-item {
         background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
-        padding: 12px;
+        padding: 8px;
         border-radius: 10px;
 
         .detail-label {
-          font-size: 13px;
+          font-size: 12px;
           color: color-mix(in srgb, var(--weather-color), #aaa 40%);
         }
 
         .detail-value {
-          font-size: 18px;
+          font-size: 16px;
           font-weight: 600;
           margin-top: 6px;
         }

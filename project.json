@@ -5013,6 +5013,7 @@
 			},
 			"DockBar" :
 			{
+				"condition" : "server_mode.value == true",
 				"index" : 418,
 				"order" : 518,
 				"text" : "● Dock栏 DockBar",
@@ -5021,7 +5022,6 @@
 			},
 			"dockbar_enabled" :
 			{
-				"condition" : "",
 				"index" : 419,
 				"order" : 519,
 				"text" : "ui_dockbar_enabled",

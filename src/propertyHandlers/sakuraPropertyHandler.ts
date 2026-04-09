@@ -10,11 +10,7 @@ import { WallpaperProperties } from './types';
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
-export function handleSakuraProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
-
+export function handleSakuraProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     // 樱花特效
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;

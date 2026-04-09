@@ -4,85 +4,85 @@
 @use 'config' as *;
 
 .fluid-effect-container {
-  position: relative;
-  overflow: hidden;
+    position: relative;
+    overflow: hidden;
 }
 
 .fluid-effect-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: hidden;
-  will-change: transform;
-  contain: strict layout paint;
-
-  // Blur layer - separate from dark overlay
-  &::before {
-    content: "";
     position: absolute;
-    display: block;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 1;
-    backdrop-filter: blur(var(--fluidEffect-backdrop-filter-strength));
-  }
+    pointer-events: none;
+    overflow: hidden;
+    will-change: transform;
+    contain: strict layout paint;
 
-  // Dark overlay layer - separate from blur
-  &::after {
-    content: "";
-    position: absolute;
-    display: block;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    z-index: 2;
-    background: $color-black;
-    opacity: var(--fluidEffect-dark-overlay-strength);
-  }
-
-  // Fullscreen mode uses 2x blur
-  &.fullscreen::before {
-    backdrop-filter: blur(calc(var(--fluidEffect-backdrop-filter-strength) * 2));
-  }
-
-  &.paused {
-    .fluid-block-rotate {
-      animation-play-state: paused !important;
+    // Blur layer - separate from dark overlay
+    &::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: 1;
+        backdrop-filter: blur(var(--fluidEffect-backdrop-filter-strength));
     }
-  }
+
+    // Dark overlay layer - separate from blur
+    &::after {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: 100%;
+        left: 0;
+        top: 0;
+        z-index: 2;
+        background: $color-black;
+        opacity: var(--fluidEffect-dark-overlay-strength);
+    }
+
+    // Fullscreen mode uses 2x blur
+    &.fullscreen::before {
+        backdrop-filter: blur(calc(var(--fluidEffect-backdrop-filter-strength) * 2));
+    }
+
+    &.paused {
+        .fluid-block-rotate {
+            animation-play-state: paused !important;
+        }
+    }
 }
 
 // Fluid effect rectangle
 .fluid-effect-rect {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  overflow: visible;
-  filter: url(#fluid-filter-2);
-  animation: fluid-container-rotate 150s linear infinite;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    overflow: visible;
+    filter: url(#fluid-filter-2);
+    animation: fluid-container-rotate 150s linear infinite;
 }
 
 // Fluid effect canvas
 .fluid-effect-canvas {
-  position: absolute;
-  image-rendering: auto;
-  will-change: transform;
-  transform-origin: center center;
-  animation: fluid-block-rotate 60s linear infinite;
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
+    position: absolute;
+    image-rendering: auto;
+    will-change: transform;
+    transform-origin: center center;
+    animation: fluid-block-rotate 60s linear infinite;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
 }
 
 // Pause control
 .fluid-block-rotate.paused {
-  animation-play-state: paused !important;
+    animation-play-state: paused !important;
 }

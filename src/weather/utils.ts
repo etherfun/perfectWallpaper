@@ -7,7 +7,7 @@ import { OPEN_METEO_TO_QWEATHER } from './types';
  * @returns 格式化后的时间字符串
  */
 export function formatTime(timeString: string | undefined): string {
-    if (!timeString) return "--:--";
+    if (!timeString) return '--:--';
 
     try {
         const date = new Date(timeString);

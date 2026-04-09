@@ -23,7 +23,10 @@ export function processInlineMarkdown(text: string): string {
     let processed = escapeHtml(text);
 
     // Handle links [text](url) - click to copy link with notification
-    processed = processed.replace(/\[([^\[\]]+)\]\(([^\)]+)\)/g, '<a href="javascript:void(0)" class="md-link" data-url="$2" onclick="SimpleMarkdown.copyLink(this)">$1</a>');
+    processed = processed.replace(
+        /\[([^\[\]]+)\]\(([^\)]+)\)/g,
+        '<a href="javascript:void(0)" class="md-link" data-url="$2" onclick="SimpleMarkdown.copyLink(this)">$1</a>'
+    );
 
     // Handle inline code `code`
     processed = processed.replace(/`([^`]+)`/g, '<code class="md-inline-code">$1</code>');
@@ -93,7 +96,7 @@ function extractCodeBlocks(text: string): { processedText: string; codeBlocks: C
         const placeholder = `__CODE_BLOCK_${blockIndex}__`;
         codeBlocks.push({
             placeholder,
-            html: `<pre class="md-code-block"><code class="language-${language}">${escapeHtml(code)}</code></pre>`
+            html: `<pre class="md-code-block"><code class="language-${language}">${escapeHtml(code)}</code></pre>`,
         });
         processedText = processedText.replace(match[0], placeholder);
         blockIndex++;
@@ -135,14 +138,14 @@ function parseLine(
         return {
             html: `<h3 class="md-title">${processInlineMarkdown(trimmedLine.substring(3))}</h3>`,
             inList: false,
-            flushList: inList && listItems.length > 0
+            flushList: inList && listItems.length > 0,
         };
     }
     if (trimmedLine.startsWith('### ')) {
         return {
             html: `<h4 class="md-subtitle">${processInlineMarkdown(trimmedLine.substring(4))}</h4>`,
             inList: false,
-            flushList: inList && listItems.length > 0
+            flushList: inList && listItems.length > 0,
         };
     }
 
@@ -167,7 +170,7 @@ function parseLine(
             html: '',
             inList: true,
             flushList: false,
-            listItem: { indent: indentLevel, content: processInlineMarkdown(content.trim()) }
+            listItem: { indent: indentLevel, content: processInlineMarkdown(content.trim()) },
         };
     }
 
@@ -175,7 +178,7 @@ function parseLine(
     return {
         html: `<p class="md-paragraph">${processInlineMarkdown(trimmedLine)}</p>`,
         inList: false,
-        flushList: inList && listItems.length > 0
+        flushList: inList && listItems.length > 0,
     };
 }
 
@@ -201,7 +204,12 @@ export function parseMarkdown(text: string): string {
         const prevInList = inList;
         const prevListItems = [...listItems];
 
-        const { html, inList: newInList, flushList, listItem } = parseLine(line, trimmedLine, inList, listItems);
+        const {
+            html,
+            inList: newInList,
+            flushList,
+            listItem,
+        } = parseLine(line, trimmedLine, inList, listItems);
 
         if (flushList && prevInList && prevListItems.length > 0) {
             result += renderListHtml(prevListItems);

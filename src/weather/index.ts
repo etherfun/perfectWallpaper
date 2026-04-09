@@ -24,7 +24,7 @@ export {
 } from './ui';
 
 // 格式化工具导出
-export { generateAlertHTML,getAirQualityText } from './formatters';
+export { generateAlertHTML, getAirQualityText } from './formatters';
 
 // 状态导出（从 weatherState 重导出）
 export {
@@ -41,12 +41,12 @@ import { i18n } from '../utils/i18n';
 import { timerManager } from '../utils/timer';
 import { fetch_with_retry } from '../utils/tool';
 import type { WeatherAPIHandler } from './api/base';
-import type { SevenHourlyData,WeatherAddress, WeatherData } from './types';
+import type { SevenHourlyData, WeatherAddress, WeatherData } from './types';
 import { generateWeatherTable } from './ui/generateWeatherTable';
-import { showWeatherError,showWeatherLoading } from './ui/states';
+import { showWeatherError, showWeatherLoading } from './ui/states';
 
 // 导出类型
-export type { SevenHourlyData,WeatherAddress, WeatherData }
+export type { SevenHourlyData, WeatherAddress, WeatherData };
 
 // ============== 图标缓存 ==============
 
@@ -83,7 +83,7 @@ const apiHandlers: { [key: number]: () => Promise<WeatherAPIHandler> } = {
     2: () => import('./api/icufree').then(m => m.icufree),
     3: () => import('./api/yiketianqi').then(m => m.yiketianqi),
     4: () => import('./api/visualcrossing').then(m => m.visualcrossing),
-    5: () => import('./api/openmeteo').then(m => m.openmeteo)
+    5: () => import('./api/openmeteo').then(m => m.openmeteo),
 };
 
 let isWeatherInitRunning = false;
@@ -99,16 +99,19 @@ export async function weather_init(): Promise<void> {
         const { weather_address, weather_data } = await import('./weatherState');
 
         // 仅在无数据时显示加载状态
-        if (weather_data.temperature === "" && weather_data.weathernow === "") {
+        if (weather_data.temperature === '' && weather_data.weathernow === '') {
             showWeatherLoading();
         }
-        if (weather_address.cityname === "") {
+        if (weather_address.cityname === '') {
             try {
-                const citydata = await fetch_with_retry("http://i.tianqi.com/index.php?c=code&id=11", {});
+                const citydata = await fetch_with_retry(
+                    'http://i.tianqi.com/index.php?c=code&id=11',
+                    {}
+                );
                 const text = await citydata.text();
-                weather_address.cityname = text.split("</strong>")[1].split(" ")[0];
+                weather_address.cityname = text.split('</strong>')[1].split(' ')[0];
             } catch (e) {
-                console.error("Failed to get city:", e);
+                console.error('Failed to get city:', e);
             }
         }
 
@@ -119,7 +122,7 @@ export async function weather_init(): Promise<void> {
                 await handler(weather_address, weather_data);
                 await generateWeatherTable();
             } catch (error) {
-                console.error("Weather fetch error:", error);
+                console.error('Weather fetch error:', error);
                 showWeatherError(i18n('weather_error_loading') || 'Failed to load weather data');
             }
         }
@@ -130,15 +133,19 @@ export async function weather_init(): Promise<void> {
 
 // 天气更新间隔（毫秒）
 const WEATHER_UPDATE_INTERVALS: Record<number, number> = {
-    1: 15 * 60 * 1000,    // 15 分钟
-    2: 20 * 60 * 1000,    // 20 分钟
-    3: 30 * 60 * 1000,    // 30 分钟
-    4: 45 * 60 * 1000,    // 45 分钟
-    5: 60 * 60 * 1000     // 60 分钟
+    1: 15 * 60 * 1000, // 15 分钟
+    2: 20 * 60 * 1000, // 20 分钟
+    3: 30 * 60 * 1000, // 30 分钟
+    4: 45 * 60 * 1000, // 45 分钟
+    5: 60 * 60 * 1000, // 60 分钟
 };
 const DEFAULT_UPDATE_INTERVAL = 15 * 60 * 1000;
 
 export function autoWeather(): void {
     weather_init();
-    timerManager.create(autoWeather, WEATHER_UPDATE_INTERVALS[config.weather_updata ?? 0] || DEFAULT_UPDATE_INTERVAL, 'updataWeather');
+    timerManager.create(
+        autoWeather,
+        WEATHER_UPDATE_INTERVALS[config.weather_updata ?? 0] || DEFAULT_UPDATE_INTERVAL,
+        'updataWeather'
+    );
 }

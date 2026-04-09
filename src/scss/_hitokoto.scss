@@ -4,21 +4,21 @@
 @use 'config' as *;
 
 #hitokoto {
-  visibility: var(--hitokoto-visibility);
-  display: var(--hitokoto-display);
-  @include component-position('hitokoto');
-  color: rgb(var(--hitokoto-color));
-  font-size: var(--hitokoto-font-size);
-  line-height: var(--hitokoto-line-height);
-  opacity: var(--hitokoto-opacity);
+    visibility: var(--hitokoto-visibility);
+    display: var(--hitokoto-display);
+    @include component-position('hitokoto');
+    color: rgb(var(--hitokoto-color));
+    font-size: var(--hitokoto-font-size);
+    line-height: var(--hitokoto-line-height);
+    opacity: var(--hitokoto-opacity);
 
-  .text {
-    white-space: nowrap;
-    @include yakeli-effect('hitokoto');
-    width: var(--hitokoto-show-width);
+    .text {
+        white-space: nowrap;
+        @include yakeli-effect('hitokoto');
+        width: var(--hitokoto-show-width);
 
-    .text2 {
-      text-align-last: right;
+        .text2 {
+            text-align-last: right;
+        }
     }
-  }
 }

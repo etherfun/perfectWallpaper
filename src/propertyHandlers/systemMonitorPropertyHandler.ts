@@ -51,7 +51,7 @@ export function handleSystemMonitorProperties(
 
     if (properties.sysmon_server_port) {
         monitor.updateConfig({
-            serverPort: properties.sysmon_server_port.value
+            serverPort: properties.sysmon_server_port.value,
         });
     }
 
@@ -61,7 +61,7 @@ export function handleSystemMonitorProperties(
 
     if (properties.sysmon_update_interval) {
         monitor.updateConfig({
-            updateInterval: properties.sysmon_update_interval.value * 1000
+            updateInterval: properties.sysmon_update_interval.value * 1000,
         });
     }
 
@@ -91,54 +91,56 @@ export function handleSystemMonitorProperties(
 
     if (properties.sysmon_show_cpu) {
         monitor.updateConfig({
-            showCpu: properties.sysmon_show_cpu.value
+            showCpu: properties.sysmon_show_cpu.value,
         });
     }
 
     if (properties.sysmon_show_gpu) {
         monitor.updateConfig({
-            showGpu: properties.sysmon_show_gpu.value
+            showGpu: properties.sysmon_show_gpu.value,
         });
     }
 
     if (properties.sysmon_show_memory) {
         monitor.updateConfig({
-            showMemory: properties.sysmon_show_memory.value
+            showMemory: properties.sysmon_show_memory.value,
         });
     }
 
     if (properties.sysmon_show_network) {
         monitor.updateConfig({
-            showNetwork: properties.sysmon_show_network.value
+            showNetwork: properties.sysmon_show_network.value,
         });
     }
 
     if (properties.sysmon_x) {
         monitor.updateConfig({
-            monitorX: properties.sysmon_x.value
+            monitorX: properties.sysmon_x.value,
         });
     }
 
     if (properties.sysmon_y) {
         monitor.updateConfig({
-            monitorY: properties.sysmon_y.value
+            monitorY: properties.sysmon_y.value,
         });
     }
 
     if (properties.sysmon_size) {
         monitor.updateConfig({
-            monitorSize: properties.sysmon_size.value
+            monitorSize: properties.sysmon_size.value,
         });
     }
 
     if (properties.sysmon_color) {
-        const c = properties.sysmon_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.sysmon_color.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         monitor.updateConfig({
-            monitorColor: `rgba(${c.join(',')})`
+            monitorColor: `rgba(${c.join(',')})`,
         });
     }
 
-    if (properties.sysmon_enabled !== undefined  && config.server_mode) {
+    if (properties.sysmon_enabled !== undefined && config.server_mode) {
         monitor.setEnabled(properties.sysmon_enabled.value);
     }
 
@@ -156,30 +158,44 @@ export function handleSystemMonitorProperties(
 
     if (properties.sysmon_disconnect_timeout) {
         monitor.updateConfig({
-            disconnectTimeout: properties.sysmon_disconnect_timeout.value * 1000
+            disconnectTimeout: properties.sysmon_disconnect_timeout.value * 1000,
         });
     }
 
     // Yakeli (acrylic) effect settings
     if (properties.sysmon_yakeli_show) {
-        elements.body.style.setProperty("--sysmon-yakeli-enabled", properties.sysmon_yakeli_show.value ? '1' : '0');
+        elements.body.style.setProperty(
+            '--sysmon-yakeli-enabled',
+            properties.sysmon_yakeli_show.value ? '1' : '0'
+        );
     }
 
     if (properties.sysmon_bluryakeli) {
-        elements.body.style.setProperty("--sysmon-blur-yakeli", `${properties.sysmon_bluryakeli.value}px`);
+        elements.body.style.setProperty(
+            '--sysmon-blur-yakeli',
+            `${properties.sysmon_bluryakeli.value}px`
+        );
     }
 
     if (properties.sysmon_yakeli) {
-        elements.body.style.setProperty("--sysmon-yakeli", String(properties.sysmon_yakeli.value/100));
+        elements.body.style.setProperty(
+            '--sysmon-yakeli',
+            String(properties.sysmon_yakeli.value / 100)
+        );
     }
 
     if (properties.sysmon_yakelicolor) {
-        const c = properties.sysmon_yakelicolor.value.split(' ').map((v: string) => Math.ceil(parseFloat(v) * 255));
-        elements.body.style.setProperty("--sysmon-yakeli-color", c.join(', '));
+        const c = properties.sysmon_yakelicolor.value
+            .split(' ')
+            .map((v: string) => Math.ceil(parseFloat(v) * 255));
+        elements.body.style.setProperty('--sysmon-yakeli-color', c.join(', '));
     }
 
     if (properties.sysmon_roundedcorners) {
-        elements.body.style.setProperty("--sysmon-roundedcorners", String(properties.sysmon_roundedcorners.value));
+        elements.body.style.setProperty(
+            '--sysmon-roundedcorners',
+            String(properties.sysmon_roundedcorners.value)
+        );
     }
 
     if (FirstLoad) {

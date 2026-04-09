@@ -4,187 +4,199 @@
 
 // Spin animation (for thumbnail rotation)
 @keyframes spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 // Pulse animation (for loading states)
 @keyframes pulse {
-  0% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    opacity: 0.6;
-  }
+    0% {
+        opacity: 0.6;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.6;
+    }
 }
 
 // Border glow inset animation (for weather alerts)
 @keyframes borderGlowInset {
-  0% {
-    border-color: rgba(var(--alert-color), 0.6);
-    box-shadow: inset 0 0 9px rgba(var(--alert-color), 0.5), inset 0 0 18px rgba(var(--alert-color), 0.3);
-  }
-  50% {
-    border-color: rgba(var(--alert-color), 1);
-    box-shadow: inset 0 0 18px rgba(var(--alert-color), 1), inset 0 0 36px rgba(var(--alert-color), 0.7);
-  }
-  100% {
-    border-color: rgba(var(--alert-color), 0.6);
-    box-shadow: inset 0 0 9px rgba(var(--alert-color), 0.5), inset 0 0 18px rgba(var(--alert-color), 0.3);
-  }
+    0% {
+        border-color: rgba(var(--alert-color), 0.6);
+        box-shadow:
+            inset 0 0 9px rgba(var(--alert-color), 0.5),
+            inset 0 0 18px rgba(var(--alert-color), 0.3);
+    }
+    50% {
+        border-color: rgba(var(--alert-color), 1);
+        box-shadow:
+            inset 0 0 18px rgba(var(--alert-color), 1),
+            inset 0 0 36px rgba(var(--alert-color), 0.7);
+    }
+    100% {
+        border-color: rgba(var(--alert-color), 0.6);
+        box-shadow:
+            inset 0 0 9px rgba(var(--alert-color), 0.5),
+            inset 0 0 18px rgba(var(--alert-color), 0.3);
+    }
 }
 
 // Horizontal scroll animation (for weather alerts)
 @keyframes scroll {
-  0% {
-    margin-left: 0;
-    transform: translateX(0);
-  }
-  10% {
-    margin-left: 0;
-    transform: translateX(0);
-  }
-  90% {
-    margin-left: 100%;
-    transform: translateX(-100%);
-  }
-  100% {
-    margin-left: 100%;
-    transform: translateX(-100%);
-  }
+    0% {
+        margin-left: 0;
+        transform: translateX(0);
+    }
+    10% {
+        margin-left: 0;
+        transform: translateX(0);
+    }
+    90% {
+        margin-left: 100%;
+        transform: translateX(-100%);
+    }
+    100% {
+        margin-left: 100%;
+        transform: translateX(-100%);
+    }
 }
 
 // Fluid block rotation (60s loop)
 @keyframes fluid-block-rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
 }
 
 // Fluid container rotation (150s loop)
 @keyframes fluid-container-rotate {
-  0% {
-    transform: scale(1.2) rotate(0deg);
-  }
-  100% {
-    transform: scale(1.2) rotate(-360deg);
-  }
+    0% {
+        transform: scale(1.2) rotate(0deg);
+    }
+    100% {
+        transform: scale(1.2) rotate(-360deg);
+    }
 }
 
 // Slide in/out animation (for notifications)
 @keyframes slideInOut {
-  0% {
-    transform: translateX(400px);
-    opacity: 0;
-  }
-  6.67% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  90% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translateX(400px);
-    opacity: 0;
-  }
+    0% {
+        transform: translateX(400px);
+        opacity: 0;
+    }
+    6.67% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    90% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(400px);
+        opacity: 0;
+    }
 }
 
 // Gentle float animation (for version icon)
 @keyframes gentle-float {
-  0%, 100% {
-    transform: translateY(0) rotate(0deg);
-  }
-  50% {
-    transform: translateY(-5px) rotate(5deg);
-  }
+    0%,
+    100% {
+        transform: translateY(0) rotate(0deg);
+    }
+    50% {
+        transform: translateY(-5px) rotate(5deg);
+    }
 }
 
 // Pulse glow animation (for "new" badges)
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
-    transform: scale(1);
-  }
-  50% {
-    box-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
-    transform: scale(1.05);
-  }
+    0%,
+    100% {
+        box-shadow: 0 0 10px rgba(255, 71, 87, 0.5);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 0 20px rgba(255, 71, 87, 0.8);
+        transform: scale(1.05);
+    }
 }
 
 // Fade in animation
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 // Pulse dot animation (for current timeline marker)
 @keyframes pulse-dot {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 0.7;
-  }
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.2);
+        opacity: 0.7;
+    }
 }
 
 // Countdown pulse animation
 @keyframes countdown-pulse {
-  0%, 100% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.1);
-  }
+    0%,
+    100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
 }
 
 // Countdown warning pulse (for last 5 seconds)
 @keyframes countdown-warning-pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.5;
-  }
+    0%,
+    100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
 }
 
 // Fade in up animation
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 // Precip text pulse animation
 @keyframes precip-text-pulse {
-  0%, 100% {
-    opacity: 0.7;
-  }
-  50% {
-    opacity: 1;
-  }
+    0%,
+    100% {
+        opacity: 0.7;
+    }
+    50% {
+        opacity: 1;
+    }
 }

@@ -14,7 +14,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
     const isAfternoon = hour >= 12 && hour < 18;
     const isEvening = hour >= 18 && hour < 22;
 
-    const weatherText = weatherData.weathernow || "";
+    const weatherText = weatherData.weathernow || '';
     const windScale = parseInt(weatherData.windLv) || 0;
     const airQuality = parseInt(weatherData.air) || 0;
     const humidity = parseInt(weatherData.humidity) || 0;
@@ -49,9 +49,10 @@ export function getWeatherTips(weatherData: WeatherData): string {
     }
 
     // 检查是否有天气预警
-    const hasWeatherAlert = weatherData.weatherAlert && 
-                           Array.isArray(weatherData.weatherAlert) && 
-                           weatherData.weatherAlert.length > 0;
+    const hasWeatherAlert =
+        weatherData.weatherAlert &&
+        Array.isArray(weatherData.weatherAlert) &&
+        weatherData.weatherAlert.length > 0;
 
     // 优先级 0: 天气预警（最高优先级）
     if (hasWeatherAlert) {

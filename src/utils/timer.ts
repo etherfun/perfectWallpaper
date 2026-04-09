@@ -47,7 +47,7 @@ export class MultiTimerManager {
      */
     create(callback: () => void, delay: number, name?: string): string {
         const timerId = name || `timer_${++this.counter}`;
-        
+
         // 如果已存在同名定时器，先清除
         if (this.timers.has(timerId)) {
             this.remove(timerId);
@@ -57,12 +57,12 @@ export class MultiTimerManager {
             id: timerId,
             callback,
             delay,
-            remaining: delay,      // 剩余时间
+            remaining: delay, // 剩余时间
             startTime: Date.now(), // 开始时间
-            timerId: null,         // 原生定时器ID
-            isPaused: false,       // 是否暂停
-            isActive: true,        // 是否激活
-            status: 'running',     // 状态：running, paused, finished
+            timerId: null, // 原生定时器ID
+            isPaused: false, // 是否暂停
+            isActive: true, // 是否激活
+            status: 'running', // 状态：running, paused, finished
         };
 
         // 设置原生定时器
@@ -91,7 +91,7 @@ export class MultiTimerManager {
         // 计算已运行的时间
         const elapsed = Date.now() - timer.startTime;
         timer.remaining = Math.max(0, timer.remaining - elapsed);
-        
+
         // 清除原生定时器
         if (timer.timerId !== null) {
             clearTimeout(timer.timerId);
@@ -99,7 +99,7 @@ export class MultiTimerManager {
         timer.timerId = null;
         timer.isPaused = true;
         timer.status = 'paused';
-        
+
         return true;
     }
 
@@ -119,7 +119,7 @@ export class MultiTimerManager {
         timer.startTime = Date.now();
         timer.isPaused = false;
         timer.status = 'running';
-        
+
         timer.timerId = window.setTimeout(() => {
             this._executeTimer(timerId);
         }, timer.remaining);
@@ -156,23 +156,25 @@ export class MultiTimerManager {
         const statusList: TimerStatus[] = [];
         for (const [, timer] of this.timers) {
             let remaining = timer.remaining;
-            
+
             // 如果正在运行，重新计算剩余时间
             if (timer.isActive && !timer.isPaused) {
                 const elapsed = Date.now() - timer.startTime;
                 remaining = Math.max(0, timer.remaining - elapsed);
             }
-            
+
             statusList.push({
                 id: timer.id,
                 name: timer.id,
                 status: timer.status,
                 delay: timer.delay,
                 remaining: remaining,
-                progress: timer.delay > 0 ? 
-                    ((timer.delay - remaining) / timer.delay * 100).toFixed(1) + '%' : '100%',
+                progress:
+                    timer.delay > 0
+                        ? (((timer.delay - remaining) / timer.delay) * 100).toFixed(1) + '%'
+                        : '100%',
                 isActive: timer.isActive,
-                isPaused: timer.isPaused
+                isPaused: timer.isPaused,
             });
         }
         return statusList;
@@ -199,10 +201,12 @@ export class MultiTimerManager {
             status: timer.status,
             delay: timer.delay,
             remaining: remaining,
-            progress: timer.delay > 0 ? 
-                ((timer.delay - remaining) / timer.delay * 100).toFixed(1) + '%' : '100%',
+            progress:
+                timer.delay > 0
+                    ? (((timer.delay - remaining) / timer.delay) * 100).toFixed(1) + '%'
+                    : '100%',
             isActive: timer.isActive,
-            isPaused: timer.isPaused
+            isPaused: timer.isPaused,
         };
     }
 
@@ -250,10 +254,12 @@ export class MultiTimerManager {
                 // 动画暂停中，无限等待动画恢复
 
                 // 监听动画状态变化
-                const observer = new MutationObserver((mutations) => {
-                    mutations.forEach((mutation) => {
-                        if (mutation.attributeName === 'style' && 
-                            document.body.style.animationPlayState !== 'paused') {
+                const observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        if (
+                            mutation.attributeName === 'style' &&
+                            document.body.style.animationPlayState !== 'paused'
+                        ) {
                             // 动画已恢复播放，停止监听并执行回调
                             observer.disconnect();
                             executeTimerCallback();
@@ -264,7 +270,7 @@ export class MultiTimerManager {
                 // 开始监听body元素的style属性变化
                 observer.observe(document.body, {
                     attributes: true,
-                    attributeFilter: ['style']
+                    attributeFilter: ['style'],
                 });
             } else {
                 // 动画正在播放，直接执行回调
@@ -300,18 +306,18 @@ export class MultiTimerManager {
  * @returns 返回Promise，在actionFn执行后resolve
  */
 export function waitAndExecute(
-    conditionFn: () => boolean, 
-    actionFn: () => void, 
-    interval: number = 100, 
+    conditionFn: () => boolean,
+    actionFn: () => void,
+    interval: number = 100,
     timeout: number = 20000
 ): Promise<void> {
     return new Promise((resolve, reject) => {
         const startTime = Date.now();
-        
+
         const check = () => {
             try {
                 const conditionMet = conditionFn();
-                
+
                 if (conditionMet === true) {
                     const result = actionFn();
                     resolve(result);
@@ -326,7 +332,7 @@ export function waitAndExecute(
                 reject(new Error(`条件检测失败: ${error.message}`));
             }
         };
-        
+
         check();
     });
 }

@@ -2,12 +2,12 @@
 import { FluidEffect } from '../fluid';
 import { versionManager } from '../version';
 import { WallpaperEffectController } from '../WallpaperEffectController';
-import { DebugLogger,debugLogger, registerDebugLogger } from './logger';
+import { DebugLogger, debugLogger, registerDebugLogger } from './logger';
 
 // 类型
 
 type ConfigListener = (key: string, value: unknown) => void;
-type ConfigValue = typeof SYNC_DEFAULTS[keyof typeof SYNC_DEFAULTS];
+type ConfigValue = (typeof SYNC_DEFAULTS)[keyof typeof SYNC_DEFAULTS];
 
 const RUNTIME_DATA_DEFAULTS: RuntimeData = {
     playerInfo: {
@@ -35,27 +35,67 @@ const RUNTIME_DATA_DEFAULTS: RuntimeData = {
     photo: {
         currentImg: null,
         nextphoto: false,
-        infomation: { title: "", text: "", copyright: "", where: "" },
+        infomation: { title: '', text: '', copyright: '', where: '' },
     },
     wallpaper: null,
     param: {
-        style: 1, r: 0.45, color: "rgba(255,255,255,0.8)", blurColor: "#ffcccc",
-        arr1: [], arr2: [], rotation: 0, rotationcopy: 0, offsetAngle: 0,
-        waveArr: new Array(120), cX: 0.5, cY: 0.5, range: 9, shadowBlur: 15,
-        lineWidth: 9, showCircle: true, wavetransparency: 0.8, showSemiCircle: false,
-        SemiCircledirection: 1, Polygon: 12, PolygonAngle: 0, direction: 1,
-        SolidColorGradient: true, BlurColorGradient: true, ColorRhythm: true,
-        ColorMode: 1, TagNow: 1, GradientRate: 0.5,
+        style: 1,
+        r: 0.45,
+        color: 'rgba(255,255,255,0.8)',
+        blurColor: '#ffcccc',
+        arr1: [],
+        arr2: [],
+        rotation: 0,
+        rotationcopy: 0,
+        offsetAngle: 0,
+        waveArr: new Array(120),
+        cX: 0.5,
+        cY: 0.5,
+        range: 9,
+        shadowBlur: 15,
+        lineWidth: 9,
+        showCircle: true,
+        wavetransparency: 0.8,
+        showSemiCircle: false,
+        SemiCircledirection: 1,
+        Polygon: 12,
+        PolygonAngle: 0,
+        direction: 1,
+        SolidColorGradient: true,
+        BlurColorGradient: true,
+        ColorRhythm: true,
+        ColorMode: 1,
+        TagNow: 1,
+        GradientRate: 0.5,
     },
     PWLineParam: {
-        style: 1, sw: 0.8, lineWidth: 9, waveArr: new Array(120), range: 5,
-        color: "rgba(255,255,255,0.8)", blurColor: "#ffcccc", shadowBlur: 100,
-        arr1: [], arr2: [], arr3: [], LineX: 0.5, LineY: 0.5, showLine: true,
-        LinePosition: 1, Direction: 1, LineDensity: 120, LineTransparency: 0.8,
-        MiddleLine: false, TagNow: 1, SolidColorGradient: true, BlurColorGradient: true,
-        ColorRhythm: true, ColorMode: 1, GradientRate: 0.5,
+        style: 1,
+        sw: 0.8,
+        lineWidth: 9,
+        waveArr: new Array(120),
+        range: 5,
+        color: 'rgba(255,255,255,0.8)',
+        blurColor: '#ffcccc',
+        shadowBlur: 100,
+        arr1: [],
+        arr2: [],
+        arr3: [],
+        LineX: 0.5,
+        LineY: 0.5,
+        showLine: true,
+        LinePosition: 1,
+        Direction: 1,
+        LineDensity: 120,
+        LineTransparency: 0.8,
+        MiddleLine: false,
+        TagNow: 1,
+        SolidColorGradient: true,
+        BlurColorGradient: true,
+        ColorRhythm: true,
+        ColorMode: 1,
+        GradientRate: 0.5,
     },
-    hitokoto: { hitokoto_text: "未获取", from_text: "未获取", from_who_text: "未获取" },
+    hitokoto: { hitokoto_text: '未获取', from_text: '未获取', from_who_text: '未获取' },
 };
 
 interface RuntimeData {
@@ -157,9 +197,9 @@ interface RuntimeData {
 }
 
 const SYNC_DEFAULTS = {
-    language: "zh-CN",
-    language_code: "zh",
-    font_setting: "",
+    language: 'zh-CN',
+    language_code: 'zh',
+    font_setting: '',
     first_load: true,
     paused: false,
 
@@ -169,26 +209,26 @@ const SYNC_DEFAULTS = {
     fluid_effect_init_complete: false,
     update_init_complete: false,
 
-    background_route: "./src/source/imgs/1.jpg",
-    video_route: "",
-    cusvideo_route: "",
-    cusaudio_route: "",
-    map_route: "./src/source/map/1.png",
+    background_route: './src/source/imgs/1.jpg',
+    video_route: '',
+    cusvideo_route: '',
+    cusaudio_route: '',
+    map_route: './src/source/map/1.png',
 
     video_model: 1,
     video_volume: 0.5,
     video_model_now: 1,
-    select_video: "",
+    select_video: '',
 
     galaxy_api: 1,
-    chiyuanapi: "https://t.alcy.cc/ycy/?json",
+    chiyuanapi: 'https://t.alcy.cc/ycy/?json',
 
-    bgy: "512px",
-    bgx: "512px",
-    bgs: "100%",
-    bgxy: "512px 512px ",
-    custom: "",
-    customdirectory: "",
+    bgy: '512px',
+    bgx: '512px',
+    bgs: '100%',
+    bgxy: '512px 512px ',
+    custom: '',
+    customdirectory: '',
 
     frist_picturesinfo: true,
     pictures_info_show_ror_l: null,
@@ -200,7 +240,7 @@ const SYNC_DEFAULTS = {
     pictures_info_yakelic_color: null,
     pictures_info_bluryakeli: null,
     pictures_info_show: null,
-    pictures_url: "",
+    pictures_url: '',
     pictures_info_y: 50,
     pictures_info_x: 50,
     pictures_info_size: 30,
@@ -213,7 +253,7 @@ const SYNC_DEFAULTS = {
     music_model: 0,
     music_volume: 0.5,
     selectmusic: {} as Record<string, string>,
-    musicdirectory: "",
+    musicdirectory: '',
     music_playlist: [] as string[],
     music_playlist_index: 0,
     music_playlist_random: false,
@@ -296,7 +336,7 @@ const SYNC_DEFAULTS = {
     transition_mode: 1,
     transition_mode_choose_0: 0,
     transition_mode_choose_1: 0,
-    transition_mode_choose_4: "",
+    transition_mode_choose_4: '',
     random: false,
     speed: 1,
     bg_style: 1,
@@ -323,10 +363,10 @@ const SYNC_DEFAULTS = {
     },
 
     weather_api_choose: null,
-    citynumber: "",
+    citynumber: '',
     weather_updata: 3,
-    weather_unit: "metric",
-    weather_lang: "en",
+    weather_unit: 'metric',
+    weather_lang: 'en',
     qweather_api_paymode: false,
 
     hitokoto_update: 6,
@@ -341,18 +381,18 @@ const SYNC_DEFAULTS = {
     hitokoto_x: 50,
     hitokoto_y: 50,
 
-    hit_a: "",
-    hit_b: "",
-    hit_c: "",
-    hit_d: "",
-    hit_e: "",
-    hit_f: "",
-    hit_g: "",
-    hit_h: "",
-    hit_i: "",
-    hit_j: "",
-    hit_k: "",
-    hit_l: "",
+    hit_a: '',
+    hit_b: '',
+    hit_c: '',
+    hit_d: '',
+    hit_e: '',
+    hit_f: '',
+    hit_g: '',
+    hit_h: '',
+    hit_i: '',
+    hit_j: '',
+    hit_k: '',
+    hit_l: '',
 
     hitokoto_color: [255, 255, 255] as [number, number, number],
     hitokoto_blurcolor_show: false,
@@ -362,11 +402,11 @@ const SYNC_DEFAULTS = {
     hitokoto_yakeli: 0,
     hitokoto_bluryakeli: 10,
 
-    city_key: "",
-    api_host: "",
-    visual_crossing_key: "",
-    weather_app_id: "",
-    weather_app_secret: "",
+    city_key: '',
+    api_host: '',
+    visual_crossing_key: '',
+    weather_app_id: '',
+    weather_app_secret: '',
 
     weather_color: [255, 255, 255] as [number, number, number],
     weather_blurcolor_show: false,
@@ -377,9 +417,9 @@ const SYNC_DEFAULTS = {
     weather_bluryakeli: 10,
     weather_daily_tip: false,
 
-    weather_latitude: "",
-    weather_longitude: "",
-    weather_city_text: "",
+    weather_latitude: '',
+    weather_longitude: '',
+    weather_city_text: '',
     weather_timetransparency: 80,
     weather_roundedcorners: 10,
     weather_size: 100,
@@ -398,8 +438,8 @@ const SYNC_DEFAULTS = {
     countdown_yakeli: 0,
     countdown_bluryakeli: 10,
 
-    countdown_txt: "",
-    countdown_txt1: "",
+    countdown_txt: '',
+    countdown_txt1: '',
     first_load_countdown: true,
 
     countdown_y: 80,
@@ -445,8 +485,8 @@ const SYNC_DEFAULTS = {
 
     t_show_sencends: true,
     time_color_rhythm: false,
-    time_color: "rgb(255, 255, 255)",
-    time_blur_color: "0 0 20px rgb(255, 255, 255)",
+    time_color: 'rgb(255, 255, 255)',
+    time_blur_color: '0 0 20px rgb(255, 255, 255)',
     show_time: true,
     time_style: true,
     t_size: 100,
@@ -525,7 +565,7 @@ const SYNC_DEFAULTS = {
     particles_color: [255, 255, 255] as [number, number, number],
     particles_shadow_color: [255, 255, 255] as [number, number, number],
     particles_shadow_blur: 10,
-    particles_image: "",
+    particles_image: '',
     particles_shape_type: 1,
     particles_size_value: 10,
     particles_size_random: false,
@@ -686,7 +726,7 @@ type ConfigBase = Omit<typeof SYNC_DEFAULTS, keyof NullableConfigKeys> & Nullabl
 // an index signature for dynamic property access.
 interface Config extends ConfigBase {
     // 索引签名：兼容动态属性访问
-     
+
     [key: string]: unknown;
 
     // 运行时数据
@@ -711,8 +751,12 @@ const appConfig = AppConfig.getInstance();
 // 使用 Object.defineProperty 在 appConfig 上为所有 SYNC_DEFAULTS key 定义 getter/setter
 for (const key of Object.keys(SYNC_DEFAULTS)) {
     Object.defineProperty(appConfig, key, {
-        get(this: AppConfig) { return this.get(key); },
-        set(this: AppConfig, value: ConfigValue) { this.set(key, value); },
+        get(this: AppConfig) {
+            return this.get(key);
+        },
+        set(this: AppConfig, value: ConfigValue) {
+            this.set(key, value);
+        },
         configurable: true,
         enumerable: true,
     });

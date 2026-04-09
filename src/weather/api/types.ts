@@ -135,6 +135,6 @@ export function initSevenHourlyData(): SevenHourlyData {
         Pressures: [],
         Clouds: [],
         Dews: [],
-        preciptype: []
+        preciptype: [],
     };
 }

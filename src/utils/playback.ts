@@ -6,12 +6,7 @@
 import { config } from './config';
 
 /** Placeholder song titles that indicate no actual playback content */
-const INVALID_SONG_TITLES = new Set([
-    '',
-    'loading...',
-    '✧ପ(๑･ω･)੭',
-    '٩(๑❛ᴗ❛๑)۶'
-]);
+const INVALID_SONG_TITLES = new Set(['', 'loading...', '✧ପ(๑･ω･)੭', '٩(๑❛ᴗ❛๑)۶']);
 
 /** Player states that indicate active playback */
 const PLAYBACK_STATES = new Set([1, 2]); // 1=playing, 2=paused

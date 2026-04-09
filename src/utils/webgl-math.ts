@@ -12,7 +12,7 @@ export interface Vec3 {
 
 export const Vector3 = {
     create: function (x: number, y: number, z: number): Vec3 {
-        return { 'x': x, 'y': y, 'z': z };
+        return { x: x, y: y, z: z };
     },
 
     dot: function (v0: Vec3, v1: Vec3): number {
@@ -44,27 +44,42 @@ export const Vector3 = {
             v.array = new Float32Array([v.x, v.y, v.z]);
         }
         return v.array;
-    }
+    },
 };
 
 export const Matrix44 = {
     createIdentity: function (): Float32Array {
         return new Float32Array([
-            1.0, 0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0, 0.0,
-            0.0, 0.0, 1.0, 0.0,
-            0.0, 0.0, 0.0, 1.0
+            1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0,
         ]);
     },
 
-    loadProjection: function (m: Float32Array, aspect: number, vdeg: number, near: number, far: number): void {
-        const h = near * Math.tan(vdeg * Math.PI / 180.0 * 0.5) * 2.0;
+    loadProjection: function (
+        m: Float32Array,
+        aspect: number,
+        vdeg: number,
+        near: number,
+        far: number
+    ): void {
+        const h = near * Math.tan(((vdeg * Math.PI) / 180.0) * 0.5) * 2.0;
         const w = h * aspect;
 
-        m[0] = 2.0 * near / w; m[1] = 0.0; m[2] = 0.0; m[3] = 0.0;
-        m[4] = 0.0; m[5] = 2.0 * near / h; m[6] = 0.0; m[7] = 0.0;
-        m[8] = 0.0; m[9] = 0.0; m[10] = -(far + near) / (far - near); m[11] = -1.0;
-        m[12] = 0.0; m[13] = 0.0; m[14] = -2.0 * far * near / (far - near); m[15] = 0.0;
+        m[0] = (2.0 * near) / w;
+        m[1] = 0.0;
+        m[2] = 0.0;
+        m[3] = 0.0;
+        m[4] = 0.0;
+        m[5] = (2.0 * near) / h;
+        m[6] = 0.0;
+        m[7] = 0.0;
+        m[8] = 0.0;
+        m[9] = 0.0;
+        m[10] = -(far + near) / (far - near);
+        m[11] = -1.0;
+        m[12] = 0.0;
+        m[13] = 0.0;
+        m[14] = (-2.0 * far * near) / (far - near);
+        m[15] = 0.0;
     },
 
     loadLookAt: function (m: Float32Array, vpos: Vec3, vlook: Vec3, vup: Vec3): void {
@@ -77,12 +92,21 @@ export const Matrix44 = {
         Vector3.cross(topv, frontv, sidev);
         Vector3.normalize(topv);
 
-        m[0] = sidev.x; m[1] = topv.x; m[2] = frontv.x; m[3] = 0.0;
-        m[4] = sidev.y; m[5] = topv.y; m[6] = frontv.y; m[7] = 0.0;
-        m[8] = sidev.z; m[9] = topv.z; m[10] = frontv.z; m[11] = 0.0;
+        m[0] = sidev.x;
+        m[1] = topv.x;
+        m[2] = frontv.x;
+        m[3] = 0.0;
+        m[4] = sidev.y;
+        m[5] = topv.y;
+        m[6] = frontv.y;
+        m[7] = 0.0;
+        m[8] = sidev.z;
+        m[9] = topv.z;
+        m[10] = frontv.z;
+        m[11] = 0.0;
         m[12] = -(vpos.x * m[0] + vpos.y * m[4] + vpos.z * m[8]);
         m[13] = -(vpos.x * m[1] + vpos.y * m[5] + vpos.z * m[9]);
         m[14] = -(vpos.x * m[2] + vpos.y * m[6] + vpos.z * m[10]);
         m[15] = 1.0;
-    }
+    },
 };

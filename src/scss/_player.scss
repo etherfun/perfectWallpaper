@@ -4,235 +4,240 @@
 @use 'config' as *;
 
 #player_control {
-  visibility: var(--player-visibility, hidden);
-  z-index: $z-component;
-  overflow: hidden;
-  position: absolute;
-  top: var(--player-top, 50%);
-  left: var(--player-left, 50%);
-  text-align: center;
-  color: rgb(var(--player-color));
-  font-size: var(--player-font-size, 100px);
-  line-height: var(--player-line-height, 190px);
-  opacity: var(--player-opacity, 0.8);
-  justify-content: space-around;
+    visibility: var(--player-visibility, hidden);
+    z-index: $z-component;
+    overflow: hidden;
+    position: absolute;
+    top: var(--player-top, 50%);
+    left: var(--player-left, 50%);
+    text-align: center;
+    color: rgb(var(--player-color));
+    font-size: var(--player-font-size, 100px);
+    line-height: var(--player-line-height, 190px);
+    opacity: var(--player-opacity, 0.8);
+    justify-content: space-around;
 
-  &.paused .pause-overlay {
-    display: flex !important;
-  }
-  
-  &.paused .thumbnail {
-    animation-play-state: paused !important;
-  }
-
-  .background {
-    display: flex;
-    justify-content: space-between;
-    align-items: stretch;
-    background: rgba(var(--player-yakeli-color), calc(var(--player-yakeli) * var(--player-yakeli-enabled)));
-    backdrop-filter: blur(calc(var(--player-blur-yakeli) * var(--player-yakeli-enabled)));
-    text-shadow: 0 0 20px rgba(var(--player-blur-color), var(--player-blur-enabled));
-
-    .thumbnail-wrap {
-      z-index: 5;
-      position: relative;
-      overflow: hidden;
-      flex-shrink: 0;
-      width: var(--player-thumb-size, 100px);
-      height: var(--player-thumb-size, 100px);
-      border-radius: var(--player-thumb-radius, 0px);
-
-      .thumbnail {
-        background-size: cover;
-        width: var(--player-thumb-inner-size, 100%);
-        height: var(--player-thumb-inner-size, 100%);
-        border-radius: inherit;
-      }
-
-      .pause-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        display: none;
-        justify-content: center;
-        align-items: center;
-        border-radius: var(--player-thumb-radius, 0px);
-
-        svg {
-          width: 50%;
-          height: 50%;
-          filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
-        }
-      }
-
-      &.circular {
-        border-radius: 50% !important;
-        overflow: hidden;
-
-        .thumbnail {
-          border-radius: 50%;
-        }
-
-        .pause-overlay {
-          border-radius: 50%;
-        }
-      }
+    &.paused .pause-overlay {
+        display: flex !important;
     }
 
-    .info-container {
-      height: 100%;
-      display: flex;
-      flex-grow: 1;
-      flex-direction: column;
-      margin-left: 10px;
-      margin-right: 10px;
-      z-index: 5;
-      position: relative;
+    &.paused .thumbnail {
+        animation-play-state: paused !important;
+    }
 
-      .info {
-        white-space: nowrap;
+    .background {
         display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        flex-shrink: 0;
-        width: min-content;
+        justify-content: space-between;
+        align-items: stretch;
+        background: rgba(
+            var(--player-yakeli-color),
+            calc(var(--player-yakeli) * var(--player-yakeli-enabled))
+        );
+        backdrop-filter: blur(calc(var(--player-blur-yakeli) * var(--player-yakeli-enabled)));
+        text-shadow: 0 0 20px rgba(var(--player-blur-color), var(--player-blur-enabled));
 
-        .title {
-          padding-top: 0.1em;
-          font-size: 0.45em;
-
-          .titleicon {
-            width: 0.9em;
-            height: 0.9em;
-            vertical-align: middle;
-            @include icon-position-hide;
+        .thumbnail-wrap {
+            z-index: 5;
+            position: relative;
             overflow: hidden;
-          }
-        }
+            flex-shrink: 0;
+            width: var(--player-thumb-size, 100px);
+            height: var(--player-thumb-size, 100px);
+            border-radius: var(--player-thumb-radius, 0px);
 
-        .artist {
-          font-size: 0.3em;
-
-          .artisticon {
-            width: 1.2em;
-            height: 1.2em;
-            vertical-align: middle;
-            @include icon-position-hide;
-            overflow: hidden;
-          }
-        }
-
-        .albumTitle {
-          font-size: 0.3em;
-
-          .albumTitleicon {
-            width: 1.2em;
-            height: 1.2em;
-            vertical-align: middle;
-            @include icon-position-hide;
-            overflow: hidden;
-          }
-        }
-
-        .timeline {
-          width: 100%;
-          background-color: #ddd;
-
-          .progress-bar {
-            height: 5px;
-            width: 0%;
-          }
-        }
-      }
-
-      .aubar-wrapper {
-        position: relative;
-        flex-grow: 1;
-        display: flex;
-        flex-direction: column;
-
-        .aubar {
-          flex-grow: 1;
-          display: block;
-        //   width: 100%;
-        //   height: 100%;
-        }
-
-        .aubar-controls {
-          position: absolute;
-          top: 0;
-          left: 0;
-        //   width: 100%;
-           height: 100%;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: clamp(0.2em, 5%, 0.5em);
-          opacity: 0;
-          pointer-events: none;
-          transition: opacity 0.3s ease;
-          
-          &.visible {
-            opacity: 1;
-            pointer-events: auto;
-          }
-
-          .control-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.2s, background 0.2s;
-            width: min(4em, 70%);
-            aspect-ratio: 1;
-            min-width: 1.5em;
-            min-height: 1.5em;
-
-            &:hover {
-              background: rgba(255, 255, 255, 0.4);
-              transform: scale(1.1);
+            .thumbnail {
+                background-size: cover;
+                width: var(--player-thumb-inner-size, 100%);
+                height: var(--player-thumb-inner-size, 100%);
+                border-radius: inherit;
             }
 
-            svg {
-              width: 50%;
-              height: 50%;
-              fill: currentColor;
-            }
-          }
-
-          .play-pause {
-            .pause-icon {
-              display: none;
-            }
-
-            &.playing {
-              .play-icon {
+            .pause-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
                 display: none;
-              }
+                justify-content: center;
+                align-items: center;
+                border-radius: var(--player-thumb-radius, 0px);
 
-              .pause-icon {
-                display: block;
-              }
+                svg {
+                    width: 50%;
+                    height: 50%;
+                    filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.8));
+                }
             }
-          }
+
+            &.circular {
+                border-radius: 50% !important;
+                overflow: hidden;
+
+                .thumbnail {
+                    border-radius: 50%;
+                }
+
+                .pause-overlay {
+                    border-radius: 50%;
+                }
+            }
         }
-      }
+
+        .info-container {
+            height: 100%;
+            display: flex;
+            flex-grow: 1;
+            flex-direction: column;
+            margin-left: 10px;
+            margin-right: 10px;
+            z-index: 5;
+            position: relative;
+
+            .info {
+                white-space: nowrap;
+                display: flex;
+                flex-direction: column;
+                align-items: flex-start;
+                flex-shrink: 0;
+                width: min-content;
+
+                .title {
+                    padding-top: 0.1em;
+                    font-size: 0.45em;
+
+                    .titleicon {
+                        width: 0.9em;
+                        height: 0.9em;
+                        vertical-align: middle;
+                        @include icon-position-hide;
+                        overflow: hidden;
+                    }
+                }
+
+                .artist {
+                    font-size: 0.3em;
+
+                    .artisticon {
+                        width: 1.2em;
+                        height: 1.2em;
+                        vertical-align: middle;
+                        @include icon-position-hide;
+                        overflow: hidden;
+                    }
+                }
+
+                .albumTitle {
+                    font-size: 0.3em;
+
+                    .albumTitleicon {
+                        width: 1.2em;
+                        height: 1.2em;
+                        vertical-align: middle;
+                        @include icon-position-hide;
+                        overflow: hidden;
+                    }
+                }
+
+                .timeline {
+                    width: 100%;
+                    background-color: #ddd;
+
+                    .progress-bar {
+                        height: 5px;
+                        width: 0%;
+                    }
+                }
+            }
+
+            .aubar-wrapper {
+                position: relative;
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+
+                .aubar {
+                    flex-grow: 1;
+                    display: block;
+                    //   width: 100%;
+                    //   height: 100%;
+                }
+
+                .aubar-controls {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    //   width: 100%;
+                    height: 100%;
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    gap: clamp(0.2em, 5%, 0.5em);
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.3s ease;
+
+                    &.visible {
+                        opacity: 1;
+                        pointer-events: auto;
+                    }
+
+                    .control-btn {
+                        background: rgba(255, 255, 255, 0.2);
+                        border: none;
+                        border-radius: 50%;
+                        cursor: pointer;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        transition:
+                            transform 0.2s,
+                            background 0.2s;
+                        width: min(4em, 70%);
+                        aspect-ratio: 1;
+                        min-width: 1.5em;
+                        min-height: 1.5em;
+
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.4);
+                            transform: scale(1.1);
+                        }
+
+                        svg {
+                            width: 50%;
+                            height: 50%;
+                            fill: currentColor;
+                        }
+                    }
+
+                    .play-pause {
+                        .pause-icon {
+                            display: none;
+                        }
+
+                        &.playing {
+                            .play-icon {
+                                display: none;
+                            }
+
+                            .pause-icon {
+                                display: block;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
-  }
 
-  // RTL direction (for thumbnailrorl toggle)
-  &.rtl .background {
-    flex-direction: row-reverse;
-  }
+    // RTL direction (for thumbnailrorl toggle)
+    &.rtl .background {
+        flex-direction: row-reverse;
+    }
 
-  // Show-away position (for showaway toggle)
-  &.show-away {
-    transform: translate(-100%, 0);
-  }
+    // Show-away position (for showaway toggle)
+    &.show-away {
+        transform: translate(-100%, 0);
+    }
 }

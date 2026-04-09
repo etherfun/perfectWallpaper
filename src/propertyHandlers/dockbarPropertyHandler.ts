@@ -9,10 +9,7 @@ import { WallpaperProperties } from './types';
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
-export function handleDockBarProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
+export function handleDockBarProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     if (FirstLoad) {
         initDockBar();
     }
@@ -27,7 +24,12 @@ export function handleDockBarProperties(
 
     // 位置
     if (properties.dockbar_position) {
-        const positions: Array<'bottom' | 'top' | 'left' | 'right'> = ['bottom', 'top', 'left', 'right'];
+        const positions: Array<'bottom' | 'top' | 'left' | 'right'> = [
+            'bottom',
+            'top',
+            'left',
+            'right',
+        ];
         const position = positions[properties.dockbar_position.value] || 'bottom';
         dockbar.updateConfig({ position });
     }
@@ -45,20 +47,26 @@ export function handleDockBarProperties(
     // 亚克力效果启用
     if (properties.dockbar_yakeli_show) {
         dockbar.updateConfig({ yakeliEnabled: properties.dockbar_yakeli_show.value });
-        elements.body.style.setProperty("--dockbar-yakeli-enabled", properties.dockbar_yakeli_show.value ? '1' : '0');
+        elements.body.style.setProperty(
+            '--dockbar-yakeli-enabled',
+            properties.dockbar_yakeli_show.value ? '1' : '0'
+        );
     }
 
     // 亚克力强度
     if (properties.dockbar_yakeli) {
         const intensity = properties.dockbar_yakeli.value / 100;
         dockbar.updateConfig({ yakeliIntensity: intensity });
-        elements.body.style.setProperty("--dockbar-yakeli", String(intensity));
+        elements.body.style.setProperty('--dockbar-yakeli', String(intensity));
     }
 
     // 模糊强度
     if (properties.dockbar_bluryakeli) {
         dockbar.updateConfig({ blurIntensity: properties.dockbar_bluryakeli.value });
-        elements.body.style.setProperty("--dockbar-blur-yakeli", `${properties.dockbar_bluryakeli.value}px`);
+        elements.body.style.setProperty(
+            '--dockbar-blur-yakeli',
+            `${properties.dockbar_bluryakeli.value}px`
+        );
     }
 
     // 亚克力颜色
@@ -68,15 +76,18 @@ export function handleDockBarProperties(
         dockbar.updateConfig({
             yakeliColorR: c[0] || 255,
             yakeliColorG: c[1] || 255,
-            yakeliColorB: c[2] || 255
+            yakeliColorB: c[2] || 255,
         });
-        elements.body.style.setProperty("--dockbar-yakeli-color", c.join(', '));
+        elements.body.style.setProperty('--dockbar-yakeli-color', c.join(', '));
     }
 
     // 圆角
     if (properties.dockbar_roundedcorners) {
         dockbar.updateConfig({ roundedCorners: properties.dockbar_roundedcorners.value });
-        elements.body.style.setProperty("--dockbar-roundedcorners", String(properties.dockbar_roundedcorners.value));
+        elements.body.style.setProperty(
+            '--dockbar-roundedcorners',
+            String(properties.dockbar_roundedcorners.value)
+        );
     }
 
     // X轴位置

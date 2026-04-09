@@ -5,194 +5,199 @@
 
 // Component base positioning mixin
 @mixin component-base {
-  position: absolute;
-  z-index: $z-component;
-  text-align: center;
-  justify-content: space-around;
-  transform: translate(-50%, -50%);
+    position: absolute;
+    z-index: $z-component;
+    text-align: center;
+    justify-content: space-around;
+    transform: translate(-50%, -50%);
 }
 
 // Component positioning with CSS variable names
 @mixin component-position($prefix) {
-  position: absolute;
-  top: var(--#{$prefix}-top);
-  left: var(--#{$prefix}-left);
-  transform: translate(-50%, -50%);
-  z-index: $z-component;
+    position: absolute;
+    top: var(--#{$prefix}-top);
+    left: var(--#{$prefix}-left);
+    transform: translate(-50%, -50%);
+    z-index: $z-component;
 }
 
 // Yakeli (glass/aurora) effect mixin
 // Used by: clock, date, weather, hitokoto, countdown, player, picture-info
 @mixin yakeli-effect($prefix) {
-  text-shadow: 0 0 12px rgba(var(--#{$prefix}-blur-color), var(--#{$prefix}-blur-enabled));
-  background-color: rgba(var(--#{$prefix}-yakeli-color), calc(var(--#{$prefix}-yakeli) * var(--#{$prefix}-yakeli-enabled)));
-  backdrop-filter: blur(calc(var(--#{$prefix}-blur-yakeli) * var(--#{$prefix}-yakeli-enabled)));
-  border-radius: calc((var(--#{$prefix}-height) / 2) * (var(--#{$prefix}-roundedcorners) / 100));
-  padding-inline: calc((var(--#{$prefix}-height) / 2) * (var(--#{$prefix}-roundedcorners) / 200));
+    text-shadow: 0 0 12px rgba(var(--#{$prefix}-blur-color), var(--#{$prefix}-blur-enabled));
+    background-color: rgba(
+        var(--#{$prefix}-yakeli-color),
+        calc(var(--#{$prefix}-yakeli) * var(--#{$prefix}-yakeli-enabled))
+    );
+    backdrop-filter: blur(calc(var(--#{$prefix}-blur-yakeli) * var(--#{$prefix}-yakeli-enabled)));
+    border-radius: calc((var(--#{$prefix}-height) / 2) * (var(--#{$prefix}-roundedcorners) / 100));
+    padding-inline: calc((var(--#{$prefix}-height) / 2) * (var(--#{$prefix}-roundedcorners) / 200));
 }
 
 // Scrollbar hiding mixin
 @mixin hide-scrollbar {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-  }
+    &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
 }
 
 // Scrollbar hiding with local scope (for nested use)
 @mixin scrollbar-hidden {
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 
-  &::-webkit-scrollbar {
-    display: none;
-    width: 0;
-    height: 0;
-  }
+    &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+    }
 }
 
 // Overlay backdrop mixin
 @mixin overlay-backdrop($opacity: 0.85) {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba($color-black, $opacity);
-  backdrop-filter: blur(10px) saturate(180%);
-  -webkit-backdrop-filter: blur(10px) saturate(180%);
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba($color-black, $opacity);
+    backdrop-filter: blur(10px) saturate(180%);
+    -webkit-backdrop-filter: blur(10px) saturate(180%);
 }
 
 // Modal base mixin
 @mixin modal-base {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity $duration-normal ease, visibility $duration-normal ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    transition:
+        opacity $duration-normal ease,
+        visibility $duration-normal ease;
 }
 
 // Modal overlay mixin
 @mixin modal-overlay {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
 }
 
 // Modal content mixin
 @mixin modal-content {
-  position: relative;
-  overflow: hidden;
-  transform: translateY(20px) scale(0.95);
-  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-  box-sizing: border-box;
+    position: relative;
+    overflow: hidden;
+    transform: translateY(20px) scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-sizing: border-box;
 }
 
 // Button base mixin
 @mixin btn-base {
-  padding: 12px 28px;
-  border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all $duration-fast ease;
-  min-width: 120px;
+    padding: 12px 28px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all $duration-fast ease;
+    min-width: 120px;
 }
 
 // Flex center mixin
 @mixin flex-center {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 // Flex between mixin
 @mixin flex-between {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 // Flex start mixin
 @mixin flex-start {
-  display: flex;
-  align-items: flex-start;
+    display: flex;
+    align-items: flex-start;
 }
 
 // Fluid effect wrapper pseudo-elements
 @mixin fluid-overlay {
-  content: "";
-  position: absolute;
-  display: block;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  z-index: 1;
+    content: '';
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 1;
 }
 
 @mixin fluid-overlay-after {
-  @include fluid-overlay;
-  backdrop-filter: blur(var(--fluidEffect-backdrop-filter-strength));
+    @include fluid-overlay;
+    backdrop-filter: blur(var(--fluidEffect-backdrop-filter-strength));
 }
 
 @mixin fluid-overlay-before {
-  @include fluid-overlay;
-  background: $color-black;
-  opacity: var(--fluidEffect-dark-overlay-strength);
+    @include fluid-overlay;
+    background: $color-black;
+    opacity: var(--fluidEffect-dark-overlay-strength);
 }
 
 // Icon positioning hack mixin
 @mixin icon-position-hide($offset: -10240px) {
-  transform: translateY($offset);
-  overflow: hidden;
+    transform: translateY($offset);
+    overflow: hidden;
 }
 
 // Version badge mixin
 @mixin version-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(135deg, #4a6fff, #8a2fff);
-  padding: 12px 24px;
-  border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(135deg, #4a6fff, #8a2fff);
+    padding: 12px 24px;
+    border-radius: 50px;
 }
 
 // Card base mixin
 @mixin card-base {
-  background: rgba($color-white, 0.05);
-  border-radius: 8px;
-  transition: background $duration-fast ease;
+    background: rgba($color-white, 0.05);
+    border-radius: 8px;
+    transition: background $duration-fast ease;
 }
 
 // Loading pulse animation mixin
 @mixin loading-pulse {
-  animation: pulse $duration-pulse infinite;
+    animation: pulse $duration-pulse infinite;
 }
 
 // Tooltip card mixin
 @mixin tooltip-card($height-var, $rounded-var, $yakeli-var, $blur-var) {
-  flex: 0 0 auto;
-  width: 320px;
-  min-height: 200px;
-  padding: 12px;
-  position: relative;
-  z-index: 1;
-  border-radius: calc((var($height-var) / 2) * (var($rounded-var) / 100) / 4);
-  background-color: rgba(var($yakeli-var), calc(calc(var($yakeli-var)*1.5) * var($yakeli-var)));
-  box-shadow: 0 12px 30px rgba($color-black, 0.35);
-  backdrop-filter: blur(calc(var($blur-var)*3));
+    flex: 0 0 auto;
+    width: 320px;
+    min-height: 200px;
+    padding: 12px;
+    position: relative;
+    z-index: 1;
+    border-radius: calc((var($height-var) / 2) * (var($rounded-var) / 100) / 4);
+    background-color: rgba(var($yakeli-var), calc(calc(var($yakeli-var) * 1.5) * var($yakeli-var)));
+    box-shadow: 0 12px 30px rgba($color-black, 0.35);
+    backdrop-filter: blur(calc(var($blur-var) * 3));
 }

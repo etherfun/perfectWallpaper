@@ -20,7 +20,7 @@ $z-modal: 9999;
 $z-notification: 99999;
 
 // Font families
-$font-family-default: "等线 Light", "Microsoft Yahei Light", sans-serif;
+$font-family-default: '等线 Light', 'Microsoft Yahei Light', sans-serif;
 $font-family-mono: 'Consolas', 'Monaco', 'Courier New', monospace;
 
 // Animation durations
@@ -31,8 +31,7 @@ $duration-pulse: 1.5s;
 $duration-fade: 0.5s;
 
 // Animation keyframes list (for reference)
-$keyframes-list: spin, pulse, borderGlowInset, scroll,
-    fluid-block-rotate, fluid-container-rotate,
-    slideInOut, gentle-float, pulse-glow,
-    fade-in, pulse-dot, countdown-pulse,
-    countdown-warning-pulse, fadeInUp, precip-text-pulse;
+$keyframes-list:
+    spin, pulse, borderGlowInset, scroll, fluid-block-rotate, fluid-container-rotate, slideInOut,
+    gentle-float, pulse-glow, fade-in, pulse-dot, countdown-pulse, countdown-warning-pulse,
+    fadeInUp, precip-text-pulse;

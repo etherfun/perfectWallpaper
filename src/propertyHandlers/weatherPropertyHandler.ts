@@ -4,7 +4,7 @@ import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { debounce } from '../utils/tool';
-import { autoWeather,generateWeatherTable, weather_address, weather_init } from '../weather';
+import { autoWeather, generateWeatherTable, weather_address, weather_init } from '../weather';
 import { setWeatherUnitByName } from '../weather/weatherState';
 import { WallpaperProperties } from './types';
 
@@ -15,11 +15,7 @@ const weather = elements.weather.weather as HTMLElement;
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
-export function handleWeatherProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
-
+export function handleWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     if (properties.getcitykey_qweather) {
         config.city_key = properties.getcitykey_qweather.value;
     }
@@ -50,7 +46,7 @@ export function handleWeatherProperties(
 
     if (properties.weather_unit) {
         config.weather_unit = properties.weather_unit.value;
-        setWeatherUnitByName(config.weather_unit || "metric");
+        setWeatherUnitByName(config.weather_unit || 'metric');
     }
 
     if (properties.weather_daliy_tip) {
@@ -60,7 +56,10 @@ export function handleWeatherProperties(
         }
         // Toggle border-bottom of precip container based on daily tip visibility
         if (elements.weather.precipContainer) {
-            elements.weather.precipContainer.style.borderBottomWidth = properties.weather_daliy_tip.value ? '1px' : '0';
+            elements.weather.precipContainer.style.borderBottomWidth = properties.weather_daliy_tip
+                .value
+                ? '1px'
+                : '0';
         }
     }
 
@@ -136,69 +135,93 @@ export function handleWeatherProperties(
         timerManager.remove('updataWeather');
 
         if (properties.weather_show.value) {
-            weather.style.display = "flex";
-            weather.style.visibility = "visible";
+            weather.style.display = 'flex';
+            weather.style.visibility = 'visible';
             autoWeather();
         } else {
-            weather.style.display = "none";
-            weather.style.visibility = "hidden";
+            weather.style.display = 'none';
+            weather.style.visibility = 'hidden';
         }
     }
 
     // 天气颜色
     if (properties.weather_Color) {
-        const c = properties.weather_Color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
-        elements.body.style.setProperty("--weather-color", `rgb(${c})`);
+        const c = properties.weather_Color.value
+            .split(' ')
+            .map(c => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        elements.body.style.setProperty('--weather-color', `rgb(${c})`);
         config.weather_color = c;
     }
 
     if (properties.weather_blurcolor_show) {
-        elements.body.style.setProperty("--weather-blur-enabled", properties.weather_blurcolor_show.value ? '1' : '0');
+        elements.body.style.setProperty(
+            '--weather-blur-enabled',
+            properties.weather_blurcolor_show.value ? '1' : '0'
+        );
         config.weather_blurcolor_show = properties.weather_blurcolor_show.value;
     }
 
     if (properties.weather_blurcolor) {
-        const c = properties.weather_blurcolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
-        elements.body.style.setProperty("--weather-blur-color", c.join(', '));
+        const c = properties.weather_blurcolor.value
+            .split(' ')
+            .map(c => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        elements.body.style.setProperty('--weather-blur-color', c.join(', '));
         config.weather_blurcolor = c;
     }
 
     if (properties.weather_yakeli_show) {
-        elements.body.style.setProperty("--weather-yakeli-enabled", properties.weather_yakeli_show.value ? '1' : '0');
+        elements.body.style.setProperty(
+            '--weather-yakeli-enabled',
+            properties.weather_yakeli_show.value ? '1' : '0'
+        );
         config.weather_yakeli_show = properties.weather_yakeli_show.value;
     }
 
     if (properties.weather_yakelicolor) {
-        const c = properties.weather_yakelicolor.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
-        elements.body.style.setProperty("--weather-yakeli-color", c.join(', '));
+        const c = properties.weather_yakelicolor.value
+            .split(' ')
+            .map(c => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        elements.body.style.setProperty('--weather-yakeli-color', c.join(', '));
         config.weather_yakelic_color = c;
     }
 
     if (properties.weather_yakeli) {
-        elements.body.style.setProperty("--weather-yakeli", String(properties.weather_yakeli.value / 100));
+        elements.body.style.setProperty(
+            '--weather-yakeli',
+            String(properties.weather_yakeli.value / 100)
+        );
         config.weather_yakeli = properties.weather_yakeli.value;
     }
 
     if (properties.weather_bluryakeli) {
-        elements.body.style.setProperty("--weather-blur-yakeli", String(properties.weather_bluryakeli.value) + 'px');
+        elements.body.style.setProperty(
+            '--weather-blur-yakeli',
+            String(properties.weather_bluryakeli.value) + 'px'
+        );
         config.weather_bluryakeli = properties.weather_bluryakeli.value;
     }
 
     // 天气透明度
     if (properties.weather_timetransparency) {
-        elements.body.style.setProperty("--weather-opacity", String(properties.weather_timetransparency.value / 100));
+        elements.body.style.setProperty(
+            '--weather-opacity',
+            String(properties.weather_timetransparency.value / 100)
+        );
         config.weather_timetransparency = properties.weather_timetransparency.value;
     }
 
     // 天气圆角
     if (properties.weather_roundedcorners) {
-        elements.body.style.setProperty("--weather-roundedcorners", String(properties.weather_roundedcorners.value));
+        elements.body.style.setProperty(
+            '--weather-roundedcorners',
+            String(properties.weather_roundedcorners.value)
+        );
         config.weather_roundedcorners = properties.weather_roundedcorners.value;
 
         const updateHeight = () => {
             const height = weather.getBoundingClientRect().height;
             if (!height) return;
-            elements.body.style.setProperty("--weather-height", height + "px");
+            elements.body.style.setProperty('--weather-height', height + 'px');
         };
 
         updateHeight();
@@ -210,28 +233,31 @@ export function handleWeatherProperties(
     // 天气大小
     if (properties.weather_size) {
         const s = properties.weather_size.value;
-        elements.body.style.setProperty("--weather-font-size", Math.floor(window.innerHeight / 900 * s) + 'px');
+        elements.body.style.setProperty(
+            '--weather-font-size',
+            Math.floor((window.innerHeight / 900) * s) + 'px'
+        );
         config.weather_size = s;
     }
 
     if (properties.weather_showwidth) {
         if (properties.weather_showwidth.value === 0) {
-            elements.body.style.setProperty("--weather-show-width", 'auto');
+            elements.body.style.setProperty('--weather-show-width', 'auto');
         } else {
             const s = properties.weather_showwidth.value / 100;
-            elements.body.style.setProperty("--weather-show-width", window.innerWidth * s + "px");
+            elements.body.style.setProperty('--weather-show-width', window.innerWidth * s + 'px');
         }
         config.weather_showwidth = properties.weather_showwidth.value;
     }
 
     // 天气位置
     if (properties.weatherX) {
-        elements.body.style.setProperty("--weather-left", `${properties.weatherX.value}%`);
+        elements.body.style.setProperty('--weather-left', `${properties.weatherX.value}%`);
         config.weather_x = properties.weatherX.value;
     }
 
     if (properties.weatherY) {
-        elements.body.style.setProperty("--weather-top", `${properties.weatherY.value}%`);
+        elements.body.style.setProperty('--weather-top', `${properties.weatherY.value}%`);
         config.weather_y = properties.weatherY.value;
     }
 

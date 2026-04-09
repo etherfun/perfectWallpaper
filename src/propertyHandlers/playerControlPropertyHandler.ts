@@ -1,6 +1,6 @@
 import { debugLogger } from '@/utils/logger';
 
-import { pc_aubar, playertitle,thumbnailsue } from '../player_control';
+import { pc_aubar, playertitle, thumbnailsue } from '../player_control';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
 import { WallpaperProperties } from './types';
@@ -25,7 +25,6 @@ export function handlePlayerControlProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
-
     if (properties.player_control_show) {
         config.player_control_show = properties.player_control_show.value;
         player_control_show = properties.player_control_show.value;
@@ -36,39 +35,47 @@ export function handlePlayerControlProperties(
                 thumbnailsue();
             }
         } else {
-            player_control.style.display = "flex";
+            player_control.style.display = 'flex';
             player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
 
             setTimeout(function () {
                 if (!player_control_show) {
-                    player_control.style.display = "none";
+                    player_control.style.display = 'none';
                     return;
                 }
 
-                const leftTitle = document.querySelector("#player_control .title .left") as HTMLElement | null;
-                const rightTitle = document.querySelector("#player_control .title .right") as HTMLElement | null;
-                const isTitleLoading = (leftTitle && leftTitle.innerText == "loading...") ||
-                    (rightTitle && rightTitle.innerText == "loading...");
+                const leftTitle = document.querySelector(
+                    '#player_control .title .left'
+                ) as HTMLElement | null;
+                const rightTitle = document.querySelector(
+                    '#player_control .title .right'
+                ) as HTMLElement | null;
+                const isTitleLoading =
+                    (leftTitle && leftTitle.innerText == 'loading...') ||
+                    (rightTitle && rightTitle.innerText == 'loading...');
 
                 if (!isTitleLoading) {
                     return;
                 }
 
                 if (config.player_control_autohide) {
-                    player_control.style.display = "none";
+                    player_control.style.display = 'none';
                 } else {
                     const titleElement = leftTitle || rightTitle;
-                    const artistElement = document.querySelector("#player_control .artist .left") as HTMLElement ||
-                        document.querySelector("#player_control .artist .right") as HTMLElement;
+                    const artistElement =
+                        (document.querySelector('#player_control .artist .left') as HTMLElement) ||
+                        (document.querySelector('#player_control .artist .right') as HTMLElement);
 
                     if (titleElement) {
-                        titleElement.innerHTML = "✧ପ(๑･ω･)੭";
+                        titleElement.innerHTML = '✧ପ(๑･ω･)੭';
                     }
                     if (artistElement) {
-                        artistElement.innerHTML = "少女祈祷中……";
+                        artistElement.innerHTML = '少女祈祷中……';
                     }
 
-                    const albumTitleElement = document.querySelector("#player_control .albumTitle") as HTMLElement | null;
+                    const albumTitleElement = document.querySelector(
+                        '#player_control .albumTitle'
+                    ) as HTMLElement | null;
                     if (albumTitleElement) {
                         albumTitleElement.style.display = 'none';
                     }
@@ -83,76 +90,101 @@ export function handlePlayerControlProperties(
 
     if (properties.playery) {
         config.playery = properties.playery.value;
-        player_control.style.top = properties.playery.value + "%";
+        player_control.style.top = properties.playery.value + '%';
     }
 
     if (properties.playerx) {
         config.playerx = properties.playerx.value;
-        player_control.style.left = properties.playerx.value + "%";
+        player_control.style.left = properties.playerx.value + '%';
     }
 
     if (properties.player_control_color) {
-        const color = properties.player_control_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const color = properties.player_control_color.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.player_control_color = color as [number, number, number];
-        elements.body.style.setProperty("--player-color", color.join(', '));
+        elements.body.style.setProperty('--player-color', color.join(', '));
     }
 
     if (properties.player_control_blurcolor_show) {
         config.player_control_blurcolor_show = properties.player_control_blurcolor_show.value;
-        elements.body.style.setProperty("--player-blur-enabled", properties.player_control_blurcolor_show.value ? '1' : '0');
+        elements.body.style.setProperty(
+            '--player-blur-enabled',
+            properties.player_control_blurcolor_show.value ? '1' : '0'
+        );
     }
 
     if (properties.player_control_blurcolor) {
-        const blurcolor = properties.player_control_blurcolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const blurcolor = properties.player_control_blurcolor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.player_control_blurcolor = blurcolor as [number, number, number];
-        elements.body.style.setProperty("--player-blur-color", blurcolor.join(', '));
+        elements.body.style.setProperty('--player-blur-color', blurcolor.join(', '));
     }
 
     if (properties.player_control_yakeli_show) {
         config.player_control_yakeli_show = properties.player_control_yakeli_show.value;
-        elements.body.style.setProperty("--player-yakeli-enabled", properties.player_control_yakeli_show.value ? '1' : '0');
+        elements.body.style.setProperty(
+            '--player-yakeli-enabled',
+            properties.player_control_yakeli_show.value ? '1' : '0'
+        );
     }
 
     if (properties.player_control_yakelicolor) {
-        const yakeliccolor = properties.player_control_yakelicolor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const yakeliccolor = properties.player_control_yakelicolor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.player_control_yakelic_color = yakeliccolor as [number, number, number];
-        elements.body.style.setProperty("--player-yakeli-color", yakeliccolor.join(', '));
+        elements.body.style.setProperty('--player-yakeli-color', yakeliccolor.join(', '));
     }
 
     if (properties.player_control_yakeli) {
         const yakeli = properties.player_control_yakeli.value / 100;
         config.player_control_yakeli = yakeli;
-        elements.body.style.setProperty("--player-yakeli", String(yakeli));
+        elements.body.style.setProperty('--player-yakeli', String(yakeli));
     }
 
     if (properties.player_control_bluryakeli) {
         config.player_control_bluryakeli = properties.player_control_bluryakeli.value;
-        elements.body.style.setProperty("--player-blur-yakeli", `${properties.player_control_bluryakeli.value}px`);
+        elements.body.style.setProperty(
+            '--player-blur-yakeli',
+            `${properties.player_control_bluryakeli.value}px`
+        );
     }
 
     if (properties.player_control_size) {
         const s = properties.player_control_size.value;
-        config.player_control_size_value = Math.floor(window.innerHeight / 150 * s);
-        player_control.style.fontSize = Math.floor(window.innerHeight / 300 * s) + 'px';
-        player_control.style.lineHeight = Math.floor(window.innerHeight / 700 * s) + 'px';
-        player_control_artist.style.lineHeight = Math.floor(window.innerHeight / 1000 * s) + 'px';
-        player_control_albumTitle.style.lineHeight = Math.floor(window.innerHeight / 1000 * s) + 'px';
-       
+        config.player_control_size_value = Math.floor((window.innerHeight / 150) * s);
+        player_control.style.fontSize = Math.floor((window.innerHeight / 300) * s) + 'px';
+        player_control.style.lineHeight = Math.floor((window.innerHeight / 700) * s) + 'px';
+        player_control_artist.style.lineHeight = Math.floor((window.innerHeight / 1000) * s) + 'px';
+        player_control_albumTitle.style.lineHeight =
+            Math.floor((window.innerHeight / 1000) * s) + 'px';
     }
 
     if (properties.player_control_thumbnail_size !== undefined) {
         config.player_control_thumbnail_size = properties.player_control_thumbnail_size.value;
         if (config.player_control_thumbnail_size) {
             player_control_thumbnailWrap.classList.add('flex-center');
-            player_control_thumbnailWrap.style.setProperty('--player-thumb-size', config.player_control_size_value + 'px');
+            player_control_thumbnailWrap.style.setProperty(
+                '--player-thumb-size',
+                config.player_control_size_value + 'px'
+            );
             if (FirstLoad === false) {
-                const ss = (config.player_control_size_value * (player_control_thumbnail_size_value / 100));
-                player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', ss + 'px');
+                const ss =
+                    config.player_control_size_value * (player_control_thumbnail_size_value / 100);
+                player_control_thumbnailWrap.style.setProperty(
+                    '--player-thumb-inner-size',
+                    ss + 'px'
+                );
                 player_control_thumbnail.style.setProperty('--player-thumb-inner-size', ss + 'px');
             }
         } else {
             player_control_thumbnailWrap.classList.remove('flex-center');
-            player_control_thumbnailWrap.style.setProperty('--player-thumb-size', config.player_control_size_value + 'px');
+            player_control_thumbnailWrap.style.setProperty(
+                '--player-thumb-size',
+                config.player_control_size_value + 'px'
+            );
             // Reset to 100% when scaling is off
             player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', '100%');
             player_control_thumbnail.style.setProperty('--player-thumb-inner-size', '100%');
@@ -161,8 +193,9 @@ export function handlePlayerControlProperties(
 
     if (properties.player_control_thumbnail_size_value) {
         const s = config.player_control_size_value;
-        config.player_control_thumbnail_size_value = properties.player_control_thumbnail_size_value.value;
-        const ss = (s * (properties.player_control_thumbnail_size_value.value / 100));
+        config.player_control_thumbnail_size_value =
+            properties.player_control_thumbnail_size_value.value;
+        const ss = s * (properties.player_control_thumbnail_size_value.value / 100);
         if (config.player_control_thumbnail_size) {
             player_control_thumbnailWrap.style.setProperty('--player-thumb-size', s + 'px');
             player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', ss + 'px');
@@ -186,7 +219,10 @@ export function handlePlayerControlProperties(
 
             // 只有当旋转功能关闭时才设置圆角
             if (config.player_control_thumbnail_rotation !== true) {
-                player_control_thumbnailWrap.style.setProperty('--player-thumb-radius', radius + 'px');
+                player_control_thumbnailWrap.style.setProperty(
+                    '--player-thumb-radius',
+                    radius + 'px'
+                );
                 player_control_thumbnailWrap.classList.remove('circular');
             }
         };
@@ -200,7 +236,8 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_thumbnail_rotation) {
-        config.player_control_thumbnail_rotation = properties.player_control_thumbnail_rotation.value;
+        config.player_control_thumbnail_rotation =
+            properties.player_control_thumbnail_rotation.value;
         if (properties.player_control_thumbnail_rotation.value === false) {
             player_control_thumbnail.style.animation = '';
             player_control_thumbnailWrap.classList.remove('circular');
@@ -211,15 +248,19 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_thumbnail_rotation_speed) {
-        config.player_control_thumbnail_rotation_speed = 10 - properties.player_control_thumbnail_rotation_speed.value;
+        config.player_control_thumbnail_rotation_speed =
+            10 - properties.player_control_thumbnail_rotation_speed.value;
         if (player_control_thumbnail.style.animation) {
-            player_control_thumbnail.style.animationDuration = config.player_control_thumbnail_rotation_speed + 's';
+            player_control_thumbnail.style.animationDuration =
+                config.player_control_thumbnail_rotation_speed + 's';
         }
     }
 
     if (properties.player_control_timetransparency) {
         config.player_control_timetransparency = properties.player_control_timetransparency.value;
-        player_control.style.opacity = String(properties.player_control_timetransparency.value / 100);
+        player_control.style.opacity = String(
+            properties.player_control_timetransparency.value / 100
+        );
     }
 
     if (properties.player_control_showwidth) {

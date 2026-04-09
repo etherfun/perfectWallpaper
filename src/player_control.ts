@@ -4,7 +4,14 @@ import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
 import { hasPlaybackContent } from './utils/playback';
-import { pauseBuiltInPlayer, PlayNextTrack, PlayPrevTrack, resumeBuiltInPlayer, setExternalMediaActive,TogglePlayPause } from './video';
+import {
+    pauseBuiltInPlayer,
+    PlayNextTrack,
+    PlayPrevTrack,
+    resumeBuiltInPlayer,
+    setExternalMediaActive,
+    TogglePlayPause,
+} from './video';
 
 // 进度条定时器
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;
@@ -25,7 +32,6 @@ const player_control_artist = elements.playerControl.artist;
 const player_control_albumTitle = elements.playerControl.albumTitle;
 const player_control_timeline = elements.playerControl.timeline;
 const player_control_aubar = elements.playerControl.aubar;
-
 
 /*msct封面*/
 async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {
@@ -55,8 +61,10 @@ function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
     function updateTimeline(): void {
         if (waitingForData) return;
 
-        if (config.runtime.playerInfo.playerState === 0 ||
-            config.runtime.playerInfo.playerState === 2) {
+        if (
+            config.runtime.playerInfo.playerState === 0 ||
+            config.runtime.playerInfo.playerState === 2
+        ) {
             timelineTimer = setTimeout(updateTimeline, 500);
             return;
         }
@@ -68,7 +76,7 @@ function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
         }
 
         const progressPercent = (currentPosition / dur) * 100;
-        player_control_timeline.style.width = progressPercent + "%";
+        player_control_timeline.style.width = progressPercent + '%';
 
         if (!waitingForData) {
             timelineTimer = setTimeout(updateTimeline, 100);
@@ -83,7 +91,9 @@ function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void {
 /*msct监听*/
 function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     if (event) {
-        debugLogger.info(`[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`);
+        debugLogger.info(
+            `[Player] 收到新歌曲信息: ${event.title || '未知'} - ${event.artist || '未知'}`
+        );
 
         // 外部媒体源激活（收到歌曲信息）
         // 设置标志
@@ -102,7 +112,11 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
         player_control_aubar.height = 0;
 
         const playerControlShow = config.player_control_show;
-        if (playerControlShow && config.runtime.playerInfo.singtitle && config.runtime.playerInfo.singtitle !== '') {
+        if (
+            playerControlShow &&
+            config.runtime.playerInfo.singtitle &&
+            config.runtime.playerInfo.singtitle !== ''
+        ) {
             player_control.style.display = 'flex';
         } else {
             player_control.style.display = 'none';
@@ -113,7 +127,12 @@ function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     }
 
     const playerControlShow = config.player_control_show;
-    if (!playerControlShow || config.runtime.playerInfo.singtitle === undefined || config.runtime.playerInfo.singtitle === '') return;
+    if (
+        !playerControlShow ||
+        config.runtime.playerInfo.singtitle === undefined ||
+        config.runtime.playerInfo.singtitle === ''
+    )
+        return;
 
     playertitle(Boolean(config.player_control_visualaudiobar));
 }
@@ -155,7 +174,13 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
     const playerControlColor = config.player_control_color;
 
     // ColorImpl 对象转换为 RGB 数组
-    const colorToRgb = (color: [number, number, number] | { rgb(): { r: number; g: number; b: number } } | null | undefined): [number, number, number] | null => {
+    const colorToRgb = (
+        color:
+            | [number, number, number]
+            | { rgb(): { r: number; g: number; b: number } }
+            | null
+            | undefined
+    ): [number, number, number] | null => {
         if (!color) return null;
         if (Array.isArray(color)) {
             return color as [number, number, number];
@@ -170,7 +195,7 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
     try {
         const [paletteResult, dominantResult] = await Promise.all([
             getPalette(player_control_thumbnail, { colorCount: 3 }),
-            getColor(player_control_thumbnail)
+            getColor(player_control_thumbnail),
         ]);
         palette = paletteResult;
         dominantColor = dominantResult;
@@ -191,10 +216,10 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
                 colorToRgb(dominantColor),
                 colorToRgb(palette?.[0]),
                 colorToRgb(palette?.[1]),
-                colorToRgb(palette?.[2])
+                colorToRgb(palette?.[2]),
             ],
             [playerControlYakelicColor],
-            [playerControlColor]
+            [playerControlColor],
         ];
     } else {
         // 自定义封面只用 colorthief 提取的颜色
@@ -203,16 +228,16 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
                 colorToRgb(dominantColor) || [0, 0, 0],
                 colorToRgb(palette?.[0]) || [0, 0, 0],
                 colorToRgb(palette?.[1]) || [0, 0, 0],
-                colorToRgb(palette?.[2]) || [0, 0, 0]
+                colorToRgb(palette?.[2]) || [0, 0, 0],
             ],
             [
                 colorToRgb(dominantColor) || [0, 0, 0],
                 colorToRgb(palette?.[0]) || [0, 0, 0],
                 colorToRgb(palette?.[1]) || [0, 0, 0],
-                colorToRgb(palette?.[2]) || [0, 0, 0]
+                colorToRgb(palette?.[2]) || [0, 0, 0],
             ],
             [playerControlYakelicColor],
-            [playerControlColor]
+            [playerControlColor],
         ];
     }
 
@@ -233,7 +258,9 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
                 const img = elements.playerControl.thumbnail;
                 if (img?.complete && img?.naturalWidth) {
                     existingEffect.setSourceFromImage(img);
-                    const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+                    const wrapper = document.querySelector(
+                        '.fluid-effect-wrapper'
+                    ) as HTMLElement | null;
                     if (wrapper && img.src) {
                         wrapper.style.backgroundImage = `url('${img.src}')`;
                     }
@@ -257,25 +284,29 @@ export function playertitle(visualaudiobar: boolean = false): void {
     const playerControlThumbnailrorl = config.player_control_thumbnailrorl;
     const playerControlSamealbumTitle = config.player_control_samealbum_title;
 
-    if ((!titleToShow || titleToShow === "loading...") && !playerControlAutohide && playerControlShow) {
-        titleToShow = "✧ପ(๑･ω･)੭";
-        artistToShow = "少女祈祷中……";
-        albumToShow = "";
+    if (
+        (!titleToShow || titleToShow === 'loading...') &&
+        !playerControlAutohide &&
+        playerControlShow
+    ) {
+        titleToShow = '✧ପ(๑･ω･)੭';
+        artistToShow = '少女祈祷中……';
+        albumToShow = '';
     }
 
     let titleEl: Element, artistEl: Element, albumEl: Element;
 
     if (playerControlThumbnailrorl === false) {
-        titleEl = player_control_title.querySelector(".left")!;
-        artistEl = player_control_artist.querySelector(".left")!;
-        albumEl = player_control_albumTitle.querySelector(".left")!;
-        const rightElements = player_control.querySelectorAll(".right");
+        titleEl = player_control_title.querySelector('.left')!;
+        artistEl = player_control_artist.querySelector('.left')!;
+        albumEl = player_control_albumTitle.querySelector('.left')!;
+        const rightElements = player_control.querySelectorAll('.right');
         for (let i = 0; i < rightElements.length; i++) rightElements[i].innerHTML = '';
     } else {
-        titleEl = player_control_title.querySelector(".right")!;
-        artistEl = player_control_artist.querySelector(".right")!;
-        albumEl = player_control_albumTitle.querySelector(".right")!;
-        const leftElements = player_control.querySelectorAll(".left");
+        titleEl = player_control_title.querySelector('.right')!;
+        artistEl = player_control_artist.querySelector('.right')!;
+        albumEl = player_control_albumTitle.querySelector('.right')!;
+        const leftElements = player_control.querySelectorAll('.left');
         for (let i = 0; i < leftElements.length; i++) leftElements[i].innerHTML = '';
     }
 
@@ -335,11 +366,13 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
     const playerControlThumbnailRotationSpeed = config.player_control_thumbnail_rotation_speed;
 
     if (playerControlShow) {
-        if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_PLAYING ||
-            event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
-            player_control.style.display = "flex";
+        if (
+            event.state === window.wallpaperMediaIntegration?.PLAYBACK_PLAYING ||
+            event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED
+        ) {
+            player_control.style.display = 'flex';
         } else if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_STOPPED) {
-            player_control.style.display = playerControlAutohide ? "none" : "flex";
+            player_control.style.display = playerControlAutohide ? 'none' : 'flex';
         }
     } else {
         return;
@@ -349,8 +382,10 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
 
     if (!playerControlThumbnailRotation) return;
 
-    if (event.state === window.wallpaperMediaIntegration?.PLAYBACK_STOPPED ||
-        event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED) {
+    if (
+        event.state === window.wallpaperMediaIntegration?.PLAYBACK_STOPPED ||
+        event.state === window.wallpaperMediaIntegration?.PLAYBACK_PAUSED
+    ) {
         player_control_thumbnail.style.animationPlayState = 'paused';
     } else {
         player_control_thumbnailWrap.classList.add('circular');
@@ -393,16 +428,19 @@ function resumeFluidEffect(): void {
     if (!config.runtime.FluidEffect?.normalEffect && config.runtime.FluidEffect?.enabled) {
         config.runtime.FluidEffect.initNormalEffect();
     }
-    if (config.runtime.FluidEffect?.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(true);
+    if (config.runtime.FluidEffect?.normalEffect?.setPlayState)
+        config.runtime.FluidEffect.normalEffect.setPlayState(true);
 }
 
 function pauseFluidEffect(): void {
-    if (config.runtime.FluidEffect?.normalEffect?.setPlayState) config.runtime.FluidEffect.normalEffect.setPlayState(false);
+    if (config.runtime.FluidEffect?.normalEffect?.setPlayState)
+        config.runtime.FluidEffect.normalEffect.setPlayState(false);
 }
 
 function stopFluidEffect(): void {
     if (config.runtime.FluidEffect) {
-        if (config.runtime.FluidEffect.normalEffect?.stop) config.runtime.FluidEffect.normalEffect.stop();
+        if (config.runtime.FluidEffect.normalEffect?.stop)
+            config.runtime.FluidEffect.normalEffect.stop();
         config.runtime.FluidEffect.destroyNormalEffect();
     }
 }
@@ -417,12 +455,14 @@ function resumeFullscreenFluidEffect(): void {
 }
 
 function pauseFullscreenFluidEffect(): void {
-    if (config.runtime.FluidEffect?.fullscreenEffect?.setPlayState) config.runtime.FluidEffect.fullscreenEffect.setPlayState(false);
+    if (config.runtime.FluidEffect?.fullscreenEffect?.setPlayState)
+        config.runtime.FluidEffect.fullscreenEffect.setPlayState(false);
 }
 
 function stopFullscreenFluidEffect(): void {
     if (config.runtime.FluidEffect) {
-        if (config.runtime.FluidEffect.fullscreenEffect?.stop) config.runtime.FluidEffect.fullscreenEffect.stop();
+        if (config.runtime.FluidEffect.fullscreenEffect?.stop)
+            config.runtime.FluidEffect.fullscreenEffect.stop();
         config.runtime.FluidEffect.destroyFullscreenEffect();
     }
 }
@@ -440,24 +480,32 @@ export function thumbnailsue(): void {
     let thumbnailcolor: [number, number, number] | string | null;
 
     if (playerControlYakelibgusetb !== 5) {
-        thumbnailcolor = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlYakelibgusetb - 1];
+        thumbnailcolor =
+            config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][
+                playerControlYakelibgusetb - 1
+            ];
     } else {
         thumbnailcolor = playerControlYakelicColor;
     }
 
     if (playerControlFontusetb !== 5) {
-        config.runtime.playerInfo.fontcolor = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlFontusetb - 1];
+        config.runtime.playerInfo.fontcolor =
+            config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlFontusetb - 1];
     } else {
         config.runtime.playerInfo.fontcolor = playerControlColor;
     }
 
-    player_control_background.style.background = "rgba(" + thumbnailcolor + "," + playerControlYakeli + ")";
-    player_control_info.style.color = "rgb(" + config.runtime.playerInfo.fontcolor + ")";
+    player_control_background.style.background =
+        'rgba(' + thumbnailcolor + ',' + playerControlYakeli + ')';
+    player_control_info.style.color = 'rgb(' + config.runtime.playerInfo.fontcolor + ')';
     player_iconcolor(config.runtime.playerInfo.fontcolor);
-    player_control_timeline.style.backgroundColor = "rgb(" + config.runtime.playerInfo.fontcolor + ")";
+    player_control_timeline.style.backgroundColor =
+        'rgb(' + config.runtime.playerInfo.fontcolor + ')';
 
     const timelineEl = elements.playerControl.timeline?.parentElement;
-    if (timelineEl) timelineEl.style.backgroundColor = "rgba(" + [255, 255, 255] + "," + (playerControlYakeli + 0.4) + ")";
+    if (timelineEl)
+        timelineEl.style.backgroundColor =
+            'rgba(' + [255, 255, 255] + ',' + (playerControlYakeli + 0.4) + ')';
 }
 
 function player_iconcolor(rgb: [number, number, number] | string | null): void {
@@ -476,7 +524,9 @@ export function pc_aubar(): void {
     const usage = elements.playerControl.info;
     const aubar = elements.playerControl.aubar;
     const calculatedHeight = (full?.clientHeight ?? 0) - usage.clientHeight;
-    console.log(`[pc_aubar] full.clientHeight: ${full?.clientHeight}, usage.clientHeight: ${usage.clientHeight}, aubar.clientHeight: ${aubar?.clientHeight}, calculatedHeight: ${calculatedHeight}`);
+    console.log(
+        `[pc_aubar] full.clientHeight: ${full?.clientHeight}, usage.clientHeight: ${usage.clientHeight}, aubar.clientHeight: ${aubar?.clientHeight}, calculatedHeight: ${calculatedHeight}`
+    );
     if (!aubar || !full || !usage) return;
 
     const rgbbg = aubar.getContext('2d');
@@ -509,7 +559,8 @@ export function pc_aubar(): void {
 
         for (let i = 0, l = 64; i < 64; ++i, ++l) {
             const bar = (currentAudioArr[i] + currentAudioArr[l]) / 2;
-            const targetHeight = aubar.height * Math.min(bar, 1) * config.player_control_scalefactor;
+            const targetHeight =
+                aubar.height * Math.min(bar, 1) * config.player_control_scalefactor;
             const actualHeight = Math.min(targetHeight, aubar.height);
 
             barHeights[i] = lerp(barHeights[i], actualHeight, config.player_control_hdong);
@@ -517,7 +568,11 @@ export function pc_aubar(): void {
             rgbbg.fillRect(barWidth * i, aubar.height - barHeights[i], barWidth, barHeights[i]);
         }
 
-        if (!config.runtime.playerInfo.aubarstop && config.player_control_visualaudiobar && config.runtime.playerInfo.playerState !== 0) {
+        if (
+            !config.runtime.playerInfo.aubarstop &&
+            config.player_control_visualaudiobar &&
+            config.runtime.playerInfo.playerState !== 0
+        ) {
             requestAnimationFrame(draw);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
@@ -539,14 +594,24 @@ export function pc_aubar(): void {
         const heights: number[] = [];
         for (let i = 0, l = 64; i < 64; ++i, ++l) {
             const amplitude = (currentAudioArr[i] + currentAudioArr[l]) / 2;
-            let targetHeight = aubar.height - aubar.height * Math.min(amplitude, 1) * config.player_control_scalefactor;
+            let targetHeight =
+                aubar.height -
+                aubar.height * Math.min(amplitude, 1) * config.player_control_scalefactor;
             targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
-            previousHeights[i] = lerp(previousHeights[i], targetHeight, config.player_control_hdong);
+            previousHeights[i] = lerp(
+                previousHeights[i],
+                targetHeight,
+                config.player_control_hdong
+            );
             heights[i] = previousHeights[i];
         }
 
         if (heights.length < 2) {
-            if (!config.runtime.playerInfo.aubarstop && config.player_control_visualaudiobar && config.runtime.playerInfo.playerState !== 0) {
+            if (
+                !config.runtime.playerInfo.aubarstop &&
+                config.player_control_visualaudiobar &&
+                config.runtime.playerInfo.playerState !== 0
+            ) {
                 requestAnimationFrame(drawline);
             }
             return;
@@ -577,7 +642,11 @@ export function pc_aubar(): void {
 
         rgbbg.stroke();
 
-        if (!config.runtime.playerInfo.aubarstop && config.player_control_visualaudiobar && config.runtime.playerInfo.playerState !== 0) {
+        if (
+            !config.runtime.playerInfo.aubarstop &&
+            config.player_control_visualaudiobar &&
+            config.runtime.playerInfo.playerState !== 0
+        ) {
             requestAnimationFrame(drawline);
         } else {
             rgbbg.clearRect(0, 0, aubar.width, aubar.height);
@@ -603,19 +672,23 @@ window.wallpaperRegisterMediaPlaybackListener?.(wallpaperMediaPlaybackListener);
 // 辅助函数
 function hexToRgb(hex: string): [number, number, number] {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result ? [
-        parseInt(result[1], 16),
-        parseInt(result[2], 16),
-        parseInt(result[3], 16)
-    ] : [0, 0, 0];
+    return result
+        ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
+        : [0, 0, 0];
 }
 
 // ==================== 播放器控制按钮 ====================
 
 // DOM元素
-const player_control_aubarWrapper = player_control?.querySelector('.aubar-wrapper') as HTMLElement | null;
-const player_control_aubarControls = player_control?.querySelector('.aubar-controls') as HTMLElement | null;
-const player_control_playPauseBtn = player_control?.querySelector('.play-pause') as HTMLElement | null;
+const player_control_aubarWrapper = player_control?.querySelector(
+    '.aubar-wrapper'
+) as HTMLElement | null;
+const player_control_aubarControls = player_control?.querySelector(
+    '.aubar-controls'
+) as HTMLElement | null;
+const player_control_playPauseBtn = player_control?.querySelector(
+    '.play-pause'
+) as HTMLElement | null;
 
 // 显示/隐藏控制按钮
 function showControls(): void {
@@ -630,8 +703,8 @@ function hideControls(): void {
 function initPlayerControls(): void {
     setTimeout(() => {
         if (!config.server_mode) return;
-    }, 3000)
-    
+    }, 3000);
+
     if (!player_control_aubarWrapper || !player_control_aubarControls) return;
 
     // 鼠标进入aubar-wrapper时显示控制按钮

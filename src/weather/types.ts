@@ -135,34 +135,34 @@ export interface WeatherTip {
 // Visual Crossing icon → 和风天气 icon映射
 export const VC_ICON_TO_QWEATHER: Record<string, { day: number; night: number }> = {
     // ===== 晴 / 多云 =====
-    "clear-day": { day: 100, night: 150 },
-    "clear-night": { day: 100, night: 150 },
+    'clear-day': { day: 100, night: 150 },
+    'clear-night': { day: 100, night: 150 },
 
-    "partly-cloudy-day": { day: 101, night: 151 },
-    "partly-cloudy-night": { day: 101, night: 151 },
+    'partly-cloudy-day': { day: 101, night: 151 },
+    'partly-cloudy-night': { day: 101, night: 151 },
 
-    "cloudy": { day: 101, night: 151 },
+    cloudy: { day: 101, night: 151 },
 
     // ===== 雨 =====
-    "rain": { day: 399, night: 399 },
-    "showers-day": { day: 300, night: 350 },
-    "showers-night": { day: 300, night: 350 },
+    rain: { day: 399, night: 399 },
+    'showers-day': { day: 300, night: 350 },
+    'showers-night': { day: 300, night: 350 },
 
     // ===== 雷雨 =====
-    "thunder-rain": { day: 302, night: 302 },
-    "thunder-showers-day": { day: 302, night: 302 },
-    "thunder-showers-night": { day: 302, night: 302 },
+    'thunder-rain': { day: 302, night: 302 },
+    'thunder-showers-day': { day: 302, night: 302 },
+    'thunder-showers-night': { day: 302, night: 302 },
 
     // ===== 雪 =====
-    "snow": { day: 499, night: 499 },
-    "snow-showers-day": { day: 407, night: 457 },
-    "snow-showers-night": { day: 407, night: 457 },
+    snow: { day: 499, night: 499 },
+    'snow-showers-day': { day: 407, night: 457 },
+    'snow-showers-night': { day: 407, night: 457 },
 
     // ===== 雾 =====
-    "fog": { day: 501, night: 501 },
+    fog: { day: 501, night: 501 },
 
     // ===== 风（无昼夜图标，兜底）=====
-    "wind": { day: 101, night: 151 }
+    wind: { day: 101, night: 151 },
 };
 
 // Open-Meteo 天气代码 → 和风天气 icon映射
@@ -193,5 +193,5 @@ export const OPEN_METEO_TO_QWEATHER: Record<number, { day: number; night: number
     86: { day: 407, night: 457 },
     95: { day: 302, night: 302 },
     96: { day: 302, night: 302 },
-    99: { day: 302, night: 302 }
+    99: { day: 302, night: 302 },
 };

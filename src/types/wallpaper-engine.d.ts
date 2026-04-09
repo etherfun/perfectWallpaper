@@ -38,14 +38,21 @@ export declare global {
         };
         wpPlugins?: {
             led?: {
-                setAllDevicesByImageData: (imageData: string, width: number, height: number) => void;
+                setAllDevicesByImageData: (
+                    imageData: string,
+                    width: number,
+                    height: number
+                ) => void;
             };
         };
         smoothedAudioArray?: number[];
         wallpaperPropertyListener: {
             applyUserProperties: (properties: Record<string, any>) => void;
             applyGeneralProperties: (properties: Record<string, any>) => void;
-            userDirectoryFilesAddedOrChanged: (propertyName: string, changedFiles: string[]) => void;
+            userDirectoryFilesAddedOrChanged: (
+                propertyName: string,
+                changedFiles: string[]
+            ) => void;
             userDirectoryFilesRemoved: (propertyName: string, removedFiles: string[]) => void;
             setPaused: (isPaused: boolean) => void;
         };
@@ -54,11 +61,21 @@ export declare global {
             PLAYBACK_PAUSED: number;
             PLAYBACK_STOPPED: number;
         };
-        wallpaperRegisterMediaStatusListener?: (listener: (event: MediaStatusEvent) => void) => void;
-        wallpaperRegisterMediaPropertiesListener?: (listener: (event: MediaPropertiesEvent) => void) => void;
-        wallpaperRegisterMediaThumbnailListener?: (listener: (event: MediaThumbnailEvent) => void) => void;
-        wallpaperRegisterMediaPlaybackListener?: (listener: (event: MediaPlaybackEvent) => void) => void;
-        wallpaperRegisterMediaTimelineListener?: (listener: (event: MediaTimelineEvent) => void) => void;
+        wallpaperRegisterMediaStatusListener?: (
+            listener: (event: MediaStatusEvent) => void
+        ) => void;
+        wallpaperRegisterMediaPropertiesListener?: (
+            listener: (event: MediaPropertiesEvent) => void
+        ) => void;
+        wallpaperRegisterMediaThumbnailListener?: (
+            listener: (event: MediaThumbnailEvent) => void
+        ) => void;
+        wallpaperRegisterMediaPlaybackListener?: (
+            listener: (event: MediaPlaybackEvent) => void
+        ) => void;
+        wallpaperRegisterMediaTimelineListener?: (
+            listener: (event: MediaTimelineEvent) => void
+        ) => void;
         wallpaperRegisterAudioListener?: (listener: (audioData: number[]) => void) => void;
     }
 }

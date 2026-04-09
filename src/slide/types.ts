@@ -2,7 +2,7 @@
  * Slide module type definitions
  */
 
-import { elements } from "../utils/elementManager";
+import { elements } from '../utils/elementManager';
 
 // DOM elements for picture info
 export const pictures = {
@@ -11,7 +11,7 @@ export const pictures = {
     title: elements.slide.title,
     author: elements.slide.author,
     where: elements.slide.location,
-    text: elements.slide.description
+    text: elements.slide.description,
 };
 
 // Background layers (DOM elements) - shared between modules
@@ -23,7 +23,7 @@ export const backgroundLayers = {
     blurLayer2: elements.background.blurLayer2,
     currentActive: 1 as 1 | 2,
     blurCurrentActive: 1 as 1 | 2,
-    isTransitioning: false
+    isTransitioning: false,
 };
 
 // Background layers interface
@@ -56,5 +56,5 @@ export const WALLPAPER_MODE = {
     NASA: 6,
     CIYUAN: 7,
     WINDOWS: 8,
-    CUSTOM: 9
+    CUSTOM: 9,
 } as const;

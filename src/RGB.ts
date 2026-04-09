@@ -35,7 +35,11 @@ function startRGBInternal(canvas: HTMLCanvasElement): void {
     if (!config.wallpaper_settings.ledPlugin) return;
     const encodedImageData = getEncodedCanvasImageData(canvas);
     if (window.wpPlugins?.led) {
-        window.wpPlugins.led.setAllDevicesByImageData(encodedImageData, canvas.width, canvas.height);
+        window.wpPlugins.led.setAllDevicesByImageData(
+            encodedImageData,
+            canvas.width,
+            canvas.height
+        );
     }
 }
 
@@ -61,7 +65,10 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
 
     function drawLayers(): void {
         const sakuraRGB = config.sakura_rgb;
-        const sakurause = (sakuraRGB && ((sakura.width === window.screen.width) && (sakura.height === window.screen.height)));
+        const sakurause =
+            sakuraRGB &&
+            sakura.width === window.screen.width &&
+            sakura.height === window.screen.height;
         const opacitySaRGB = config.opacity_sa_rgb;
         const particlesRGB = config.particles_rgb;
         const audiobarRGB = config.audiobar_rgb;
@@ -77,10 +84,14 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
 
         rgbbg.save();
         rgbbg.globalAlpha = opacitySaRGB;
-        if (sakurause) { rgbbg.drawImage(sakura, 0, 0, sakura.width, sakura.height, 0, 0, 100, 20); }
+        if (sakurause) {
+            rgbbg.drawImage(sakura, 0, 0, sakura.width, sakura.height, 0, 0, 100, 20);
+        }
 
         rgbbg.globalAlpha = 1;
-        if (particlesRGB && particles) { rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20); }
+        if (particlesRGB && particles) {
+            rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20);
+        }
 
         const audioArray = config.runtime.playerInfo.audioArray;
         if (audiobarRainbowColor) {
@@ -89,12 +100,16 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 const scaleFactor = aurgbhigh;
                 const hueStep = 360 / 128;
 
-                if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
+                if (
+                    !window.smoothedAudioArray ||
+                    window.smoothedAudioArray.length !== audioArray.length
+                ) {
                     window.smoothedAudioArray = new Array(audioArray.length).fill(0);
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
+                    window.smoothedAudioArray[i] +=
+                        (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
@@ -108,11 +123,17 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                         channelIndex += 64;
                     }
 
-                    const height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                    const height =
+                        bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
                     const actualHeight = Math.min(height, bg.height);
 
                     rgbbg.fillStyle = rgbColor;
-                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
+                    rgbbg.fillRect(
+                        barWidth * channelIndex,
+                        bg.height - actualHeight,
+                        barWidth,
+                        actualHeight
+                    );
                 }
                 if (rainbowMove) {
                     time += rainbowMoveSpeed;
@@ -124,12 +145,16 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 const scaleFactor = aurgbhigh;
                 rgbbg.fillStyle = `rgb(${aurgbcolor})`;
 
-                if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
+                if (
+                    !window.smoothedAudioArray ||
+                    window.smoothedAudioArray.length !== audioArray.length
+                ) {
                     window.smoothedAudioArray = new Array(audioArray.length).fill(0);
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] += (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
+                    window.smoothedAudioArray[i] +=
+                        (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
@@ -137,9 +162,15 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                     if (i >= 64) {
                         channelIndex += 64;
                     }
-                    const height = bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                    const height =
+                        bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
                     const actualHeight = Math.min(height, bg.height);
-                    rgbbg.fillRect(barWidth * channelIndex, bg.height - actualHeight, barWidth, actualHeight);
+                    rgbbg.fillRect(
+                        barWidth * channelIndex,
+                        bg.height - actualHeight,
+                        barWidth,
+                        actualHeight
+                    );
                 }
             }
         }
@@ -147,7 +178,13 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         rgbbg.restore();
         startRGBInternal(bg);
 
-        if (config.wallpaper_settings.ledPlugin && !nextphoto && !isPaused && RGBShow && (videoORimages || (sakurause || particlesRGB || audiobarRGB))) {
+        if (
+            config.wallpaper_settings.ledPlugin &&
+            !nextphoto &&
+            !isPaused &&
+            RGBShow &&
+            (videoORimages || sakurause || particlesRGB || audiobarRGB)
+        ) {
             if (RGBRefresh > 0) {
                 setTimeout(() => {
                     requestAnimationFrame(drawbackground);

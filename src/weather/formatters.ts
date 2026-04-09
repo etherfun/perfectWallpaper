@@ -11,7 +11,7 @@ import { weather_data } from './weatherState';
  * 获取空气质量描述文本
  */
 export function getAirQualityText(airValue: string | number): string {
-    if (!airValue || airValue === "") return "";
+    if (!airValue || airValue === '') return '';
 
     let airNum = typeof airValue === 'string' ? parseFloat(airValue) : airValue;
     if (isNaN(airNum)) {
@@ -30,7 +30,11 @@ export function getAirQualityText(airValue: string | number): string {
  * 生成天气预警HTML
  */
 export function generateAlertHTML(): string {
-    if (!weather_data.weatherAlert || !Array.isArray(weather_data.weatherAlert) || weather_data.weatherAlert.length === 0) {
+    if (
+        !weather_data.weatherAlert ||
+        !Array.isArray(weather_data.weatherAlert) ||
+        weather_data.weatherAlert.length === 0
+    ) {
         return '';
     }
 
@@ -39,13 +43,13 @@ export function generateAlertHTML(): string {
         severe: 4,
         moderate: 3,
         minor: 2,
-        unknown: 1
+        unknown: 1,
     };
 
     type AlertWithIds = WeatherAlert & { ids: string[] };
 
-    const sorted = [...weather_data.weatherAlert].sort((a, b) =>
-        severityLevel[b.level] - severityLevel[a.level]
+    const sorted = [...weather_data.weatherAlert].sort(
+        (a, b) => severityLevel[b.level] - severityLevel[a.level]
     );
 
     const alertMap: { [key: string]: AlertWithIds } = {};
@@ -64,7 +68,9 @@ export function generateAlertHTML(): string {
     const parts: string[] = [];
     Object.values(alertMap).forEach(a => {
         const idsString = a.ids.join(',');
-        parts.push(`<span class="weather-alert-item" style="color: rgb(${a.color}); font-weight: bold; margin-right: 10px;" data-id="${idsString}">${a.alert}</span>`);
+        parts.push(
+            `<span class="weather-alert-item" style="color: rgb(${a.color}); font-weight: bold; margin-right: 10px;" data-id="${idsString}">${a.alert}</span>`
+        );
     });
 
     return parts.join('');

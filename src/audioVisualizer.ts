@@ -51,7 +51,7 @@ function spatialSmooth(data: number[], windowSize: number, output: number[]): nu
         // 循环平滑：使用取模运算实现头尾相连
         for (let j = -halfWindow; j <= halfWindow; j++) {
             // 使用 ((i + j) % len + len) % len 实现正确的负数取模
-            const idx = ((i + j) % len + len) % len;
+            const idx = (((i + j) % len) + len) % len;
             sum += data[idx];
         }
 
@@ -65,7 +65,12 @@ function spatialSmooth(data: number[], windowSize: number, output: number[]): nu
  * 对数组应用时序平滑（指数移动平均）
  * 基于上一帧数据平滑过渡，避免突变
  */
-function temporalSmooth(data: number[], prevData: number[] | null, smoothFactor: number, output: number[]): number[] {
+function temporalSmooth(
+    data: number[],
+    prevData: number[] | null,
+    smoothFactor: number,
+    output: number[]
+): number[] {
     if (!prevData || prevData.length !== data.length) {
         return data;
     }
@@ -140,7 +145,7 @@ function validateAudioData(data: number[]): boolean {
 }
 
 import { createPoint, setCan, style1, style2, style3 } from './PWCircle';
-import { PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3,setCTXLine } from './PWLine';
+import { PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3, setCTXLine } from './PWLine';
 
 const circleStyles = [style1, style2, style3] as const;
 const lineStyles = [PWLineStyle1, PWLineStyle2, PWLineStyle3] as const;
@@ -153,11 +158,11 @@ let _lineCtx: CanvasRenderingContext2D | null = null;
  * 初始化 Canvas Context 缓存
  */
 function initCanvasContexts(): void {
-    const can = document.querySelector("#can") as HTMLCanvasElement | null;
-    _circleCtx = can?.getContext("2d") ?? null;
+    const can = document.querySelector('#can') as HTMLCanvasElement | null;
+    _circleCtx = can?.getContext('2d') ?? null;
 
-    const canLine = document.querySelector("#CanLine") as HTMLCanvasElement | null;
-    _lineCtx = canLine?.getContext("2d") ?? null;
+    const canLine = document.querySelector('#CanLine') as HTMLCanvasElement | null;
+    _lineCtx = canLine?.getContext('2d') ?? null;
 }
 
 /**
@@ -205,7 +210,6 @@ function renderLine(audioData: number[]): void {
  * 由 Wallpaper Engine 调用，约30fps
  */
 export function audioDataListener(audioData: number[]): void {
-
     // 验证原始数据有效性
     if (!validateAudioData(audioData)) {
         debugLogger.warn('[AudioVisual] Invalid audio data, skipping');
@@ -242,7 +246,9 @@ export function renderAudioVisualization(): void {
     // 首次调用时初始化 Canvas Context
     if (!_circleCtx) {
         initCanvasContexts();
-        debugLogger.info(`[AudioVisual] Canvas contexts initialized, circle: ${!!_circleCtx}, line: ${!!_lineCtx}`);
+        debugLogger.info(
+            `[AudioVisual] Canvas contexts initialized, circle: ${!!_circleCtx}, line: ${!!_lineCtx}`
+        );
     }
 
     clearCanvases();
@@ -259,4 +265,3 @@ export function renderAudioVisualization(): void {
             break;
     }
 }
-

@@ -7,16 +7,16 @@ import { WallpaperProperties } from './types';
  * 获取圆圈可视化canvas的2D上下文
  */
 function getCircleCtx(): CanvasRenderingContext2D | null {
-    const can = document.querySelector("#can") as HTMLCanvasElement | null;
-    return can?.getContext("2d") ?? null;
+    const can = document.querySelector('#can') as HTMLCanvasElement | null;
+    return can?.getContext('2d') ?? null;
 }
 
 /**
  * 获取直线可视化canvas的2D上下文
  */
 function getLineCtx(): CanvasRenderingContext2D | null {
-    const canLine = document.querySelector("#CanLine") as HTMLCanvasElement | null;
-    return canLine?.getContext("2d") ?? null;
+    const canLine = document.querySelector('#CanLine') as HTMLCanvasElement | null;
+    return canLine?.getContext('2d') ?? null;
 }
 
 /**
@@ -25,10 +25,7 @@ function getLineCtx(): CanvasRenderingContext2D | null {
  * @param FirstLoad 是否首次加载
  * @returns 处理结果
  */
-export function handleAudioVisualProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-) {
+export function handleAudioVisualProperties(properties: WallpaperProperties, FirstLoad: boolean) {
     const ctx = getCircleCtx();
     const CTXLine = getLineCtx();
     const param = config.runtime.param;
@@ -159,14 +156,18 @@ export function handleAudioVisualProperties(
 
     // 颜色
     if (properties.color && ctx && param) {
-        const c = properties.color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.color.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         ctx.strokeStyle = param.color = 'rgba(' + c + ',0.8)';
         config.pw_circle_color = c as [number, number, number];
     }
 
     // 模糊颜色
     if (properties.blurColor && ctx && param) {
-        const c = properties.blurColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.blurColor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         ctx.shadowColor = param.blurColor = 'rgb(' + c + ')';
         config.pw_circle_blur_color = c as [number, number, number];
     }
@@ -309,14 +310,18 @@ export function handleAudioVisualProperties(
 
     // 颜色
     if (properties.PWLineColor && CTXLine && PWLineParam) {
-        const c = properties.PWLineColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.PWLineColor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         CTXLine.strokeStyle = PWLineParam.color = 'rgba(' + c + ',0.8)';
         config.pw_line_color = c as [number, number, number];
     }
 
     // 模糊颜色
     if (properties.PWLineBlurColor && CTXLine && PWLineParam) {
-        const c = properties.PWLineBlurColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.PWLineBlurColor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         CTXLine.shadowColor = PWLineParam.blurColor = 'rgb(' + c + ')';
         config.pw_line_blur_color = c as [number, number, number];
     }
@@ -444,14 +449,18 @@ export function handleAudioVisualProperties(
 
     // 颜色
     if (properties.audio_color) {
-        const c = properties.audio_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.audio_color.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.audio_color = c as [number, number, number];
         wallpaper?.audiovisualizer('set', 'color', c);
     }
 
     // 模糊颜色
     if (properties.audio_shadowColor) {
-        const c = properties.audio_shadowColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const c = properties.audio_shadowColor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.audio_shadow_color = c as [number, number, number];
         wallpaper?.audiovisualizer('set', 'shadowColor', c);
     }

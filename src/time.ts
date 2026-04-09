@@ -16,11 +16,16 @@ var tStyle = true;
 var clockHue = 0;
 var clockTag = 1;
 
-
 // 时钟彩色律动
 function updateClockColor(): void {
-    if (clockHue > 255) { clockTag *= -1; clockHue = 255; }
-    if (clockHue < 0) { clockTag *= -1; clockHue = 0; }
+    if (clockHue > 255) {
+        clockTag *= -1;
+        clockHue = 255;
+    }
+    if (clockHue < 0) {
+        clockTag *= -1;
+        clockHue = 0;
+    }
     const clockColor = 'hsl(' + clockHue + ',90%,50%)';
     clockHue += clockTag / 1;
 
@@ -52,7 +57,7 @@ export function stopTimeColorRhythmLoop(): void {
         cancelAnimationFrame(clockAnimationFrameId);
         clockAnimationFrameId = null;
         if (oClock) {
-            oClock.style.color = "";
+            oClock.style.color = '';
         }
     }
 }
@@ -75,21 +80,24 @@ export function getTime_sec() {
     if (tStyle == false) {
         //h = t.getHours()
         if (oClock_webtext_min) {
-            oClock_webtext_min.innerHTML = add0(t.getHours() >= 12 ? t.getHours() - 12 : t.getHours()) + " : " + add0(t.getMinutes());
+            oClock_webtext_min.innerHTML =
+                add0(t.getHours() >= 12 ? t.getHours() - 12 : t.getHours()) +
+                ' : ' +
+                add0(t.getMinutes());
         }
         if (oClock_webtext_st) {
-            oClock_webtext_st.style.display = "flex";
+            oClock_webtext_st.style.display = 'flex';
         }
-        var str = t.getHours() <= 12 ? "AM" : "PM";
+        var str = t.getHours() <= 12 ? 'AM' : 'PM';
         if (oClock_webtext_st) {
             oClock_webtext_st.innerHTML = str;
         }
     } else {
         if (oClock_webtext_min) {
-            oClock_webtext_min.innerHTML = add0(t.getHours()) + " : " + add0(t.getMinutes());
+            oClock_webtext_min.innerHTML = add0(t.getHours()) + ' : ' + add0(t.getMinutes());
         }
         if (oClock_webtext_st) {
-            oClock_webtext_st.style.display = "none";
+            oClock_webtext_st.style.display = 'none';
         }
     }
 

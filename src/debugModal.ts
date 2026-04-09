@@ -44,12 +44,18 @@ function formatTime(date: Date): string {
  */
 function getLevelColor(level: number): { bg: string; text: string; label: string } {
     switch (level) {
-        case 0: return { bg: '#3c3c3c', text: '#9e9e9e', label: 'DEBUG' };
-        case 1: return { bg: '#0a45a5', text: '#64b5f6', label: 'INFO' };
-        case 2: return { bg: '#8a5a00', text: '#ffb74d', label: 'WARN' };
-        case 3: return { bg: '#a50000', text: '#ef5350', label: 'ERROR' };
-        case 4: return { bg: '#6a0080', text: '#ce93d8', label: 'CRITICAL' };
-        default: return { bg: '#333', text: '#fff', label: 'LOG' };
+        case 0:
+            return { bg: '#3c3c3c', text: '#9e9e9e', label: 'DEBUG' };
+        case 1:
+            return { bg: '#0a45a5', text: '#64b5f6', label: 'INFO' };
+        case 2:
+            return { bg: '#8a5a00', text: '#ffb74d', label: 'WARN' };
+        case 3:
+            return { bg: '#a50000', text: '#ef5350', label: 'ERROR' };
+        case 4:
+            return { bg: '#6a0080', text: '#ce93d8', label: 'CRITICAL' };
+        default:
+            return { bg: '#333', text: '#fff', label: 'LOG' };
     }
 }
 
@@ -144,16 +150,19 @@ function renderLogs(logs: any[]): void {
 
     const activeFilter = document.querySelector('.debug-filter-btn.active') as HTMLElement;
     const filterLevel = activeFilter ? parseInt(activeFilter.dataset.level || '-1') : -1;
-    const searchText = (document.getElementById('debug-search-input') as HTMLInputElement)?.value.toLowerCase() || '';
+    const searchText =
+        (document.getElementById('debug-search-input') as HTMLInputElement)?.value.toLowerCase() ||
+        '';
 
     let filteredLogs = logs;
     if (filterLevel >= 0) {
         filteredLogs = filteredLogs.filter(log => log.level === filterLevel);
     }
     if (searchText) {
-        filteredLogs = filteredLogs.filter(log =>
-            log.message.toLowerCase().includes(searchText) ||
-            (log.extraData && JSON.stringify(log.extraData).toLowerCase().includes(searchText))
+        filteredLogs = filteredLogs.filter(
+            log =>
+                log.message.toLowerCase().includes(searchText) ||
+                (log.extraData && JSON.stringify(log.extraData).toLowerCase().includes(searchText))
         );
     }
 
@@ -162,7 +171,9 @@ function renderLogs(logs: any[]): void {
     if (searchCount) {
         searchCount.textContent = searchText ? `${filteredLogs.length}/${logs.length}` : '';
     }
-    statusInfo.textContent = searchText ? `找到 ${filteredLogs.length} 条匹配` : `共 ${logs.length} 条`;
+    statusInfo.textContent = searchText
+        ? `找到 ${filteredLogs.length} 条匹配`
+        : `共 ${logs.length} 条`;
 
     if (filteredLogs.length === 0) {
         emptyState.style.display = 'flex';
@@ -173,12 +184,13 @@ function renderLogs(logs: any[]): void {
 
     emptyState.style.display = 'none';
 
-    logList.innerHTML = filteredLogs.map((log, idx) => {
-        const colors = getLevelColor(log.level);
-        const hasExtra = log.extraData && Object.keys(log.extraData).length > 0;
-        const extraStr = hasExtra ? JSON.stringify(log.extraData, null, 2) : '';
+    logList.innerHTML = filteredLogs
+        .map((log, idx) => {
+            const colors = getLevelColor(log.level);
+            const hasExtra = log.extraData && Object.keys(log.extraData).length > 0;
+            const extraStr = hasExtra ? JSON.stringify(log.extraData, null, 2) : '';
 
-        return `
+            return `
         <div class="debug-log-entry ${log.level >= 3 ? 'debug-log-error' : ''}" data-id="${log.id}">
             <div class="debug-log-row" onclick="toggleLogDetails(${log.id})">
                 <span class="debug-log-line">${idx + 1}</span>
@@ -187,14 +199,19 @@ function renderLogs(logs: any[]): void {
                 <span class="debug-log-message">${escapeHtml(log.message)}</span>
                 <span class="debug-log-expand">${hasExtra ? (isLogExpanded(log.id) ? '▼' : '▶') : ''}</span>
             </div>
-            ${hasExtra ? `
+            ${
+                hasExtra
+                    ? `
             <div class="debug-log-details" id="debug-details-${log.id}" style="display:${isLogExpanded(log.id) ? 'block' : 'none'}">
                 <pre class="debug-log-extra">${escapeHtml(extraStr)}</pre>
             </div>
-            ` : ''}
+            `
+                    : ''
+            }
         </div>
         `;
-    }).join('');
+        })
+        .join('');
 
     const body = document.getElementById('debug-console-body');
     const autoScroll = document.getElementById('debug-auto-scroll') as HTMLInputElement;
@@ -238,22 +255,29 @@ function bindConsoleEvents(): void {
 
     document.getElementById('debug-btn-copy')?.addEventListener('click', () => {
         const logs: any[] = debugLogger?.logs || [];
-        const text = logs.map(log =>
-            `[${log.timeString}] [${log.levelName}] ${log.message}` +
-            (log.extraData ? `\n${JSON.stringify(log.extraData, null, 2)}` : '')
-        ).join('\n\n');
+        const text = logs
+            .map(
+                log =>
+                    `[${log.timeString}] [${log.levelName}] ${log.message}` +
+                    (log.extraData ? `\n${JSON.stringify(log.extraData, null, 2)}` : '')
+            )
+            .join('\n\n');
         clipboardCopy(text);
 
         const statusInfo = document.getElementById('debug-status-info');
         if (statusInfo) {
             statusInfo.textContent = '已复制到剪贴板';
-            setTimeout(() => { statusInfo.textContent = '就绪'; }, 2000);
+            setTimeout(() => {
+                statusInfo.textContent = '就绪';
+            }, 2000);
         }
     });
 
     document.querySelectorAll('.debug-filter-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            document.querySelectorAll('.debug-filter-btn').forEach(b => b.classList.remove('active'));
+            document
+                .querySelectorAll('.debug-filter-btn')
+                .forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             const logs: any[] = debugLogger?.logs || [];
             renderLogs(logs);
@@ -266,7 +290,9 @@ function bindConsoleEvents(): void {
         renderLogs(logs);
     });
 
-    document.querySelector('.debug-console-overlay')?.addEventListener('click', e => e.stopPropagation());
+    document
+        .querySelector('.debug-console-overlay')
+        ?.addEventListener('click', e => e.stopPropagation());
 }
 
 /**

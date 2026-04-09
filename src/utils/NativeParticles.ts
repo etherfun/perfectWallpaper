@@ -15,7 +15,16 @@
  * Refactored to TypeScript and modified by etherfun
  */
 
-type Direction = 'none' | 'top' | 'top-right' | 'right' | 'bottom-right' | 'bottom' | 'bottom-left' | 'left' | 'top-left';
+type Direction =
+    | 'none'
+    | 'top'
+    | 'top-right'
+    | 'right'
+    | 'bottom-right'
+    | 'bottom'
+    | 'bottom-left'
+    | 'left'
+    | 'top-left';
 type MoveOutMode = 'out' | 'bounce';
 type ShapeType = 'circle' | 'edge' | 'triangle' | 'star' | 'image';
 
@@ -78,7 +87,7 @@ const DEFAULTS: ParticlesOptions = {
     direction: 'bottom',
     isStraight: false,
     isBounce: false,
-    moveOutMode: 'out'
+    moveOutMode: 'out',
 };
 
 export class NativeParticles {
@@ -143,11 +152,15 @@ export class NativeParticles {
             top: '0',
             left: '0',
             'z-index': '1',
-            opacity: String(this.opacity)
+            opacity: String(this.opacity),
         });
 
-        this.canvasWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        this.canvasHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.canvasWidth =
+            window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        this.canvasHeight =
+            window.innerHeight ||
+            document.documentElement.clientHeight ||
+            document.body.clientHeight;
         this.canvas.width = this.canvasWidth;
         this.canvas.height = this.canvasHeight;
 
@@ -172,8 +185,14 @@ export class NativeParticles {
 
     private setupPointerEvents(): void {
         this.resizeHandler = () => {
-            this.canvasWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-            this.canvasHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            this.canvasWidth =
+                window.innerWidth ||
+                document.documentElement.clientWidth ||
+                document.body.clientWidth;
+            this.canvasHeight =
+                window.innerHeight ||
+                document.documentElement.clientHeight ||
+                document.body.clientHeight;
         };
         window.addEventListener('resize', this.resizeHandler);
     }
@@ -211,16 +230,26 @@ export class NativeParticles {
 
     private directionVector(direction: Direction): { x: number; y: number } {
         switch (direction) {
-            case 'none': return { x: 0, y: 0 };
-            case 'top': return { x: 0, y: -1 };
-            case 'top-right': return { x: 0.5, y: -0.5 };
-            case 'right': return { x: 1, y: 0 };
-            case 'bottom-right': return { x: 0.5, y: 0.5 };
-            case 'bottom': return { x: 0, y: 1 };
-            case 'bottom-left': return { x: -0.5, y: 1 };
-            case 'left': return { x: -1, y: 0 };
-            case 'top-left': return { x: -0.5, y: -0.5 };
-            default: return { x: 0, y: 0 };
+            case 'none':
+                return { x: 0, y: 0 };
+            case 'top':
+                return { x: 0, y: -1 };
+            case 'top-right':
+                return { x: 0.5, y: -0.5 };
+            case 'right':
+                return { x: 1, y: 0 };
+            case 'bottom-right':
+                return { x: 0.5, y: 0.5 };
+            case 'bottom':
+                return { x: 0, y: 1 };
+            case 'bottom-left':
+                return { x: -0.5, y: 1 };
+            case 'left':
+                return { x: -1, y: 0 };
+            case 'top-left':
+                return { x: -0.5, y: -0.5 };
+            default:
+                return { x: 0, y: 0 };
         }
     }
 
@@ -267,14 +296,14 @@ export class NativeParticles {
                 x_left: particles.radius,
                 x_right: this.canvasWidth,
                 y_top: particles.radius,
-                y_bottom: this.canvasHeight
+                y_bottom: this.canvasHeight,
             };
         } else {
             newPos = {
                 x_left: -particles.radius,
                 x_right: this.canvasWidth + particles.radius,
                 y_top: -particles.radius,
-                y_bottom: this.canvasHeight + particles.radius
+                y_bottom: this.canvasHeight + particles.radius,
             };
         }
 
@@ -315,10 +344,11 @@ export class NativeParticles {
                 shadowBlur: this.shadowBlur,
                 shapeType: this.shapeType,
                 radius: this.sizeValue,
-                x, y,
+                x,
+                y,
                 speed: 0,
                 vx: 0,
-                vy: 0
+                vy: 0,
             });
         }
 
@@ -346,10 +376,11 @@ export class NativeParticles {
                     shadowBlur: this.shadowBlur,
                     shapeType: this.shapeType,
                     radius: this.sizeValue,
-                    x, y,
+                    x,
+                    y,
                     speed: 0,
                     vx: 0,
-                    vy: 0
+                    vy: 0,
                 });
             }
             for (let i = 0; i < this.particlesArray.length; i++) {
@@ -394,11 +425,18 @@ export class NativeParticles {
         }
     }
 
-    private drawShape(ctx: CanvasRenderingContext2D, startX: number, startY: number, sideLength: number, sideCountNumerator: number, sideCountDenominator: number): void {
+    private drawShape(
+        ctx: CanvasRenderingContext2D,
+        startX: number,
+        startY: number,
+        sideLength: number,
+        sideCountNumerator: number,
+        sideCountDenominator: number
+    ): void {
         const sideCount = sideCountNumerator * sideCountDenominator;
         const decimalSides = sideCountNumerator / sideCountDenominator;
         const interiorAngleDegrees = (180 * (decimalSides - 2)) / decimalSides;
-        const interiorAngle = Math.PI - Math.PI * interiorAngleDegrees / 180;
+        const interiorAngle = Math.PI - (Math.PI * interiorAngleDegrees) / 180;
         ctx.translate(startX, startY);
         ctx.moveTo(0, 0);
         for (let i = 0; i < sideCount; i++) {
@@ -421,33 +459,54 @@ export class NativeParticles {
                 this.context.arc(particles.x, particles.y, particles.radius, 0, Math.PI * 2, false);
                 break;
             case 'edge':
-                this.context.rect(particles.x - particles.radius, particles.y - particles.radius, particles.radius * 2, particles.radius * 2);
+                this.context.rect(
+                    particles.x - particles.radius,
+                    particles.y - particles.radius,
+                    particles.radius * 2,
+                    particles.radius * 2
+                );
                 break;
             case 'triangle':
-                this.drawShape(this.context, particles.x - particles.radius, particles.y + particles.radius / 1.66, particles.radius * 2, 3, 2);
+                this.drawShape(
+                    this.context,
+                    particles.x - particles.radius,
+                    particles.y + particles.radius / 1.66,
+                    particles.radius * 2,
+                    3,
+                    2
+                );
                 break;
             case 'star':
                 this.drawShape(
                     this.context,
-                    particles.x - particles.radius * 2 / (5 / 4),
-                    particles.y - particles.radius / (2 * 2.66 / 3.5),
-                    particles.radius * 2 * 2.66 / (5 / 3),
+                    particles.x - (particles.radius * 2) / (5 / 4),
+                    particles.y - particles.radius / ((2 * 2.66) / 3.5),
+                    (particles.radius * 2 * 2.66) / (5 / 3),
                     5,
                     2
                 );
                 break;
             case 'image':
-                if (this.currantCanvas.width > particles.radius * 10 || this.currantCanvas.height > particles.radius * 10) {
+                if (
+                    this.currantCanvas.width > particles.radius * 10 ||
+                    this.currantCanvas.height > particles.radius * 10
+                ) {
                     let scaling: number;
                     let width: number, height: number;
                     if (this.currantCanvas.width > this.currantCanvas.height) {
-                        scaling = particles.radius * 10 / this.currantCanvas.width;
+                        scaling = (particles.radius * 10) / this.currantCanvas.width;
                     } else {
-                        scaling = particles.radius * 10 / this.currantCanvas.height;
+                        scaling = (particles.radius * 10) / this.currantCanvas.height;
                     }
                     width = this.currantCanvas.width * scaling;
                     height = this.currantCanvas.height * scaling;
-                    this.context.drawImage(this.currantCanvas, particles.x, particles.y, width, height);
+                    this.context.drawImage(
+                        this.currantCanvas,
+                        particles.x,
+                        particles.y,
+                        width,
+                        height
+                    );
                 }
                 break;
         }
@@ -526,7 +585,13 @@ export class NativeParticles {
                 }
                 this.currantCanvas.width = this.img.width * scaling;
                 this.currantCanvas.height = this.img.height * scaling;
-                this.currantContext.drawImage(this.img, 0, 0, this.currantCanvas.width, this.currantCanvas.height);
+                this.currantContext.drawImage(
+                    this.img,
+                    0,
+                    0,
+                    this.currantCanvas.width,
+                    this.currantCanvas.height
+                );
             } else {
                 this.currantCanvas.width = this.img.width;
                 this.currantCanvas.height = this.img.height;

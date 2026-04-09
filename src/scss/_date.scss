@@ -4,18 +4,18 @@
 @use 'config' as *;
 
 #oDate {
-  white-space: nowrap;
-  visibility: var(--date-visibility);
-  display: var(--date-display);
-  @include component-position('date');
-  color: rgb(var(--date-color));
-  font-size: var(--date-font-size);
-  line-height: var(--date-line-height);
-  opacity: var(--date-opacity);
+    white-space: nowrap;
+    visibility: var(--date-visibility);
+    display: var(--date-display);
+    @include component-position('date');
+    color: rgb(var(--date-color));
+    font-size: var(--date-font-size);
+    line-height: var(--date-line-height);
+    opacity: var(--date-opacity);
 
-  .text {
-    font-size: 0.5em;
-    @include yakeli-effect('date');
-    width: var(--date-show-width);
-  }
+    .text {
+        font-size: 0.5em;
+        @include yakeli-effect('date');
+        width: var(--date-show-width);
+    }
 }

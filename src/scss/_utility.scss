@@ -5,38 +5,38 @@
 
 // Display states
 .hidden {
-  display: none !important;
+    display: none !important;
 }
 
 .flex {
-  display: flex !important;
+    display: flex !important;
 }
 
 .block {
-  display: block !important;
+    display: block !important;
 }
 
 .flex-center {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
 }
 
 // Visibility
 .invisible {
-  visibility: hidden;
+    visibility: hidden;
 }
 
 .visible {
-  visibility: visible;
+    visibility: visible;
 }
 
 // Direction
 .rtl {
-  flex-direction: row-reverse !important;
+    flex-direction: row-reverse !important;
 }
 
 // Position
 .show-away {
-  transform: translate(-100%, 0) !important;
+    transform: translate(-100%, 0) !important;
 }

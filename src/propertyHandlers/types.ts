@@ -158,7 +158,7 @@ export interface WallpaperProperties {
     wallpaper_updata_open_on_update?: { value: boolean };
     debugger_copy?: { value: boolean };
     fontSetting?: { value: string };
-    
+
     // 日期相关
     showDate?: { value: boolean };
     odate_roundedcorners?: { value: number };
@@ -182,7 +182,7 @@ export interface WallpaperProperties {
     date_dayFormat?: { value: number };
     date_weekFormat?: { value: number };
     datetransparency?: { value: number };
-    
+
     // 时间相关
     showTime?: { value: boolean };
     tShowSencends?: { value: boolean };
@@ -203,7 +203,7 @@ export interface WallpaperProperties {
     oclock_yakelicolor?: { value: string };
     oclock_yakeli?: { value: number };
     oclock_bluryakeli?: { value: number };
-    
+
     // 樱花相关
     showSakura?: { value: boolean };
     sakuratransparency?: { value: number };
@@ -212,12 +212,12 @@ export interface WallpaperProperties {
     sakurareverse?: { value: boolean };
     sakurapointnumber?: { value: number };
     sakurabacklight?: { value: number };
-    
+
     // 音频可视化相关
     visual_audio_model?: { value: number };
     PWCircle_show_bool?: { value: boolean };
     PWLine_show_bool?: { value: boolean };
-    
+
     // 播放器控制
     player_control_autohide?: { value: boolean };
     player_control_show?: { value: boolean };
@@ -248,7 +248,7 @@ export interface WallpaperProperties {
     player_control_hdong?: { value: number };
     playerx?: { value: number };
     playery?: { value: number };
-    
+
     // 天气相关
     weather_api_choose?: { value: number };
     citynumber?: { value: string };
@@ -265,7 +265,7 @@ export interface WallpaperProperties {
     getcityappid_tianqiapi?: { value: string };
     getcityappsecret_tianqiapi?: { value: string };
     getcitykey_visualcrossing?: { value: string };
-    
+
     // 一言相关
     hitokoto_updata?: { value: number };
     hitokoto_auth?: { value: boolean };
@@ -288,7 +288,7 @@ export interface WallpaperProperties {
     hitokoto_showwidth?: { value: number };
     hitokotoX?: { value: number };
     hitokotoY?: { value: number };
-    
+
     // 一言颜色相关
     hitokoto_color?: { value: string };
     hitokoto_blurcolor_show?: { value: boolean };
@@ -298,7 +298,7 @@ export interface WallpaperProperties {
     hitokoto_yakelicolor?: { value: string };
     hitokoto_bluryakeli?: { value: number };
     hitokoto_sizeX_show?: { value: boolean };
-    
+
     // 天气显示相关
     weather_show?: { value: boolean };
     weather_daliy_tip?: { value: boolean };
@@ -324,7 +324,7 @@ export interface WallpaperProperties {
     weather_showwidth?: { value: number };
     weatherX?: { value: number };
     weatherY?: { value: number };
-    
+
     // 壁纸/背景相关
     image?: { value: any };
     galaxyapi?: { value: number };
@@ -349,7 +349,7 @@ export interface WallpaperProperties {
     MuiscVolume?: { value: number };
     musicPlaylistRandom?: { value: boolean };
     musicPlaylistRepeat?: { value: number };
-    
+
     // 图片信息相关
     picturesinfoY?: { value: number };
     picturesinfoX?: { value: number };
@@ -369,7 +369,7 @@ export interface WallpaperProperties {
     picturesinfo_showwidth?: { value: number };
     picturesinfo_description?: { value: boolean };
     pictures_URL?: { value: string };
-    
+
     // 倒计时相关
     countdownY?: { value: number };
     countdownX?: { value: number };

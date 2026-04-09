@@ -23,7 +23,9 @@ const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/files/player`;
  * 控制外部播放器 (发送媒体按键)
  * 播放器无关，适用于任何支持系统媒体键的播放器
  */
-async function controlExternalPlayer(action: 'play-pause' | 'next' | 'prev' | 'stop'): Promise<void> {
+async function controlExternalPlayer(
+    action: 'play-pause' | 'next' | 'prev' | 'stop'
+): Promise<void> {
     try {
         await fetch(`${EXTERNAL_PLAYER_API}/${action}`, { method: 'POST' });
     } catch (error) {
@@ -167,7 +169,7 @@ function playNextTrack(): void {
         index = (index + 1) % playlist.length;
         if (index === 0 && repeat === 0) {
             // 非循环模式播放完毕，停止
-            myAudio.src = "";
+            myAudio.src = '';
             return;
         }
     }
@@ -231,7 +233,7 @@ function handleAudioEnded(): void {
 
     // 非循环模式且是最后一首
     if (repeat === 0 && index >= playlist.length - 1) {
-        myAudio.src = "";
+        myAudio.src = '';
         return;
     }
 
@@ -251,11 +253,11 @@ function bindAudioEndedListener(): void {
  * 切换视频模式
  */
 export function ChangeVideoModel(): void {
-    if (config.cusvideo_route != "") {
+    if (config.cusvideo_route != '') {
         myvideo.src = config.cusvideo_route;
         myvideo.play();
     } else {
-        myvideo.src = "";
+        myvideo.src = '';
     }
 }
 
@@ -265,11 +267,11 @@ export function ChangeVideoModel(): void {
 export function ChangeAudioModel(): void {
     bindAudioEndedListener();
 
-    if (config.cusaudio_route != "") {
+    if (config.cusaudio_route != '') {
         myAudio.src = config.cusaudio_route;
         myAudio.play();
     } else {
-        myAudio.src = "";
+        myAudio.src = '';
     }
 }
 

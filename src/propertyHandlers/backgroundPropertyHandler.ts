@@ -1,11 +1,6 @@
 import { elements } from '@/utils/elementManager';
 
-import {
-    applyBackgroundStyle,
-    changeBackground,
-    shouldShow,
-    TransitionSwith
-} from '../slide';
+import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '../slide';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
@@ -21,7 +16,6 @@ export function handleBackgroundProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
-
     // 自定义壁纸
     if (properties.image) {
         config.custom = properties.image.value;
@@ -38,22 +32,22 @@ export function handleBackgroundProperties(
     // 次元api
     if (properties.chiyuanapi) {
         const s = properties.chiyuanapi.value;
-        let apiUrl = "https://t.alcy.cc/ycy/?json";
+        let apiUrl = 'https://t.alcy.cc/ycy/?json';
         switch (s) {
             case 1:
-                apiUrl = "https://t.alcy.cc/ycy/?json";
+                apiUrl = 'https://t.alcy.cc/ycy/?json';
                 break;
             case 2:
-                apiUrl = "https://t.alcy.cc/moez/?json";
+                apiUrl = 'https://t.alcy.cc/moez/?json';
                 break;
             case 3:
-                apiUrl = "https://t.alcy.cc/ai/?json";
+                apiUrl = 'https://t.alcy.cc/ai/?json';
                 break;
             case 4:
-                apiUrl = "https://t.alcy.cc/ysz/?json";
+                apiUrl = 'https://t.alcy.cc/ysz/?json';
                 break;
             case 5:
-                apiUrl = "https://t.alcy.cc/fj/?json";
+                apiUrl = 'https://t.alcy.cc/fj/?json';
                 break;
         }
         config.chiyuanapi = apiUrl;
@@ -119,7 +113,7 @@ export function handleBackgroundProperties(
         if (properties.selectvideo.value) {
             config.cusvideo_route = 'file:///' + properties.selectvideo.value;
         } else {
-            config.cusvideo_route = "";
+            config.cusvideo_route = '';
         }
         if (config.wallpaper_mode == 3) {
             ChangeVideoModel();
@@ -138,7 +132,7 @@ export function handleBackgroundProperties(
         if (properties.selectmusic.value) {
             config.cusaudio_route = 'file:///' + properties.selectmusic.value;
         } else {
-            config.cusaudio_route = "";
+            config.cusaudio_route = '';
         }
         ChangeAudioModel();
     }
@@ -182,18 +176,18 @@ export function handleBackgroundProperties(
     // 自由变换
     if (properties.bgy) {
         const y = properties.bgy.value;
-        config.bgy = ((y - 50) * 2) + "%";
+        config.bgy = (y - 50) * 2 + '%';
         applyBackgroundStyle();
     }
 
     if (properties.bgx) {
         const x = properties.bgx.value;
-        config.bgx = ((x - 50) * 2) + "%";
+        config.bgx = (x - 50) * 2 + '%';
         applyBackgroundStyle();
     }
 
     if (properties.bgs) {
-        config.bgs = properties.bgs.value + "%";
+        config.bgs = properties.bgs.value + '%';
         applyBackgroundStyle();
     }
 
@@ -207,79 +201,91 @@ export function handleBackgroundProperties(
     if (properties.picturesinfoY) {
         const y = properties.picturesinfoY.value;
         config.pictures_info_y = y;
-        elements.body.style.setProperty("--picture-info-top", `${y}%`);
+        elements.body.style.setProperty('--picture-info-top', `${y}%`);
     }
 
     // 图片信息X轴位置
     if (properties.picturesinfoX) {
         const x = properties.picturesinfoX.value;
         config.pictures_info_x = x;
-        elements.body.style.setProperty("--picture-info-left", `${x}%`);
+        elements.body.style.setProperty('--picture-info-left', `${x}%`);
     }
 
     // 图片信息字体大小
     if (properties.picturesinfo_size) {
         const s = properties.picturesinfo_size.value;
         config.pictures_info_size = s;
-        elements.body.style.setProperty("--picture-info-font-size", Math.floor(window.innerHeight / 600 * s) + 'px');
-        elements.body.style.setProperty("--picture-info-line-height", Math.floor(window.innerHeight / 1140 * s) + 'px');
+        elements.body.style.setProperty(
+            '--picture-info-font-size',
+            Math.floor((window.innerHeight / 600) * s) + 'px'
+        );
+        elements.body.style.setProperty(
+            '--picture-info-line-height',
+            Math.floor((window.innerHeight / 1140) * s) + 'px'
+        );
     }
 
     // 图片信息显示开关
     if (properties.picturesinfo_show) {
         const show = properties.picturesinfo_show.value;
         config.pictures_info_show = show;
-        elements.body.style.setProperty("--picture-info-display", show ? 'flex' : 'none');
-        elements.body.style.setProperty("--picture-info-visibility", show ? 'visible' : 'hidden');
+        elements.body.style.setProperty('--picture-info-display', show ? 'flex' : 'none');
+        elements.body.style.setProperty('--picture-info-visibility', show ? 'visible' : 'hidden');
     }
 
     // 图片信息文字颜色
     if (properties.picturesinfo_color) {
-        const color = properties.picturesinfo_color.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
+        const color = properties.picturesinfo_color.value
+            .split(' ')
+            .map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
         config.pictures_info_color = color;
-        elements.body.style.setProperty("--picture-info-color", color.join(', '));
+        elements.body.style.setProperty('--picture-info-color', color.join(', '));
     }
 
     // 图片信息模糊背景开关
     if (properties.picturesinfo_blurcolor_show) {
         const show = properties.picturesinfo_blurcolor_show.value;
         config.pictures_info_blurcolor_show = show;
-        elements.body.style.setProperty("--picture-info-blur-enabled", show ? '1' : '0');
+        elements.body.style.setProperty('--picture-info-blur-enabled', show ? '1' : '0');
     }
 
     // 图片信息模糊背景颜色
     if (properties.picturesinfo_blurcolor) {
-        const color = properties.picturesinfo_blurcolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
+        const color = properties.picturesinfo_blurcolor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
         config.pictures_info_blurcolor = color;
-        elements.body.style.setProperty("--picture-info-blur-color", color.join(', '));
+        elements.body.style.setProperty('--picture-info-blur-color', color.join(', '));
     }
 
     // 图片信息亚克力效果开关
     if (properties.picturesinfo_yakeli_show) {
         const show = properties.picturesinfo_yakeli_show.value;
         config.pictures_info_yakeli_show = show;
-        elements.body.style.setProperty("--picture-info-yakeli-enabled", show ? '1' : '0');
+        elements.body.style.setProperty('--picture-info-yakeli-enabled', show ? '1' : '0');
     }
 
     // 图片信息亚克力效果颜色
     if (properties.picturesinfo_yakelicolor) {
-        const color = properties.picturesinfo_yakelicolor.value.split(' ').map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
+        const color = properties.picturesinfo_yakelicolor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
         config.pictures_info_yakelic_color = color;
-        elements.body.style.setProperty("--picture-info-yakeli-color", color.join(', '));
+        elements.body.style.setProperty('--picture-info-yakeli-color', color.join(', '));
     }
 
     // 图片信息亚克力效果强度
     if (properties.picturesinfo_yakeli) {
         const yakeli = properties.picturesinfo_yakeli.value / 100;
         config.pictures_info_yakeli = yakeli;
-        elements.body.style.setProperty("--picture-info-yakeli", String(yakeli));
+        elements.body.style.setProperty('--picture-info-yakeli', String(yakeli));
     }
 
     // 图片信息模糊亚克力效果
     if (properties.picturesinfo_bluryakeli) {
         const blur = properties.picturesinfo_bluryakeli.value;
         config.pictures_info_bluryakeli = blur;
-        elements.body.style.setProperty("--picture-info-blur-yakeli", `${blur}px`);
+        elements.body.style.setProperty('--picture-info-blur-yakeli', `${blur}px`);
         config.frist_picturesinfo = false;
     }
 
@@ -287,22 +293,19 @@ export function handleBackgroundProperties(
     if (properties.picturesinfo_timetransparency) {
         config.pictures_info_timetransparency = properties.picturesinfo_timetransparency.value;
         const t = properties.picturesinfo_timetransparency.value / 100;
-        elements.body.style.setProperty("--picture-info-opacity", String(t));
+        elements.body.style.setProperty('--picture-info-opacity', String(t));
     }
 
     // 图片信息圆角
     if (properties.picturesinfo_roundedcorners) {
         const roundedcorners = properties.picturesinfo_roundedcorners.value;
         config.pictures_info_roundedcorners = roundedcorners;
-        elements.body.style.setProperty(
-            "--picture-info-roundedcorners",
-            String(roundedcorners)
-        );
+        elements.body.style.setProperty('--picture-info-roundedcorners', String(roundedcorners));
 
         const updateHeight = () => {
             const height = elements.slide.picture_info?.getBoundingClientRect().height;
             if (!height) return;
-            elements.body.style.setProperty("--picture-info-height", height + "px");
+            elements.body.style.setProperty('--picture-info-height', height + 'px');
         };
 
         updateHeight();
@@ -314,14 +317,17 @@ export function handleBackgroundProperties(
     if (properties.picturesinfo_showaway) {
         const showaway = properties.picturesinfo_showaway.value;
         config.pictures_info_showaway = showaway;
-        elements.body.style.setProperty("--picture-info-transform", showaway ? 'translate(-100%, 0)' : 'translate(0, 0)');
+        elements.body.style.setProperty(
+            '--picture-info-transform',
+            showaway ? 'translate(-100%, 0)' : 'translate(0, 0)'
+        );
     }
 
     // 图片信息文字对齐方向
     if (properties.picturesinfo_showRorL) {
         const rorL = properties.picturesinfo_showRorL.value;
         config.pictures_info_show_ror_l = rorL;
-        elements.body.style.setProperty("--picture-info-text-align", rorL ? "right" : "left");
+        elements.body.style.setProperty('--picture-info-text-align', rorL ? 'right' : 'left');
     }
 
     // 图片信息显示宽度
@@ -329,10 +335,13 @@ export function handleBackgroundProperties(
         const width = properties.picturesinfo_showwidth.value;
         config.pictures_info_showwidth = width;
         if (width === 0) {
-            elements.body.style.setProperty("--picture-info-show-width", 'auto');
+            elements.body.style.setProperty('--picture-info-show-width', 'auto');
         } else {
             const s = width / 100;
-            elements.body.style.setProperty("--picture-info-show-width", window.innerWidth * s + "px");
+            elements.body.style.setProperty(
+                '--picture-info-show-width',
+                window.innerWidth * s + 'px'
+            );
         }
     }
 
@@ -340,7 +349,10 @@ export function handleBackgroundProperties(
     if (properties.picturesinfo_description) {
         const desc = properties.picturesinfo_description.value;
         config.pictures_info_description = desc;
-        elements.body.style.setProperty("--picture-info-description-display", desc ? "block" : "none");
+        elements.body.style.setProperty(
+            '--picture-info-description-display',
+            desc ? 'block' : 'none'
+        );
     }
 
     if (FirstLoad) {

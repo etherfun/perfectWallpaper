@@ -5,478 +5,488 @@
 @use 'config' as *;
 
 #dockbar {
-  position: absolute;
-  z-index: $z-component;
-  left: 50%;
-  bottom: 20px;
-  transform: translateX(-50%);
+    position: absolute;
+    z-index: $z-component;
+    left: 50%;
+    bottom: 20px;
+    transform: translateX(-50%);
 
-  .dockbar-background {
-    display: flex;
-    align-items: center;
-    gap: var(--dockbar-spacing, 12px);
-    padding: 8px 16px;
-    background: rgba(var(--dockbar-yakeli-color, 255, 255, 255), calc(var(--dockbar-yakeli, 0.5) * var(--dockbar-yakeli-enabled, 0)));
-    backdrop-filter: blur(calc(var(--dockbar-blur-yakeli, 10px) * var(--dockbar-yakeli-enabled, 0)));
-    border-radius: calc((var(--dockbar-icon-size, 48px) / 2) * (var(--dockbar-roundedcorners, 50) / 100));
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-
-  .dockbar-items {
-    display: flex;
-    align-items: center;
-    gap: var(--dockbar-spacing, 12px);
-  }
-
-  .dock-item {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: var(--dockbar-icon-size, 48px);
-    height: var(--dockbar-icon-size, 48px);
-    border-radius: calc(var(--dockbar-icon-size, 48px) * 0.2);
-    cursor: pointer;
-    transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
-    position: relative;
-
-    &:hover {
-      transform: scale(1.2) translateY(-4px);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-
-      .dock-item-icon {
-        transform: scale(1.1);
-      }
+    .dockbar-background {
+        display: flex;
+        align-items: center;
+        gap: var(--dockbar-spacing, 12px);
+        padding: 8px 16px;
+        background: rgba(
+            var(--dockbar-yakeli-color, 255, 255, 255),
+            calc(var(--dockbar-yakeli, 0.5) * var(--dockbar-yakeli-enabled, 0))
+        );
+        backdrop-filter: blur(
+            calc(var(--dockbar-blur-yakeli, 10px) * var(--dockbar-yakeli-enabled, 0))
+        );
+        border-radius: calc(
+            (var(--dockbar-icon-size, 48px) / 2) * (var(--dockbar-roundedcorners, 50) / 100)
+        );
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
     }
 
-    &:active {
-      transform: scale(1.1) translateY(-2px);
+    .dockbar-items {
+        display: flex;
+        align-items: center;
+        gap: var(--dockbar-spacing, 12px);
     }
 
-    .dock-item-icon {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      border-radius: inherit;
-      pointer-events: none;
-      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+    .dock-item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: var(--dockbar-icon-size, 48px);
+        height: var(--dockbar-icon-size, 48px);
+        border-radius: calc(var(--dockbar-icon-size, 48px) * 0.2);
+        cursor: pointer;
+        transition:
+            transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+            box-shadow 0.2s ease;
+        position: relative;
+
+        &:hover {
+            transform: scale(1.2) translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+
+            .dock-item-icon {
+                transform: scale(1.1);
+            }
+        }
+
+        &:active {
+            transform: scale(1.1) translateY(-2px);
+        }
+
+        .dock-item-icon {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: inherit;
+            pointer-events: none;
+            transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
     }
-  }
 
-  .dockbar-add-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: calc(var(--dockbar-icon-size, 48px) * 0.6);
-    height: calc(var(--dockbar-icon-size, 48px) * 0.6);
-    border: none;
-    border-radius: calc(var(--dockbar-icon-size, 48px) * 0.2);
-    background: rgba(255, 255, 255, 0.2);
-    color: rgba(255, 255, 255, 0.8);
-    cursor: pointer;
-    transition: all 0.2s ease;
+    .dockbar-add-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: calc(var(--dockbar-icon-size, 48px) * 0.6);
+        height: calc(var(--dockbar-icon-size, 48px) * 0.6);
+        border: none;
+        border-radius: calc(var(--dockbar-icon-size, 48px) * 0.2);
+        background: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.8);
+        cursor: pointer;
+        transition: all 0.2s ease;
 
-    svg {
-      width: 60%;
-      height: 60%;
+        svg {
+            width: 60%;
+            height: 60%;
+        }
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.4);
+            transform: scale(1.1);
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
     }
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.4);
-      transform: scale(1.1);
+    // Yakeli pulse animation
+    &.yakeli-pulse .dockbar-background {
+        animation: dockbar-yakeli-pulse 2s ease-in-out;
     }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-
-  // Yakeli pulse animation
-  &.yakeli-pulse .dockbar-background {
-    animation: dockbar-yakeli-pulse 2s ease-in-out;
-  }
 }
 
 @keyframes dockbar-yakeli-pulse {
-  0%, 100% {
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  }
-  50% {
-    box-shadow: 0 8px 48px rgba(var(--dockbar-yakeli-color, 255, 255, 255), 0.4);
-  }
+    0%,
+    100% {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 8px 48px rgba(var(--dockbar-yakeli-color, 255, 255, 255), 0.4);
+    }
 }
 
 // Context menu
 .dockbar-context-menu {
-  position: fixed;
-  z-index: 10000;
-  background: rgba(30, 30, 30, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 8px;
-  padding: 4px 0;
-  min-width: 120px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+    position: fixed;
+    z-index: 10000;
+    background: rgba(30, 30, 30, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 4px 0;
+    min-width: 120px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 
-  .menu-item {
-    padding: 8px 16px;
-    cursor: pointer;
-    transition: background 0.15s ease;
-    color: #fff;
-    font-size: 14px;
+    .menu-item {
+        padding: 8px 16px;
+        cursor: pointer;
+        transition: background 0.15s ease;
+        color: #fff;
+        font-size: 14px;
 
-    &:hover {
-      background: rgba(255, 255, 255, 0.1);
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        &.delete {
+            color: #ff4757;
+        }
     }
-
-    &.delete {
-      color: #ff4757;
-    }
-  }
 }
 
 // Dialog (pseudo-modal, click-only)
 .dockbar-dialog {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 10001;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.6);
-  backdrop-filter: blur(4px);
-  animation: fadeIn 0.15s ease;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    animation: fadeIn 0.15s ease;
 
-  .dockbar-dialog-content {
-    background: rgba(40, 40, 40, 0.95);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 24px;
-    min-width: 320px;
-    max-width: 400px;
-    box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
+    .dockbar-dialog-content {
+        background: rgba(40, 40, 40, 0.95);
+        backdrop-filter: blur(20px);
+        border-radius: 16px;
+        padding: 24px;
+        min-width: 320px;
+        max-width: 400px;
+        box-shadow: 0 16px 64px rgba(0, 0, 0, 0.5);
 
-    h3 {
-      margin: 0 0 20px 0;
-      color: #fff;
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .dockbar-dialog-type {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 20px;
-
-      .type-btn {
-        flex: 1;
-        padding: 10px 16px;
-        border: none;
-        border-radius: 8px;
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.7);
-        cursor: pointer;
-        transition: all 0.2s ease;
-        font-size: 14px;
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.15);
-        }
-
-        &.active {
-          background: rgba(74, 111, 255, 0.8);
-          color: #fff;
-        }
-      }
-    }
-
-    .dockbar-dialog-fields {
-      .field {
-        margin-bottom: 16px;
-
-        label {
-          display: block;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 12px;
-          margin-bottom: 6px;
-        }
-
-        .browse-btn {
-          width: 100%;
-          padding: 12px 16px;
-          border: none;
-          border-radius: 8px;
-          background: rgba(255, 255, 255, 0.1);
-          color: #fff;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          font-size: 14px;
-
-          &:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-          }
-
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
-
-          &.selected {
-            background: rgba(74, 111, 255, 0.6);
-          }
-        }
-
-        .url-presets {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 8px;
-          margin-top: 12px;
-
-          .url-preset-btn {
-            padding: 8px 14px;
-            border: none;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
+        h3 {
+            margin: 0 0 20px 0;
             color: #fff;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 13px;
-
-            &:hover {
-              background: rgba(255, 255, 255, 0.2);
-            }
-
-            &.selected {
-              background: rgba(74, 111, 255, 0.8);
-            }
-          }
+            font-size: 18px;
+            font-weight: 600;
         }
 
-        .paste-btn {
-          width: 100%;
-          padding: 12px 16px;
-          border: none;
-          border-radius: 8px;
-          background: rgba(74, 111, 255, 0.4);
-          color: #fff;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          font-size: 14px;
+        .dockbar-dialog-type {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
 
-          &:hover:not(:disabled) {
-            background: rgba(74, 111, 255, 0.6);
-          }
+            .type-btn {
+                flex: 1;
+                padding: 10px 16px;
+                border: none;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.7);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 14px;
 
-          &:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-          }
+                &:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                }
 
-          &.selected {
-            background: rgba(74, 111, 255, 0.8);
-          }
-        }
-      }
-
-      .icon-selector {
-        margin-top: 16px;
-
-        label {
-          display: block;
-          color: rgba(255, 255, 255, 0.7);
-          font-size: 12px;
-          margin-bottom: 8px;
+                &.active {
+                    background: rgba(74, 111, 255, 0.8);
+                    color: #fff;
+                }
+            }
         }
 
-        .icon-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
-          gap: 8px;
-          max-height: 150px;
-          overflow-y: auto;
-          padding: 8px;
-          background: rgba(255, 255, 255, 0.05);
-          border-radius: 8px;
+        .dockbar-dialog-fields {
+            .field {
+                margin-bottom: 16px;
 
-          .icon-option {
-            width: 48px;
-            height: 48px;
-            padding: 4px;
-            border: 2px solid transparent;
-            border-radius: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            cursor: pointer;
-            transition: all 0.2s ease;
+                label {
+                    display: block;
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 12px;
+                    margin-bottom: 6px;
+                }
 
-            img {
-              width: 100%;
-              height: 100%;
-              object-fit: contain;
+                .browse-btn {
+                    width: 100%;
+                    padding: 12px 16px;
+                    border: none;
+                    border-radius: 8px;
+                    background: rgba(255, 255, 255, 0.1);
+                    color: #fff;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-size: 14px;
+
+                    &:hover:not(:disabled) {
+                        background: rgba(255, 255, 255, 0.2);
+                    }
+
+                    &:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                    }
+
+                    &.selected {
+                        background: rgba(74, 111, 255, 0.6);
+                    }
+                }
+
+                .url-presets {
+                    display: flex;
+                    flex-wrap: wrap;
+                    gap: 8px;
+                    margin-top: 12px;
+
+                    .url-preset-btn {
+                        padding: 8px 14px;
+                        border: none;
+                        border-radius: 6px;
+                        background: rgba(255, 255, 255, 0.1);
+                        color: #fff;
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+                        font-size: 13px;
+
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.2);
+                        }
+
+                        &.selected {
+                            background: rgba(74, 111, 255, 0.8);
+                        }
+                    }
+                }
+
+                .paste-btn {
+                    width: 100%;
+                    padding: 12px 16px;
+                    border: none;
+                    border-radius: 8px;
+                    background: rgba(74, 111, 255, 0.4);
+                    color: #fff;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    font-size: 14px;
+
+                    &:hover:not(:disabled) {
+                        background: rgba(74, 111, 255, 0.6);
+                    }
+
+                    &:disabled {
+                        opacity: 0.6;
+                        cursor: not-allowed;
+                    }
+
+                    &.selected {
+                        background: rgba(74, 111, 255, 0.8);
+                    }
+                }
             }
 
-            &:hover {
-              background: rgba(255, 255, 255, 0.2);
-            }
+            .icon-selector {
+                margin-top: 16px;
 
-            &.selected {
-              border-color: rgba(74, 111, 255, 0.8);
-              background: rgba(74, 111, 255, 0.3);
-            }
-          }
+                label {
+                    display: block;
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 12px;
+                    margin-bottom: 8px;
+                }
 
-          .icon-loading,
-          .icon-no-icons {
-            grid-column: 1 / -1;
-            text-align: center;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 13px;
-            padding: 16px;
-          }
+                .icon-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
+                    gap: 8px;
+                    max-height: 150px;
+                    overflow-y: auto;
+                    padding: 8px;
+                    background: rgba(255, 255, 255, 0.05);
+                    border-radius: 8px;
+
+                    .icon-option {
+                        width: 48px;
+                        height: 48px;
+                        padding: 4px;
+                        border: 2px solid transparent;
+                        border-radius: 8px;
+                        background: rgba(255, 255, 255, 0.1);
+                        cursor: pointer;
+                        transition: all 0.2s ease;
+
+                        img {
+                            width: 100%;
+                            height: 100%;
+                            object-fit: contain;
+                        }
+
+                        &:hover {
+                            background: rgba(255, 255, 255, 0.2);
+                        }
+
+                        &.selected {
+                            border-color: rgba(74, 111, 255, 0.8);
+                            background: rgba(74, 111, 255, 0.3);
+                        }
+                    }
+
+                    .icon-loading,
+                    .icon-no-icons {
+                        grid-column: 1 / -1;
+                        text-align: center;
+                        color: rgba(255, 255, 255, 0.5);
+                        font-size: 13px;
+                        padding: 16px;
+                    }
+                }
+            }
         }
-      }
+
+        .dockbar-dialog-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: 24px;
+
+            .actions-right {
+                display: flex;
+                gap: 12px;
+            }
+
+            button {
+                padding: 10px 24px;
+                border: none;
+                border-radius: 8px;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            #dockbar-clear-cache {
+                background: rgba(255, 100, 100, 0.2);
+                color: rgba(255, 150, 150, 0.9);
+
+                &:hover {
+                    background: rgba(255, 100, 100, 0.3);
+                }
+
+                &:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                }
+            }
+
+            #dockbar-cancel {
+                background: rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.7);
+
+                &:hover {
+                    background: rgba(255, 255, 255, 0.15);
+                }
+            }
+
+            #dockbar-add-confirm {
+                background: rgba(74, 111, 255, 0.9);
+                color: #fff;
+
+                &:hover {
+                    background: rgba(74, 111, 255, 1);
+                }
+            }
+        }
+
+        .dockbar-dialog-manage {
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+            h4 {
+                margin: 0 0 12px 0;
+                color: #fff;
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .manage-list {
+                max-height: 200px;
+                overflow-y: auto;
+            }
+
+            .manage-item {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px;
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 6px;
+                margin-bottom: 6px;
+
+                .manage-item-icon {
+                    width: 24px;
+                    height: 24px;
+                    img {
+                        width: 100%;
+                        height: 100%;
+                        object-fit: contain;
+                    }
+                }
+
+                .manage-item-name {
+                    flex: 1;
+                    color: #fff;
+                    font-size: 13px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
+
+                .manage-item-type {
+                    color: rgba(255, 255, 255, 0.5);
+                    font-size: 12px;
+                }
+
+                button {
+                    padding: 4px 10px;
+                    border: none;
+                    border-radius: 4px;
+                    background: rgba(255, 255, 255, 0.1);
+                    color: #fff;
+                    font-size: 12px;
+                    cursor: pointer;
+                    transition: all 0.15s ease;
+
+                    &:hover:not(:disabled) {
+                        background: rgba(255, 255, 255, 0.2);
+                    }
+
+                    &:disabled {
+                        opacity: 0.3;
+                        cursor: not-allowed;
+                    }
+                }
+
+                .manage-delete-btn {
+                    background: rgba(255, 71, 87, 0.3);
+                    &:hover:not(:disabled) {
+                        background: rgba(255, 71, 87, 0.5);
+                    }
+                }
+            }
+        }
     }
-
-    .dockbar-dialog-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-top: 24px;
-
-      .actions-right {
-        display: flex;
-        gap: 12px;
-      }
-
-      button {
-        padding: 10px 24px;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      #dockbar-clear-cache {
-        background: rgba(255, 100, 100, 0.2);
-        color: rgba(255, 150, 150, 0.9);
-
-        &:hover {
-          background: rgba(255, 100, 100, 0.3);
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
-      }
-
-      #dockbar-cancel {
-        background: rgba(255, 255, 255, 0.1);
-        color: rgba(255, 255, 255, 0.7);
-
-        &:hover {
-          background: rgba(255, 255, 255, 0.15);
-        }
-      }
-
-      #dockbar-add-confirm {
-        background: rgba(74, 111, 255, 0.9);
-        color: #fff;
-
-        &:hover {
-          background: rgba(74, 111, 255, 1);
-        }
-      }
-    }
-
-    .dockbar-dialog-manage {
-      margin-top: 20px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(255, 255, 255, 0.1);
-
-      h4 {
-        margin: 0 0 12px 0;
-        color: #fff;
-        font-size: 14px;
-        font-weight: 500;
-      }
-
-      .manage-list {
-        max-height: 200px;
-        overflow-y: auto;
-      }
-
-      .manage-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 8px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 6px;
-        margin-bottom: 6px;
-
-        .manage-item-icon {
-          width: 24px;
-          height: 24px;
-          img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-          }
-        }
-
-        .manage-item-name {
-          flex: 1;
-          color: #fff;
-          font-size: 13px;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-
-        .manage-item-type {
-          color: rgba(255, 255, 255, 0.5);
-          font-size: 12px;
-        }
-
-        button {
-          padding: 4px 10px;
-          border: none;
-          border-radius: 4px;
-          background: rgba(255, 255, 255, 0.1);
-          color: #fff;
-          font-size: 12px;
-          cursor: pointer;
-          transition: all 0.15s ease;
-
-          &:hover:not(:disabled) {
-            background: rgba(255, 255, 255, 0.2);
-          }
-
-          &:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-          }
-        }
-
-        .manage-delete-btn {
-          background: rgba(255, 71, 87, 0.3);
-          &:hover:not(:disabled) {
-            background: rgba(255, 71, 87, 0.5);
-          }
-        }
-      }
-    }
-  }
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }

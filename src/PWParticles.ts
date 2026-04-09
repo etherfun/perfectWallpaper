@@ -5,7 +5,7 @@
 type RequestAnimFrameCallback = (time: number) => void;
 
 // Polyfill requestAnimFrame
-const requestAnimFramePolyfill: RequestAnimFrameCallback = (function() {
+const requestAnimFramePolyfill: RequestAnimFrameCallback = (function () {
     const vendors = ['webkit', 'moz'];
     const win = window as typeof window & Record<string, any>;
     for (let i = 0; i < vendors.length; i++) {
@@ -14,7 +14,7 @@ const requestAnimFramePolyfill: RequestAnimFrameCallback = (function() {
             return win[vp].bind(win);
         }
     }
-    return function(callback: RequestAnimFrameCallback) {
+    return function (callback: RequestAnimFrameCallback) {
         window.setTimeout(callback, 1000 / 60);
     };
 })();
@@ -127,9 +127,18 @@ function addColor(r: number, g: number, b: number, a: number): string {
  * Mix two colors based on radius weights
  */
 function mixColor(point1: Point, point2: Point, a: number): string {
-    const r = Math.floor((point1.color.r * point1.radius + point2.color.r * point2.radius) / (point1.radius + point2.radius));
-    const g = Math.floor((point1.color.g * point1.radius + point2.color.g * point2.radius) / (point1.radius + point2.radius));
-    const b = Math.floor((point1.color.b * point1.radius + point2.color.b * point2.radius) / (point1.radius + point2.radius));
+    const r = Math.floor(
+        (point1.color.r * point1.radius + point2.color.r * point2.radius) /
+            (point1.radius + point2.radius)
+    );
+    const g = Math.floor(
+        (point1.color.g * point1.radius + point2.color.g * point2.radius) /
+            (point1.radius + point2.radius)
+    );
+    const b = Math.floor(
+        (point1.color.b * point1.radius + point2.color.b * point2.radius) /
+            (point1.radius + point2.radius)
+    );
     return addColor(r, g, b, a);
 }
 
@@ -137,12 +146,12 @@ function mixColor(point1: Point, point2: Point, a: number): string {
  * Handle window resize
  */
 export function wResize(): void {
-    const canEl = document.querySelector("#canvas-particles") as HTMLCanvasElement;
+    const canEl = document.querySelector('#canvas-particles') as HTMLCanvasElement;
     if (!canEl) {
         return;
     }
     CanPar = canEl;
-    CXTPar = CanPar.getContext("2d")!;
+    CXTPar = CanPar.getContext('2d')!;
     CanPar.width = window.innerWidth;
     CanPar.height = window.innerHeight;
 }
@@ -152,7 +161,7 @@ export function wResize(): void {
  */
 export function PWParcreatePoint(): void {
     points.arr = [];
-    num = Math.floor(points.num * numLevel / 4);
+    num = Math.floor((points.num * numLevel) / 4);
     for (let i = 0; i < num; i++) {
         points.arr.push(new Point());
     }
@@ -168,7 +177,9 @@ export function drawP(point: Point): void {
     if (point.r && equalize !== 1) radius = radius * equalize + point.r * (1 - equalize);
 
     CXTPar.beginPath();
-    const pointColor = usePColor ? pColor.replace(COLOR_ALPHA_REGEX, String(point.alpha)) : point.color.all;
+    const pointColor = usePColor
+        ? pColor.replace(COLOR_ALPHA_REGEX, String(point.alpha))
+        : point.color.all;
     if (pStyle) {
         CXTPar.fillStyle = pointColor;
     } else {
@@ -216,7 +227,10 @@ export function drawPoint(): void {
 
     if (isMoveFollow) {
         const arr = audioArrayPar.slice(1, 6);
-        sum = arr.reduce(function(a: number, b: number) { return a + b; }, 0) * 0.12;
+        sum =
+            arr.reduce(function (a: number, b: number) {
+                return a + b;
+            }, 0) * 0.12;
         if (!sum || sum < 0.5) sum = 0.5;
         sum = Math.min(sum, 5);
     } else {
@@ -244,7 +258,10 @@ export function connect(): void {
     const particlesInRadius: Point[] = [];
     for (let i = 0; i < num; i++) {
         const pointI = points.arr[i];
-        if (Math.abs(pointI.x - mouse.x) <= points.mRadius && Math.abs(pointI.y - mouse.y) <= points.mRadius) {
+        if (
+            Math.abs(pointI.x - mouse.x) <= points.mRadius &&
+            Math.abs(pointI.y - mouse.y) <= points.mRadius
+        ) {
             particlesInRadius.push(pointI);
         }
     }
@@ -269,7 +286,9 @@ export function connect(): void {
                 let lineC = 10 / Math.sqrt(x * x + y * y);
                 lineC = Math.min(lineC, 1);
                 CXTPar.beginPath();
-                const lColor = usePColor ? pColor.replace(COLOR_ALPHA_REGEX, String(lineC)) : mixColor(pointI, pointJ, lineC);
+                const lColor = usePColor
+                    ? pColor.replace(COLOR_ALPHA_REGEX, String(lineC))
+                    : mixColor(pointI, pointJ, lineC);
                 CXTPar.strokeStyle = lColor;
                 CXTPar.moveTo(pointI.x, pointI.y);
                 CXTPar.lineTo(pointJ.x, pointJ.y);

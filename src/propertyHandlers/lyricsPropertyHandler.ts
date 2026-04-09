@@ -9,11 +9,7 @@ import { WallpaperProperties } from './types';
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
-export function handleLyricsProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
-
+export function handleLyricsProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     if (properties.fullscreen_lyrics_enabled) {
         config.fullscreen_lyrics_enabled = properties.fullscreen_lyrics_enabled.value;
 
@@ -25,7 +21,8 @@ export function handleLyricsProperties(
     }
 
     if (properties.fullscreen_lyrics_show_translation) {
-        config.fullscreen_lyrics_show_translation = properties.fullscreen_lyrics_show_translation.value;
+        config.fullscreen_lyrics_show_translation =
+            properties.fullscreen_lyrics_show_translation.value;
         fullscreenLyrics.setConfig({ showTranslation: config.fullscreen_lyrics_show_translation });
     }
 

@@ -50,7 +50,7 @@ const DEFAULT_CONFIG: DockBarConfig = {
     yakeliColorG: 255,
     yakeliColorB: 255,
     roundedCorners: 50,
-    items: []
+    items: [],
 };
 
 const STORAGE_KEY = 'perfectwall_dockbar_items';
@@ -102,7 +102,7 @@ class DockBar {
         });
 
         // 容器点击事件代理
-        this.itemsContainer?.addEventListener('click', (e) => {
+        this.itemsContainer?.addEventListener('click', e => {
             const target = e.target as HTMLElement;
             const item = target.closest('.dock-item') as HTMLElement | null;
             if (item) {
@@ -115,7 +115,7 @@ class DockBar {
         });
 
         // 右键菜单删除
-        this.itemsContainer?.addEventListener('contextmenu', (e) => {
+        this.itemsContainer?.addEventListener('contextmenu', e => {
             e.preventDefault();
             const target = e.target as HTMLElement;
             const item = target.closest('.dock-item') as HTMLElement | null;
@@ -141,10 +141,13 @@ class DockBar {
 
     private saveItems(): void {
         try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify({
-                items: this.config.items,
-                version: 1
-            }));
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify({
+                    items: this.config.items,
+                    version: 1,
+                })
+            );
         } catch (e) {
             console.error('[DockBar] Failed to save items:', e);
         }
@@ -300,7 +303,13 @@ class DockBar {
         try {
             const res = await fetch(`${this.serverUrl}/api/icon/cache`, { method: 'POST' });
             const data = await res.json();
-            console.log('[DockBar] Cleared icon cache:', data.data?.cleared || 0, 'server entries,', keys.length, 'localStorage entries');
+            console.log(
+                '[DockBar] Cleared icon cache:',
+                data.data?.cleared || 0,
+                'server entries,',
+                keys.length,
+                'localStorage entries'
+            );
         } catch (e) {
             console.error('[DockBar] Failed to clear server cache:', e);
         }
@@ -316,7 +325,7 @@ class DockBar {
         if (!items || items.length === 0) return;
 
         // 初始状态：不可见，缩小
-        items.forEach((item) => {
+        items.forEach(item => {
             const el = item as HTMLElement;
             el.style.opacity = '0';
             el.style.transform = 'scale(0.8) translateY(10px)';
@@ -341,9 +350,12 @@ class DockBar {
 
         // 入场完成后亚克力脉冲效果
         if (this.config.yakeliEnabled) {
-            setTimeout(() => {
-                this.container?.classList.add('yakeli-pulse');
-            }, items.length * baseDelay + 200);
+            setTimeout(
+                () => {
+                    this.container?.classList.add('yakeli-pulse');
+                },
+                items.length * baseDelay + 200
+            );
         }
     }
 
@@ -353,13 +365,15 @@ class DockBar {
 
         const promises: Promise<void>[] = [];
 
-        images.forEach((img) => {
+        images.forEach(img => {
             const imageEl = img as HTMLImageElement;
             if (!imageEl.complete) {
-                promises.push(new Promise((resolve) => {
-                    imageEl.onload = () => resolve();
-                    imageEl.onerror = () => resolve();
-                }));
+                promises.push(
+                    new Promise(resolve => {
+                        imageEl.onload = () => resolve();
+                        imageEl.onerror = () => resolve();
+                    })
+                );
             }
         });
 
@@ -378,8 +392,8 @@ class DockBar {
             body: JSON.stringify({
                 type: item.type,
                 path: item.path,
-                url: item.url
-            })
+                url: item.url,
+            }),
         })
             .then(res => res.json())
             .then(data => {
@@ -478,8 +492,12 @@ class DockBar {
                 selectedUrl = '';
 
                 // 清除选中状态
-                overlay.querySelectorAll('.url-preset-btn').forEach(b => b.classList.remove('selected'));
-                overlay.querySelectorAll('.browse-btn').forEach(b => b.classList.remove('selected'));
+                overlay
+                    .querySelectorAll('.url-preset-btn')
+                    .forEach(b => b.classList.remove('selected'));
+                overlay
+                    .querySelectorAll('.browse-btn')
+                    .forEach(b => b.classList.remove('selected'));
                 overlay.querySelectorAll('.paste-btn').forEach(b => b.classList.remove('selected'));
                 if (browseBtn) browseBtn.textContent = '选择文件...';
                 if (pasteUrlBtn) pasteUrlBtn.textContent = '从剪贴板获取';
@@ -497,7 +515,9 @@ class DockBar {
         // URL 预设选择
         overlay.querySelectorAll('.url-preset-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                overlay.querySelectorAll('.url-preset-btn').forEach(b => b.classList.remove('selected'));
+                overlay
+                    .querySelectorAll('.url-preset-btn')
+                    .forEach(b => b.classList.remove('selected'));
                 overlay.querySelectorAll('.paste-btn').forEach(b => b.classList.remove('selected'));
                 btn.classList.add('selected');
                 selectedUrl = (btn as HTMLElement).dataset.url || '';
@@ -519,11 +539,14 @@ class DockBar {
             browseBtn.textContent = '选择中...';
             browseBtn.disabled = true;
             try {
-                const response = await fetch(`${this.serverUrl}/api/dockbar/select-file?type=${selectedType}`);
+                const response = await fetch(
+                    `${this.serverUrl}/api/dockbar/select-file?type=${selectedType}`
+                );
                 const data = await response.json();
                 if (data.success && data.data.path) {
                     selectedPath = data.data.path;
-                    browseBtn.textContent = data.data.name || selectedPath.split('\\').pop() || '已选择';
+                    browseBtn.textContent =
+                        data.data.name || selectedPath.split('\\').pop() || '已选择';
                     browseBtn.classList.add('selected');
 
                     // 获取所有图标
@@ -533,27 +556,41 @@ class DockBar {
                     iconSelector.style.display = 'block';
 
                     try {
-                        const iconsResponse = await fetch(`${this.serverUrl}/api/icon/all?path=${encodeURIComponent(selectedPath)}&t=${Date.now()}`);
+                        const iconsResponse = await fetch(
+                            `${this.serverUrl}/api/icon/all?path=${encodeURIComponent(selectedPath)}&t=${Date.now()}`
+                        );
                         const iconsData = await iconsResponse.json();
 
                         iconGrid.innerHTML = '';
 
-                        if (iconsData.success && iconsData.data && iconsData.data.icons && iconsData.data.icons.length > 0) {
-                            iconsData.data.icons.forEach((iconItem: { icon: string; width: number; height: number }, idx: number) => {
-                                const iconBtn = document.createElement('button');
-                                iconBtn.className = 'icon-option';
-                                if (idx === 0) {
-                                    iconBtn.classList.add('selected');
-                                    selectedIcon = iconItem.icon;
+                        if (
+                            iconsData.success &&
+                            iconsData.data &&
+                            iconsData.data.icons &&
+                            iconsData.data.icons.length > 0
+                        ) {
+                            iconsData.data.icons.forEach(
+                                (
+                                    iconItem: { icon: string; width: number; height: number },
+                                    idx: number
+                                ) => {
+                                    const iconBtn = document.createElement('button');
+                                    iconBtn.className = 'icon-option';
+                                    if (idx === 0) {
+                                        iconBtn.classList.add('selected');
+                                        selectedIcon = iconItem.icon;
+                                    }
+                                    iconBtn.innerHTML = `<img src="${iconItem.icon}" alt="${iconItem.width}x${iconItem.height}" title="${iconItem.width}x${iconItem.height}" />`;
+                                    iconBtn.addEventListener('click', () => {
+                                        iconGrid
+                                            .querySelectorAll('.icon-option')
+                                            .forEach(b => b.classList.remove('selected'));
+                                        iconBtn.classList.add('selected');
+                                        selectedIcon = iconItem.icon;
+                                    });
+                                    iconGrid.appendChild(iconBtn);
                                 }
-                                iconBtn.innerHTML = `<img src="${iconItem.icon}" alt="${iconItem.width}x${iconItem.height}" title="${iconItem.width}x${iconItem.height}" />`;
-                                iconBtn.addEventListener('click', () => {
-                                    iconGrid.querySelectorAll('.icon-option').forEach(b => b.classList.remove('selected'));
-                                    iconBtn.classList.add('selected');
-                                    selectedIcon = iconItem.icon;
-                                });
-                                iconGrid.appendChild(iconBtn);
-                            });
+                            );
                         } else {
                             iconGrid.innerHTML = '<div class="icon-no-icons">未找到图标</div>';
                         }
@@ -582,7 +619,7 @@ class DockBar {
             if (!file) return;
 
             const reader = new FileReader();
-            reader.onload = async (e) => {
+            reader.onload = async e => {
                 const result = e.target?.result as string;
                 // Extract base64 data without the data:image/...;base64, prefix
                 const base64Match = result.match(/^data:image\/\w+;base64,(.+)$/);
@@ -597,8 +634,8 @@ class DockBar {
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
                             data: base64Match[1],
-                            type: file.type || 'image/png'
-                        })
+                            type: file.type || 'image/png',
+                        }),
                     });
                     const data = await response.json();
                     if (data.success && data.data.icon) {
@@ -608,12 +645,16 @@ class DockBar {
                         iconBtn.className = 'icon-option selected';
                         iconBtn.innerHTML = `<img src="${data.data.icon}" alt="自定义" title="自定义图标" />`;
                         iconBtn.addEventListener('click', () => {
-                            iconGrid.querySelectorAll('.icon-option').forEach(b => b.classList.remove('selected'));
+                            iconGrid
+                                .querySelectorAll('.icon-option')
+                                .forEach(b => b.classList.remove('selected'));
                             iconBtn.classList.add('selected');
                             selectedIcon = data.data.icon;
                         });
                         // Clear existing selection and add new
-                        iconGrid.querySelectorAll('.icon-option').forEach(b => b.classList.remove('selected'));
+                        iconGrid
+                            .querySelectorAll('.icon-option')
+                            .forEach(b => b.classList.remove('selected'));
                         iconGrid.appendChild(iconBtn);
                         selectedIcon = data.data.icon;
                     } else {
@@ -664,7 +705,8 @@ class DockBar {
                 itemRow.className = 'manage-item';
                 itemRow.dataset.index = String(index);
 
-                const typeLabel = item.type === 'url' ? '链接' : item.type === 'file' ? '文件' : '软件';
+                const typeLabel =
+                    item.type === 'url' ? '链接' : item.type === 'file' ? '文件' : '软件';
                 itemRow.innerHTML = `
                     <span class="manage-item-icon"><img src="${self.getDefaultIcon()}" /></span>
                     <span class="manage-item-name">${item.name}</span>
@@ -731,7 +773,11 @@ class DockBar {
             } else {
                 if (!selectedPath) return;
                 path = selectedPath;
-                name = selectedPath.split('\\').pop()?.replace(/\.[^/.]+$/, '') || '应用程序';
+                name =
+                    selectedPath
+                        .split('\\')
+                        .pop()
+                        ?.replace(/\.[^/.]+$/, '') || '应用程序';
             }
 
             const newItem: DockItem = {
@@ -740,7 +786,7 @@ class DockBar {
                 icon: selectedIcon || '',
                 type: selectedType as 'app' | 'file' | 'url',
                 path: path || undefined,
-                url: url || undefined
+                url: url || undefined,
             };
 
             this.addItem(newItem);
@@ -804,7 +850,9 @@ class DockBar {
         this.config.items = this.config.items.filter(i => i.id !== itemId);
         this.saveItems();
 
-        const itemEl = this.itemsContainer?.querySelector(`[data-id="${itemId}"]`) as HTMLElement | null;
+        const itemEl = this.itemsContainer?.querySelector(
+            `[data-id="${itemId}"]`
+        ) as HTMLElement | null;
         if (itemEl) {
             itemEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
             itemEl.style.opacity = '0';
@@ -869,17 +917,28 @@ class DockBar {
         this.container.style.transform = transform;
 
         // 亚克力效果
-        document.body.style.setProperty('--dockbar-yakeli-enabled', this.config.yakeliEnabled ? '1' : '0');
+        document.body.style.setProperty(
+            '--dockbar-yakeli-enabled',
+            this.config.yakeliEnabled ? '1' : '0'
+        );
         document.body.style.setProperty('--dockbar-yakeli', String(this.config.yakeliIntensity));
         document.body.style.setProperty('--dockbar-blur-yakeli', `${this.config.blurIntensity}px`);
-        document.body.style.setProperty('--dockbar-yakeli-color', `${this.config.yakeliColorR}, ${this.config.yakeliColorG}, ${this.config.yakeliColorB}`);
+        document.body.style.setProperty(
+            '--dockbar-yakeli-color',
+            `${this.config.yakeliColorR}, ${this.config.yakeliColorG}, ${this.config.yakeliColorB}`
+        );
         document.body.style.setProperty('--dockbar-icon-size', `${this.config.iconSize}px`);
         document.body.style.setProperty('--dockbar-spacing', `${this.config.spacing}px`);
-        document.body.style.setProperty('--dockbar-roundedcorners', String(this.config.roundedCorners));
+        document.body.style.setProperty(
+            '--dockbar-roundedcorners',
+            String(this.config.roundedCorners)
+        );
 
         // 应用到背景
         this.background.style.backgroundColor = `rgba(${this.config.yakeliColorR}, ${this.config.yakeliColorG}, ${this.config.yakeliColorB}, ${this.config.yakeliEnabled ? this.config.yakeliIntensity : 0})`;
-        this.background.style.backdropFilter = this.config.yakeliEnabled ? `blur(${this.config.blurIntensity}px)` : 'none';
+        this.background.style.backdropFilter = this.config.yakeliEnabled
+            ? `blur(${this.config.blurIntensity}px)`
+            : 'none';
 
         // 圆角
         const borderRadius = (this.config.iconSize / 2) * (this.config.roundedCorners / 100);

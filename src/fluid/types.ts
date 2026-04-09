@@ -34,23 +34,23 @@ export interface FluidEffectConfigState {
  * 默认配置值
  */
 export const DEFAULT_FLUID_EFFECT_OPTIONS: Required<FluidEffectOptions> = {
-    resolution: 384,  // 降低默认分辨率以提升性能 (512 -> 384)
+    resolution: 384, // 降低默认分辨率以提升性能 (512 -> 384)
     blurAmount: 5,
     displacementScale: 400,
     turbulenceSeed: Math.floor(Math.random() * 1000),
     turbulenceFrequency: 0.005,
     turbulenceOctaves: 1,
     canvasDisplacementAmplitude: 200,
-    fullscreen: false
+    fullscreen: false,
 };
 
 export const DEFAULT_FLUID_EFFECT_CONFIG: FluidEffectConfigState = {
     enabled: true,
-    resolution: 384,  // 降低默认分辨率以提升性能
+    resolution: 384, // 降低默认分辨率以提升性能
     blurAmount: 5,
     displacementScale: 400,
     turbulenceFrequency: 0.005,
     turbulenceOctaves: 1,
     fullscreenEnabled: true,
-    canvasDisplacementAmplitude: 200
+    canvasDisplacementAmplitude: 200,
 };

@@ -4,7 +4,6 @@
  * 布局使用预置HTML结构，JS只负责更新文本内容
  */
 
-
 // 配置类型
 interface SystemMonitorConfig {
     enabled: boolean;
@@ -47,7 +46,7 @@ const DEFAULT_CONFIG: SystemMonitorConfig = {
     monitorX: 95,
     monitorY: 5,
     monitorSize: 14,
-    monitorColor: 'rgba(255, 255, 255, 0.8)'
+    monitorColor: 'rgba(255, 255, 255, 0.8)',
 };
 
 class SystemMonitor {
@@ -173,7 +172,13 @@ class SystemMonitor {
             const memUsedStr = this.formatBytes(data.memory?.used || 0);
             const memTotalStr = this.formatBytes(data.memory?.total || 0);
             this.pushHistory(this.memoryHistory, memUsed);
-            this.updateItem(this.memoryRow, 'MEM', memUsed, this.config.memoryMode, `${memUsedStr.slice(0, -3)}/${memTotalStr}`);
+            this.updateItem(
+                this.memoryRow,
+                'MEM',
+                memUsed,
+                this.config.memoryMode,
+                `${memUsedStr.slice(0, -3)}/${memTotalStr}`
+            );
             this.memoryRow!.style.display = '';
         } else if (this.memoryRow) {
             this.memoryRow.style.display = 'none';
@@ -190,7 +195,13 @@ class SystemMonitor {
         }
     }
 
-    private updateItem(row: HTMLElement | null, label: string, value: number, mode: string, extra?: string): void {
+    private updateItem(
+        row: HTMLElement | null,
+        label: string,
+        value: number,
+        mode: string,
+        extra?: string
+    ): void {
         if (!row) return;
 
         const leftSpan = row.querySelector('.left') as HTMLElement | null;
@@ -219,7 +230,6 @@ class SystemMonitor {
 
         if (subLine) subLine.innerHTML = '';
 
-
         switch (mode) {
             case 'text':
                 break;
@@ -247,7 +257,7 @@ class SystemMonitor {
         // Determine where to append canvas based on alignment
         const isLeft = this.config.monitorPosition === 'left';
         const targetContainer = isLeft ? mainLine : leftSpan;
-        
+
         if (!targetContainer) return;
 
         // Clear old canvas from target container
@@ -276,7 +286,7 @@ class SystemMonitor {
         if (!leftSpan || !rightSpan) return;
 
         const isLeft = this.config.monitorPosition === 'left';
-        
+
         // Determine target container for bar based on alignment
         let targetContainer: HTMLElement;
         if (isLeft) {
@@ -301,18 +311,22 @@ class SystemMonitor {
         // Always set width to 80px to match chart width
         if (isVertical) {
             // Vertical bar: column layout, bar below value
-            barContainer.style.cssText = 'display:flex;flex-direction:column;gap:2px;width:80px;margin-top:var(--sysmon-gap,4px);';
+            barContainer.style.cssText =
+                'display:flex;flex-direction:column;gap:2px;width:80px;margin-top:var(--sysmon-gap,4px);';
         } else {
             // Horizontal bar: row layout, bar after value
-            barContainer.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:4px;width:80px;margin-top:var(--sysmon-gap,4px);';
+            barContainer.style.cssText =
+                'display:flex;flex-direction:row;align-items:center;gap:4px;width:80px;margin-top:var(--sysmon-gap,4px);';
         }
 
         // Bar track (gray background)
         const track = document.createElement('div');
         if (isVertical) {
-            track.style.cssText = 'width:100%;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;';
+            track.style.cssText =
+                'width:100%;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;';
         } else {
-            track.style.cssText = 'flex:1;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;';
+            track.style.cssText =
+                'flex:1;height:4px;background:rgba(255,255,255,0.2);border-radius:2px;';
         }
 
         // Bar fill (colored foreground)
@@ -364,9 +378,12 @@ class SystemMonitor {
         const ctx = canvas.getContext('2d');
         if (!ctx) return;
 
-        const history = type === 'cpu' ? this.cpuHistory :
-                        type === 'gpu' ? this.gpuHistory :
-                        this.memoryHistory;
+        const history =
+            type === 'cpu'
+                ? this.cpuHistory
+                : type === 'gpu'
+                  ? this.gpuHistory
+                  : this.memoryHistory;
 
         const width = canvas.width;
         const height = canvas.height;
@@ -458,7 +475,10 @@ class SystemMonitor {
         if (this.background) {
             this.background.classList.toggle('left-side', isLeft);
             this.background.classList.toggle('right-side', !isLeft);
-            this.background.classList.toggle('horizontal-layout', this.config.barLayout === 'horizontal');
+            this.background.classList.toggle(
+                'horizontal-layout',
+                this.config.barLayout === 'horizontal'
+            );
         }
 
         // Font styles
@@ -481,19 +501,34 @@ class SystemMonitor {
     private rerenderAllRows(): void {
         // Force re-render of all visible rows to reposition canvas elements
         if (this.config.showCpu && this.cpuHistory.length > 0) {
-            this.updateItem(this.cpuRow, 'CPU', this.cpuHistory[this.cpuHistory.length - 1] || 0, this.config.cpuMode);
+            this.updateItem(
+                this.cpuRow,
+                'CPU',
+                this.cpuHistory[this.cpuHistory.length - 1] || 0,
+                this.config.cpuMode
+            );
             if (this.config.cpuMode === 'curve') {
                 this.drawCurveInRow(this.cpuRow!, 'cpu');
             }
         }
         if (this.config.showGpu && this.gpuHistory.length > 0) {
-            this.updateItem(this.gpuRow, 'GPU', this.gpuHistory[this.gpuHistory.length - 1] || 0, this.config.gpuMode);
+            this.updateItem(
+                this.gpuRow,
+                'GPU',
+                this.gpuHistory[this.gpuHistory.length - 1] || 0,
+                this.config.gpuMode
+            );
             if (this.config.gpuMode === 'curve') {
                 this.drawCurveInRow(this.gpuRow!, 'gpu');
             }
         }
         if (this.config.showMemory && this.memoryHistory.length > 0) {
-            this.updateItem(this.memoryRow, 'MEM', this.memoryHistory[this.memoryHistory.length - 1] || 0, this.config.memoryMode);
+            this.updateItem(
+                this.memoryRow,
+                'MEM',
+                this.memoryHistory[this.memoryHistory.length - 1] || 0,
+                this.config.memoryMode
+            );
             if (this.config.memoryMode === 'curve') {
                 this.drawCurveInRow(this.memoryRow!, 'memory');
             }

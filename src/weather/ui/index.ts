@@ -3,8 +3,12 @@
  */
 
 export { generateWeatherTable } from './generateWeatherTable';
-export { clearPrecipTemperatureToggleTimer,startPrecipTemperatureToggleTimer, togglePrecipTemperatureDisplay } from './precipToggle';
-export { hideWeatherLoading, showWeatherError,showWeatherLoading } from './states';
+export {
+    clearPrecipTemperatureToggleTimer,
+    startPrecipTemperatureToggleTimer,
+    togglePrecipTemperatureDisplay,
+} from './precipToggle';
+export { hideWeatherLoading, showWeatherError, showWeatherLoading } from './states';
 export {
     updateAirQualityAndAlerts,
     updateMainWeatherDisplay,

@@ -8,18 +8,14 @@ import { WallpaperProperties } from './types';
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
-export function handleRGBProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
-
+export function handleRGBProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     // RGB FPS刷新率
     if (properties.rgb_fps) {
         const fpsMap: Record<number, number> = {
             24: 41,
             30: 33,
             45: 22,
-            60: 16
+            60: 16,
         };
         const fps = properties.rgb_fps.value;
         if (fpsMap[fps] !== undefined) {
@@ -64,7 +60,9 @@ export function handleRGBProperties(
 
     // 音频条颜色
     if (properties.rgb_au_color) {
-        const color = properties.rgb_au_color.value.split(' ').map((c) => Math.ceil(parseFloat(c) * 255));
+        const color = properties.rgb_au_color.value
+            .split(' ')
+            .map(c => Math.ceil(parseFloat(c) * 255));
         config.aurgbcolor = color.join(',');
     }
 

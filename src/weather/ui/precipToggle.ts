@@ -33,14 +33,19 @@ export function togglePrecipTemperatureDisplay(): void {
     // 更新标签（带动画）
     const labelElement = document.querySelector('.precip-label');
     if (labelElement) {
-        const label = showTemperatureInsteadOfPrecip ? i18n('weather_show_temperature') : i18n('weather_show_precipprob');
+        const label = showTemperatureInsteadOfPrecip
+            ? i18n('weather_show_temperature')
+            : i18n('weather_show_precipprob');
 
         // 添加动画类
         labelElement.classList.add('animate');
 
         // 更新标签内容
         labelElement.textContent = label;
-        labelElement.setAttribute('data-display-type', showTemperatureInsteadOfPrecip ? 'temperature' : 'precipitation');
+        labelElement.setAttribute(
+            'data-display-type',
+            showTemperatureInsteadOfPrecip ? 'temperature' : 'precipitation'
+        );
 
         // 移除动画类
         setTimeout(() => {
@@ -51,8 +56,10 @@ export function togglePrecipTemperatureDisplay(): void {
     // 更新数值（带动画）
     const valueCells = document.querySelectorAll('.precip-prob-cell');
     if (valueCells.length === 7) {
-        const dataValues = showTemperatureInsteadOfPrecip ? weather_data.sevenHourlyData.Temps : weather_data.sevenHourlyData.Pops;
-        const unit = showTemperatureInsteadOfPrecip ? (getWeatherUnit().temp || "℃") : "";
+        const dataValues = showTemperatureInsteadOfPrecip
+            ? weather_data.sevenHourlyData.Temps
+            : weather_data.sevenHourlyData.Pops;
+        const unit = showTemperatureInsteadOfPrecip ? getWeatherUnit().temp || '℃' : '';
 
         // 第一步：为所有单元格添加淡出动画
         valueCells.forEach(cell => {
@@ -62,7 +69,7 @@ export function togglePrecipTemperatureDisplay(): void {
         // 第二步：等待淡出动画完成后更新内容并添加淡入动画
         setTimeout(() => {
             valueCells.forEach((cell, index) => {
-                const value = dataValues[index] || "--";
+                const value = dataValues[index] || '--';
                 cell.textContent = `${value}${unit}`;
 
                 // 移除淡出类，添加淡入类

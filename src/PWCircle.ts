@@ -32,11 +32,11 @@ let hue10 = 225;
  * Handle window resize
  */
 export function resize(): void {
-    const canvasEl = document.querySelector("#can") as HTMLCanvasElement | null;
+    const canvasEl = document.querySelector('#can') as HTMLCanvasElement | null;
     if (!canvasEl) {
         return;
     }
-    ctx = canvasEl.getContext("2d");
+    ctx = canvasEl.getContext('2d');
 
     w = window.innerWidth;
     h = window.innerHeight;
@@ -66,53 +66,66 @@ export function setCan(): void {
             break;
         case 2:
             {
-            if (hue > 255) { config.runtime.param.TagNow *= -1; hue = 255; }
-            if (hue < 0) { config.runtime.param.TagNow *= -1; hue = 0; }
-            const color = `hsl(${hue},90%,50%)`;
-            hue += config.runtime.param.TagNow / config.runtime.param.GradientRate;
+                if (hue > 255) {
+                    config.runtime.param.TagNow *= -1;
+                    hue = 255;
+                }
+                if (hue < 0) {
+                    config.runtime.param.TagNow *= -1;
+                    hue = 0;
+                }
+                const color = `hsl(${hue},90%,50%)`;
+                hue += config.runtime.param.TagNow / config.runtime.param.GradientRate;
 
-            if (config.runtime.param.SolidColorGradient) {
-                ctx.strokeStyle = color;
-            } else {
-                ctx.strokeStyle = config.runtime.param.color;
-            }
-            if (config.runtime.param.BlurColorGradient) {
-                ctx.shadowColor = color;
-            } else {
-                ctx.shadowColor = config.runtime.param.blurColor;
-            }
+                if (config.runtime.param.SolidColorGradient) {
+                    ctx.strokeStyle = color;
+                } else {
+                    ctx.strokeStyle = config.runtime.param.color;
+                }
+                if (config.runtime.param.BlurColorGradient) {
+                    ctx.shadowColor = color;
+                } else {
+                    ctx.shadowColor = config.runtime.param.blurColor;
+                }
             }
             break;
         case 3:
             {
-            const ranX = rainRad / 3 * Math.cos(roh) + w;
-            const ranY = rainRad / 3 * Math.sin(roh) + h;
-            roh = (roh + (Math.PI / 300)) % (2 * Math.PI);
-            circleX = w * config.runtime.param.cX;
-            circleY = h * config.runtime.param.cY;
-            const rainbow = ctx.createRadialGradient(circleX, circleY, 0, ranX / 2, ranY / 2, w / 3);
+                const ranX = (rainRad / 3) * Math.cos(roh) + w;
+                const ranY = (rainRad / 3) * Math.sin(roh) + h;
+                roh = (roh + Math.PI / 300) % (2 * Math.PI);
+                circleX = w * config.runtime.param.cX;
+                circleY = h * config.runtime.param.cY;
+                const rainbow = ctx.createRadialGradient(
+                    circleX,
+                    circleY,
+                    0,
+                    ranX / 2,
+                    ranY / 2,
+                    w / 3
+                );
 
-            if (config.runtime.param.ColorRhythm) {
-                rainbow.addColorStop(0.1, getColor(10));
-                rainbow.addColorStop(0.2, getColor(9));
-                rainbow.addColorStop(0.3, getColor(8));
-                rainbow.addColorStop(0.4, getColor(7));
-                rainbow.addColorStop(0.5, getColor(6));
-                rainbow.addColorStop(0.6, getColor(5));
-                rainbow.addColorStop(0.7, getColor(4));
-                rainbow.addColorStop(0.8, getColor(3));
-                rainbow.addColorStop(0.9, getColor(2));
-                rainbow.addColorStop(1.0, getColor(1));
-            } else {
-                rainbow.addColorStop(0, "magenta");
-                rainbow.addColorStop(0.25, "blue");
-                rainbow.addColorStop(0.5, "green");
-                rainbow.addColorStop(0.75, "yellow");
-                rainbow.addColorStop(1.0, "red");
-            }
-            ctx.fillStyle = rainbow;
-            ctx.strokeStyle = rainbow;
-            ctx.shadowColor = config.runtime.param.blurColor;
+                if (config.runtime.param.ColorRhythm) {
+                    rainbow.addColorStop(0.1, getColor(10));
+                    rainbow.addColorStop(0.2, getColor(9));
+                    rainbow.addColorStop(0.3, getColor(8));
+                    rainbow.addColorStop(0.4, getColor(7));
+                    rainbow.addColorStop(0.5, getColor(6));
+                    rainbow.addColorStop(0.6, getColor(5));
+                    rainbow.addColorStop(0.7, getColor(4));
+                    rainbow.addColorStop(0.8, getColor(3));
+                    rainbow.addColorStop(0.9, getColor(2));
+                    rainbow.addColorStop(1.0, getColor(1));
+                } else {
+                    rainbow.addColorStop(0, 'magenta');
+                    rainbow.addColorStop(0.25, 'blue');
+                    rainbow.addColorStop(0.5, 'green');
+                    rainbow.addColorStop(0.75, 'yellow');
+                    rainbow.addColorStop(1.0, 'red');
+                }
+                ctx.fillStyle = rainbow;
+                ctx.strokeStyle = rainbow;
+                ctx.shadowColor = config.runtime.param.blurColor;
             }
             break;
     }
@@ -122,7 +135,7 @@ export function setCan(): void {
  * Get color based on case value for color rhythm effect
  */
 function getColor(casev: number): string {
-    let colornow: string = "";
+    let colornow: string = '';
     switch (casev) {
         case 1:
             colornow = `hsl(${hue1},90%,50%)`;
@@ -190,29 +203,32 @@ export function createPoint(arr: number[]): void {
         if (config.runtime.param.showSemiCircle) {
             switch (config.runtime.param.SemiCircledirection) {
                 case 1: // Top
-                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 0.5) * -1;
+                    deg = (Math.PI / 128) * (i + config.runtime.param.offsetAngle + 0.5) * -1;
                     break;
                 case 2: // Bottom
-                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 0.5);
+                    deg = (Math.PI / 128) * (i + config.runtime.param.offsetAngle + 0.5);
                     break;
                 case 3: // Left
-                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle - 179.5);
+                    deg = (Math.PI / 128) * (i + config.runtime.param.offsetAngle - 179.5);
                     break;
                 case 4: // Right
-                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 180.5);
+                    deg = (Math.PI / 128) * (i + config.runtime.param.offsetAngle + 180.5);
                     break;
                 default:
-                    deg = Math.PI / 128 * (i + config.runtime.param.offsetAngle + 0.5) * -1;
+                    deg = (Math.PI / 128) * (i + config.runtime.param.offsetAngle + 0.5) * -1;
             }
         } else {
             // 全圆角度: 与原始 JS 版本一致
-            deg = Math.PI / config.runtime.param.PolygonAngle * (i + config.runtime.param.offsetAngle) * 3;
+            deg =
+                (Math.PI / config.runtime.param.PolygonAngle) *
+                (i + config.runtime.param.offsetAngle) *
+                3;
         }
 
         let w1 = arr[i] ? arr[i] : 0;
         let w2: number;
         if (config.runtime.param.waveArr[i]) {
-            w2 = config.runtime.param.waveArr[i] - (config.runtime.param.waveArr[i] * 0.25);
+            w2 = config.runtime.param.waveArr[i] - config.runtime.param.waveArr[i] * 0.25;
         } else {
             w2 = 0;
         }
@@ -224,20 +240,20 @@ export function createPoint(arr: number[]): void {
         let offset2: number;
         switch (config.runtime.param.direction) {
             case 1:
-                offset1 = config.runtime.param.r * minW / 2 + waveHeight + 1;
-                offset2 = config.runtime.param.r * minW / 2;
+                offset1 = (config.runtime.param.r * minW) / 2 + waveHeight + 1;
+                offset2 = (config.runtime.param.r * minW) / 2;
                 break;
             case 2:
-                offset1 = config.runtime.param.r * minW / 2;
-                offset2 = config.runtime.param.r * minW / 2 - waveHeight - 1;
+                offset1 = (config.runtime.param.r * minW) / 2;
+                offset2 = (config.runtime.param.r * minW) / 2 - waveHeight - 1;
                 break;
             case 3:
-                offset1 = config.runtime.param.r * minW / 2 + waveHeight + 1;
-                offset2 = config.runtime.param.r * minW / 2 - waveHeight - 1;
+                offset1 = (config.runtime.param.r * minW) / 2 + waveHeight + 1;
+                offset2 = (config.runtime.param.r * minW) / 2 - waveHeight - 1;
                 break;
             default:
-                offset1 = config.runtime.param.r * minW / 2 + waveHeight + 1;
-                offset2 = config.runtime.param.r * minW / 2 - waveHeight - 1;
+                offset1 = (config.runtime.param.r * minW) / 2 + waveHeight + 1;
+                offset2 = (config.runtime.param.r * minW) / 2 - waveHeight - 1;
         }
 
         const p1 = getXY(offset1, deg);
@@ -248,7 +264,8 @@ export function createPoint(arr: number[]): void {
     }
 
     if (config.runtime.param.rotation) {
-        config.runtime.param.offsetAngle += config.runtime.param.rotation / config.runtime.param.Polygon;
+        config.runtime.param.offsetAngle +=
+            config.runtime.param.rotation / config.runtime.param.Polygon;
         if (config.runtime.param.offsetAngle >= 360) {
             config.runtime.param.offsetAngle = 0;
         } else if (config.runtime.param.offsetAngle <= 0) {
@@ -359,4 +376,3 @@ export function style3(): void {
     }
     ctx.stroke();
 }
-

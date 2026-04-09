@@ -6,7 +6,7 @@
 import { tooltip } from '../tooltip';
 import { weather_data } from '../weatherState';
 import { startPrecipTemperatureToggleTimer } from './precipToggle';
-import { hideWeatherLoading,showWeatherLoading } from './states';
+import { hideWeatherLoading, showWeatherLoading } from './states';
 import {
     updateAirQualityAndAlerts,
     updateMainWeatherDisplay,
@@ -20,7 +20,7 @@ import {
  * 生成天气表格UI
  */
 export async function generateWeatherTable(): Promise<void> {
-    if (weather_data.temperature === "" && weather_data.weathernow === "") {
+    if (weather_data.temperature === '' && weather_data.weathernow === '') {
         showWeatherLoading();
         return;
     }

@@ -4,14 +4,16 @@
 
 export { SimpleMarkdown } from './simple-markdown';
 
-import { config } from "../utils/config";
-import { i18n } from "../utils/i18n";
-import { waitAndExecute } from "../utils/timer";
-import { fetch_with_retry } from "../utils/tool";
+import { config } from '../utils/config';
+import { i18n } from '../utils/i18n';
+import { waitAndExecute } from '../utils/timer';
+import { fetch_with_retry } from '../utils/tool';
 import { SimpleMarkdown } from './simple-markdown';
 
 // 版本历史数据Promise
-export const VERSION_HISTORY_PROMISE = fetch_with_retry("update/history.json").then(res => res.json());
+export const VERSION_HISTORY_PROMISE = fetch_with_retry('update/history.json').then(res =>
+    res.json()
+);
 
 /**
  * Version history entry structure
@@ -25,35 +27,35 @@ export interface VersionHistoryEntry {
 }
 
 export const versionConfig = {
-    CURRENT_VERSION: "1.7.3",
+    CURRENT_VERSION: '1.7.3',
 
     MODAL_SIZE: {
-        width: "65%",
-        height: "93%",
-        maxWidth: "90%",
-        maxHeight: "95%",
+        width: '65%',
+        height: '93%',
+        maxWidth: '90%',
+        maxHeight: '95%',
     },
 
     VERSION_HISTORY: [] as VersionHistoryEntry[],
 
-    STORAGE_KEY: "perfectwall_version",
+    STORAGE_KEY: 'perfectwall_version',
 
     SHOW_SETTINGS: {
         autoCloseDelay: 60000,
         animationDuration: 400,
         showOnFirstLoad: false,
-        showOnUpdate: Boolean(localStorage.getItem("perfectwall_version_show_update")),
+        showOnUpdate: Boolean(localStorage.getItem('perfectwall_version_show_update')),
         enableHistoryNavigation: true,
         enableMarkdown: true,
-        defaultView: "current"
+        defaultView: 'current',
     },
 
     IMAGE_SETTINGS: {
-        maxHeight: "40vh",
-        borderRadius: "12px",
+        maxHeight: '40vh',
+        borderRadius: '12px',
         showImage: true,
-        lazyLoad: true
-    }
+        lazyLoad: true,
+    },
 };
 
 class versionManager {
@@ -116,7 +118,7 @@ class versionManager {
                 this.showModal();
             }, 2000);
         } catch (error) {
-            console.error("初始化版本弹窗失败:", error);
+            console.error('初始化版本弹窗失败:', error);
         }
     }
 
@@ -272,7 +274,7 @@ class versionManager {
         }
 
         // ESC键关闭
-        document.addEventListener('keydown', (e) => {
+        document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && this.updateModal?.classList.contains('show')) {
                 this.hideModal();
             }
@@ -545,7 +547,7 @@ class versionManager {
     // 绑定全局事件（在构造函数中调用）
     private bindGlobalEvents(): void {
         // 版本列表项点击事件
-        document.addEventListener('click', (e) => {
+        document.addEventListener('click', e => {
             const versionItem = (e.target as HTMLElement).closest('.version-list-item');
 
             if (versionItem) {
@@ -573,7 +575,7 @@ class versionManager {
                 this.bindEvents();
                 this.isInitialized = true;
             } catch (error) {
-                console.error("初始化版本弹窗失败:", error);
+                console.error('初始化版本弹窗失败:', error);
                 return;
             }
         }
@@ -606,7 +608,8 @@ class versionManager {
 
         if (listContainer && countElement) {
             listContainer.innerHTML = this.renderVersionList();
-            countElement.textContent = versionConfig.VERSION_HISTORY.length + " " + i18n('version_units');
+            countElement.textContent =
+                versionConfig.VERSION_HISTORY.length + ' ' + i18n('version_units');
         }
 
         // 填充当前版本详情
@@ -615,7 +618,8 @@ class versionManager {
         // 更新标题
         const titleElement = document.getElementById('detail-version-title');
         if (titleElement && versionInfo) {
-            titleElement.textContent = (versionInfo.title as string) || `版本 v${versionInfo.version}`;
+            titleElement.textContent =
+                (versionInfo.title as string) || `版本 v${versionInfo.version}`;
         }
 
         // 更新元信息
@@ -641,9 +645,9 @@ class versionManager {
     private renderPlainChanges(changes: unknown): string {
         if (!changes || !Array.isArray(changes)) return '';
 
-        return `<ul class="plain-changes-list">${(changes as unknown[]).map((change: unknown) =>
-            `<li>${change}</li>`
-        ).join('')}</ul>`;
+        return `<ul class="plain-changes-list">${(changes as unknown[])
+            .map((change: unknown) => `<li>${change}</li>`)
+            .join('')}</ul>`;
     }
 
     // 渲染版本详情内容
@@ -654,7 +658,11 @@ class versionManager {
 
         return `
             <div class="version-detail">
-                ${versionConfig.IMAGE_SETTINGS.showImage && info.image && (info.image as string).trim() !== '' ? `
+                ${
+                    versionConfig.IMAGE_SETTINGS.showImage &&
+                    info.image &&
+                    (info.image as string).trim() !== ''
+                        ? `
                     <div class="version-image-container">
                         <img src="${info.image}"
                              class="version-image"
@@ -666,15 +674,20 @@ class versionManager {
                             </div>
                         </div>
                     </div>
-                ` : ''}
+                `
+                        : ''
+                }
 
                 <div class="version-changes">
                     <h4>${i18n('version_changes_title')}</h4>
                     <div class="changes-content">
-                        ${versionConfig.SHOW_SETTINGS.enableMarkdown ?
-                SimpleMarkdown.parse(((info.changes as string[]) || []).join('\n')) :
-                this.renderPlainChanges(info.changes)
-            }
+                        ${
+                            versionConfig.SHOW_SETTINGS.enableMarkdown
+                                ? SimpleMarkdown.parse(
+                                      ((info.changes as string[]) || []).join('\n')
+                                  )
+                                : this.renderPlainChanges(info.changes)
+                        }
                     </div>
                 </div>
             </div>
@@ -685,12 +698,13 @@ class versionManager {
     private renderVersionList(): string {
         const allHistory = this.getAllVersionHistory();
 
-        return allHistory.map((history: VersionHistoryEntry) => {
-            const versionInfo = this.getVersionInfo(history.version);
-            const isCurrent = history.version === this.currentVersion;
-            const isSelected = history.version === this.selectedVersion;
+        return allHistory
+            .map((history: VersionHistoryEntry) => {
+                const versionInfo = this.getVersionInfo(history.version);
+                const isCurrent = history.version === this.currentVersion;
+                const isSelected = history.version === this.selectedVersion;
 
-            return `
+                return `
                 <div class="version-list-item ${isCurrent ? 'current' : ''} ${isSelected ? 'selected' : ''}"
                      data-version="${history.version}">
                     <div class="version-item-header">
@@ -707,7 +721,8 @@ class versionManager {
                     </div>
                 </div>
             `;
-        }).join('');
+            })
+            .join('');
     }
 
     // 获取指定版本的更新信息（带i18n处理）
@@ -722,7 +737,9 @@ class versionManager {
             return null;
         }
 
-        const rawInfo = versionConfig.VERSION_HISTORY.find((info: VersionHistoryEntry) => info.version === targetVersion);
+        const rawInfo = versionConfig.VERSION_HISTORY.find(
+            (info: VersionHistoryEntry) => info.version === targetVersion
+        );
 
         if (!rawInfo) {
             return null;
@@ -758,7 +775,9 @@ class versionManager {
         // 处理更新内容
         if (rawInfo.changesKey) {
             const changesText = i18n(rawInfo.changesKey);
-            processedInfo.changes = changesText.split('\n').filter((line: string) => line.trim() !== '');
+            processedInfo.changes = changesText
+                .split('\n')
+                .filter((line: string) => line.trim() !== '');
         } else if (rawInfo.changes) {
             processedInfo.changes = rawInfo.changes;
         } else {
@@ -816,7 +835,8 @@ class versionManager {
         // 更新标题
         const titleElement = document.getElementById('detail-version-title');
         if (titleElement && versionInfo) {
-            titleElement.textContent = (versionInfo.title as string) || `版本 v${versionInfo.version}`;
+            titleElement.textContent =
+                (versionInfo.title as string) || `版本 v${versionInfo.version}`;
         }
 
         // 更新元信息
@@ -825,8 +845,13 @@ class versionManager {
             metaElement.innerHTML = `
                 <span class="detail-version">v${versionInfo.version}</span>
                 <span class="detail-date">${versionInfo.date}</span>
-                ${versionInfo.version === this.currentVersion ?
-                    '<span class="current-badge">' + i18n('version_current_version') + '</span>' : ''}
+                ${
+                    versionInfo.version === this.currentVersion
+                        ? '<span class="current-badge">' +
+                          i18n('version_current_version') +
+                          '</span>'
+                        : ''
+                }
             `;
         }
 
@@ -864,12 +889,14 @@ waitAndExecute(
                 try {
                     await config.runtime.versionManager.initUpdateModal();
                 } catch (error) {
-                    console.error("初始化版本弹窗失败:", error);
+                    console.error('初始化版本弹窗失败:', error);
                 }
             }
         }, 2000);
     },
-    500, 15000);
+    500,
+    15000
+);
 
 // 导出
 export { versionManager };

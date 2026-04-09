@@ -102,18 +102,18 @@ function initI18nObserver(): void {
     }
 
     // 创建MutationObserver实例
-    i18nObserver = new MutationObserver((mutations) => {
+    i18nObserver = new MutationObserver(mutations => {
         // 收集所有变化
         pendingMutations.push(...mutations);
-        
+
         // 智能防抖处理：根据变化数量决定延迟时间
         if (i18nUpdateTimeout) {
             clearTimeout(i18nUpdateTimeout);
         }
-        
+
         // 如果变化很多，给更多时间收集所有变化
         const delay = mutations.length > 5 ? 200 : 100;
-        
+
         i18nUpdateTimeout = window.setTimeout(() => {
             if (pendingMutations.length > 0) {
                 handleDomMutations(pendingMutations);
@@ -124,10 +124,10 @@ function initI18nObserver(): void {
 
     // 配置观察选项
     const observerConfig = {
-        childList: true,      // 观察子节点的添加或删除
-        subtree: true,        // 观察所有后代节点
-        attributes: true,     // 观察属性变化
-        attributeFilter: ['data-i18n'] // 只观察data-i18n属性变化
+        childList: true, // 观察子节点的添加或删除
+        subtree: true, // 观察所有后代节点
+        attributes: true, // 观察属性变化
+        attributeFilter: ['data-i18n'], // 只观察data-i18n属性变化
     };
 
     // 开始观察整个文档
@@ -152,14 +152,16 @@ function handleDomMutations(mutations: MutationRecord[]): void {
                     if (element.hasAttribute && element.hasAttribute('data-i18n')) {
                         elementsToUpdate.add(element);
                     }
-                    
+
                     // 检查节点的后代元素是否有data-i18n属性
-                    const i18nElements = element.querySelectorAll ? element.querySelectorAll('[data-i18n]') : [];
+                    const i18nElements = element.querySelectorAll
+                        ? element.querySelectorAll('[data-i18n]')
+                        : [];
                     i18nElements.forEach(el => elementsToUpdate.add(el));
                 }
             });
         }
-        
+
         // 处理属性变化
         if (mutation.type === 'attributes' && mutation.attributeName === 'data-i18n') {
             elementsToUpdate.add(mutation.target as Element);
@@ -193,20 +195,20 @@ export function stopI18nObserver(): void {
  */
 function processElements(elements: Element[]): number {
     const processedElements = new Set<Element>();
-    
+
     elements.forEach(element => {
         // 跳过已处理的元素
         if (processedElements.has(element)) {
             return;
         }
-        
+
         const key = element.getAttribute('data-i18n');
         if (!key) {
             return; // 如果没有data-i18n属性，跳过
         }
-        
+
         const translation = i18n(key);
-        
+
         // 检查是否需要更新（避免不必要的DOM操作）
         const currentText = element.textContent || '';
         if (currentText === translation && translation !== key) {
@@ -215,24 +217,22 @@ function processElements(elements: Element[]): number {
         }
 
         if (element.children.length > 0) {
-            const textNodes = Array.from(element.childNodes)
-                .filter(node => node.nodeType === Node.TEXT_NODE);
+            const textNodes = Array.from(element.childNodes).filter(
+                node => node.nodeType === Node.TEXT_NODE
+            );
 
             if (textNodes.length > 0) {
                 textNodes[0].textContent = translation;
             } else {
-                element.insertBefore(
-                    document.createTextNode(translation),
-                    element.firstChild
-                );
+                element.insertBefore(document.createTextNode(translation), element.firstChild);
             }
         } else {
             element.textContent = translation;
         }
-        
+
         processedElements.add(element);
     });
-    
+
     return processedElements.size; // 返回实际处理的元素数量
 }
 

@@ -31,12 +31,12 @@ let hue = 0;
  * Initialize the PWLine canvas and context
  */
 export function PWLineInit(): void {
-    const canvasEl = document.querySelector("#CanLine") as HTMLCanvasElement | null;
+    const canvasEl = document.querySelector('#CanLine') as HTMLCanvasElement | null;
     if (!canvasEl) {
         return;
     }
     CanLine = canvasEl;
-    CTXLine = canvasEl.getContext("2d")!;
+    CTXLine = canvasEl.getContext('2d')!;
 
     CanLine.width = w = window.innerWidth;
     CanLine.height = h = window.innerHeight;
@@ -56,8 +56,14 @@ export function setCTXLine(): void {
             CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
             break;
         case 2:
-            if (hue > 255) { config.runtime.PWLineParam.TagNow *= -1; hue = 255; }
-            if (hue < 0) { config.runtime.PWLineParam.TagNow *= -1; hue = 0; }
+            if (hue > 255) {
+                config.runtime.PWLineParam.TagNow *= -1;
+                hue = 255;
+            }
+            if (hue < 0) {
+                config.runtime.PWLineParam.TagNow *= -1;
+                hue = 0;
+            }
             color = `hsl(${hue},90%,50%)`;
             hue += config.runtime.PWLineParam.TagNow / config.runtime.PWLineParam.GradientRate;
 
@@ -74,32 +80,39 @@ export function setCTXLine(): void {
             break;
         case 3:
             {
-            originX = maxW * config.runtime.PWLineParam.LineX;
-            originY = minW * config.runtime.PWLineParam.LineY;
-            const rainbow = CTXLine.createRadialGradient(originX, originY, 0, originX, originY, lineR);
+                originX = maxW * config.runtime.PWLineParam.LineX;
+                originY = minW * config.runtime.PWLineParam.LineY;
+                const rainbow = CTXLine.createRadialGradient(
+                    originX,
+                    originY,
+                    0,
+                    originX,
+                    originY,
+                    lineR
+                );
 
-            if (config.runtime.PWLineParam.ColorRhythm) {
-                rainbow.addColorStop(0.1, getColor(10));
-                rainbow.addColorStop(0.2, getColor(9));
-                rainbow.addColorStop(0.3, getColor(8));
-                rainbow.addColorStop(0.4, getColor(7));
-                rainbow.addColorStop(0.5, getColor(6));
-                rainbow.addColorStop(0.6, getColor(5));
-                rainbow.addColorStop(0.7, getColor(4));
-                rainbow.addColorStop(0.8, getColor(3));
-                rainbow.addColorStop(0.9, getColor(2));
-                rainbow.addColorStop(1.0, getColor(1));
-            } else {
-                rainbow.addColorStop(0, "magenta");
-                rainbow.addColorStop(0.25, "blue");
-                rainbow.addColorStop(0.5, "green");
-                rainbow.addColorStop(0.75, "yellow");
-                rainbow.addColorStop(1.0, "red");
-            }
-            color = rainbow;
-            CTXLine.fillStyle = color;
-            CTXLine.strokeStyle = color;
-            CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
+                if (config.runtime.PWLineParam.ColorRhythm) {
+                    rainbow.addColorStop(0.1, getColor(10));
+                    rainbow.addColorStop(0.2, getColor(9));
+                    rainbow.addColorStop(0.3, getColor(8));
+                    rainbow.addColorStop(0.4, getColor(7));
+                    rainbow.addColorStop(0.5, getColor(6));
+                    rainbow.addColorStop(0.6, getColor(5));
+                    rainbow.addColorStop(0.7, getColor(4));
+                    rainbow.addColorStop(0.8, getColor(3));
+                    rainbow.addColorStop(0.9, getColor(2));
+                    rainbow.addColorStop(1.0, getColor(1));
+                } else {
+                    rainbow.addColorStop(0, 'magenta');
+                    rainbow.addColorStop(0.25, 'blue');
+                    rainbow.addColorStop(0.5, 'green');
+                    rainbow.addColorStop(0.75, 'yellow');
+                    rainbow.addColorStop(1.0, 'red');
+                }
+                color = rainbow;
+                CTXLine.fillStyle = color;
+                CTXLine.strokeStyle = color;
+                CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
             }
             break;
     }
@@ -109,7 +122,7 @@ export function setCTXLine(): void {
  * Get color based on case value for color rhythm effect
  */
 export function getColor(casev: number): string {
-    let colornow: string = "";
+    let colornow: string = '';
     switch (casev) {
         case 1:
             colornow = `hsl(${hue1},90%,50%)`;
@@ -174,12 +187,18 @@ export function PWLineCreatePoint(arr: number[]): void {
     const iv = (120 - config.runtime.PWLineParam.LineDensity) / 2;
 
     if (config.runtime.PWLineParam.LinePosition === 1) {
-        sw = (maxW - config.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) / (config.runtime.PWLineParam.LineDensity - 1) * config.runtime.PWLineParam.sw;
+        sw =
+            ((maxW - config.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) /
+                (config.runtime.PWLineParam.LineDensity - 1)) *
+            config.runtime.PWLineParam.sw;
     } else {
-        sw = (minW - config.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) / (config.runtime.PWLineParam.LineDensity - 1) * config.runtime.PWLineParam.sw;
+        sw =
+            ((minW - config.runtime.PWLineParam.LineDensity * CTXLine.lineWidth) /
+                (config.runtime.PWLineParam.LineDensity - 1)) *
+            config.runtime.PWLineParam.sw;
     }
 
-    for (let i = iv, j = 0; i < (config.runtime.PWLineParam.LineDensity + iv); i++, j++) {
+    for (let i = iv, j = 0; i < config.runtime.PWLineParam.LineDensity + iv; i++, j++) {
         let w1 = arr[i] ? arr[i] : 0;
         let w2: number;
         if (config.runtime.PWLineParam.waveArr[i]) {
@@ -219,9 +238,13 @@ export function PWLineCreatePoint(arr: number[]): void {
     }
 
     if (config.runtime.PWLineParam.LinePosition === 1) {
-        lineR = config.runtime.PWLineParam.arr1[(config.runtime.PWLineParam.LineDensity) / 2 - 1].x - config.runtime.PWLineParam.arr1[0].x;
+        lineR =
+            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity / 2 - 1].x -
+            config.runtime.PWLineParam.arr1[0].x;
     } else {
-        lineR = config.runtime.PWLineParam.arr1[(config.runtime.PWLineParam.LineDensity) / 2 - 1].y - config.runtime.PWLineParam.arr1[0].y;
+        lineR =
+            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity / 2 - 1].y -
+            config.runtime.PWLineParam.arr1[0].y;
     }
 }
 
@@ -230,11 +253,17 @@ export function PWLineCreatePoint(arr: number[]): void {
  */
 export function getLineXY(Deviation: number, i: number): { x: number; y: number } {
     if (config.runtime.PWLineParam.LinePosition === 1) {
-        const x = maxW * config.runtime.PWLineParam.LineX + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * sw + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
+        const x =
+            maxW * config.runtime.PWLineParam.LineX +
+            (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * sw +
+            (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
         const y = minW * config.runtime.PWLineParam.LineY;
         return { x: x, y: y + Deviation };
     } else {
-        const x = minW * config.runtime.PWLineParam.LineY + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * sw + (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
+        const x =
+            minW * config.runtime.PWLineParam.LineY +
+            (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * sw +
+            (i + 0.5 - config.runtime.PWLineParam.LineDensity / 2) * CTXLine.lineWidth;
         const y = maxW * config.runtime.PWLineParam.LineX;
         return { x: y + Deviation, y: x };
     }
@@ -256,7 +285,10 @@ export function PWLineStyle1(): void {
     if (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
         CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
-        CTXLine.lineTo(config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x, config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y);
+        CTXLine.lineTo(
+            config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x,
+            config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y
+        );
         CTXLine.stroke();
     }
 
@@ -264,15 +296,28 @@ export function PWLineStyle1(): void {
     if (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
         CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
-        CTXLine.lineTo(config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x, config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y);
+        CTXLine.lineTo(
+            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x,
+            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y
+        );
         CTXLine.stroke();
     }
 
     // Bidirectional middle line
     if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo((config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2, (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2);
-        CTXLine.lineTo((config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) / 2, (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) / 2);
+        CTXLine.moveTo(
+            (config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2,
+            (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2
+        );
+        CTXLine.lineTo(
+            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x +
+                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) /
+                2,
+            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y +
+                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) /
+                2
+        );
         CTXLine.stroke();
     }
 }
@@ -282,21 +327,33 @@ export function PWLineStyle1(): void {
  */
 export function PWLineStyle2(): void {
     // Top line
-    if (config.runtime.PWLineParam.Direction !== 2 || (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)) {
+    if (
+        config.runtime.PWLineParam.Direction !== 2 ||
+        (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)
+    ) {
         CTXLine.beginPath();
         CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
         for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
+            CTXLine.lineTo(
+                config.runtime.PWLineParam.arr1[i].x,
+                config.runtime.PWLineParam.arr1[i].y
+            );
         }
         CTXLine.stroke();
     }
 
     // Bottom line
-    if (config.runtime.PWLineParam.Direction !== 1 || (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)) {
+    if (
+        config.runtime.PWLineParam.Direction !== 1 ||
+        (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)
+    ) {
         CTXLine.beginPath();
         CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
         for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
+            CTXLine.lineTo(
+                config.runtime.PWLineParam.arr2[i].x,
+                config.runtime.PWLineParam.arr2[i].y
+            );
         }
         CTXLine.stroke();
     }
@@ -304,8 +361,18 @@ export function PWLineStyle2(): void {
     // Bidirectional middle line
     if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo((config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2, (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2);
-        CTXLine.lineTo((config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) / 2, (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) / 2);
+        CTXLine.moveTo(
+            (config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2,
+            (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2
+        );
+        CTXLine.lineTo(
+            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x +
+                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) /
+                2,
+            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y +
+                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) /
+                2
+        );
         CTXLine.stroke();
     }
 
@@ -323,21 +390,33 @@ export function PWLineStyle2(): void {
  */
 export function PWLineStyle3(): void {
     // Top line
-    if (config.runtime.PWLineParam.Direction !== 2 || (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)) {
+    if (
+        config.runtime.PWLineParam.Direction !== 2 ||
+        (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)
+    ) {
         CTXLine.beginPath();
         CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
         for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
+            CTXLine.lineTo(
+                config.runtime.PWLineParam.arr1[i].x,
+                config.runtime.PWLineParam.arr1[i].y
+            );
         }
         CTXLine.stroke();
     }
 
     // Bottom line
-    if (config.runtime.PWLineParam.Direction !== 1 || (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)) {
+    if (
+        config.runtime.PWLineParam.Direction !== 1 ||
+        (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)
+    ) {
         CTXLine.beginPath();
         CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
         for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
+            CTXLine.lineTo(
+                config.runtime.PWLineParam.arr2[i].x,
+                config.runtime.PWLineParam.arr2[i].y
+            );
         }
         CTXLine.stroke();
     }
@@ -345,9 +424,18 @@ export function PWLineStyle3(): void {
     // Bidirectional middle line
     if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
         CTXLine.beginPath();
-        CTXLine.moveTo((config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2, (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2);
-        CTXLine.lineTo((config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) / 2, (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y + config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) / 2);
+        CTXLine.moveTo(
+            (config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2,
+            (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2
+        );
+        CTXLine.lineTo(
+            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x +
+                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) /
+                2,
+            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y +
+                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) /
+                2
+        );
         CTXLine.stroke();
     }
 }
-

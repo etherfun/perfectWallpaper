@@ -4,16 +4,16 @@
 @use 'config' as *;
 
 #countdown {
-  visibility: var(--countdown-visibility);
-  display: var(--countdown-display);
-  @include component-position('countdown');
-  color: rgb(var(--countdown-color));
-  font-size: var(--countdown-font-size);
-  opacity: var(--countdown-opacity);
+    visibility: var(--countdown-visibility);
+    display: var(--countdown-display);
+    @include component-position('countdown');
+    color: rgb(var(--countdown-color));
+    font-size: var(--countdown-font-size);
+    opacity: var(--countdown-opacity);
 
-  .text {
-    white-space: nowrap;
-    @include yakeli-effect('countdown');
-    width: var(--countdown-show-width);
-  }
+    .text {
+        white-space: nowrap;
+        @include yakeli-effect('countdown');
+        width: var(--countdown-show-width);
+    }
 }

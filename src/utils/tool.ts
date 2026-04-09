@@ -35,16 +35,16 @@ export function add0(n: number, digits: number = 2): string {
  * @returns RGB数组 [r, g, b]
  */
 export function hexToRgb(hexColor: string): [number, number, number] {
-    const colorCode = hexColor.replace("#", "");
-    
+    const colorCode = hexColor.replace('#', '');
+
     if (colorCode.length !== 6) {
         throw new Error('Invalid hex color format');
     }
-    
+
     const r = parseInt(colorCode.substring(0, 2), 16);
     const g = parseInt(colorCode.substring(2, 4), 16);
     const b = parseInt(colorCode.substring(4, 6), 16);
-    
+
     return [r, g, b];
 }
 
@@ -89,8 +89,8 @@ export function weather_paymode(): boolean {
  * @returns Promise<Response>
  */
 export function fetch_with_retry(
-    url: string, 
-    options: RequestInit = {}, 
+    url: string,
+    options: RequestInit = {},
     maxRetries: number = 3
 ): Promise<Response> {
     return new Promise((resolve, reject) => {
@@ -98,10 +98,15 @@ export function fetch_with_retry(
             fetch(url, options)
                 .then(async response => {
                     if (!response.ok) {
-                        const errorMsg = typeof window.get_i18n_text === 'function'
-                            ? String(await window.get_i18n_text(window.error_get_weather_data || 'error_get_weather_data'))
-                            : '获取天气数据失败';
-                        debugLogger.warn("Get weather failed");
+                        const errorMsg =
+                            typeof window.get_i18n_text === 'function'
+                                ? String(
+                                      await window.get_i18n_text(
+                                          window.error_get_weather_data || 'error_get_weather_data'
+                                      )
+                                  )
+                                : '获取天气数据失败';
+                        debugLogger.warn('Get weather failed');
                         throw new Error(`${errorMsg} HTTP ${response.status}`);
                     }
                     return response;
@@ -137,9 +142,9 @@ export function getTime(timestamp: Date, seconds: boolean = true): string {
         hour: '2-digit',
         minute: '2-digit',
         second: undefined,
-        hour12: false
+        hour12: false,
     };
-    
+
     if (seconds) {
         format.second = '2-digit';
     }
@@ -171,14 +176,14 @@ export function getQWeatherIcon(vcIcon: string, isNight: boolean): number {
  */
 export function isNightTime(nowTime: string, sunrise: string, sunset: string): boolean {
     const toMinutes = (t: string): number => {
-        const [hours, minutes, seconds] = t.split(":").map(Number);
+        const [hours, minutes, seconds] = t.split(':').map(Number);
         return hours * 60 + minutes + seconds / 60;
     };
-    
+
     const now = toMinutes(nowTime);
     const rise = toMinutes(sunrise);
     const set = toMinutes(sunset);
-    
+
     return now < rise || now > set;
 }
 
@@ -200,11 +205,11 @@ export function debounce<T extends (...args: any[]) => any>(
         return new Promise((resolve, reject) => {
             const context = this;
 
-            const later = async function() {
+            const later = async function () {
                 timeout = null;
                 if (!immediate) {
                     try {
-                        const result = await func.apply(context, args) as ReturnType<T>;
+                        const result = (await func.apply(context, args)) as ReturnType<T>;
                         resolve(result);
                     } catch (err) {
                         reject(err);
@@ -248,14 +253,13 @@ export function throttle<T extends (...args: any[]) => any>(
 ): (...args: Parameters<T>) => void {
     let inThrottle: boolean = false;
 
-    return function(this: any, ...args: Parameters<T>) {
+    return function (this: any, ...args: Parameters<T>) {
         const context = this;
 
         if (!inThrottle) {
             func.apply(context, args);
             inThrottle = true;
-            setTimeout(() => inThrottle = false, limit);
+            setTimeout(() => (inThrottle = false), limit);
         }
     };
 }
-

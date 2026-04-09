@@ -40,7 +40,7 @@ interface AudioVisualizerOptions {
 }
 
 const DEFAULTS: AudioVisualizerOptions = {
-    opacity: 0.90,
+    opacity: 0.9,
     color: '255,255,255',
     shadowColor: '255,255,255',
     shadowBlur: 15,
@@ -64,7 +64,7 @@ const DEFAULTS: AudioVisualizerOptions = {
     isBall: true,
     ballSpacer: 3,
     ballSize: 3,
-    ballRotation: 0
+    ballRotation: 0,
 };
 
 export class NativeAudioVisualizer {
@@ -132,11 +132,15 @@ export class NativeAudioVisualizer {
             top: '0',
             left: '0',
             'z-index': '2',
-            opacity: String(this.opacity)
+            opacity: String(this.opacity),
         });
 
-        this.canvasWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-        this.canvasHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+        this.canvasWidth =
+            window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+        this.canvasHeight =
+            window.innerHeight ||
+            document.documentElement.clientHeight ||
+            document.body.clientHeight;
         this.canvas.width = this.canvasWidth;
         this.canvas.height = this.canvasHeight;
 
@@ -153,7 +157,7 @@ export class NativeAudioVisualizer {
     }
 
     private setupPointerEvents(): void {
-        this.canvas.addEventListener('click', (e) => {
+        this.canvas.addEventListener('click', e => {
             if (this.isClickOffset) {
                 this.offsetX = e.clientX / this.canvasWidth;
                 this.offsetY = e.clientY / this.canvasHeight;
@@ -161,8 +165,14 @@ export class NativeAudioVisualizer {
         });
 
         window.addEventListener('resize', () => {
-            this.canvasWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
-            this.canvasHeight = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight;
+            this.canvasWidth =
+                window.innerWidth ||
+                document.documentElement.clientWidth ||
+                document.body.clientWidth;
+            this.canvasHeight =
+                window.innerHeight ||
+                document.documentElement.clientHeight ||
+                document.body.clientHeight;
             this.minLength = Math.min(this.canvasWidth, this.canvasHeight);
             this.originX = this.canvasWidth * this.offsetX;
             this.originY = this.canvasHeight * this.offsetY;
@@ -170,7 +180,7 @@ export class NativeAudioVisualizer {
     }
 
     private getRingArray(audioSamples: number[], num: number): number[] {
-        const AudioArray = [...audioSamples || []];
+        const AudioArray = [...(audioSamples || [])];
         const max = AudioArray.length - num;
         let isFirst = true;
         for (let i = 0; i < max; i++) {
@@ -193,7 +203,12 @@ export class NativeAudioVisualizer {
         return AudioArray;
     }
 
-    private getAudioSamples(audioSamples: number[], index: number, decline: number, isChange: boolean): number {
+    private getAudioSamples(
+        audioSamples: number[],
+        index: number,
+        decline: number,
+        isChange: boolean
+    ): number {
         let audioValue = audioSamples[index] ? audioSamples[index] : 0;
         audioValue = Math.max(audioValue, (this.lastAudioSamples[index] || 0) - decline || 0.1);
         audioValue = Math.min(audioValue, 1.5);
@@ -204,23 +219,27 @@ export class NativeAudioVisualizer {
     }
 
     private rotation(angle: number, deg: number): number {
-        angle += Math.PI / 180 * deg;
+        angle += (Math.PI / 180) * deg;
         angle = angle % (2 * Math.PI);
         return angle;
     }
 
     private getDeg(point: number, index: number, angle: number): number {
-        return Math.PI / 180 * (360 / point) * (index + angle / 3);
+        return (Math.PI / 180) * (360 / point) * (index + angle / 3);
     }
 
     private getXY(radius: number, deg: number, x: number, y: number): { x: number; y: number } {
         return {
             x: Math.cos(deg) * radius + x,
-            y: Math.sin(deg) * radius + y
+            y: Math.sin(deg) * radius + y,
         };
     }
 
-    private setPoint(audioSamples: number[], direction: number, isChange: boolean): { x: number; y: number }[] {
+    private setPoint(
+        audioSamples: number[],
+        direction: number,
+        isChange: boolean
+    ): { x: number; y: number }[] {
         const pointArray: { x: number; y: number }[] = [];
         const ringArray = this.getRingArray(audioSamples, this.pointNum);
         this.rotationAngle1 = this.rotation(this.rotationAngle1, this.ringRotation);
@@ -228,7 +247,9 @@ export class NativeAudioVisualizer {
         for (let i = 0; i < ringArray.length; i++) {
             const deg = this.getDeg(ringArray.length, i, this.rotationAngle1);
             const audioValue = this.getAudioSamples(audioSamples, i, this.decline, isChange);
-            const radius = this.radius * (this.minLength / 2) + direction * (this.distance + audioValue * (this.amplitude * 15));
+            const radius =
+                this.radius * (this.minLength / 2) +
+                direction * (this.distance + audioValue * (this.amplitude * 15));
             const point = this.getXY(radius, deg, this.originX, this.originY);
             pointArray.push({ x: point.x, y: point.y });
         }
@@ -257,7 +278,8 @@ export class NativeAudioVisualizer {
         for (let i = 0; i < ballArray.length; i++) {
             const deg = this.getDeg(ballArray.length, i, this.rotationAngle2);
             const audioValue = Math.min(audioSamples[i] ? audioSamples[i] : 0, 1);
-            const radius = this.radius * (this.minLength / 2) + (this.distance + 50) + audioValue * 75;
+            const radius =
+                this.radius * (this.minLength / 2) + (this.distance + 50) + audioValue * 75;
             const point = this.getXY(radius, deg, this.originX, this.originY);
             pointArray.push({ x: point.x, y: point.y });
         }
@@ -266,10 +288,14 @@ export class NativeAudioVisualizer {
 
     private getPointArray(num: number): { x: number; y: number }[] {
         switch (num) {
-            case 1: return this.staticPointsArray;
-            case 2: return this.pointArray1;
-            case 3: return this.pointArray2;
-            default: return [];
+            case 1:
+                return this.staticPointsArray;
+            case 2:
+                return this.pointArray1;
+            case 3:
+                return this.pointArray2;
+            default:
+                return [];
         }
     }
 
@@ -293,7 +319,10 @@ export class NativeAudioVisualizer {
         }
     }
 
-    private drawLine(pointArray1: { x: number; y: number }[], pointArray2: { x: number; y: number }[]): void {
+    private drawLine(
+        pointArray1: { x: number; y: number }[],
+        pointArray2: { x: number; y: number }[]
+    ): void {
         this.context.beginPath();
         const max = Math.min(pointArray1.length, pointArray2.length);
         for (let i = 0; i < max; i++) {

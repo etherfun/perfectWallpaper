@@ -2,9 +2,9 @@
  * Background transition logic
  * Handles two-layer background system with fade transitions
  */
-import { config } from "../utils/config";
-import { applyBackgroundStyle } from "./styles";
-import { backgroundLayers } from "./types";
+import { config } from '../utils/config';
+import { applyBackgroundStyle } from './styles';
+import { backgroundLayers } from './types';
 
 /** Use two-layer background for gradient switching */
 export function transitionBackground(newImageUrl: string): void {
@@ -16,7 +16,8 @@ export function transitionBackground(newImageUrl: string): void {
     if (backgroundLayers.isTransitioning) return;
 
     // Get current active layer
-    const activeLayer = backgroundLayers.currentActive === 1 ? backgroundLayers.layer1 : backgroundLayers.layer2;
+    const activeLayer =
+        backgroundLayers.currentActive === 1 ? backgroundLayers.layer1 : backgroundLayers.layer2;
 
     // Skip if new image is same as current
     if (activeLayer && activeLayer.style.backgroundImage) {
@@ -28,12 +29,20 @@ export function transitionBackground(newImageUrl: string): void {
     backgroundLayers.isTransitioning = true;
 
     // Get current and next layers
-    const currentLayer = backgroundLayers.currentActive === 1 ? backgroundLayers.layer1 : backgroundLayers.layer2;
-    const nextLayer = backgroundLayers.currentActive === 1 ? backgroundLayers.layer2 : backgroundLayers.layer1;
+    const currentLayer =
+        backgroundLayers.currentActive === 1 ? backgroundLayers.layer1 : backgroundLayers.layer2;
+    const nextLayer =
+        backgroundLayers.currentActive === 1 ? backgroundLayers.layer2 : backgroundLayers.layer1;
 
     // Get current and next blur layers
-    const currentBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer1 : backgroundLayers.blurLayer2;
-    const nextBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer2 : backgroundLayers.blurLayer1;
+    const currentBlurLayer =
+        backgroundLayers.blurCurrentActive === 1
+            ? backgroundLayers.blurLayer1
+            : backgroundLayers.blurLayer2;
+    const nextBlurLayer =
+        backgroundLayers.blurCurrentActive === 1
+            ? backgroundLayers.blurLayer2
+            : backgroundLayers.blurLayer1;
 
     // Set background image for next layer
     nextLayer.style.backgroundImage = "url('" + newImageUrl + "')";
@@ -47,18 +56,18 @@ export function transitionBackground(newImageUrl: string): void {
     applyBackgroundStyle();
 
     // Start transition
-    setTimeout(function() {
+    setTimeout(function () {
         // Fade out current layer
-        currentLayer.style.opacity = "0";
+        currentLayer.style.opacity = '0';
         // Fade in next layer
-        nextLayer.style.opacity = "1";
+        nextLayer.style.opacity = '1';
         // Fade out current blur layer
         if (currentBlurLayer) {
-            currentBlurLayer.style.opacity = "0";
+            currentBlurLayer.style.opacity = '0';
         }
         // Fade in next blur layer
         if (nextBlurLayer) {
-            nextBlurLayer.style.opacity = "1";
+            nextBlurLayer.style.opacity = '1';
         }
 
         // Switch active layer
@@ -66,7 +75,7 @@ export function transitionBackground(newImageUrl: string): void {
         backgroundLayers.blurCurrentActive = backgroundLayers.blurCurrentActive === 1 ? 2 : 1;
 
         // Reset transition state
-        setTimeout(function() {
+        setTimeout(function () {
             backgroundLayers.isTransitioning = false;
         }, 1000);
     }, 50);

@@ -9,9 +9,7 @@ import { debugLogger } from '../utils/logger';
 import { hasPlaybackContent } from '../utils/playback';
 import { timerManager } from '../utils/timer';
 import type { FluidEffectOptions } from './types';
-import {
-    DEFAULT_FLUID_EFFECT_CONFIG,
-    DEFAULT_FLUID_EFFECT_OPTIONS} from './types';
+import { DEFAULT_FLUID_EFFECT_CONFIG, DEFAULT_FLUID_EFFECT_OPTIONS } from './types';
 
 // ============================================================
 // 渲染器类 (原 FluidEffect2)
@@ -50,11 +48,16 @@ class FluidEffect2Renderer {
         this.options = {
             resolution: options.resolution ?? DEFAULT_FLUID_EFFECT_OPTIONS.resolution,
             blurAmount: options.blurAmount ?? DEFAULT_FLUID_EFFECT_OPTIONS.blurAmount,
-            displacementScale: options.displacementScale ?? DEFAULT_FLUID_EFFECT_OPTIONS.displacementScale,
+            displacementScale:
+                options.displacementScale ?? DEFAULT_FLUID_EFFECT_OPTIONS.displacementScale,
             turbulenceSeed: options.turbulenceSeed ?? Math.floor(Math.random() * 1000),
-            turbulenceFrequency: options.turbulenceFrequency ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceFrequency,
-            turbulenceOctaves: options.turbulenceOctaves ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceOctaves,
-            canvasDisplacementAmplitude: options.canvasDisplacementAmplitude ?? DEFAULT_FLUID_EFFECT_OPTIONS.canvasDisplacementAmplitude,
+            turbulenceFrequency:
+                options.turbulenceFrequency ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceFrequency,
+            turbulenceOctaves:
+                options.turbulenceOctaves ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceOctaves,
+            canvasDisplacementAmplitude:
+                options.canvasDisplacementAmplitude ??
+                DEFAULT_FLUID_EFFECT_OPTIONS.canvasDisplacementAmplitude,
             fullscreen: options.fullscreen ?? DEFAULT_FLUID_EFFECT_OPTIONS.fullscreen,
         };
         this.init();
@@ -99,7 +102,10 @@ class FluidEffect2Renderer {
 
         this.feTurbulence = document.createElementNS(svgNS, 'feTurbulence');
         this.feTurbulence.setAttribute('type', 'fractalNoise');
-        this.feTurbulence.setAttribute('baseFrequency', this.options.turbulenceFrequency.toString());
+        this.feTurbulence.setAttribute(
+            'baseFrequency',
+            this.options.turbulenceFrequency.toString()
+        );
         this.feTurbulence.setAttribute('numOctaves', this.options.turbulenceOctaves.toString());
         this.feTurbulence.setAttribute('seed', this.options.turbulenceSeed.toString());
 
@@ -141,7 +147,7 @@ class FluidEffect2Renderer {
             const amp = parseFloat(String(this.options.canvasDisplacementAmplitude)) || 200;
             this._canvasOffsets.push({
                 dx: (Math.random() * 2 - 1) * amp,
-                dy: (Math.random() * 2 - 1) * amp
+                dy: (Math.random() * 2 - 1) * amp,
             });
 
             const delays = [0, -5, -10, -15];
@@ -199,8 +205,8 @@ class FluidEffect2Renderer {
                 const signX = x === 0 ? -1 : 1;
                 const signY = y === 0 ? -1 : 1;
 
-                const baseLeft = (width / 2 + signX * canvasSize * 0.35) - canvasSize / 2;
-                const baseTop = (height / 2 + signY * canvasSize * 0.35) - canvasSize / 2;
+                const baseLeft = width / 2 + signX * canvasSize * 0.35 - canvasSize / 2;
+                const baseTop = height / 2 + signY * canvasSize * 0.35 - canvasSize / 2;
 
                 const offset = this._canvasOffsets[index] ?? { dx: 0, dy: 0 };
                 canvas.style.left = `${baseLeft + offset.dx}px`;
@@ -217,7 +223,7 @@ class FluidEffect2Renderer {
         if (!image || !image.complete) {
             debugLogger.warn('setSourceFromImage: 图像无效或未加载完成', {
                 image: image ? 'exists' : 'null',
-                complete: image ? image.complete : 'N/A'
+                complete: image ? image.complete : 'N/A',
             });
             return;
         }
@@ -225,22 +231,26 @@ class FluidEffect2Renderer {
         const imageUrl = image.src || (image as any).currentSrc || '';
 
         // 脏检查：图片 URL 没变且尺寸没变，跳过重新绘制
-        if (imageUrl === this._lastRenderImageUrl && this._cachedSourceSize.width === image.naturalWidth) {
+        if (
+            imageUrl === this._lastRenderImageUrl &&
+            this._cachedSourceSize.width === image.naturalWidth
+        ) {
             return;
         }
 
         this.currentImage = image;
         this._lastRenderImageUrl = imageUrl;
 
-        const width = image.naturalWidth || image.width || (image.clientWidth || 0);
-        const height = image.naturalHeight || image.height || (image.clientHeight || 0);
+        const width = image.naturalWidth || image.width || image.clientWidth || 0;
+        const height = image.naturalHeight || image.height || image.clientHeight || 0;
         const sWidth = Math.floor(width / 2);
         const sHeight = Math.floor(height / 2);
 
         // 缓存源图尺寸
         this._cachedSourceSize = { width, height, sWidth, sHeight };
 
-        const displaySize = this._lastDisplaySize || Math.round(this.options.resolution / (this._cachedDpr || 1));
+        const displaySize =
+            this._lastDisplaySize || Math.round(this.options.resolution / (this._cachedDpr || 1));
 
         for (let i = 0; i < 4; i++) {
             const ctx = this.canvasContexts[i];
@@ -249,14 +259,10 @@ class FluidEffect2Renderer {
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const sx = (i % 2 === 0) ? 0 : sWidth;
-            const sy = (i < 2) ? 0 : sHeight;
+            const sx = i % 2 === 0 ? 0 : sWidth;
+            const sy = i < 2 ? 0 : sHeight;
 
-            ctx.drawImage(
-                image,
-                sx, sy, sWidth, sHeight,
-                0, 0, displaySize, displaySize
-            );
+            ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, displaySize, displaySize);
         }
 
         if (this.feTurbulence && imageUrl !== this._currentImageUrl) {
@@ -269,7 +275,7 @@ class FluidEffect2Renderer {
         const image = new Image();
         image.crossOrigin = 'Anonymous';
         image.onload = () => this.setSourceFromImage(image);
-        image.onerror = (error) => {
+        image.onerror = error => {
             debugLogger.error('加载 FluidEffect2 图像失败', { url, error });
         };
         image.src = url;
@@ -277,7 +283,9 @@ class FluidEffect2Renderer {
 
     setDisplacementScale(scale: number): void {
         if (!this.feDisplacementMap) return;
-        const currentScale = parseFloat(this.feDisplacementMap.getAttribute('scale') || String(this.options.displacementScale));
+        const currentScale = parseFloat(
+            this.feDisplacementMap.getAttribute('scale') || String(this.options.displacementScale)
+        );
         const newScale = currentScale + (scale - currentScale) * 0.1;
         this.feDisplacementMap.setAttribute('scale', String(newScale));
     }
@@ -323,7 +331,10 @@ class FluidEffect2Renderer {
         }
 
         if (newOptions.turbulenceFrequency !== undefined) {
-            this.feTurbulence?.setAttribute('baseFrequency', String(newOptions.turbulenceFrequency));
+            this.feTurbulence?.setAttribute(
+                'baseFrequency',
+                String(newOptions.turbulenceFrequency)
+            );
         }
 
         if (newOptions.turbulenceOctaves !== undefined) {
@@ -341,7 +352,7 @@ class FluidEffect2Renderer {
             for (let i = 0; i < this._canvasOffsets.length; i++) {
                 this._canvasOffsets[i] = {
                     dx: (Math.random() * 2 - 1) * amp,
-                    dy: (Math.random() * 2 - 1) * amp
+                    dy: (Math.random() * 2 - 1) * amp,
                 };
             }
             this.onResize();
@@ -622,7 +633,9 @@ export class FluidEffect {
             return;
         }
 
-        const container = document.querySelector('#player_control .background') as HTMLElement | null;
+        const container = document.querySelector(
+            '#player_control .background'
+        ) as HTMLElement | null;
         if (!container) {
             return;
         }
@@ -634,14 +647,16 @@ export class FluidEffect {
                 displacementScale: this.displacementScale,
                 turbulenceFrequency: this.turbulenceFrequency,
                 turbulenceOctaves: this.turbulenceOctaves,
-                canvasDisplacementAmplitude: this.canvasDisplacementAmplitude
+                canvasDisplacementAmplitude: this.canvasDisplacementAmplitude,
             });
             this._normalEffect = effect;
 
             const thumbnail = elements.playerControl.thumbnail as HTMLImageElement | undefined;
             if (thumbnail?.complete && effect.setSourceFromImage) {
                 effect.setSourceFromImage(thumbnail);
-                const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+                const wrapper = document.querySelector(
+                    '.fluid-effect-wrapper'
+                ) as HTMLElement | null;
                 if (wrapper && thumbnail.src) {
                     wrapper.style.backgroundImage = `url('${thumbnail.src}')`;
                 }
@@ -714,7 +729,7 @@ export class FluidEffect {
                 turbulenceFrequency: this.turbulenceFrequency,
                 turbulenceOctaves: this.turbulenceOctaves,
                 canvasDisplacementAmplitude: this.canvasDisplacementAmplitude,
-                fullscreen: true
+                fullscreen: true,
             });
             this._fullscreenEffect = effect;
             effect.start();
@@ -732,7 +747,9 @@ export class FluidEffect {
                 img.onload = () => {
                     if (this._fullscreenEffect) {
                         this._fullscreenEffect.setSourceFromImage(img);
-                        const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+                        const wrapper = document.querySelector(
+                            '.fluid-effect-wrapper'
+                        ) as HTMLElement | null;
                         if (wrapper) {
                             wrapper.style.backgroundImage = `url('${imgSrc}')`;
                             wrapper.style.backgroundSize = 'cover';
@@ -743,7 +760,9 @@ export class FluidEffect {
                 };
                 img.src = imgSrc;
             } else {
-                const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+                const wrapper = document.querySelector(
+                    '.fluid-effect-wrapper'
+                ) as HTMLElement | null;
                 if (wrapper) {
                     wrapper.style.backgroundImage = "url('imgs/1.jpg')";
                     wrapper.style.backgroundSize = 'cover';
@@ -795,7 +814,9 @@ export class FluidEffect {
         img.onload = () => {
             if (this._fullscreenEffect?.setSourceFromImage) {
                 this._fullscreenEffect.setSourceFromImage(img);
-                const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
+                const fluidWrapper = document.querySelector(
+                    '.fluid-effect-wrapper'
+                ) as HTMLElement | null;
                 if (fluidWrapper) {
                     fluidWrapper.style.backgroundImage = `url('${thumbnail.src}')`;
                     fluidWrapper.style.backgroundSize = 'cover';

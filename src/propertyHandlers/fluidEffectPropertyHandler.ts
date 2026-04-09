@@ -75,16 +75,23 @@ export function handleFluidEffectProperties(
 
     // 暗化
     if (properties.fluidEffect_DarkOverlayStrength && bodyElement) {
-        config.fluid_effect_dark_overlay_strength = properties.fluidEffect_DarkOverlayStrength.value;
-        bodyElement.style.setProperty("--fluidEffect-dark-overlay-strength", String(properties.fluidEffect_DarkOverlayStrength.value / 100));
+        config.fluid_effect_dark_overlay_strength =
+            properties.fluidEffect_DarkOverlayStrength.value;
+        bodyElement.style.setProperty(
+            '--fluidEffect-dark-overlay-strength',
+            String(properties.fluidEffect_DarkOverlayStrength.value / 100)
+        );
     }
 
     // 模糊
     if (properties.fluidEffect_backdropFilterStrength && bodyElement) {
-        config.fluid_effect_backdrop_filter_strength = properties.fluidEffect_backdropFilterStrength.value;
-        bodyElement.style.setProperty("--fluidEffect-backdrop-filter-strength", `${properties.fluidEffect_backdropFilterStrength.value}px`);
+        config.fluid_effect_backdrop_filter_strength =
+            properties.fluidEffect_backdropFilterStrength.value;
+        bodyElement.style.setProperty(
+            '--fluidEffect-backdrop-filter-strength',
+            `${properties.fluidEffect_backdropFilterStrength.value}px`
+        );
     }
-
 
     if (FirstLoad) {
         debugLogger.info('[FluidEffect] 流体参数初始化完成');

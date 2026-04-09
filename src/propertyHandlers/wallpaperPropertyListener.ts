@@ -29,7 +29,12 @@ import { handleWeatherProperties } from './weatherPropertyHandler';
 /**
  * 安全执行属性处理函数,捕获并记录错误
  */
-function safeHandle<T extends (...args: any[]) => void>(handler: T, properties: WallpaperProperties, firstLoad: boolean, name: string): void {
+function safeHandle<T extends (...args: any[]) => void>(
+    handler: T,
+    properties: WallpaperProperties,
+    firstLoad: boolean,
+    name: string
+): void {
     try {
         handler(properties, firstLoad);
     } catch (e) {
@@ -45,7 +50,9 @@ function safeHandle<T extends (...args: any[]) => void>(handler: T, properties: 
 function savePropertiesToLocalStorage(properties: Record<string, any>): void {
     // 获取已有配置
     const existingConfigStr = localStorage.getItem('perfectwall_user_properties');
-    const existingConfig: Record<string, any> = existingConfigStr ? JSON.parse(existingConfigStr) : {};
+    const existingConfig: Record<string, any> = existingConfigStr
+        ? JSON.parse(existingConfigStr)
+        : {};
 
     // 提取新属性的 { value } 结构并合并
     for (const [key, prop] of Object.entries(properties)) {
@@ -68,7 +75,6 @@ export function createWallpaperPropertyListener(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
-
     // 全局语言设置
     if (properties.global_settings_language) {
         config.language = properties.global_settings_language.value;
@@ -88,7 +94,10 @@ export function createWallpaperPropertyListener(
 
     // 版本更新弹窗显示设置
     if (properties.wallpaper_updata_open_on_update) {
-        localStorage.setItem("perfectwall_version_show_update", String(properties.wallpaper_updata_open_on_update.value));
+        localStorage.setItem(
+            'perfectwall_version_show_update',
+            String(properties.wallpaper_updata_open_on_update.value)
+        );
     }
 
     // 调试日志复制
@@ -109,7 +118,11 @@ export function createWallpaperPropertyListener(
             .split(';')
             .map(font => {
                 const trimmedFont = font.trim();
-                if (trimmedFont.includes(' ') && !trimmedFont.startsWith('"') && !trimmedFont.startsWith("'")) {
+                if (
+                    trimmedFont.includes(' ') &&
+                    !trimmedFont.startsWith('"') &&
+                    !trimmedFont.startsWith("'")
+                ) {
                     return `"${trimmedFont}"`;
                 }
                 return trimmedFont;
@@ -133,14 +146,24 @@ export function createWallpaperPropertyListener(
     safeHandle(handleWeatherProperties, properties, FirstLoad, 'handleWeatherProperties');
     safeHandle(handleHitokotoProperties, properties, FirstLoad, 'handleHitokotoProperties');
     safeHandle(handleCountdownProperties, properties, FirstLoad, 'handleCountdownProperties');
-    safeHandle(handlePlayerControlProperties, properties, FirstLoad, 'handlePlayerControlProperties');
+    safeHandle(
+        handlePlayerControlProperties,
+        properties,
+        FirstLoad,
+        'handlePlayerControlProperties'
+    );
     safeHandle(handleRGBProperties, properties, FirstLoad, 'handleRGBProperties');
     safeHandle(handleParticleProperties, properties, FirstLoad, 'handleParticleProperties');
     safeHandle(handleAudioVisualProperties, properties, FirstLoad, 'handleAudioVisualProperties');
     safeHandle(handleSakuraProperties, properties, FirstLoad, 'handleSakuraProperties');
     safeHandle(handleFluidEffectProperties, properties, FirstLoad, 'handleFluidEffectProperties');
     safeHandle(handleLyricsProperties, properties, FirstLoad, 'handleLyricsProperties');
-    safeHandle(handleSystemMonitorProperties, properties, FirstLoad, 'handleSystemMonitorProperties');
+    safeHandle(
+        handleSystemMonitorProperties,
+        properties,
+        FirstLoad,
+        'handleSystemMonitorProperties'
+    );
     safeHandle(handleDockBarProperties, properties, FirstLoad, 'handleDockBarProperties');
 
     // 如果是首次加载，在处理完所有属性后将其设置为 false
@@ -163,7 +186,11 @@ export function setupWallpaperPropertyListener(): void {
 
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
-                if (Object.keys(properties).length == 0 || (config.first_load === false && Object.keys(properties).length > 10)) return;
+                if (
+                    Object.keys(properties).length == 0 ||
+                    (config.first_load === false && Object.keys(properties).length > 10)
+                )
+                    return;
 
                 propertiesReceived = true;
                 const isFirstLoad = config.first_load;
@@ -186,7 +213,9 @@ export function setupWallpaperPropertyListener(): void {
             },
             userDirectoryFilesRemoved: (propertyName: string, removedFiles: string[]) => {
                 const removedSet = new Set(removedFiles);
-                runtime.files[propertyName] = runtime.files[propertyName].filter(file => !removedSet.has(file));
+                runtime.files[propertyName] = runtime.files[propertyName].filter(
+                    file => !removedSet.has(file)
+                );
                 runtime.myList = runtime.myList.filter(file => !removedSet.has(file));
                 updateFileList(runtime.files[propertyName]);
             },
@@ -199,16 +228,34 @@ export function setupWallpaperPropertyListener(): void {
                     myAudio.pause();
                 } else {
                     config.paused = false;
-                    if (myvideo.src && !(myvideo.paused && (myvideo.src.slice(-10) === 'twall/null' || myvideo.src.slice(-10) === 'index.html'))) {
+                    if (
+                        myvideo.src &&
+                        !(
+                            myvideo.paused &&
+                            (myvideo.src.slice(-10) === 'twall/null' ||
+                                myvideo.src.slice(-10) === 'index.html')
+                        )
+                    ) {
                         myvideo.play();
                     }
                     // 只有当用户没有手动暂停时才恢复音频
-                    if (config.runtime.playerInfo.playerState !== 2 && myAudio.src && !(myAudio.paused && (myAudio.src.slice(-10) === 'twall/null' || myAudio.src.slice(-10) === 'index.html'))) {
+                    if (
+                        config.runtime.playerInfo.playerState !== 2 &&
+                        myAudio.src &&
+                        !(
+                            myAudio.paused &&
+                            (myAudio.src.slice(-10) === 'twall/null' ||
+                                myAudio.src.slice(-10) === 'index.html')
+                        )
+                    ) {
                         myAudio.play();
                     }
                     if (config.rgb_show === true) {
                         if (config.wallpaper_mode !== 3) {
-                            const src = document.body.style.backgroundImage.replace(/^url\("(.+?)"\)$/, '$1');
+                            const src = document.body.style.backgroundImage.replace(
+                                /^url\("(.+?)"\)$/,
+                                '$1'
+                            );
                             background2canvas(src, false);
                         } else {
                             background2canvas(null, true);
@@ -218,7 +265,7 @@ export function setupWallpaperPropertyListener(): void {
                         removesakura();
                     }
                 }
-            }
+            },
         };
 
         // 注册 Wallpaper Engine 音频监听器
@@ -235,13 +282,15 @@ export function setupWallpaperPropertyListener(): void {
                     config.wallpaper_settings.cuePlugin = true;
                     debugLogger.info('[RGB] CUE 插件已加载');
                 }
-            }
+            },
         };
 
         // 5秒超时：如果 Wallpaper Engine 没有在5秒内发送配置，则使用 localStorage 的配置初始化
         setTimeout(() => {
             if (!propertiesReceived) {
-                debugLogger.warn('[PropertyHandler] Wallpaper Engine 未在5秒内发送配置，使用 localStorage 配置初始化');
+                debugLogger.warn(
+                    '[PropertyHandler] Wallpaper Engine 未在5秒内发送配置，使用 localStorage 配置初始化'
+                );
                 const savedConfigStr = localStorage.getItem('perfectwall_user_properties');
                 if (savedConfigStr) {
                     restoredFromLocalStorage = true;

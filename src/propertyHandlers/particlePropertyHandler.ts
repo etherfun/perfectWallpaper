@@ -12,7 +12,6 @@ export function handleParticleProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
-
     const wallpaper = config.runtime.wallpaper;
 
     if (properties.particles_isParticles) {
@@ -40,13 +39,17 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_color) {
-        const color = properties.particles_color.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        const color = properties.particles_color.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         config.particles_color = color;
         wallpaper?.particles('set', 'color', color);
     }
 
     if (properties.particles_shadowColor) {
-        const color = properties.particles_shadowColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        const color = properties.particles_shadowColor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         config.particles_shadow_color = color;
         wallpaper?.particles('set', 'shadowColor', color);
     }
@@ -130,7 +133,9 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_linkColor) {
-        const color = properties.particles_linkColor.value.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+        const color = properties.particles_linkColor.value
+            .split(' ')
+            .map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
         config.particles_link_color = color;
         wallpaper?.particles('set', 'linkColor', color);
     }

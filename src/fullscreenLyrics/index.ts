@@ -8,7 +8,7 @@ export * from './types';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { escapeHtml } from '../utils/string';
-import type { FullscreenLyricsConfig,LyricLine, LyricsData } from './types';
+import type { FullscreenLyricsConfig, LyricLine, LyricsData } from './types';
 
 // Lyrics API configuration
 const LYRICS_API_URL = 'ws://localhost:42954/get';
@@ -40,7 +40,7 @@ export class FullscreenLyrics {
             delay: 0,
             enableBlur: true,
             hideOtherElements: true,
-            showClock: false
+            showClock: false,
         };
     }
 
@@ -257,7 +257,7 @@ export class FullscreenLyrics {
                 debugLogger.info('[FullscreenLyrics] WebSocket connected');
             };
 
-            this.ws.onmessage = (event) => {
+            this.ws.onmessage = event => {
                 try {
                     const data = JSON.parse(event.data);
                     this.handleLyricsUpdate(data);
@@ -271,7 +271,7 @@ export class FullscreenLyrics {
                 this.startHTTPPolling();
             };
 
-            this.ws.onerror = (error) => {
+            this.ws.onerror = error => {
                 debugLogger.error('[FullscreenLyrics] WebSocket error', error);
                 this.startHTTPPolling();
             };
@@ -356,7 +356,12 @@ export class FullscreenLyrics {
         }
     }
 
-    private updateWordHighlight(el: HTMLElement, line: any, currentTime: number, hasDynamic: boolean): void {
+    private updateWordHighlight(
+        el: HTMLElement,
+        line: any,
+        currentTime: number,
+        hasDynamic: boolean
+    ): void {
         if (!hasDynamic || !line || !line.dynamicLyric) return;
 
         const words = el.querySelectorAll('.word');
@@ -383,7 +388,12 @@ export class FullscreenLyrics {
             const currentTime = this.currentData.currentTime || 0;
             const currentLineEl = this.lineElements.get(this.currentLineIndex);
             if (currentLineEl && this.currentData.currentLine) {
-                this.updateWordHighlight(currentLineEl, this.currentData.currentLine, currentTime, this.currentData.hasDynamic);
+                this.updateWordHighlight(
+                    currentLineEl,
+                    this.currentData.currentLine,
+                    currentTime,
+                    this.currentData.hasDynamic
+                );
             }
             this.highlightInterval = window.setTimeout(() => requestAnimationFrame(update), 50);
         };
@@ -416,7 +426,11 @@ export class FullscreenLyrics {
         const totalLines = this.currentData.lyricsArray.length;
         const visibleRange = 5; // Show 5 lines above and below
 
-        for (let i = Math.max(0, toIndex - visibleRange); i <= Math.min(totalLines - 1, toIndex + visibleRange); i++) {
+        for (
+            let i = Math.max(0, toIndex - visibleRange);
+            i <= Math.min(totalLines - 1, toIndex + visibleRange);
+            i++
+        ) {
             if (!this.lineElements.has(i)) {
                 const line = this.currentData.lyricsArray[i];
                 const el = this.createLineElement(line, i);
@@ -472,7 +486,7 @@ export class FullscreenLyrics {
 
         // Scroll to center
         if (this.lyricsContainer && this.scrollContainer) {
-            const targetScroll = (currentIndex * lineHeight) - centerOffset;
+            const targetScroll = currentIndex * lineHeight - centerOffset;
             this.lyricsContainer.style.transform = `translateY(${-targetScroll}px)`;
         }
     }
@@ -497,7 +511,7 @@ export class FullscreenLyrics {
             if (this.currentData?.hasDynamic && line.dynamicLyric) {
                 // Split into words for dynamic highlight - escape HTML to prevent XSS
                 originalEl.innerHTML = this.splitLyricsToWords(line.originalLyric)
-                    .map((word) => `<span class="word">${escapeHtml(word)}</span>`)
+                    .map(word => `<span class="word">${escapeHtml(word)}</span>`)
                     .join('');
             } else {
                 originalEl.textContent = line.originalLyric;
@@ -591,7 +605,7 @@ export class FullscreenLyrics {
 
         // Check if music is playing (playerState: 1 = playing)
         const playerState = config.runtime.playerInfo.playerState;
-        if ((playerState === 1) && !this.isVisible && config.fullscreen_lyrics_enabled) {
+        if (playerState === 1 && !this.isVisible && config.fullscreen_lyrics_enabled) {
             this.show();
         } else if ((playerState === null || playerState === 0) && this.isVisible) {
             this.hide();

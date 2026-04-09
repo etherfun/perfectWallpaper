@@ -5,113 +5,113 @@
 @use 'config' as *;
 
 #system-monitor {
-  position: fixed;
-  z-index: var(--sysmon-z, 9999);
-  pointer-events: none;
-  transform: translate(-50%, -50%);
+    position: fixed;
+    z-index: var(--sysmon-z, 9999);
+    pointer-events: none;
+    transform: translate(-50%, -50%);
 
-  .background {
-    @include yakeli-effect(sysmon);
-    display: flex;
-    flex-direction: column;
-    gap: var(--sysmon-gap, 4px);
-    padding: 8px 12px;
-    border-radius: calc(var(--sysmon-height, 50px) / 2 * var(--sysmon-roundedcorners, 50) / 100);
+    .background {
+        @include yakeli-effect(sysmon);
+        display: flex;
+        flex-direction: column;
+        gap: var(--sysmon-gap, 4px);
+        padding: 8px 12px;
+        border-radius: calc(
+            var(--sysmon-height, 50px) / 2 * var(--sysmon-roundedcorners, 50) / 100
+        );
 
-    &.horizontal-layout {
-      flex-direction: row;
+        &.horizontal-layout {
+            flex-direction: row;
+        }
+
+        &.left-side {
+            align-items: flex-start;
+            .sysmon-label {
+                text-align: left;
+            }
+        }
+
+        &.right-side {
+            align-items: flex-end;
+            .sysmon-label {
+                text-align: right;
+            }
+        }
     }
 
-    &.left-side {
-      align-items: flex-start;
-      .sysmon-label {
-        text-align: left;
-      }
+    .sysmon-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        white-space: nowrap;
     }
-
-    &.right-side {
-      align-items: flex-end;
-      .sysmon-label {
-        text-align: right;
-      }
-    }
-  }
-
-  .sysmon-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    white-space: nowrap;
-  }
 
     .left {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      gap: 4px;
-      justify-content: flex-end;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 4px;
+        justify-content: flex-end;
     }
 
-      .sysmon-bar {
+    .sysmon-bar {
         flex-basis: 100%;
         margin-top: var(--sysmon-gap, 4px);
-      }
-    
+    }
 
     .sysmon-label {
-      flex-shrink: 0;
-      padding: 0 6px;
-      display: flex;
-      align-items: center;
+        flex-shrink: 0;
+        padding: 0 6px;
+        display: flex;
+        align-items: center;
     }
-  
 
-  .right {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sysmon-gap, 4px);
-  }
+    .right {
+        display: flex;
+        flex-direction: column;
+        gap: var(--sysmon-gap, 4px);
+    }
 
-  .main-line {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    flex: 1;
-  }
+    .main-line {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex: 1;
+    }
 
-  .sub-line {
-    display: flex;
-    align-items: center;
-    flex: 0 0 auto;
-  }
+    .sub-line {
+        display: flex;
+        align-items: center;
+        flex: 0 0 auto;
+    }
 
-  .sysmon-value {
-    font-variant-numeric: tabular-nums;
-    min-width: 2.5em;
-  }
+    .sysmon-value {
+        font-variant-numeric: tabular-nums;
+        min-width: 2.5em;
+    }
 
-  .sysmon-extra {
-    font-variant-numeric: tabular-nums;
-    opacity: 0.7;
-    padding: 0 0.5em;
-    min-width: 6ch;
-  }
+    .sysmon-extra {
+        font-variant-numeric: tabular-nums;
+        opacity: 0.7;
+        padding: 0 0.5em;
+        min-width: 6ch;
+    }
 
-  .sysmon-net-down,
-  .sysmon-net-up {
-    font-variant-numeric: tabular-nums;
-    min-width: 7em;
-    display: block;
-  }
+    .sysmon-net-down,
+    .sysmon-net-up {
+        font-variant-numeric: tabular-nums;
+        min-width: 7em;
+        display: block;
+    }
 
-  .sysmon-bar {
-    width: 100%;
-    flex-shrink: 0;
-  }
+    .sysmon-bar {
+        width: 100%;
+        flex-shrink: 0;
+    }
 
-  canvas {
-    display: inline-block;
-    vertical-align: middle;
-    flex-shrink: 0;
-  }
+    canvas {
+        display: inline-block;
+        vertical-align: middle;
+        flex-shrink: 0;
+    }
 }

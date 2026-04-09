@@ -7,11 +7,11 @@ export { shouldShow } from './sources';
 export { applyBackgroundStyle, TransitionSwith } from './styles';
 export { updateFileList } from './transition';
 
-import { timerManager } from "@/utils/timer";
+import { timerManager } from '@/utils/timer';
 
-import { config } from "../utils/config";
-import { shouldShow } from "./sources";
-import { applyBackgroundStyle, calculate, TransitionSwith } from "./styles";
+import { config } from '../utils/config';
+import { shouldShow } from './sources';
+import { applyBackgroundStyle, calculate, TransitionSwith } from './styles';
 
 /** Change background based on mode */
 export function changeBackground(): void {
@@ -68,7 +68,9 @@ export function changeBackground(): void {
         default:
     }
 
-    if (document.querySelector(".fluid-effect-wrapper:not(#player_control .fluid-effect-wrapper)")) {
+    if (
+        document.querySelector('.fluid-effect-wrapper:not(#player_control .fluid-effect-wrapper)')
+    ) {
         timerManager.pause('backgroundChange');
     }
 }
@@ -88,7 +90,7 @@ export function nextImage(rands: boolean): void {
     // Random or sequential
     if (rands) {
         while (index == indexNow) {
-            index = Math.floor(Math.random() * (config.runtime.myList.length));
+            index = Math.floor(Math.random() * config.runtime.myList.length);
         }
         photoInfo.currentImg = config.runtime.myList[index];
     } else {

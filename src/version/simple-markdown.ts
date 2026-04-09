@@ -3,14 +3,15 @@
  * Handles basic markdown formatting
  */
 
-import { i18n } from "../utils/i18n";
+import { i18n } from '../utils/i18n';
 import { debugLogger } from '../utils/logger';
 import {
     type ListItem,
     parseMarkdown,
     processInlineMarkdown,
-    renderListHtml} from "../utils/markdown";
-import { truncateUrl } from "../utils/string";
+    renderListHtml,
+} from '../utils/markdown';
+import { truncateUrl } from '../utils/string';
 
 /**
  * Enhanced Markdown parser (delegates to utility functions)
@@ -85,9 +86,9 @@ export class SimpleMarkdown {
             <div class="notification-content">
                 <div class="notification-icon">📋</div>
                 <div class="notification-text">
-                    <div class="notification-title">${i18n("already_copy")}</div>
+                    <div class="notification-title">${i18n('already_copy')}</div>
                     <div class="notification-url">${truncateUrl(url, 40)}</div>
-                    <div class="notification-hint">${i18n("already_copy_tip")}</div>
+                    <div class="notification-hint">${i18n('already_copy_tip')}</div>
                 </div>
                 <button class="notification-close">&times;</button>
             </div>
@@ -113,7 +114,7 @@ export class SimpleMarkdown {
             });
         }
 
-        notification.addEventListener('animationend', (event) => {
+        notification.addEventListener('animationend', event => {
             if (event.animationName === 'slideInOut') {
                 this.removeNotification(notification);
             }

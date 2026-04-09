@@ -4,11 +4,16 @@
  * Handles CSS bundling, file copying, and HTML processing
  */
 
-const esbuild = require('esbuild');
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
-const chokidar = require('chokidar');
+import esbuild from 'esbuild';
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
+import chokidar from 'chokidar';
+
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const isWatch = process.argv.includes('--watch');
 const srcDir = path.resolve(__dirname, '..');

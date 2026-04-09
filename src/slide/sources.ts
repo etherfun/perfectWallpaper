@@ -2,12 +2,12 @@
  * Wallpaper sources - Bing, NASA, Lorem Picsum, etc.
  */
 
+import { background2canvas } from "../RGB";
 import { config } from "../utils/config";
 import { elements } from "../utils/elementManager";
-import { transitionBackground, updateFileList } from "./transition";
-import { background2canvas } from "../RGB";
 import { ChangeVideoModel } from "../video";
-import { pictures, backgroundLayers } from "./types";
+import { transitionBackground } from "./transition";
+import { backgroundLayers,pictures } from "./types";
 
 /** Clear picture info */
 export function clearpicturesinfo(): void {
@@ -75,6 +75,7 @@ export function shouldShow(): void {
 
     switch (config.wallpaper_mode) {
         case 1: // Single wallpaper mode
+            {
             (elements.myvideo as HTMLVideoElement).src = "";
             backgroundLayers.container.style.display = "block";
             document.body.style.backgroundImage = "";
@@ -96,6 +97,7 @@ export function shouldShow(): void {
                     background2canvas(imageUrl, false);
                     config.runtime.photo.nextphoto = false;
                 }, 100);
+            }
             }
             break;
 
@@ -178,6 +180,7 @@ export function shouldShow(): void {
             break;
 
         case 5: // Lorem Picsum
+            {
             elements.myvideo.src = "";
             backgroundLayers.container.style.display = "block";
             const timestamp = new Date().getTime();
@@ -198,9 +201,11 @@ export function shouldShow(): void {
             };
             clearpicturesinfo();
             pictures.picture_info.style.display = "none";
+            }
             break;
 
         case 6: // NASA
+            {
             if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
@@ -262,6 +267,7 @@ export function shouldShow(): void {
                         });
                     break;
             }
+            }
             break;
 
         case 7: // 次元api
@@ -291,6 +297,7 @@ export function shouldShow(): void {
             break;
 
         case 8: // Windows聚焦
+            {
             if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
@@ -331,9 +338,11 @@ export function shouldShow(): void {
                         }
                     };
                 });
+            }
             break;
 
         case 9: // Custom
+            {
             if (config.pictures_info_show && pictures.picture_info.style.display == "none") {
                 pictures.picture_info.style.display = "flex";
             }
@@ -355,6 +364,7 @@ export function shouldShow(): void {
             };
             clearpicturesinfo();
             pictures.picture_info.style.display = "none";
+            }
             break;
 
         default:

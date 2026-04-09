@@ -4,10 +4,10 @@
 
 export { SimpleMarkdown } from './simple-markdown';
 
-import { waitAndExecute } from "../utils/timer";
-import { fetch_with_retry } from "../utils/tool";
 import { config } from "../utils/config";
 import { i18n } from "../utils/i18n";
+import { waitAndExecute } from "../utils/timer";
+import { fetch_with_retry } from "../utils/tool";
 import { SimpleMarkdown } from './simple-markdown';
 
 // 版本历史数据Promise
@@ -400,8 +400,8 @@ class versionManager {
         }
 
         // 创建新的鼠标移动处理器
-        this.mouseMoveHandler = (event: MouseEvent) => {
-            this.handleMouseMove(event);
+        this.mouseMoveHandler = () => {
+            this.handleMouseMove();
         };
 
         // 添加鼠标移动监听器
@@ -416,7 +416,7 @@ class versionManager {
     }
 
     // 处理鼠标移动事件
-    private handleMouseMove(event: MouseEvent): void {
+    private handleMouseMove(): void {
         this.lastMouseMoveTime = Date.now();
         this.isMouseMoving = true;
 

@@ -6,7 +6,6 @@
 // IMPORTANT: main.ts must be imported FIRST to set up globals before other modules
 // that depend on them (like PWLine, PWCircle, PWParticles) are loaded.
 import './main';
-
 import './version';
 import './sakura';
 import './slide';

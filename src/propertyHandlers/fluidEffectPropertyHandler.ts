@@ -1,9 +1,10 @@
-import { WallpaperProperties } from './types';
-import { elements } from '../utils/elementManager';
 import { config } from '@/utils/config';
-import { FluidEffect } from '../fluid';
 import { debugLogger } from '@/utils/logger';
 import { hasPlaybackContent } from '@/utils/playback';
+
+import { FluidEffect } from '../fluid';
+import { elements } from '../utils/elementManager';
+import { WallpaperProperties } from './types';
 
 /**
  * 处理流体效果相关属性

@@ -1,12 +1,10 @@
-import { WallpaperProperties } from './types';
-import { config } from '../utils/config';
-import { debugLogger } from '../utils/logger';
 import { elements } from '@/utils/elementManager';
+
 import { getdate } from '../date';
 import { startDateColorRhythmLoop, stopDateColorRhythmLoop } from '../date';
-
-// ResizeObserver for date height tracking
-let dateResizeObserver: ResizeObserver | null = null;
+import { config } from '../utils/config';
+import { debugLogger } from '../utils/logger';
+import { WallpaperProperties } from './types';
 
 const oDate = elements.date.container as HTMLElement;
 

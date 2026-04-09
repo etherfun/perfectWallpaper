@@ -47,19 +47,7 @@ interface ConsoleCaptureConfig {
     captureBrowserErrors: boolean;
 }
 
-// 定时器对象接口
-interface TimerObject {
-    id: string;
-    callback: Function;
-    delay: number;
-    remaining: number;
-    startTime: number;
-    timerId: number | null;
-    isPaused: boolean;
-    isActive: boolean;
-    status: 'running' | 'paused' | 'finished' | 'error';
-}
-
+// Logger class for debug output
 export class DebugLogger {
     private outPutConsole: boolean = false;
     public logs: LogEntry[] = [];
@@ -321,14 +309,6 @@ export class DebugLogger {
             console.clear = this.createConsoleWrapper('clear', 'INFO');
         }
         
-        if (this.consoleCaptureConfig.captureProfile && this.originalConsole.profile) {
-            console.profile = this.createConsoleWrapper('profile', 'INFO');
-        }
-        
-        if (this.consoleCaptureConfig.captureProfileEnd && this.originalConsole.profileEnd) {
-            console.profileEnd = this.createConsoleWrapper('profileEnd', 'INFO');
-        }
-        
         if (this.consoleCaptureConfig.captureTimeStamp && this.originalConsole.timeStamp) {
             console.timeStamp = this.createConsoleWrapper('timeStamp', 'INFO');
         }
@@ -422,7 +402,7 @@ export class DebugLogger {
                         return `Error: ${arg.message}`;
                     }
                     return JSON.stringify(arg, this.getCircularReplacer());
-                } catch (error) {
+                } catch (_error) {
                     return `[Object: ${Object.prototype.toString.call(arg)}]`;
                 }
             }
@@ -482,7 +462,7 @@ export class DebugLogger {
                 if (logEntry.level >= this.levels.ERROR && logEntry.stackTrace) {
                     safeConsoleLog('堆栈跟踪:', logEntry.stackTrace);
                 }
-            } catch (error) {
+            } catch (_error) {
                 // 如果安全方法也失败，使用最原始的控制台方法
                 if (console && typeof console.log === 'function' && console.log !== this.createConsoleWrapper) {
                     console.log(`[安全模式] [${logEntry.timeString}] [${logEntry.levelName}] ${logEntry.message}`);

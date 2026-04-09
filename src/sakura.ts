@@ -5,7 +5,7 @@
 
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
-import { Vector3, Matrix44, Vec3 } from './utils/webgl-math';
+import { Matrix44, Vec3,Vector3 } from './utils/webgl-math';
 
 // 片段着色器
 let pp_final_fsh = '#ifdef GL_ES\nprecision highp float;\n#endif\nuniform sampler2D uSrc;    uniform sampler2D uBloom;    uniform vec2 uDelta;    varying vec2 texCoord;    varying vec2 screenCoord;    void main(void) {        vec4 srccol = texture2D(uSrc, texCoord) * 2.0;        vec4 bloomcol = texture2D(uBloom, texCoord);        vec4 col;        col = srccol + bloomcol * (vec4(1.0) + srccol);        col *= smoothstep(1.0, 0.0, pow(length((texCoord - vec2(0.5)) * 2.0), 1.2) * 0.5);        col = pow(col, vec4(0.45454545454545));         ';
@@ -401,7 +401,7 @@ function initPointFlowers(): void {
 
     const PI2 = Math.PI * 2.0;
     const tmpv3 = Vector3.create(0, 0, 0);
-    let tmpv = 0;
+    let tmpv: number;
     const symmetryrand = function () { return (Math.random() * 2.0 - 1.0); };
 
     for (let i = 0; i < pointFlower.numFlowers; i++) {
@@ -890,7 +890,7 @@ export function applySakuraTransparency(): void {
 
 // ==================== Export ====================
 
-export { Vector3, Matrix44 };
+export { Matrix44,Vector3 };
 
 // ==================== Initialize ====================
 

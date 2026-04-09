@@ -1,8 +1,10 @@
 // 视频和音频控制模块
 
 import { elements } from '@/utils/elementManager';
+
+import { refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
 import { config } from './utils/config';
-import { pc_aubar, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
+import { debugLogger } from './utils/logger';
 import { debounce } from './utils/tool';
 
 const myvideo = elements.myvideo;
@@ -67,6 +69,7 @@ async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | nul
         }
         return null;
     } catch (error) {
+        debugLogger.log(`[Video] Failed to fetch audio metadata: ${error}`);
         return null;
     }
 }
@@ -129,6 +132,7 @@ async function fetchAudioFilesFromServer(directory: string): Promise<string[]> {
         }
         return [];
     } catch (error) {
+        debugLogger.log(`[Video] Failed to fetch audio files: ${error}`);
         return [];
     }
 }

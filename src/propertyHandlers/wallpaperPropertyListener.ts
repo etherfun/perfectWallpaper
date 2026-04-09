@@ -1,29 +1,30 @@
-import { WallpaperProperties } from './types';
-import { handleDateProperties } from './datePropertyHandler';
-import { handleTimeProperties } from './timePropertyHandler';
-import { handleBackgroundProperties } from './backgroundPropertyHandler';
-import { handleWeatherProperties } from './weatherPropertyHandler';
-import { handleHitokotoProperties } from './hitokotoPropertyHandler';
-import { handleCountdownProperties } from './countdownPropertyHandler';
-import { handlePlayerControlProperties } from './playerControlPropertyHandler';
-import { handleRGBProperties } from './rgbPropertyHandler';
-import { handleParticleProperties } from './particlePropertyHandler';
-import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
-import { handleSakuraProperties } from './sakuraPropertyHandler';
-import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
-import { handleLyricsProperties } from './lyricsPropertyHandler';
-import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
-import { handleDockBarProperties } from './dockbarPropertyHandler';
-import { config } from '../utils/config';
-import { debugLogger } from '../utils/logger';
-import { elements } from '../utils/elementManager';
+import '../version';
+
+import { audioDataListener } from '../audioVisualizer';
+import { showDebugLogModal } from '../debugModal';
+import { background2canvas } from '../RGB';
 import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
-import { showDebugLogModal } from '../debugModal';
-import '../version';
+import { config } from '../utils/config';
+import { elements } from '../utils/elementManager';
 import { loadI18nData } from '../utils/i18n';
-import { background2canvas } from '../RGB';
-import { audioDataListener } from '../audioVisualizer';
+import { debugLogger } from '../utils/logger';
+import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
+import { handleBackgroundProperties } from './backgroundPropertyHandler';
+import { handleCountdownProperties } from './countdownPropertyHandler';
+import { handleDateProperties } from './datePropertyHandler';
+import { handleDockBarProperties } from './dockbarPropertyHandler';
+import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
+import { handleHitokotoProperties } from './hitokotoPropertyHandler';
+import { handleLyricsProperties } from './lyricsPropertyHandler';
+import { handleParticleProperties } from './particlePropertyHandler';
+import { handlePlayerControlProperties } from './playerControlPropertyHandler';
+import { handleRGBProperties } from './rgbPropertyHandler';
+import { handleSakuraProperties } from './sakuraPropertyHandler';
+import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
+import { handleTimeProperties } from './timePropertyHandler';
+import { WallpaperProperties } from './types';
+import { handleWeatherProperties } from './weatherPropertyHandler';
 
 /**
  * 安全执行属性处理函数,捕获并记录错误
@@ -176,7 +177,7 @@ export function setupWallpaperPropertyListener(): void {
                 // General properties are handled by wallpaper engine directly
             },
             userDirectoryFilesAddedOrChanged: (propertyName: string, changedFiles: string[]) => {
-                if (!runtime.files.hasOwnProperty(propertyName)) {
+                if (!Object.prototype.hasOwnProperty.call(runtime.files, propertyName)) {
                     runtime.files[propertyName] = changedFiles;
                 } else {
                     runtime.files[propertyName] = runtime.files[propertyName].concat(changedFiles);

@@ -3,7 +3,7 @@
  * 集中管理所有天气相关的可变状态
  */
 
-import type { WeatherData, WeatherAddress, WeatherUnit } from './types';
+import type { WeatherAddress, WeatherData, WeatherUnit } from './types';
 import { DEFAULT_UNIT, UNIT_PRESETS } from './units';
 
 // 天气数据

@@ -438,7 +438,7 @@ export class NativeParticles {
                 break;
             case 'image':
                 if (this.currantCanvas.width > particles.radius * 10 || this.currantCanvas.height > particles.radius * 10) {
-                    let scaling = 0.5;
+                    let scaling: number;
                     let width: number, height: number;
                     if (this.currantCanvas.width > this.currantCanvas.height) {
                         scaling = particles.radius * 10 / this.currantCanvas.width;
@@ -517,7 +517,7 @@ export class NativeParticles {
             this.img.src = 'map/1.png';
         }
         this.img.onload = () => {
-            let scaling = 0.5;
+            let scaling: number;
             if (this.img.width > this.imgHeight || this.img.height > this.imgHeight) {
                 if (this.img.width > this.img.height) {
                     scaling = this.imgWidth / this.img.width;

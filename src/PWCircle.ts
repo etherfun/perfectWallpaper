@@ -4,7 +4,6 @@
 import { config } from './utils/config';
 
 // Global canvas and context - initialized in resize()
-let can: HTMLCanvasElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
 let w: number = 0;
 let h: number = 0;
@@ -13,35 +12,6 @@ let circleX: number = 0;
 let circleY: number = 0;
 let roh: number = 0;
 let rainRad: number = 0;
-
-// PWCircle parameters
-interface ParamType {
-    arr1: { x: number; y: number }[];
-    arr2: { x: number; y: number }[];
-    waveArr: number[];
-    showCircle: boolean;
-    style: number;
-    ColorMode: number;
-    color: string;
-    blurColor: string;
-    TagNow: number;
-    GradientRate: number;
-    SolidColorGradient: boolean;
-    BlurColorGradient: boolean;
-    ColorRhythm: boolean;
-    rotation: number;
-    PolygonAngle: number;
-    offsetAngle: number;
-    range: number;
-    r: number;
-    cX: number;
-    cY: number;
-    direction: number;
-    showSemiCircle: boolean;
-    SemiCircledirection: number;
-    lineWidth: number;
-    shadowBlur: number;
-}
 
 // Color rhythm hue value
 let hue = 0;
@@ -66,7 +36,6 @@ export function resize(): void {
     if (!canvasEl) {
         return;
     }
-    can = canvasEl;
     ctx = canvasEl.getContext("2d");
 
     w = window.innerWidth;
@@ -96,6 +65,7 @@ export function setCan(): void {
             ctx.shadowColor = config.runtime.param.blurColor;
             break;
         case 2:
+            {
             if (hue > 255) { config.runtime.param.TagNow *= -1; hue = 255; }
             if (hue < 0) { config.runtime.param.TagNow *= -1; hue = 0; }
             const color = `hsl(${hue},90%,50%)`;
@@ -111,8 +81,10 @@ export function setCan(): void {
             } else {
                 ctx.shadowColor = config.runtime.param.blurColor;
             }
+            }
             break;
         case 3:
+            {
             const ranX = rainRad / 3 * Math.cos(roh) + w;
             const ranY = rainRad / 3 * Math.sin(roh) + h;
             roh = (roh + (Math.PI / 300)) % (2 * Math.PI);
@@ -141,6 +113,7 @@ export function setCan(): void {
             ctx.fillStyle = rainbow;
             ctx.strokeStyle = rainbow;
             ctx.shadowColor = config.runtime.param.blurColor;
+            }
             break;
     }
 }

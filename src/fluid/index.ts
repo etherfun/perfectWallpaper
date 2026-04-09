@@ -4,8 +4,7 @@
  */
 
 export { FluidEffect } from './effect';
-export type { FluidEffectOptions, FluidEffectConfigState } from './types';
+export type { FluidEffectConfigState,FluidEffectOptions } from './types';
 export {
-    DEFAULT_FLUID_EFFECT_OPTIONS,
-    DEFAULT_FLUID_EFFECT_CONFIG
-} from './types';
+    DEFAULT_FLUID_EFFECT_CONFIG,
+    DEFAULT_FLUID_EFFECT_OPTIONS} from './types';

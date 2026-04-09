@@ -3,14 +3,14 @@
  * Handles basic markdown formatting
  */
 
+import { i18n } from "../utils/i18n";
+import { debugLogger } from '../utils/logger';
 import {
+    type ListItem,
     parseMarkdown,
     processInlineMarkdown,
-    renderListHtml,
-    type ListItem
-} from "../utils/markdown";
+    renderListHtml} from "../utils/markdown";
 import { truncateUrl } from "../utils/string";
-import { i18n } from "../utils/i18n";
 
 /**
  * Enhanced Markdown parser (delegates to utility functions)
@@ -62,10 +62,12 @@ export class SimpleMarkdown {
                 document.body.removeChild(textarea);
                 return successful;
             } catch (err) {
+                debugLogger.log(`[SimpleMarkdown] Copy to clipboard failed: ${err}`);
                 document.body.removeChild(textarea);
                 return false;
             }
         } catch (error) {
+            debugLogger.log(`[SimpleMarkdown] Clipboard operation failed: ${error}`);
             return false;
         }
     }

@@ -5,7 +5,6 @@
 
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
-import { debugLogger } from './utils/logger';
 
 // RAF chain tracking to prevent memory leaks
 let currentRafId: number | null = null;

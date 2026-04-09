@@ -1,16 +1,15 @@
-import { add0 } from './utils/tool';
+import { getdate } from './date';
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
-import { getdate } from './date';
+import { add0 } from './utils/tool';
 
 var oClock = elements.clock.container;
-var oClock_block = elements.clock.block;
+//var oClock_block = elements.clock.block;
 var oClock_webtext_min = elements.clock.min;
-var oClock_webtext_ti = elements.clock.indicators;
+//var oClock_webtext_ti = elements.clock.indicators;
 var oClock_webtext_sec = elements.clock.sec;
 var oClock_webtext_st = elements.clock.st;
 
-var oDate = elements.date.container as HTMLElement;
 var tStyle = true;
 
 // 时钟彩色律动状态
@@ -91,13 +90,6 @@ export function getTime_sec() {
         }
         if (oClock_webtext_st) {
             oClock_webtext_st.style.display = "none";
-        }
-    }
-
-    if (tStyle == false) {
-        var str = t.getHours() < 12 ? "AM" : "PM";
-        if (oClock_webtext_st) {
-            oClock_webtext_st.innerHTML = str;
         }
     }
 

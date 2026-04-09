@@ -1,12 +1,10 @@
-import { config } from '../utils/config';
-import { WallpaperProperties } from './types';
-import { timerManager } from '../utils/timer';
 import { elements } from '@/utils/elementManager';
-import { setcountdown_a } from '../countdown';
 import { debugLogger } from '@/utils/logger';
 
-// ResizeObserver for countdown height tracking
-let countdownResizeObserver: ResizeObserver | null = null;
+import { setcountdown_a } from '../countdown';
+import { config } from '../utils/config';
+import { timerManager } from '../utils/timer';
+import { WallpaperProperties } from './types';
 
 const bodyElement = elements.body;
 const countdown = elements.countdown.container;

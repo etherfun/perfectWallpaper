@@ -1,10 +1,10 @@
+import { getColor, getPalette } from 'colorthief';
+
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
-import { FluidEffect } from './fluid';
 import { hasPlaybackContent } from './utils/playback';
-import { getColor, getPalette } from 'colorthief';
-import { PlayNextTrack, PlayPrevTrack, TogglePlayPause, pauseBuiltInPlayer, resumeBuiltInPlayer, setExternalMediaActive } from './video';
+import { pauseBuiltInPlayer, PlayNextTrack, PlayPrevTrack, resumeBuiltInPlayer, setExternalMediaActive,TogglePlayPause } from './video';
 
 // 进度条定时器
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;

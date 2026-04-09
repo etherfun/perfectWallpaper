@@ -7,7 +7,7 @@ import { backgroundLayers } from "./types";
 
 /** Calculate switch interval from speed setting */
 export function calculate(t: number): number {
-    let res = 1;
+    let res: number;
     switch (t) {
         case 0.5:
             res = 30;
@@ -89,7 +89,8 @@ export function applyBackgroundStyle(): void {
 
     // Get current blur layers
     const currentBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer1 : backgroundLayers.blurLayer2;
-    const nextBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer2 : backgroundLayers.blurLayer1;
+    // Note: nextBlurLayer reserved for future cross-fade transitions
+    const _nextBlurLayer = backgroundLayers.blurCurrentActive === 1 ? backgroundLayers.blurLayer2 : backgroundLayers.blurLayer1;
 
     // Hide all blur layers by default
     if (backgroundLayers.blurLayer1) {

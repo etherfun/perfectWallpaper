@@ -1,8 +1,9 @@
 import { getSystemMonitor, initSystemMonitor } from '@/systemMonitor';
-import { WallpaperProperties } from './types';
-import { debugLogger } from '@/utils/logger';
 import { config } from '@/utils/config';
 import { elements } from '@/utils/elementManager';
+import { debugLogger } from '@/utils/logger';
+
+import { WallpaperProperties } from './types';
 
 /**
  * Handle auto-start setting change

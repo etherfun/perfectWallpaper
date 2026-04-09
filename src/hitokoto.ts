@@ -1,9 +1,8 @@
 // 一言模块
-import { elements } from './utils/elementManager';
 import { config } from './utils/config';
+import { elements } from './utils/elementManager';
 import { escapeHtml } from './utils/string';
 
-const hitokoto = elements.hitokoto.container;
 const hitokoto_webtext = elements.hitokoto.webtext;
 const hitokotoRuntime = config.runtime?.hitokoto ?? { hitokoto_text: "", from_text: "", from_who_text: "" };
 

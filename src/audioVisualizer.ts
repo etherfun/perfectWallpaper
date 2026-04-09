@@ -139,8 +139,8 @@ function validateAudioData(data: number[]): boolean {
     return true;
 }
 
-import { setCan, createPoint, style1, style2, style3 } from './PWCircle';
-import { setCTXLine, PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3 } from './PWLine';
+import { createPoint, setCan, style1, style2, style3 } from './PWCircle';
+import { PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3,setCTXLine } from './PWLine';
 
 const circleStyles = [style1, style2, style3] as const;
 const lineStyles = [PWLineStyle1, PWLineStyle2, PWLineStyle3] as const;

@@ -1,4 +1,5 @@
 import { debugLogger } from '@/utils/logger';
+
 import { config } from '../utils/config';
 import { WallpaperProperties } from './types';
 

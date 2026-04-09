@@ -1,8 +1,9 @@
-import { WallpaperProperties } from './types';
+import { debugLogger } from '@/utils/logger';
+
+import { pc_aubar, playertitle,thumbnailsue } from '../player_control';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
-import { pc_aubar, thumbnailsue, playertitle } from '../player_control';
-import { debugLogger } from '@/utils/logger';
+import { WallpaperProperties } from './types';
 
 const player_control = elements.playerControl.container;
 const player_control_thumbnail = elements.playerControl.thumbnail;

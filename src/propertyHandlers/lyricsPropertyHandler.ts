@@ -1,7 +1,8 @@
-import { WallpaperProperties } from './types';
-import { config } from '../utils/config';
-import { fullscreenLyrics } from '../fullscreenLyrics';
 import { debugLogger } from '@/utils/logger';
+
+import { fullscreenLyrics } from '../fullscreenLyrics';
+import { config } from '../utils/config';
+import { WallpaperProperties } from './types';
 
 /**
  * 处理全屏歌词相关属性

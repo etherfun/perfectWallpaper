@@ -27,33 +27,6 @@ let hue9 = 200;
 let hue10 = 225;
 let hue = 0;
 
-// PWLine parameters
-interface PWLineParamType {
-    arr1: { x: number; y: number }[];
-    arr2: { x: number; y: number }[];
-    waveArr: number[];
-    LineDensity: number;
-    LinePosition: number;
-    LineX: number;
-    LineY: number;
-    style: number;
-    showLine: boolean;
-    ColorMode: number;
-    color: string;
-    blurColor: string;
-    TagNow: number;
-    GradientRate: number;
-    SolidColorGradient: boolean;
-    BlurColorGradient: boolean;
-    ColorRhythm: boolean;
-    Direction: number;
-    MiddleLine: boolean;
-    range: number;
-    sw: number;
-    lineWidth: number;
-    shadowBlur: number;
-}
-
 /**
  * Initialize the PWLine canvas and context
  */
@@ -100,6 +73,7 @@ export function setCTXLine(): void {
             }
             break;
         case 3:
+            {
             originX = maxW * config.runtime.PWLineParam.LineX;
             originY = minW * config.runtime.PWLineParam.LineY;
             const rainbow = CTXLine.createRadialGradient(originX, originY, 0, originX, originY, lineR);
@@ -126,6 +100,7 @@ export function setCTXLine(): void {
             CTXLine.fillStyle = color;
             CTXLine.strokeStyle = color;
             CTXLine.shadowColor = config.runtime.PWLineParam.blurColor;
+            }
             break;
     }
 }

@@ -8,7 +8,7 @@ export * from './types';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { escapeHtml } from '../utils/string';
-import type { LyricLine, LyricsData, FullscreenLyricsConfig } from './types';
+import type { FullscreenLyricsConfig,LyricLine, LyricsData } from './types';
 
 // Lyrics API configuration
 const LYRICS_API_URL = 'ws://localhost:42954/get';
@@ -295,7 +295,7 @@ export class FullscreenLyrics {
                 this.handleLyricsUpdate(data);
             }
         } catch (e) {
-            // Silently fail for HTTP polling
+            debugLogger.log(`[FullscreenLyrics] HTTP polling failed: ${e}`);
         }
     }
 
@@ -419,7 +419,7 @@ export class FullscreenLyrics {
         for (let i = Math.max(0, toIndex - visibleRange); i <= Math.min(totalLines - 1, toIndex + visibleRange); i++) {
             if (!this.lineElements.has(i)) {
                 const line = this.currentData.lyricsArray[i];
-                const el = this.createLineElement(line, i, toIndex);
+                const el = this.createLineElement(line, i);
                 this.lineElements.set(i, el);
                 this.lyricsContainer.appendChild(el);
             }
@@ -485,7 +485,7 @@ export class FullscreenLyrics {
         }
     }
 
-    private createLineElement(line: LyricLine, index: number, currentIndex: number): HTMLElement {
+    private createLineElement(line: LyricLine, index: number): HTMLElement {
         const el = document.createElement('div');
         el.className = 'lyric-line';
         el.dataset.index = String(index);
@@ -497,7 +497,7 @@ export class FullscreenLyrics {
             if (this.currentData?.hasDynamic && line.dynamicLyric) {
                 // Split into words for dynamic highlight - escape HTML to prevent XSS
                 originalEl.innerHTML = this.splitLyricsToWords(line.originalLyric)
-                    .map((word, i) => `<span class="word">${escapeHtml(word)}</span>`)
+                    .map((word) => `<span class="word">${escapeHtml(word)}</span>`)
                     .join('');
             } else {
                 originalEl.textContent = line.originalLyric;
@@ -610,7 +610,7 @@ export class FullscreenLyrics {
 }
 
 // Player state change handler
-function onPlayerStateChange(key: string, value: unknown): void {
+function onPlayerStateChange(key: string): void {
     if (key === 'playerState') {
         fullscreenLyrics.checkPlayerState();
     }

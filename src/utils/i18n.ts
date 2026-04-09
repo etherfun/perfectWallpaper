@@ -3,8 +3,8 @@
  * 用于处理多语言文本翻译和DOM元素更新
  */
 
-import { debugLogger } from './logger';
 import { config } from './config';
+import { debugLogger } from './logger';
 
 // i18n数据接口
 interface I18nData {

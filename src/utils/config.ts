@@ -1,8 +1,8 @@
 // 默认配置值
-import { debugLogger, registerDebugLogger, DebugLogger } from './logger';
 import { FluidEffect } from '../fluid';
-import { WallpaperEffectController } from '../WallpaperEffectController';
 import { versionManager } from '../version';
+import { WallpaperEffectController } from '../WallpaperEffectController';
+import { DebugLogger,debugLogger, registerDebugLogger } from './logger';
 
 // 类型
 
@@ -686,7 +686,7 @@ type ConfigBase = Omit<typeof SYNC_DEFAULTS, keyof NullableConfigKeys> & Nullabl
 // an index signature for dynamic property access.
 interface Config extends ConfigBase {
     // 索引签名：兼容动态属性访问
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     [key: string]: unknown;
 
     // 运行时数据
@@ -721,4 +721,4 @@ for (const key of Object.keys(SYNC_DEFAULTS)) {
 // 导出 config 实例（类型为 Config 接口）
 const config = appConfig as AppConfig & Config;
 
-export { config, AppConfig, SYNC_DEFAULTS };
+export { AppConfig, config, SYNC_DEFAULTS };

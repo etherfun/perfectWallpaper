@@ -1,8 +1,9 @@
-import { WallpaperProperties } from './types';
+import { debugLogger } from '@/utils/logger';
+
+import * as sakuraModule from '../sakura';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
-import * as sakuraModule from '../sakura';
-import { debugLogger } from '@/utils/logger';
+import { WallpaperProperties } from './types';
 
 /**
  * 处理樱花效果相关属性

@@ -154,7 +154,7 @@ export class MultiTimerManager {
      */
     getAllStatus(): TimerStatus[] {
         const statusList: TimerStatus[] = [];
-        for (const [id, timer] of this.timers) {
+        for (const [, timer] of this.timers) {
             let remaining = timer.remaining;
             
             // 如果正在运行，重新计算剩余时间
@@ -210,7 +210,7 @@ export class MultiTimerManager {
      * 清除所有定时器
      */
     clearAll(): void {
-        for (const [id, timer] of this.timers) {
+        for (const [, timer] of this.timers) {
             if (timer.timerId !== null) {
                 clearTimeout(timer.timerId);
             }

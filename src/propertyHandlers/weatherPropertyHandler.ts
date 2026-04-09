@@ -1,14 +1,12 @@
-import { WallpaperProperties } from './types';
+import { elements } from '@/utils/elementManager';
+
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
-import { elements } from '@/utils/elementManager';
-import { weather_address, weather_init, generateWeatherTable, autoWeather } from '../weather';
-import { setWeatherUnitByName } from '../weather/weatherState';
 import { debounce } from '../utils/tool';
-
-// ResizeObserver for weather height tracking
-let weatherResizeObserver: ResizeObserver | null = null;
+import { autoWeather,generateWeatherTable, weather_address, weather_init } from '../weather';
+import { setWeatherUnitByName } from '../weather/weatherState';
+import { WallpaperProperties } from './types';
 
 const weather = elements.weather.weather as HTMLElement;
 

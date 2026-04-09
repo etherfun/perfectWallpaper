@@ -21,10 +21,10 @@ export function getWeatherTips(weatherData: WeatherData): string {
     const uvIndex = parseInt(weatherData.uvindex) || 0;
     const currentTemp = parseInt(weatherData.temperature) || 0;
     const feelsTemp = parseInt(weatherData.feels) || 0;
-    const windSpeed = parseFloat(weatherData.windSpeed) || 0;
+    //const windSpeed = parseFloat(weatherData.windSpeed) || 0;
     const visibility = parseFloat(weatherData.vis) || 0;
     const cloudCover = parseInt(weatherData.cloud) || 0;
-    const pressure = parseInt(weatherData.pressure) || 0;
+    //const pressure = parseInt(weatherData.pressure) || 0;
     const precipitation = parseFloat(weatherData.precip) || 0;
 
     // 计算温度范围

@@ -1,6 +1,7 @@
-import { debugLogger } from '@/utils/logger';
-import { WallpaperProperties } from './types';
 import { config } from '@/utils/config';
+import { debugLogger } from '@/utils/logger';
+
+import { WallpaperProperties } from './types';
 
 /**
  * 处理粒子效果相关属性

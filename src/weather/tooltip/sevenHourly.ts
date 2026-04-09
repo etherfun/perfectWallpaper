@@ -4,8 +4,8 @@
  */
 
 import { i18n } from '../../utils/i18n';
-import { weather_data } from '../weatherState';
 import { getIconSvg } from '../index';
+import { weather_data } from '../weatherState';
 
 /**
  * 绑定七小时预报悬停提示

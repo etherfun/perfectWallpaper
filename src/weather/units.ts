@@ -1,5 +1,4 @@
-import { i18n } from '../utils/i18n';
-import { WeatherUnit, WeatherLang } from './types';
+import { WeatherUnit } from './types';
 
 // 默认单位配置
 export const DEFAULT_UNIT: WeatherUnit = {

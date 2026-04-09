@@ -49,11 +49,10 @@
 - 自定义网络图片
 
 ### 其他功能
-- [ ]  全屏歌词显示 
- 
-- [ ]  系统监控（CPU、内存等）
- 
+- [X]  全屏歌词显示
+- [X]  系统监控（CPU、内存、GPU、网络）
 - [X]  一言（Hitokoto）随机语录
+- [X]  DockBar 快捷栏（应用、文件、网址）
 
 ## 技术栈
 
@@ -71,20 +70,24 @@ perfectwall/
 │   ├── PWCircle.ts            # 圆形可视化
 │   ├── PWLine.ts              # 线条可视化
 │   ├── PWParticles.ts         # 粒子系统
-│   ├── fluid_control.ts        # 流体控制
-│   ├── fluid_effect2.ts        # 流体效果
+│   ├── fluid/                  # 流体效果
+│   │   ├── index.ts
+│   │   ├── effect.ts
+│   │   └── types.ts
 │   ├── weather/                # 天气模块
 │   │   ├── index.ts
-│   │   └── api/                # 天气API适配器
+│   │   ├── api/               # 天气API适配器
+│   │   ├── tooltip/           # 天气提示框
+│   │   └── ui/                # 天气UI组件
 │   ├── slide/                  # 背景切换模块
 │   ├── fullscreenLyrics/       # 全屏歌词
 │   ├── propertyHandlers/       # 属性处理器
-│   ├── server/                 # 服务器模块
+│   ├── dockbar.ts             # DockBar快捷栏
+│   ├── systemMonitor.ts       # 系统监控
+│   ├── version/               # 版本解析
 │   └── utils/                  # 工具函数
-├── source/                     # 静态资源
-│   ├── i18n/                   # 多语言文件
-│   ├── imgs/                  # 图片资源
-│   └── map/                   # 地图资源
+├── src/scss/                   # 样式文件
+├── src/server-rs/              # Rust服务器（可选）
 ├── scripts/                    # 构建脚本
 ├── package.json
 └── tsconfig.json

@@ -3,8 +3,8 @@
  */
 
 import { config } from '../../utils/config';
-import { attachSevenHourlyTooltip } from './sevenHourly';
 import { attachWeatherAlertTooltip } from './alert';
+import { attachSevenHourlyTooltip } from './sevenHourly';
 
 /**
  * 统一绑定所有tooltip事件
@@ -22,6 +22,6 @@ export function tooltip(): void {
     }
 }
 
-export { attachSevenHourlyTooltip } from './sevenHourly';
 export { attachWeatherAlertTooltip } from './alert';
+export { attachSevenHourlyTooltip } from './sevenHourly';
 export { getTime } from './time';

@@ -12,17 +12,30 @@
     "check-types": "tsc --noEmit",
     "bundle": "node scripts/bundle.js",
     "prepare": "yarn run build",
-    "build:server:rust": "cd src/server-rs && cargo build --release && powershell -Command \"Copy-Item target/release/perfectwall-server.exe ../../dist/\""
+    "build:server:rust": "cd src/server-rs && cargo build --release && powershell -Command \"Copy-Item target/release/perfectwall-server.exe ../../dist/\"",
+    "lint": "eslint src",
+    "lint:fix": "eslint src --fix",
+    "format": "prettier --check src",
+    "format:fix": "prettier --write src"
   },
   "author": "etherfun",
   "license": "GPL-3.0-only",
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^8.58.1",
+    "@typescript-eslint/parser": "^8.58.1",
     "esbuild": "^0.27.4",
+    "eslint": "^10.2.0",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-import": "^2.32.0",
+    "eslint-plugin-prettier": "^5.5.5",
+    "eslint-plugin-simple-import-sort": "^13.0.0",
     "license-checker-rseidelsohn": "^4.4.2",
+    "prettier": "^3.8.1",
     "sass": "^1.77.8",
     "tsx": "^4.7.0",
-    "typescript": "^5.0.0"
+    "typescript": "^6.0.2"
   },
   "engines": {
     "node": ">=18.0.0"
@@ -30,5 +43,9 @@
   "dependencies": {
     "colorthief": "^3.3.1",
     "qweather-icons": "^1.8.0"
-  }
+  },
+  "eslintIgnore": [
+    "src/server-rs"
+  ],
+  "type": "module"
 }

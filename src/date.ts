@@ -1,6 +1,6 @@
-import { waitAndExecute } from "./utils/timer";
 import { config } from "./utils/config";
 import { elements } from "./utils/elementManager";
+import { waitAndExecute } from "./utils/timer";
 
 let oDate = elements.date.container as HTMLElement;
 // Null check for oDate_webtext - elements.date.webtext may be null if DOM is not ready

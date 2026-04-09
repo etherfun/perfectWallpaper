@@ -2,11 +2,9 @@
  * Background transition logic
  * Handles two-layer background system with fade transitions
  */
-
-import { background2canvas } from "../RGB";
 import { config } from "../utils/config";
-import { backgroundLayers } from "./types";
 import { applyBackgroundStyle } from "./styles";
+import { backgroundLayers } from "./types";
 
 /** Use two-layer background for gradient switching */
 export function transitionBackground(newImageUrl: string): void {

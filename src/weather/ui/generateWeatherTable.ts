@@ -3,18 +3,18 @@
  * 职责：协调所有 UI 更新函数
  */
 
+import { tooltip } from '../tooltip';
 import { weather_data } from '../weatherState';
-import { showWeatherLoading, hideWeatherLoading } from './states';
+import { startPrecipTemperatureToggleTimer } from './precipToggle';
+import { hideWeatherLoading,showWeatherLoading } from './states';
 import {
-    updateMainWeatherDisplay,
-    updateWeatherDetails,
-    updateWeatherExtendedInfo,
     updateAirQualityAndAlerts,
+    updateMainWeatherDisplay,
     updatePrecipContainer,
     updateTipDisplay,
+    updateWeatherDetails,
+    updateWeatherExtendedInfo,
 } from './updaters';
-import { startPrecipTemperatureToggleTimer } from './precipToggle';
-import { tooltip } from '../tooltip';
 
 /**
  * 生成天气表格UI

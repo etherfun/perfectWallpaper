@@ -4,6 +4,8 @@
  * 特性：亚克力模糊效果、动画入场效果、localStorage持久化
  */
 
+import { debugLogger } from './utils/logger';
+
 // Dock项数据类型
 interface DockItem {
     id: string;
@@ -222,6 +224,7 @@ class DockBar {
                 };
                 imgEl.src = svgFaviconUrl;
             } catch (e) {
+                debugLogger.log(`[DockBar] Icon load failed: ${e}`);
                 imgEl.src = this.getDefaultIcon();
             }
             return;
@@ -258,6 +261,7 @@ class DockBar {
                             localStorage.setItem(cacheKey, data.data.icon);
                         } catch (e) {
                             // localStorage 可能满，清除旧数据重试
+                            debugLogger.log(`[DockBar] LocalStorage cache failed: ${e}`);
                             this.cleanupIconCache();
                             try {
                                 localStorage.setItem(cacheKey, data.data.icon);
@@ -716,7 +720,7 @@ class DockBar {
         refreshManageList();
 
         confirmBtn?.addEventListener('click', () => {
-            let name = '';
+            let name: string;
             let path = '';
             let url = '';
 

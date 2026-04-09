@@ -1,11 +1,12 @@
-﻿import { config } from './utils/config';
-import { debugLogger } from './utils/logger';
+﻿import './audioVisualizer';
+import './fullscreenLyrics';
+
 import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
-import { WallpaperEffectController } from './WallpaperEffectController';
-import './audioVisualizer';
 import { resize as pwCircleResize } from './PWCircle';
 import { PWLineInit } from './PWLine';
-import './fullscreenLyrics';
+import { config } from './utils/config';
+import { debugLogger } from './utils/logger';
+import { WallpaperEffectController } from './WallpaperEffectController';
 
 config.runtime.wallpaper = new WallpaperEffectController(document.body);
 

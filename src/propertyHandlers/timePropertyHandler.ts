@@ -1,12 +1,11 @@
-import { WallpaperProperties } from './types';
+import { elements } from '@/utils/elementManager';
+
+import { getTime_sec, startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
-import { elements } from '@/utils/elementManager';
-import { getTime_sec, startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
+import { WallpaperProperties } from './types';
 
-// ResizeObserver for clock height tracking
-let clockResizeObserver: ResizeObserver | null = null;
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 let tStyle = true;
 const oClock_webtext_ti = elements.clock.indicators;
 const oClock = elements.clock.container;

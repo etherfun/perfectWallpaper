@@ -1,6 +1,6 @@
-import type { WeatherAddress, WeatherData } from '../types';
-import { fetch_with_retry } from '../../utils/tool';
 import { config } from '../../utils/config';
+import { fetch_with_retry } from '../../utils/tool';
+import type { WeatherAddress, WeatherData } from '../types';
 
 interface YiKeTianQiResponse {
   city: string;

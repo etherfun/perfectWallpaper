@@ -3,16 +3,16 @@
  * 职责：更新天气显示的各个部分
  */
 
-import { fetch_with_retry } from '../../utils/tool';
 import { config } from '../../utils/config';
 import { elements } from '../../utils/elementManager';
-import { getWeatherUnit } from '../weatherState';
 import { i18n } from '../../utils/i18n';
+import { fetch_with_retry } from '../../utils/tool';
+import { generateAlertHTML,getAirQualityText } from '../formatters';
+import { getWeatherTips } from '../tips';
 import { formatTime } from '../utils';
+import { getWeatherUnit } from '../weatherState';
 import { weather_address, weather_data } from '../weatherState';
 import { showTemperatureInsteadOfPrecip } from '../weatherState';
-import { getAirQualityText, generateAlertHTML } from '../formatters';
-import { getWeatherTips } from '../tips';
 
 /**
  * 更新左侧主天气信息（图标，温度、天气文字、体感温度、城市）

@@ -2,15 +2,14 @@
  * UI 模块统一导出
  */
 
-export { showWeatherLoading, hideWeatherLoading, showWeatherError } from './states';
-export { togglePrecipTemperatureDisplay, startPrecipTemperatureToggleTimer, clearPrecipTemperatureToggleTimer } from './precipToggle';
+export { generateWeatherTable } from './generateWeatherTable';
+export { clearPrecipTemperatureToggleTimer,startPrecipTemperatureToggleTimer, togglePrecipTemperatureDisplay } from './precipToggle';
+export { hideWeatherLoading, showWeatherError,showWeatherLoading } from './states';
 export {
-    updateMainWeatherDisplay,
-    updateWeatherDetails,
-    updateWeatherExtendedInfo,
     updateAirQualityAndAlerts,
+    updateMainWeatherDisplay,
     updatePrecipContainer,
     updateTipDisplay,
+    updateWeatherDetails,
+    updateWeatherExtendedInfo,
 } from './updaters';
-
-export { generateWeatherTable } from './generateWeatherTable';

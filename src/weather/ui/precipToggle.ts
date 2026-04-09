@@ -4,17 +4,16 @@
  */
 
 import { config } from '../../utils/config';
-import { getWeatherUnit } from '../weatherState';
 import { i18n } from '../../utils/i18n';
+import { getWeatherUnit } from '../weatherState';
 import {
-    weather_data,
-    showTemperatureInsteadOfPrecip,
-    precipTemperatureToggleTimer,
+    clearPrecipTimer,
     isAnimatingPrecipToggle,
     setIsAnimatingPrecipToggle,
-    toggleShowTemperatureInsteadOfPrecip,
     setPrecipTemperatureToggleTimer,
-    clearPrecipTimer,
+    showTemperatureInsteadOfPrecip,
+    toggleShowTemperatureInsteadOfPrecip,
+    weather_data,
 } from '../weatherState';
 
 /**

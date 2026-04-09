@@ -1,15 +1,14 @@
-import type { WeatherAddress, WeatherData } from '../types';
-import { fetch_with_retry, weather_paymode } from '../../utils/tool';
-import { i18n } from '../../utils/i18n';
 import { config } from '../../utils/config';
+import { i18n } from '../../utils/i18n';
+import { fetch_with_retry, weather_paymode } from '../../utils/tool';
+import type { WeatherAddress, WeatherData } from '../types';
 import type {
-    QWeatherCityResponse,
-    QWeatherNowResponse,
-    QWeather24hResponse,
     QWeather3dResponse,
+    QWeather24hResponse,
     QWeatherAirResponse,
-    QWeatherAlertResponse
-} from './types';
+    QWeatherAlertResponse,
+    QWeatherCityResponse,
+    QWeatherNowResponse} from './types';
 
 // 和风天气 API 实现
 // Case 1: qweatherapi

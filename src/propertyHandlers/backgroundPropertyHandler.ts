@@ -1,18 +1,16 @@
-import { WallpaperProperties } from './types';
+import { elements } from '@/utils/elementManager';
+
+import {
+    applyBackgroundStyle,
+    changeBackground,
+    shouldShow,
+    TransitionSwith
+} from '../slide';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
-import {
-    shouldShow,
-    changeBackground,
-    applyBackgroundStyle,
-    TransitionSwith
-} from '../slide';
-import { ChangeVideoModel, ChangeAudioModel, updateMusicPlaylist } from '../video';
-import { elements } from '@/utils/elementManager';
-
-// ResizeObserver for picture info height tracking
-let pictureInfoResizeObserver: ResizeObserver | null = null;
+import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '../video';
+import { WallpaperProperties } from './types';
 
 /**
  * 处理壁纸/背景相关属性

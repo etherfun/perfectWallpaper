@@ -1,7 +1,8 @@
 import { getDockBar, initDockBar } from '@/dockbar';
-import { WallpaperProperties } from './types';
-import { debugLogger } from '@/utils/logger';
 import { elements } from '@/utils/elementManager';
+import { debugLogger } from '@/utils/logger';
+
+import { WallpaperProperties } from './types';
 
 /**
  * 处理Dock栏属性

@@ -1,7 +1,7 @@
-import type { WeatherAddress, WeatherData } from '../types';
-import { fetch_with_retry, isNightTime, getQWeatherIcon } from '../../utils/tool';
-import { i18n } from '../../utils/i18n';
 import { config } from '../../utils/config';
+import { i18n } from '../../utils/i18n';
+import { fetch_with_retry, getQWeatherIcon,isNightTime } from '../../utils/tool';
+import type { WeatherAddress, WeatherData } from '../types';
 
 interface VisualCrossingHour {
   datetime: string;

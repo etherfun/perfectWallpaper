@@ -1,8 +1,8 @@
-import type { WeatherAddress, WeatherData, SevenHourlyData } from '../types';
-import { fetch_with_retry } from '../../utils/tool';
-import { getWeatherUnit } from '../weatherState';
 import { i18n } from '../../utils/i18n';
+import { fetch_with_retry } from '../../utils/tool';
+import type { SevenHourlyData,WeatherAddress, WeatherData } from '../types';
 import { OPEN_METEO_TO_QWEATHER } from '../types';
+import { getWeatherUnit } from '../weatherState';
 
 interface OpenMeteoCurrent {
   time: string;
@@ -184,8 +184,6 @@ export async function openmeteo(
       sevenHourlyData.Temps.push(res.hourly.temperature_2m?.[idx] ?? "--");
 
       const weatherCode = res.hourly.weather_code?.[idx] ?? res.current.weather_code;
-      const hour = parseInt(timeStr.split('T')[1].substring(0, 2));
-      const isDay = hour >= 6 && hour < 18;
       sevenHourlyData.Icons.push(getOpenMeteoIcon(weatherCode, timeStr).toString());
       sevenHourlyData.Texts.push(i18n(`weather_openmeteo_${weatherCode}`) || i18n("weather_no_data"));
 

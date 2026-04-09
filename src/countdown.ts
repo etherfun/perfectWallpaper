@@ -1,10 +1,10 @@
 // 倒计时模块
-import { elements } from './utils/elementManager';
-import { config } from './utils/config';
 import { timerManager } from '@/utils/timer';
 
+import { config } from './utils/config';
+import { elements } from './utils/elementManager';
+
 const countdown_webtext = elements.countdown.webtext;
-const countdown = elements.countdown.container;
 
 // 添加前导零
 function add0(num: number): string {

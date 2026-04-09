@@ -1,6 +1,7 @@
 import { config } from '@/utils/config';
-import { WallpaperProperties } from './types';
 import { debugLogger } from '@/utils/logger';
+
+import { WallpaperProperties } from './types';
 
 /**
  * 获取圆圈可视化canvas的2D上下文
@@ -28,8 +29,6 @@ export function handleAudioVisualProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ) {
-    const result = {};
-
     const ctx = getCircleCtx();
     const CTXLine = getLineCtx();
     const param = config.runtime.param;

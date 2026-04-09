@@ -71,6 +71,7 @@ class SystemMonitor {
     private disconnectTimer: number | null = null;
     private lastConnectedTime: number = 0;
     private hasEverConnected: boolean = false;
+    private lastMonitorPosition: 'left' | 'right' = 'right';
 
     constructor() {
         this.init();
@@ -202,11 +203,17 @@ class SystemMonitor {
         const mainLine = rightSpan.querySelector('.main-line') as HTMLElement | null;
         const subLine = rightSpan.querySelector('.sub-line') as HTMLElement | null;
 
+        // Clear old canvas from both containers
+        const oldCanvasLeft = leftSpan.querySelector('canvas');
+        if (oldCanvasLeft) oldCanvasLeft.remove();
+        const oldCanvasRight = mainLine?.querySelector('canvas');
+        if (oldCanvasRight) oldCanvasRight.remove();
+
         if (isLeft) {
             leftSpan.innerHTML = '';
             mainLine!.innerHTML = `<span class="sysmon-value">${value}%</span>${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}`;
         } else {
-            leftSpan.innerHTML = `${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}</span><span class="sysmon-value">${value}%</span>`;
+            leftSpan.innerHTML = `${extra ? `<span class="sysmon-extra">(${extra})</span>` : ''}<span class="sysmon-value">${value}%</span>`;
             mainLine!.innerHTML = '';
         }
 
@@ -230,14 +237,21 @@ class SystemMonitor {
     }
 
     private drawCurveInRow(row: HTMLElement, type: 'cpu' | 'gpu' | 'memory'): void {
+        const leftSpan = row.querySelector('.left') as HTMLElement | null;
         const rightSpan = row.querySelector('.right');
         if (!rightSpan) return;
 
-        const mainLine = rightSpan.querySelector('.main-line');
+        const mainLine = rightSpan.querySelector('.main-line') as HTMLElement | null;
         if (!mainLine) return;
 
-        // Clear old canvas
-        const oldCanvas = mainLine.querySelector('canvas');
+        // Determine where to append canvas based on alignment
+        const isLeft = this.config.monitorPosition === 'left';
+        const targetContainer = isLeft ? mainLine : leftSpan;
+        
+        if (!targetContainer) return;
+
+        // Clear old canvas from target container
+        const oldCanvas = targetContainer.querySelector('canvas');
         if (oldCanvas) oldCanvas.remove();
 
         const canvas = document.createElement('canvas');
@@ -245,31 +259,52 @@ class SystemMonitor {
         canvas.height = 24;
         canvas.style.cssText = 'display:inline-block;vertical-align:middle;';
 
-        mainLine.appendChild(canvas);
+        // Position canvas based on alignment
+        // Left-aligned: chart appears last (data → extra → chart)
+        // Right-aligned: chart appears first (chart → extra → data)
+        if (isLeft) {
+            targetContainer.appendChild(canvas);
+        } else {
+            targetContainer.insertBefore(canvas, targetContainer.firstChild);
+        }
         this.drawCurve(canvas, type);
     }
 
     private drawBarInRow(row: HTMLElement, value: number): void {
+        const leftSpan = row.querySelector('.left') as HTMLElement | null;
         const rightSpan = row.querySelector('.right');
-        if (!rightSpan) return;
+        if (!leftSpan || !rightSpan) return;
 
-        const subLine = rightSpan.querySelector('.sub-line') as HTMLElement | null;
-        if (!subLine) return;
+        const isLeft = this.config.monitorPosition === 'left';
+        
+        // Determine target container for bar based on alignment
+        let targetContainer: HTMLElement;
+        if (isLeft) {
+            // Left-aligned: bar goes to sub-line in right
+            const subLine = rightSpan.querySelector('.sub-line') as HTMLElement | null;
+            if (!subLine) return;
+            targetContainer = subLine;
+        } else {
+            // Right-aligned: bar goes to left (with chart)
+            targetContainer = leftSpan;
+        }
 
-        // Clear old bar container
-        subLine.innerHTML = '';
+        // Clear old bar container from target
+        const oldBar = targetContainer.querySelector('.sysmon-bar');
+        if (oldBar) oldBar.remove();
 
         const isVertical = this.config.barLayout === 'vertical';
 
         // Bar container
         const barContainer = document.createElement('div');
         barContainer.className = 'sysmon-bar';
+        // Always set width to 80px to match chart width
         if (isVertical) {
             // Vertical bar: column layout, bar below value
-            barContainer.style.cssText = 'display:flex;flex-direction:column;gap:2px;width:80px;';
+            barContainer.style.cssText = 'display:flex;flex-direction:column;gap:2px;width:80px;margin-top:var(--sysmon-gap,4px);';
         } else {
             // Horizontal bar: row layout, bar after value
-            barContainer.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:4px;';
+            barContainer.style.cssText = 'display:flex;flex-direction:row;align-items:center;gap:4px;width:80px;margin-top:var(--sysmon-gap,4px);';
         }
 
         // Bar track (gray background)
@@ -291,15 +326,15 @@ class SystemMonitor {
         track.appendChild(fill);
         barContainer.appendChild(track);
 
-        // Append bar to sub-line
-        subLine.appendChild(barContainer);
+        // Append bar to target container
+        targetContainer.appendChild(barContainer);
     }
 
     private updateNetworkDisplay(rx: string, tx: string): void {
         if (!this.networkRow) return;
 
-        const leftSpan = this.networkRow.querySelector('.left');
-        const rightSpan = this.networkRow.querySelector('.right');
+        const leftSpan = this.networkRow.querySelector('.left') as HTMLElement | null;
+        const rightSpan = this.networkRow.querySelector('.right') as HTMLElement | null;
         if (!leftSpan || !rightSpan) return;
 
         const isLeft = this.config.monitorPosition === 'left';
@@ -308,6 +343,11 @@ class SystemMonitor {
         if (!leftSpan || !rightSpan || !labelSpan) return;
 
         const mainLine = rightSpan.querySelector('.main-line') as HTMLElement | null;
+
+        const oldCanvasLeft = leftSpan.querySelector('canvas');
+        if (oldCanvasLeft) oldCanvasLeft.remove();
+        const oldCanvasRight = mainLine?.querySelector('canvas');
+        if (oldCanvasRight) oldCanvasRight.remove();
 
         if (isLeft) {
             leftSpan.innerHTML = '';
@@ -429,6 +469,42 @@ class SystemMonitor {
                 row.style.color = this.config.monitorColor;
             }
         });
+
+        // Only re-render when alignment changes (performance optimization)
+        const alignmentChanged = this.lastMonitorPosition !== this.config.monitorPosition;
+        if (alignmentChanged) {
+            this.lastMonitorPosition = this.config.monitorPosition;
+            this.rerenderAllRows();
+        }
+    }
+
+    private rerenderAllRows(): void {
+        // Force re-render of all visible rows to reposition canvas elements
+        if (this.config.showCpu && this.cpuHistory.length > 0) {
+            this.updateItem(this.cpuRow, 'CPU', this.cpuHistory[this.cpuHistory.length - 1] || 0, this.config.cpuMode);
+            if (this.config.cpuMode === 'curve') {
+                this.drawCurveInRow(this.cpuRow!, 'cpu');
+            }
+        }
+        if (this.config.showGpu && this.gpuHistory.length > 0) {
+            this.updateItem(this.gpuRow, 'GPU', this.gpuHistory[this.gpuHistory.length - 1] || 0, this.config.gpuMode);
+            if (this.config.gpuMode === 'curve') {
+                this.drawCurveInRow(this.gpuRow!, 'gpu');
+            }
+        }
+        if (this.config.showMemory && this.memoryHistory.length > 0) {
+            this.updateItem(this.memoryRow, 'MEM', this.memoryHistory[this.memoryHistory.length - 1] || 0, this.config.memoryMode);
+            if (this.config.memoryMode === 'curve') {
+                this.drawCurveInRow(this.memoryRow!, 'memory');
+            }
+        }
+        if (this.config.showNetwork && this.networkRow) {
+            const networkLeftSpan = this.networkRow.querySelector('.left') as HTMLElement | null;
+            if (networkLeftSpan) {
+                const oldCanvas = networkLeftSpan.querySelector('canvas');
+                if (oldCanvas) oldCanvas.remove();
+            }
+        }
     }
 
     public destroy(): void {

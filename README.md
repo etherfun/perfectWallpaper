@@ -54,11 +54,16 @@
 - [X]  一言（Hitokoto）随机语录
 - [X]  DockBar 快捷栏（应用、文件、网址）
 
+## 服务器 (Rust)
+
+Rust 编写的系统信息服务器，提供 API 给前端调用。
+请自行查看对应文件夹的README
+
 ## 技术栈
 
 - **前端**: TypeScript、HTML5 Canvas、WebGL
+- **服务器**: Rust、Axum、Tower
 - **构建**: esbuild、TypeScript、SASS
-- **依赖**: Express、systeminformation、colorthief
 
 ## 项目结构
 

@@ -5026,7 +5026,7 @@
 				"order" : 519,
 				"text" : "ui_dockbar_enabled",
 				"type" : "bool",
-				"value" : true
+				"value" : false
 			},
 			"dockbar_position" :
 			{

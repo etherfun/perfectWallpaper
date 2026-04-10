@@ -23,7 +23,7 @@ const imageAlt = get(entry.imageAltKey) || '';
 const image = entry.image || '';
 
 const imageUrl = image
-  ? 'https://raw.githubusercontent.com/etherfun/perfectwall/' + rawTag + '/' + image
+  ? 'https://raw.githubusercontent.com/etherfun/perfectWallpaper/refs/heads/main/' + image
   : '';
 const imageTag = imageUrl ? '<img src="' + imageUrl + '">' : '';
 const caption = imageAlt ? imageAlt : '';

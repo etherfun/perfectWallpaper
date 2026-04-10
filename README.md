@@ -1,6 +1,6 @@
 # Perfect Wallpaper
 
-一个~~功能丰富~~的 Wallpaper Engine 动态壁纸项目，支持音频可视化、天气显示、时间日期、粒子效果等多种视觉效果。
+一个 Wallpaper Engine 动态壁纸项目，支持音频可视化、天气显示、时间日期、粒子效果等多种视觉效果。
 
 ## 功能特性
 
@@ -17,7 +17,7 @@
   - Open-Meteo
   - Visual Crossing
   - 一刻天气
-  - ICU Free
+  - [ICU Free](https://steamcommunity.com/workshop/filedetails/discussion/884307090/3412054783687240237/)
 - 天气图标和提示信息
 - 温度单位转换
 
@@ -49,7 +49,7 @@
 - 自定义网络图片
 
 ### 其他功能
-- [X]  全屏歌词显示
+- []  全屏歌词显示
 - [X]  系统监控（CPU、内存、GPU、网络）
 - [X]  一言（Hitokoto）随机语录
 - [X]  DockBar 快捷栏（应用、文件、网址）
@@ -123,16 +123,7 @@ yarn run watch
 # 监听 SCSS 变化
 yarn run watch:scss
 ```
-## 配置
-
-项目支持丰富的自定义配置，通过 Wallpaper Engine 的项目属性面板可以：
-
-- 调整音频可视化样式和颜色
-- 配置天气 API
-- 设置时间和日期格式
-- 自定义粒子效果参数
-- 配置背景切换策略
-
 ## License
+在此感谢[原作者](https://steamcommunity.com/sharedfiles/filedetails/?id=884307090)的长期更新
 
 GPL-3.0

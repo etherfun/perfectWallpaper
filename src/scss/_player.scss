@@ -29,8 +29,10 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        background: rgba(var(--player-yakeli-color),
-                calc(var(--player-yakeli) * var(--player-yakeli-enabled)));
+        background: rgba(
+            var(--player-yakeli-color),
+            calc(var(--player-yakeli) * var(--player-yakeli-enabled))
+        );
         backdrop-filter: blur(calc(var(--player-blur-yakeli) * var(--player-yakeli-enabled)));
         text-shadow: 0 0 20px rgba(var(--player-blur-color), var(--player-blur-enabled));
 

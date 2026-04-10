@@ -702,11 +702,11 @@ function hideControls(): void {
 // 初始化控制按钮事件
 function initPlayerControls(): void {
     setTimeout(() => {
-        console.log(config.server_mode)
+        console.log(config.server_mode);
         if (!config.server_mode) {
-            player_control_aubarControls?.style.setProperty("display", "none", "important");
-            return
-        };
+            player_control_aubarControls?.style.setProperty('display', 'none', 'important');
+            return;
+        }
     }, 3000);
 
     if (!player_control_aubarWrapper || !player_control_aubarControls) return;
@@ -716,7 +716,7 @@ function initPlayerControls(): void {
     player_control_aubarWrapper.addEventListener('mouseleave', hideControls);
 
     // 事件委托 - 处理上一首/下一首/播放暂停按钮点击
-    player_control_aubarControls.addEventListener('click', (e) => {
+    player_control_aubarControls.addEventListener('click', e => {
         const target = e.target as HTMLElement;
         if (target.closest('.prev')) {
             PlayPrevTrack();

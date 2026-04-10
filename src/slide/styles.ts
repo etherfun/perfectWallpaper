@@ -9,7 +9,7 @@ import { backgroundLayers } from './types';
 export function getSwitchInterval(): number {
     const speed = config.speed as string | number;
     if (String(speed) === 'custom') {
-        return Number(config.switch_interval_input)  * 1000;
+        return Number(config.switch_interval_input) * 1000;
     }
     return calculate(Number(speed));
 }

@@ -702,7 +702,11 @@ function hideControls(): void {
 // 初始化控制按钮事件
 function initPlayerControls(): void {
     setTimeout(() => {
-        if (!config.server_mode) return;
+        console.log(config.server_mode)
+        if (!config.server_mode) {
+            player_control_aubarControls?.style.setProperty("display", "none", "important");
+            return
+        };
     }, 3000);
 
     if (!player_control_aubarWrapper || !player_control_aubarControls) return;

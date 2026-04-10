@@ -410,16 +410,16 @@ export function setExternalMediaActive(active: boolean): void {
     }
 }
 
-// 监听音频播放状态变化，同步到 config
-// 注意：当外部媒体激活时，不更新 playerState（由外部播放器状态决定）
-myAudio.addEventListener('play', () => {
-    if (!config.runtime.playerInfo.externalMediaActive) {
-        config.runtime.playerInfo.playerState = 1;
-    }
-});
+// // 监听音频播放状态变化，同步到 config
+// // 注意：当外部媒体激活时，不更新 playerState（由外部播放器状态决定）
+// myAudio.addEventListener('play', () => {
+//     if (!config.runtime.playerInfo.externalMediaActive) {
+//         config.runtime.playerInfo.playerState = 1;
+//     }
+// });
 
-myAudio.addEventListener('pause', () => {
-    if (!config.runtime.playerInfo.externalMediaActive) {
-        config.runtime.playerInfo.playerState = 2;
-    }
-});
+// myAudio.addEventListener('pause', () => {
+//     if (!config.runtime.playerInfo.externalMediaActive) {
+//         config.runtime.playerInfo.playerState = 2;
+//     }
+// });

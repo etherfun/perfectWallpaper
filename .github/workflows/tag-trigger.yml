@@ -5,6 +5,9 @@ on:
     tags:
       - 'v*.*.*'
 
+permissions:
+  contents: write
+
 jobs:
   triggered:
     runs-on: windows-latest
@@ -48,6 +51,8 @@ jobs:
 
       - name: Extract release notes
         run: node scripts/generate-release-notes.cjs
+        env:
+          TAG_NAME: ${{ github.ref_name }}
 
       - name: Set release title output
         id: set-title

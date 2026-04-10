@@ -459,15 +459,11 @@ class SystemMonitor {
 
         const isLeft = this.config.monitorPosition === 'left';
 
-        // Position
+        // Position: x is always distance from LEFT edge (0=leftmost, 100=rightmost)
+        // SCSS translate(-50%, -50%) centers on this point
         if (this.container) {
-            if (isLeft) {
-                this.container.style.left = `${100 - this.config.monitorX}%`;
-                this.container.style.right = 'auto';
-            } else {
-                this.container.style.right = `${100 - this.config.monitorX}%`;
-                this.container.style.left = 'auto';
-            }
+            this.container.style.left = `${this.config.monitorX}%`;
+            this.container.style.right = 'auto';
             this.container.style.top = `${this.config.monitorY}%`;
         }
 

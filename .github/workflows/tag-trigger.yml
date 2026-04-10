@@ -15,7 +15,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '24'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
@@ -23,6 +23,12 @@ jobs:
         uses: dtolnay/rust-toolchain@master
         with:
           toolchain: stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+
+      - name: Setup sccache
+        uses: mozilla-actions/sccache-action@v0.0.3
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -32,46 +38,16 @@ jobs:
 
       - name: Build server
         run: yarn build:server:rust
+        env:
+          RUSTC_WRAPPER: sccache
 
       - name: Create zip archive
         run: |
-          $tag = ${{ github.ref_name }} -replace '^v',''
+          $tag = "${{ github.ref_name }}" -replace '^v',''
           Compress-Archive -Path dist\* -DestinationPath "perfectwallpaper-${tag}.zip"
 
       - name: Extract release notes
-        id: release-notes
-        run: |
-          node -e "
-            const fs = require('fs');
-
-            const rawTag = process.env.TAG_NAME;
-            const tag = rawTag.replace(/^v/, '');
-
-            const history = JSON.parse(fs.readFileSync('update/history.json', 'utf8'));
-            const i18n = JSON.parse(fs.readFileSync('source/i18n/zh-CN.json', 'utf8'));
-
-            const entry = history.find(e => e.version === tag || e.version === rawTag);
-
-            if (!entry) {
-              console.log('No matching version found, fallback');
-              fs.writeFileSync('RELEASE_NOTES.md', '# ' + rawTag);
-              fs.writeFileSync('RELEASE_TITLE.txt', rawTag);
-              process.exit(0);
-            }
-
-            const get = (key) => i18n.changelog?.[key] ?? i18n[key] ?? '';
-
-            const title = get(entry.titleKey) || rawTag;
-            const changes = get(entry.changesKey) || '';
-            const imageAlt = get(entry.imageAltKey) || '';
-
-            const notes = \`\${imageAlt ? imageAlt + '\\n\\n' : ''}\${changes}\`;
-
-            fs.writeFileSync('RELEASE_NOTES.md', notes);
-            fs.writeFileSync('RELEASE_TITLE.txt', rawTag + ' - ' + title);
-
-            console.log('Release generated:', rawTag);
-          "
+        run: node scripts/generate-release-notes.cjs
 
       - name: Set release title output
         id: set-title
@@ -88,5 +64,6 @@ jobs:
           draft: false
           files: |
             perfectwallpaper-*.zip
+            dist/perfectwall-server.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

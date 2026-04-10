@@ -6,12 +6,8 @@
   "scripts": {
     "build": "tsc --noEmit && node scripts/bundle.js",
     "build:scss": "sass --style=compressed --no-source-map src/scss/main.scss dist/default.css",
-    "watch": "tsc --watch",
     "watch:bundle": "node scripts/bundle.js --watch",
     "watch:scss": "sass --watch --style=expanded scss/main.scss dist/default.css",
-    "check-types": "tsc --noEmit",
-    "bundle": "node scripts/bundle.js",
-    "prepare": "yarn run build",
     "build:server:rust": "cd src/server-rs && cargo build --release && powershell -Command \"Copy-Item target/release/perfectwall-server.exe ../../dist/\"",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",

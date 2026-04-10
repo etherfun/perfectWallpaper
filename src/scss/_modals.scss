@@ -915,33 +915,6 @@
         }
     }
 
-    .scroll-hint {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background: rgba(0, 0, 0, 0.7);
-        color: rgba(255, 255, 255, 0.8);
-        padding: 8px 16px;
-        border-radius: 20px;
-        font-size: 16px;
-        @include flex-center;
-        gap: 8px;
-        z-index: 10;
-        transform: translateY(-10px);
-        transition: all $duration-normal ease;
-        backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-
-        &.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        i {
-            font-size: 14px;
-        }
-    }
-
     .keyboard-hint {
         position: absolute;
         bottom: 10px;
@@ -1637,6 +1610,33 @@
     overflow: visible;
     min-width: 0;
     position: relative;
+
+    .scroll-hint {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: rgba(255, 255, 255, 0.8);
+        padding: 8px 16px;
+        border-radius: 20px;
+        font-size: 16px;
+        @include flex-center;
+        gap: 8px;
+        z-index: 10;
+        transform: translateY(-10px);
+        transition: all $duration-normal ease;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+
+        &.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        i {
+            font-size: 14px;
+        }
+    }
 
     .version-detail-header {
         padding: 24px 32px 20px;

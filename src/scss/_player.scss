@@ -29,10 +29,8 @@
         display: flex;
         justify-content: space-between;
         align-items: stretch;
-        background: rgba(
-            var(--player-yakeli-color),
-            calc(var(--player-yakeli) * var(--player-yakeli-enabled))
-        );
+        background: rgba(var(--player-yakeli-color),
+                calc(var(--player-yakeli) * var(--player-yakeli-enabled)));
         backdrop-filter: blur(calc(var(--player-blur-yakeli) * var(--player-yakeli-enabled)));
         text-shadow: 0 0 20px rgba(var(--player-blur-color), var(--player-blur-enabled));
 
@@ -54,10 +52,11 @@
 
             .pause-overlay {
                 position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: calc((var(--player-thumb-inner-size, 100%)) + 5px);
+                height: calc((var(--player-thumb-inner-size, 100%)) + 5px);
                 background: rgba(0, 0, 0, 0.5);
                 display: none;
                 justify-content: center;

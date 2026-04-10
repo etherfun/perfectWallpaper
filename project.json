@@ -143,6 +143,8 @@
 				"ui_background_imageswitchtimes_4" : "10Min",
 				"ui_background_imageswitchtimes_5" : "30Min",
 				"ui_background_imageswitchtimes_6" : "60Min",
+				"ui_background_imageswitchtimes_custom" : "Custom",
+				"ui_background_imageswitchtimes_input" : "Custom interval (seconds)",
 				"ui_background_info" : "Show photo info",
 				"ui_background_random" : "Enable Random Switch",
 				"ui_background_selectvideo" : "Custom Video",
@@ -368,7 +370,7 @@
 				"ui_hitokoto_updata_5" : "Do Not Update",
 				"ui_music_MuiscVolume" : "Volume",
 				"ui_music_directory" : "Music Folder (Playlist)",
-				"ui_music_directory_text" : "<small>★ Select a folder containing audio files for playlist playback</small>",
+				"ui_music_directory_text" : "<small>★ Selecting a folder containing audio files as a playlist—this feature currently has a bug that may cause wallpaper initialization to crash. The cause of the crash is under investigation.</small>",
 				"ui_music_musictext" : "<small>★ BGM can be directly selected from OGG or WEBM audio files</small>",
 				"ui_music_playlist_random" : "Playlist Shuffle",
 				"ui_music_playlist_repeat" : "Playlist Repeat",
@@ -642,6 +644,8 @@
 				"ui_background_imageswitchtimes_4" : "10分钟",
 				"ui_background_imageswitchtimes_5" : "30分钟",
 				"ui_background_imageswitchtimes_6" : "60分钟",
+				"ui_background_imageswitchtimes_custom" : "自定义",
+				"ui_background_imageswitchtimes_input" : "自定义间隔（秒）",
 				"ui_background_info" : "显示图片信息",
 				"ui_background_random" : "开启随机",
 				"ui_background_selectvideo" : "自定义视频",
@@ -875,7 +879,7 @@
 				"ui_hitokoto_updata_5" : "不更新",
 				"ui_music_MuiscVolume" : "音量",
 				"ui_music_directory" : "音乐文件夹（播放列表）",
-				"ui_music_directory_text" : "<small>★ 选择包含音频文件的文件夹作为播放列表</small>",
+				"ui_music_directory_text" : "<small>★ 选择包含音频文件的文件夹作为播放列表, 该功能目前存在Bug可能会导致壁纸初始化加载崩溃, 崩溃原因正在调查中</small>",
 				"ui_music_musictext" : "<small>★ BGM可以选择OGG或者Webm音频文件</small>",
 				"ui_music_playlist_random" : "播放列表随机",
 				"ui_music_playlist_repeat" : "播放列表循环",
@@ -3333,12 +3337,25 @@
 					{
 						"label" : "ui_background_imageswitchtimes_6",
 						"value" : 5
+					},
+					{
+						"label" : "ui_background_imageswitchtimes_custom",
+						"value" : "custom"
 					}
 				],
 				"order" : 128,
 				"text" : "ui_background_imageswitchtimes",
 				"type" : "combo",
 				"value" : 2
+			},
+			"imageswitchtimeinput" :
+			{
+				"condition" : "[2, 5, 7,8].includes(wallpapermode.value) && imageswitchtimes.value === 'custom'",
+				"default" : "60",
+				"index" : 29,
+				"order" : 129,
+				"text" : "ui_background_imageswitchtimes_input",
+				"type" : "textinput"
 			},
 			"lineWidth" : 
 			{

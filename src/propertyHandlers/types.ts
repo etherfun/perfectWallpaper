@@ -339,7 +339,8 @@ export interface WallpaperProperties {
     selectvideo?: { value: any };
     VideoVolume?: { value: number };
     random?: { value: boolean };
-    imageswitchtimes?: { value: number };
+    imageswitchtimes?: { value: number | string };
+    imageswitchtimeinput?: { value: string };
     bgy?: { value: number };
     bgx?: { value: number };
     bgs?: { value: number };

@@ -173,6 +173,14 @@ export function handleBackgroundProperties(
         }
     }
 
+    // 处理自定义切换时间输入
+    if (properties.imageswitchtimeinput) {
+        config.switch_interval_input = properties.imageswitchtimeinput.value;
+        if (FirstLoad === false && String(config.speed) === 'custom') {
+            changeBackground();
+        }
+    }
+
     // 自由变换
     if (properties.bgy) {
         const y = properties.bgy.value;

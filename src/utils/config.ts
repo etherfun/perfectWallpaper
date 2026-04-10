@@ -338,8 +338,9 @@ const SYNC_DEFAULTS = {
     transition_mode_choose_1: 0,
     transition_mode_choose_4: '',
     random: false,
-    speed: 1,
+    speed: 1 as number | string,
     bg_style: 1,
+    switch_interval_input: '60',
 
     show_sakura: true,
     sakura_transparency: 0.15,

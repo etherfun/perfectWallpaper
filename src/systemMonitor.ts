@@ -28,7 +28,7 @@ interface SystemMonitorConfig {
 }
 
 const DEFAULT_CONFIG: SystemMonitorConfig = {
-    enabled: true,
+    enabled: false,
     barLayout: 'horizontal',
     monitorPosition: 'right',
     disconnectTimeout: 10000,

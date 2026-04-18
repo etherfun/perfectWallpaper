@@ -36,7 +36,7 @@ interface DockBarConfig {
 }
 
 const DEFAULT_CONFIG: DockBarConfig = {
-    enabled: true,
+    enabled: false,
     position: 'bottom',
     positionX: 50,
     positionY: 100,

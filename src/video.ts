@@ -12,6 +12,8 @@ const myAudio = elements.myAudio;
 
 // 是否已绑定音频结束事件
 let audioEndedListenerBound = false;
+// 单曲循环时防止重入标志
+let isSingleTrackLoop = false;
 
 // 服务器端口
 const SERVER_PORT = 27420;
@@ -238,8 +240,14 @@ function handleAudioEnded(): void {
 
     // 单曲循环
     if (repeat === 2) {
+        if (isSingleTrackLoop) return;  // 防止重入
+        isSingleTrackLoop = true;
         myAudio.currentTime = 0;
-        myAudio.play();
+        myAudio.play().then(() => {
+            isSingleTrackLoop = false;
+        }).catch(() => {
+            isSingleTrackLoop = false;
+        });
         return;
     }
 

@@ -5,9 +5,30 @@
 
 import { config } from './utils/config';
 import { elements } from './utils/elementManager';
+import { debugLogger } from './utils/logger';
 
 // RAF chain tracking to prevent memory leaks
 let currentRafId: number | null = null;
+// Track last src to detect if we need to restart RAF loop
+let lastRafSrc: string | null = null;
+let lastRafVideoMode: boolean | null = null;
+
+// Visibility change handler to resume RAF when tab becomes visible
+function handleVisibilityChange(): void {
+    if (document.visibilityState === 'visible') {
+        // Check if RGB is enabled and we had an active RAF before
+        if (config.rgb_show && lastRafSrc !== null) {
+            debugLogger.log('RGB: visibility restored, resuming RAF');
+            // Re-trigger background2canvas to restart the RAF chain
+            background2canvas(lastRafSrc, lastRafVideoMode ?? undefined);
+        }
+    }
+}
+
+// Register visibility change listener once
+if (typeof document !== 'undefined') {
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+}
 
 /**
  * 获取编码的Canvas图像数据
@@ -49,6 +70,10 @@ function startRGBInternal(canvas: HTMLCanvasElement): void {
  * @param videoORimages 是否为视频模式
  */
 export function background2canvas(src?: string | null, videoORimages?: boolean): void {
+    // Track last parameters for visibility recovery
+    lastRafSrc = src ?? null;
+    lastRafVideoMode = videoORimages ?? null;
+
     let Frist = true;
     const sakura = elements.sakura;
     const particles = document.getElementById('canvas-particles') as HTMLCanvasElement | null;

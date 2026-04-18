@@ -3,13 +3,16 @@
  * 合并渲染器(FluidEffect2)与控制器(FluidEffectConfig)
  */
 
-import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
-import { debugLogger } from '../utils/logger';
+import { config } from '../utils/config';
 import { hasPlaybackContent } from '../utils/playback';
+import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
-import type { FluidEffectOptions } from './types';
-import { DEFAULT_FLUID_EFFECT_CONFIG, DEFAULT_FLUID_EFFECT_OPTIONS } from './types';
+import type { FluidEffectOptions, FluidEffectConfigState } from './types';
+import {
+    DEFAULT_FLUID_EFFECT_OPTIONS,
+    DEFAULT_FLUID_EFFECT_CONFIG
+} from './types';
 
 // ============================================================
 // 渲染器类 (原 FluidEffect2)
@@ -35,29 +38,20 @@ class FluidEffect2Renderer {
     private _currentImageUrl: string = '';
     private _canvasOffsets: { dx: number; dy: number }[] = [];
     private _lastDisplaySize = 0;
-    private _cachedDpr = 1;
-    private _resizeTimer = 0;
+    // @ts-ignore - 保留用于将来可能的高DPI支持
+    private _lastDpr = 1;
     private resizeHandler: (() => void) | null = null;
-
-    // 性能优化：缓存计算结果
-    private _cachedSourceSize = { width: 0, height: 0, sWidth: 0, sHeight: 0 };
-    private _lastRenderImageUrl = '';
 
     constructor(container: HTMLElement, options: FluidEffectOptions = {}) {
         this.container = container;
         this.options = {
             resolution: options.resolution ?? DEFAULT_FLUID_EFFECT_OPTIONS.resolution,
             blurAmount: options.blurAmount ?? DEFAULT_FLUID_EFFECT_OPTIONS.blurAmount,
-            displacementScale:
-                options.displacementScale ?? DEFAULT_FLUID_EFFECT_OPTIONS.displacementScale,
+            displacementScale: options.displacementScale ?? DEFAULT_FLUID_EFFECT_OPTIONS.displacementScale,
             turbulenceSeed: options.turbulenceSeed ?? Math.floor(Math.random() * 1000),
-            turbulenceFrequency:
-                options.turbulenceFrequency ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceFrequency,
-            turbulenceOctaves:
-                options.turbulenceOctaves ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceOctaves,
-            canvasDisplacementAmplitude:
-                options.canvasDisplacementAmplitude ??
-                DEFAULT_FLUID_EFFECT_OPTIONS.canvasDisplacementAmplitude,
+            turbulenceFrequency: options.turbulenceFrequency ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceFrequency,
+            turbulenceOctaves: options.turbulenceOctaves ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceOctaves,
+            canvasDisplacementAmplitude: options.canvasDisplacementAmplitude ?? DEFAULT_FLUID_EFFECT_OPTIONS.canvasDisplacementAmplitude,
             fullscreen: options.fullscreen ?? DEFAULT_FLUID_EFFECT_OPTIONS.fullscreen,
         };
         this.init();
@@ -70,11 +64,7 @@ class FluidEffect2Renderer {
             this.createCanvases();
             this.setupContainer();
 
-            this.resizeHandler = () => {
-                // 添加节流：延迟 100ms 执行，避免频繁调用
-                clearTimeout(this._resizeTimer);
-                this._resizeTimer = window.setTimeout(() => this.onResize(), 100);
-            };
+            this.resizeHandler = () => this.onResize();
             window.addEventListener('resize', this.resizeHandler);
             this.onResize();
             debugLogger.info('[FluidEffect2] 流体效果初始化完成');
@@ -102,10 +92,7 @@ class FluidEffect2Renderer {
 
         this.feTurbulence = document.createElementNS(svgNS, 'feTurbulence');
         this.feTurbulence.setAttribute('type', 'fractalNoise');
-        this.feTurbulence.setAttribute(
-            'baseFrequency',
-            this.options.turbulenceFrequency.toString()
-        );
+        this.feTurbulence.setAttribute('baseFrequency', this.options.turbulenceFrequency.toString());
         this.feTurbulence.setAttribute('numOctaves', this.options.turbulenceOctaves.toString());
         this.feTurbulence.setAttribute('seed', this.options.turbulenceSeed.toString());
 
@@ -139,22 +126,18 @@ class FluidEffect2Renderer {
             canvas.width = this.options.resolution;
             canvas.height = this.options.resolution;
 
-            // willReadFrequently: false 优化 Canvas 2D 性能
-            const ctx = canvas.getContext('2d', { willReadFrequently: false })!;
+            const ctx = canvas.getContext('2d')!;
             this.canvases.push(canvas);
             this.canvasContexts.push(ctx);
 
             const amp = parseFloat(String(this.options.canvasDisplacementAmplitude)) || 200;
             this._canvasOffsets.push({
                 dx: (Math.random() * 2 - 1) * amp,
-                dy: (Math.random() * 2 - 1) * amp,
+                dy: (Math.random() * 2 - 1) * amp
             });
 
             const delays = [0, -5, -10, -15];
             canvas.style.animationDelay = `${delays[i]}s`;
-
-            // 应用 SVG filter (GPU 加速) 替代 canvas context filter
-            canvas.style.filter = `url(#fluid-filter-2)`;
 
             this.fluidRect.appendChild(canvas);
         }
@@ -175,42 +158,39 @@ class FluidEffect2Renderer {
         const canvasSize = viewSize * 0.707;
 
         const displaySize = Math.max(1, Math.round(canvasSize));
-        // DPR 限制在 1.5 以内，平衡画质与性能
         const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-        this._cachedDpr = dpr;
         this._lastDisplaySize = displaySize;
+        this._lastDpr = dpr;
 
-        const backing = displaySize * dpr;
-
-        // 合并两次循环为一次（计算基础位置 + 应用偏移）
+        // Single loop: compute position + offset together
         for (let x = 0; x <= 1; x++) {
             for (let y = 0; y <= 1; y++) {
                 const index = y * 2 + x;
                 const canvas = this.canvases[index];
                 if (!canvas) continue;
 
+                const signX = x === 0 ? -1 : 1;
+                const signY = y === 0 ? -1 : 1;
+                const offset = this._canvasOffsets[index] ?? { dx: 0, dy: 0 };
+
+                const baseLeft = (width / 2 + signX * canvasSize * 0.35) - canvasSize / 2;
+                const baseTop = (height / 2 + signY * canvasSize * 0.35) - canvasSize / 2;
+
                 canvas.style.width = `${canvasSize}px`;
                 canvas.style.height = `${canvasSize}px`;
+                canvas.style.left = `${baseLeft + offset.dx}px`;
+                canvas.style.top = `${baseTop + offset.dy}px`;
 
+                const backing = displaySize * dpr;
                 if (canvas.width !== backing || canvas.height !== backing) {
                     canvas.width = backing;
                     canvas.height = backing;
-                    const ctx = canvas.getContext('2d', { willReadFrequently: false });
+                    const ctx = canvas.getContext('2d');
                     if (ctx) {
                         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-                        // 不再设置 ctx.filter，blur 已在 CSS filter 中通过 GPU 加速
+                        ctx.filter = `blur(${this.options.blurAmount}px)`;
                     }
                 }
-
-                const signX = x === 0 ? -1 : 1;
-                const signY = y === 0 ? -1 : 1;
-
-                const baseLeft = width / 2 + signX * canvasSize * 0.35 - canvasSize / 2;
-                const baseTop = height / 2 + signY * canvasSize * 0.35 - canvasSize / 2;
-
-                const offset = this._canvasOffsets[index] ?? { dx: 0, dy: 0 };
-                canvas.style.left = `${baseLeft + offset.dx}px`;
-                canvas.style.top = `${baseTop + offset.dy}px`;
             }
         }
 
@@ -223,34 +203,31 @@ class FluidEffect2Renderer {
         if (!image || !image.complete) {
             debugLogger.warn('setSourceFromImage: 图像无效或未加载完成', {
                 image: image ? 'exists' : 'null',
-                complete: image ? image.complete : 'N/A',
+                complete: image ? image.complete : 'N/A'
             });
             return;
         }
 
         const imageUrl = image.src || (image as any).currentSrc || '';
 
-        // 脏检查：图片 URL 没变且尺寸没变，跳过重新绘制
-        if (
-            imageUrl === this._lastRenderImageUrl &&
-            this._cachedSourceSize.width === image.naturalWidth
-        ) {
-            return;
+        // Skip redraw if image URL hasn't changed and displaySize is the same
+        if (imageUrl === this._currentImageUrl && this._lastDisplaySize > 0) {
+            const firstCanvas = this.canvases[0];
+            const currentDisplaySize = firstCanvas
+                ? Math.round(firstCanvas.width / (window.devicePixelRatio || 1))
+                : 0;
+            if (currentDisplaySize === this._lastDisplaySize) {
+                return;
+            }
         }
 
         this.currentImage = image;
-        this._lastRenderImageUrl = imageUrl;
+        this._currentImageUrl = imageUrl;
 
-        const width = image.naturalWidth || image.width || image.clientWidth || 0;
-        const height = image.naturalHeight || image.height || image.clientHeight || 0;
+        const width = image.naturalWidth || image.width || (image.clientWidth || 0);
+        const height = image.naturalHeight || image.height || (image.clientHeight || 0);
         const sWidth = Math.floor(width / 2);
         const sHeight = Math.floor(height / 2);
-
-        // 缓存源图尺寸
-        this._cachedSourceSize = { width, height, sWidth, sHeight };
-
-        const displaySize =
-            this._lastDisplaySize || Math.round(this.options.resolution / (this._cachedDpr || 1));
 
         for (let i = 0; i < 4; i++) {
             const ctx = this.canvasContexts[i];
@@ -259,15 +236,19 @@ class FluidEffect2Renderer {
 
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            const sx = i % 2 === 0 ? 0 : sWidth;
-            const sy = i < 2 ? 0 : sHeight;
+            const sx = (i % 2 === 0) ? 0 : sWidth;
+            const sy = (i < 2) ? 0 : sHeight;
 
-            ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, displaySize, displaySize);
+            const displaySize = this._lastDisplaySize || Math.round(canvas.width / (window.devicePixelRatio || 1));
+            ctx.drawImage(
+                image,
+                sx, sy, sWidth, sHeight,
+                0, 0, displaySize, displaySize
+            );
         }
 
-        if (this.feTurbulence && imageUrl !== this._currentImageUrl) {
+        if (this.feTurbulence) {
             this.feTurbulence.setAttribute('seed', String(Math.floor(Math.random() * 1000)));
-            this._currentImageUrl = imageUrl;
         }
     }
 
@@ -275,7 +256,7 @@ class FluidEffect2Renderer {
         const image = new Image();
         image.crossOrigin = 'Anonymous';
         image.onload = () => this.setSourceFromImage(image);
-        image.onerror = error => {
+        image.onerror = (error) => {
             debugLogger.error('加载 FluidEffect2 图像失败', { url, error });
         };
         image.src = url;
@@ -283,9 +264,7 @@ class FluidEffect2Renderer {
 
     setDisplacementScale(scale: number): void {
         if (!this.feDisplacementMap) return;
-        const currentScale = parseFloat(
-            this.feDisplacementMap.getAttribute('scale') || String(this.options.displacementScale)
-        );
+        const currentScale = parseFloat(this.feDisplacementMap.getAttribute('scale') || String(this.options.displacementScale));
         const newScale = currentScale + (scale - currentScale) * 0.1;
         this.feDisplacementMap.setAttribute('scale', String(newScale));
     }
@@ -324,17 +303,19 @@ class FluidEffect2Renderer {
         this.options = { ...this.options, ...newOptions };
 
         if (newOptions.blurAmount !== undefined) {
-            // CSS filter 通过 GPU 加速，比 canvas context filter 更快
+            this.canvasContexts.forEach(ctx => {
+                ctx.filter = `blur(${newOptions.blurAmount}px)`;
+            });
+            // Also update canvas style filter if blurAmount is 0 (remove CSS filter)
             this.canvases.forEach(canvas => {
-                canvas.style.filter = `url(#fluid-filter-2)`;
+                if (newOptions.blurAmount === 0) {
+                    canvas.style.filter = '';
+                }
             });
         }
 
         if (newOptions.turbulenceFrequency !== undefined) {
-            this.feTurbulence?.setAttribute(
-                'baseFrequency',
-                String(newOptions.turbulenceFrequency)
-            );
+            this.feTurbulence?.setAttribute('baseFrequency', String(newOptions.turbulenceFrequency));
         }
 
         if (newOptions.turbulenceOctaves !== undefined) {
@@ -348,13 +329,10 @@ class FluidEffect2Renderer {
         if (newOptions.canvasDisplacementAmplitude !== undefined) {
             const amp = parseFloat(String(newOptions.canvasDisplacementAmplitude)) || 0;
             this.options.canvasDisplacementAmplitude = amp;
-            // 原地更新偏移量，避免重建数组
-            for (let i = 0; i < this._canvasOffsets.length; i++) {
-                this._canvasOffsets[i] = {
-                    dx: (Math.random() * 2 - 1) * amp,
-                    dy: (Math.random() * 2 - 1) * amp,
-                };
-            }
+            this._canvasOffsets = this.canvases.map(() => ({
+                dx: (Math.random() * 2 - 1) * amp,
+                dy: (Math.random() * 2 - 1) * amp
+            }));
             this.onResize();
         }
 
@@ -371,7 +349,6 @@ class FluidEffect2Renderer {
 
     destroy(): void {
         this.stop();
-        clearTimeout(this._resizeTimer);
 
         if (this.resizeHandler) {
             window.removeEventListener('resize', this.resizeHandler);
@@ -426,9 +403,6 @@ export class FluidEffect {
     private _normalEffect: FluidEffect2Renderer | null = null;
     private _fullscreenEffect: FluidEffect2Renderer | null = null;
 
-    // 缓存的 wrapper 引用（避免重复 DOM 查询）
-    private _cachedWrapper: HTMLElement | null = null;
-
     /**
      * 创建流体效果统一实例
      */
@@ -455,23 +429,6 @@ export class FluidEffect {
             return;
         }
         this._applyFullscreenMode();
-    }
-
-    /**
-     * 获取流体效果 wrapper 元素（带缓存）
-     */
-    private _getFluidWrapper(): HTMLElement | null {
-        if (!this._cachedWrapper) {
-            this._cachedWrapper = document.querySelector('.fluid-effect-wrapper');
-        }
-        return this._cachedWrapper;
-    }
-
-    /**
-     * 使缓存失效（wrapper 被移除时调用）
-     */
-    private _invalidateWrapperCache(): void {
-        this._cachedWrapper = null;
     }
 
     /**
@@ -527,8 +484,6 @@ export class FluidEffect {
 
     enableFullscreen(): this {
         this.fullscreenEnabled = true;
-        this._getFluidWrapper()?.remove();
-        this._invalidateWrapperCache();
         this._normalEffect?.destroy();
         this._normalEffect = null;
         if (this.enabled) {
@@ -549,8 +504,6 @@ export class FluidEffect {
     toggleFullscreen(): boolean {
         this.fullscreenEnabled = !this.fullscreenEnabled;
         if (this.fullscreenEnabled) {
-            this._getFluidWrapper()?.remove();
-            this._invalidateWrapperCache();
             this._normalEffect?.destroy();
             this._normalEffect = null;
         } else {
@@ -633,9 +586,7 @@ export class FluidEffect {
             return;
         }
 
-        const container = document.querySelector(
-            '#player_control .background'
-        ) as HTMLElement | null;
+        const container = document.querySelector('#player_control .background') as HTMLElement | null;
         if (!container) {
             return;
         }
@@ -647,16 +598,14 @@ export class FluidEffect {
                 displacementScale: this.displacementScale,
                 turbulenceFrequency: this.turbulenceFrequency,
                 turbulenceOctaves: this.turbulenceOctaves,
-                canvasDisplacementAmplitude: this.canvasDisplacementAmplitude,
+                canvasDisplacementAmplitude: this.canvasDisplacementAmplitude
             });
             this._normalEffect = effect;
 
             const thumbnail = elements.playerControl.thumbnail as HTMLImageElement | undefined;
             if (thumbnail?.complete && effect.setSourceFromImage) {
                 effect.setSourceFromImage(thumbnail);
-                const wrapper = document.querySelector(
-                    '.fluid-effect-wrapper'
-                ) as HTMLElement | null;
+                const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
                 if (wrapper && thumbnail.src) {
                     wrapper.style.backgroundImage = `url('${thumbnail.src}')`;
                 }
@@ -666,7 +615,7 @@ export class FluidEffect {
                 effect.start();
             }
 
-            const currentPlaybackState = config.runtime.playerInfo.playerState;
+            const currentPlaybackState = config.playbackState;
             if (currentPlaybackState === 2) {
                 effect.setPlayState?.(false);
             } else if (currentPlaybackState === 1) {
@@ -676,7 +625,6 @@ export class FluidEffect {
             container.style.background = 'none';
             container.style.overflow = 'hidden';
         } catch (error) {
-            debugLogger.log(`[FluidEffect] Failed to apply normal effect: ${error}`);
             return;
         }
     }
@@ -711,7 +659,7 @@ export class FluidEffect {
         }
 
         let isPaused = false;
-        const playbackState = config.runtime.playerInfo.playerState;
+        const playbackState = config.playbackState;
         if (playbackState === 2) {
             isPaused = true;
         }
@@ -729,7 +677,7 @@ export class FluidEffect {
                 turbulenceFrequency: this.turbulenceFrequency,
                 turbulenceOctaves: this.turbulenceOctaves,
                 canvasDisplacementAmplitude: this.canvasDisplacementAmplitude,
-                fullscreen: true,
+                fullscreen: true
             });
             this._fullscreenEffect = effect;
             effect.start();
@@ -747,9 +695,7 @@ export class FluidEffect {
                 img.onload = () => {
                     if (this._fullscreenEffect) {
                         this._fullscreenEffect.setSourceFromImage(img);
-                        const wrapper = document.querySelector(
-                            '.fluid-effect-wrapper'
-                        ) as HTMLElement | null;
+                        const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
                         if (wrapper) {
                             wrapper.style.backgroundImage = `url('${imgSrc}')`;
                             wrapper.style.backgroundSize = 'cover';
@@ -760,9 +706,7 @@ export class FluidEffect {
                 };
                 img.src = imgSrc;
             } else {
-                const wrapper = document.querySelector(
-                    '.fluid-effect-wrapper'
-                ) as HTMLElement | null;
+                const wrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
                 if (wrapper) {
                     wrapper.style.backgroundImage = "url('imgs/1.jpg')";
                     wrapper.style.backgroundSize = 'cover';
@@ -785,11 +729,10 @@ export class FluidEffect {
         config.runtime.fullscreenFluidEnabled = false;
         this._removePictureInfoHideStyle();
 
-        const fluidWrapper = this._getFluidWrapper();
+        const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
         if (fluidWrapper) {
             fluidWrapper.style.backgroundImage = 'none';
         }
-        this._invalidateWrapperCache();
     }
 
     /**
@@ -814,9 +757,7 @@ export class FluidEffect {
         img.onload = () => {
             if (this._fullscreenEffect?.setSourceFromImage) {
                 this._fullscreenEffect.setSourceFromImage(img);
-                const fluidWrapper = document.querySelector(
-                    '.fluid-effect-wrapper'
-                ) as HTMLElement | null;
+                const fluidWrapper = document.querySelector('.fluid-effect-wrapper') as HTMLElement | null;
                 if (fluidWrapper) {
                     fluidWrapper.style.backgroundImage = `url('${thumbnail.src}')`;
                     fluidWrapper.style.backgroundSize = 'cover';
@@ -858,10 +799,8 @@ export class FluidEffect {
 // 初始化
 // ============================================================
 
-// 初始化运行时状态（检查 runtime 是否已初始化）
-if (config.runtime) {
-    config.runtime.fluidEffect = null;
-    config.runtime.fullscreenFluidEffect = null;
-    config.runtime.fullscreenFluidEnabled = false;
-    config.runtime.pictureInfoHideStyleAdded = false;
-}
+// 初始化运行时状态
+config.runtime.fluidEffect = null;
+config.runtime.fullscreenFluidEffect = null;
+config.runtime.fullscreenFluidEnabled = false;
+config.runtime.pictureInfoHideStyleAdded = false;

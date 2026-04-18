@@ -171,7 +171,7 @@ export function PWParcreatePoint(): void {
  * Draw a single particle
  */
 export function drawP(point: Point): void {
-    let l = audioArrayPar[point.index] / 20;
+    let l = (audioArrayPar?.[point.index] ?? 0) / 20;
     if (!l || l < 1) l = 1;
     let radius = Math.min(point.radius * l, 4) * ratio;
     if (point.r && equalize !== 1) radius = radius * equalize + point.r * (1 - equalize);

@@ -16,6 +16,7 @@ export function handleBackgroundProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
+    debugLogger.warn(`[handleBackgroundProperties] FirstLoad=${FirstLoad}, keys=${Object.keys(properties).join(', ')}`);
     // 自定义壁纸
     if (properties.image) {
         config.custom = properties.image.value;
@@ -58,6 +59,7 @@ export function handleBackgroundProperties(
 
     // 自定义目录
     if (properties.customdirectory) {
+        debugLogger.warn(`[handleBackgroundProperties] customdirectory changed, FirstLoad=${FirstLoad}`);
         config.customdirectory = properties.customdirectory.value;
         timerManager.remove('backgroundChange');
         if (properties.customdirectory && FirstLoad === false) {
@@ -67,6 +69,7 @@ export function handleBackgroundProperties(
 
     // 监听幻灯开关变化
     if (properties.wallpapermode) {
+        debugLogger.warn(`[handleBackgroundProperties] wallpapermode changed, FirstLoad=${FirstLoad}`);
         timerManager.remove('backgroundChange');
         config.wallpaper_mode = properties.wallpapermode.value;
         if (FirstLoad) {
@@ -78,24 +81,31 @@ export function handleBackgroundProperties(
         }
     }
 
-    // 幻灯片特效
+    // 幻灯片特效 - 批量更新，只在最后调用一次 TransitionSwith
+    let transitionModeChanged = false;
+
     if (properties.TransitionMode) {
         config.transition_mode = properties.TransitionMode.value;
-        TransitionSwith();
+        transitionModeChanged = true;
     }
 
     if (properties.TransitionMode_choose_0) {
         config.transition_mode_choose_0 = properties.TransitionMode_choose_0.value;
-        TransitionSwith();
+        transitionModeChanged = true;
     }
 
     if (properties.TransitionMode_choose_1) {
         config.transition_mode_choose_1 = properties.TransitionMode_choose_1.value;
-        TransitionSwith();
+        transitionModeChanged = true;
     }
 
     if (properties.TransitionMode_choose_4) {
         config.transition_mode_choose_4 = properties.TransitionMode_choose_4.value;
+        transitionModeChanged = true;
+    }
+
+    // 统一调用一次 TransitionSwith
+    if (transitionModeChanged) {
         TransitionSwith();
     }
 

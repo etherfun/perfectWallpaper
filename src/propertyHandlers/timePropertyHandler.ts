@@ -5,9 +5,7 @@ import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { WallpaperProperties } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let tStyle = true;
-const oClock_webtext_ti = elements.clock.indicators;
+const oClock_webtext_ti = elements.clock.st;
 const oClock = elements.clock.container;
 
 /**
@@ -111,14 +109,7 @@ export function handleTimeProperties(properties: WallpaperProperties, FirstLoad:
 
     // 时间制式
     if (properties.tStyle) {
-        if (properties.tStyle.value) {
-            oClock_webtext_ti.style.justifyContent = 'flex-end';
-        } else {
-            oClock_webtext_ti.style.justifyContent = 'space-between';
-        }
-        tStyle = properties.tStyle.value;
         config.time_style = properties.tStyle.value;
-        getTime_sec();
     }
 
     // 时间透明度

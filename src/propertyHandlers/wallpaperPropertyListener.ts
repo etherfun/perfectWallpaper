@@ -78,7 +78,7 @@ export function createWallpaperPropertyListener(
     // 全局语言设置
     if (properties.global_settings_language) {
         config.language = properties.global_settings_language.value;
-        config.language_code = properties.global_settings_language.value.slice(0, 2);
+        config.language_code = properties.global_settings_language.value?.slice(0, 2) ?? config.language_code;
         loadI18nData();
     }
 

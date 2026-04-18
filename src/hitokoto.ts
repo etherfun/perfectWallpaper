@@ -40,7 +40,7 @@ async function getHitokoto_input(strHtml1: string): Promise<void> {
 
         hitokotoRuntime.hitokoto_text = res.hitokoto;
         hitokotoRuntime.from_text = res.from;
-        hitokotoRuntime.from_who_text = res.from_who ?? '未获取';
+        hitokotoRuntime.from_who_text = res.from_who ?? '';
 
         hitokoto_webtext.innerHTML = formatHitokoto(strHtml1);
     } catch (error) {

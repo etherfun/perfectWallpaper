@@ -293,7 +293,6 @@ export class MultiTimerManager {
                 timer.animationTimeout = null;
             }
 
-            // 先删除
             this.timers.delete(timerId);
 
             try {

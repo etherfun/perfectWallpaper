@@ -44,22 +44,18 @@ export function changeBackground(): void {
             break;
         case 6: // NASA
             shouldShow();
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, getSwitchInterval(), 'backgroundChange');
             break;
         case 7: // 次元api
             shouldShow();
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, getSwitchInterval(), 'backgroundChange');
             break;
         case 8: // Windows聚焦
             shouldShow();
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, getSwitchInterval(), 'backgroundChange');
             break;
         case 9: // Custom
             shouldShow();
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, getSwitchInterval(), 'backgroundChange');
             break;
         default:

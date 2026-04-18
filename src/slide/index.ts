@@ -29,7 +29,6 @@ export function changeBackground(): void {
             } else {
                 shouldShow();
             }
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, getSwitchInterval(), 'backgroundChange');
             break;
         case 3: // Video mode
@@ -37,12 +36,10 @@ export function changeBackground(): void {
             break;
         case 4: // Bing wallpaper
             shouldShow();
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, 10800000, 'backgroundChange');
             break;
         case 5: // Lorem Picsum
             shouldShow();
-            timerManager.remove('backgroundChange');
             timerManager.create(changeBackground, getSwitchInterval(), 'backgroundChange');
             break;
         case 6: // NASA
@@ -71,7 +68,10 @@ export function changeBackground(): void {
     if (
         document.querySelector('.fluid-effect-wrapper:not(#player_control .fluid-effect-wrapper)')
     ) {
-        timerManager.pause('backgroundChange');
+        // 只在定时器存在时才尝试暂停
+        if (timerManager.has('backgroundChange')) {
+            timerManager.pause('backgroundChange');
+        }
     }
 }
 

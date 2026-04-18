@@ -4,6 +4,7 @@
 
 import { background2canvas } from '../RGB';
 import { config } from '../utils/config';
+import { debugLogger } from '../utils/logger';
 import { elements } from '../utils/elementManager';
 import { ChangeVideoModel } from '../video';
 import { transitionBackground } from './transition';
@@ -186,6 +187,9 @@ export function shouldShow(): void {
                             }, 100);
                         }
                     };
+                    img.onerror = function () {
+                        debugLogger.error(`Bing图片加载失败: ${bingurl}_UHD.jpg`);
+                    };
                 });
             break;
 
@@ -208,6 +212,9 @@ export function shouldShow(): void {
                             config.runtime.photo.nextphoto = false;
                         }, 100);
                     }
+                };
+                loremImg.onerror = function () {
+                    debugLogger.error(`Lorem Picsum图片加载失败: ${loremImg.src}`);
                 };
                 clearpicturesinfo();
                 pictures.picture_info.style.display = 'none';
@@ -306,6 +313,9 @@ export function shouldShow(): void {
                             }, 100);
                         }
                     };
+                    img.onerror = function () {
+                        debugLogger.error(`次元api图片加载失败: ${img.src}`);
+                    };
                 });
             clearpicturesinfo();
             pictures.picture_info.style.display = 'none';
@@ -356,6 +366,9 @@ export function shouldShow(): void {
                                 }, 100);
                             }
                         };
+                        img.onerror = function () {
+                            debugLogger.error(`Windows聚焦图片加载失败: ${img.src}`);
+                        };
                     });
             }
             break;
@@ -380,6 +393,9 @@ export function shouldShow(): void {
                             config.runtime.photo.nextphoto = false;
                         }, 100);
                     }
+                };
+                customImg.onerror = function () {
+                    debugLogger.error(`Custom图片加载失败: ${customImg.src}`);
                 };
                 clearpicturesinfo();
                 pictures.picture_info.style.display = 'none';

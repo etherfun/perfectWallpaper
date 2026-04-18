@@ -3,13 +3,20 @@
  */
 
 import { config } from '../utils/config';
+import { debugLogger } from '../utils/logger';
 import { backgroundLayers } from './types';
 
 /** Get switch interval based on speed setting or custom input */
 export function getSwitchInterval(): number {
     const speed = config.speed as string | number;
     if (String(speed) === 'custom') {
-        return Number(config.switch_interval_input) * 1000;
+        const customInterval = Number(config.switch_interval_input);
+        // 验证输入值：如果是 NaN 或小于等于0，使用默认值 60秒
+        if (isNaN(customInterval) || customInterval <= 0) {
+            debugLogger.warn(`无效的custom切换间隔: ${config.switch_interval_input}，使用默认值60秒`);
+            return 60000;
+        }
+        return customInterval * 1000;
     }
     return calculate(Number(speed));
 }

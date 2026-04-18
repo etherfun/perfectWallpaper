@@ -49,6 +49,10 @@ export async function qweatherLookupCity(weather_address: WeatherAddress): Promi
     );
     const data: QWeatherCityResponse = await response.json();
 
+    if (!data.location || data.location.length === 0) {
+        throw new Error(`City lookup returned no results for: ${weather_address.cityname}`);
+    }
+
     weather_address.citynumber = data.location[0].id;
     weather_address.cityname = data.location[0].name;
     weather_address.latitude = data.location[0].lat;

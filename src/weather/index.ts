@@ -37,6 +37,7 @@ export {
 } from './weatherState';
 
 import { config } from '../utils/config';
+import { debugLogger } from '../utils/logger';
 import { i18n } from '../utils/i18n';
 import { timerManager } from '../utils/timer';
 import { fetch_with_retry } from '../utils/tool';
@@ -60,16 +61,21 @@ export async function getIconSvg(iconPath: string): Promise<string> {
         return cached;
     }
 
-    const res = await fetch(iconPath);
-    const svg = await res.text();
-
-    if (iconCache.size >= MAX_ICON_CACHE_SIZE) {
-        // 删除最早的条目（Map 按插入顺序迭代）
-        const firstKey = iconCache.keys().next().value;
-        if (firstKey) iconCache.delete(firstKey);
+    try {
+        const res = await fetch(iconPath);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const svg = await res.text();
+        // 缓存大小管理
+        if (iconCache.size >= MAX_ICON_CACHE_SIZE) {
+            const firstKey = iconCache.keys().next().value;
+            if (firstKey) iconCache.delete(firstKey);
+        }
+        iconCache.set(iconPath, svg);
+        return svg;
+    } catch (error) {
+        debugLogger.error('Failed to fetch weather icon', { iconPath, error });
+        return '';
     }
-    iconCache.set(iconPath, svg);
-    return svg;
 }
 
 export function clearIconCache(): void {
@@ -140,10 +146,15 @@ const WEATHER_UPDATE_INTERVALS: Record<number, number> = {
     5: 60 * 60 * 1000, // 60 分钟
 };
 const DEFAULT_UPDATE_INTERVAL = 15 * 60 * 1000;
+let weatherTimerId: string | null = null;
 
 export function autoWeather(): void {
     weather_init();
-    timerManager.create(
+    // 如果已有定时器，先删除
+    if (weatherTimerId) {
+        timerManager.remove(weatherTimerId);
+    }
+    weatherTimerId = timerManager.create(
         autoWeather,
         WEATHER_UPDATE_INTERVALS[config.weather_updata ?? 0] || DEFAULT_UPDATE_INTERVAL,
         'updataWeather'

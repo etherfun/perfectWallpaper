@@ -26,11 +26,15 @@ export async function icufree(
     );
     const res: IcuFreeResponse = await response.json();
 
+    if (!res.cityname || !res.feels) {
+        throw new Error('Invalid ICUFree API response: missing required fields');
+    }
+
     weather_address.cityname = res.cityname;
     weather_data.temperature = res.feels;
-    weather_data.weathernow = res.weathernow;
-    weather_data.wind = res.wind.slice(0, -1);
-    weather_data.windLv = res.windLv.slice(0, -1);
-    weather_data.temperature_max = res.high;
-    weather_data.temperature_min = res.low;
+    weather_data.weathernow = res.weathernow ?? '';
+    weather_data.wind = (res.wind ?? '').slice(0, -1);
+    weather_data.windLv = (res.windLv ?? '').slice(0, -1);
+    weather_data.temperature_max = res.high ?? '';
+    weather_data.temperature_min = res.low ?? '';
 }

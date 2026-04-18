@@ -91,7 +91,12 @@ function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
     const now = new Date();
     const endTime = new Date(now.getTime() + 7 * 60 * 60 * 1000);
 
-    const allHours: VisualCrossingHour[] = [...res.days[0].hours, ...(res.days[1]?.hours || [])];
+    const day0Hours = res.days[0]?.hours;
+    const day1Hours = res.days[1]?.hours;
+    const allHours: VisualCrossingHour[] = [
+        ...(day0Hours || []),
+        ...(day1Hours || []),
+    ];
 
     return allHours.filter(h => {
         const [hh, mm, ss] = h.datetime.split(':').map(Number);

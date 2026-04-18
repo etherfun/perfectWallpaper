@@ -614,6 +614,7 @@ class AppConfig {
 
     private _clone<T>(value: T): T {
         if (Array.isArray(value)) return [...value] as unknown as T;
+        if (value instanceof Date) return new Date(value) as unknown as T;
         if (typeof value === 'object' && value !== null) return { ...value } as T;
         return value;
     }

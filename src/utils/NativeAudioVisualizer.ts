@@ -176,6 +176,9 @@ export class NativeAudioVisualizer {
             this.minLength = Math.min(this.canvasWidth, this.canvasHeight);
             this.originX = this.canvasWidth * this.offsetX;
             this.originY = this.canvasHeight * this.offsetY;
+            // 更新画布分辨率
+            this.canvas.width = this.canvasWidth;
+            this.canvas.height = this.canvasHeight;
         });
     }
 

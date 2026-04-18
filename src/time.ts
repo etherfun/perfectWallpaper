@@ -3,40 +3,35 @@ import { config } from './utils/config';
 import { elements } from './utils/elementManager';
 import { add0 } from './utils/tool';
 
-var oClock = elements.clock.container;
-//var oClock_block = elements.clock.block;
-var oClock_webtext_min = elements.clock.min;
-//var oClock_webtext_ti = elements.clock.indicators;
-var oClock_webtext_sec = elements.clock.sec;
-var oClock_webtext_st = elements.clock.st;
-
-var tStyle = true;
+const oClock = elements.clock.container;
+const oClock_webtext_min = elements.clock.min;
+const oClock_webtext_sec = elements.clock.sec;
+const oClock_webtext_st = elements.clock.st;
 
 // 时钟彩色律动状态
-var clockHue = 0;
-var clockTag = 1;
-
-// 时钟彩色律动
-function updateClockColor(): void {
-    if (clockHue > 255) {
-        clockTag *= -1;
-        clockHue = 255;
-    }
-    if (clockHue < 0) {
-        clockTag *= -1;
-        clockHue = 0;
-    }
-    const clockColor = 'hsl(' + clockHue + ',90%,50%)';
-    clockHue += clockTag / 1;
-
-    if (oClock) {
-        oClock.style.color = clockColor;
-    }
+interface ClockRhythmState {
+    hue: number;
+    direction: 1 | -1;
 }
 
-// 时钟彩色律动动画循环
+let clockState: ClockRhythmState = { hue: 0, direction: 1 };
+
+function updateClockColor(): void {
+    const { hue, direction } = clockState;
+    const newHue = hue + direction;
+
+    if (newHue > 255) {
+        clockState = { hue: 255, direction: -1 };
+    } else if (newHue < 0) {
+        clockState = { hue: 0, direction: 1 };
+    } else {
+        clockState = { hue: newHue, direction };
+    }
+
+    oClock && (oClock.style.color = `hsl(${clockState.hue},90%,50%)`);
+}
+
 let clockAnimationFrameId: number | null = null;
-let timeIntervalId: ReturnType<typeof setInterval> | null = null;
 
 function clockColorRhythmLoop(): void {
     if (config.time_color_rhythm) {
@@ -46,21 +41,18 @@ function clockColorRhythmLoop(): void {
 }
 
 export function startTimeColorRhythmLoop(): void {
-    if (clockAnimationFrameId !== null) {
-        cancelAnimationFrame(clockAnimationFrameId);
-    }
+    if (clockAnimationFrameId !== null) return;
     clockAnimationFrameId = requestAnimationFrame(clockColorRhythmLoop);
 }
 
 export function stopTimeColorRhythmLoop(): void {
-    if (clockAnimationFrameId !== null) {
-        cancelAnimationFrame(clockAnimationFrameId);
-        clockAnimationFrameId = null;
-        if (oClock) {
-            oClock.style.color = '';
-        }
-    }
+    if (clockAnimationFrameId === null) return;
+    cancelAnimationFrame(clockAnimationFrameId);
+    clockAnimationFrameId = null;
+    oClock && (oClock.style.color = '');
 }
+
+let timeIntervalId: ReturnType<typeof setInterval> | null = null;
 
 export function stopTimeUpdate(): void {
     if (timeIntervalId !== null) {
@@ -69,39 +61,36 @@ export function stopTimeUpdate(): void {
     }
 }
 
-timeIntervalId = setInterval(getTime_sec, 1000);
+// 格式化小时（12小时制），避免中午12点显示为零点
+function formatHour12(hour: number): number {
+    return hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+}
 
-export function getTime_sec() {
-    var t = new Date();
-    if (oClock_webtext_sec) {
-        oClock_webtext_sec.innerHTML = add0(t.getSeconds());
-    }
+// 更新时间（每秒）
+export function getTime_sec(): void {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
 
-    if (tStyle == false) {
-        //h = t.getHours()
-        if (oClock_webtext_min) {
-            oClock_webtext_min.innerHTML =
-                add0(t.getHours() >= 12 ? t.getHours() - 12 : t.getHours()) +
-                ' : ' +
-                add0(t.getMinutes());
-        }
-        if (oClock_webtext_st) {
-            oClock_webtext_st.style.display = 'flex';
-        }
-        var str = t.getHours() <= 12 ? 'AM' : 'PM';
-        if (oClock_webtext_st) {
-            oClock_webtext_st.innerHTML = str;
-        }
+    oClock_webtext_sec && (oClock_webtext_sec.innerHTML = add0(seconds));
+
+    if (config.time_style) {
+        // 12小时制
+        const hour12 = formatHour12(hours);
+        oClock_webtext_min && (oClock_webtext_min.innerHTML = `${add0(hour12)} : ${add0(minutes)}`);
+        oClock_webtext_st && (oClock_webtext_st.style.display = 'flex');
+        oClock_webtext_st && (oClock_webtext_st.innerHTML = hours < 12 ? 'AM' : 'PM');
     } else {
-        if (oClock_webtext_min) {
-            oClock_webtext_min.innerHTML = add0(t.getHours()) + ' : ' + add0(t.getMinutes());
-        }
-        if (oClock_webtext_st) {
-            oClock_webtext_st.style.display = 'none';
-        }
+        // 24小时制
+        oClock_webtext_min && (oClock_webtext_min.innerHTML = `${add0(hours)} : ${add0(minutes)}`);
+        oClock_webtext_st && (oClock_webtext_st.style.display = 'none');
     }
 
-    if (t.getHours() === 0 && t.getMinutes() === 0 && t.getSeconds() === 0) {
+    // 午夜重置日期
+    if (hours === 0 && minutes === 0 && seconds === 0) {
         getdate();
     }
 }
+
+timeIntervalId = setInterval(getTime_sec, 1000);

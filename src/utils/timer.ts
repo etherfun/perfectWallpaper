@@ -16,6 +16,8 @@ interface TimerObject {
     isPaused: boolean;
     isActive: boolean;
     status: 'running' | 'paused' | 'finished' | 'error';
+    observer?: MutationObserver | null; // 用于动画暂停检测的observer
+    animationTimeout?: number | null; // 动画暂停检测超时
 }
 
 // 定时器状态接口
@@ -141,11 +143,33 @@ export class MultiTimerManager {
         // 清除原生定时器
         if (timer.timerId !== null) {
             clearTimeout(timer.timerId);
+            timer.timerId = null;
+        }
+
+        // 清除动画等待observer
+        if (timer.observer) {
+            timer.observer.disconnect();
+            timer.observer = null;
+        }
+
+        // 清除动画等待超时
+        if (timer.animationTimeout !== null) {
+            clearTimeout(timer.animationTimeout);
+            timer.animationTimeout = null;
         }
 
         // 从Map中移除
         this.timers.delete(timerId);
         return true;
+    }
+
+    /**
+     * 检查定时器是否存在
+     * @param timerId - 定时器ID
+     * @returns 是否存在
+     */
+    has(timerId: string): boolean {
+        return this.timers.has(timerId);
     }
 
     /**
@@ -217,6 +241,15 @@ export class MultiTimerManager {
         for (const [, timer] of this.timers) {
             if (timer.timerId !== null) {
                 clearTimeout(timer.timerId);
+                timer.timerId = null;
+            }
+            if (timer.observer) {
+                timer.observer.disconnect();
+                timer.observer = null;
+            }
+            if (timer.animationTimeout !== null) {
+                clearTimeout(timer.animationTimeout);
+                timer.animationTimeout = null;
             }
         }
         this.timers.clear();
@@ -248,40 +281,22 @@ export class MultiTimerManager {
         const timer = this.timers.get(timerId);
         if (!timer) return;
 
-        // 检查动画状态
-        const checkAnimationState = () => {
-            if (document.body.style.animationPlayState === 'paused') {
-                // 动画暂停中，无限等待动画恢复
-
-                // 监听动画状态变化
-                const observer = new MutationObserver(mutations => {
-                    mutations.forEach(mutation => {
-                        if (
-                            mutation.attributeName === 'style' &&
-                            document.body.style.animationPlayState !== 'paused'
-                        ) {
-                            // 动画已恢复播放，停止监听并执行回调
-                            observer.disconnect();
-                            executeTimerCallback();
-                        }
-                    });
-                });
-
-                // 开始监听body元素的style属性变化
-                observer.observe(document.body, {
-                    attributes: true,
-                    attributeFilter: ['style'],
-                });
-            } else {
-                // 动画正在播放，直接执行回调
-                executeTimerCallback();
-            }
-        };
-
         // 执行定时器回调的实际函数
         const executeTimerCallback = () => {
+            // 清理observer和timeout
+            if (timer.observer) {
+                timer.observer.disconnect();
+                timer.observer = null;
+            }
+            if (timer.animationTimeout !== null) {
+                clearTimeout(timer.animationTimeout);
+                timer.animationTimeout = null;
+            }
+
+            // 先删除
+            this.timers.delete(timerId);
+
             try {
-                this.timers.delete(timerId);
                 // 执行回调
                 timer.callback();
                 timer.status = 'finished';
@@ -289,6 +304,36 @@ export class MultiTimerManager {
             } catch (error) {
                 debugLogger.error(`定时器 "${timerId}" 执行出错:`, error);
                 timer.status = 'error';
+            }
+        };
+
+        // 检查动画状态
+        const checkAnimationState = () => {
+            if (document.body.style.animationPlayState === 'paused') {
+                // 动画暂停中，无限等待动画恢复
+                debugLogger.warn(`定时器 "${timerId}" 检测到动画暂停，等待恢复...`);
+
+                // 监听动画状态变化
+                timer.observer = new MutationObserver(mutations => {
+                    mutations.forEach(mutation => {
+                        if (
+                            mutation.attributeName === 'style' &&
+                            document.body.style.animationPlayState !== 'paused'
+                        ) {
+                            // 动画已恢复播放，停止监听并执行回调
+                            executeTimerCallback();
+                        }
+                    });
+                });
+
+                // 开始监听body元素的style属性变化
+                timer.observer.observe(document.body, {
+                    attributes: true,
+                    attributeFilter: ['style'],
+                });
+            } else {
+                // 动画正在播放，直接执行回调
+                executeTimerCallback();
             }
         };
 

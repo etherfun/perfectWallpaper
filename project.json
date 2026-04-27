@@ -1261,7 +1261,7 @@
 					}
 				],
 				"order" : 223,
-				"text" : "ui_audio_wave_position>",
+				"text" : "ui_audio_wave_position",
 				"type" : "combo",
 				"value" : 1
 			},

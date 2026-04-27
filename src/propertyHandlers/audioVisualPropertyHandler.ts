@@ -50,7 +50,7 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
                 if (param) param.showCircle = false;
                 if (PWLineParam) PWLineParam.showLine = config.pw_line_show_bool;
                 break;
-            case 3: // come soon
+            case 3: // Alice Circle
                 if (param) param.showCircle = false;
                 if (PWLineParam) PWLineParam.showLine = false;
                 break;
@@ -378,73 +378,55 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
 
     if (properties.audio_amplitude) {
         config.audio_amplitude = properties.audio_amplitude.value;
-        if (wallpaper) {
-            wallpaper.audiovisualizer('set', 'amplitude', properties.audio_amplitude.value);
-        }
+        wallpaper?.getAudioVisualizer()?.set('amplitude', properties.audio_amplitude.value);
     }
 
     // 音频衰弱
     if (properties.audio_decline) {
         config.audio_decline = properties.audio_decline.value;
-        wallpaper?.audiovisualizer('set', 'decline', properties.audio_decline.value / 100);
+        wallpaper?.getAudioVisualizer()?.set('decline', properties.audio_decline.value / 100);
     }
 
     // 显示圆环
     if (properties.audio_isRing) {
         config.audio_is_ring = properties.audio_isRing.value;
-        if (properties.audio_isRing.value) {
-            wallpaper?.audiovisualizer('set', 'isRing', true);
-        } else {
-            wallpaper?.audiovisualizer('set', 'isRing', false);
-        }
+        wallpaper?.getAudioVisualizer()?.set('isRing', properties.audio_isRing.value);
     }
 
     // 显示静态环
     if (properties.audio_isStaticRing) {
         config.audio_is_static_ring = properties.audio_isStaticRing.value;
-        if (properties.audio_isStaticRing.value) {
-            wallpaper?.audiovisualizer('set', 'isStaticRing', true);
-        } else {
-            wallpaper?.audiovisualizer('set', 'isStaticRing', false);
-        }
+        wallpaper?.getAudioVisualizer()?.set('isStaticRing', properties.audio_isStaticRing.value);
     }
 
     // 显示内环
     if (properties.audio_isInnerRing) {
         config.audio_is_inner_ring = properties.audio_isInnerRing.value;
-        if (properties.audio_isInnerRing.value) {
-            wallpaper?.audiovisualizer('set', 'isInnerRing', true);
-        } else {
-            wallpaper?.audiovisualizer('set', 'isInnerRing', false);
-        }
+        wallpaper?.getAudioVisualizer()?.set('isInnerRing', properties.audio_isInnerRing.value);
     }
 
     // 显示外环
     if (properties.audio_isOuterRing) {
         config.audio_is_outer_ring = properties.audio_isOuterRing.value;
-        if (properties.audio_isOuterRing.value) {
-            wallpaper?.audiovisualizer('set', 'isOuterRing', true);
-        } else {
-            wallpaper?.audiovisualizer('set', 'isOuterRing', false);
-        }
+        wallpaper?.getAudioVisualizer()?.set('isOuterRing', properties.audio_isOuterRing.value);
     }
 
     // 圆环半径
     if (properties.audio_radius) {
         config.audio_radius = properties.audio_radius.value;
-        wallpaper?.audiovisualizer('set', 'radius', properties.audio_radius.value / 10);
+        wallpaper?.getAudioVisualizer()?.set('radius', properties.audio_radius.value / 10);
     }
 
     // 圆环旋转
     if (properties.audio_ringRotation) {
         config.audio_ring_rotation = properties.audio_ringRotation.value;
-        wallpaper?.audiovisualizer('set', 'ringRotation', properties.audio_ringRotation.value);
+        wallpaper?.getAudioVisualizer()?.set('ringRotation', properties.audio_ringRotation.value);
     }
 
     // 不透明度
     if (properties.audio_opacity) {
         config.audio_opacity = properties.audio_opacity.value;
-        wallpaper?.audiovisualizer('set', 'opacity', properties.audio_opacity.value / 100);
+        wallpaper?.getAudioVisualizer()?.set('opacity', properties.audio_opacity.value / 100);
     }
 
     // 颜色
@@ -453,7 +435,7 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.audio_color = c as [number, number, number];
-        wallpaper?.audiovisualizer('set', 'color', c);
+        wallpaper?.getAudioVisualizer()?.set('color', c);
     }
 
     // 模糊颜色
@@ -462,91 +444,91 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
         config.audio_shadow_color = c as [number, number, number];
-        wallpaper?.audiovisualizer('set', 'shadowColor', c);
+        wallpaper?.getAudioVisualizer()?.set('shadowColor', c);
     }
 
     // 模糊大小
     if (properties.audio_shadowBlur) {
         config.audio_shadow_blur = properties.audio_shadowBlur.value;
-        wallpaper?.audiovisualizer('set', 'shadowBlur', properties.audio_shadowBlur.value);
+        wallpaper?.getAudioVisualizer()?.set('shadowBlur', properties.audio_shadowBlur.value);
     }
 
     // X轴偏移
     if (properties.audio_offsetX) {
         config.audio_offset_x = properties.audio_offsetX.value;
-        wallpaper?.audiovisualizer('set', 'offsetX', properties.audio_offsetX.value / 100);
+        wallpaper?.getAudioVisualizer()?.set('offsetX', properties.audio_offsetX.value / 100);
     }
 
     // Y轴偏移
     if (properties.audio_offsetY) {
         config.audio_offset_y = properties.audio_offsetY.value;
-        wallpaper?.audiovisualizer('set', 'offsetY', properties.audio_offsetY.value / 100);
+        wallpaper?.getAudioVisualizer()?.set('offsetY', properties.audio_offsetY.value / 100);
     }
 
     // 鼠标坐标偏移
     if (properties.audio_isClickOffset) {
         config.audio_is_click_offset = properties.audio_isClickOffset.value;
-        wallpaper?.audiovisualizer('set', 'isClickOffset', properties.audio_isClickOffset.value);
+        wallpaper?.getAudioVisualizer()?.set('isClickOffset', properties.audio_isClickOffset.value);
     }
 
     // 是否连线
     if (properties.audio_isLineTo) {
         config.audio_is_line_to = properties.audio_isLineTo.value;
-        wallpaper?.audiovisualizer('set', 'isLineTo', properties.audio_isLineTo.value);
+        wallpaper?.getAudioVisualizer()?.set('isLineTo', properties.audio_isLineTo.value);
     }
 
     // 第一点
     if (properties.audio_firstPoint) {
         config.audio_first_point = properties.audio_firstPoint.value;
-        wallpaper?.audiovisualizer('set', 'firstPoint', properties.audio_firstPoint.value);
+        wallpaper?.getAudioVisualizer()?.set('firstPoint', properties.audio_firstPoint.value);
     }
 
     // 第二点
     if (properties.audio_secondPoint) {
         config.audio_second_point = properties.audio_secondPoint.value;
-        wallpaper?.audiovisualizer('set', 'secondPoint', properties.audio_secondPoint.value);
+        wallpaper?.getAudioVisualizer()?.set('secondPoint', properties.audio_secondPoint.value);
     }
 
     // 圆环点数
     if (properties.audio_pointNum) {
         config.audio_point_num = properties.audio_pointNum.value;
-        wallpaper?.audiovisualizer('set', 'pointNum', properties.audio_pointNum.value);
+        wallpaper?.getAudioVisualizer()?.set('pointNum', properties.audio_pointNum.value);
     }
 
     // 内外环距离
     if (properties.audio_distance) {
         config.audio_distance = properties.audio_distance.value;
-        wallpaper?.audiovisualizer('set', 'distance', properties.audio_distance.value);
+        wallpaper?.getAudioVisualizer()?.set('distance', properties.audio_distance.value);
     }
 
     // 线条粗细
     if (properties.audio_lineWidth) {
         config.audio_line_width = properties.audio_lineWidth.value;
-        wallpaper?.audiovisualizer('set', 'lineWidth', properties.audio_lineWidth.value);
+        wallpaper?.getAudioVisualizer()?.set('lineWidth', properties.audio_lineWidth.value);
     }
 
     // 显示小球
     if (properties.audio_isBall) {
         config.audio_is_ball = properties.audio_isBall.value;
-        wallpaper?.audiovisualizer('set', 'isBall', properties.audio_isBall.value);
+        wallpaper?.getAudioVisualizer()?.set('isBall', properties.audio_isBall.value);
     }
 
     // 小球间隔
     if (properties.audio_ballSpacer) {
         config.audio_ball_spacer = properties.audio_ballSpacer.value;
-        wallpaper?.audiovisualizer('set', 'ballSpacer', properties.audio_ballSpacer.value);
+        wallpaper?.getAudioVisualizer()?.set('ballSpacer', properties.audio_ballSpacer.value);
     }
 
     // 小球大小
     if (properties.audio_ballSize) {
         config.audio_ball_size = properties.audio_ballSize.value;
-        wallpaper?.audiovisualizer('set', 'ballSize', properties.audio_ballSize.value);
+        wallpaper?.getAudioVisualizer()?.set('ballSize', properties.audio_ballSize.value);
     }
 
     // 小球旋转
     if (properties.audio_ballRotation) {
         config.audio_ball_rotation = properties.audio_ballRotation.value;
-        wallpaper?.audiovisualizer('set', 'ballRotation', properties.audio_ballRotation.value);
+        wallpaper?.getAudioVisualizer()?.set('ballRotation', properties.audio_ballRotation.value);
     }
 
     // 启用平滑效果

@@ -5571,7 +5571,7 @@
 			{
 				"index" : 0,
 				"order" : 100,
-				"text" : "<h4>● 更新日志 Updata log</h4> V2.0.0(33) 2026-2-1(Y-M-D)<br/>",
+				"text" : "<h4>● 更新日志 Updata log</h4> V2.1.0(35) 2026-4-28(Y-M-D)<br/>",
 				"type" : "bool",
 				"value" : true
 			},

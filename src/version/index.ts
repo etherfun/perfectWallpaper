@@ -27,7 +27,7 @@ export interface VersionHistoryEntry {
 }
 
 export const versionConfig = {
-    CURRENT_VERSION: '2.0.0',
+    CURRENT_VERSION: '2.1.0',
 
     MODAL_SIZE: {
         width: '65%',

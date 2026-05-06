@@ -50,11 +50,14 @@
     &.fullscreen::before {
         backdrop-filter: blur(calc(var(--fluidEffect-backdrop-filter-strength) * 2));
     }
+}
 
-    &.paused {
-        .fluid-block-rotate {
-            animation-play-state: paused !important;
-        }
+// Body paused state controls all fluid effect animations
+body.paused {
+    .fluid-effect-wrapper,
+    .fluid-effect-rect,
+    .fluid-effect-canvas {
+        animation-play-state: paused !important;
     }
 }
 
@@ -80,9 +83,4 @@
     animation: fluid-block-rotate 60s linear infinite;
     backface-visibility: hidden;
     -webkit-backface-visibility: hidden;
-}
-
-// Pause control
-.fluid-block-rotate.paused {
-    animation-play-state: paused !important;
 }

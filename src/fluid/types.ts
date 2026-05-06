@@ -3,6 +3,15 @@
  */
 
 /**
+ * 流体效果状态枚举
+ */
+export enum FluidEffectState {
+    DISABLED = 'disabled',
+    NORMAL = 'normal',
+    FULLSCREEN = 'fullscreen'
+}
+
+/**
  * 流体效果配置选项
  */
 export interface FluidEffectOptions {

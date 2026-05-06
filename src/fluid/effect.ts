@@ -8,10 +8,11 @@ import { config } from '../utils/config';
 import { hasPlaybackContent } from '../utils/playback';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
-import type { FluidEffectOptions, FluidEffectConfigState } from './types';
+import type { FluidEffectOptions, FluidEffectConfigState, FluidEffectState } from './types';
 import {
     DEFAULT_FLUID_EFFECT_OPTIONS,
-    DEFAULT_FLUID_EFFECT_CONFIG
+    DEFAULT_FLUID_EFFECT_CONFIG,
+    FluidEffectState as FluidEffectStateEnum
 } from './types';
 
 // ============================================================
@@ -386,22 +387,31 @@ class FluidEffect2Renderer {
  * 合并配置状态管理与渲染逻辑
  */
 export class FluidEffect {
-    // 配置状态
-    enabled: boolean = DEFAULT_FLUID_EFFECT_CONFIG.enabled;
+    // 配置状态 - 使用状态机
+    private _state: FluidEffectState = FluidEffectStateEnum.DISABLED;
     resolution: number = DEFAULT_FLUID_EFFECT_CONFIG.resolution;
     blurAmount: number = DEFAULT_FLUID_EFFECT_CONFIG.blurAmount;
     displacementScale: number = DEFAULT_FLUID_EFFECT_CONFIG.displacementScale;
     turbulenceFrequency: number = DEFAULT_FLUID_EFFECT_CONFIG.turbulenceFrequency;
     turbulenceOctaves: number = DEFAULT_FLUID_EFFECT_CONFIG.turbulenceOctaves;
-    fullscreenEnabled: boolean = DEFAULT_FLUID_EFFECT_CONFIG.fullscreenEnabled;
     canvasDisplacementAmplitude: number = DEFAULT_FLUID_EFFECT_CONFIG.canvasDisplacementAmplitude;
-
-    private _propertiesApplied: boolean = false;
-    private _inSetOperation: boolean = false;
 
     // 渲染器实例
     private _normalEffect: FluidEffect2Renderer | null = null;
     private _fullscreenEffect: FluidEffect2Renderer | null = null;
+
+    // 状态访问器
+    get state(): FluidEffectState {
+        return this._state;
+    }
+
+    get enabled(): boolean {
+        return this._state !== FluidEffectStateEnum.DISABLED;
+    }
+
+    get fullscreenEnabled(): boolean {
+        return this._state === FluidEffectStateEnum.FULLSCREEN;
+    }
 
     /**
      * 创建流体效果统一实例
@@ -410,104 +420,79 @@ export class FluidEffect {
         return new FluidEffect();
     }
 
-    /**
-     * 标记属性已应用
-     */
-    markPropertiesApplied(): void {
-        this._propertiesApplied = true;
-        if (this._inSetOperation) {
-            return;
-        }
-        this.apply();
-    }
-
-    /**
-     * 应用配置
-     */
-    apply(): void {
-        if (!this._propertiesApplied) {
-            return;
-        }
-        this._applyFullscreenMode();
-    }
-
-    /**
-     * 根据当前配置应用全屏/普通模式
-     */
-    private _applyFullscreenMode(): void {
-        if (this.fullscreenEnabled) {
-            if (!this.enabled) {
-                this.destroyNormalEffect();
-                return;
-            }
-            this.destroyNormalEffect();
-            this.initFullscreenEffect();
-        } else {
-            this.destroyFullscreenEffect();
-            timerManager.resume('backgroundChange');
-            if (!this.enabled) {
-                this.destroyNormalEffect();
-            } else {
-                this.initNormalEffect();
-            }
-        }
-    }
-
     enable(): this {
-        this.enabled = true;
-        if (!this.fullscreenEnabled && this._propertiesApplied) {
-            this.initNormalEffect();
+        if (this._state === FluidEffectStateEnum.FULLSCREEN) {
+            return this;
         }
+        if (this._state === FluidEffectStateEnum.NORMAL) {
+            return this;
+        }
+        this._state = FluidEffectStateEnum.NORMAL;
+        this.initNormalEffect();
         return this;
     }
 
     disable(): this {
-        this.enabled = false;
-        if (this.fullscreenEnabled) {
+        if (this._state === FluidEffectStateEnum.DISABLED) {
+            return this;
+        }
+        if (this._state === FluidEffectStateEnum.FULLSCREEN) {
             this.destroyFullscreenEffect();
-        } else {
+            this._state = FluidEffectStateEnum.DISABLED;
+            return this;
+        } else if (this._state === FluidEffectStateEnum.NORMAL) {
             this.destroyNormalEffect();
+            this._state = FluidEffectStateEnum.DISABLED;
         }
         return this;
     }
 
-    toggle(): boolean {
-        if (this.fullscreenEnabled) {
-            return this.enabled;
+    enableFullscreen(): this {
+        if (this._state === FluidEffectStateEnum.FULLSCREEN) {
+            return this;
         }
-        this.enabled = !this.enabled;
-        if (!this.enabled) {
+        // 清理普通效果，确保状态干净
+        if (this._state === FluidEffectStateEnum.NORMAL) {
             this.destroyNormalEffect();
         }
-        return this.enabled;
-    }
-
-    enableFullscreen(): this {
-        this.fullscreenEnabled = true;
-        this._normalEffect?.destroy();
-        this._normalEffect = null;
-        if (this.enabled) {
-            this.initFullscreenEffect();
+        // 强制清理任何残留的普通效果
+        if (this._normalEffect) {
+            this._normalEffect.destroy();
+            this._normalEffect = null;
         }
+        this._state = FluidEffectStateEnum.FULLSCREEN;
+        this.initFullscreenEffect();
         return this;
     }
 
     disableFullscreen(): this {
-        this.fullscreenEnabled = false;
-        this.destroyFullscreenEffect();
-        if (this.enabled) {
-            this.initNormalEffect();
+        if (this._state !== FluidEffectStateEnum.FULLSCREEN) {
+            return this;
         }
+        this.destroyFullscreenEffect();
+        // 切换到普通模式并初始化播放器效果
+        this._state = FluidEffectStateEnum.NORMAL;
+        this.initNormalEffect();
         return this;
     }
 
-    toggleFullscreen(): boolean {
-        this.fullscreenEnabled = !this.fullscreenEnabled;
-        if (this.fullscreenEnabled) {
-            this._normalEffect?.destroy();
-            this._normalEffect = null;
+    toggle(): boolean {
+        if (this._state === FluidEffectStateEnum.FULLSCREEN) {
+            return this.enabled;
+        }
+        if (this._state === FluidEffectStateEnum.NORMAL) {
+            this.disable();
         } else {
-            this.destroyFullscreenEffect();
+            this.enable();
+        }
+        return this.enabled;
+    }
+
+    toggleFullscreen(): boolean {
+        if (this._state === FluidEffectStateEnum.FULLSCREEN) {
+            this.disableFullscreen();
+        } else {
+            this.enableFullscreen();
         }
         return this.fullscreenEnabled;
     }
@@ -516,41 +501,34 @@ export class FluidEffect {
      * 设置配置属性
      */
     set(key: string, value: unknown): this {
-        if (key in this && typeof (this as Record<string, unknown>)[key] !== 'function') {
-            (this as Record<string, unknown>)[key] = value;
-
-            if (key === 'fullscreenEnabled') {
-                if (value) {
-                    this.enableFullscreen();
-                } else {
-                    this.disableFullscreen();
-                }
-                return this;
+        if (key === 'fullscreenEnabled') {
+            if (value) {
+                this.enableFullscreen();
+            } else {
+                this.disableFullscreen();
             }
-
-            if (key === 'enabled') {
-                this._inSetOperation = true;
-                if (value) {
-                    this.enable();
-                } else {
-                    this.disable();
-                }
-                this._inSetOperation = false;
-                return this;
-            }
-
-            // 更新普通模式渲染器选项
-            if (this.enabled && this._normalEffect) {
-                this._updateEffectOptions(this._normalEffect, key, value);
-            }
-
-            // 更新全屏模式渲染器选项
-            if (this.fullscreenEnabled && this._fullscreenEffect) {
-                this._updateEffectOptions(this._fullscreenEffect, key, value);
-            }
-
             return this;
         }
+
+        if (key === 'enabled') {
+            if (value) {
+                this.enable();
+            } else {
+                this.disable();
+            }
+            return this;
+        }
+
+        // 更新普通模式渲染器选项
+        if (this._state === FluidEffectStateEnum.NORMAL && this._normalEffect) {
+            this._updateEffectOptions(this._normalEffect, key, value);
+        }
+
+        // 更新全屏模式渲染器选项
+        if (this._state === FluidEffectStateEnum.FULLSCREEN && this._fullscreenEffect) {
+            this._updateEffectOptions(this._fullscreenEffect, key, value);
+        }
+
         return this;
     }
 
@@ -578,6 +556,11 @@ export class FluidEffect {
     // ==================== 生命周期方法 ====================
 
     initNormalEffect(): void {
+        // 状态守卫：全屏模式下不允许初始化普通效果
+        if (this._state === FluidEffectStateEnum.FULLSCREEN) {
+            return;
+        }
+
         if (this._normalEffect) {
             return;
         }
@@ -615,13 +598,6 @@ export class FluidEffect {
                 effect.start();
             }
 
-            const currentPlaybackState = config.playbackState;
-            if (currentPlaybackState === 2) {
-                effect.setPlayState?.(false);
-            } else if (currentPlaybackState === 1) {
-                effect.setPlayState?.(true);
-            }
-
             container.style.background = 'none';
             container.style.overflow = 'hidden';
         } catch (error) {
@@ -642,7 +618,8 @@ export class FluidEffect {
     }
 
     initFullscreenEffect(): void {
-        if (!this.fullscreenEnabled) {
+        // 状态守卫：只有全屏模式才能初始化全屏效果
+        if (this._state !== FluidEffectStateEnum.FULLSCREEN) {
             if (this._fullscreenEffect) {
                 this._fullscreenEffect.destroy();
                 this._fullscreenEffect = null;
@@ -656,12 +633,6 @@ export class FluidEffect {
 
         if (typeof hasPlaybackContent === 'function' && !hasPlaybackContent()) {
             return;
-        }
-
-        let isPaused = false;
-        const playbackState = config.playbackState;
-        if (playbackState === 2) {
-            isPaused = true;
         }
 
         config.runtime.fullscreenFluidEnabled = true;
@@ -681,10 +652,6 @@ export class FluidEffect {
             });
             this._fullscreenEffect = effect;
             effect.start();
-
-            if (isPaused) {
-                effect.setPlayState(false);
-            }
 
             const thumbnail = elements.playerControl.thumbnail as HTMLImageElement | undefined;
             const imgSrc = thumbnail?.src;

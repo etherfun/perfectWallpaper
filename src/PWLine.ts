@@ -82,13 +82,14 @@ export function setCTXLine(): void {
             {
                 originX = maxW * config.runtime.PWLineParam.LineX;
                 originY = minW * config.runtime.PWLineParam.LineY;
+                const gradientRadius = lineR > 0 ? lineR : minW / 2;
                 const rainbow = CTXLine.createRadialGradient(
                     originX,
                     originY,
                     0,
                     originX,
                     originY,
-                    lineR
+                    gradientRadius
                 );
 
                 if (config.runtime.PWLineParam.ColorRhythm) {

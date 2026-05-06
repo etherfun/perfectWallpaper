@@ -1,6 +1,5 @@
 import { config } from '@/utils/config';
 import { debugLogger } from '@/utils/logger';
-import { hasPlaybackContent } from '@/utils/playback';
 
 import { FluidEffect } from '../fluid';
 import { elements } from '../utils/elementManager';
@@ -21,7 +20,7 @@ export function handleFluidEffectProperties(
 
     const cfg = config.runtime.FluidEffect;
 
-    // 全屏启用
+    // 全屏启用 - 优先处理
     if (properties.fluidEffectEnabledFullscreen) {
         cfg?.set('fullscreenEnabled', properties.fluidEffectEnabledFullscreen.value);
         config.fluid_effect_enabled_fullscreen = properties.fluidEffectEnabledFullscreen.value;
@@ -30,16 +29,9 @@ export function handleFluidEffectProperties(
     // 启用
     if (properties.fluidEffectEnabled) {
         cfg?.set('enabled', properties.fluidEffectEnabled.value);
+        // 如果启用了全屏配置，确保在 FULLSCREEN 模式
         if (properties.fluidEffectEnabled.value && config.fluid_effect_enabled_fullscreen) {
             cfg?.set('fullscreenEnabled', true);
-        }
-
-        // 初始化或更新流体效果（确保在 PropertiesListener 时也能初始化）
-        if (!FirstLoad && config.runtime.FluidEffect?.enabled) {
-            const hasContent = hasPlaybackContent();
-            if (hasContent) {
-                config.runtime.FluidEffect.initNormalEffect();
-            }
         }
     }
 

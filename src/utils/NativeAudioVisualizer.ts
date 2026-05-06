@@ -262,10 +262,9 @@ export class NativeAudioVisualizer {
     private setStaticPoint(audioSamples: number[]): { x: number; y: number }[] {
         const pointArray: { x: number; y: number }[] = [];
         const ringArray = this.getRingArray(audioSamples, this.pointNum);
-        this.rotationAngle1 = this.rotation(this.rotationAngle1, this.ringRotation);
 
         for (let i = 0; i < ringArray.length; i++) {
-            const deg = this.getDeg(ringArray.length, i, this.rotationAngle1);
+            const deg = this.getDeg(ringArray.length, i, 0);
             const radius = this.radius * (this.minLength / 2);
             const point = this.getXY(radius, deg, this.originX, this.originY);
             pointArray.push({ x: point.x, y: point.y });
@@ -401,24 +400,32 @@ export class NativeAudioVisualizer {
                 break;
             case 'offsetX':
             case 'offsetY':
-            case 'isClickOffset':
-            case 'isRing':
-            case 'isStaticRing':
-            case 'isInnerRing':
-            case 'isOuterRing':
             case 'ringRotation':
             case 'radius':
             case 'amplitude':
             case 'decline':
             case 'distance':
-            case 'isLineTo':
             case 'firstPoint':
             case 'secondPoint':
             case 'pointNum':
-            case 'isBall':
             case 'ballSpacer':
             case 'ballSize':
             case 'ballRotation':
+                (this as unknown as Record<string, unknown>)[property] = value;
+                break;
+            case 'isClickOffset':
+                this.isClickOffset = value as boolean;
+                break;
+            case 'isRing':
+                (this as unknown as Record<string, unknown>)[property] = value;
+                break;
+            case 'isStaticRing':
+                this.isStaticRing = value as boolean;
+                break;
+            case 'isInnerRing':
+            case 'isOuterRing':
+            case 'isLineTo':
+            case 'isBall':
                 (this as unknown as Record<string, unknown>)[property] = value;
                 break;
         }

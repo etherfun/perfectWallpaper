@@ -246,12 +246,6 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
         const hasContent = hasPlaybackContent();
         if (hasContent) {
             config.runtime.FluidEffect.initNormalEffect();
-            // 根据当前播放状态设置流体效果播放状态，而不仅仅是暂停状态
-            if (config.runtime.FluidEffect.normalEffect?.setPlayState) {
-                config.runtime.FluidEffect.normalEffect.setPlayState(
-                    config.runtime.playerInfo.playerState === 1
-                );
-            }
             // 如果效果已存在但需要更新缩略图（比如外部媒体新曲目）
             const existingEffect = config.runtime.FluidEffect.normalEffect;
             if (existingEffect && event?.thumbnail) {
@@ -398,73 +392,41 @@ function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
 
 // 控制流体效果播放状态
 function controlFluidEffectPlayback(playbackState: number): void {
-    if (!config.runtime.FluidEffect || config.runtime.FluidEffect.enabled === undefined) return;
     if (!window.wallpaperMediaIntegration) return;
 
-    if (config.runtime.FluidEffect.enabled && !config.runtime.FluidEffect.fullscreenEnabled) {
-        if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
-            resumeFluidEffect();
-        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
-            pauseFluidEffect();
-        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
-            stopFluidEffect();
-        }
-    }
-
-    if (config.runtime.FluidEffect.fullscreenEnabled) {
-        if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
-            resumeFullscreenFluidEffect();
-        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED) {
-            pauseFullscreenFluidEffect();
-        } else if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_STOPPED) {
-            stopFullscreenFluidEffect();
-        }
+    // 使用 body class 控制播放状态
+    if (playbackState === window.wallpaperMediaIntegration.PLAYBACK_PLAYING) {
+        document.body.classList.remove('paused');
+    } else if (
+        playbackState === window.wallpaperMediaIntegration.PLAYBACK_PAUSED ||
+        playbackState === window.wallpaperMediaIntegration.PLAYBACK_STOPPED
+    ) {
+        document.body.classList.add('paused');
     }
 }
 
 function resumeFluidEffect(): void {
-    if (!hasPlaybackContent()) return;
-    // 使用 config.runtime.FluidEffect（来自 fluid.ts）
-    if (!config.runtime.FluidEffect?.normalEffect && config.runtime.FluidEffect?.enabled) {
-        config.runtime.FluidEffect.initNormalEffect();
-    }
-    if (config.runtime.FluidEffect?.normalEffect?.setPlayState)
-        config.runtime.FluidEffect.normalEffect.setPlayState(true);
+    // 由 CSS 和 body class 控制，不需要 JS 处理
 }
 
 function pauseFluidEffect(): void {
-    if (config.runtime.FluidEffect?.normalEffect?.setPlayState)
-        config.runtime.FluidEffect.normalEffect.setPlayState(false);
+    // 由 CSS 和 body class 控制，不需要 JS 处理
 }
 
 function stopFluidEffect(): void {
-    if (config.runtime.FluidEffect) {
-        if (config.runtime.FluidEffect.normalEffect?.stop)
-            config.runtime.FluidEffect.normalEffect.stop();
-        config.runtime.FluidEffect.destroyNormalEffect();
-    }
+    // 由 CSS 和 body class 控制，不需要 JS 处理
 }
 
 function resumeFullscreenFluidEffect(): void {
-    if (!hasPlaybackContent()) return;
-    if (config.runtime.FluidEffect?.fullscreenEffect?.setPlayState) {
-        config.runtime.FluidEffect.fullscreenEffect.setPlayState(true);
-    } else if (config.runtime.FluidEffect?.fullscreenEnabled) {
-        config.runtime.FluidEffect.initFullscreenEffect();
-    }
+    // 由 CSS 和 body class 控制，不需要 JS 处理
 }
 
 function pauseFullscreenFluidEffect(): void {
-    if (config.runtime.FluidEffect?.fullscreenEffect?.setPlayState)
-        config.runtime.FluidEffect.fullscreenEffect.setPlayState(false);
+    // 由 CSS 和 body class 控制，不需要 JS 处理
 }
 
 function stopFullscreenFluidEffect(): void {
-    if (config.runtime.FluidEffect) {
-        if (config.runtime.FluidEffect.fullscreenEffect?.stop)
-            config.runtime.FluidEffect.fullscreenEffect.stop();
-        config.runtime.FluidEffect.destroyFullscreenEffect();
-    }
+    // 由 CSS 和 body class 控制，不需要 JS 处理
 }
 
 export function thumbnailsue(): void {

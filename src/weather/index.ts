@@ -37,8 +37,8 @@ export {
 } from './weatherState';
 
 import { config } from '../utils/config';
-import { debugLogger } from '../utils/logger';
 import { i18n } from '../utils/i18n';
+import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { fetch_with_retry } from '../utils/tool';
 import type { WeatherAPIHandler } from './api/base';

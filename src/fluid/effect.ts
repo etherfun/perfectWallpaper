@@ -3,15 +3,15 @@
  * 合并渲染器(FluidEffect2)与控制器(FluidEffectConfig)
  */
 
-import { elements } from '../utils/elementManager';
 import { config } from '../utils/config';
-import { hasPlaybackContent } from '../utils/playback';
+import { elements } from '../utils/elementManager';
 import { debugLogger } from '../utils/logger';
+import { hasPlaybackContent } from '../utils/playback';
 import { timerManager } from '../utils/timer';
-import type { FluidEffectOptions, FluidEffectConfigState, FluidEffectState } from './types';
+import type { FluidEffectOptions, FluidEffectState } from './types';
 import {
-    DEFAULT_FLUID_EFFECT_OPTIONS,
     DEFAULT_FLUID_EFFECT_CONFIG,
+    DEFAULT_FLUID_EFFECT_OPTIONS,
     FluidEffectState as FluidEffectStateEnum
 } from './types';
 
@@ -600,7 +600,7 @@ export class FluidEffect {
 
             container.style.background = 'none';
             container.style.overflow = 'hidden';
-        } catch (error) {
+        } catch (_error) {
             return;
         }
     }

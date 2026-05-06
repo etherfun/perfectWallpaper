@@ -1,11 +1,10 @@
 import { elements } from '@/utils/elementManager';
 
-import { getTime_sec, startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
+import { startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
 import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { WallpaperProperties } from './types';
 
-const oClock_webtext_ti = elements.clock.st;
 const oClock = elements.clock.container;
 
 /**

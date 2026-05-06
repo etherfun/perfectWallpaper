@@ -405,29 +405,6 @@ function controlFluidEffectPlayback(playbackState: number): void {
     }
 }
 
-function resumeFluidEffect(): void {
-    // 由 CSS 和 body class 控制，不需要 JS 处理
-}
-
-function pauseFluidEffect(): void {
-    // 由 CSS 和 body class 控制，不需要 JS 处理
-}
-
-function stopFluidEffect(): void {
-    // 由 CSS 和 body class 控制，不需要 JS 处理
-}
-
-function resumeFullscreenFluidEffect(): void {
-    // 由 CSS 和 body class 控制，不需要 JS 处理
-}
-
-function pauseFullscreenFluidEffect(): void {
-    // 由 CSS 和 body class 控制，不需要 JS 处理
-}
-
-function stopFullscreenFluidEffect(): void {
-    // 由 CSS 和 body class 控制，不需要 JS 处理
-}
 
 export function thumbnailsue(): void {
     if (!config.runtime.playerInfo.colorGroup) return;

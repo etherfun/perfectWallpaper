@@ -4,8 +4,8 @@
 
 import { background2canvas } from '../RGB';
 import { config } from '../utils/config';
-import { debugLogger } from '../utils/logger';
 import { elements } from '../utils/elementManager';
+import { debugLogger } from '../utils/logger';
 import { ChangeVideoModel } from '../video';
 import { transitionBackground } from './transition';
 import { backgroundLayers, pictures } from './types';

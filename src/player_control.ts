@@ -405,7 +405,6 @@ function controlFluidEffectPlayback(playbackState: number): void {
     }
 }
 
-
 export function thumbnailsue(): void {
     if (!config.runtime.playerInfo.colorGroup) return;
 

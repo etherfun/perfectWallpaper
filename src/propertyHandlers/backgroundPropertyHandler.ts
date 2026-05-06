@@ -16,7 +16,9 @@ export function handleBackgroundProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
-    debugLogger.warn(`[handleBackgroundProperties] FirstLoad=${FirstLoad}, keys=${Object.keys(properties).join(', ')}`);
+    debugLogger.warn(
+        `[handleBackgroundProperties] FirstLoad=${FirstLoad}, keys=${Object.keys(properties).join(', ')}`
+    );
     // 自定义壁纸
     if (properties.image) {
         config.custom = properties.image.value;
@@ -59,7 +61,9 @@ export function handleBackgroundProperties(
 
     // 自定义目录
     if (properties.customdirectory) {
-        debugLogger.warn(`[handleBackgroundProperties] customdirectory changed, FirstLoad=${FirstLoad}`);
+        debugLogger.warn(
+            `[handleBackgroundProperties] customdirectory changed, FirstLoad=${FirstLoad}`
+        );
         config.customdirectory = properties.customdirectory.value;
         timerManager.remove('backgroundChange');
         if (properties.customdirectory && FirstLoad === false) {
@@ -69,7 +73,9 @@ export function handleBackgroundProperties(
 
     // 监听幻灯开关变化
     if (properties.wallpapermode) {
-        debugLogger.warn(`[handleBackgroundProperties] wallpapermode changed, FirstLoad=${FirstLoad}`);
+        debugLogger.warn(
+            `[handleBackgroundProperties] wallpapermode changed, FirstLoad=${FirstLoad}`
+        );
         timerManager.remove('backgroundChange');
         config.wallpaper_mode = properties.wallpapermode.value;
         if (FirstLoad) {

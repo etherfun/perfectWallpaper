@@ -8,7 +8,7 @@
 export enum FluidEffectState {
     DISABLED = 'disabled',
     NORMAL = 'normal',
-    FULLSCREEN = 'fullscreen'
+    FULLSCREEN = 'fullscreen',
 }
 
 /**

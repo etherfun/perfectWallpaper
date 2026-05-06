@@ -240,14 +240,17 @@ function handleAudioEnded(): void {
 
     // 单曲循环
     if (repeat === 2) {
-        if (isSingleTrackLoop) return;  // 防止重入
+        if (isSingleTrackLoop) return; // 防止重入
         isSingleTrackLoop = true;
         myAudio.currentTime = 0;
-        myAudio.play().then(() => {
-            isSingleTrackLoop = false;
-        }).catch(() => {
-            isSingleTrackLoop = false;
-        });
+        myAudio
+            .play()
+            .then(() => {
+                isSingleTrackLoop = false;
+            })
+            .catch(() => {
+                isSingleTrackLoop = false;
+            });
         return;
     }
 

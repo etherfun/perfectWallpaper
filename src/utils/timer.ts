@@ -371,9 +371,10 @@ export function waitAndExecute(
                 } else {
                     setTimeout(check, interval);
                 }
-            } catch (error: any) {
-                debugLogger.error(`条件检测失败: ${error.message}`);
-                reject(new Error(`条件检测失败: ${error.message}`));
+            } catch (error: unknown) {
+                const message = error instanceof Error ? error.message : String(error);
+                debugLogger.error(`条件检测失败: ${message}`);
+                reject(new Error(`条件检测失败: ${message}`));
             }
         };
 

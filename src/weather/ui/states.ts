@@ -6,6 +6,18 @@
 import { elements } from '../../utils/elementManager';
 import { i18n } from '../../utils/i18n';
 
+const weatherChildrenStore = new WeakMap<HTMLElement, Element[]>();
+
+function saveOriginalChildren(container: HTMLElement): void {
+    if (!weatherChildrenStore.has(container)) {
+        weatherChildrenStore.set(container, Array.from(container.children));
+    }
+}
+
+function getOriginalChildren(container: HTMLElement): Element[] | undefined {
+    return weatherChildrenStore.get(container);
+}
+
 /**
  * 显示天气加载状态
  */
@@ -14,10 +26,7 @@ export function showWeatherLoading(): void {
     const rightContainer = elements.weather.rightContainer;
     if (!leftContainer || !rightContainer) return;
 
-    // 保存原始子元素（仅在尚未保存时保存，避免覆盖错误状态）
-    if (!(leftContainer as any)._originalChildren) {
-        (leftContainer as any)._originalChildren = Array.from(leftContainer.children);
-    }
+    saveOriginalChildren(leftContainer);
 
     leftContainer.style.flex = '1';
     leftContainer.style.minWidth = 'auto';
@@ -39,8 +48,7 @@ export function hideWeatherLoading(): void {
     const rightContainer = elements.weather.rightContainer;
     if (!leftContainer || !rightContainer) return;
 
-    // 恢复原始子元素
-    const originalChildren = (leftContainer as any)._originalChildren as Element[] | undefined;
+    const originalChildren = getOriginalChildren(leftContainer);
     if (originalChildren && originalChildren.length > 0) {
         leftContainer.innerHTML = '';
         originalChildren.forEach(child => leftContainer.appendChild(child));
@@ -64,10 +72,7 @@ export function showWeatherError(message: string): void {
     const rightContainer = elements.weather.rightContainer;
     if (!leftContainer || !rightContainer) return;
 
-    // 保存当前子元素状态（以便后续恢复）
-    if (!(leftContainer as any)._originalChildren) {
-        (leftContainer as any)._originalChildren = Array.from(leftContainer.children);
-    }
+    saveOriginalChildren(leftContainer);
 
     leftContainer.style.flex = '1';
     leftContainer.style.minWidth = 'auto';
@@ -78,7 +83,6 @@ export function showWeatherError(message: string): void {
     leftContainer.style.alignItems = 'center';
     rightContainer.classList.add('hidden');
 
-    // 清除之前的内容
     leftContainer.innerHTML = '';
     const errorDiv = document.createElement('div');
     errorDiv.className = 'weather-error';

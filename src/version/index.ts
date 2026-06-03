@@ -23,6 +23,9 @@ export interface VersionHistoryEntry {
     date: string;
     titleKey?: string;
     title?: string;
+    imageAltKey?: string;
+    imageAlt?: string;
+    changesKey?: string;
     changes?: string[];
 }
 
@@ -749,7 +752,9 @@ class versionManager {
     }
 
     // 处理版本信息的i18n转换
-    private processVersionInfoWithI18n(rawInfo: any): Record<string, unknown> | null {
+    private processVersionInfoWithI18n(
+        rawInfo: VersionHistoryEntry
+    ): Record<string, unknown> | null {
         if (!rawInfo) return null;
 
         const processedInfo: Record<string, unknown> = { ...rawInfo };
@@ -793,12 +798,12 @@ class versionManager {
     }
 
     // 获取所有更新历史（按日期降序排列，最新的在前面）
-    private getAllVersionHistory(): any[] {
+    private getAllVersionHistory(): VersionHistoryEntry[] {
         if (!versionConfig.VERSION_HISTORY || !Array.isArray(versionConfig.VERSION_HISTORY)) {
             return [];
         }
 
-        return versionConfig.VERSION_HISTORY.sort((a: any, b: any) => {
+        return versionConfig.VERSION_HISTORY.sort((a: VersionHistoryEntry, b: VersionHistoryEntry) => {
             const dateA = new Date(a.date);
             const dateB = new Date(b.date);
             return dateB.getTime() - dateA.getTime();

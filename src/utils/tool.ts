@@ -194,14 +194,17 @@ export function isNightTime(nowTime: string, sunrise: string, sunset: string): b
  * @param immediate - 是否立即执行
  * @returns 防抖处理后的函数
  */
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: never[]) => unknown>(
     func: T,
     wait: number,
     immediate: boolean = false
 ): (...args: Parameters<T>) => Promise<ReturnType<T>> {
     let timeout: number | null = null;
 
-    return function executedFunction(this: any, ...args: Parameters<T>): Promise<ReturnType<T>> {
+    return function executedFunction(
+        this: unknown,
+        ...args: Parameters<T>
+    ): Promise<ReturnType<T>> {
         return new Promise((resolve, reject) => {
             const context = this;
 
@@ -247,13 +250,13 @@ export function debounce<T extends (...args: any[]) => any>(
  * @param limit - 限制时间(毫秒)
  * @returns 节流处理后的函数
  */
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: never[]) => unknown>(
     func: T,
     limit: number
 ): (...args: Parameters<T>) => void {
     let inThrottle: boolean = false;
 
-    return function (this: any, ...args: Parameters<T>) {
+    return function (this: unknown, ...args: Parameters<T>) {
         const context = this;
 
         if (!inThrottle) {

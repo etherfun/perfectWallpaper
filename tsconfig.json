@@ -19,7 +19,7 @@
     "declaration": false,
     "noEmit": false,
     "allowSyntheticDefaultImports": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],

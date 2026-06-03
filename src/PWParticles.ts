@@ -1,27 +1,6 @@
 // PWParticles.ts - Audio particle visualizer module
 // This module provides particle-based audio visualization effects
 
-// Typedef for requestAnimFrame
-type RequestAnimFrameCallback = (time: number) => void;
-
-// Polyfill requestAnimFrame
-const requestAnimFramePolyfill: RequestAnimFrameCallback = (function () {
-    const vendors = ['webkit', 'moz'];
-    const win = window as typeof window & Record<string, any>;
-    for (let i = 0; i < vendors.length; i++) {
-        const vp = vendors[i] + 'RequestAnimationFrame';
-        if (win[vp]) {
-            return win[vp].bind(win);
-        }
-    }
-    return function (callback: RequestAnimFrameCallback) {
-        window.setTimeout(callback, 1000 / 60);
-    };
-})();
-
-// Use the polyfill
-const requestAnimFrame = requestAnimFramePolyfill;
-
 // Audio data array (shared with other modules)
 declare let audioArrayPar: number[];
 
@@ -311,7 +290,7 @@ export function auto(): void {
         CXTPar.clearRect(0, 0, CanPar.width, CanPar.height);
         drawPoint();
         if (isShowLine) connect();
-        pAutoTimer = (requestAnimFrame as any)(loop);
+        pAutoTimer = requestAnimationFrame(loop);
     };
     loop();
 }

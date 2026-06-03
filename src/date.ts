@@ -97,10 +97,10 @@ let me_array = new Array(
     'December'
 );
 
-function getFormattedYear(t) {
+function getFormattedYear(t: Date): string {
     switch (config.date_format.year_format) {
         case 1: // YYYY格式
-            return t.getFullYear();
+            return String(t.getFullYear());
         case 2: // YY格式（后两位）
             return t.getFullYear().toString().substr(-2);
         case 0: // 不显示
@@ -109,35 +109,35 @@ function getFormattedYear(t) {
     }
 }
 
-function getFormattedMonth(t) {
-    let month = t.getMonth() + 1;
+function getFormattedMonth(t: Date): string {
+    const month = t.getMonth() + 1;
     switch (config.date_format.month_format) {
         case 1: // 数字格式
-            return month;
+            return String(month);
         case 2: // 英文月份
-            return me_array[t.getMonth()];
+            return me_array[t.getMonth()] ?? '';
         case 3: // 中文月份
-            return m_array[t.getMonth()];
+            return m_array[t.getMonth()] ?? '';
         case 0: // 不显示
         default:
             return '';
     }
 }
 
-function getFormattedDay(t) {
-    let day = t.getDate();
+function getFormattedDay(t: Date): string {
+    const day = t.getDate();
     switch (config.date_format.day_format) {
         case 1: // 数字格式
-            return day;
+            return String(day);
         case 2: // 带前导零
-            return day < 10 ? '0' + day : day;
+            return day < 10 ? '0' + day : String(day);
         case 0: // 不显示
         default:
             return '';
     }
 }
 
-function getFormattedWeek(t) {
+function getFormattedWeek(t: Date) {
     switch (config.date_format.week_format) {
         case 1: // 中文星期
             return w_array[t.getDay()];
@@ -169,8 +169,14 @@ function getSeparator() {
 }
 
 // 构建日期字符串
-function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
-    let parts: any[] = [];
+function buildDateString(
+    year: string,
+    month: string,
+    day: string,
+    week: string,
+    sep: string | { year: string; month: string; day: string }
+): string {
+    let parts: string[] = [];
     let partTypes: string[] = [];
 
     // 根据顺序添加年份、月份、日期，并记录类型
@@ -220,17 +226,17 @@ function buildDateString(year: any, month: any, day: any, week: any, sep: any) {
 
     // 处理分隔符
     let result = '';
-    if (sep === '' || typeof sep === 'string') {
+    if (typeof sep === 'string') {
         // 简单分隔符
         for (let i = 0; i < parts.length; i++) {
             if (i > 0) result += sep;
             result += parts[i];
         }
-    } else if (typeof sep === 'object') {
+    } else {
         // 中文分隔符（年/月/日）- 根据实际类型添加正确的分隔符
         for (let i = 0; i < parts.length; i++) {
             result += parts[i];
-            let partType = partTypes[i];
+            const partType = partTypes[i];
             if (partType === 'year' && sep.year) result += sep.year;
             else if (partType === 'month' && sep.month) result += sep.month;
             else if (partType === 'day' && sep.day) result += sep.day;

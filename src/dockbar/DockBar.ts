@@ -18,7 +18,7 @@ import type { DockBarConfig, DockItem } from './types';
 export class DockBar {
     private refs: DockDomRefs | null = null;
     private config: DockBarConfig = { ...DEFAULT_CONFIG };
-    private enabled = true;
+    private enabled = false;
 
     constructor() {
         this.init();
@@ -31,6 +31,7 @@ export class DockBar {
 
         this.config.items = loadItems();
         applyConfig(refs.container, refs.background, refs.addButton, this.config);
+        this.setEnabled(this.config.enabled);
         this.renderItems();
         this.setupEventListeners();
         void animateEntrance(refs.itemsContainer, this.config.yakeliEnabled);

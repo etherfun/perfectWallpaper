@@ -21,7 +21,7 @@ export class SystemMonitor {
     private networkRxHistory: number[] = [];
     private networkTxHistory: number[] = [];
     private config: SystemMonitorConfig = { ...DEFAULT_CONFIG };
-    private enabled: boolean = true;
+    private enabled: boolean = false;
     private disconnectTimer: number | null = null;
     private lastConnectedTime: number = 0;
     private hasEverConnected: boolean = false;
@@ -47,6 +47,7 @@ export class SystemMonitor {
         });
 
         this.applyConfig();
+        this.setEnabled(this.config.enabled);
 
         // Only start polling if enabled in config
         if (this.config.enabled) {

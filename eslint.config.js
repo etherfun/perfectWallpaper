@@ -10,7 +10,8 @@ export default [
     ignores: [
       'src/server-rs/**',
       'node_modules/**',
-      'dist/**'
+      'dist/**',
+      'coverage/**'
     ]
   },
 
@@ -433,6 +434,24 @@ export default [
     rules: {
       '@typescript-eslint/no-unused-vars': 'off',
       'no-unused-vars': 'off'
+    }
+  },
+
+  {
+    files: ['tests/**/*.ts', 'vitest.config.ts'],
+    languageOptions: {
+      globals: {
+        describe: 'readonly',
+        test: 'readonly',
+        it: 'readonly',
+        expect: 'readonly',
+        beforeAll: 'readonly',
+        afterAll: 'readonly',
+        beforeEach: 'readonly',
+        afterEach: 'readonly',
+        vi: 'readonly',
+        vitest: 'readonly'
+      }
     }
   },
 

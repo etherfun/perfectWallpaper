@@ -225,13 +225,11 @@ export function createPoint(arr: number[]): void {
                 3;
         }
 
-        let w1 = arr[i] ? arr[i] : 0;
-        let w2: number;
-        if (config.runtime.param.waveArr[i]) {
-            w2 = config.runtime.param.waveArr[i] - config.runtime.param.waveArr[i] * 0.25;
-        } else {
-            w2 = 0;
-        }
+        const arrI = arr[i] ?? 0;
+        let w1 = arrI ? arrI : 0;
+        const prevWave = config.runtime.param.waveArr[i];
+        const w2: number =
+            prevWave !== undefined && prevWave !== 0 ? prevWave - prevWave * 0.25 : 0;
         w1 = Math.max(w1, w2);
         config.runtime.param.waveArr[i] = w1 = Math.min(w1, 1.2);
         const waveHeight = w1 * config.runtime.param.range * 100;
@@ -289,10 +287,15 @@ export function getXY(offset: number, deg: number): { x: number; y: number } {
  */
 export function style1(): void {
     if (!ctx) return;
+    const arr1 = config.runtime.param.arr1;
+    const arr2 = config.runtime.param.arr2;
     ctx.beginPath();
     for (let i = 0; i < 128; i++) {
-        ctx.moveTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
-        ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
+        const a1 = arr1[i];
+        const a2 = arr2[i];
+        if (!a1 || !a2) continue;
+        ctx.moveTo(a1.x, a1.y);
+        ctx.lineTo(a2.x, a2.y);
     }
     ctx.closePath();
     ctx.stroke();
@@ -303,11 +306,19 @@ export function style1(): void {
  */
 export function style2(): void {
     if (!ctx) return;
+    const arr1 = config.runtime.param.arr1;
+    const arr2 = config.runtime.param.arr2;
+
     // Outer circle
     ctx.beginPath();
-    ctx.moveTo(config.runtime.param.arr1[0].x, config.runtime.param.arr1[0].y);
-    for (let i = 0; i < 128; i++) {
-        ctx.lineTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
+    const outerFirst = arr1[0];
+    if (outerFirst) {
+        ctx.moveTo(outerFirst.x, outerFirst.y);
+        for (let i = 0; i < 128; i++) {
+            const p = arr1[i];
+            if (!p) continue;
+            ctx.lineTo(p.x, p.y);
+        }
     }
     if (!config.runtime.param.showSemiCircle) {
         ctx.closePath();
@@ -316,15 +327,13 @@ export function style2(): void {
 
     // Inner circle
     ctx.beginPath();
-    if (config.runtime.param.showSemiCircle) {
-        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
+    const innerFirst = arr2[0];
+    if (innerFirst) {
+        ctx.moveTo(innerFirst.x, innerFirst.y);
         for (let i = 0; i < 128; i++) {
-            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
-        }
-    } else {
-        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
-        for (let i = 0; i < 128; i++) {
-            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
+            const p = arr2[i];
+            if (!p) continue;
+            ctx.lineTo(p.x, p.y);
         }
     }
     if (!config.runtime.param.showSemiCircle) {
@@ -335,8 +344,11 @@ export function style2(): void {
     // Connecting lines
     ctx.beginPath();
     for (let i = 0; i < 128; i++) {
-        ctx.moveTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
-        ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
+        const a1 = arr1[i];
+        const a2 = arr2[i];
+        if (!a1 || !a2) continue;
+        ctx.moveTo(a1.x, a1.y);
+        ctx.lineTo(a2.x, a2.y);
     }
     ctx.closePath();
     ctx.stroke();
@@ -347,11 +359,19 @@ export function style2(): void {
  */
 export function style3(): void {
     if (!ctx) return;
+    const arr1 = config.runtime.param.arr1;
+    const arr2 = config.runtime.param.arr2;
+
     // Outer circle
     ctx.beginPath();
-    ctx.moveTo(config.runtime.param.arr1[0].x, config.runtime.param.arr1[0].y);
-    for (let i = 0; i < 128; i++) {
-        ctx.lineTo(config.runtime.param.arr1[i].x, config.runtime.param.arr1[i].y);
+    const outerFirst = arr1[0];
+    if (outerFirst) {
+        ctx.moveTo(outerFirst.x, outerFirst.y);
+        for (let i = 0; i < 128; i++) {
+            const p = arr1[i];
+            if (!p) continue;
+            ctx.lineTo(p.x, p.y);
+        }
     }
     if (!config.runtime.param.showSemiCircle) {
         ctx.closePath();
@@ -360,15 +380,13 @@ export function style3(): void {
 
     // Inner circle
     ctx.beginPath();
-    if (config.runtime.param.showSemiCircle) {
-        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
+    const innerFirst = arr2[0];
+    if (innerFirst) {
+        ctx.moveTo(innerFirst.x, innerFirst.y);
         for (let i = 0; i < 128; i++) {
-            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
-        }
-    } else {
-        ctx.moveTo(config.runtime.param.arr2[0].x, config.runtime.param.arr2[0].y);
-        for (let i = 0; i < 128; i++) {
-            ctx.lineTo(config.runtime.param.arr2[i].x, config.runtime.param.arr2[i].y);
+            const p = arr2[i];
+            if (!p) continue;
+            ctx.lineTo(p.x, p.y);
         }
     }
     if (!config.runtime.param.showSemiCircle) {

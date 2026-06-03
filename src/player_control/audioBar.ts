@@ -61,14 +61,21 @@ export function pc_aubar(): void {
         const currentAudioArr = config.runtime.playerInfo.audioArray;
 
         for (let i = 0, l = AUDIO_BAR_COUNT; i < AUDIO_BAR_COUNT; ++i, ++l) {
-            const bar = (currentAudioArr[i] + currentAudioArr[l]) / 2;
+            const lo = currentAudioArr[i] ?? 0;
+            const hi = currentAudioArr[l] ?? 0;
+            const bar = (lo + hi) / 2;
             const targetHeight =
                 aubar.height * Math.min(bar, 1) * config.player_control_scalefactor;
             const actualHeight = Math.min(targetHeight, aubar.height);
 
-            barHeights[i] = lerp(barHeights[i], actualHeight, config.player_control_hdong);
+            barHeights[i] = lerp(barHeights[i] ?? 0, actualHeight, config.player_control_hdong);
 
-            rgbbg.fillRect(barWidth * i, aubar.height - barHeights[i], barWidth, barHeights[i]);
+            rgbbg.fillRect(
+                barWidth * i,
+                aubar.height - (barHeights[i] ?? 0),
+                barWidth,
+                barHeights[i] ?? 0
+            );
         }
 
         if (shouldContinueDrawing()) {
@@ -90,17 +97,19 @@ export function pc_aubar(): void {
 
         const heights: number[] = [];
         for (let i = 0, l = AUDIO_BAR_COUNT; i < AUDIO_BAR_COUNT; ++i, ++l) {
-            const amplitude = (currentAudioArr[i] + currentAudioArr[l]) / 2;
+            const lo = currentAudioArr[i] ?? 0;
+            const hi = currentAudioArr[l] ?? 0;
+            const amplitude = (lo + hi) / 2;
             let targetHeight =
                 aubar.height -
                 aubar.height * Math.min(amplitude, 1) * config.player_control_scalefactor;
             targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
             previousHeights[i] = lerp(
-                previousHeights[i],
+                previousHeights[i] ?? aubar.height,
                 targetHeight,
                 config.player_control_hdong
             );
-            heights[i] = previousHeights[i];
+            heights[i] = previousHeights[i] ?? 0;
         }
 
         if (heights.length < 2) {
@@ -110,16 +119,16 @@ export function pc_aubar(): void {
             return;
         }
 
-        rgbbg.moveTo(0, heights[0]);
+        rgbbg.moveTo(0, heights[0] ?? 0);
 
         // 用 Catmull-Rom → 三次贝塞尔 转换实现平滑折线
         for (let i = 0; i < heights.length - 1; i++) {
             const x0 = i > 0 ? spacing * (i - 1) : 0;
-            const y0 = heights[i - 1] ?? heights[0];
+            const y0 = heights[i - 1] ?? heights[0] ?? 0;
             const x1 = spacing * i;
-            const y1 = heights[i];
+            const y1 = heights[i] ?? 0;
             const x2 = spacing * (i + 1);
-            const y2 = heights[i + 1];
+            const y2 = heights[i + 1] ?? 0;
             const x3 = i < heights.length - 2 ? spacing * (i + 2) : x2;
             const y3 = heights[i + 2] ?? y2;
 

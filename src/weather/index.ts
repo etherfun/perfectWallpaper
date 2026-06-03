@@ -115,7 +115,8 @@ export async function weather_init(): Promise<void> {
                     {}
                 );
                 const text = await citydata.text();
-                weather_address.cityname = text.split('</strong>')[1].split(' ')[0];
+                const afterStrong = text.split('</strong>')[1];
+                weather_address.cityname = afterStrong?.split(' ')[0] ?? weather_address.cityname;
             } catch (e) {
                 console.error('Failed to get city:', e);
             }

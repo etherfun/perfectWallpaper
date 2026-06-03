@@ -49,18 +49,19 @@ export function generateAlertHTML(): string {
     type AlertWithIds = WeatherAlert & { ids: string[] };
 
     const sorted = [...weather_data.weatherAlert].sort(
-        (a, b) => severityLevel[b.level] - severityLevel[a.level]
+        (a, b) => (severityLevel[b.level] ?? 0) - (severityLevel[a.level] ?? 0)
     );
 
     const alertMap: { [key: string]: AlertWithIds } = {};
     sorted.forEach(alert => {
-        if (!alertMap[alert.alert]) {
+        const existing = alertMap[alert.alert];
+        if (!existing) {
             alertMap[alert.alert] = { ...alert, ids: [alert.id] };
         } else {
-            alertMap[alert.alert].ids.push(alert.id);
-            if (severityLevel[alert.level] > severityLevel[alertMap[alert.alert].level]) {
-                alertMap[alert.alert].level = alert.level;
-                alertMap[alert.alert].color = alert.color;
+            existing.ids.push(alert.id);
+            if ((severityLevel[alert.level] ?? 0) > (severityLevel[existing.level] ?? 0)) {
+                existing.level = alert.level;
+                existing.color = alert.color;
             }
         }
     });

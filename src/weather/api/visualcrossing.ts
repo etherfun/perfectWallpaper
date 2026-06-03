@@ -99,7 +99,7 @@ function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
         const [hh, mm, ss] = h.datetime.split(':').map(Number);
 
         const hourDate = new Date(now);
-        hourDate.setHours(hh, mm, ss || 0, 0);
+        hourDate.setHours(hh ?? 0, mm ?? 0, ss ?? 0, 0);
 
         if (hourDate < now) {
             hourDate.setDate(hourDate.getDate() + 1);
@@ -130,18 +130,20 @@ export async function visualcrossing(
     const resNow = res.currentConditions;
     const resHourly = getNext7Hours(res);
     const resDaily = res.days;
+    const today = resDaily[0];
+    if (!today) return;
 
-    weather_address.cityname = res.resolvedAddress.split(',')[0];
+    weather_address.cityname = res.resolvedAddress.split(',')[0] ?? '';
 
     weather_data.updateTime = resNow.datetime;
     weather_data.windSpeed = resNow.windspeed;
     weather_data.humidity = resNow.humidity;
     weather_data.temperature = resNow.temp;
-    weather_data.temperature_max = resDaily[0].tempmax;
-    weather_data.temperature_min = resDaily[0].tempmin;
+    weather_data.temperature_max = today.tempmax;
+    weather_data.temperature_min = today.tempmin;
     weather_data.feels = resNow.feelslike;
-    weather_data.feels_max = resDaily[0].feelslikemax;
-    weather_data.feels_min = resDaily[0].feelslikemin;
+    weather_data.feels_max = today.feelslikemax;
+    weather_data.feels_min = today.feelslikemin;
     weather_data.weathernow = resNow.conditions
         .split(',')
         .map(c => c.trim())
@@ -159,17 +161,17 @@ export async function visualcrossing(
     weather_data.visibility = resNow.visibility;
     weather_data.solarradiation = resNow.solarradiation;
     weather_data.uvindex = resNow.uvindex;
-    weather_data.sunrise = resDaily[0].sunrise;
-    weather_data.sunset = resDaily[0].sunset;
-    weather_data.cloud = resDaily[0].cloudcover.toString();
+    weather_data.sunrise = today.sunrise;
+    weather_data.sunset = today.sunset;
+    weather_data.cloud = today.cloudcover.toString();
     weather_data.dew = resNow.dew;
     weather_data.pressure = resNow.pressure;
     weather_data.icon = getQWeatherIcon(
         resNow.icon,
         isNightTime(
-            new Date().toTimeString().split(' ')[0],
-            resDaily[0].sunrise,
-            resDaily[0].sunset
+            new Date().toTimeString().split(' ')[0] ?? '',
+            today.sunrise,
+            today.sunset
         )
     ).toString();
 
@@ -181,7 +183,7 @@ export async function visualcrossing(
 
     // 月相
     {
-        const index = Math.floor((resDaily[0].moonphase + 0.0625) * 8) % 8;
+        const index = Math.floor((today.moonphase + 0.0625) * 8) % 8;
         weather_data.moonphase = i18n(MOON_PHASE_KEYS[index] ?? 'weather_no_data');
     }
 
@@ -191,7 +193,7 @@ export async function visualcrossing(
     weather_data.sevenHourlyData.Dews = resHourly.map(hour => hour.dew);
     weather_data.sevenHourlyData.Humidities = resHourly.map(hour => hour.humidity);
     weather_data.sevenHourlyData.Icons = resHourly.map(hour => {
-        const isNight = isNightTime(hour.datetime, resDaily[0].sunrise, resDaily[0].sunset);
+        const isNight = isNightTime(hour.datetime, today.sunrise, today.sunset);
         return getQWeatherIcon(hour.icon, isNight).toString();
     });
     weather_data.sevenHourlyData.Pops = resHourly.map(hour => `${hour.precipprob}%`);

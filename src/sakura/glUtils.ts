@@ -112,11 +112,13 @@ export function createShader(
     };
 
     for (let i = 0; i < uniformlist.length; i++) {
-        result.uniforms[uniformlist[i]] = gl!.getUniformLocation(prog, uniformlist[i])!;
+        const name = uniformlist[i] ?? '';
+        result.uniforms[name] = gl!.getUniformLocation(prog, name)!;
     }
 
     for (let i = 0; i < attrlist.length; i++) {
-        result.attributes[attrlist[i]] = gl!.getAttribLocation(prog, attrlist[i]);
+        const name = attrlist[i] ?? '';
+        result.attributes[name] = gl!.getAttribLocation(prog, name);
     }
 
     return result;
@@ -127,7 +129,7 @@ export function useShader(prog: ShaderProgram): void {
     if (!gl) return;
     gl.useProgram(prog.program);
     for (const attr in prog.attributes) {
-        gl.enableVertexAttribArray(prog.attributes[attr]);
+        gl.enableVertexAttribArray(prog.attributes[attr]!);
     }
 }
 
@@ -135,7 +137,7 @@ export function useShader(prog: ShaderProgram): void {
 export function unuseShader(prog: ShaderProgram): void {
     if (!gl) return;
     for (const attr in prog.attributes) {
-        gl.disableVertexAttribArray(prog.attributes[attr]);
+        gl.disableVertexAttribArray(prog.attributes[attr]!);
     }
     gl.useProgram(null);
 }

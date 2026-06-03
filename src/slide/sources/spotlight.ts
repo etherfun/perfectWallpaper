@@ -15,7 +15,9 @@ export function loadWindowsSpotlight(): void {
     )
         .then(response => response.json())
         .then((get: WindowsSpotlightResponse) => {
-            const rawjson: WindowsSpotlightItem = JSON.parse(get.batchrsp.items[0].item);
+            const itemJson = get.batchrsp.items[0]?.item;
+            if (!itemJson) return;
+            const rawjson: WindowsSpotlightItem = JSON.parse(itemJson);
 
             const url = rawjson.ad.landscapeImage.asset;
             const img = new Image();
@@ -24,9 +26,8 @@ export function loadWindowsSpotlight(): void {
             config.runtime.photo.infomation.title = rawjson.ad.title;
             config.runtime.photo.infomation.text = rawjson.ad.description;
             config.runtime.photo.infomation.copyright = rawjson.ad.copyright;
-            config.runtime.photo.infomation.where = rawjson.ad.iconHoverText
-                .split(/\r?\n/)[0]
-                .trim();
+            config.runtime.photo.infomation.where =
+                rawjson.ad.iconHoverText.split(/\r?\n/)[0]?.trim() ?? '';
             picturesinfo_showrl(
                 config.runtime.photo.infomation.title,
                 config.runtime.photo.infomation.copyright,

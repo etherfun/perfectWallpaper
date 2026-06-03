@@ -84,8 +84,9 @@ export function transitionBackground(newImageUrl: string): void {
 /** Update playlist */
 export function updateFileList(currentFiles: string[]): void {
     for (let i = 0; i < currentFiles.length; ++i) {
-        if (config.runtime.myList.indexOf(currentFiles[i]) === -1) {
-            config.runtime.myList.push(currentFiles[i]);
+        const file = currentFiles[i];
+        if (file && config.runtime.myList.indexOf(file) === -1) {
+            config.runtime.myList.push(file);
         }
     }
 }

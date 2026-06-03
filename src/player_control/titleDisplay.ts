@@ -46,13 +46,19 @@ export function playertitle(visualaudiobar: boolean = false): void {
         artistEl = player_control_artist.querySelector('.left')!;
         albumEl = player_control_albumTitle.querySelector('.left')!;
         const rightElements = player_control.querySelectorAll('.right');
-        for (let i = 0; i < rightElements.length; i++) rightElements[i].innerHTML = '';
+        for (let i = 0; i < rightElements.length; i++) {
+            const el = rightElements[i];
+            if (el) el.innerHTML = '';
+        }
     } else {
         titleEl = player_control_title.querySelector('.right')!;
         artistEl = player_control_artist.querySelector('.right')!;
         albumEl = player_control_albumTitle.querySelector('.right')!;
         const leftElements = player_control.querySelectorAll('.left');
-        for (let i = 0; i < leftElements.length; i++) leftElements[i].innerHTML = '';
+        for (let i = 0; i < leftElements.length; i++) {
+            const el = leftElements[i];
+            if (el) el.innerHTML = '';
+        }
     }
 
     titleEl.innerHTML = `<span>${titleToShow}</span>`;

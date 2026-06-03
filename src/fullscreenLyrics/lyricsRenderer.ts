@@ -164,6 +164,7 @@ export function animateToNewLine(
     ) {
         if (!lineElements.has(i)) {
             const line = currentData.lyricsArray[i];
+            if (!line) continue;
             const el = createLineElement(line, i, currentData, config);
             lineElements.set(i, el);
             lyricsContainer.appendChild(el);

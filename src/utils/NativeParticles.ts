@@ -217,8 +217,8 @@ export class NativeParticles {
     private checkOverlap(index: number): void {
         for (let i = 0; i < this.particlesArray.length; i++) {
             if (i === index) continue;
-            const p1 = this.particlesArray[index];
-            const p2 = this.particlesArray[i];
+            const p1 = this.particlesArray[index]!;
+            const p2 = this.particlesArray[i]!;
             const dist = this.getDist(p1.x, p1.y, p2.x, p2.y);
             if (dist <= p1.radius + p2.radius) {
                 p1.x = Math.random() * this.canvasWidth;
@@ -275,8 +275,8 @@ export class NativeParticles {
         if (!this.isBounce) return;
         for (let i = 0; i < this.particlesArray.length; i++) {
             if (i === index) continue;
-            const p1 = this.particlesArray[index];
-            const p2 = this.particlesArray[i];
+            const p1 = this.particlesArray[index]!;
+            const p2 = this.particlesArray[i]!;
             const dist = this.getDist(p1.x, p1.y, p2.x, p2.y);
             const distP = p1.radius + p2.radius;
             if (dist <= distP) {
@@ -353,7 +353,7 @@ export class NativeParticles {
         }
 
         for (let i = 0; i < this.particlesArray.length; i++) {
-            const p = this.particlesArray[i];
+            const p = this.particlesArray[i]!;
             p.opacity = this.opacityRandom ? Math.min(Math.random(), this.opacity) : this.opacity;
             p.radius = (this.sizeRandom ? Math.random() : 1) * this.sizeValue;
             p.speed = Math.max(1, (this.speedRandom ? Math.random() : 1) * this.speed);
@@ -384,7 +384,7 @@ export class NativeParticles {
                 });
             }
             for (let i = 0; i < this.particlesArray.length; i++) {
-                const p = this.particlesArray[i];
+                const p = this.particlesArray[i]!;
                 p.opacity = this.opacityRandom ? Math.random() : this.opacity;
                 p.radius = (this.sizeRandom ? Math.random() : 1) * this.sizeValue;
                 p.speed = (this.speedRandom ? Math.random() : 1) * this.speed;
@@ -519,8 +519,8 @@ export class NativeParticles {
     private drawLine(index: number): void {
         for (let i = 0; i < this.particlesArray.length; i++) {
             if (i === index) continue;
-            const p1 = this.particlesArray[index];
-            const p2 = this.particlesArray[i];
+            const p1 = this.particlesArray[index]!;
+            const p2 = this.particlesArray[i]!;
             const dist = this.getDist(p1.x, p1.y, p2.x, p2.y);
             if (dist <= this.linkDistance) {
                 const d = (this.linkDistance - dist) / this.linkDistance;
@@ -539,9 +539,9 @@ export class NativeParticles {
 
     private updateParticlesArray(): void {
         for (let i = 0; i < this.particlesArray.length; i++) {
-            this.moveParticles(this.particlesArray[i]);
+            this.moveParticles(this.particlesArray[i]!);
             this.bounceParticles(i);
-            this.marginalCheck(this.particlesArray[i]);
+            this.marginalCheck(this.particlesArray[i]!);
         }
     }
 
@@ -550,7 +550,7 @@ export class NativeParticles {
             this.updateParticlesArray();
             this.context.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
             for (let i = 0; i < this.particlesArray.length; i++) {
-                this.drawParticles(this.particlesArray[i]);
+                this.drawParticles(this.particlesArray[i]!);
                 if (this.linkEnable) {
                     this.drawLine(i);
                 }

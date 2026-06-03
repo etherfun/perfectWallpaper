@@ -50,10 +50,10 @@ export interface ShaderProgram {
  * 以便 pointFlower.particles: BlossomParticle[] 的元素能直接调用 update/setXxx。
  */
 export class BlossomParticle {
-    public velocity: number[] = new Array(3);
-    public rotation: number[] = new Array(3);
-    public position: number[] = new Array(3);
-    public euler: number[] = new Array(3);
+    public velocity: [number, number, number] = [0, 0, 0];
+    public rotation: [number, number, number] = [0, 0, 0];
+    public position: [number, number, number] = [0, 0, 0];
+    public euler: [number, number, number] = [0, 0, 0];
     public size: number = 1.0;
     public alpha: number = 1.0;
     public zkey: number = 0.0;

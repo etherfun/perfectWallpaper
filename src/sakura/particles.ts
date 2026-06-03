@@ -95,7 +95,7 @@ export function initPointFlowers(): void {
     };
 
     for (let i = 0; i < pointFlower.numFlowers; i++) {
-        const tmpprtcl: BlossomParticle = pointFlower.particles[i];
+        const tmpprtcl: BlossomParticle = pointFlower.particles[i]!;
 
         tmpv3.x = symmetryrand() * 0.3 + 0.8;
         tmpv3.y = symmetryrand() * 0.2 - 1.0;

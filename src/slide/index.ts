@@ -88,12 +88,12 @@ export function nextImage(rands: boolean): void {
         while (index == indexNow) {
             index = Math.floor(Math.random() * config.runtime.myList.length);
         }
-        photoInfo.currentImg = config.runtime.myList[index];
+        photoInfo.currentImg = config.runtime.myList[index] ?? null;
     } else {
         if (index + 1 == config.runtime.myList.length) {
-            photoInfo.currentImg = config.runtime.myList[0];
+            photoInfo.currentImg = config.runtime.myList[0] ?? null;
         } else {
-            photoInfo.currentImg = config.runtime.myList[index + 1];
+            photoInfo.currentImg = config.runtime.myList[index + 1] ?? null;
         }
     }
     shouldShow();

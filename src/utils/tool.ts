@@ -177,7 +177,7 @@ export function getQWeatherIcon(vcIcon: string, isNight: boolean): number {
 export function isNightTime(nowTime: string, sunrise: string, sunset: string): boolean {
     const toMinutes = (t: string): number => {
         const [hours, minutes, seconds] = t.split(':').map(Number);
-        return hours * 60 + minutes + seconds / 60;
+        return (hours ?? 0) * 60 + (minutes ?? 0) + (seconds ?? 0) / 60;
     };
 
     const now = toMinutes(nowTime);

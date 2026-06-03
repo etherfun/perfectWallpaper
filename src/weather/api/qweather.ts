@@ -53,10 +53,10 @@ export async function qweatherLookupCity(weather_address: WeatherAddress): Promi
         throw new Error(`City lookup returned no results for: ${weather_address.cityname}`);
     }
 
-    weather_address.citynumber = data.location[0].id;
-    weather_address.cityname = data.location[0].name;
-    weather_address.latitude = data.location[0].lat;
-    weather_address.longitude = data.location[0].lon;
+    weather_address.citynumber = data.location[0]?.id ?? '';
+    weather_address.cityname = data.location[0]?.name ?? '';
+    weather_address.latitude = data.location[0]?.lat ?? '';
+    weather_address.longitude = data.location[0]?.lon ?? '';
     weather_address.checkcity = weather_address.cityname;
 
     return weather_address;
@@ -86,7 +86,7 @@ async function fetchNowWeather(
     weather_data.temperature = res.now.temp;
     weather_data.feels = res.now.feelsLike;
     weather_data.weathernow = res.now.text;
-    weather_data.wind = i18n(WIND_DIR_MAP[res.now.windDir] || 'weather_wind_north');
+    weather_data.wind = i18n(WIND_DIR_MAP[res.now.windDir] ?? 'weather_wind_north');
     weather_data.windLv = res.now.windScale;
     weather_data.precip = res.now.precip;
     weather_data.cloud = res.now.cloud;
@@ -116,7 +116,7 @@ async function fetchAirQuality(
 
     if (airData && airData.days && airData.days.length > 0) {
         const day = airData.days[0];
-        if (day.indexes && day.indexes.length > 0) {
+        if (day?.indexes && day.indexes.length > 0) {
             const aqiIndex = day.indexes.find(
                 index =>
                     index.name === 'AQI (CN)' ||
@@ -132,8 +132,14 @@ async function fetchAirQuality(
                     aqiIndex.aqi?.toString() || aqiIndex.aqiDisplay || i18n('weather_no_data');
             } else {
                 const firstIndex = day.indexes[0];
-                weather_data.air =
-                    firstIndex.aqi?.toString() || firstIndex.aqiDisplay || i18n('weather_no_data');
+                if (firstIndex) {
+                    weather_data.air =
+                        firstIndex.aqi?.toString() ||
+                        firstIndex.aqiDisplay ||
+                        i18n('weather_no_data');
+                } else {
+                    weather_data.air = i18n('weather_no_data');
+                }
             }
         } else {
             weather_data.air = i18n('weather_no_data');
@@ -229,7 +235,8 @@ async function fetch24hForecast(
         weather_data.sevenHourlyData.updateTime = hourlyData.updateTime;
         weather_data.sevenHourlyData.Times = sevenHourlyData.map(hour => {
             const timeStr = hour.fxTime;
-            return timeStr.split('T')[1].split('+')[0].substring(0, 5);
+            const afterT = timeStr?.split('T')[1];
+            return afterT?.split('+')[0]?.substring(0, 5) ?? '--:--';
         });
         weather_data.sevenHourlyData.Pops = sevenHourlyData.map(hour => {
             return hour.pop !== undefined && hour.pop !== '' ? `${hour.pop}%` : '——';
@@ -271,19 +278,20 @@ async function fetch3dForecast(
 
     if (dailyData && dailyData.daily && dailyData.daily.length > 0) {
         const today = dailyData.daily[0];
+        if (today) {
+            weather_data.temperature_max = today.tempMax;
+            weather_data.temperature_min = today.tempMin;
+            weather_data.feels_max = today.feelsLikeMax || today.tempMax;
+            weather_data.feels_min = today.feelsLikeMin || today.tempMin;
+            weather_data.sunrise = today.sunrise;
+            weather_data.sunset = today.sunset;
+            weather_data.moonphase = today.moonPhase;
+            weather_data.uvindex = today.uvIndex;
+            weather_data.rangetemperature = `${today.tempMin}~${today.tempMax}`;
+            weather_data.rangefeelstemperature = `${today.feelsLikeMin || today.tempMin}~${today.feelsLikeMax || today.tempMax}`;
 
-        weather_data.temperature_max = today.tempMax;
-        weather_data.temperature_min = today.tempMin;
-        weather_data.feels_max = today.feelsLikeMax || today.tempMax;
-        weather_data.feels_min = today.feelsLikeMin || today.tempMin;
-        weather_data.sunrise = today.sunrise;
-        weather_data.sunset = today.sunset;
-        weather_data.moonphase = today.moonPhase;
-        weather_data.uvindex = today.uvIndex;
-        weather_data.rangetemperature = `${today.tempMin}~${today.tempMax}`;
-        weather_data.rangefeelstemperature = `${today.feelsLikeMin || today.tempMin}~${today.feelsLikeMax || today.tempMax}`;
-
-        weather_data.dailyData = dailyData;
+            weather_data.dailyData = dailyData;
+        }
     }
 }
 

@@ -41,7 +41,7 @@ export function createScene(): void {
 export function initScene(): void {
     initPointFlowers();
 
-    camera.position.z = pointFlower.area.z + projection.nearfar[0];
+    camera.position.z = pointFlower.area.z + (projection.nearfar[0] ?? 0);
     projection.angle =
         ((Math.atan2(pointFlower.area.y, camera.position.z + pointFlower.area.z) * 180.0) /
             Math.PI) *
@@ -50,8 +50,8 @@ export function initScene(): void {
         projection.matrix,
         renderSpec.aspect,
         projection.angle,
-        projection.nearfar[0],
-        projection.nearfar[1]
+        projection.nearfar[0] ?? 0,
+        projection.nearfar[1] ?? 0
     );
 }
 

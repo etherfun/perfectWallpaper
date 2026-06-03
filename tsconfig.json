@@ -20,6 +20,7 @@
     "noEmit": false,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
+    "noUncheckedIndexedAccess": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],

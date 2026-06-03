@@ -200,13 +200,10 @@ export function PWLineCreatePoint(arr: number[]): void {
     }
 
     for (let i = iv, j = 0; i < config.runtime.PWLineParam.LineDensity + iv; i++, j++) {
-        let w1 = arr[i] ? arr[i] : 0;
-        let w2: number;
-        if (config.runtime.PWLineParam.waveArr[i]) {
-            w2 = config.runtime.PWLineParam.waveArr[i] - 0.1;
-        } else {
-            w2 = 0;
-        }
+        const arrI = arr[i] ?? 0;
+        let w1 = arrI ? arrI : 0;
+        const prevWave = config.runtime.PWLineParam.waveArr[i];
+        const w2: number = prevWave !== undefined && prevWave !== 0 ? prevWave - 0.1 : 0;
         w1 = Math.max(w1, w2);
         config.runtime.PWLineParam.waveArr[i] = w1 = Math.min(w1, 1.2);
         const waveHeight = w1 * config.runtime.PWLineParam.range * 100;
@@ -239,13 +236,17 @@ export function PWLineCreatePoint(arr: number[]): void {
     }
 
     if (config.runtime.PWLineParam.LinePosition === 1) {
-        lineR =
-            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity / 2 - 1].x -
-            config.runtime.PWLineParam.arr1[0].x;
+        const mid = config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity / 2 - 1];
+        const first = config.runtime.PWLineParam.arr1[0];
+        if (mid && first) {
+            lineR = mid.x - first.x;
+        }
     } else {
-        lineR =
-            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity / 2 - 1].y -
-            config.runtime.PWLineParam.arr1[0].y;
+        const mid = config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity / 2 - 1];
+        const first = config.runtime.PWLineParam.arr1[0];
+        if (mid && first) {
+            lineR = mid.y - first.y;
+        }
     }
 }
 
@@ -274,52 +275,60 @@ export function getLineXY(Deviation: number, i: number): { x: number; y: number 
  * Draw style 1 - Lines with optional middle line
  */
 export function PWLineStyle1(): void {
+    const arr1 = config.runtime.PWLineParam.arr1;
+    const arr2 = config.runtime.PWLineParam.arr2;
+    const last = config.runtime.PWLineParam.LineDensity - 1;
+
     // Draw lines
     CTXLine.beginPath();
     for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-        CTXLine.moveTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
-        CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
+        const a1 = arr1[i];
+        const a2 = arr2[i];
+        if (!a1 || !a2) continue;
+        CTXLine.moveTo(a1.x, a1.y);
+        CTXLine.lineTo(a2.x, a2.y);
     }
     CTXLine.stroke();
 
     // Top middle line
     if (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
-        CTXLine.lineTo(
-            config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x,
-            config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y
-        );
-        CTXLine.stroke();
+        const a0 = arr2[0];
+        const aLast = arr2[last];
+        if (a0 && aLast) {
+            CTXLine.beginPath();
+            CTXLine.moveTo(a0.x, a0.y);
+            CTXLine.lineTo(aLast.x, aLast.y);
+            CTXLine.stroke();
+        }
     }
 
     // Bottom middle line
     if (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
-        CTXLine.lineTo(
-            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x,
-            config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y
-        );
-        CTXLine.stroke();
+        const a0 = arr1[0];
+        const aLast = arr1[last];
+        if (a0 && aLast) {
+            CTXLine.beginPath();
+            CTXLine.moveTo(a0.x, a0.y);
+            CTXLine.lineTo(aLast.x, aLast.y);
+            CTXLine.stroke();
+        }
     }
 
     // Bidirectional middle line
     if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(
-            (config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2,
-            (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2
-        );
-        CTXLine.lineTo(
-            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x +
-                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) /
-                2,
-            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y +
-                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) /
-                2
-        );
-        CTXLine.stroke();
+        const a1First = arr1[0];
+        const a2First = arr2[0];
+        const a1Last = arr1[last];
+        const a2Last = arr2[last];
+        if (a1First && a2First && a1Last && a2Last) {
+            CTXLine.beginPath();
+            CTXLine.moveTo((a2First.x + a1First.x) / 2, (a2First.y + a1First.y) / 2);
+            CTXLine.lineTo(
+                (a2Last.x + a1Last.x) / 2,
+                (a2Last.y + a1Last.y) / 2
+            );
+            CTXLine.stroke();
+        }
     }
 }
 
@@ -327,20 +336,26 @@ export function PWLineStyle1(): void {
  * Draw style 2 - Filled shapes with connecting lines
  */
 export function PWLineStyle2(): void {
+    const arr1 = config.runtime.PWLineParam.arr1;
+    const arr2 = config.runtime.PWLineParam.arr2;
+    const last = config.runtime.PWLineParam.LineDensity - 1;
+
     // Top line
     if (
         config.runtime.PWLineParam.Direction !== 2 ||
         (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)
     ) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
-        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(
-                config.runtime.PWLineParam.arr1[i].x,
-                config.runtime.PWLineParam.arr1[i].y
-            );
+        const first = arr1[0];
+        if (first) {
+            CTXLine.beginPath();
+            CTXLine.moveTo(first.x, first.y);
+            for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+                const p = arr1[i];
+                if (!p) continue;
+                CTXLine.lineTo(p.x, p.y);
+            }
+            CTXLine.stroke();
         }
-        CTXLine.stroke();
     }
 
     // Bottom line
@@ -348,40 +363,44 @@ export function PWLineStyle2(): void {
         config.runtime.PWLineParam.Direction !== 1 ||
         (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)
     ) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
-        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(
-                config.runtime.PWLineParam.arr2[i].x,
-                config.runtime.PWLineParam.arr2[i].y
-            );
+        const first = arr2[0];
+        if (first) {
+            CTXLine.beginPath();
+            CTXLine.moveTo(first.x, first.y);
+            for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+                const p = arr2[i];
+                if (!p) continue;
+                CTXLine.lineTo(p.x, p.y);
+            }
+            CTXLine.stroke();
         }
-        CTXLine.stroke();
     }
 
     // Bidirectional middle line
     if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(
-            (config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2,
-            (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2
-        );
-        CTXLine.lineTo(
-            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x +
-                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) /
-                2,
-            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y +
-                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) /
-                2
-        );
-        CTXLine.stroke();
+        const a1First = arr1[0];
+        const a2First = arr2[0];
+        const a1Last = arr1[last];
+        const a2Last = arr2[last];
+        if (a1First && a2First && a1Last && a2Last) {
+            CTXLine.beginPath();
+            CTXLine.moveTo((a2First.x + a1First.x) / 2, (a2First.y + a1First.y) / 2);
+            CTXLine.lineTo(
+                (a2Last.x + a1Last.x) / 2,
+                (a2Last.y + a1Last.y) / 2
+            );
+            CTXLine.stroke();
+        }
     }
 
     // Connecting lines
     CTXLine.beginPath();
     for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-        CTXLine.moveTo(config.runtime.PWLineParam.arr1[i].x, config.runtime.PWLineParam.arr1[i].y);
-        CTXLine.lineTo(config.runtime.PWLineParam.arr2[i].x, config.runtime.PWLineParam.arr2[i].y);
+        const a1 = arr1[i];
+        const a2 = arr2[i];
+        if (!a1 || !a2) continue;
+        CTXLine.moveTo(a1.x, a1.y);
+        CTXLine.lineTo(a2.x, a2.y);
     }
     CTXLine.stroke();
 }
@@ -390,20 +409,26 @@ export function PWLineStyle2(): void {
  * Draw style 3 - Separate top and bottom lines
  */
 export function PWLineStyle3(): void {
+    const arr1 = config.runtime.PWLineParam.arr1;
+    const arr2 = config.runtime.PWLineParam.arr2;
+    const last = config.runtime.PWLineParam.LineDensity - 1;
+
     // Top line
     if (
         config.runtime.PWLineParam.Direction !== 2 ||
         (config.runtime.PWLineParam.Direction === 2 && config.runtime.PWLineParam.MiddleLine)
     ) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(config.runtime.PWLineParam.arr1[0].x, config.runtime.PWLineParam.arr1[0].y);
-        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(
-                config.runtime.PWLineParam.arr1[i].x,
-                config.runtime.PWLineParam.arr1[i].y
-            );
+        const first = arr1[0];
+        if (first) {
+            CTXLine.beginPath();
+            CTXLine.moveTo(first.x, first.y);
+            for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+                const p = arr1[i];
+                if (!p) continue;
+                CTXLine.lineTo(p.x, p.y);
+            }
+            CTXLine.stroke();
         }
-        CTXLine.stroke();
     }
 
     // Bottom line
@@ -411,32 +436,33 @@ export function PWLineStyle3(): void {
         config.runtime.PWLineParam.Direction !== 1 ||
         (config.runtime.PWLineParam.Direction === 1 && config.runtime.PWLineParam.MiddleLine)
     ) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(config.runtime.PWLineParam.arr2[0].x, config.runtime.PWLineParam.arr2[0].y);
-        for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
-            CTXLine.lineTo(
-                config.runtime.PWLineParam.arr2[i].x,
-                config.runtime.PWLineParam.arr2[i].y
-            );
+        const first = arr2[0];
+        if (first) {
+            CTXLine.beginPath();
+            CTXLine.moveTo(first.x, first.y);
+            for (let i = 0; i < config.runtime.PWLineParam.LineDensity; i++) {
+                const p = arr2[i];
+                if (!p) continue;
+                CTXLine.lineTo(p.x, p.y);
+            }
+            CTXLine.stroke();
         }
-        CTXLine.stroke();
     }
 
     // Bidirectional middle line
     if (config.runtime.PWLineParam.Direction === 3 && config.runtime.PWLineParam.MiddleLine) {
-        CTXLine.beginPath();
-        CTXLine.moveTo(
-            (config.runtime.PWLineParam.arr2[0].x + config.runtime.PWLineParam.arr1[0].x) / 2,
-            (config.runtime.PWLineParam.arr2[0].y + config.runtime.PWLineParam.arr1[0].y) / 2
-        );
-        CTXLine.lineTo(
-            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].x +
-                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].x) /
-                2,
-            (config.runtime.PWLineParam.arr2[config.runtime.PWLineParam.LineDensity - 1].y +
-                config.runtime.PWLineParam.arr1[config.runtime.PWLineParam.LineDensity - 1].y) /
-                2
-        );
-        CTXLine.stroke();
+        const a1First = arr1[0];
+        const a2First = arr2[0];
+        const a1Last = arr1[last];
+        const a2Last = arr2[last];
+        if (a1First && a2First && a1Last && a2Last) {
+            CTXLine.beginPath();
+            CTXLine.moveTo((a2First.x + a1First.x) / 2, (a2First.y + a1First.y) / 2);
+            CTXLine.lineTo(
+                (a2Last.x + a1Last.x) / 2,
+                (a2Last.y + a1Last.y) / 2
+            );
+            CTXLine.stroke();
+        }
     }
 }

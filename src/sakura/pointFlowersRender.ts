@@ -26,11 +26,12 @@ export function renderPointFlowers(): void {
     const sakuraReverse = config.sakura_reverse;
 
     const repeatPos = function (prt: BlossomParticle, cmp: number, limitVal: number): void {
-        if (Math.abs(prt.position[cmp]) - prt.size * 0.5 > limitVal) {
-            if (prt.position[cmp] > 0) {
-                prt.position[cmp] -= limitVal * 2.0;
+        const posCmp = prt.position[cmp] ?? 0;
+        if (Math.abs(posCmp) - prt.size * 0.5 > limitVal) {
+            if (posCmp > 0) {
+                prt.position[cmp] = posCmp - limitVal * 2.0;
             } else {
-                prt.position[cmp] += limitVal * 2.0;
+                prt.position[cmp] = posCmp + limitVal * 2.0;
             }
         }
     };
@@ -41,27 +42,27 @@ export function renderPointFlowers(): void {
         limit1: number,
         limit2: number
     ): void {
+        const posCmp = prt.position[cmp] ?? 0;
         if (
-            prt.position[cmp] + prt.size * 0.5 < limit1 ||
-            prt.position[cmp] - prt.size * 0.5 > limit2
+            posCmp + prt.size * 0.5 < limit1 ||
+            posCmp - prt.size * 0.5 > limit2
         ) {
-            if (prt.position[cmp] - prt.size * 0.5 > limit1) {
-                prt.position[cmp] -= limit2 - limit1;
+            if (posCmp - prt.size * 0.5 > limit1) {
+                prt.position[cmp] = posCmp - (limit2 - limit1);
             } else {
-                prt.position[cmp] += limit2 - limit1;
+                prt.position[cmp] = posCmp + (limit2 - limit1);
             }
         }
     };
 
     const repeatEuler = function (prt: BlossomParticle, cmp: number): void {
-        prt.euler[cmp] = prt.euler[cmp] % PI2;
-        if (prt.euler[cmp] < 0.0) {
-            prt.euler[cmp] += PI2;
-        }
+        const eulerCmp = prt.euler[cmp] ?? 0;
+        const wrapped = eulerCmp % PI2;
+        prt.euler[cmp] = wrapped < 0.0 ? wrapped + PI2 : wrapped;
     };
 
     for (let i = 0; i < pointFlower.numFlowers; i++) {
-        const prtcl = pointFlower.particles[i];
+        const prtcl = pointFlower.particles[i]!;
         if (sakuraReverse) {
             prtcl.update(-timeInfo.delta, timeInfo.elapsed);
             repeatPoss(prtcl, 0, -pointFlower.area.x, pointFlower.area.x);
@@ -84,10 +85,10 @@ export function renderPointFlowers(): void {
             prtcl.alpha = 1.0;
         }
         prtcl.zkey =
-            camera.matrix[2] * prtcl.position[0] +
-            camera.matrix[6] * prtcl.position[1] +
-            camera.matrix[10] * prtcl.position[2] +
-            camera.matrix[14];
+            camera.matrix[2]! * prtcl.position[0] +
+            camera.matrix[6]! * prtcl.position[1] +
+            camera.matrix[10]! * prtcl.position[2] +
+            camera.matrix[14]!;
     }
 
     pointFlower.particles.sort(function (p0: BlossomParticle, p1: BlossomParticle): number {
@@ -98,7 +99,7 @@ export function renderPointFlowers(): void {
     let ieuler = pointFlower.eulerArrayOffset;
     let imisc = pointFlower.miscArrayOffset;
     for (let i = 0; i < pointFlower.numFlowers; i++) {
-        const prtcl = pointFlower.particles[i];
+        const prtcl = pointFlower.particles[i]!;
         pointFlower.dataArray[ipos] = prtcl.position[0];
         pointFlower.dataArray[ipos + 1] = prtcl.position[1];
         pointFlower.dataArray[ipos + 2] = prtcl.position[2];
@@ -118,17 +119,17 @@ export function renderPointFlowers(): void {
     const prog = pointFlower.program;
     useShader(prog);
 
-    gl.uniformMatrix4fv(prog.uniforms.uProjection, false, projection.matrix);
-    gl.uniformMatrix4fv(prog.uniforms.uModelview, false, camera.matrix);
-    gl.uniform3fv(prog.uniforms.uResolution, renderSpec.array);
-    gl.uniform3fv(prog.uniforms.uDOF, Vector3.arrayForm(camera.dof));
-    gl.uniform3fv(prog.uniforms.uFade, Vector3.arrayForm(pointFlower.fader));
+    gl.uniformMatrix4fv(prog.uniforms.uProjection!, false, projection.matrix);
+    gl.uniformMatrix4fv(prog.uniforms.uModelview!, false, camera.matrix);
+    gl.uniform3fv(prog.uniforms.uResolution!, renderSpec.array);
+    gl.uniform3fv(prog.uniforms.uDOF!, Vector3.arrayForm(camera.dof));
+    gl.uniform3fv(prog.uniforms.uFade!, Vector3.arrayForm(pointFlower.fader));
 
     gl.bindBuffer(gl.ARRAY_BUFFER, pointFlower.buffer);
     gl.bufferData(gl.ARRAY_BUFFER, pointFlower.dataArray, gl.DYNAMIC_DRAW);
 
     gl.vertexAttribPointer(
-        prog.attributes.aPosition,
+        prog.attributes.aPosition!,
         3,
         gl.FLOAT,
         false,
@@ -136,7 +137,7 @@ export function renderPointFlowers(): void {
         pointFlower.positionArrayOffset * Float32Array.BYTES_PER_ELEMENT
     );
     gl.vertexAttribPointer(
-        prog.attributes.aEuler,
+        prog.attributes.aEuler!,
         3,
         gl.FLOAT,
         false,
@@ -144,7 +145,7 @@ export function renderPointFlowers(): void {
         pointFlower.eulerArrayOffset * Float32Array.BYTES_PER_ELEMENT
     );
     gl.vertexAttribPointer(
-        prog.attributes.aMisc,
+        prog.attributes.aMisc!,
         2,
         gl.FLOAT,
         false,
@@ -158,25 +159,25 @@ export function renderPointFlowers(): void {
         pointFlower.offset[0] = pointFlower.area.x * -1.0;
         pointFlower.offset[1] = pointFlower.area.y * -1.0;
         pointFlower.offset[2] = pointFlower.area.z * zpos;
-        gl.uniform3fv(prog.uniforms.uOffset, pointFlower.offset);
+        gl.uniform3fv(prog.uniforms.uOffset!, pointFlower.offset);
         gl.drawArrays(gl.POINTS, 0, pointFlower.numFlowers);
 
         pointFlower.offset[0] = pointFlower.area.x * -1.0;
         pointFlower.offset[1] = pointFlower.area.y * 1.0;
         pointFlower.offset[2] = pointFlower.area.z * zpos;
-        gl.uniform3fv(prog.uniforms.uOffset, pointFlower.offset);
+        gl.uniform3fv(prog.uniforms.uOffset!, pointFlower.offset);
         gl.drawArrays(gl.POINTS, 0, pointFlower.numFlowers);
 
         pointFlower.offset[0] = pointFlower.area.x * 1.0;
         pointFlower.offset[1] = pointFlower.area.y * -1.0;
         pointFlower.offset[2] = pointFlower.area.z * zpos;
-        gl.uniform3fv(prog.uniforms.uOffset, pointFlower.offset);
+        gl.uniform3fv(prog.uniforms.uOffset!, pointFlower.offset);
         gl.drawArrays(gl.POINTS, 0, pointFlower.numFlowers);
 
         pointFlower.offset[0] = pointFlower.area.x * 1.0;
         pointFlower.offset[1] = pointFlower.area.y * 1.0;
         pointFlower.offset[2] = pointFlower.area.z * zpos;
-        gl.uniform3fv(prog.uniforms.uOffset, pointFlower.offset);
+        gl.uniform3fv(prog.uniforms.uOffset!, pointFlower.offset);
         gl.drawArrays(gl.POINTS, 0, pointFlower.numFlowers);
     }
 
@@ -184,7 +185,7 @@ export function renderPointFlowers(): void {
     pointFlower.offset[0] = 0.0;
     pointFlower.offset[1] = 0.0;
     pointFlower.offset[2] = 0.0;
-    gl.uniform3fv(prog.uniforms.uOffset, pointFlower.offset);
+    gl.uniform3fv(prog.uniforms.uOffset!, pointFlower.offset);
     gl.drawArrays(gl.POINTS, 0, pointFlower.numFlowers);
 
     gl.bindBuffer(gl.ARRAY_BUFFER, null);

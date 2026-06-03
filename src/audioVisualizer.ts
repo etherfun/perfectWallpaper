@@ -28,7 +28,7 @@ function ensureBufferSize(buffer: number[], size: number): number[] {
  */
 function clampAudioData(data: number[], output: number[]): number[] {
     for (let i = 0; i < data.length; i++) {
-        const v = data[i];
+        const v = data[i] ?? 0;
         output[i] = v < 0 ? 0 : v > 1 ? 1 : v;
     }
     return output;
@@ -52,7 +52,7 @@ function spatialSmooth(data: number[], windowSize: number, output: number[]): nu
         for (let j = -halfWindow; j <= halfWindow; j++) {
             // 使用 ((i + j) % len + len) % len 实现正确的负数取模
             const idx = (((i + j) % len) + len) % len;
-            sum += data[idx];
+            sum += data[idx] ?? 0;
         }
 
         output[i] = sum / actualCount;
@@ -78,7 +78,7 @@ function temporalSmooth(
     for (let i = 0; i < data.length; i++) {
         const prev = prevData[i] ?? 0;
         // 指数移动平均：new = old * factor + prev * (1 - factor)
-        output[i] = data[i] * smoothFactor + prev * (1 - smoothFactor);
+        output[i] = (data[i] ?? 0) * smoothFactor + prev * (1 - smoothFactor);
     }
     return output;
 }
@@ -125,7 +125,7 @@ function smoothAudioData(rawData: number[]): number[] {
         _prevAudioData = new Array(len);
     }
     for (let i = 0; i < len; i++) {
-        _prevAudioData[i] = _spatialBuffer[i];
+        _prevAudioData[i] = _spatialBuffer[i] ?? 0;
     }
 
     return _spatialBuffer;

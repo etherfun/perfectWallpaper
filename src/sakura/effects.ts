@@ -45,16 +45,20 @@ export function createEffectProgram(
     return { program: prog, buffer };
 }
 
+// WebGL uniform 查找（prog.uniforms[name]）返回 WebGLUniformLocation | undefined，
+// 但 WebGL API（gl.uniform*f）只接受 WebGLUniformLocation | null。
+// 用 `?? null` 收敛到 API 期望的 null 形态；这与"该 uniform 真的未找到"无法在类型层区分，
+// 故下方所有 effect 调用点统一走 `?? null` 而不是更显式的三元表达式。
 /** 绑定 effect program + 设置 uResolution/uDelta + 绑定源纹理到 TEXTURE0 */
 export function useEffect(fxobj: EffectProgram, srctex: RenderTarget | null | undefined): void {
     if (!gl || !fxobj || !fxobj.program) return;
     const prog = fxobj.program;
     useShader(prog);
-    gl.uniform3fv(prog.uniforms.uResolution, renderSpec.array);
+    gl.uniform3fv(prog.uniforms.uResolution ?? null, renderSpec.array);
 
     if (srctex != null) {
-        gl.uniform2fv(prog.uniforms.uDelta, srctex.dtxArray);
-        gl.uniform1i(prog.uniforms.uSrc, 0);
+        gl.uniform2fv(prog.uniforms.uDelta ?? null, srctex.dtxArray);
+        gl.uniform1i(prog.uniforms.uSrc ?? null, 0);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D, srctex.texture);
     }
@@ -64,7 +68,7 @@ export function useEffect(fxobj: EffectProgram, srctex: RenderTarget | null | un
 export function drawEffect(fxobj: EffectProgram): void {
     if (!gl || !fxobj || !fxobj.buffer) return;
     gl.bindBuffer(gl.ARRAY_BUFFER, fxobj.buffer);
-    gl.vertexAttribPointer(fxobj.program.attributes.aPosition, 2, gl.FLOAT, false, 0, 0);
+    gl.vertexAttribPointer(fxobj.program.attributes.aPosition!, 2, gl.FLOAT, false, 0, 0);
     gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 }
 
@@ -110,7 +114,11 @@ export function renderBackground(): void {
 
     gl.disable(gl.DEPTH_TEST);
     useEffect(effectLib.sceneBg, null);
-    gl.uniform2f(effectLib.sceneBg.program.uniforms.uTimes, timeInfo.elapsed, timeInfo.delta);
+    gl.uniform2f(
+        effectLib.sceneBg.program.uniforms.uTimes ?? null,
+        timeInfo.elapsed,
+        timeInfo.delta
+    );
     drawEffect(effectLib.sceneBg);
     unuseEffect(effectLib.sceneBg);
     gl.enable(gl.DEPTH_TEST);
@@ -151,7 +159,13 @@ export function renderPostProcess(): void {
         bindRT(renderSpec.wHalfRT1!, true);
         useEffect(effectLib.dirBlur, renderSpec.wHalfRT0);
         if (effectLib.dirBlur.program) {
-            gl.uniform4f(effectLib.dirBlur.program.uniforms.uBlurDir, p, 0.0, s, 0.0);
+            gl.uniform4f(
+                effectLib.dirBlur.program.uniforms.uBlurDir ?? null,
+                p,
+                0.0,
+                s,
+                0.0
+            );
         }
         drawEffect(effectLib.dirBlur);
         unuseEffect(effectLib.dirBlur);
@@ -159,7 +173,13 @@ export function renderPostProcess(): void {
         bindRT(renderSpec.wHalfRT0!, true);
         useEffect(effectLib.dirBlur, renderSpec.wHalfRT1);
         if (effectLib.dirBlur.program) {
-            gl.uniform4f(effectLib.dirBlur.program.uniforms.uBlurDir, 0.0, p, 0.0, s);
+            gl.uniform4f(
+                effectLib.dirBlur.program.uniforms.uBlurDir ?? null,
+                0.0,
+                p,
+                0.0,
+                s
+            );
         }
         drawEffect(effectLib.dirBlur);
         unuseEffect(effectLib.dirBlur);
@@ -172,7 +192,7 @@ export function renderPostProcess(): void {
 
     useEffect(effectLib.finalComp, renderSpec.mainRT);
     if (effectLib.finalComp.program) {
-        gl.uniform1i(effectLib.finalComp.program.uniforms.uBloom, 1);
+        gl.uniform1i(effectLib.finalComp.program.uniforms.uBloom ?? null, 1);
     }
     gl.activeTexture(gl.TEXTURE1);
     gl.bindTexture(gl.TEXTURE_2D, renderSpec.wHalfRT0!.texture);

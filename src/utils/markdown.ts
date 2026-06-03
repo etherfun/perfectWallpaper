@@ -50,7 +50,7 @@ export function renderListHtml(items: ListItem[]): string {
     let currentIndent = 0;
 
     for (let i = 0; i < items.length; i++) {
-        const item = items[i];
+        const item = items[i]!;
 
         // Handle nesting
         if (item.indent > currentIndent) {
@@ -92,7 +92,7 @@ function extractCodeBlocks(text: string): { processedText: string; codeBlocks: C
 
     while ((match = codeBlockRegex.exec(text)) !== null) {
         const language = match[1] || '';
-        const code = match[2];
+        const code = match[2] ?? '';
         const placeholder = `__CODE_BLOCK_${blockIndex}__`;
         codeBlocks.push({
             placeholder,
@@ -152,9 +152,9 @@ function parseLine(
     // List items (support various markers: -, *, +, --, --- for nested)
     const listMatch = line.match(/^([\s]*)([-*+]+)\s+(.*)$/);
     if (listMatch) {
-        const spaces = listMatch[1].length;
-        const markers = listMatch[2];
-        const content = listMatch[3];
+        const spaces = listMatch[1]?.length ?? 0;
+        const markers = listMatch[2] ?? '';
+        const content = listMatch[3] ?? '';
 
         let indentLevel: number;
         if (markers.length === 1) {
@@ -197,7 +197,7 @@ export function parseMarkdown(text: string): string {
     let result = '';
 
     for (let i = 0; i < lines.length; i++) {
-        const line = lines[i];
+        const line = lines[i] ?? '';
         const trimmedLine = line.trim();
 
         // Flush pending list items when transitioning away from lists

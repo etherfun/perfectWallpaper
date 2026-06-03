@@ -137,12 +137,12 @@ function getFormattedDay(t: Date): string {
     }
 }
 
-function getFormattedWeek(t: Date) {
+function getFormattedWeek(t: Date): string {
     switch (config.date_format.week_format) {
         case 1: // 中文星期
-            return w_array[t.getDay()];
+            return w_array[t.getDay()] ?? '';
         case 2: // 英文星期
-            return we_array[t.getDay()];
+            return we_array[t.getDay()] ?? '';
         case 0: // 不显示
         default:
             return '';

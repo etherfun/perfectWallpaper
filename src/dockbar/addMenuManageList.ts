@@ -35,7 +35,11 @@ export function refreshManageList(
         btn.addEventListener('click', () => {
             if (i <= 0) return;
             const newItems = [...items];
-            [newItems[i - 1], newItems[i]] = [newItems[i], newItems[i - 1]];
+            const a = newItems[i - 1];
+            const b = newItems[i];
+            if (a === undefined || b === undefined) return;
+            newItems[i - 1] = b;
+            newItems[i] = a;
             callbacks.onChange(newItems);
         });
     });
@@ -44,7 +48,11 @@ export function refreshManageList(
         btn.addEventListener('click', () => {
             if (i >= items.length - 1) return;
             const newItems = [...items];
-            [newItems[i + 1], newItems[i]] = [newItems[i], newItems[i + 1]];
+            const a = newItems[i + 1];
+            const b = newItems[i];
+            if (a === undefined || b === undefined) return;
+            newItems[i + 1] = b;
+            newItems[i] = a;
             callbacks.onChange(newItems);
         });
     });

@@ -279,7 +279,7 @@ export class NativeAudioVisualizer {
 
         for (let i = 0; i < ballArray.length; i++) {
             const deg = this.getDeg(ballArray.length, i, this.rotationAngle2);
-            const audioValue = Math.min(audioSamples[i] ? audioSamples[i] : 0, 1);
+            const audioValue = Math.min(audioSamples[i] ?? 0, 1);
             const radius =
                 this.radius * (this.minLength / 2) + (this.distance + 50) + audioValue * 75;
             const point = this.getXY(radius, deg, this.originX, this.originY);
@@ -304,9 +304,9 @@ export class NativeAudioVisualizer {
     private drawRing(pointArray: { x: number; y: number }[]): void {
         if (pointArray.length === 0) return;
         this.context.beginPath();
-        this.context.moveTo(pointArray[0].x, pointArray[0].y);
+        this.context.moveTo(pointArray[0]!.x, pointArray[0]!.y);
         for (let i = 0; i < pointArray.length; i++) {
-            this.context.lineTo(pointArray[i].x, pointArray[i].y);
+            this.context.lineTo(pointArray[i]!.x, pointArray[i]!.y);
         }
         this.context.closePath();
         this.context.stroke();
@@ -315,7 +315,7 @@ export class NativeAudioVisualizer {
     private drawBall(pointArray: { x: number; y: number }[], ballSize: number): void {
         for (let i = 0; i < pointArray.length; i++) {
             this.context.beginPath();
-            this.context.arc(pointArray[i].x - 0.5, pointArray[i].y - 0.5, ballSize, 0, 360, false);
+            this.context.arc(pointArray[i]!.x - 0.5, pointArray[i]!.y - 0.5, ballSize, 0, 360, false);
             this.context.closePath();
             this.context.fill();
         }
@@ -328,8 +328,8 @@ export class NativeAudioVisualizer {
         this.context.beginPath();
         const max = Math.min(pointArray1.length, pointArray2.length);
         for (let i = 0; i < max; i++) {
-            this.context.moveTo(pointArray1[i].x, pointArray1[i].y);
-            this.context.lineTo(pointArray2[i].x, pointArray2[i].y);
+            this.context.moveTo(pointArray1[i]!.x, pointArray1[i]!.y);
+            this.context.lineTo(pointArray2[i]!.x, pointArray2[i]!.y);
         }
         this.context.closePath();
         this.context.stroke();

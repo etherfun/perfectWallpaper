@@ -13,14 +13,16 @@ export function loadBing(): void {
     )
         .then(response => response.json())
         .then((get: BingResponse) => {
-            config.runtime.photo.infomation.title = get.images[0].title;
+            const image = get.images[0];
+            if (!image) return;
+            config.runtime.photo.infomation.title = image.title;
             config.runtime.photo.infomation.text = '';
             config.runtime.photo.infomation.copyright = '';
             config.runtime.photo.infomation.where = '';
-            const match = get.images[0].copyright.match(/\(([^)]+)\)/);
-            if (match) {
+            const match = image.copyright.match(/\(([^)]+)\)/);
+            if (match?.[1]) {
                 config.runtime.photo.infomation.copyright = match[1];
-                config.runtime.photo.infomation.where = get.images[0].copyright
+                config.runtime.photo.infomation.where = image.copyright
                     .replace(/\(([^)]+)\)/, '')
                     .trim();
             }
@@ -32,7 +34,7 @@ export function loadBing(): void {
                 config.runtime.photo.infomation.text
             );
 
-            const bingurl = 'https://www.bing.com' + get.images[0].urlbase;
+            const bingurl = 'https://www.bing.com' + image.urlbase;
             const img = new Image();
             img.src = bingurl + '_UHD.jpg';
 

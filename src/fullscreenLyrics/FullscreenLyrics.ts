@@ -156,7 +156,7 @@ export class FullscreenLyrics {
         for (let i = 0; i < data.lyricsArray.length; i++) {
             const line = data.lyricsArray[i];
             const nextLine = data.lyricsArray[i + 1];
-            if (currentTime >= line.time && (!nextLine || currentTime < nextLine.time)) {
+            if (line && currentTime >= line.time && (!nextLine || currentTime < nextLine.time)) {
                 newLineIndex = i;
                 break;
             }

@@ -183,10 +183,10 @@ function playNextTrack(): void {
     }
 
     config.music_playlist_index = index;
-    config.cusaudio_route = getAudioStreamUrl(playlist[index]);
+    config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
-    debouncedUpdatePlayerInfo(playlist[index]);
+    debouncedUpdatePlayerInfo(playlist[index]!);
     controlExternalPlayer('next');
 }
 
@@ -221,10 +221,10 @@ function playPrevTrack(): void {
     }
 
     config.music_playlist_index = index;
-    config.cusaudio_route = getAudioStreamUrl(playlist[index]);
+    config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
-    debouncedUpdatePlayerInfo(playlist[index]);
+    debouncedUpdatePlayerInfo(playlist[index]!);
     controlExternalPlayer('prev');
 }
 
@@ -323,7 +323,7 @@ export async function updateMusicPlaylist(): Promise<void> {
                 initialIndex = Math.floor(Math.random() * files.length);
             }
             config.music_playlist_index = initialIndex;
-            config.cusaudio_route = getAudioStreamUrl(files[initialIndex]);
+            config.cusaudio_route = getAudioStreamUrl(files[initialIndex]!);
 
             // 设置标志表示内置播放器正在初始化
             // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
@@ -334,12 +334,12 @@ export async function updateMusicPlaylist(): Promise<void> {
 
             // 如果外部媒体已激活，不启动内置播放器
             if (config.runtime.playerInfo.externalMediaActive) {
-                updatePlayerInfo(files[initialIndex]);
+                updatePlayerInfo(files[initialIndex]!);
                 return;
             }
 
             ChangeAudioModel();
-            updatePlayerInfo(files[initialIndex]);
+            updatePlayerInfo(files[initialIndex]!);
         }
     } finally {
         isPlaylistUpdating = false;

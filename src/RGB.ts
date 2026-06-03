@@ -42,9 +42,9 @@ function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
 
     for (let d = 0; d < imageData.data.length; d += 4) {
         const write = (d / 4) * 3;
-        colorArray[write] = imageData.data[d];
-        colorArray[write + 1] = imageData.data[d + 1];
-        colorArray[write + 2] = imageData.data[d + 2];
+        colorArray[write] = imageData.data[d] ?? 0;
+        colorArray[write + 1] = imageData.data[d + 1] ?? 0;
+        colorArray[write + 2] = imageData.data[d + 2] ?? 0;
     }
     return String.fromCharCode(...colorArray);
 }
@@ -133,8 +133,9 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] +=
-                        (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
+                    window.smoothedAudioArray[i] =
+                        (window.smoothedAudioArray[i] ?? 0) +
+                        ((audioArray[i] ?? 0) - (window.smoothedAudioArray[i] ?? 0)) * 0.1;
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
@@ -149,7 +150,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                     }
 
                     const height =
-                        bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                        bg.height * Math.min(window.smoothedAudioArray[i] ?? 0, 1) * scaleFactor;
                     const actualHeight = Math.min(height, bg.height);
 
                     rgbbg.fillStyle = rgbColor;
@@ -178,8 +179,9 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] +=
-                        (audioArray[i] - window.smoothedAudioArray[i]) * 0.1;
+                    window.smoothedAudioArray[i] =
+                        (window.smoothedAudioArray[i] ?? 0) +
+                        ((audioArray[i] ?? 0) - (window.smoothedAudioArray[i] ?? 0)) * 0.1;
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
@@ -188,7 +190,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                         channelIndex += 64;
                     }
                     const height =
-                        bg.height * Math.min(window.smoothedAudioArray[i], 1) * scaleFactor;
+                        bg.height * Math.min(window.smoothedAudioArray[i] ?? 0, 1) * scaleFactor;
                     const actualHeight = Math.min(height, bg.height);
                     rgbbg.fillRect(
                         barWidth * channelIndex,

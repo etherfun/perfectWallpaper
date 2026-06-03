@@ -21,6 +21,7 @@ export function updateWordHighlight(
     const words = el.querySelectorAll('.word');
     for (let i = 0; i < line.dynamicLyric.length; i++) {
         const wordData = line.dynamicLyric[i];
+        if (!wordData) continue;
         const wordTime = line.time + wordData.time;
         const wordEndTime = wordTime + wordData.duration;
 

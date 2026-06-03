@@ -13,7 +13,7 @@ export function formatTime(timeString: string | undefined): string {
         const date = new Date(timeString);
         if (isNaN(date.getTime())) {
             const timeMatch = timeString.match(/(\d{1,2}):(\d{1,2})/);
-            if (timeMatch) {
+            if (timeMatch?.[1] && timeMatch[2]) {
                 const hours = timeMatch[1].padStart(2, '0');
                 const minutes = timeMatch[2].padStart(2, '0');
                 return `${hours}:${minutes}`;

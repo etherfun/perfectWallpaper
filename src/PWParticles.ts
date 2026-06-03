@@ -219,7 +219,7 @@ export function drawPoint(): void {
     CXTPar.lineWidth = 1.5;
 
     for (let i = 0; i < num; i++) {
-        const point = points.arr[i];
+        const point = points.arr[i]!;
         moveP(point, sum);
         if (isShowPoint) drawP(point);
     }
@@ -236,7 +236,7 @@ export function connect(): void {
     // Pre-filter particles within mouse radius (O(n) instead of checking in inner loop)
     const particlesInRadius: Point[] = [];
     for (let i = 0; i < num; i++) {
-        const pointI = points.arr[i];
+        const pointI = points.arr[i]!;
         if (
             Math.abs(pointI.x - mouse.x) <= points.mRadius &&
             Math.abs(pointI.y - mouse.y) <= points.mRadius
@@ -253,9 +253,9 @@ export function connect(): void {
     // Use j = i + 1 to skip self-checks and duplicate pair checks (50% reduction)
     const len = particlesInRadius.length;
     for (let i = 0; i < len; i++) {
-        const pointI = particlesInRadius[i];
+        const pointI = particlesInRadius[i]!;
         for (let j = i + 1; j < len; j++) {
-            const pointJ = particlesInRadius[j];
+            const pointJ = particlesInRadius[j]!;
             const dx = pointI.x - pointJ.x;
             const dy = pointI.y - pointJ.y;
             // Use squared distance comparison (avoids sqrt)

@@ -205,18 +205,18 @@ export function setupWallpaperPropertyListener(): void {
                 // General properties are handled by wallpaper engine directly
             },
             userDirectoryFilesAddedOrChanged: (propertyName: string, changedFiles: string[]) => {
-                if (!Object.prototype.hasOwnProperty.call(runtime.files, propertyName)) {
+                const existing = runtime.files[propertyName];
+                if (!Object.prototype.hasOwnProperty.call(runtime.files, propertyName) || !existing) {
                     runtime.files[propertyName] = changedFiles;
                 } else {
-                    runtime.files[propertyName] = runtime.files[propertyName].concat(changedFiles);
+                    runtime.files[propertyName] = existing.concat(changedFiles);
                 }
                 updateFileList(runtime.files[propertyName]);
             },
             userDirectoryFilesRemoved: (propertyName: string, removedFiles: string[]) => {
                 const removedSet = new Set(removedFiles);
-                runtime.files[propertyName] = runtime.files[propertyName].filter(
-                    file => !removedSet.has(file)
-                );
+                const existing = runtime.files[propertyName] ?? [];
+                runtime.files[propertyName] = existing.filter(file => !removedSet.has(file));
                 runtime.myList = runtime.myList.filter(file => !removedSet.has(file));
                 updateFileList(runtime.files[propertyName]);
             },

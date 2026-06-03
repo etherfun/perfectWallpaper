@@ -26,16 +26,15 @@ export function thumbnailsue(): void {
     const playerControlYakelicColor = config.player_control_yakelic_color;
     const playerControlColor = config.player_control_color;
 
+    const methodGroup = config.runtime.playerInfo.colorGroup[colorPickupMethod - 1];
     const thumbnailcolor =
         playerControlYakelibgusetb !== 5
-            ? config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][
-                  playerControlYakelibgusetb - 1
-              ]
+            ? (methodGroup?.[playerControlYakelibgusetb - 1] ?? null)
             : playerControlYakelicColor;
 
     config.runtime.playerInfo.fontcolor =
         playerControlFontusetb !== 5
-            ? config.runtime.playerInfo.colorGroup[colorPickupMethod - 1][playerControlFontusetb - 1]
+            ? (methodGroup?.[playerControlFontusetb - 1] ?? null)
             : playerControlColor;
 
     player_control_background.style.background =

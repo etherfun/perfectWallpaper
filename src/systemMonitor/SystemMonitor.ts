@@ -107,6 +107,7 @@ export class SystemMonitor {
         // GPU
         if (this.config.showGpu && data.gpu && data.gpu.length > 0) {
             const gpu = data.gpu[0];
+            if (!gpu) return;
             const gpuUsage = Math.round(gpu.utilization || 0);
             const gpuTemp = gpu.temperature || 0;
             pushHistory(this.gpuHistory, gpuUsage);

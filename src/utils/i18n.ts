@@ -222,7 +222,7 @@ function processElements(elements: Element[]): number {
             );
 
             if (textNodes.length > 0) {
-                textNodes[0].textContent = translation;
+                textNodes[0]!.textContent = translation;
             } else {
                 element.insertBefore(document.createTextNode(translation), element.firstChild);
             }

@@ -1,6 +1,6 @@
 import { config } from '@/utils/config';
-import { debugLogger } from '@/utils/logger';
 
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -549,6 +549,6 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
     }
 
     if (FirstLoad) {
-        debugLogger.info('[audioVisualizer] 可视化音频参数初始化完成');
+        logInitComplete('[audioVisualizer]', '可视化音频', FirstLoad);
     }
 }

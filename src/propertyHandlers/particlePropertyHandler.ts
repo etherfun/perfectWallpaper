@@ -1,6 +1,6 @@
 import { config } from '@/utils/config';
-import { debugLogger } from '@/utils/logger';
 
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -220,6 +220,6 @@ export function handleParticleProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Particles] 粒子效果参数初始化完成');
+        logInitComplete('[Particles]', '粒子效果', FirstLoad);
     }
 }

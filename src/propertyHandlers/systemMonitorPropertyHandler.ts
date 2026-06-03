@@ -3,6 +3,7 @@ import { config } from '@/utils/config';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -199,6 +200,6 @@ export function handleSystemMonitorProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Sysmon] 系统性能参数初始化完成');
+        logInitComplete('[Sysmon]', '系统性能', FirstLoad);
     }
 }

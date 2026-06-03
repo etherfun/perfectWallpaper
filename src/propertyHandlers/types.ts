@@ -326,17 +326,17 @@ export interface WallpaperProperties {
     weatherY?: { value: number };
 
     // 壁纸/背景相关
-    image?: { value: any };
+    image?: { value: string };
     galaxyapi?: { value: number };
     chiyuanapi?: { value: number };
-    customdirectory?: { value: any };
+    customdirectory?: { value: string };
     wallpapermode?: { value: number };
     TransitionMode?: { value: number };
     TransitionMode_choose_0?: { value: number };
     TransitionMode_choose_1?: { value: number };
     TransitionMode_choose_4?: { value: string };
     background_wallpapermode_9_URL?: { value: string };
-    selectvideo?: { value: any };
+    selectvideo?: { value: string };
     VideoVolume?: { value: number };
     random?: { value: boolean };
     imageswitchtimes?: { value: number | string };
@@ -345,8 +345,8 @@ export interface WallpaperProperties {
     bgx?: { value: number };
     bgs?: { value: number };
     imagedisplaystlye?: { value: number };
-    selectmusic?: { value: any };
-    musicdirectory?: { value: any };
+    selectmusic?: { value: string };
+    musicdirectory?: { value: string };
     MuiscVolume?: { value: number };
     musicPlaylistRandom?: { value: boolean };
     musicPlaylistRepeat?: { value: number };

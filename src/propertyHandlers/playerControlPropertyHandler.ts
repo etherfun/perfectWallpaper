@@ -1,8 +1,7 @@
-import { debugLogger } from '@/utils/logger';
-
 import { pc_aubar, playertitle, thumbnailsue } from '../player_control';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 const player_control = elements.playerControl.container;
@@ -313,7 +312,6 @@ export function handlePlayerControlProperties(
     }
 
     if (properties.player_control_showaway) {
-        config.player_control_showaway = properties.player_control_showaway.value;
         if (properties.player_control_showaway.value === true) {
             player_control.classList.add('show-away');
         } else {
@@ -354,6 +352,6 @@ export function handlePlayerControlProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[PlayerControl] 播放器参数初始化完成');
+        logInitComplete('[PlayerControl]', '播放器', FirstLoad);
     }
 }

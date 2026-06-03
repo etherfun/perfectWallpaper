@@ -1,7 +1,6 @@
-import { debugLogger } from '@/utils/logger';
-
 import { fullscreenLyrics } from '../fullscreenLyrics';
 import { config } from '../utils/config';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -54,6 +53,6 @@ export function handleLyricsProperties(properties: WallpaperProperties, FirstLoa
     if (FirstLoad) {
         if (config.fullscreen_lyrics_enabled) fullscreenLyrics.show();
 
-        debugLogger.info('[FullscreenLyrics] 全屏歌词参数初始化完成');
+        logInitComplete('[FullscreenLyrics]', '全屏歌词', FirstLoad);
     }
 }

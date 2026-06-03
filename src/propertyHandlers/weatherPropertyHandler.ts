@@ -1,11 +1,11 @@
 import { elements } from '@/utils/elementManager';
 
 import { config } from '../utils/config';
-import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { debounce } from '../utils/tool';
 import { autoWeather, generateWeatherTable, weather_address, weather_init } from '../weather';
 import { setWeatherUnitByName } from '../weather/weatherState';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 const weather = elements.weather.weather as HTMLElement;
@@ -37,7 +37,7 @@ export function handleWeatherProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (properties.weather_updata) {
-        config.weather_update = properties.weather_updata.value;
+        config.weather_updata = properties.weather_updata.value;
     }
 
     if (properties.weather_lang) {
@@ -262,7 +262,7 @@ export function handleWeatherProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Weather] 天气参数初始化完成');
+        logInitComplete('[Weather]', '天气', FirstLoad);
         config.weather_init_complete = true;
     }
 }

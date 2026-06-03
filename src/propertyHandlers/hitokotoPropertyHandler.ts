@@ -1,9 +1,9 @@
 import { elements } from '@/utils/elementManager';
-import { debugLogger } from '@/utils/logger';
 
 import { autoHitokto } from '../hitokoto';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -194,6 +194,6 @@ export function handleHitokotoProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Hitokoto] 一言参数初始化完成');
+        logInitComplete('[Hitokoto]', '一言', FirstLoad);
     }
 }

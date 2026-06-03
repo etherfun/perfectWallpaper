@@ -1,6 +1,5 @@
-import { debugLogger } from '@/utils/logger';
-
 import { config } from '../utils/config';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -82,6 +81,6 @@ export function handleRGBProperties(properties: WallpaperProperties, FirstLoad: 
     }
 
     if (FirstLoad) {
-        debugLogger.info('[RGB] RGB灯光参数初始化完成');
+        logInitComplete('[RGB]', 'RGB灯光', FirstLoad);
     }
 }

@@ -1,9 +1,9 @@
 import { elements } from '@/utils/elementManager';
-import { debugLogger } from '@/utils/logger';
 
 import { setcountdown_a } from '../countdown';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 const bodyElement = elements.body;
@@ -163,7 +163,6 @@ export function handleCountdownProperties(
 
     // 倒计时显示宽度
     if (properties.countdown_showwidth) {
-        config.countdown_showwidth = properties.countdown_showwidth.value;
         if (properties.countdown_showwidth.value === 0) {
             bodyElement.style.setProperty('--countdown-show-width', 'auto');
         } else {
@@ -173,6 +172,6 @@ export function handleCountdownProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Countdown] 倒计时参数初始化完成');
+        logInitComplete('[Countdown]', '倒计时', FirstLoad);
     }
 }

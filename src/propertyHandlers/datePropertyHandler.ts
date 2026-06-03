@@ -3,7 +3,7 @@ import { elements } from '@/utils/elementManager';
 import { getdate } from '../date';
 import { startDateColorRhythmLoop, stopDateColorRhythmLoop } from '../date';
 import { config } from '../utils/config';
-import { debugLogger } from '../utils/logger';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 const oDate = elements.date.container as HTMLElement;
@@ -188,7 +188,7 @@ export function handleDateProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Date] 日期参数初始化完成');
+        logInitComplete('[Date]', '日期', FirstLoad);
         config.date_init_complete = true;
     }
 }

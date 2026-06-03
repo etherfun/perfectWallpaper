@@ -1,7 +1,7 @@
 import { getDockBar, initDockBar } from '@/dockbar';
 import { elements } from '@/utils/elementManager';
-import { debugLogger } from '@/utils/logger';
 
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -106,6 +106,6 @@ export function handleDockBarProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (FirstLoad) {
-        debugLogger.info('[DockBar] Dock栏参数初始化完成');
+        logInitComplete('[DockBar]', 'Dock栏', FirstLoad);
     }
 }

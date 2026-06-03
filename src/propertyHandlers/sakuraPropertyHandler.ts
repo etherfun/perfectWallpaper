@@ -1,8 +1,7 @@
-import { debugLogger } from '@/utils/logger';
-
 import * as sakuraModule from '../sakura';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -75,6 +74,6 @@ export function handleSakuraProperties(properties: WallpaperProperties, FirstLoa
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Sakura] 樱花效果参数初始化完成');
+        logInitComplete('[Sakura]', '樱花效果', FirstLoad);
     }
 }

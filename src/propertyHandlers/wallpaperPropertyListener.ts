@@ -29,8 +29,8 @@ import { handleWeatherProperties } from './weatherPropertyHandler';
 /**
  * 安全执行属性处理函数,捕获并记录错误
  */
-function safeHandle<T extends (...args: any[]) => void>(
-    handler: T,
+function safeHandle(
+    handler: (properties: WallpaperProperties, firstLoad: boolean) => void,
     properties: WallpaperProperties,
     firstLoad: boolean,
     name: string

@@ -1,8 +1,8 @@
 import { config } from '@/utils/config';
-import { debugLogger } from '@/utils/logger';
 
 import { FluidEffect } from '../fluid';
 import { elements } from '../utils/elementManager';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -86,7 +86,7 @@ export function handleFluidEffectProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[FluidEffect] 流体参数初始化完成');
+        logInitComplete('[FluidEffect]', '流体', FirstLoad);
         config.fluid_effect_init_complete = true;
     }
 }

@@ -5,6 +5,7 @@ import { config } from '../utils/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '../video';
+import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
@@ -29,7 +30,7 @@ export function handleBackgroundProperties(
 
     // 星河图片api选择
     if (properties.galaxyapi) {
-        config.galaxyapi = properties.galaxyapi.value;
+        config.galaxy_api = properties.galaxyapi.value;
     }
 
     // 次元api
@@ -124,7 +125,7 @@ export function handleBackgroundProperties(
 
     // 自定义视频
     if (properties.selectvideo) {
-        config.selectvideo = properties.selectvideo.value;
+        config.select_video = properties.selectvideo.value;
 
         if (properties.selectvideo.value) {
             config.cusvideo_route = 'file:///' + properties.selectvideo.value;
@@ -380,7 +381,7 @@ export function handleBackgroundProperties(
     }
 
     if (FirstLoad) {
-        debugLogger.info('[Background] 壁纸参数初始化完成');
+        logInitComplete('[Background]', '壁纸', FirstLoad);
         config.bg_init_complete = true;
     }
 }

@@ -3,7 +3,7 @@
  * 类似 DevTools Console 的界面
  */
 
-import { debugLogger } from './utils/logger';
+import { debugLogger, type LogEntry } from './utils/logger';
 import { escapeHtml } from './utils/string';
 
 /**
@@ -68,7 +68,7 @@ export function showDebugLogModal(): void {
         document.body.removeChild(existingModal);
     }
 
-    const logs: any[] = debugLogger?.logs || [];
+    const logs: LogEntry[] = debugLogger?.logs || [];
 
     const modalHTML = `
     <div id="debug-log-modal" class="debug-console-modal">
@@ -140,7 +140,7 @@ export function showDebugLogModal(): void {
 /**
  * 渲染日志列表
  */
-function renderLogs(logs: any[]): void {
+function renderLogs(logs: LogEntry[]): void {
     const logList = document.getElementById('debug-log-list') as HTMLElement;
     const emptyState = document.getElementById('debug-console-empty') as HTMLElement;
     const logCount = document.getElementById('debug-log-count') as HTMLElement;
@@ -232,7 +232,7 @@ function toggleLogDetails(id: number): void {
     } else {
         expandedLogs.add(id);
     }
-    const logs: any[] = debugLogger?.logs || [];
+    const logs: LogEntry[] = debugLogger?.logs || [];
     renderLogs(logs);
 }
 
@@ -241,7 +241,7 @@ function bindConsoleEvents(): void {
 
     document.getElementById('debug-btn-collapse')?.addEventListener('click', () => {
         expandedLogs.clear();
-        const logs: any[] = debugLogger?.logs || [];
+        const logs: LogEntry[] = debugLogger?.logs || [];
         renderLogs(logs);
     });
 
@@ -254,7 +254,7 @@ function bindConsoleEvents(): void {
     });
 
     document.getElementById('debug-btn-copy')?.addEventListener('click', () => {
-        const logs: any[] = debugLogger?.logs || [];
+        const logs: LogEntry[] = debugLogger?.logs || [];
         const text = logs
             .map(
                 log =>
@@ -279,14 +279,14 @@ function bindConsoleEvents(): void {
                 .querySelectorAll('.debug-filter-btn')
                 .forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            const logs: any[] = debugLogger?.logs || [];
+            const logs: LogEntry[] = debugLogger?.logs || [];
             renderLogs(logs);
         });
     });
 
     const searchInput = document.getElementById('debug-search-input') as HTMLInputElement;
     searchInput?.addEventListener('input', () => {
-        const logs: any[] = debugLogger?.logs || [];
+        const logs: LogEntry[] = debugLogger?.logs || [];
         renderLogs(logs);
     });
 

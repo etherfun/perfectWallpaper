@@ -1,0 +1,27 @@
+export const particleDefaults = {
+    particles_is_particles: false,
+    particles_number: 100,
+    particles_opacity: 100,
+    particles_opacity_random: false,
+    particles_color: [255, 255, 255] as [number, number, number],
+    particles_shadow_color: [255, 255, 255] as [number, number, number],
+    particles_shadow_blur: 10,
+    particles_image: '',
+    particles_shape_type: 1,
+    particles_size_value: 10,
+    particles_size_random: false,
+    particles_link_enable: false,
+    particles_link_distance: 50,
+    particles_link_width: 1,
+    particles_link_color: [255, 255, 255] as [number, number, number],
+    particles_link_opacity: 50,
+    particles_is_move: true,
+    particles_speed: 1,
+    particles_speed_random: false,
+    particles_direction: 1,
+    particles_is_straight: false,
+    particles_is_bounce: false,
+    particles_move_out_mode: 1,
+};
+
+export type ParticleDefaults = typeof particleDefaults;

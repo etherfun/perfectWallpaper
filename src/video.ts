@@ -2,7 +2,7 @@
 
 import { elements } from '@/utils/elementManager';
 
-import { refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
+import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
 import { config } from './utils/config';
 import { debugLogger } from './utils/logger';
 import { debounce } from './utils/tool';
@@ -372,6 +372,7 @@ export function TogglePlayPause(): void {
         config.runtime.playerInfo.playerState = 2;
     }
     controlExternalPlayer('play-pause');
+    applyPlayerStateUI();
 }
 
 /**

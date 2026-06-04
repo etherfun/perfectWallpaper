@@ -5,11 +5,7 @@ import { config } from '@/utils/config';
 import { elements } from '@/utils/elementManager';
 
 import { TIMELINE_BG_ALPHA_OFFSET } from './constants';
-import {
-    player_control_background,
-    player_control_info,
-    player_control_timeline,
-} from './domRefs';
+import { player_control_background, player_control_info, player_control_timeline } from './domRefs';
 import type { RgbTuple } from './types';
 
 /**
@@ -47,7 +43,11 @@ export function thumbnailsue(): void {
     const timelineEl = elements.playerControl.timeline?.parentElement;
     if (timelineEl) {
         timelineEl.style.backgroundColor =
-            'rgba(' + [255, 255, 255] + ',' + (playerControlYakeli + TIMELINE_BG_ALPHA_OFFSET) + ')';
+            'rgba(' +
+            [255, 255, 255] +
+            ',' +
+            (playerControlYakeli + TIMELINE_BG_ALPHA_OFFSET) +
+            ')';
     }
 }
 

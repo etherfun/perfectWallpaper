@@ -206,7 +206,10 @@ export function setupWallpaperPropertyListener(): void {
             },
             userDirectoryFilesAddedOrChanged: (propertyName: string, changedFiles: string[]) => {
                 const existing = runtime.files[propertyName];
-                if (!Object.prototype.hasOwnProperty.call(runtime.files, propertyName) || !existing) {
+                if (
+                    !Object.prototype.hasOwnProperty.call(runtime.files, propertyName) ||
+                    !existing
+                ) {
                     runtime.files[propertyName] = changedFiles;
                 } else {
                     runtime.files[propertyName] = existing.concat(changedFiles);

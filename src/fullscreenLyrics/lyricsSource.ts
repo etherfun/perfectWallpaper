@@ -49,9 +49,7 @@ export function connectLyricsSource(onUpdate: (data: LyricsData) => void): Lyric
         ws.onmessage = handleMessage;
 
         ws.onclose = () => {
-            debugLogger.info(
-                '[FullscreenLyrics] WebSocket disconnected, falling back to HTTP'
-            );
+            debugLogger.info('[FullscreenLyrics] WebSocket disconnected, falling back to HTTP');
             startHTTPPolling();
         };
 

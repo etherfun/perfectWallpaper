@@ -91,8 +91,10 @@ export class DebugLogger {
 
     private formatTimestamp(d: Date): string {
         const pad = (n: number, w = 2) => n.toString().padStart(w, '0');
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
-               `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`;
+        return (
+            `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ` +
+            `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}.${pad(d.getMilliseconds(), 3)}`
+        );
     }
 
     private getLevelName(level: number): string {

@@ -99,7 +99,15 @@ export class SystemMonitor {
         if (this.config.showCpu) {
             const cpuUsage = Math.round(data.cpu?.usage || 0);
             pushHistory(this.cpuHistory, cpuUsage);
-            updateItem(cpuRow, 'CPU', cpuUsage, this.config.cpuMode, undefined, this.config, this.cpuHistory);
+            updateItem(
+                cpuRow,
+                'CPU',
+                cpuUsage,
+                this.config.cpuMode,
+                undefined,
+                this.config,
+                this.cpuHistory
+            );
             if (cpuRow) cpuRow.style.display = '';
         } else if (cpuRow) {
             cpuRow.style.display = 'none';
@@ -112,7 +120,15 @@ export class SystemMonitor {
             const gpuUsage = Math.round(gpu.utilization || 0);
             const gpuTemp = gpu.temperature || 0;
             pushHistory(this.gpuHistory, gpuUsage);
-            updateItem(gpuRow, 'GPU', gpuUsage, this.config.gpuMode, `${gpuTemp}°C`, this.config, this.gpuHistory);
+            updateItem(
+                gpuRow,
+                'GPU',
+                gpuUsage,
+                this.config.gpuMode,
+                `${gpuTemp}°C`,
+                this.config,
+                this.gpuHistory
+            );
             if (gpuRow) gpuRow.style.display = '';
         } else if (gpuRow) {
             gpuRow.style.display = 'none';
@@ -213,7 +229,9 @@ export class SystemMonitor {
             );
         }
         if (this.config.showNetwork && this.refs.networkRow) {
-            const networkLeftSpan = this.refs.networkRow.querySelector('.left') as HTMLElement | null;
+            const networkLeftSpan = this.refs.networkRow.querySelector(
+                '.left'
+            ) as HTMLElement | null;
             if (networkLeftSpan) {
                 const oldCanvas = networkLeftSpan.querySelector('canvas');
                 if (oldCanvas) oldCanvas.remove();
@@ -248,7 +266,10 @@ export class SystemMonitor {
     private startPolling(): void {
         if (this.pollInterval) return;
         void this.pollData();
-        this.pollInterval = window.setInterval(() => void this.pollData(), this.config.updateInterval);
+        this.pollInterval = window.setInterval(
+            () => void this.pollData(),
+            this.config.updateInterval
+        );
     }
 
     private stopPolling(): void {

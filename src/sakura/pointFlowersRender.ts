@@ -43,10 +43,7 @@ export function renderPointFlowers(): void {
         limit2: number
     ): void {
         const posCmp = prt.position[cmp] ?? 0;
-        if (
-            posCmp + prt.size * 0.5 < limit1 ||
-            posCmp - prt.size * 0.5 > limit2
-        ) {
+        if (posCmp + prt.size * 0.5 < limit1 || posCmp - prt.size * 0.5 > limit2) {
             if (posCmp - prt.size * 0.5 > limit1) {
                 prt.position[cmp] = posCmp - (limit2 - limit1);
             } else {

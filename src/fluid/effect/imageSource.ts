@@ -11,10 +11,7 @@ import { debugLogger } from '@/utils/logger';
  * 异步加载 URL 图片；成功/失败均通过回调通知调用方，
  * 由调用方决定将结果应用到渲染器或回退到默认占位。
  */
-export function loadImageFromUrl(
-    url: string,
-    onLoad: (image: HTMLImageElement) => void
-): void {
+export function loadImageFromUrl(url: string, onLoad: (image: HTMLImageElement) => void): void {
     const image = new Image();
     image.crossOrigin = 'Anonymous';
     image.onload = () => onLoad(image);

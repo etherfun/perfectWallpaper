@@ -39,7 +39,9 @@ export class DockBar {
 
     private renderItems(): void {
         if (!this.refs) return;
-        render(this.refs.itemsContainer, this.config.items, (item, imgEl) => loadIcon(item, imgEl, SERVER_URL));
+        render(this.refs.itemsContainer, this.config.items, (item, imgEl) =>
+            loadIcon(item, imgEl, SERVER_URL)
+        );
     }
 
     private setupEventListeners(): void {
@@ -96,7 +98,9 @@ export class DockBar {
         saveItems(this.config.items);
         if (!this.refs) return;
 
-        const itemEl = this.refs.itemsContainer.querySelector(`[data-id="${itemId}"]`) as HTMLElement | null;
+        const itemEl = this.refs.itemsContainer.querySelector(
+            `[data-id="${itemId}"]`
+        ) as HTMLElement | null;
         if (!itemEl) return;
         itemEl.style.transition = 'opacity 0.2s ease, transform 0.2s ease';
         itemEl.style.opacity = '0';
@@ -140,7 +144,12 @@ export class DockBar {
         }
 
         if (this.refs) {
-            applyConfig(this.refs.container, this.refs.background, this.refs.addButton, this.config);
+            applyConfig(
+                this.refs.container,
+                this.refs.background,
+                this.refs.addButton,
+                this.config
+            );
         }
     }
 

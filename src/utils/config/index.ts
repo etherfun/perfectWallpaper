@@ -97,7 +97,9 @@ class AppConfig {
     constructor() {
         this.runtime = structuredClone(RUNTIME_DATA_DEFAULTS);
         for (const key of Object.keys(SYNC_DEFAULTS)) {
-            (this as Record<string, unknown>)[`_${key}`] = (SYNC_DEFAULTS as Record<string, unknown>)[key];
+            (this as Record<string, unknown>)[`_${key}`] = (
+                SYNC_DEFAULTS as Record<string, unknown>
+            )[key];
         }
         registerDebugLogger(this as unknown as { runtime: { debugLogger: typeof debugLogger } });
     }

@@ -11,10 +11,7 @@ const CLOCK_INTERVAL_MS = 1000;
  *
  * Returns a `stop` function that clears the interval.
  */
-export function startClockUpdate(
-    clockElement: HTMLElement,
-    isVisible: () => boolean
-): () => void {
+export function startClockUpdate(clockElement: HTMLElement, isVisible: () => boolean): () => void {
     const updateClock = (): void => {
         if (clockElement && isVisible()) {
             clockElement.textContent = new Date().toLocaleTimeString();

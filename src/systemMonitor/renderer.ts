@@ -56,11 +56,7 @@ export function drawCurve(canvas: HTMLCanvasElement, history: number[]): void {
     ctx.fill();
 }
 
-export function drawCurveInRow(
-    row: HTMLElement,
-    type: HistoryType,
-    history: number[]
-): void {
+export function drawCurveInRow(row: HTMLElement, type: HistoryType, history: number[]): void {
     const leftSpan = row.querySelector('.left') as HTMLElement | null;
     const rightSpan = row.querySelector('.right');
     if (!rightSpan) return;
@@ -95,11 +91,7 @@ export function drawCurveInRow(
     drawCurve(canvas, history);
 }
 
-export function drawBarInRow(
-    row: HTMLElement,
-    value: number,
-    config: SystemMonitorConfig
-): void {
+export function drawBarInRow(row: HTMLElement, value: number, config: SystemMonitorConfig): void {
     const leftSpan = row.querySelector('.left') as HTMLElement | null;
     const rightSpan = row.querySelector('.right');
     if (!leftSpan || !rightSpan) return;
@@ -220,11 +212,7 @@ export function updateItem(
     }
 }
 
-export function updateNetworkDisplay(
-    row: HTMLElement | null,
-    rx: string,
-    tx: string
-): void {
+export function updateNetworkDisplay(row: HTMLElement | null, rx: string, tx: string): void {
     if (!row) return;
 
     const leftSpan = row.querySelector('.left') as HTMLElement | null;

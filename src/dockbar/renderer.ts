@@ -21,7 +21,9 @@ export function queryDomElements(): DockDomRefs | null {
     const addButton = document.getElementById('dockbar-add-btn');
 
     if (!background) {
-        debugLogger.error('[DockBar] DOM elements not found in HTML', { missing: '.dockbar-background' });
+        debugLogger.error('[DockBar] DOM elements not found in HTML', {
+            missing: '.dockbar-background',
+        });
         return null;
     }
 
@@ -97,10 +99,13 @@ export async function animateEntrance(
     });
 
     if (yakeliEnabled) {
-        setTimeout(() => {
-            const container = itemsContainer.closest('.dockbar-container');
-            container?.classList.add('yakeli-pulse');
-        }, items.length * baseDelay + 200);
+        setTimeout(
+            () => {
+                const container = itemsContainer.closest('.dockbar-container');
+                container?.classList.add('yakeli-pulse');
+            },
+            items.length * baseDelay + 200
+        );
     }
 }
 

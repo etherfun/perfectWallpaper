@@ -22,10 +22,7 @@ import {
     destroyFullscreenLyricsDom,
     type FullscreenLyricsDom,
 } from './dom';
-import {
-    animateToNewLine,
-    startFloatingAnimation,
-} from './lyricsRenderer';
+import { animateToNewLine, startFloatingAnimation } from './lyricsRenderer';
 import { connectLyricsSource, type LyricsSourceHandle } from './lyricsSource';
 import type { FullscreenLyricsConfig, LyricsData } from './types';
 import { hideOtherElements, restoreOtherElements } from './visibility';

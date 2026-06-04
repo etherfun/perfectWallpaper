@@ -323,10 +323,7 @@ export function PWLineStyle1(): void {
         if (a1First && a2First && a1Last && a2Last) {
             CTXLine.beginPath();
             CTXLine.moveTo((a2First.x + a1First.x) / 2, (a2First.y + a1First.y) / 2);
-            CTXLine.lineTo(
-                (a2Last.x + a1Last.x) / 2,
-                (a2Last.y + a1Last.y) / 2
-            );
+            CTXLine.lineTo((a2Last.x + a1Last.x) / 2, (a2Last.y + a1Last.y) / 2);
             CTXLine.stroke();
         }
     }
@@ -385,10 +382,7 @@ export function PWLineStyle2(): void {
         if (a1First && a2First && a1Last && a2Last) {
             CTXLine.beginPath();
             CTXLine.moveTo((a2First.x + a1First.x) / 2, (a2First.y + a1First.y) / 2);
-            CTXLine.lineTo(
-                (a2Last.x + a1Last.x) / 2,
-                (a2Last.y + a1Last.y) / 2
-            );
+            CTXLine.lineTo((a2Last.x + a1Last.x) / 2, (a2Last.y + a1Last.y) / 2);
             CTXLine.stroke();
         }
     }
@@ -458,10 +452,7 @@ export function PWLineStyle3(): void {
         if (a1First && a2First && a1Last && a2Last) {
             CTXLine.beginPath();
             CTXLine.moveTo((a2First.x + a1First.x) / 2, (a2First.y + a1First.y) / 2);
-            CTXLine.lineTo(
-                (a2Last.x + a1Last.x) / 2,
-                (a2Last.y + a1Last.y) / 2
-            );
+            CTXLine.lineTo((a2Last.x + a1Last.x) / 2, (a2Last.y + a1Last.y) / 2);
             CTXLine.stroke();
         }
     }

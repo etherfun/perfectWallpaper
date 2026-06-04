@@ -133,11 +133,7 @@ export function performInitFullscreenEffect(ctx: LifecycleContext): void {
         const imgSrc = thumbnail?.src;
 
         if (imgSrc && imgSrc !== '') {
-            asyncLoadThumbnailIntoRenderer(
-                effect,
-                imgSrc,
-                () => ctx._fullscreenEffect === effect
-            );
+            asyncLoadThumbnailIntoRenderer(effect, imgSrc, () => ctx._fullscreenEffect === effect);
         } else {
             const wrapper = queryFluidWrapper();
             if (wrapper) {

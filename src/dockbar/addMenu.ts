@@ -172,11 +172,16 @@ function bindTypeSwitching(refs: DialogRefs, state: DialogState): void {
         btn.addEventListener('click', () => {
             typeBtns.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            state.selectedType = ((btn as HTMLElement).dataset.type || 'app') as 'app' | 'file' | 'url';
+            state.selectedType = ((btn as HTMLElement).dataset.type || 'app') as
+                | 'app'
+                | 'file'
+                | 'url';
             state.selectedPath = '';
             state.selectedUrl = '';
 
-            overlay.querySelectorAll('.url-preset-btn').forEach(b => b.classList.remove('selected'));
+            overlay
+                .querySelectorAll('.url-preset-btn')
+                .forEach(b => b.classList.remove('selected'));
             overlay.querySelectorAll('.browse-btn').forEach(b => b.classList.remove('selected'));
             overlay.querySelectorAll('.paste-btn').forEach(b => b.classList.remove('selected'));
             if (refs.browseBtn) refs.browseBtn.textContent = '选择文件...';
@@ -199,7 +204,9 @@ function bindUrlPresets(refs: DialogRefs, state: DialogState): void {
 
     overlay.querySelectorAll('.url-preset-btn').forEach(btn => {
         btn.addEventListener('click', () => {
-            overlay.querySelectorAll('.url-preset-btn').forEach(b => b.classList.remove('selected'));
+            overlay
+                .querySelectorAll('.url-preset-btn')
+                .forEach(b => b.classList.remove('selected'));
             overlay.querySelectorAll('.paste-btn').forEach(b => b.classList.remove('selected'));
             btn.classList.add('selected');
             state.selectedUrl = (btn as HTMLElement).dataset.url || '';
@@ -233,7 +240,11 @@ function bindClearCache(clearCacheBtn: HTMLButtonElement | null, serverUrl: stri
     });
 }
 
-function bindConfirm(confirmBtn: HTMLButtonElement | null, state: DialogState, opts: AddMenuOptions): void {
+function bindConfirm(
+    confirmBtn: HTMLButtonElement | null,
+    state: DialogState,
+    opts: AddMenuOptions
+): void {
     confirmBtn?.addEventListener('click', () => {
         const overlay = confirmBtn.closest('.dockbar-dialog');
         let name: string;
@@ -247,7 +258,11 @@ function bindConfirm(confirmBtn: HTMLButtonElement | null, state: DialogState, o
         } else {
             if (!state.selectedPath) return;
             path = state.selectedPath;
-            name = state.selectedPath.split('\\').pop()?.replace(/\.[^/.]+$/, '') || '应用程序';
+            name =
+                state.selectedPath
+                    .split('\\')
+                    .pop()
+                    ?.replace(/\.[^/.]+$/, '') || '应用程序';
         }
 
         const newItem: DockItem = {

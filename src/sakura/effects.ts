@@ -159,13 +159,7 @@ export function renderPostProcess(): void {
         bindRT(renderSpec.wHalfRT1!, true);
         useEffect(effectLib.dirBlur, renderSpec.wHalfRT0);
         if (effectLib.dirBlur.program) {
-            gl.uniform4f(
-                effectLib.dirBlur.program.uniforms.uBlurDir ?? null,
-                p,
-                0.0,
-                s,
-                0.0
-            );
+            gl.uniform4f(effectLib.dirBlur.program.uniforms.uBlurDir ?? null, p, 0.0, s, 0.0);
         }
         drawEffect(effectLib.dirBlur);
         unuseEffect(effectLib.dirBlur);
@@ -173,13 +167,7 @@ export function renderPostProcess(): void {
         bindRT(renderSpec.wHalfRT0!, true);
         useEffect(effectLib.dirBlur, renderSpec.wHalfRT1);
         if (effectLib.dirBlur.program) {
-            gl.uniform4f(
-                effectLib.dirBlur.program.uniforms.uBlurDir ?? null,
-                0.0,
-                p,
-                0.0,
-                s
-            );
+            gl.uniform4f(effectLib.dirBlur.program.uniforms.uBlurDir ?? null, 0.0, p, 0.0, s);
         }
         drawEffect(effectLib.dirBlur);
         unuseEffect(effectLib.dirBlur);

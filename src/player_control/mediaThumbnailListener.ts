@@ -10,9 +10,7 @@ import { ITEM_ENTRANCE_DELAY_MS } from './constants';
 import { player_control_thumbnail } from './domRefs';
 import { thumbnailsue } from './thumbnailColor';
 
-export async function wallpaperMediaThumbnailListener(
-    event: MediaThumbnailEvent
-): Promise<void> {
+export async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {
     if (event && config.player_control_show) {
         player_control_thumbnail.src = event.thumbnail;
 

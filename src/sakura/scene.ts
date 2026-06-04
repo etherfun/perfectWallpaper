@@ -14,20 +14,9 @@ import { Matrix44 } from '@/utils/webgl-math';
 import { makeCanvasFullScreen } from './canvas';
 import { createEffectLib, renderBackground, renderPostProcess } from './effects';
 import { createRenderTarget, deleteRenderTarget } from './glUtils';
-import {
-    createPointFlowers,
-    initPointFlowers,
-    pointFlower,
-} from './particles';
+import { createPointFlowers, initPointFlowers, pointFlower } from './particles';
 import { renderPointFlowers } from './pointFlowersRender';
-import {
-    camera,
-    gl,
-    projection,
-    renderSpec,
-    sceneStandBy,
-    setSceneStandBy,
-} from './state';
+import { camera, gl, projection, renderSpec, sceneStandBy, setSceneStandBy } from './state';
 import type { RenderTarget } from './types';
 
 /** 创建效果库 + 粒子系统，标记 sceneStandBy = true */

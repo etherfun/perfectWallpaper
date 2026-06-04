@@ -89,7 +89,11 @@ export class FluidEffect2Renderer {
     private onResize(): void {
         if (!this.grid) return;
 
-        const { displaySize, dpr } = layoutCanvasGrid(this.grid, this.container, this.options.blurAmount);
+        const { displaySize, dpr } = layoutCanvasGrid(
+            this.grid,
+            this.container,
+            this.options.blurAmount
+        );
         this._lastDisplaySize = displaySize;
         this._lastDpr = dpr;
 

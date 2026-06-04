@@ -8,13 +8,7 @@
  * @/sakura 自动解析到本 index.ts，外部零修改。
  */
 
-export {
-    animate,
-    getAnimating,
-    setAnimating,
-    stepAnimation,
-    toggleAnimation,
-} from './animation';
+export { animate, getAnimating, setAnimating, stepAnimation, toggleAnimation } from './animation';
 export {
     applySakuraTransparency,
     initSakura,

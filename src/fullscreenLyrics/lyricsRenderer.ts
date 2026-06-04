@@ -196,10 +196,7 @@ export function animateToNewLine(
  * The element keeps its current transform/position and glides upward while
  * fading; the optional `onComplete` is invoked once the line is fully gone.
  */
-export function startFloatingAnimation(
-    el: HTMLElement,
-    onComplete?: () => void
-): void {
+export function startFloatingAnimation(el: HTMLElement, onComplete?: () => void): void {
     el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
     el.style.opacity = '0';
     el.style.transform += ' translateY(-20px)';
@@ -210,10 +207,7 @@ export function startFloatingAnimation(
 }
 
 /** Continuation of `startFloatingAnimation` after the initial 500ms transition */
-function fadeOutAndFloatAway(
-    element: HTMLElement,
-    onComplete?: () => void
-): void {
+function fadeOutAndFloatAway(element: HTMLElement, onComplete?: () => void): void {
     const startTime = Date.now();
     const duration = 2000;
     const startY = parseFloat(element.style.transform.replace(/[^-\d.]/g, '')) || 0;

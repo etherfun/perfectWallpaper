@@ -35,9 +35,10 @@ function applyPosition(container: HTMLElement, config: DockBarConfig): void {
             break;
     }
 
-    container.style.transform = config.position === 'left' || config.position === 'right'
-        ? 'translateY(-50%)'
-        : 'translateX(-50%)';
+    container.style.transform =
+        config.position === 'left' || config.position === 'right'
+            ? 'translateY(-50%)'
+            : 'translateX(-50%)';
 }
 
 function applyCssVariables(config: DockBarConfig): void {
@@ -55,7 +56,9 @@ function applyCssVariables(config: DockBarConfig): void {
 
 function applyBackgroundStyle(background: HTMLElement, config: DockBarConfig): void {
     background.style.backgroundColor = `rgba(${config.yakeliColorR}, ${config.yakeliColorG}, ${config.yakeliColorB}, ${config.yakeliEnabled ? config.yakeliIntensity : 0})`;
-    background.style.backdropFilter = config.yakeliEnabled ? `blur(${config.blurIntensity}px)` : 'none';
+    background.style.backdropFilter = config.yakeliEnabled
+        ? `blur(${config.blurIntensity}px)`
+        : 'none';
 
     const borderRadius = (config.iconSize / 2) * (config.roundedCorners / 100);
     background.style.borderRadius = `${borderRadius}px`;

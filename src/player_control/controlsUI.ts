@@ -6,11 +6,7 @@
  */
 import { config } from '@/utils/config';
 import { debugLogger } from '@/utils/logger';
-import {
-    PlayNextTrack,
-    PlayPrevTrack,
-    TogglePlayPause,
-} from '@/video';
+import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from '@/video';
 
 import { SERVER_MODE_PROBE_DELAY_MS } from './constants';
 import { player_control } from './domRefs';

@@ -6,11 +6,7 @@
  */
 import { config } from '@/utils/config';
 
-import {
-    TIMELINE_STEP_SEC,
-    TIMELINE_TICK_MS,
-    TIMELINE_WAIT_MS,
-} from './constants';
+import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from './constants';
 import { player_control_timeline } from './domRefs';
 import { PLAYER_STATE } from './types';
 

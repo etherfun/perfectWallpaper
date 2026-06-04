@@ -315,7 +315,14 @@ export class NativeAudioVisualizer {
     private drawBall(pointArray: { x: number; y: number }[], ballSize: number): void {
         for (let i = 0; i < pointArray.length; i++) {
             this.context.beginPath();
-            this.context.arc(pointArray[i]!.x - 0.5, pointArray[i]!.y - 0.5, ballSize, 0, 360, false);
+            this.context.arc(
+                pointArray[i]!.x - 0.5,
+                pointArray[i]!.y - 0.5,
+                ballSize,
+                0,
+                360,
+                false
+            );
             this.context.closePath();
             this.context.fill();
         }

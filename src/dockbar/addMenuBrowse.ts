@@ -17,7 +17,15 @@ export function setupBrowseButton(opts: BrowseOptions): void {
 }
 
 async function handleBrowseClick(opts: BrowseOptions): Promise<void> {
-    const { browseBtn, iconSelector, iconGrid, getSelectedType, onPathSelected, onIconSelected, serverUrl } = opts;
+    const {
+        browseBtn,
+        iconSelector,
+        iconGrid,
+        getSelectedType,
+        onPathSelected,
+        onIconSelected,
+        serverUrl,
+    } = opts;
     const selectedType = getSelectedType();
 
     browseBtn.textContent = '选择中...';
@@ -161,7 +169,11 @@ function readFileAsDataUrl(file: File): Promise<string | null> {
     });
 }
 
-function appendCustomIcon(iconGrid: HTMLElement, icon: string, onIconSelected: (icon: string) => void): void {
+function appendCustomIcon(
+    iconGrid: HTMLElement,
+    icon: string,
+    onIconSelected: (icon: string) => void
+): void {
     const iconBtn = document.createElement('button');
     iconBtn.className = 'icon-option selected';
     iconBtn.innerHTML = `<img src="${icon}" alt="自定义" title="自定义图标" />`;

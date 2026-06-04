@@ -10,10 +10,7 @@ import { elements } from '@/utils/elementManager';
 import { timerManager } from '@/utils/timer';
 
 import { FluidEffectState as FluidEffectStateEnum } from '../types';
-import {
-    DEFAULT_FLUID_EFFECT_CONFIG,
-    type FluidEffectState,
-} from '../types';
+import { DEFAULT_FLUID_EFFECT_CONFIG, type FluidEffectState } from '../types';
 import { FluidEffect2Renderer } from './FluidEffect2Renderer';
 import type { LifecycleContext } from './lifecycleImpl';
 import {

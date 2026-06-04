@@ -8,9 +8,7 @@ import { onImageError, onImageLoad } from './loader';
 import type { BingResponse } from './types';
 
 export function loadBing(): void {
-    fetch(
-        'https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=' + config.language
-    )
+    fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=' + config.language)
         .then(response => response.json())
         .then((get: BingResponse) => {
             const image = get.images[0];

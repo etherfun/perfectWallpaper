@@ -24,8 +24,7 @@ function resolveOptions(options: Partial<FluidEffectOptions>): Required<FluidEff
         blurAmount: options.blurAmount ?? DEFAULT_FLUID_EFFECT_OPTIONS.blurAmount,
         displacementScale:
             options.displacementScale ?? DEFAULT_FLUID_EFFECT_OPTIONS.displacementScale,
-        turbulenceSeed:
-            options.turbulenceSeed ?? Math.floor(Math.random() * 1000),
+        turbulenceSeed: options.turbulenceSeed ?? Math.floor(Math.random() * 1000),
         turbulenceFrequency:
             options.turbulenceFrequency ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceFrequency,
         turbulenceOctaves:

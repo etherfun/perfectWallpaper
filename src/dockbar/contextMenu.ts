@@ -1,4 +1,8 @@
-export function showContextMenu(itemId: string | undefined, event: MouseEvent, onDelete: (id: string) => void): void {
+export function showContextMenu(
+    itemId: string | undefined,
+    event: MouseEvent,
+    onDelete: (id: string) => void
+): void {
     if (!itemId) return;
 
     document.querySelector('.dockbar-context-menu')?.remove();

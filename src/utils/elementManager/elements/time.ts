@@ -7,12 +7,8 @@ export const timeElements = {
         block: document.querySelector('#clock .clock-block') as HTMLElement,
         min: document.querySelector('#clock .clock-block .min') as HTMLElement,
         indicators: document.querySelector('#clock .clock-block .time-indicators') as HTMLElement,
-        sec: document.querySelector(
-            '#clock .clock-block .time-indicators .sec'
-        ) as HTMLElement,
-        st: document.querySelector(
-            '#clock .clock-block .time-indicators .st'
-        ) as HTMLElement,
+        sec: document.querySelector('#clock .clock-block .time-indicators .sec') as HTMLElement,
+        st: document.querySelector('#clock .clock-block .time-indicators .st') as HTMLElement,
     },
     date: {
         container: document.querySelector('#oDate'),

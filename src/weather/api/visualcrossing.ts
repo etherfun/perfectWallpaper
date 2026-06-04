@@ -168,11 +168,7 @@ export async function visualcrossing(
     weather_data.pressure = resNow.pressure;
     weather_data.icon = getQWeatherIcon(
         resNow.icon,
-        isNightTime(
-            new Date().toTimeString().split(' ')[0] ?? '',
-            today.sunrise,
-            today.sunset
-        )
+        isNightTime(new Date().toTimeString().split(' ')[0] ?? '', today.sunrise, today.sunset)
     ).toString();
 
     // 风向

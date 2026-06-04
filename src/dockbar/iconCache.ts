@@ -7,7 +7,11 @@ export function getDefaultIcon(): string {
     return DEFAULT_ICON;
 }
 
-export function loadIcon(item: DockItem, imgEl: HTMLImageElement, serverUrl: string = SERVER_URL): void {
+export function loadIcon(
+    item: DockItem,
+    imgEl: HTMLImageElement,
+    serverUrl: string = SERVER_URL
+): void {
     imgEl.src = getDefaultIcon();
 
     if (item.type === 'url' && item.url) {

@@ -45,8 +45,19 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
     }
 
     config.runtime.playerInfo.colorGroup = event
-        ? buildEventColorGroup(event, dominantColor, palette, playerControlYakelicColor, playerControlColor)
-        : buildCustomColorGroup(dominantColor, palette, playerControlYakelicColor, playerControlColor);
+        ? buildEventColorGroup(
+              event,
+              dominantColor,
+              palette,
+              playerControlYakelicColor,
+              playerControlColor
+          )
+        : buildCustomColorGroup(
+              dominantColor,
+              palette,
+              playerControlYakelicColor,
+              playerControlColor
+          );
 
     updateFluidEffectSource(event);
 }

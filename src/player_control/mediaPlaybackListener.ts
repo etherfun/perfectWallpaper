@@ -11,11 +11,7 @@ import { config } from '@/utils/config';
 import { debugLogger } from '@/utils/logger';
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/video';
 
-import {
-    player_control,
-    player_control_thumbnail,
-    player_control_thumbnailWrap,
-} from './domRefs';
+import { player_control, player_control_thumbnail, player_control_thumbnailWrap } from './domRefs';
 import {
     applyPlayerStateUI,
     controlFluidEffectPlayback,

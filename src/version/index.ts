@@ -803,11 +803,13 @@ class versionManager {
             return [];
         }
 
-        return versionConfig.VERSION_HISTORY.sort((a: VersionHistoryEntry, b: VersionHistoryEntry) => {
-            const dateA = new Date(a.date);
-            const dateB = new Date(b.date);
-            return dateB.getTime() - dateA.getTime();
-        });
+        return versionConfig.VERSION_HISTORY.sort(
+            (a: VersionHistoryEntry, b: VersionHistoryEntry) => {
+                const dateA = new Date(a.date);
+                const dateB = new Date(b.date);
+                return dateB.getTime() - dateA.getTime();
+            }
+        );
     }
 
     // 选择版本（更新右侧详情）

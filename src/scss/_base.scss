@@ -201,8 +201,10 @@ body {
     --picture-info-roundedcorners: 0;
     --picture-info-height: auto;
     --picture-info-show-width: auto;
-    --picture-info-display: flex;
-    --picture-info-visibility: visible;
+    // 静默加载: 默认隐藏 #picture_info, 等 loader 写入真实数据
+    // (picturesinfo_showrl) 时再 display=flex / visibility=visible。
+    --picture-info-display: none;
+    --picture-info-visibility: hidden;
     --picture-info-text-align: left;
     --picture-info-transform: translate(0, 0);
     --picture-info-description-display: none;

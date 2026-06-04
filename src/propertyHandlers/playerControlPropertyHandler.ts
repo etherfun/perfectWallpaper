@@ -34,52 +34,12 @@ export function handlePlayerControlProperties(
                 thumbnailsue();
             }
         } else {
-            player_control.style.display = 'flex';
+            // 静默加载:FirstLoad 阶段默认隐藏播放器框架,
+            // 等 wallpaperMediaPropertiesListener 收到首个真实媒体事件
+            // (即 config.runtime.playerInfo.singtitle 非空) 时再 display='flex'。
+            // 避免首次启动到首首歌曲到来之间出现空框架/占位文字。
             player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
-
-            setTimeout(function () {
-                if (!player_control_show) {
-                    player_control.style.display = 'none';
-                    return;
-                }
-
-                const leftTitle = document.querySelector(
-                    '#player_control .title .left'
-                ) as HTMLElement | null;
-                const rightTitle = document.querySelector(
-                    '#player_control .title .right'
-                ) as HTMLElement | null;
-                const isTitleLoading =
-                    (leftTitle && leftTitle.innerText == 'loading...') ||
-                    (rightTitle && rightTitle.innerText == 'loading...');
-
-                if (!isTitleLoading) {
-                    return;
-                }
-
-                if (config.player_control_autohide) {
-                    player_control.style.display = 'none';
-                } else {
-                    const titleElement = leftTitle || rightTitle;
-                    const artistElement =
-                        (document.querySelector('#player_control .artist .left') as HTMLElement) ||
-                        (document.querySelector('#player_control .artist .right') as HTMLElement);
-
-                    if (titleElement) {
-                        titleElement.innerHTML = '✧ପ(๑･ω･)੭';
-                    }
-                    if (artistElement) {
-                        artistElement.innerHTML = '少女祈祷中……';
-                    }
-
-                    const albumTitleElement = document.querySelector(
-                        '#player_control .albumTitle'
-                    ) as HTMLElement | null;
-                    if (albumTitleElement) {
-                        albumTitleElement.style.display = 'none';
-                    }
-                }
-            }, 3000);
+            player_control.style.display = 'none';
         }
     }
 

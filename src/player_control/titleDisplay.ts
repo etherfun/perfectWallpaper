@@ -24,20 +24,12 @@ export function playertitle(visualaudiobar: boolean = false): void {
     let titleToShow = config.runtime.playerInfo.singtitle || '';
     let artistToShow = config.runtime.playerInfo.singartist || '';
     let albumToShow = config.runtime.playerInfo.singalbumTitle || '';
-    const playerControlAutohide = config.player_control_autohide;
-    const playerControlShow = config.player_control_show;
     const playerControlThumbnailrorl = config.player_control_thumbnailrorl;
     const playerControlSamealbumTitle = config.player_control_samealbum_title;
 
-    if (
-        (!titleToShow || titleToShow === 'loading...') &&
-        !playerControlAutohide &&
-        playerControlShow
-    ) {
-        titleToShow = '✧ପ(๑･ω･)੭';
-        artistToShow = '少女祈祷中……';
-        albumToShow = '';
-    }
+    // 静默加载:没拿到真实媒体标题时不再写占位文字。
+    // 容器本身由 mediaPropertiesListener 在收到真内容前保持 display:none,
+    // 此处只需如实渲染空文本即可。
 
     let titleEl: Element, artistEl: Element, albumEl: Element;
 

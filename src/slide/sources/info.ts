@@ -4,7 +4,7 @@
 
 import { config } from '../../utils/config';
 
-/** Clear picture info */
+/** Clear picture info and hide the container */
 export function clearpicturesinfo(): void {
     const titleLeft = document.querySelector('#picture_info .title .left');
     const titleRight = document.querySelector('#picture_info .title .right');
@@ -21,6 +21,14 @@ export function clearpicturesinfo(): void {
     if (locationLeft) locationLeft.innerHTML = '';
     if (locationRight) locationRight.innerHTML = '';
     if (description) description.innerHTML = '';
+
+    // 静默加载: 没有真实数据时容器保持隐藏,
+    // 由 picturesinfo_showrl() 在写完数据后恢复显示。
+    const container = document.querySelector('#picture_info') as HTMLElement | null;
+    if (container) {
+        container.style.display = 'none';
+        container.style.visibility = 'hidden';
+    }
 }
 
 /** Show picture info */
@@ -50,4 +58,14 @@ export function picturesinfo_showrl(
     if (author_w) author_w.innerHTML = author;
     if (where_w) where_w.innerHTML = where;
     if (text_w) text_w.innerHTML = text;
+
+    // 静默加载: loader 拿到真实版权/标题后才显示容器,
+    // 避免 fetch 期间的空框架被用户看到。
+    if (config.pictures_info_show === true) {
+        const container = document.querySelector('#picture_info') as HTMLElement | null;
+        if (container) {
+            container.style.display = 'flex';
+            container.style.visibility = 'visible';
+        }
+    }
 }

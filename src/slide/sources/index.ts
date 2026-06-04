@@ -95,9 +95,9 @@ export function shouldShow(): void {
             break;
 
         case 4: // Bing wallpaper
-            if (config.pictures_info_show && pictures.picture_info.style.display == 'none') {
-                pictures.picture_info.style.display = 'flex';
-            }
+            // 静默加载: 容器显示由 picturesinfo_showrl() 在 loader
+            // 拿到真实版权/标题数据后再 display=flex,
+            // 不再在此处提前 show,避免 fetch 期间出现空框架。
             elements.myvideo.src = '';
             backgroundLayers.container.style.display = 'block';
             loadBing();
@@ -125,9 +125,7 @@ export function shouldShow(): void {
 
         case 6: // NASA
             {
-                if (config.pictures_info_show && pictures.picture_info.style.display == 'none') {
-                    pictures.picture_info.style.display = 'flex';
-                }
+                // 静默加载: 同 case 4, 由 picturesinfo_showrl() 负责显示。
                 elements.myvideo.src = '';
                 backgroundLayers.container.style.display = 'block';
                 loadNasa();
@@ -144,9 +142,7 @@ export function shouldShow(): void {
 
         case 8: // Windows聚焦
             {
-                if (config.pictures_info_show && pictures.picture_info.style.display == 'none') {
-                    pictures.picture_info.style.display = 'flex';
-                }
+                // 静默加载: 同 case 4, 由 picturesinfo_showrl() 负责显示。
                 elements.myvideo.src = '';
                 backgroundLayers.container.style.display = 'block';
                 loadWindowsSpotlight();
@@ -155,9 +151,7 @@ export function shouldShow(): void {
 
         case 9: // Custom
             {
-                if (config.pictures_info_show && pictures.picture_info.style.display == 'none') {
-                    pictures.picture_info.style.display = 'flex';
-                }
+                // 静默加载: 同 case 4, 由 picturesinfo_showrl() 负责显示。
                 elements.myvideo.src = '';
                 backgroundLayers.container.style.display = 'block';
                 const customImg = new Image();

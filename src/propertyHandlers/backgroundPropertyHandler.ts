@@ -254,8 +254,16 @@ export function handleBackgroundProperties(
     if (properties.picturesinfo_show) {
         const show = properties.picturesinfo_show.value;
         config.pictures_info_show = show;
-        elements.body.style.setProperty('--picture-info-display', show ? 'flex' : 'none');
-        elements.body.style.setProperty('--picture-info-visibility', show ? 'visible' : 'hidden');
+        // 静默加载: FirstLoad 阶段不立即把 CSS 变量设为 flex/visible,
+        // 保持 #picture_info 默认隐藏;真正的显示交给 picturesinfo_showrl()
+        // 在 loader 拿到真实版权/标题数据后触发。后续 prop 变更正常应用。
+        if (!FirstLoad) {
+            elements.body.style.setProperty('--picture-info-display', show ? 'flex' : 'none');
+            elements.body.style.setProperty(
+                '--picture-info-visibility',
+                show ? 'visible' : 'hidden'
+            );
+        }
     }
 
     // 图片信息文字颜色

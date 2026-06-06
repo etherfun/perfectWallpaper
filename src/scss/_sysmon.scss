@@ -1,6 +1,27 @@
 // ============================================
 // System Monitor Styles
 // ============================================
+// Layout is data-driven from HTML structure (defined in index.html).
+// SCSS owns ALL placement decisions.
+// Each row is a flex container with two children:
+//
+//   <div class="sysmon-row">
+//       <div class="sysmon-text">…</div>   ← label / value / extra (or net rx/tx)
+//       <div class="sysmon-viz"></div>    ← bar / canvas
+//   </div>
+//
+// Two layout shapes, switched by the `sysmon-row--curve` modifier class:
+//
+//   bar / text mode  (default)            curve mode  (.sysmon-row--curve)
+//   ┌──────────────────────┐             ┌──────────────────────────────┐
+//   │ text (label + value) │  row 1      │ viz (canvas)   text          │  1 row
+//   ├──────────────────────┤             │               ┌──────┬────┐  │
+//   │ viz (bar, full row)  │  row 2      │               │  CPU │ 12% │  │
+//   └──────────────────────┘             └──────────────────────────────┘
+//
+// The viz container always reserves 6px (bar height) even in text mode,
+// so toggling text ↔ bar never reflows neighboring rows. In curve mode
+// the viz slot grows to 24px and the row is laid out as a single line.
 @use 'mixins' as *;
 @use 'config' as *;
 
@@ -14,104 +35,239 @@
         @include yakeli-effect(sysmon);
         display: flex;
         flex-direction: column;
-        gap: var(--sysmon-gap, 4px);
+        gap: var(--sysmon-gap, 12px);
         padding: 8px 12px;
         border-radius: calc(
             var(--sysmon-height, 50px) / 2 * var(--sysmon-roundedcorners, 50) / 100
         );
 
+        // All rows are columns by default; horizontal-layout lays the rows
+        // side by side like a taskbar.
         &.horizontal-layout {
             flex-direction: row;
-        }
-
-        &.left-side {
-            align-items: flex-start;
-            .sysmon-label {
-                text-align: left;
-            }
-        }
-
-        &.right-side {
-            align-items: flex-end;
-            .sysmon-label {
-                text-align: right;
+            align-items: center;
+            gap: 16px; // row-to-row horizontal gap in horizontal-layout
+            // Right-side: anchor the whole row group at the right edge
+            // of the background so it visually mirrors left-side. Without
+            // this, `justify-content` defaults to `flex-start` and the
+            // rows are pinned to the left regardless of monitorPosition.
+            &.right-side {
+                justify-content: flex-end;
             }
         }
     }
 
+    // ---- Row -----------------------------------------------------
+    // Default: column (text on top, bar/canvas full-width below).
+    // Curve modifier class: row (canvas on the left, text on the right).
     .sysmon-row {
         display: flex;
-        align-items: center;
-        justify-content: space-between;
-        white-space: nowrap;
+        flex-direction: column;
+        gap: 4px; // text ↔ viz vertical gap (fixed)
+        min-width: 0;
     }
 
-    .left {
+    .sysmon-row--curve {
+        // Curve lives next to the value (one row). The viz is the FIRST
+        // child of the row so it naturally lands on the left; the text
+        // (with label/value) is the second child and lands on the right.
+        flex-direction: row;
+        align-items: center;
+        gap: 6px;
+    }
+
+    // ---- Text (label + value + extra) ----------------------------
+    // Single-line flex row of label/value/extra. The default `min-width`
+    // covers the common case (CPU has no extra, GPU has a short
+    // `(58°C)`-style string). The memory row needs a wider reservation
+    // because its extra is server-driven `(used/total GB)` and can run
+    // up to 14ch wide. The override lives on the memory row only so
+    // CPU/GPU rows stay tight and the whole taskbar doesn't grow
+    // unnecessarily.
+    .sysmon-text {
         display: flex;
-        flex-wrap: wrap;
-        align-items: center;
-        gap: 4px;
-        justify-content: flex-end;
+        flex-direction: row;
+        align-items: baseline;
+        gap: 6px;
+        min-width: 10em;
+        font-variant-numeric: tabular-nums;
     }
 
-    .sysmon-bar {
-        flex-basis: 100%;
-        margin-top: var(--sysmon-gap, 4px);
+    // Memory row only: reserve enough room for the realistic
+    // `(9999.9/9999.9 GB)` ceiling. `em` (not `ch`) is used so the
+    // reservation scales with `--sysmon-monitor-size` and any user
+    // font-size override. The selector is anchored on `.sysmon-row`
+    // because the `data-metric` attribute lives on the row, not on
+    // `#system-monitor`.
+    .sysmon-row[data-metric='memory'] .sysmon-text {
+        min-width: 13.5em;
+    }
+
+    .background.right-side .sysmon-text {
+        // Mirror so the label sits on the right edge of the row.
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+        // Re-anchor the right-align of the value column on the right
+        // side. `.sysmon-value { text-align: right }` is correct when
+        // the column reads left-to-right, but on a mirrored row the
+        // logical "right" of the value is now visually on the LEFT,
+        // which makes the `%` sign sit at the gap between value and
+        // extra. We flip the alignment so the % still anchors against
+        // the row's right edge.
+        .sysmon-value {
+            text-align: left;
+        }
+        .sysmon-extra {
+            text-align: right;
+        }
     }
 
     .sysmon-label {
         flex-shrink: 0;
-        padding: 0 6px;
-        display: flex;
-        align-items: center;
-    }
-
-    .right {
-        display: flex;
-        flex-direction: column;
-        gap: var(--sysmon-gap, 4px);
-    }
-
-    .main-line {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        flex: 1;
-    }
-
-    .sub-line {
-        display: flex;
-        align-items: center;
-        flex: 0 0 auto;
+        font-weight: 600;
+        letter-spacing: 0.04em;
     }
 
     .sysmon-value {
+        // Fixed-width value column: "0%" through "100%" all occupy the
+        // same horizontal slot so the row width does not twitch as the
+        // percentage digits change. `4ch` covers the widest case ("100%")
+        // at the current font's `0` glyph width (tabular-nums is set on
+        // the parent `.sysmon-text` so all digits share the same width).
+        // `inline-block` makes `min-width` actually take effect; the
+        // element would otherwise be an inline run that ignores width
+        // properties entirely. Right-alignment keeps the `%` sign pinned
+        // to the same x-coordinate regardless of the digit count.
+        display: inline-block;
+        min-width: 4ch;
+        text-align: right;
+        font-weight: 600;
         font-variant-numeric: tabular-nums;
-        min-width: 2.5em;
+        flex-shrink: 0;
     }
 
     .sysmon-extra {
-        font-variant-numeric: tabular-nums;
+        // The `extra` text comes from the system server and varies
+        // wildly: `(54°C)` for GPU, `(19.1/31.2 GB)` for memory,
+        // `(9999.9/9999.9 GB)` for 32-bit overflow edge cases. We must
+        // never let the row's `min-width` truncate it; flex children
+        // default to `flex-shrink: 1` which compresses long strings
+        // with an ellipsis that hides real data.
+        //
+        // `flex-shrink: 0` is the fix: the element keeps its natural
+        // intrinsic width and never gives way to its siblings.
+        display: inline-block;
+        flex-shrink: 0;
+        vertical-align: baseline;
         opacity: 0.7;
-        padding: 0 0.5em;
-        min-width: 6ch;
+        font-size: 0.9em;
+        white-space: nowrap;
     }
 
+    .sysmon-net {
+        // The rx/tx labels come from the server (`0 B/s` → `1023.9 TB/s`)
+        // and vary in width. `flex-shrink: 0` keeps them at their
+        // natural intrinsic width so they never get squashed by the
+        // surrounding row (which is itself flex-shrinking against the
+        // network row's reserved `min-width`).
+        display: inline-block;
+        flex-shrink: 0;
+        font-variant-numeric: tabular-nums;
+    }
+
+    // Each rx/tx span reserves its own 8em (= ~12ch of the
+    // `1023.9 TB/s` ceiling, with a small `↓`/`↑` prefix). This means
+    // the rx and tx slots stay the same width regardless of the current
+    // throughput, so the row never twitches when one direction briefly
+    // reports 0 B/s while the other hits 999 MB/s.
     .sysmon-net-down,
     .sysmon-net-up {
-        font-variant-numeric: tabular-nums;
-        min-width: 7em;
-        display: block;
+        min-width: 6.5em;
+        text-align: left;
     }
 
+    // ---- Visualization slot --------------------------------------
+    // Always present in the DOM (owned by the HTML template). In text
+    // mode the slot is empty but reserves its 6px bar height so toggling
+    // text ↔ bar doesn't reflow neighboring rows. In curve mode the slot
+    // grows to 24px and holds a single full-width `<canvas>`.
+    .sysmon-viz {
+        width: 100%; // span the full row width in column layout
+        height: 6px;
+        min-height: 6px; // text mode: keep the 6px reserved slot
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        line-height: 0;
+    }
+
+    .sysmon-viz--curve {
+        // Curve mode: the slot is taller (24px) and has a fixed width so
+        // it doesn't greedily stretch the row in column layout. The
+        // modifier class is also set on network's inner lane divs (see
+        // network rules below).
+        height: 24px;
+    }
+
+    .sysmon-row--curve .sysmon-viz {
+        // In curve layout the viz is the FIRST child and sits on the
+        // left, sized to its natural 24px height. We give it a fixed
+        // width so the text right of it doesn't squeeze it.
+        width: 80px;
+        flex-shrink: 0;
+    }
+
+    // ---- Bar -----------------------------------------------------
+    // In bar mode the bar element fills the entire viz slot.
     .sysmon-bar {
         width: 100%;
-        flex-shrink: 0;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.18);
+        border-radius: 3px;
+        overflow: hidden;
     }
 
+    .sysmon-bar-fill {
+        height: 100%;
+        border-radius: 3px;
+        transition: width 0.3s ease;
+    }
+
+    // ---- Canvas --------------------------------------------------
+    // The canvas inside `.sysmon-viz` always fills its parent — the JS
+    // side sizes the backing store to match (DPR-aware).
     canvas {
-        display: inline-block;
-        vertical-align: middle;
-        flex-shrink: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+    }
+
+    // ---- Network row ---------------------------------------------
+    // Network needs two lanes (rx + tx) instead of one. The lane structure
+    // mirrors the simple row: in text/bar mode lanes stack vertically,
+    // in curve mode lanes sit side by side as two compact curves.
+    // Selectors are anchored on `.sysmon-row` because `data-metric`
+    // lives on the row, not on `#system-monitor`.
+    .sysmon-row[data-metric='network'] .sysmon-viz {
+        flex-direction: column;
+        height: auto;
+        gap: 2px;
+    }
+
+    // Network + bar mode: two slim bars stacked, each 5px tall + 2px gap.
+    .sysmon-row[data-metric='network'] .sysmon-viz.sysmon-viz--bar {
+        height: 14px;
+    }
+
+    .sysmon-row[data-metric='network'] .sysmon-viz.sysmon-viz--bar .sysmon-bar {
+        height: 5px;
+    }
+
+    // Network + curve mode: two lanes side by side inside the (now row)
+    // viz container. Each lane is its own `.sysmon-viz--curve` so SCSS
+    // gives it the standard 24px height / canvas fill.
+    .sysmon-row[data-metric='network'] .sysmon-viz.sysmon-viz--curve {
+        flex-direction: row;
+        height: 24px;
     }
 }

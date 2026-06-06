@@ -26,6 +26,7 @@ export default defineConfig({
                 'src/utils/tool.ts',
                 'src/player_control/colorUtils.ts',
                 'src/systemMonitor/formatters.ts',
+                'src/systemMonitor/renderer.ts',
                 'src/dockbar/storage.ts',
                 'src/dockbar/configApply.ts',
                 'src/dockbar/renderer.ts',

@@ -2,7 +2,7 @@ import { applyConfig } from './configApply';
 import { DEFAULT_CONFIG } from './constants';
 import { queryDomElements } from './domRefs';
 import { formatBytes } from './formatters';
-import { pushHistory, updateItem, updateNetworkDisplay } from './renderer';
+import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './renderer';
 import type { SystemMonitorConfig, SystemMonitorData, SystemMonitorDomRefs } from './types';
 
 /**
@@ -90,79 +90,102 @@ export class SystemMonitor {
     }
 
     private updateDisplay(data: SystemMonitorData): void {
-        const cpuRow = this.refs?.cpuRow ?? null;
-        const gpuRow = this.refs?.gpuRow ?? null;
-        const memoryRow = this.refs?.memoryRow ?? null;
-        const networkRow = this.refs?.networkRow ?? null;
+        const refs = this.refs;
+        if (!refs) return;
 
         // CPU
-        if (this.config.showCpu) {
-            const cpuUsage = Math.round(data.cpu?.usage || 0);
-            pushHistory(this.cpuHistory, cpuUsage);
-            updateItem(
-                cpuRow,
-                'CPU',
-                cpuUsage,
-                this.config.cpuMode,
-                undefined,
-                this.config,
-                this.cpuHistory
-            );
-            if (cpuRow) cpuRow.style.display = '';
-        } else if (cpuRow) {
-            cpuRow.style.display = 'none';
-        }
+        this.renderSimple(refs.cpuRow, this.config.showCpu, this.config.cpuMode, () => {
+            const usage = Math.round(data.cpu?.usage ?? 0);
+            pushHistory(this.cpuHistory, usage);
+            return { value: usage };
+        });
 
         // GPU
-        if (this.config.showGpu && data.gpu && data.gpu.length > 0) {
-            const gpu = data.gpu[0];
-            if (!gpu) return;
-            const gpuUsage = Math.round(gpu.utilization || 0);
-            const gpuTemp = gpu.temperature || 0;
-            pushHistory(this.gpuHistory, gpuUsage);
-            updateItem(
-                gpuRow,
-                'GPU',
-                gpuUsage,
-                this.config.gpuMode,
-                `${gpuTemp}°C`,
-                this.config,
-                this.gpuHistory
-            );
-            if (gpuRow) gpuRow.style.display = '';
-        } else if (gpuRow) {
-            gpuRow.style.display = 'none';
-        }
+        this.renderSimple(
+            refs.gpuRow,
+            this.config.showGpu && !!data.gpu?.[0],
+            this.config.gpuMode,
+            () => {
+                const gpu = data.gpu?.[0];
+                if (!gpu) return null;
+                const usage = Math.round(gpu.utilization ?? 0);
+                const temp = gpu.temperature ?? 0;
+                pushHistory(this.gpuHistory, usage);
+                return { value: usage, extra: `${temp}°C` };
+            }
+        );
 
         // Memory
-        if (this.config.showMemory) {
-            const memUsed = Math.round(data.memory?.used_percent || 0);
-            const memUsedStr = formatBytes(data.memory?.used || 0);
-            const memTotalStr = formatBytes(data.memory?.total || 0);
-            pushHistory(this.memoryHistory, memUsed);
-            updateItem(
-                memoryRow,
-                'MEM',
-                memUsed,
-                this.config.memoryMode,
-                `${memUsedStr.slice(0, -3)}/${memTotalStr}`,
-                this.config,
-                this.memoryHistory
-            );
-            if (memoryRow) memoryRow.style.display = '';
-        } else if (memoryRow) {
-            memoryRow.style.display = 'none';
-        }
+        this.renderSimple(refs.memoryRow, this.config.showMemory, this.config.memoryMode, () => {
+            const usedPct = Math.round(data.memory?.used_percent ?? 0);
+            const usedStr = formatBytes(data.memory?.used ?? 0).slice(0, -3);
+            const totalStr = formatBytes(data.memory?.total ?? 0);
+            pushHistory(this.memoryHistory, usedPct);
+            return { value: usedPct, extra: `${usedStr}/${totalStr}` };
+        });
 
         // Network
-        if (this.config.showNetwork) {
-            const rx = formatBytes(data.network?.rx || 0) + '/s';
-            const tx = formatBytes(data.network?.tx || 0) + '/s';
-            updateNetworkDisplay(networkRow, rx, tx);
-            if (networkRow) networkRow.style.display = '';
-        } else if (networkRow) {
-            networkRow.style.display = 'none';
+        this.renderNetwork(
+            refs.networkRow,
+            this.config.showNetwork,
+            this.config.networkMode,
+            () => {
+                const rx = data.network?.rx ?? 0;
+                const tx = data.network?.tx ?? 0;
+                const maxBps = Math.max(rx, tx, 1);
+                const rxPct = clampPct((rx / maxBps) * 100);
+                const txPct = clampPct((tx / maxBps) * 100);
+                pushHistory(this.networkRxHistory, rxPct);
+                pushHistory(this.networkTxHistory, txPct);
+                return {
+                    netRx: `${formatBytes(rx)}/s`,
+                    netTx: `${formatBytes(tx)}/s`,
+                    netRxPct: rxPct,
+                    netTxPct: txPct,
+                };
+            }
+        );
+    }
+
+    /**
+     * Render a simple (cpu/gpu/memory) row. The producer may return null to
+     * hide the row this frame (e.g. gpu is missing on this host).
+     */
+    private renderSimple(
+        row: HTMLElement | null,
+        visible: boolean,
+        mode: DisplayMode,
+        produce: () => RowPayload | null
+    ): void {
+        if (!visible || !row) {
+            if (row) row.style.display = 'none';
+            return;
         }
+        const payload = produce();
+        if (!payload) {
+            row.style.display = 'none';
+            return;
+        }
+        const history = historyForMetric(row, this);
+        renderRow(row, payload, mode, history);
+    }
+
+    /** Render the network row. Network has its own history lane pair. */
+    private renderNetwork(
+        row: HTMLElement | null,
+        visible: boolean,
+        mode: DisplayMode,
+        produce: () => RowPayload
+    ): void {
+        if (!visible || !row) {
+            if (row) row.style.display = 'none';
+            return;
+        }
+        const payload = produce();
+        // Network curves use the rx history as the primary; the tx lane
+        // reuses the same buffer for visual symmetry (callers can supply
+        // a richer payload to override this).
+        renderRow(row, payload, mode, this.networkRxHistory);
     }
 
     public updateConfig(newConfig: Partial<SystemMonitorConfig>): void {
@@ -194,48 +217,46 @@ export class SystemMonitor {
     private rerenderAllRows(): void {
         if (!this.refs) return;
 
-        // Force re-render of all visible rows to reposition canvas elements
-        if (this.config.showCpu && this.cpuHistory.length > 0) {
-            updateItem(
+        // Force re-render of all visible rows to reposition viz elements.
+        // The last cached value/extra are not preserved across alignment
+        // flips; we emit an empty payload which still clears the viz slot.
+        if (this.config.showCpu) {
+            renderRow(
                 this.refs.cpuRow,
-                'CPU',
-                this.cpuHistory[this.cpuHistory.length - 1] || 0,
+                { value: lastOf(this.cpuHistory) },
                 this.config.cpuMode,
-                undefined,
-                this.config,
                 this.cpuHistory
             );
         }
-        if (this.config.showGpu && this.gpuHistory.length > 0) {
-            updateItem(
+        if (this.config.showGpu) {
+            renderRow(
                 this.refs.gpuRow,
-                'GPU',
-                this.gpuHistory[this.gpuHistory.length - 1] || 0,
+                { value: lastOf(this.gpuHistory) },
                 this.config.gpuMode,
-                undefined,
-                this.config,
                 this.gpuHistory
             );
         }
-        if (this.config.showMemory && this.memoryHistory.length > 0) {
-            updateItem(
+        if (this.config.showMemory) {
+            renderRow(
                 this.refs.memoryRow,
-                'MEM',
-                this.memoryHistory[this.memoryHistory.length - 1] || 0,
+                { value: lastOf(this.memoryHistory) },
                 this.config.memoryMode,
-                undefined,
-                this.config,
                 this.memoryHistory
             );
         }
-        if (this.config.showNetwork && this.refs.networkRow) {
-            const networkLeftSpan = this.refs.networkRow.querySelector(
-                '.left'
-            ) as HTMLElement | null;
-            if (networkLeftSpan) {
-                const oldCanvas = networkLeftSpan.querySelector('canvas');
-                if (oldCanvas) oldCanvas.remove();
-            }
+        if (this.config.showNetwork) {
+            renderRow(
+                this.refs.networkRow,
+                {
+                    value: 0,
+                    netRx: '0 B/s',
+                    netTx: '0 B/s',
+                    netRxPct: 0,
+                    netTxPct: 0,
+                },
+                this.config.networkMode,
+                this.networkRxHistory
+            );
         }
     }
 
@@ -282,6 +303,43 @@ export class SystemMonitor {
             this.disconnectTimer = null;
         }
     }
+}
+
+/**
+ * Pick the matching history buffer for a simple row based on its metric tag.
+ * Falls back to an empty buffer (so curve mode renders no curve yet) when
+ * the row has no data-metric attribute.
+ */
+function historyForMetric(row: HTMLElement, owner: SystemMonitor): number[] {
+    // Access private fields through a typed alias — this is a deliberate,
+    // tightly-scoped bridge that keeps the renderer free of metric branching.
+    const self = owner as unknown as {
+        cpuHistory: number[];
+        gpuHistory: number[];
+        memoryHistory: number[];
+    };
+    switch (row.dataset.metric) {
+        case 'cpu':
+            return self.cpuHistory;
+        case 'gpu':
+            return self.gpuHistory;
+        case 'memory':
+            return self.memoryHistory;
+        default:
+            return [];
+    }
+}
+
+function lastOf(history: number[]): number {
+    if (history.length === 0) return 0;
+    return history[history.length - 1] ?? 0;
+}
+
+function clampPct(v: number): number {
+    if (Number.isNaN(v) || !Number.isFinite(v)) return 0;
+    if (v < 0) return 0;
+    if (v > 100) return 100;
+    return v;
 }
 
 // 导出单例

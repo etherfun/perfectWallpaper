@@ -267,37 +267,37 @@
 
     <div id="system-monitor">
         <div class="background">
-            <div class="sysmon-row sysmon-cpu">
-                <span class="left"></span>
-                <span class="sysmon-label">CPU</span>
-                <div class="right">
-                    <div class="main-line"></div>
-                    <div class="sub-line"></div>
+            <div class="sysmon-row sysmon-cpu" data-metric="cpu">
+                <div class="sysmon-text">
+                    <span class="sysmon-label">CPU</span>
+                    <span class="sysmon-value">0%</span>
+                    <span class="sysmon-extra"></span>
                 </div>
+                <div class="sysmon-viz"></div>
             </div>
-            <div class="sysmon-row sysmon-gpu">
-                <span class="left"></span>
-                <span class="sysmon-label">GPU</span>
-                <div class="right">
-                    <div class="main-line"></div>
-                    <div class="sub-line"></div>
+            <div class="sysmon-row sysmon-gpu" data-metric="gpu">
+                <div class="sysmon-text">
+                    <span class="sysmon-label">GPU</span>
+                    <span class="sysmon-value">0%</span>
+                    <span class="sysmon-extra"></span>
                 </div>
+                <div class="sysmon-viz"></div>
             </div>
-            <div class="sysmon-row sysmon-memory">
-                <span class="left"></span>
-                <span class="sysmon-label" data-i18n="sysmon_label_memory"></span>
-                <div class="right">
-                    <div class="main-line"></div>
-                    <div class="sub-line"></div>
+            <div class="sysmon-row sysmon-memory" data-metric="memory">
+                <div class="sysmon-text">
+                    <span class="sysmon-label" data-i18n="sysmon_label_memory"></span>
+                    <span class="sysmon-value">0%</span>
+                    <span class="sysmon-extra"></span>
                 </div>
+                <div class="sysmon-viz"></div>
             </div>
-            <div class="sysmon-row sysmon-network">
-                <span class="left"></span>
-                <span class="sysmon-label" data-i18n="sysmon_label_network"></span>
-                <div class="right">
-                    <div class="main-line"></div>
-                    <div class="sub-line"></div>
+            <div class="sysmon-row sysmon-network" data-metric="network">
+                <div class="sysmon-text">
+                    <span class="sysmon-label" data-i18n="sysmon_label_network"></span>
+                    <span class="sysmon-net sysmon-net-down">↓0 B/s</span>
+                    <span class="sysmon-net sysmon-net-up">↑0 B/s</span>
                 </div>
+                <div class="sysmon-viz"></div>
             </div>
         </div>
     </div>

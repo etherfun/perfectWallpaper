@@ -115,8 +115,12 @@ mod tests {
 
     #[test]
     fn test_port_validation() {
+        // validate_port 拒绝 < 1024 的端口(避免与系统保留端口冲突)
+        assert!(ServerConfig::validate_port(1024).is_ok());
         assert!(ServerConfig::validate_port(3842).is_ok());
-        assert!(ServerConfig::validate_port(80).is_ok());
+        assert!(ServerConfig::validate_port(8080).is_ok());
+        assert!(ServerConfig::validate_port(65535).is_ok());
+        assert!(ServerConfig::validate_port(80).is_err());
         assert!(ServerConfig::validate_port(1023).is_err());
         assert!(ServerConfig::validate_port(0).is_err());
     }

@@ -3,47 +3,9 @@ use chrono::Utc;
 use sysinfo::{CpuRefreshKind, MemoryRefreshKind, RefreshKind, System, MINIMUM_CPU_UPDATE_INTERVAL};
 use std::sync::Arc;
 
-use super::gpu::GpuInfo;
+use super::cpu::{collect_cpu_infos, CpuInfo};
+use super::gpu::{collect_gpu_infos, GpuInfo};
 use crate::routes::config::AppStateWithConfig;
-
-#[cfg(windows)]
-fn get_gpu_info_windows() -> Vec<GpuInfo> {
-    use hardware_query::GPUInfo;
-
-    match GPUInfo::query_all() {
-        Ok(gpus) => {
-            gpus.into_iter().enumerate().map(|(idx, gpu)| {
-                let vendor_str = match gpu.vendor {
-                    hardware_query::GPUVendor::NVIDIA => "NVIDIA",
-                    hardware_query::GPUVendor::AMD => "AMD",
-                    hardware_query::GPUVendor::Intel => "Intel",
-                    hardware_query::GPUVendor::Apple => "Apple",
-                    hardware_query::GPUVendor::ARM => "ARM",
-                    hardware_query::GPUVendor::Qualcomm => "Qualcomm",
-                    hardware_query::GPUVendor::Unknown(ref s) => s,
-                };
-                GpuInfo {
-                    id: idx,
-                    model: gpu.model_name,
-                    vendor: vendor_str.to_string(),
-                    vram: gpu.memory_mb * 1024 * 1024,
-                    utilization: gpu.usage_percent.unwrap_or(0.0),
-                    temperature: gpu.temperature.unwrap_or(0.0),
-                }
-            }).collect()
-        }
-        Err(_) => {
-            vec![GpuInfo {
-                id: 0,
-                model: "Unknown".to_string(),
-                vendor: "Unknown".to_string(),
-                vram: 0,
-                utilization: 0.0,
-                temperature: 0.0,
-            }]
-        }
-    }
-}
 
 pub async fn get_system_info(
     State(state): State<Arc<AppStateWithConfig>>,
@@ -70,11 +32,15 @@ pub async fn get_system_info(
     let total_mem = sys.total_memory();
     let used_mem = sys.used_memory();
 
-    // Get CPU info
-    let cpu = sys.cpus();
-    let cpu_data = cpu.first();
-
     let now = Utc::now().timestamp_millis();
+
+    // Collect detailed CPU info (usage, frequency, cores, ...)
+    // via the same helper that powers `GET /api/sysinfo/cpu`,
+    // so both endpoints stay in lock-step. CPU temperature
+    // fields stay at 0 / `available: false` — see the
+    // `cpu.rs` module-level docs for the rationale (no
+    // kernel driver, no admin).
+    let cpu_info: Vec<CpuInfo> = collect_cpu_infos();
 
     // Get network stats
     let networks = sysinfo::Networks::new_with_refreshed_list();
@@ -110,41 +76,16 @@ pub async fn get_system_info(
         *cached = (total_rx, total_tx, now);
     }
 
-    // Get GPU info
-    #[cfg(windows)]
-    let gpu_info = get_gpu_info_windows();
-
-    #[cfg(not(windows))]
-    let gpu_info = vec![GpuInfo {
-        id: 0,
-        model: "Unknown".to_string(),
-        vendor: "Unknown".to_string(),
-        vram: 0,
-        utilization: 0.0,
-        temperature: 0.0,
-    }];
-
-    // Detect CPU manufacturer from brand string
-    let cpu_manufacturer = cpu_data.map(|c| {
-        let brand = c.brand();
-        if brand.contains("AMD") { "AMD" }
-        else if brand.contains("Intel") { "Intel" }
-        else if brand.contains("Apple") { "Apple" }
-        else if brand.contains("ARM") { "ARM" }
-        else { "Unknown" }
-    }).unwrap_or("Unknown");
+    // GPU info via `hardware_query` (no kernel driver, no
+    // admin). Same helper that powers `GET /api/sysinfo/gpu`,
+    // so the aggregate and per-component endpoints stay in
+    // lock-step.
+    let gpu_info: Vec<GpuInfo> = collect_gpu_infos();
 
     let response = serde_json::json!({
         "success": true,
         "data": {
-            "cpu": {
-                "manufacturer": cpu_manufacturer,
-                "brand": cpu_data.map(|c| c.brand()).unwrap_or("Unknown"),
-                "speed": cpu_data.map(|c| c.frequency()).unwrap_or(0),
-                "cores": cpu.len() as u32,
-                "physical_cores": sys.physical_core_count().unwrap_or(1) as u32,
-                "usage": sys.global_cpu_info().cpu_usage()
-            },
+            "cpu": cpu_info,
             "memory": {
                 "total": total_mem,
                 "used": used_mem,

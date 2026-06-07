@@ -10,6 +10,10 @@ $DIST_DIR = Join-Path $PROJECT_DIR "dist"
 
 Write-Host "Building Rust server..."
 
+# `lhm-sys` (Windows-only) statically links an AOT-compiled C# bridge
+# over LibreHardwareMonitor. The C# bridge is built with .NET 8, so the
+# .NET 8 SDK is required at *build* time on Windows. No .NET runtime
+# is needed at runtime — the bridge is baked into the binary.
 # Build release
 Set-Location $SERVER_RS_DIR
 cargo build --release

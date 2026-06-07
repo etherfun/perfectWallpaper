@@ -1,7 +1,7 @@
 import { applyConfig } from './configApply';
 import { DEFAULT_CONFIG } from './constants';
 import { queryDomElements } from './domRefs';
-import { formatBytes } from './formatters';
+import { formatBytes, formatTemperature } from './formatters';
 import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './renderer';
 import type { SystemMonitorConfig, SystemMonitorData, SystemMonitorDomRefs } from './types';
 
@@ -94,10 +94,16 @@ export class SystemMonitor {
         if (!refs) return;
 
         // CPU
+        // `/api/sysinfo` returns `cpu` as a `CpuData[]`. On mainstream
+        // PCs the array has exactly one element (see `collect_cpu_infos`
+        // in the Rust server); we always render from index 0 and silently
+        // fall back to zeros if the array is empty or missing.
         this.renderSimple(refs.cpuRow, this.config.showCpu, this.config.cpuMode, () => {
-            const usage = Math.round(data.cpu?.usage ?? 0);
+            const cpu0 = data.cpu?.[0];
+            const usage = Math.round(cpu0?.usage ?? 0);
+            const tempText = cpu0 ? formatTemperature(cpu0.temperature) ?? undefined : undefined;
             pushHistory(this.cpuHistory, usage);
-            return { value: usage };
+            return { value: usage, extra: tempText };
         });
 
         // GPU

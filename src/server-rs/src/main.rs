@@ -158,7 +158,7 @@ fn main() {
     let app = Router::new()
         // System info routes
         .route("/api/sysinfo", get(routes::sysinfo::get_system_info))
-        .route("/api/sysinfo/cpu", get(routes::sysinfo::get_cpu_usage))
+        .route("/api/sysinfo/cpu", get(routes::sysinfo::get_cpu_info))
         .route("/api/sysinfo/memory", get(routes::sysinfo::get_memory_info))
         .route("/api/sysinfo/gpu", get(routes::sysinfo::get_gpu_info))
         // File routes

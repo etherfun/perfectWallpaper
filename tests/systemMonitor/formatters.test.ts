@@ -8,7 +8,7 @@
 
 import { describe, expect, test } from 'vitest';
 
-import { formatBytes, getColorForValue } from '@/systemMonitor/formatters';
+import { formatBytes, formatTemperature, getColorForValue } from '@/systemMonitor/formatters';
 
 describe('formatBytes', () => {
     test('returns "0 B" for zero', () => {
@@ -76,5 +76,45 @@ describe('getColorForValue', () => {
     test('handles negative values as "low" (green)', () => {
         // Implementation: if (value < 50) green — includes negatives
         expect(getColorForValue(-1)).toBe('rgba(76, 175, 80, 1)');
+    });
+});
+
+describe('formatTemperature', () => {
+    test('returns null for null or undefined', () => {
+        // Callers rely on `null` to decide whether to show the `(extra)`
+        // slot at all, so missing sensor data must round-trip to `null`.
+        expect(formatTemperature(null)).toBeNull();
+        expect(formatTemperature(undefined)).toBeNull();
+    });
+
+    test('returns null for non-finite values (NaN, Infinity)', () => {
+        // `sysinfo` returns NaN on Linux when a sensor read fails.
+        expect(formatTemperature(NaN)).toBeNull();
+        expect(formatTemperature(Infinity)).toBeNull();
+        expect(formatTemperature(-Infinity)).toBeNull();
+    });
+
+    test('returns null for zero and negative readings', () => {
+        // `sysinfo` often reports `0.0` when a sensor exists but is
+        // unreadable; showing "0°C" in the taskbar would be misleading.
+        expect(formatTemperature(0)).toBeNull();
+        expect(formatTemperature(-5)).toBeNull();
+    });
+
+    test('rounds positive readings to the nearest integer with the °C suffix', () => {
+        expect(formatTemperature(55)).toBe('55°C');
+        expect(formatTemperature(55.4)).toBe('55°C');
+        expect(formatTemperature(55.5)).toBe('56°C');
+        expect(formatTemperature(99.6)).toBe('100°C');
+    });
+
+    test('sub-1 readings round down to 0°C (honest report, not suppressed)', () => {
+        // We only suppress EXACTLY-zero / negative / non-finite inputs,
+        // which the upstream sensor layer uses to signal "unreadable".
+        // A sub-1 positive reading is a valid (cold) measurement and is
+        // shown as "0°C" so the user sees the value is low rather than
+        // missing.
+        expect(formatTemperature(0.4)).toBe('0°C');
+        expect(formatTemperature(0.9)).toBe('1°C');
     });
 });

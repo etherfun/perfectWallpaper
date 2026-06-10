@@ -8,7 +8,6 @@ import importPlugin from 'eslint-plugin-import';
 export default [
   {
     ignores: [
-      'src/server-rs/**',
       'node_modules/**',
       'dist/**',
       'coverage/**'

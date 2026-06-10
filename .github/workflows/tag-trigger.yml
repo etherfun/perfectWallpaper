@@ -22,17 +22,6 @@ jobs:
           cache: 'yarn'
           cache-dependency-path: yarn.lock
 
-      - name: Setup Rust
-        uses: dtolnay/rust-toolchain@master
-        with:
-          toolchain: stable
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-
-      - name: Setup sccache
-        uses: mozilla-actions/sccache-action@v0.0.3
-
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
@@ -40,13 +29,24 @@ jobs:
         run: yarn build
 
       - name: Build server
-        run: yarn build:server:rust
-        env:
-          RUSTC_WRAPPER: sccache
+        # The Rust server backend was deprecated 2026-06.
+        # The .NET Framework 4.8 server is the single
+        # supported backend going forward. See
+        # scripts/build-dotnet.ps1 for the .NET pipeline.
+        # Note: this step now expects the .NET 8 SDK on
+        # the runner (windows-latest has it preinstalled).
+        run: yarn build:server:dotnet
 
       - name: Create zip archive
         run: |
           $tag = "${{ github.ref_name }}" -replace '^v',''
+          # Ship the whole of dist/ (TS bundle + perfectwall-server/).
+          # Compress-Archive -Path 'dist\*' recurses into
+          # subdirectories automatically, so users get a
+          # single zip containing the TS bundle at the root
+          # and the server binary in the
+          # perfectwall-server/ subfolder — same layout
+          # that build-dotnet.ps1 lays out on disk.
           Compress-Archive -Path dist\* -DestinationPath "perfectwallpaper-${tag}.zip"
 
       - name: Extract release notes
@@ -69,6 +69,12 @@ jobs:
           draft: false
           files: |
             perfectwallpaper-*.zip
-            dist/perfectwall-server.exe
+            # Post-2026-06 layout: server lives in its own
+            # subfolder so dist/ root stays clean for the
+            # TypeScript bundle. Uploading the EXE
+            # individually (in addition to the zip) makes
+            # it easy to grab a single artefact from the
+            # release page without unzipping.
+            dist/perfectwall-server/perfectwall-server.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

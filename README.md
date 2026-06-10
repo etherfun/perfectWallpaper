@@ -92,7 +92,7 @@ perfectwall/
 │   ├── version/               # 版本解析
 │   └── utils/                  # 工具函数
 ├── src/scss/                   # 样式文件
-├── src/server-rs/              # Rust服务器（可选）
+├── src/server-dotnet/          # .NET Framework 4.8 服务器
 ├── scripts/                    # 构建脚本
 ├── package.json
 └── tsconfig.json

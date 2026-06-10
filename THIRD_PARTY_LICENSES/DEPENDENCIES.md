@@ -7,5 +7,8 @@ This project uses the following third-party libraries, fonts, and assets:
 - [qweather-icons@1.8.0](https://github.com/qwd/Icons) - MIT
 - [hardware-query@0.2](https://github.com/ciresnave/hardware-query) - MIT OR Apache-2.0
   - Windows-only GPU vendor/model/utilisation/temperature/VRAM
-    detection used by `src/server-rs/src/routes/sysinfo/gpu.rs`.
+    detection; was previously used by the (now-deprecated)
+    Rust server in `src/server-rs/src/routes/sysinfo/gpu.rs`.
+    Kept in this list because the licence is still in
+    effect for any historical build artefacts.
     No kernel driver; no administrator privileges required.

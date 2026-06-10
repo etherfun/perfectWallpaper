@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    Localized strings for the .NET sidecar's GUI / console
+    surfaces. Pure C# — the HTML /setup page is served by
+    SetupEndpoints and uses its own per-locale JSON, NOT
+    these .resx entries. Keeping the two stores separate
+    matches the project rule "GUI i18n must not be mixed
+    with the frontend HTML's i18n".
+
+    Keys cover:
+      * WinForms window chrome
+      * Console fallback menu text
+      * The /api/setup/strings JSON payload (also here
+        so the two stay in lockstep)
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <!-- WinForms chrome -->
+  <data name="Gui_WindowTitle" xml:space="preserve">
+    <value>PerfectWall Server — Setup</value>
+  </data>
+  <data name="Gui_GuiCrashedFormat" xml:space="preserve">
+    <value>[Setup] GUI crashed: {0}: {1}</value>
+  </data>
+  <data name="Gui_GuiThreadFailedFormat" xml:space="preserve">
+    <value>[Setup] GUI thread failed to start: {0}</value>
+  </data>
+
+  <!-- Console fallback menu -->
+  <data name="Console_MenuTitle" xml:space="preserve">
+    <value>=== PerfectWall Server — Setup ===</value>
+  </data>
+  <data name="Console_PortLabel" xml:space="preserve">
+    <value>  Listening port        : {0}</value>
+  </data>
+  <data name="Console_ElevatedLabel" xml:space="preserve">
+    <value>  Running as admin      : {0}</value>
+  </data>
+  <data name="Console_UserAutoStartLabel" xml:space="preserve">
+    <value>  User auto-start       : {0} (HKCU)</value>
+  </data>
+  <data name="Console_AdminAutoStartLabel" xml:space="preserve">
+    <value>  Admin auto-start      : {0} (Task Scheduler, requires admin rights)</value>
+  </data>
+  <data name="Console_PawnioLabel" xml:space="preserve">
+    <value>  PawnIO                 : {0}</value>
+  </data>
+  <data name="Console_PawnioInstalledFormat" xml:space="preserve">
+    <value>installed ({0})</value>
+  </data>
+  <data name="Console_PawnioNotInstalled" xml:space="preserve">
+    <value>NOT INSTALLED</value>
+  </data>
+  <data name="Console_PawnioLhmHint" xml:space="preserve">
+    <value>                          LHM 0.9.6 needs PawnIO.sys to read sensors when HVCI is enabled.</value>
+  </data>
+  <data name="Console_ChoicePort" xml:space="preserve">
+    <value>  [P] change port</value>
+  </data>
+  <data name="Console_ChoiceUser" xml:space="preserve">
+    <value>  [U] toggle user auto-start</value>
+  </data>
+  <data name="Console_ChoiceAdmin" xml:space="preserve">
+    <value>  [A] toggle admin auto-start</value>
+  </data>
+  <data name="Console_ChoiceAdminNeedsElevation" xml:space="preserve">
+    <value> (need admin rights)</value>
+  </data>
+  <data name="Console_ChoicePawnio" xml:space="preserve">
+    <value>  [O] open PawnIO releases page in browser</value>
+  </data>
+  <data name="Console_ChoiceQuit" xml:space="preserve">
+    <value>  [Q] quit (resume normal logging)</value>
+  </data>
+  <data name="Console_Prompt" xml:space="preserve">
+    <value>&gt; </value>
+  </data>
+  <data name="Console_PortPrompt" xml:space="preserve">
+    <value>New port (1024-65535, or empty to cancel): </value>
+  </data>
+  <data name="Console_PortInvalid" xml:space="preserve">
+    <value>Invalid port.</value>
+  </data>
+  <data name="Console_PortSaved" xml:space="preserve">
+    <value>Saved. The HTTP listener will pick this up on the next wallpaper restart (the .NET Framework HttpListener cannot rebind in-process).</value>
+  </data>
+  <data name="Console_Enabled" xml:space="preserve">
+    <value>ENABLED</value>
+  </data>
+  <data name="Console_Disabled" xml:space="preserve">
+    <value>disabled</value>
+  </data>
+  <data name="Console_UserAutoStartUpdated" xml:space="preserve">
+    <value>Done. User auto-start is now {0}.</value>
+  </data>
+  <data name="Console_AdminAutoStartUpdated" xml:space="preserve">
+    <value>Done. Admin auto-start is now {0}.</value>
+  </data>
+  <data name="Console_NeedElevationForAdmin" xml:space="preserve">
+    <value>This process is not elevated. Right-click perfectwall-server.exe → 'Run as administrator' first.</value>
+  </data>
+  <data name="Console_PawnioOpened" xml:space="preserve">
+    <value>Opened PawnIO releases page in default browser.</value>
+  </data>
+  <data name="Console_ActionFailed" xml:space="preserve">
+    <value>Failed: {0}</value>
+  </data>
+
+  <!-- /api/setup/strings payload -->
+  <data name="Api_PageTitle" xml:space="preserve">
+    <value>PerfectWall Server — Setup</value>
+  </data>
+  <data name="Api_LabelPort" xml:space="preserve">
+    <value>Listening port</value>
+  </data>
+  <data name="Api_LabelUserAutoStart" xml:space="preserve">
+    <value>User-mode auto-start</value>
+  </data>
+  <data name="Api_LabelAdminAutoStart" xml:space="preserve">
+    <value>Admin-mode auto-start</value>
+  </data>
+  <data name="Api_LabelPawnio" xml:space="preserve">
+    <value>PawnIO</value>
+  </data>
+  <data name="Api_SubUserAutoStart" xml:space="preserve">
+    <value>HKCU\…\Run, no admin required, but some sensor data may be unavailable</value>
+  </data>
+  <data name="Api_SubAdminAutoStart" xml:space="preserve">
+    <value>Task Scheduler runs at logon with admin rights — no UAC prompt</value>
+  </data>
+  <data name="Api_SubPawnioMissing" xml:space="preserve">
+    <value>LibreHardwareMonitor needs PawnIO.sys to read sensors when HVCI is enabled.</value>
+  </data>
+  <!-- PawnIO card sub three-line layout (shown when installed) -->
+  <data name="Api_LabelPawnioPath" xml:space="preserve">
+    <value>Install path</value>
+  </data>
+  <data name="Api_LabelPawnioVersion" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Api_LabelPawnioLatest" xml:space="preserve">
+    <value>Latest (GitHub)</value>
+  </data>
+  <data name="Api_LabelPawnioInstallTime" xml:space="preserve">
+    <value>Install time</value>
+  </data>
+  <data name="Api_PawnioNoNetwork" xml:space="preserve">
+    <value>no network</value>
+  </data>
+  <data name="Api_PawnioUnknown" xml:space="preserve">
+    <value>unknown</value>
+  </data>
+  <data name="Api_BtnSave" xml:space="preserve">
+    <value>Save &amp; restart listener</value>
+  </data>
+  <data name="Api_PortInputPlaceholder" xml:space="preserve">
+    <value>1024-65535</value>
+  </data>
+  <data name="Api_BtnToggle" xml:space="preserve">
+    <value>Toggle</value>
+  </data>
+  <data name="Api_BtnOpenPawnio" xml:space="preserve">
+    <value>Open releases page</value>
+  </data>
+  <data name="Api_BtnOpenConsole" xml:space="preserve">
+    <value>Open console</value>
+  </data>
+  <data name="Api_ConsoleAlreadyOpen" xml:space="preserve">
+    <value>Console was already open.</value>
+  </data>
+  <data name="Api_ConsoleOpenedNote" xml:space="preserve">
+    <value>Console window opened in the background — switch to it to see logs.</value>
+  </data>
+  <data name="Api_Enabled" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="Api_Disabled" xml:space="preserve">
+    <value>Disabled</value>
+  </data>
+  <data name="Api_DisabledAdminHint" xml:space="preserve">
+    <value>Disabled (relaunch as admin to enable)</value>
+  </data>
+  <data name="Api_PawnioInstalled" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Api_PawnioNotInstalled" xml:space="preserve">
+    <value>Not installed</value>
+  </data>
+  <data name="Api_BtnEnable" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="Api_BtnDisable" xml:space="preserve">
+    <value>Disable</value>
+  </data>
+  <data name="Api_PortSub" xml:space="preserve">
+    <value>URL: http://localhost:{0}/api/sysinfo</value>
+  </data>
+  <data name="Api_ElevatedNote" xml:space="preserve">
+    <value>Running as Administrator. All features available.</value>
+  </data>
+  <data name="Api_NotElevatedNote" xml:space="preserve">
+    <value>Not running as Administrator. Right-click the EXE → Run as administrator to read CPU temperature, fan speed, and clock frequency, and to register admin auto-start.</value>
+  </data>
+  <data name="Api_InvalidPortStatus" xml:space="preserve">
+    <value>Invalid port (must be 1024-65535).</value>
+  </data>
+  <data name="Api_SavingStatus" xml:space="preserve">
+    <value>Saving…</value>
+  </data>
+  <data name="Api_PortSavedStatus" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Api_DefaultSaved" xml:space="preserve">
+    <value>Saved.</value>
+  </data>
+  <data name="Api_ActionFailedFormat" xml:space="preserve">
+    <value>Failed: {0}</value>
+  </data>
+  <data name="Api_GenericError" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="Api_LangSwitcherLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="Api_LangEn" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Api_LangZhCn" xml:space="preserve">
+    <value>中文</value>
+  </data>
+  <!-- Diagnostics card -->
+  <data name="Api_LabelDiagnostics" xml:space="preserve">
+    <value>Diagnostics</value>
+  </data>
+  <data name="Api_LabelRunMode" xml:space="preserve">
+    <value>Run mode</value>
+  </data>
+  <data name="Api_LabelProcessId" xml:space="preserve">
+    <value>Process ID</value>
+  </data>
+  <data name="Api_LabelExePath" xml:space="preserve">
+    <value>EXE path</value>
+  </data>
+  <data name="Api_LabelStartTime" xml:space="preserve">
+    <value>Started at</value>
+  </data>
+  <data name="Api_LabelArchitecture" xml:space="preserve">
+    <value>Architecture</value>
+  </data>
+  <data name="Api_LabelDotnetVersion" xml:space="preserve">
+    <value>.NET runtime</value>
+  </data>
+  <data name="Api_RunModeUser" xml:space="preserve">
+    <value>User (no admin)</value>
+  </data>
+  <data name="Api_RunModeAdmin" xml:space="preserve">
+    <value>Admin (LHM enabled)</value>
+  </data>
+  <!-- Hint shown when user tries to enable admin auto-start
+       while the EXE is not running as admin. The action
+       refuses the call; this is the surfaced error. -->
+  <data name="Api_AdminNeededHint" xml:space="preserve">
+    <value>Administrator required: right-click the EXE → Run as administrator, then retry</value>
+  </data>
+  <data name="Api_BtnNeedAdmin" xml:space="preserve">
+    <value>Need admin</value>
+  </data>
+</root>

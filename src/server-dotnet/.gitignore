@@ -1,0 +1,19 @@
+# NuGet restore artefacts
+packages/
+*.nupkg
+project.assets.json
+project.fragment.lock.json
+artifacts/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.userprefs
+
+# Build output that the csproj writes to <repo>/build/.
+# `dist/` is NOT ignored — it is the final shippable
+# payload and the Wallpaper Engine project.json points at
+# dist/index.html as its entry point.
+bin/
+obj/

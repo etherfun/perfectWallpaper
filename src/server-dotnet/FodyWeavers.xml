@@ -1,0 +1,57 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
+  <!--
+    Costura.Fody is INTENTIONALLY DISABLED here.
+
+    Why we used to embed everything:
+      * ship a single .exe for ease of distribution.
+      * the user double-clicks the EXE; no DLL hunt.
+
+    Why we no longer embed (2026-06):
+      Windows Defender (and several other heuristic
+      AV engines) flags the embedded-payload EXE as
+      Trojan:Script/Wacatac.C!ml — a known false
+      positive that fires on the combination of:
+        1. a single .NET EXE that contains a large
+           managed payload as an embedded resource
+           (Costura's hallmark);
+        2. an IL-rewritten module initializer that
+           registers an AssemblyResolve hook and
+           calls Assembly.Load(byte[]) at startup;
+        3. the loaded payload (LibreHardwareMonitorLib)
+           then calls P/Invoke into ring0 / kernel32
+           to load the WinRing0 driver — a third
+           classic dropper-style signal.
+      The Wacatac.C ML signature looks for that
+      exact triple. Result: dotnet build fails with
+      MSB4018 ("the file contains a virus or
+      potentially unwanted software") because
+      Defender locks the freshly-written EXE before
+      the build pipeline can read it back to set
+      version attributes.
+
+    What we do instead:
+      Ship the third-party managed DLLs as siblings
+      of perfectwall-server.exe, exactly the way
+      LibreHardwareMonitor ships its own helper
+      binaries. The csproj's <PackageReference>s
+      with PrivateAssets=All +
+      CopyLocalLockFileAssemblies=true put them in
+      build/ next to the EXE, and build-dotnet.ps1
+      mirrors them into dist/ via its $OWN_DLLS
+      allowlist.
+
+    Trade-off accepted:
+      The user now sees a folder of ~12 DLLs
+      alongside perfectwall-server.exe. This is the
+      standard layout for any native-friendly
+      Windows system-info utility (HWiNFO, CPUID
+      HWMonitor, OpenHardwareMonitor, LHM itself,
+      etc.) and is the only way to get the false
+      positive to go away without code-signing
+      every release.
+  -->
+  <Costura>
+    <IncludeAssemblies/>
+  </Costura>
+</Weavers>

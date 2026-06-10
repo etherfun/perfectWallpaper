@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!--
+    简体中文翻译。与 Strings.resx 一一对应,键名必须
+    完全相同,缺哪个键就 fallback 到默认 (英文)。
+  -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+
+  <data name="Gui_WindowTitle" xml:space="preserve">
+    <value>PerfectWall 服务器 — 设置</value>
+  </data>
+  <data name="Gui_GuiCrashedFormat" xml:space="preserve">
+    <value>[设置] 图形界面崩溃:{0}:{1}</value>
+  </data>
+  <data name="Gui_GuiThreadFailedFormat" xml:space="preserve">
+    <value>[设置] 图形界面线程启动失败:{0}</value>
+  </data>
+
+  <data name="Console_MenuTitle" xml:space="preserve">
+    <value>=== PerfectWall 服务器 — 设置 ===</value>
+  </data>
+  <data name="Console_PortLabel" xml:space="preserve">
+    <value>  监听端口            :{0}</value>
+  </data>
+  <data name="Console_ElevatedLabel" xml:space="preserve">
+    <value>  以管理员身份运行    :{0}</value>
+  </data>
+  <data name="Console_UserAutoStartLabel" xml:space="preserve">
+    <value>  用户级自启动        :{0} (HKCU)</value>
+  </data>
+  <data name="Console_AdminAutoStartLabel" xml:space="preserve">
+    <value>  管理员级自启动      :{0} (任务计划程序,需要管理员权限)</value>
+  </data>
+  <data name="Console_PawnioLabel" xml:space="preserve">
+    <value>  PawnIO              :{0}</value>
+  </data>
+  <data name="Console_PawnioInstalledFormat" xml:space="preserve">
+    <value>已安装 ({0})</value>
+  </data>
+  <data name="Console_PawnioNotInstalled" xml:space="preserve">
+    <value>未安装</value>
+  </data>
+  <data name="Console_PawnioLhmHint" xml:space="preserve">
+    <value>                          当 HVCI 启用时,LHM 0.9.6 需要 PawnIO.sys 才能读取传感器。</value>
+  </data>
+  <data name="Console_ChoicePort" xml:space="preserve">
+    <value>  [P] 修改端口</value>
+  </data>
+  <data name="Console_ChoiceUser" xml:space="preserve">
+    <value>  [U] 切换用户级自启动</value>
+  </data>
+  <data name="Console_ChoiceAdmin" xml:space="preserve">
+    <value>  [A] 切换管理员级自启动</value>
+  </data>
+  <data name="Console_ChoiceAdminNeedsElevation" xml:space="preserve">
+    <value> (需要管理员权限)</value>
+  </data>
+  <data name="Console_ChoicePawnio" xml:space="preserve">
+    <value>  [O] 在浏览器中打开 PawnIO 发布页</value>
+  </data>
+  <data name="Console_ChoiceQuit" xml:space="preserve">
+    <value>  [Q] 退出 (恢复常规日志)</value>
+  </data>
+  <data name="Console_Prompt" xml:space="preserve">
+    <value>&gt; </value>
+  </data>
+  <data name="Console_PortPrompt" xml:space="preserve">
+    <value>新端口 (1024-65535,留空取消):</value>
+  </data>
+  <data name="Console_PortInvalid" xml:space="preserve">
+    <value>无效端口。</value>
+  </data>
+  <data name="Console_PortSaved" xml:space="preserve">
+    <value>已保存。HTTP 监听器会在下次重启壁纸时生效(.NET Framework 的 HttpListener 不能在进程内重新绑定)。</value>
+  </data>
+  <data name="Console_Enabled" xml:space="preserve">
+    <value>已启用</value>
+  </data>
+  <data name="Console_Disabled" xml:space="preserve">
+    <value>已禁用</value>
+  </data>
+  <data name="Console_UserAutoStartUpdated" xml:space="preserve">
+    <value>完成。用户级自启动现在为:{0}。</value>
+  </data>
+  <data name="Console_AdminAutoStartUpdated" xml:space="preserve">
+    <value>完成。管理员级自启动现在为:{0}。</value>
+  </data>
+  <data name="Console_NeedElevationForAdmin" xml:space="preserve">
+    <value>当前进程未以管理员身份运行。请先右键 perfectwall-server.exe → "以管理员身份运行"。</value>
+  </data>
+  <data name="Console_PawnioOpened" xml:space="preserve">
+    <value>已在默认浏览器中打开 PawnIO 发布页。</value>
+  </data>
+  <data name="Console_ActionFailed" xml:space="preserve">
+    <value>失败:{0}</value>
+  </data>
+
+  <data name="Api_PageTitle" xml:space="preserve">
+    <value>PerfectWall 服务器 — 设置</value>
+  </data>
+  <data name="Api_LabelPort" xml:space="preserve">
+    <value>监听端口</value>
+  </data>
+  <data name="Api_LabelUserAutoStart" xml:space="preserve">
+    <value>用户级自启动</value>
+  </data>
+  <data name="Api_LabelAdminAutoStart" xml:space="preserve">
+    <value>管理员级自启动</value>
+  </data>
+  <data name="Api_LabelPawnio" xml:space="preserve">
+    <value>PawnIO</value>
+  </data>
+  <data name="Api_SubUserAutoStart" xml:space="preserve">
+    <value>HKCU\…\Run,无需管理员,但部分传感器数据可能无法获取</value>
+  </data>
+  <data name="Api_SubAdminAutoStart" xml:space="preserve">
+    <value>任务计划程序登录时运行,以管理员权限启动,不再弹 UAC</value>
+  </data>
+  <data name="Api_SubPawnioMissing" xml:space="preserve">
+    <value>当 HVCI 启用时,LibreHardwareMonitor 需要 PawnIO.sys 才能读取传感器。</value>
+  </data>
+  <!-- PawnIO 卡片 sub 三行布局（已安装 时显示） -->
+  <data name="Api_LabelPawnioPath" xml:space="preserve">
+    <value>安装路径</value>
+  </data>
+  <data name="Api_LabelPawnioVersion" xml:space="preserve">
+    <value>版本号</value>
+  </data>
+  <data name="Api_LabelPawnioLatest" xml:space="preserve">
+    <value>最新版本（GitHub）</value>
+  </data>
+  <data name="Api_LabelPawnioInstallTime" xml:space="preserve">
+    <value>安装时间</value>
+  </data>
+  <data name="Api_PawnioNoNetwork" xml:space="preserve">
+    <value>无网络</value>
+  </data>
+  <data name="Api_PawnioUnknown" xml:space="preserve">
+    <value>未知</value>
+  </data>
+  <data name="Api_BtnSave" xml:space="preserve">
+    <value>保存并重启监听器</value>
+  </data>
+  <data name="Api_PortInputPlaceholder" xml:space="preserve">
+    <value>1024-65535</value>
+  </data>
+  <data name="Api_BtnToggle" xml:space="preserve">
+    <value>切换</value>
+  </data>
+  <data name="Api_BtnOpenPawnio" xml:space="preserve">
+    <value>打开发布页</value>
+  </data>
+  <data name="Api_BtnOpenConsole" xml:space="preserve">
+    <value>打开控制台</value>
+  </data>
+  <data name="Api_ConsoleAlreadyOpen" xml:space="preserve">
+    <value>控制台已经打开</value>
+  </data>
+  <data name="Api_ConsoleOpenedNote" xml:space="preserve">
+    <value>控制台窗口已在后台打开，切换过去可看日志</value>
+  </data>
+  <data name="Api_Enabled" xml:space="preserve">
+    <value>已启用</value>
+  </data>
+  <data name="Api_Disabled" xml:space="preserve">
+    <value>已禁用</value>
+  </data>
+  <data name="Api_DisabledAdminHint" xml:space="preserve">
+    <value>已禁用 (以管理员身份重启后启用)</value>
+  </data>
+  <data name="Api_PawnioInstalled" xml:space="preserve">
+    <value>已安装</value>
+  </data>
+  <data name="Api_PawnioNotInstalled" xml:space="preserve">
+    <value>未安装</value>
+  </data>
+  <data name="Api_BtnEnable" xml:space="preserve">
+    <value>启用</value>
+  </data>
+  <data name="Api_BtnDisable" xml:space="preserve">
+    <value>禁用</value>
+  </data>
+  <data name="Api_PortSub" xml:space="preserve">
+    <value>URL:http://localhost:{0}/api/sysinfo</value>
+  </data>
+  <data name="Api_ElevatedNote" xml:space="preserve">
+    <value>正在以管理员身份运行。全部功能可用。</value>
+  </data>
+  <data name="Api_NotElevatedNote" xml:space="preserve">
+    <value>未以管理员身份运行。右键 EXE → 以管理员身份运行,以读取 CPU 温度、风扇转速、频率等传感器数据,以及注册管理员级自启动。</value>
+  </data>
+  <data name="Api_InvalidPortStatus" xml:space="preserve">
+    <value>无效端口 (必须在 1024-65535 之间)。</value>
+  </data>
+  <data name="Api_SavingStatus" xml:space="preserve">
+    <value>保存中…</value>
+  </data>
+  <data name="Api_PortSavedStatus" xml:space="preserve">
+    <value>{0}</value>
+  </data>
+  <data name="Api_DefaultSaved" xml:space="preserve">
+    <value>已保存。</value>
+  </data>
+  <data name="Api_ActionFailedFormat" xml:space="preserve">
+    <value>失败:{0}</value>
+  </data>
+  <data name="Api_GenericError" xml:space="preserve">
+    <value>错误:{0}</value>
+  </data>
+  <data name="Api_LangSwitcherLabel" xml:space="preserve">
+    <value>语言</value>
+  </data>
+  <data name="Api_LangEn" xml:space="preserve">
+    <value>English</value>
+  </data>
+  <data name="Api_LangZhCn" xml:space="preserve">
+    <value>中文</value>
+  </data>
+  <!-- 诊断信息卡片 -->
+  <data name="Api_LabelDiagnostics" xml:space="preserve">
+    <value>诊断信息</value>
+  </data>
+  <data name="Api_LabelRunMode" xml:space="preserve">
+    <value>运行模式</value>
+  </data>
+  <data name="Api_LabelProcessId" xml:space="preserve">
+    <value>进程 ID</value>
+  </data>
+  <data name="Api_LabelExePath" xml:space="preserve">
+    <value>EXE 路径</value>
+  </data>
+  <data name="Api_LabelStartTime" xml:space="preserve">
+    <value>启动时间</value>
+  </data>
+  <data name="Api_LabelArchitecture" xml:space="preserve">
+    <value>处理器架构</value>
+  </data>
+  <data name="Api_LabelDotnetVersion" xml:space="preserve">
+    <value>.NET 运行时</value>
+  </data>
+  <data name="Api_RunModeUser" xml:space="preserve">
+    <value>用户模式（无管理员权限）</value>
+  </data>
+  <data name="Api_RunModeAdmin" xml:space="preserve">
+    <value>管理员模式（LHM 已启用）</value>
+  </data>
+  <!-- 非提权时尝试启用管理员级自启动的提示 -->
+  <data name="Api_AdminNeededHint" xml:space="preserve">
+    <value>需要以管理员身份运行:右键 EXE → 以管理员身份运行,然后重试</value>
+  </data>
+  <data name="Api_BtnNeedAdmin" xml:space="preserve">
+    <value>需要管理员权限</value>
+  </data>
+</root>

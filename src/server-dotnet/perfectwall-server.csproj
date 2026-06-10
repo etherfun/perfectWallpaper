@@ -1,0 +1,238 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <!-- WinExe (Windows GUI subsystem, not Console):
+         the EXE starts without a console window
+         popping up next to the wallpaper. Users
+         who want to see logs / interact with the
+         console fallback menu can click "Open
+         console" in the setup page; that calls
+         AllocConsole() on demand. The trade-off
+         is that startup-time Console.WriteLine
+         calls go to a null stream and are dropped
+         — that's deliberate, the silent-start
+         experience is more important than the
+         banner. -->
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net48</TargetFramework>
+    <RootNamespace>PerfectWall.Server</RootNamespace>
+    <AssemblyName>perfectwall-server</AssemblyName>
+    <LangVersion>8.0</LangVersion>
+    <PlatformTarget>x64</PlatformTarget>
+    <Prefer32Bit>false</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon />
+    <StartupObject>PerfectWall.Server.Program</StartupObject>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <!-- All build artefacts go to <repo>/build/ so they
+         are clearly separated from source (src/), vendored
+         dependencies (packages/), and the final release
+         payload (dist/). `dist/` is the ONLY directory the
+         Wallpaper Engine entry point reads at runtime, so
+         it stays the single source of truth for the
+         shipped binary. -->
+    <OutputPath>..\..\build\</OutputPath>
+    <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
+    <AssemblyTitle>PerfectWall System Info Server</AssemblyTitle>
+    <Product>PerfectWall Server</Product>
+    <Description>Hardware/system info HTTP server for the PerfectWall Wallpaper Engine project. Backed by LibreHardwareMonitor in admin mode; pure managed counters in user mode.</Description>
+    <Copyright>Copyright (c) etherfun</Copyright>
+    <Version>1.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+    <!--
+      Deliberately no <UseWindowsForms>. We are a console +
+      HTTP server; the setup UI is a web page served by
+      SetupEndpoints and rendered in the user's default
+      browser. System.Drawing is still pulled in (for icon
+      extraction) via the .NET Framework 4.8 in-box
+      reference assemblies.
+    -->
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibreHardwareMonitorLib" Version="0.9.6" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+    <PackageReference Include="TagLibSharp" Version="2.3.0" />
+    <!--
+      Costura.Fody used to embed every third-party
+      managed DLL (LHM, Newtonsoft, TagLibSharp, BCL
+      shims) into perfectwall-server.exe as resources
+      and serve them out of memory at runtime via
+      Assembly.Load(byte[]). That single-file
+      distribution pattern is what Windows Defender
+      flagged as Trojan:Script/Wacatac.C!ml — a
+      false positive on the
+      "embedded-payload + IL-rewritten module
+      initializer + P/Invoke into ring0" triple
+      that's also characteristic of .NET packers
+      and cryptors. dotnet build would fail with
+      MSB4018 ("the file contains a virus or
+      potentially unwanted software") because
+      Defender locked the freshly-written EXE
+      before the build pipeline could read it back
+      to set version attributes.
+
+      The fix: do not embed. Ship the third-party
+      DLLs as siblings of perfectwall-server.exe,
+      the standard layout for any Windows
+      system-info utility. Costura's weaver config
+      is intentionally empty (see FodyWeavers.xml);
+      we still need to keep its Fody plumbing
+      running so the Costura MSBuild target doesn't
+      error out, but the empty <IncludeAssemblies/>
+      means it produces a no-op assembly and never
+      embeds anything. The default
+      <Reference CopyLocal="true"/> behaviour for
+      a top-level <PackageReference> already copies
+      the LHM/Newtonsoft/TagLibSharp DLLs to
+      build/; the transitive ones (HidSharp,
+      DiskInfoToolkit, RAMSPDToolkit-NDD,
+      BlackSharp.Core, System.Memory,
+      System.Threading.AccessControl) are pulled
+      in by a post-build <Target> further down
+      that globs packages/*/lib/net472/*.dll into
+      $(OutputPath).
+    -->
+    <PackageReference Include="Costura.Fody" Version="5.7.0">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- App.config is the .NET Framework runtime config. We
+         ship it verbatim to the build output so the binding
+         redirect that pins System.Management to 4.0.0.0
+         makes it into perfectwall-server.exe.config next
+         to the EXE. -->
+    <None Update="App.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Loc/*.resx are the i18n bundle for the GUI / console
+         fallback. Strings.cs (BuildResourceManager +
+         GetInternal) reads them off disk at runtime via
+         ResXResourceReader, NOT from embedded assembly
+         resources, so a translator can drop a new
+         Strings.<culture>.resx in dist/Loc/ without
+         rebuilding.
+
+         IMPORTANT: we use <Content Include="..."> (NOT
+         <None Update="...">) because MSBuild silently
+         ignores CopyToOutputDirectory when the item is
+         declared as an <None> Update. <Content> with
+         PreserveNewest actually copies the .resx files
+         into the output directory, where
+         LocateContentLocDirectory() can find them next
+         to perfectwall-server.exe. -->
+    <Content Include="Loc\Strings.resx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Loc\Strings.zh-CN.resx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!--
+      We deliberately do NOT enable
+      <CopyLocalLockFileAssemblies> or broaden
+      <IncludeAssets> to drag in transitive
+      dependencies: on net48, the
+      "buildtransitive" + "analyzers" assets path
+      triggers MSB3644 ("could not find
+      .NETFramework,Version=v4.8 reference
+      assemblies") because the SDK tries to resolve
+      a .NET 4.8 *developer pack* to satisfy the
+      buildTransitive contract. The dev pack is not
+      installed in this environment, so the build
+      fails immediately.
+
+      Instead, transitive managed DLLs are copied
+      by the post-build <Target> at the bottom of
+      this file. That target globs
+      packages/*/lib/net472/*.dll (the
+      .NET Framework 4.7.2 build of every
+      transitive NuGet package) into $(OutputPath).
+      It explicitly only runs after a successful
+      build and never touches the source tree, so
+      it stays local to the build pipeline and does
+      not affect IDE compilation.
+    -->
+    <!-- Stop dotnet build from auto-generating a bogus
+         binding redirect that points System.Management at
+         9.0.0.0 (a .NET 9-only assembly). Our hand-written
+         App.config is the source of truth. -->
+    <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
+  </PropertyGroup>
+
+  <!--
+    The build pipeline is two-pass: dotnet build first
+    produces perfectwall-server.exe (with the managed DLLs
+    still on disk in build/), then Costura.Fody's MSBuild
+    target rewrites the assembly's IL to embed the DLLs as
+    resources. We do NOT need any post-build copy step —
+    the embedded IL is already in the EXE that dotnet
+    build emits.
+
+    Fody reads FodyWeavers.xml from the project root at
+    build time. Listed as a None item so it ships with
+    the source but does not pollute build/.
+  -->
+  <ItemGroup>
+    <None Update="FodyWeavers.xml">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <!--
+    Post-build: mirror every transitive NuGet
+    managed DLL into $(OutputPath) so the EXE
+    resolves its dependencies at runtime without
+    an installer or GAC.
+
+    Why this is needed:
+      Default CopyLocal=true for a top-level
+      <PackageReference> only copies the LHM,
+      Newtonsoft, and TagLibSharp DLLs. Their
+      *transitive* dependencies (HidSharp,
+      DiskInfoToolkit, RAMSPDToolkit-NDD,
+      BlackSharp.Core, System.Memory,
+      System.Threading.AccessControl) are silently
+      skipped. The .NET 4.8 BCL runtime throws
+      FileNotFoundException on first sensor read
+      if any of them is missing.
+
+    Why we don't use CopyLocalLockFileAssemblies
+    instead:
+      See the PropertyGroup above — that flag
+      triggers MSB3644 on net48 in this
+      environment.
+
+    The glob is restricted to:
+      packages/<id>/<version>/lib/net472/*.dll
+      packages/<id>/<version>/runtimes/win-x64/lib/net472/*.dll
+    so we never accidentally copy a net8.0 / net10.0
+    build (those are bound to a different TFM and
+    would either fail to load under net48 or, worse,
+    resolve shadowed types to wrong implementations).
+
+    Condition: only runs after a successful
+    Compile + Build, so a failed build doesn't
+    leave a half-copied build/ tree.
+  -->
+  <Target Name="CopyTransitiveManagedDlls" AfterTargets="Build">
+    <ItemGroup>
+      <_TransitiveLib472 Include="$(NuGetPackageRoot)*\*\lib\net472\*.dll" />
+      <_TransitiveRid Include="$(NuGetPackageRoot)*\*\runtimes\win-x64\lib\net472\*.dll" />
+      <_TransitiveDlls Include="@(_TransitiveLib472);@(_TransitiveRid)">
+        <DestinationFolder>$(OutputPath)</DestinationFolder>
+      </_TransitiveDlls>
+    </ItemGroup>
+    <Copy SourceFiles="@(_TransitiveDlls)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="'@(_TransitiveDlls)' != ''" />
+  </Target>
+
+</Project>

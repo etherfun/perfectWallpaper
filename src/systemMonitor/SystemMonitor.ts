@@ -1,9 +1,17 @@
+import { fetchAggregate } from './api';
 import { applyConfig } from './configApply';
 import { DEFAULT_CONFIG } from './constants';
 import { queryDomElements } from './domRefs';
 import { formatBytes, formatTemperature } from './formatters';
+import { pickPrimaryGpu } from './gpuSelector';
 import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './renderer';
-import type { SystemMonitorConfig, SystemMonitorData, SystemMonitorDomRefs } from './types';
+import type {
+    AggregateInfo,
+    CpuInfo,
+    GpuInfo,
+    SystemMonitorConfig,
+    SystemMonitorDomRefs,
+} from './types';
 
 /**
  * System Monitor Module
@@ -58,74 +66,81 @@ export class SystemMonitor {
     private async pollData(): Promise<void> {
         if (!this.enabled) return;
 
-        try {
-            const response = await fetch(this.config.serverUrl);
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const json = await response.json();
-
+        const data = await fetchAggregate(this.config.serverUrl);
+        if (data) {
             // Mark as connected on first success
             if (!this.hasEverConnected) {
                 this.hasEverConnected = true;
             }
-
             // Reset disconnect timer on successful connection
             this.lastConnectedTime = Date.now();
             if (this.disconnectTimer) {
                 clearTimeout(this.disconnectTimer);
                 this.disconnectTimer = null;
             }
+            this.updateDisplay(data);
+            return;
+        }
 
-            if (json.success) {
-                this.updateDisplay(json.data);
-            }
-        } catch {
-            // Only start disconnect timer if we've ever connected before
-            // This prevents auto-disable on startup when server is still initializing
-            if (this.hasEverConnected && !this.disconnectTimer) {
-                this.disconnectTimer = window.setTimeout(() => {
-                    this.destroy();
-                }, this.config.disconnectTimeout);
-            }
+        // fetchAggregate already logged the
+        // underlying error (HTTP / network /
+        // server message). Only start the
+        // disconnect timer if we've ever
+        // connected before — first-poll failure
+        // during startup is expected (server
+        // might still be initializing).
+        if (this.hasEverConnected && !this.disconnectTimer) {
+            this.disconnectTimer = window.setTimeout(() => {
+                this.destroy();
+            }, this.config.disconnectTimeout);
         }
     }
 
-    private updateDisplay(data: SystemMonitorData): void {
+    private updateDisplay(data: AggregateInfo): void {
         const refs = this.refs;
         if (!refs) return;
 
         // CPU
-        // `/api/sysinfo` returns `cpu` as a `CpuData[]`. On mainstream
-        // PCs the array has exactly one element (see `collect_cpu_infos`
-        // in the Rust server); we always render from index 0 and silently
-        // fall back to zeros if the array is empty or missing.
+        // `/api/sysinfo` returns `cpu` as a
+        // `CpuInfo[]`. On mainstream PCs the
+        // array has exactly one element; we
+        // always render from index 0 and
+        // silently fall back to zeros if the
+        // array is empty or missing. The
+        // `?? 0` and `?? undefined` patterns
+        // satisfy `noUncheckedIndexedAccess`:
+        // we explicitly acknowledge the
+        // "missing slot" branch instead of
+        // asserting non-null.
         this.renderSimple(refs.cpuRow, this.config.showCpu, this.config.cpuMode, () => {
-            const cpu0 = data.cpu?.[0];
+            const cpu0: CpuInfo | undefined = data.cpu[0];
             const usage = Math.round(cpu0?.usage ?? 0);
-            const tempText = cpu0 ? formatTemperature(cpu0.temperature) ?? undefined : undefined;
+            const tempText = cpu0 ? (formatTemperature(cpu0.temperature) ?? undefined) : undefined;
             pushHistory(this.cpuHistory, usage);
             return { value: usage, extra: tempText };
         });
 
         // GPU
-        this.renderSimple(
-            refs.gpuRow,
-            this.config.showGpu && !!data.gpu?.[0],
-            this.config.gpuMode,
-            () => {
-                const gpu = data.gpu?.[0];
-                if (!gpu) return null;
-                const usage = Math.round(gpu.utilization ?? 0);
-                const temp = gpu.temperature ?? 0;
-                pushHistory(this.gpuHistory, usage);
-                return { value: usage, extra: `${temp}°C` };
-            }
-        );
+        // Pick the most informative card from `data.gpu[]`
+        // instead of always taking index 0. On hybrid
+        // laptops (iGPU + dGPU) LHM reports the iGPU
+        // first and its temperature sensor is usually
+        // missing, which would make the row look broken
+        // even though the dGPU is fine.
+        const gpu: GpuInfo | undefined = pickPrimaryGpu(data.gpu);
+        this.renderSimple(refs.gpuRow, this.config.showGpu && !!gpu, this.config.gpuMode, () => {
+            if (!gpu) return null;
+            const usage = Math.round(gpu.utilization ?? 0);
+            const tempText = formatTemperature(gpu.temperature) ?? undefined;
+            pushHistory(this.gpuHistory, usage);
+            return { value: usage, extra: tempText };
+        });
 
         // Memory
         this.renderSimple(refs.memoryRow, this.config.showMemory, this.config.memoryMode, () => {
-            const usedPct = Math.round(data.memory?.used_percent ?? 0);
-            const usedStr = formatBytes(data.memory?.used ?? 0).slice(0, -3);
-            const totalStr = formatBytes(data.memory?.total ?? 0);
+            const usedPct = Math.round(data.memory.used_percent ?? 0);
+            const usedStr = formatBytes(data.memory.used ?? 0).slice(0, -3);
+            const totalStr = formatBytes(data.memory.total ?? 0);
             pushHistory(this.memoryHistory, usedPct);
             return { value: usedPct, extra: `${usedStr}/${totalStr}` };
         });
@@ -136,8 +151,8 @@ export class SystemMonitor {
             this.config.showNetwork,
             this.config.networkMode,
             () => {
-                const rx = data.network?.rx ?? 0;
-                const tx = data.network?.tx ?? 0;
+                const rx = data.network.rx ?? 0;
+                const tx = data.network.tx ?? 0;
                 const maxBps = Math.max(rx, tx, 1);
                 const rxPct = clampPct((rx / maxBps) * 100);
                 const txPct = clampPct((tx / maxBps) * 100);
@@ -199,7 +214,10 @@ export class SystemMonitor {
         this.config = { ...this.config, ...newConfig };
 
         if (newConfig.serverPort !== undefined) {
-            this.config.serverUrl = `http://localhost:${this.config.serverPort}/api/sysinfo`;
+            // Same as DEFAULT_CONFIG.serverUrl:
+            // origin only, the api helpers append
+            // the endpoint path.
+            this.config.serverUrl = `http://localhost:${this.config.serverPort}`;
         }
 
         if (newConfig.enabled !== undefined && newConfig.enabled !== wasEnabled) {

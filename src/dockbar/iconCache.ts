@@ -1,3 +1,4 @@
+import { clearIconCache as clearIconCacheApi, fetchIcon as fetchIconApi } from '@/systemMonitor';
 import { debugLogger } from '@/utils/logger';
 
 import { DEFAULT_ICON, SERVER_URL } from './constants';
@@ -74,16 +75,14 @@ function loadPathIcon(path: string, imgEl: HTMLImageElement, serverUrl: string):
         return;
     }
 
-    const timestamp = Date.now();
-    fetch(`${serverUrl}/api/icon?path=${encodeURIComponent(path)}&t=${timestamp}`)
-        .then(res => res.json())
+    fetchIconApi(serverUrl, path, true /* bypassCache */)
         .then(data => {
-            if (data.success && data.data.icon) {
+            if (data && data.icon) {
                 imgEl.onerror = () => {
                     imgEl.src = getDefaultIcon();
                 };
-                imgEl.src = data.data.icon;
-                cacheIcon(cacheKey, data.data.icon);
+                imgEl.src = data.icon;
+                cacheIcon(cacheKey, data.icon);
             }
         })
         .catch(err => {
@@ -116,14 +115,9 @@ export async function clearAllIconCache(serverUrl: string = SERVER_URL): Promise
     const keys = Object.keys(localStorage).filter(k => k.startsWith('icon_'));
     keys.forEach(k => localStorage.removeItem(k));
 
-    try {
-        const res = await fetch(`${serverUrl}/api/icon/cache`, { method: 'POST' });
-        const data = await res.json();
-        debugLogger.info('[DockBar] Cleared icon cache', {
-            serverEntries: data.data?.cleared || 0,
-            localStorageEntries: keys.length,
-        });
-    } catch (e) {
-        debugLogger.error('[DockBar] Failed to clear server cache', { error: e });
-    }
+    const result = await clearIconCacheApi(serverUrl);
+    debugLogger.info('[DockBar] Cleared icon cache', {
+        serverEntries: result?.cleared ?? 0,
+        localStorageEntries: keys.length,
+    });
 }

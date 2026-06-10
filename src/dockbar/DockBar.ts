@@ -1,3 +1,4 @@
+import { openDockbarItem } from '@/systemMonitor';
 import { debugLogger } from '@/utils/logger';
 
 import { showAddMenu } from './addMenu';
@@ -115,24 +116,15 @@ export class DockBar {
     }
 
     private openItem(item: DockItem): void {
-        fetch(`${SERVER_URL}/api/dockbar/open`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                type: item.type,
-                path: item.path,
-                url: item.url,
-            }),
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (!data.success) {
-                    debugLogger.error('[DockBar] Failed to open item', { error: data.error });
-                }
-            })
-            .catch(err => {
-                debugLogger.error('[DockBar] Failed to open item', { error: err });
-            });
+        void openDockbarItem(SERVER_URL, {
+            type: item.type,
+            ...(item.path !== undefined && { path: item.path }),
+            ...(item.url !== undefined && { url: item.url }),
+        }).then(opened => {
+            if (!opened) {
+                debugLogger.error('[DockBar] Failed to open item', { item: item.id });
+            }
+        });
     }
 
     public updateConfig(newConfig: Partial<DockBarConfig>): void {

@@ -1,3 +1,9 @@
+import {
+    type AllIconItem,
+    fetchAllIcons as fetchAllIconsApi,
+    selectFile as selectFileApi,
+    uploadCustomIcon as uploadCustomIconApi,
+} from '@/systemMonitor';
 import { debugLogger } from '@/utils/logger';
 
 export interface BrowseOptions {
@@ -32,16 +38,14 @@ async function handleBrowseClick(opts: BrowseOptions): Promise<void> {
     browseBtn.disabled = true;
 
     try {
-        const response = await fetch(`${serverUrl}/api/dockbar/select-file?type=${selectedType}`);
-        const data = await response.json();
-
-        if (!data.success || !data.data.path) {
+        const file = await selectFileApi(serverUrl, selectedType === 'app' ? 'app' : 'file');
+        if (!file || !file.path) {
             browseBtn.textContent = '选择文件...';
             return;
         }
 
-        const path: string = data.data.path;
-        const name: string = data.data.name || path.split('\\').pop() || '已选择';
+        const path: string = file.path;
+        const name: string = file.name ?? path.split('\\').pop() ?? '已选择';
         browseBtn.textContent = name;
         browseBtn.classList.add('selected');
         onPathSelected({ path, name });
@@ -49,14 +53,10 @@ async function handleBrowseClick(opts: BrowseOptions): Promise<void> {
         iconGrid.innerHTML = '<div class="icon-loading">加载图标中...</div>';
         iconSelector.style.display = 'block';
 
-        try {
-            const iconsResponse = await fetch(
-                `${serverUrl}/api/icon/all?path=${encodeURIComponent(path)}&t=${Date.now()}`
-            );
-            const iconsData = await iconsResponse.json();
-            populateIconGrid(iconGrid, iconsData, onIconSelected);
-        } catch (e) {
-            debugLogger.error('[DockBar] Failed to load icons', { path, error: e });
+        const iconsData = await fetchAllIconsApi(serverUrl, path);
+        if (iconsData) {
+            populateIconGrid(iconGrid, iconsData.icons, onIconSelected);
+        } else {
             iconGrid.innerHTML = '<div class="icon-no-icons">加载图标失败</div>';
         }
     } catch (e) {
@@ -69,11 +69,10 @@ async function handleBrowseClick(opts: BrowseOptions): Promise<void> {
 
 function populateIconGrid(
     iconGrid: HTMLElement,
-    iconsData: { success?: boolean; data?: { icons?: IconEntry[] } },
+    icons: AllIconItem[],
     onIconSelected: (icon: string) => void
 ): void {
     iconGrid.innerHTML = '';
-    const icons = iconsData.success && iconsData.data?.icons ? iconsData.data.icons : [];
 
     if (icons.length === 0) {
         iconGrid.innerHTML = '<div class="icon-no-icons">未找到图标</div>';
@@ -95,12 +94,6 @@ function populateIconGrid(
         });
         iconGrid.appendChild(iconBtn);
     });
-}
-
-interface IconEntry {
-    icon: string;
-    width: number;
-    height: number;
 }
 
 export interface CustomIconUploadOptions {
@@ -135,25 +128,20 @@ async function handleCustomIconUpload(
     if (!dataUrl) return;
 
     const base64Match = dataUrl.match(/^data:image\/\w+;base64,(.+)$/);
-    if (!base64Match) {
+    if (!base64Match || !base64Match[1]) {
         debugLogger.error('[DockBar] Invalid image data', { fileType: file.type });
         return;
     }
 
     try {
-        const response = await fetch(`${serverUrl}/api/icon/upload`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: base64Match[1],
-                type: file.type || 'image/png',
-            }),
+        const result = await uploadCustomIconApi(serverUrl, {
+            data: base64Match[1],
+            type: file.type || 'image/png',
         });
-        const data = await response.json();
-        if (data.success && data.data.icon) {
-            appendCustomIcon(iconGrid, data.data.icon, onIconSelected);
+        if (result && result.icon) {
+            appendCustomIcon(iconGrid, result.icon, onIconSelected);
         } else {
-            debugLogger.error('[DockBar] Failed to upload custom icon', { error: data.error });
+            debugLogger.error('[DockBar] Failed to upload custom icon');
         }
     } catch (err) {
         debugLogger.error('[DockBar] Failed to upload custom icon', { error: err });

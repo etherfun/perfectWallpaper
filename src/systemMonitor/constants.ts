@@ -7,7 +7,16 @@ export const DEFAULT_CONFIG: SystemMonitorConfig = {
     barLayout: 'horizontal',
     monitorPosition: 'right',
     disconnectTimeout: 10000,
-    serverUrl: 'http://localhost:27420/api/sysinfo',
+    // Base URL of the .NET sidecar (origin only).
+    // The apiFetch / apiPost helpers in api.ts
+    // accept this and append the per-endpoint
+    // path themselves, so the per-endpoint
+    // helpers (fetchAggregate, fetchConfig,
+    // fetchSetup, ...) take the path as a
+    // separate argument. Storing the full
+    // endpoint here would double the path on
+    // every request.
+    serverUrl: 'http://localhost:27420',
     serverPort: 27420,
     updateInterval: 2000,
     cpuMode: 'text',

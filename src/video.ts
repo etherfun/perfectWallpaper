@@ -1,5 +1,11 @@
 // 视频和音频控制模块
 
+import {
+    fetchAudioMetadata as fetchAudioMetadataApi,
+    getAudioStreamUrl as getAudioStreamUrlApi,
+    listFiles as listFilesApi,
+    postMediaAction,
+} from '@/systemMonitor';
 import { elements } from '@/utils/elementManager';
 
 import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
@@ -15,11 +21,11 @@ let audioEndedListenerBound = false;
 // 单曲循环时防止重入标志
 let isSingleTrackLoop = false;
 
-// 服务器端口
+// 服务器端口 (fallback when no SystemMonitor instance has
+// published a serverUrl yet — e.g. cold start before the
+// user toggled the plugin on).
 const SERVER_PORT = 27420;
-
-// 外部播放器控制 API 前缀
-const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/files/player`;
+const SERVER_BASE_URL = `http://localhost:${SERVER_PORT}`;
 
 /**
  * 控制外部播放器 (发送媒体按键)
@@ -28,54 +34,47 @@ const EXTERNAL_PLAYER_API = `http://localhost:${SERVER_PORT}/api/files/player`;
 async function controlExternalPlayer(
     action: 'play-pause' | 'next' | 'prev' | 'stop'
 ): Promise<void> {
-    try {
-        await fetch(`${EXTERNAL_PLAYER_API}/${action}`, { method: 'POST' });
-    } catch (error) {
-        console.warn('[External Player] Control failed:', error);
+    const ok = await postMediaAction(SERVER_BASE_URL, action);
+    if (!ok) {
+        // postMediaAction already logged the underlying
+        // network / envelope failure through debugLogger.
+        // Only the success/fail boolean comes back, so we
+        // surface a top-level warning here for symmetry
+        // with the pre-refactor behavior.
+        console.warn('[External Player] Control failed:', action);
     }
 }
 
-// 音频元数据结构
-interface AudioMetadata {
+// 音频元数据类型（与 systemMonitor/api.ts 中 AudioMetadata
+// 字段同义，保留本地别名以避免大规模重命名）。可空字段
+// 用 `T | null` 而非 `T?`，与 server `AudioMetadata` 的
+// 序列化形态保持一致。
+type AudioMetadata = {
     title: string;
     artist: string;
     album: string;
-    year?: number;
-    duration?: number;
-    genre?: string[];
-    track?: number;
+    year: number | null;
+    duration: number | null;
+    genre: string[] | null;
+    track: number | null;
     picture: {
         format: string;
         data: string;
     } | null;
-}
+};
 
 /**
  * 获取音频文件的服务器流地址
  */
 function getAudioStreamUrl(filePath: string): string {
-    return `http://localhost:${SERVER_PORT}/api/files/audio?path=${encodeURIComponent(filePath)}`;
+    return getAudioStreamUrlApi(SERVER_BASE_URL, filePath);
 }
 
 /**
- * 从服务器获取音频文件元数据
+ * 从服务器获取音频文件元数据（走 typed 包装）。
  */
 async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | null> {
-    try {
-        const url = `http://localhost:${SERVER_PORT}/api/files/metadata?path=${encodeURIComponent(filePath)}`;
-        const response = await fetch(url);
-        if (!response.ok) {
-            return null;
-        }
-        const result = await response.json();
-        if (result.success && result.data) {
-            return result.data as AudioMetadata;
-        }
-        return null;
-    } catch (error) {
-        debugLogger.log(`[Video] Failed to fetch audio metadata: ${error}`);
-        return null;
-    }
+    return fetchAudioMetadataApi(SERVER_BASE_URL, filePath);
 }
 
 /**
@@ -123,18 +122,11 @@ const debouncedUpdatePlayerInfo = debounce(updatePlayerInfo, 500, true);
 async function fetchAudioFilesFromServer(directory: string): Promise<string[]> {
     try {
         const filter = 'mp3,ogg,wav,flac,m4a,aac';
-        const url = `http://localhost:${SERVER_PORT}/api/files?directory=${encodeURIComponent(directory)}&filter=${filter}`;
-
-        const response = await fetch(url);
-        if (!response.ok) {
+        const result = await listFilesApi(SERVER_BASE_URL, directory, filter);
+        if (!result) {
             return [];
         }
-
-        const result = await response.json();
-        if (result.success && result.data && result.data.files) {
-            return result.data.files.map((f: { path: string }) => f.path);
-        }
-        return [];
+        return result.files.map(f => f.path);
     } catch (error) {
         debugLogger.log(`[Video] Failed to fetch audio files: ${error}`);
         return [];

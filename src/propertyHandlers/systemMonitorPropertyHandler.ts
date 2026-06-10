@@ -1,4 +1,4 @@
-import { getSystemMonitor, initSystemMonitor } from '@/systemMonitor';
+import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/systemMonitor';
 import { config } from '@/utils/config';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
@@ -7,30 +7,27 @@ import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
- * Handle auto-start setting change
+ * Handle auto-start setting change.
+ *
+ * Routes through the typed `updateConfig` helper in
+ * `systemMonitor/api.ts` so we share the same envelope
+ * parsing / i18n error logging as every other caller of
+ * the .NET sidecar (no more raw `fetch` + status code
+ * surgery here).
+ *
  * @param enabled Whether auto-start is enabled
  */
 async function handleAutoStart(enabled: boolean): Promise<void> {
     const monitor = getSystemMonitor();
     if (!monitor) return;
 
-    const port = monitor['config'].serverPort;
-    const url = `http://localhost:${port}/api/config`;
-
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ auto_start: enabled }),
-        });
-
-        if (!response.ok) {
-            debugLogger.error(`[Sysmon] Failed to update auto-start: ${response.status}`);
-        }
-    } catch (error) {
-        debugLogger.error(`[Sysmon] Error updating auto-start: ${error}`);
+    const baseUrl = monitor['config'].serverUrl;
+    const updated = await updateConfig(baseUrl, { auto_start: enabled });
+    if (!updated) {
+        // updateConfig already logged the underlying
+        // HTTP / envelope / network failure via the
+        // shared `debugLogger` channel.
+        debugLogger.error('[Sysmon] Failed to update auto-start');
     }
 }
 

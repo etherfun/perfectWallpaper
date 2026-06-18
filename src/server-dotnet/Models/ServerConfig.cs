@@ -84,6 +84,21 @@ namespace PerfectWall.Server.Models
         public string Validate()
         {
             if (Port < 1024) return "Port must be >= 1024";
+            if (Port > 65535) return "Port must be <= 65535";
+            return null;
+        }
+
+        // Shared validator used by /api/config (POST),
+        // /api/setup (set_port) and the console menu. Keeps the
+        // 1024-65535 bounds in one place so the three entry
+        // points can never drift.
+        public const int MinPort = 1024;
+        public const int MaxPort = 65535;
+
+        public static string ValidatePort(int port)
+        {
+            if (port < MinPort) return $"Port must be >= {MinPort}";
+            if (port > MaxPort) return $"Port must be <= {MaxPort}";
             return null;
         }
     }

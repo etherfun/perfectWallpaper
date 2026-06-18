@@ -79,6 +79,16 @@ namespace PerfectWall.Server.Endpoints
         {
             try
             {
+                // Cap request size before allocating. A 50 MB
+                // base64 blob in the request body would otherwise
+                // allocate ~50 MB of `string` memory on this
+                // thread.
+                if (ctx.Request.ContentLength64 is long len && len > 16 * 1024 * 1024)
+                {
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Request body exceeds 16 MB limit"), 413);
+                    return;
+                }
+
                 var body = ctx.ReadBody();
                 var req = JsonConvert.DeserializeObject<CustomIconRequest>(body);
                 if (req == null || string.IsNullOrEmpty(req.Data))
@@ -96,7 +106,30 @@ namespace PerfectWall.Server.Endpoints
                     "image/svg+xml" => "image/svg+xml",
                     _ => "image/png"
                 };
-                var bytes = Convert.FromBase64String(req.Data);
+                byte[] bytes;
+                try { bytes = Convert.FromBase64String(req.Data); }
+                catch (FormatException ex)
+                {
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail($"Invalid base64: {ex.Message}"));
+                    return;
+                }
+                // Reject >8 MB decoded payloads (PNG icons rarely
+                // exceed 1 MB; anything larger is almost
+                // certainly a misuse of the endpoint).
+                if (bytes.LongLength > 8 * 1024 * 1024)
+                {
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Decoded icon exceeds 8 MB limit"), 413);
+                    return;
+                }
+                // The dockbar persists custom icons in
+                // `localStorage` on the client (see
+                // `src/dockbar/iconCache.ts`), so the server
+                // intentionally does not store the bytes. We
+                // round-trip the data URL back so the client
+                // gets a normalised value (validated base64 +
+                // resolved mime). If we ever add server-side
+                // persistence, this is the place to write to
+                // `IconCache` or a file under `dist/icons/`.
                 var dataUrl = $"data:{mime};base64,{Convert.ToBase64String(bytes)}";
                 await ctx.WriteJsonAsync(ApiResponse<object>.Ok(new
                 {

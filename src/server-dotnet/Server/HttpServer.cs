@@ -19,12 +19,19 @@ namespace PerfectWall.Server.Server
         public HttpListenerRequest Request { get; }
         public HttpListenerResponse Response { get; }
         public Dictionary<string, string> PathParams { get; }
+        // Cancellation fires when the server is stopping.
+        // Long-running handlers should observe this token so a
+        // Ctrl+C / Exit tears down in-flight requests cleanly
+        // instead of leaving the client with a half-written
+        // response.
+        public CancellationToken RequestAborted { get; }
 
-        public HttpContext(HttpListenerRequest req, HttpListenerResponse resp, Dictionary<string, string> pathParams)
+        public HttpContext(HttpListenerRequest req, HttpListenerResponse resp, Dictionary<string, string> pathParams, CancellationToken requestAborted)
         {
             Request = req;
             Response = resp;
             PathParams = pathParams;
+            RequestAborted = requestAborted;
         }
 
         public string QueryParam(string key, string defaultValue = null)
@@ -149,11 +156,11 @@ namespace PerfectWall.Server.Server
                     Console.Error.WriteLine($"[HTTP] listener error: {ex.Message}");
                     continue;
                 }
-                _ = Task.Run(() => HandleAsync(ctx));
+                _ = Task.Run(() => HandleAsync(ctx, ct));
             }
         }
 
-        private async Task HandleAsync(HttpListenerContext ctx)
+        private async Task HandleAsync(HttpListenerContext ctx, CancellationToken serverCt)
         {
             try
             {
@@ -167,10 +174,13 @@ namespace PerfectWall.Server.Server
                     return;
                 }
 
-                var routeCtx = new HttpContext(ctx.Request, ctx.Response, new Dictionary<string, string>());
+                // Wire the server-wide stop token into the
+                // request context so handlers can observe it.
+                var routeCtx = new HttpContext(ctx.Request, ctx.Response, new Dictionary<string, string>(), serverCt);
                 var handled = await _router.DispatchAsync(routeCtx);
                 if (!handled)
                 {
+                    if (routeCtx.RequestAborted.IsCancellationRequested) return;
                     await routeCtx.WriteJsonAsync(new
                     {
                         success = false,
@@ -184,6 +194,7 @@ namespace PerfectWall.Server.Server
                 Console.Error.WriteLine($"[HTTP] handler error: {ex}");
                 try
                 {
+                    if (serverCt.IsCancellationRequested) return;
                     var bytes = Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new
                     {
                         success = false,

@@ -37,19 +37,36 @@ namespace PerfectWall.Server.Endpoints
                 var errors = new System.Collections.Generic.List<string>();
                 if (req.Port.HasValue)
                 {
-                    var v = c.Validate();
-                    if (v != null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail(v)); return; }
+                    // Validate the NEW port, not the current one.
+                    // The previous code validated `c.Port` (still
+                    // the old value) before assigning, which meant
+                    // a client could POST e.g. `port: 70000` and
+                    // slip past the 1024-65535 bounds check.
+                    var portErr = ServerConfig.ValidatePort(req.Port.Value);
+                    if (portErr != null)
+                    {
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail(portErr));
+                        return;
+                    }
                     c.Port = req.Port.Value;
                 }
                 if (req.AutoStart.HasValue)
                 {
-                    var prev = c.AutoStart;
                     c.AutoStart = req.AutoStart.Value;
                     // Route the actual registry write through
                     // SetupService so the user-mode and admin-mode
-                    // paths share the same error handling.
+                    // paths share the same error handling. If the
+                    // registry write fails, surface the error in
+                    // the response (HTTP 200 with `warning` field
+                    // + non-null `error` so the caller knows the
+                    // value was updated in memory but the OS-level
+                    // registration did not take).
                     try { SetupService.SetAutoStartUser(c.AutoStart); }
-                    catch (Exception ex) { errors.Add(ex.Message); }
+                    catch (Exception ex)
+                    {
+                        Console.Error.WriteLine($"[config] auto-start registration failed: {ex.Message}");
+                        errors.Add(ex.Message);
+                    }
                 }
                 if (!string.IsNullOrEmpty(req.LogLevel)) c.LogLevel = req.LogLevel;
                 c.Save();
@@ -58,7 +75,8 @@ namespace PerfectWall.Server.Endpoints
                 {
                     Port = c.Port,
                     AutoStart = c.AutoStart,
-                    LogLevel = c.LogLevel
+                    LogLevel = c.LogLevel,
+                    Warning = errors.Count > 0 ? string.Join("; ", errors) : null
                 }));
             }
             catch (Exception ex)

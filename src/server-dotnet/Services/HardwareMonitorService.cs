@@ -72,6 +72,14 @@ namespace PerfectWall.Server.Services
         // two-sample <c>Process.TotalProcessorTime</c> delta path
         // that does not need to share state with LHM.
         private readonly object _cpuCacheLock = new object();
+        // Background-sampled CPU usage. Updated by a dedicated
+        // sampler thread so request handlers never block on
+        // Thread.Sleep(250). The values are read-mostly (one
+        // writer, many readers) so we cache the last sample
+        // pair and re-compute on each refresh.
+        private float _lastCpuUsagePct;
+        private DateTime _lastCpuSampleAt = DateTime.MinValue;
+        private bool _cpuSamplerStarted;
 
         public HardwareMonitorService(RunMode mode)
         {
@@ -950,26 +958,89 @@ namespace PerfectWall.Server.Services
         // -----------------------------------------------------------------
 
         /// <summary>
-        /// Read a 0-100 CPU usage percentage using a
-        /// two-sample <see cref="Process.TotalProcessorTime"/>
-        /// delta. This is the same pattern as the Rust
-        /// <c>sysinfo</c>-backed CPU usage and works on
-        /// every Windows version without admin.
+        /// Read a 0-100 CPU usage percentage. The first call
+        /// lazily starts a background sampler thread that
+        /// refreshes the value every <see cref="CPU_SAMPLE_INTERVAL_MS"/>
+        /// milliseconds; subsequent calls return the cached
+        /// percentage immediately, so request handlers never
+        /// block on a 250 ms sample window.
         /// </summary>
         public float ReadManagedCpuUsage()
         {
-            using var p = Process.GetCurrentProcess();
-            var t0 = p.TotalProcessorTime;
-            var w0 = DateTime.UtcNow;
-            Thread.Sleep(250);
-            p.Refresh();
-            var t1 = p.TotalProcessorTime;
-            var w1 = DateTime.UtcNow;
-            var cpuMs = (t1 - t0).TotalMilliseconds;
-            var wallMs = (w1 - w0).TotalMilliseconds;
-            if (wallMs <= 0) return 0f;
-            var usage = (float)(cpuMs / (wallMs * Environment.ProcessorCount) * 100.0);
-            return Math.Max(0f, Math.Min(100f, usage));
+            EnsureCpuSamplerStarted();
+            lock (_cpuCacheLock)
+            {
+                return _lastCpuUsagePct;
+            }
+        }
+
+        // How often the background CPU-usage sampler refreshes
+        // the cached value. 250 ms matches the original two-sample
+        // window so the 1 Hz dashboard still sees a fresh reading
+        // on every poll.
+        private const int CPU_SAMPLE_INTERVAL_MS = 250;
+
+        private void EnsureCpuSamplerStarted()
+        {
+            if (_cpuSamplerStarted) return;
+            lock (_cpuCacheLock)
+            {
+                if (_cpuSamplerStarted) return;
+                _cpuSamplerStarted = true;
+                // Fire-and-forget: the sampler thread runs for
+                // the lifetime of the service and is killed by
+                // the process exit / Dispose path.
+                var t = new Thread(CpuSamplerLoop)
+                {
+                    IsBackground = true,
+                    Name = "HardwareMonitorService.CpuSampler"
+                };
+                t.Start();
+            }
+        }
+
+        private void CpuSamplerLoop()
+        {
+            Process p = null;
+            try { p = Process.GetCurrentProcess(); }
+            catch { return; }
+
+            try
+            {
+                while (true)
+                {
+                    TimeSpan t0;
+                    DateTime w0;
+                    try
+                    {
+                        t0 = p.TotalProcessorTime;
+                        w0 = DateTime.UtcNow;
+                    }
+                    catch { Thread.Sleep(CPU_SAMPLE_INTERVAL_MS); continue; }
+
+                    Thread.Sleep(CPU_SAMPLE_INTERVAL_MS);
+
+                    TimeSpan t1;
+                    DateTime w1;
+                    try { p.Refresh(); t1 = p.TotalProcessorTime; w1 = DateTime.UtcNow; }
+                    catch { continue; }
+
+                    var cpuMs = (t1 - t0).TotalMilliseconds;
+                    var wallMs = (w1 - w0).TotalMilliseconds;
+                    if (wallMs <= 0) continue;
+                    var usage = (float)(cpuMs / (wallMs * Environment.ProcessorCount) * 100.0);
+                    if (usage < 0f) usage = 0f; else if (usage > 100f) usage = 100f;
+                    lock (_cpuCacheLock)
+                    {
+                        _lastCpuUsagePct = usage;
+                        _lastCpuSampleAt = w1;
+                    }
+                }
+            }
+            finally
+            {
+                try { p?.Dispose(); } catch { }
+            }
         }
 
         // -----------------------------------------------------------------

@@ -73,23 +73,124 @@ namespace PerfectWall.Server.Endpoints
             if (err != null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail(err), 400); return; }
             if (!System.IO.File.Exists(path)) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("File not found"), 404); return; }
 
-            var ext = (Path.GetExtension(path) ?? "").ToLowerInvariant();
+            var ext = (Path.GetExtension(path) ?? "").TrimStart('.').ToLowerInvariant();
             var contentType = MapContentType(ext);
-
+            FileInfo fi;
+            long totalLength;
             try
             {
-                var bytes = System.IO.File.ReadAllBytes(path);
-                ctx.Response.StatusCode = 200;
-                ctx.Response.ContentType = contentType;
-                ctx.Response.ContentLength64 = bytes.LongLength;
-                ctx.Response.AddHeader("Access-Control-Allow-Origin", "*");
-                await ctx.Response.OutputStream.WriteAsync(bytes, 0, bytes.Length);
-                ctx.Response.OutputStream.Close();
+                fi = new FileInfo(path);
+                totalLength = fi.Length;
             }
             catch (Exception ex)
             {
                 await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
+                return;
             }
+
+            // Parse `Range: bytes=start-end` so the frontend's
+            // <audio> element can seek. Without this the
+            // browser refuses to play past the first chunk.
+            long start = 0;
+            long end = totalLength - 1;
+            bool isRange = false;
+            var rangeHeader = ctx.Request.Headers["Range"];
+            if (!string.IsNullOrEmpty(rangeHeader))
+            {
+                var parsed = ParseRangeHeader(rangeHeader, totalLength, out var s, out var e);
+                if (parsed == RangeParseResult.Invalid)
+                {
+                    ctx.Response.StatusCode = 416; // Range Not Satisfiable
+                    ctx.Response.AddHeader("Content-Range", $"bytes */{totalLength}");
+                    ctx.Response.Close();
+                    return;
+                }
+                if (parsed == RangeParseResult.Ok)
+                {
+                    start = s; end = e; isRange = true;
+                }
+            }
+            var length = end - start + 1;
+
+            try
+            {
+                ctx.Response.StatusCode = isRange ? 206 : 200;
+                ctx.Response.ContentType = contentType;
+                ctx.Response.ContentLength64 = length;
+                ctx.Response.AddHeader("Access-Control-Allow-Origin", "*");
+                ctx.Response.AddHeader("Accept-Ranges", "bytes");
+                if (isRange)
+                {
+                    ctx.Response.AddHeader("Content-Range", $"bytes {start}-{end}/{totalLength}");
+                }
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read, 81920, useAsync: true))
+                {
+                    if (start > 0) fs.Seek(start, SeekOrigin.Begin);
+                    var remaining = length;
+                    var buffer = new byte[81920];
+                    while (remaining > 0)
+                    {
+                        var toRead = (int)Math.Min(buffer.Length, remaining);
+                        var read = await fs.ReadAsync(buffer, 0, toRead);
+                        if (read <= 0) break;
+                        await ctx.Response.OutputStream.WriteAsync(buffer, 0, read);
+                        remaining -= read;
+                    }
+                }
+                ctx.Response.OutputStream.Close();
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"[files/audio] stream failed: {ex.Message}");
+                try { ctx.Response.OutputStream.Close(); } catch { /* already closed */ }
+            }
+        }
+
+        private enum RangeParseResult { Ok, NotPresent, Invalid }
+
+        /// <summary>
+        /// Parse an HTTP <c>Range</c> header. Only single-range
+        /// <c>bytes=start-end</c> requests are supported (the
+        /// frontend never sends multi-range). Returns
+        /// <see cref="RangeParseResult.NotPresent"/> when the
+        /// header is empty/missing so the caller can fall back
+        /// to a full 200 OK response.
+        /// </summary>
+        private static RangeParseResult ParseRangeHeader(string header, long totalLength, out long start, out long end)
+        {
+            start = 0; end = totalLength - 1;
+            if (string.IsNullOrEmpty(header)) return RangeParseResult.NotPresent;
+            const string prefix = "bytes=";
+            if (!header.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)) return RangeParseResult.Invalid;
+            var spec = header.Substring(prefix.Length).Trim();
+            // Reject multi-range (contains comma).
+            if (spec.Contains(',')) return RangeParseResult.Invalid;
+            var dash = spec.IndexOf('-');
+            if (dash < 0) return RangeParseResult.Invalid;
+            var startStr = spec.Substring(0, dash).Trim();
+            var endStr = spec.Substring(dash + 1).Trim();
+            try
+            {
+                if (startStr.Length == 0)
+                {
+                    // Suffix range: "bytes=-N" → last N bytes.
+                    if (!long.TryParse(endStr, out var suffix) || suffix <= 0) return RangeParseResult.Invalid;
+                    start = Math.Max(0, totalLength - suffix);
+                    end = totalLength - 1;
+                }
+                else
+                {
+                    if (!long.TryParse(startStr, out start)) return RangeParseResult.Invalid;
+                    if (endStr.Length == 0) end = totalLength - 1;
+                    else if (!long.TryParse(endStr, out end)) return RangeParseResult.Invalid;
+                }
+            }
+            catch { return RangeParseResult.Invalid; }
+            if (start < 0 || start >= totalLength || end < start || end >= totalLength)
+            {
+                return RangeParseResult.Invalid;
+            }
+            return RangeParseResult.Ok;
         }
 
         private static string MapContentType(string ext)

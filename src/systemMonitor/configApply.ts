@@ -21,6 +21,15 @@ export function applyConfig(refs: SystemMonitorDomRefs | null, config: SystemMon
     refs.background.classList.toggle('right-side', !isLeft);
     refs.background.classList.toggle('horizontal-layout', config.barLayout === 'horizontal');
 
+    // Mirror the same layout classes onto the card-mode container so
+    // cards and rows share one layout system (left/right side + horizontal bar).
+    const cardsContainer = refs.container.querySelector<HTMLElement>('.sysmon-cards');
+    if (cardsContainer) {
+        cardsContainer.classList.toggle('left-side', isLeft);
+        cardsContainer.classList.toggle('right-side', !isLeft);
+        cardsContainer.classList.toggle('horizontal-layout', config.barLayout === 'horizontal');
+    }
+
     // Font styles
     const rows = [refs.cpuRow, refs.gpuRow, refs.memoryRow, refs.networkRow];
     rows.forEach(row => {

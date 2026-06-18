@@ -99,6 +99,43 @@
     </PackageReference>
   </ItemGroup>
 
+  <!--
+    The disk-info feature deliberately avoids
+    `System.Management` (WMI). LibreHardwareMonitorLib
+    0.9.6 transitively pulls a .NET 9-era
+    `System.Management 10.0.0.0` NuGet build into the
+    project graph, and on .NET Framework 4.8 the C#
+    compiler cannot resolve its type forwarders
+    (which point at the .NET 8-era
+    `System.ComponentModel.Primitives` /
+    `System.Runtime` facades, also pulled in
+    transitively), so every `ManagementObject` /
+    `ManagementObjectSearcher` use fails with
+    CS7069. The BCL 4.0.0.0 reference assembly
+    sits at
+    packages/microsoft.netframework.referenceassemblies.net48/1.0.3/build/.NETFramework/v4.8/System.Management.dll
+    but the SDK keeps preferring the NuGet
+    netstandard2.0 build even with `<PackageReference
+    Remove>` and HintPath.
+
+    We side-step the whole class of problems by
+    reading disk information from sources that ship
+    in the .NET Framework 4.8 BCL:
+      * `System.IO.DriveInfo` for the per-volume
+        capacity / free-space / file-system /
+        drive-type numbers.
+      * `SetupDiGetClassDevs` +
+        `SetupDiGetDeviceRegistryProperty` P/Invoke
+        for the per-physical-drive model / serial /
+        interface / capacity (the Win32 setup API
+        has shipped since Windows 2000; we only
+        need the diskdrive GUID and four property
+        codes). Volume → physical-drive mapping
+        uses `IOCTL_STORAGE_GET_DEVICE_NUMBER`
+        over a CreateFile on each volume root —
+        also pure BCL P/Invoke.
+  -->
+
   <ItemGroup>
     <!-- App.config is the .NET Framework runtime config. We
          ship it verbatim to the build output so the binding

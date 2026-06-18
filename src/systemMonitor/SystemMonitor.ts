@@ -1,16 +1,24 @@
 import { fetchAggregate } from './api';
+import { buildCards, destroyCards, updateCards } from './cardRenderer';
 import { applyConfig } from './configApply';
 import { DEFAULT_CONFIG } from './constants';
 import { queryDomElements } from './domRefs';
 import { formatBytes, formatTemperature } from './formatters';
 import { pickPrimaryGpu } from './gpuSelector';
 import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './renderer';
+import { i18n } from '@/utils/i18n';
 import type {
     AggregateInfo,
+    CardPayload,
+    CardRenderData,
     CpuInfo,
+    DiskDriveInfo,
     GpuInfo,
+    SparkChannel,
+    SystemMonitorCardDomRefs,
     SystemMonitorConfig,
     SystemMonitorDomRefs,
+    TempRange,
 } from './types';
 
 /**
@@ -21,19 +29,35 @@ import type {
 export class SystemMonitor {
     // Pre-built DOM elements from index.html
     private refs: SystemMonitorDomRefs | null = null;
+    /** Card-mode DOM refs (only set when displayStyle === 'cards') */
+    private cardRefs: SystemMonitorCardDomRefs | null = null;
 
     private pollInterval: number | null = null;
     private cpuHistory: number[] = [];
+    private cpuTempHistory: number[] = [];
+    private cpuPowerHistory: number[] = [];
     private memoryHistory: number[] = [];
     private gpuHistory: number[] = [];
+    private gpuTempHistory: number[] = [];
+    private gpuPowerHistory: number[] = [];
+    private gpuVramHistory: number[] = [];
     private networkRxHistory: number[] = [];
     private networkTxHistory: number[] = [];
+    /** Per-disk usage history, keyed by disk index */
+    private diskHistories: Map<number, number[]> = new Map();
+    /** Per-disk read rate history (bytes/s), keyed by disk index */
+    private diskReadHistory: Map<number, number[]> = new Map();
+    /** Per-disk write rate history (bytes/s), keyed by disk index */
+    private diskWriteHistory: Map<number, number[]> = new Map();
+    /** Per-disk I/O activity history (0-100%), keyed by disk index */
+    private diskActivityHistory: Map<number, number[]> = new Map();
     private config: SystemMonitorConfig = { ...DEFAULT_CONFIG };
     private enabled: boolean = false;
     private disconnectTimer: number | null = null;
     private lastConnectedTime: number = 0;
     private hasEverConnected: boolean = false;
     private lastMonitorPosition: 'left' | 'right' = 'right';
+    private lastDisplayStyle: 'rows' | 'cards' = 'rows';
 
     constructor() {
         this.init();
@@ -53,6 +77,14 @@ export class SystemMonitor {
                 row.style.textShadow = 'var(--sysmon-text-shadow, 0 0 5px rgba(0,0,0,0.5))';
             }
         });
+
+        // If starting in card mode, build card DOM and hide rows
+        if (this.config.displayStyle === 'cards') {
+            if (this.refs?.background) this.refs.background.style.display = 'none';
+            if (this.refs?.container) {
+                this.cardRefs = buildCards(this.refs.container);
+            }
+        }
 
         this.applyConfig();
         this.setEnabled(this.config.enabled);
@@ -100,18 +132,14 @@ export class SystemMonitor {
         const refs = this.refs;
         if (!refs) return;
 
+        if (this.config.displayStyle === 'cards') {
+            this.updateCardDisplay(data);
+            return;
+        }
+
+        // ── Row-mode rendering (existing) ──
+
         // CPU
-        // `/api/sysinfo` returns `cpu` as a
-        // `CpuInfo[]`. On mainstream PCs the
-        // array has exactly one element; we
-        // always render from index 0 and
-        // silently fall back to zeros if the
-        // array is empty or missing. The
-        // `?? 0` and `?? undefined` patterns
-        // satisfy `noUncheckedIndexedAccess`:
-        // we explicitly acknowledge the
-        // "missing slot" branch instead of
-        // asserting non-null.
         this.renderSimple(refs.cpuRow, this.config.showCpu, this.config.cpuMode, () => {
             const cpu0: CpuInfo | undefined = data.cpu[0];
             const usage = Math.round(cpu0?.usage ?? 0);
@@ -121,12 +149,6 @@ export class SystemMonitor {
         });
 
         // GPU
-        // Pick the most informative card from `data.gpu[]`
-        // instead of always taking index 0. On hybrid
-        // laptops (iGPU + dGPU) LHM reports the iGPU
-        // first and its temperature sensor is usually
-        // missing, which would make the row look broken
-        // even though the dGPU is fine.
         const gpu: GpuInfo | undefined = pickPrimaryGpu(data.gpu);
         this.renderSimple(refs.gpuRow, this.config.showGpu && !!gpu, this.config.gpuMode, () => {
             if (!gpu) return null;
@@ -166,6 +188,351 @@ export class SystemMonitor {
                 };
             }
         );
+    }
+
+    /**
+     * Update card-mode display with the latest aggregate data.
+     */
+    private updateCardDisplay(data: AggregateInfo): void {
+        if (!this.cardRefs) return;
+
+        const cpu0: CpuInfo | undefined = data.cpu[0];
+        const gpu: GpuInfo | undefined = pickPrimaryGpu(data.gpu);
+
+        // Push history buffers
+        if (cpu0) {
+            pushHistory(this.cpuHistory, Math.round(cpu0.usage ?? 0));
+            if (cpu0.temperature > 0) pushHistory(this.cpuTempHistory, Math.round(cpu0.temperature));
+            if ((cpu0.power_package ?? 0) > 0) pushHistory(this.cpuPowerHistory, cpu0.power_package ?? 0);
+        }
+        if (gpu) {
+            pushHistory(this.gpuHistory, Math.round(gpu.utilization ?? 0));
+            if (gpu.temperature > 0) pushHistory(this.gpuTempHistory, Math.round(gpu.temperature));
+            if ((gpu.power ?? 0) > 0) pushHistory(this.gpuPowerHistory, gpu.power ?? 0);
+            const vramPct = gpu.vram_used_percent ?? 0;
+            if (vramPct > 0) pushHistory(this.gpuVramHistory, Math.round(vramPct));
+        }
+
+        const memUsedPct = Math.round(data.memory.used_percent ?? 0);
+        pushHistory(this.memoryHistory, memUsedPct);
+
+        const rx = data.network.rx ?? 0;
+        const tx = data.network.tx ?? 0;
+        pushHistory(this.networkRxHistory, rx);
+        pushHistory(this.networkTxHistory, tx);
+
+        // Build card render data
+        const renderData: CardRenderData = {
+            cpu: this.buildCpuCard(cpu0),
+            gpu: this.buildGpuCard(gpu),
+            memory: this.buildMemoryCard(data.memory),
+            network: this.buildNetworkCard(data.network),
+            disks: this.buildDiskCards(data.disks.drives),
+        };
+
+        updateCards(this.cardRefs, renderData, {
+            monitorColor: this.config.monitorColor,
+            monitorSize: this.config.monitorSize,
+        });
+    }
+
+    /** Build the CPU card payload. */
+    private buildCpuCard(cpu: CpuInfo | undefined): CardPayload | null {
+        if (!cpu || !this.config.showCpu) return null;
+        const usage = Math.round(cpu.usage ?? 0);
+        const temp = cpu.temperature;
+        const hasTemp = temp > 0 && Number.isFinite(temp);
+
+        const sparks: SparkChannel[] = [];
+        const sparkLayout = 'double-full';
+
+        sparks.push({
+            kind: 'util',
+            history: [...this.cpuHistory],
+            displayValue: `${usage}%`,
+        });
+
+        if (hasTemp && this.cpuTempHistory.length > 0) {
+            const cpuCrit = cpu.temperature_critical ?? 95;
+            sparks.push({
+                kind: 'temp',
+                history: [...this.cpuTempHistory],
+                range: { lo: 40, hi: Math.max(cpuCrit + 5, 95), crit: cpuCrit },
+                displayValue: `${Math.round(temp)}°C`,
+                tag: `max ${Math.round(cpu.temperature_max ?? temp)}`,
+            });
+        }
+
+        const power = cpu.power_package;
+        if (power != null && power > 0 && this.cpuPowerHistory.length > 0) {
+            const peak = Math.max(1, ...this.cpuPowerHistory);
+            sparks.push({
+                kind: 'power',
+                history: [...this.cpuPowerHistory],
+                displayValue: `${power.toFixed(1)} W`,
+                tag: `peak ${Math.round(peak)}`,
+            });
+        }
+
+        const freq = cpu.speed > 0 ? `${cpu.speed} MHz` : null;
+        const maxCoreUsage = cpu.usage_max_core != null
+            ? `#${cpu.usage_max_core_index ?? 0} ${Math.round(cpu.usage_max_core)}%`
+            : null;
+        const voltage = cpu.voltage_core != null ? `${cpu.voltage_core.toFixed(2)} V` : null;
+
+        const meta: Array<{ label: string; value: string }> = [];
+        if (freq) meta.push({ label: i18n('sysmon_card_freq'), value: freq });
+        if (power != null) meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
+        if (maxCoreUsage) meta.push({ label: i18n('sysmon_card_hot'), value: maxCoreUsage });
+        if (voltage) meta.push({ label: i18n('sysmon_card_vcore'), value: voltage });
+
+        return {
+            label: `${i18n('sysmon_card_label_cpu')} · ${cpu.brand}`,
+            value: `${usage}%`,
+            extra: hasTemp ? `(${Math.round(temp)}°C)` : null,
+            meta,
+            sparks,
+            sparkLayout,
+        };
+    }
+
+    /** Build the GPU card payload. */
+    private buildGpuCard(gpu: GpuInfo | undefined): CardPayload | null {
+        if (!gpu || !this.config.showGpu) return null;
+        const usage = Math.round(gpu.utilization ?? 0);
+        const temp = gpu.temperature;
+        const hasTemp = temp > 0 && Number.isFinite(temp);
+
+        const sparks: SparkChannel[] = [];
+
+        sparks.push({
+            kind: 'util',
+            history: [...this.gpuHistory],
+            displayValue: `${usage}%`,
+        });
+        let sparkCount = 1;
+
+        if (hasTemp && this.gpuTempHistory.length > 0) {
+            const crit = gpu.temperature_critical ?? 92;
+            sparks.push({
+                kind: 'temp',
+                history: [...this.gpuTempHistory],
+                range: { lo: 30, hi: Math.max(crit + 5, 95), crit },
+                displayValue: `${Math.round(temp)}°C`,
+            });
+            sparkCount++;
+        }
+
+        const power = gpu.power;
+        if (power != null && power > 0 && this.gpuPowerHistory.length > 0) {
+            const peak = Math.max(1, ...this.gpuPowerHistory);
+            sparks.push({
+                kind: 'power',
+                history: [...this.gpuPowerHistory],
+                displayValue: `${power.toFixed(1)} W`,
+                tag: `peak ${Math.round(peak)}`,
+            });
+            sparkCount++;
+        }
+
+        const vramPct = Math.round(gpu.vram_used_percent ?? 0);
+        if (vramPct > 0 && this.gpuVramHistory.length > 0) {
+            sparks.push({
+                kind: 'vram',
+                history: [...this.gpuVramHistory],
+                displayValue: `${vramPct}%`,
+            });
+            sparkCount++;
+        }
+
+        // Choose layout variant based on spark count
+        const sparkLayout = sparkCount === 4 ? 'quad'
+            : sparkCount === 3 ? 'triple'
+            : sparkCount === 2 ? 'double-full'
+            : 'solo';
+
+        const vramStr = formatBytes(gpu.vram_total ?? 0);
+        const vramUsedStr = formatBytes(gpu.vram_used ?? 0);
+        const coreClock = gpu.core_clock != null ? `${gpu.core_clock} MHz` : null;
+        const memJunc = gpu.temperature_memory_junction;
+        const memJuncStr = memJunc != null && memJunc > 0 && Number.isFinite(memJunc)
+            ? `${Math.round(memJunc)}°C`
+            : null;
+
+        const meta: Array<{ label: string; value: string }> = [];
+        if (power != null) meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
+        meta.push({ label: i18n('sysmon_card_vram_meta'), value: `${vramUsedStr}/${vramStr}` });
+        if (coreClock) meta.push({ label: i18n('sysmon_card_core_clock'), value: coreClock });
+        if (memJuncStr) meta.push({ label: i18n('sysmon_card_mem_junc'), value: memJuncStr });
+
+        return {
+            label: `${i18n('sysmon_card_label_gpu')} · ${gpu.model}`,
+            value: `${usage}%`,
+            extra: hasTemp ? `(${Math.round(temp)}°C)` : null,
+            meta,
+            sparks,
+            sparkLayout: sparkLayout as CardPayload['sparkLayout'],
+        };
+    }
+
+    /** Build the memory card payload. */
+    private buildMemoryCard(memory: { total: number; used: number; used_percent: number }): CardPayload | null {
+        if (!this.config.showMemory) return null;
+        const usedPct = Math.round(memory.used_percent ?? 0);
+        const usedStr = formatBytes(memory.used ?? 0);
+        const totalStr = formatBytes(memory.total ?? 0);
+
+        const sparks: SparkChannel[] = [
+            {
+                kind: 'util',
+                history: [...this.memoryHistory],
+                displayValue: `${usedPct}%`,
+            },
+        ];
+
+        const meta: Array<{ label: string; value: string }> = [
+            { label: i18n('sysmon_card_used'), value: usedStr },
+            { label: 'Total', value: totalStr },
+        ];
+
+        return {
+            label: `${i18n('sysmon_card_label_mem')}`,
+            value: `${usedPct}%`,
+            extra: `(${usedStr}/${totalStr})`,
+            meta,
+            sparks,
+            sparkLayout: 'solo',
+        };
+    }
+
+    /** Build the network card payload. */
+    private buildNetworkCard(network: { rx: number; tx: number }): CardPayload | null {
+        if (!this.config.showNetwork) return null;
+        const rx = network.rx ?? 0;
+        const tx = network.tx ?? 0;
+        const rxStr = `${formatBytes(rx)}/s`;
+        const txStr = `${formatBytes(tx)}/s`;
+
+        // Combined spark: rx + tx overlaid on single canvas
+        const sparks: SparkChannel[] = [];
+        if (this.networkRxHistory.length > 0 && this.networkTxHistory.length > 0) {
+            sparks.push({
+                kind: 'rx-tx',
+                history: [...this.networkRxHistory],
+                dirRx: [...this.networkTxHistory],
+                displayValue: rxStr,
+                dirTxDisplay: txStr,
+            });
+        }
+
+        const meta: Array<{ label: string; value: string }> = [
+            // { label: i18n('sysmon_card_rx_meta'), value: rxStr },
+            // { label: i18n('sysmon_card_tx_meta'), value: txStr },
+        ];
+
+        // Use combined throughput for main value display
+        const primary = rx + tx;
+        const primaryStr = `${formatBytes(primary)}/s`;
+
+        return {
+            label: `${i18n('sysmon_card_label_net')}`,
+            value: primaryStr,
+            extra: null,
+            meta,
+            sparks,
+            sparkLayout: 'combined',
+        };
+    }
+
+    /**
+     * Build disk card payloads from the drives array in the aggregate.
+     * History maps are updated inline so sparklines stay in sync with
+     * the main 1-Hz poll — no separate disk polling needed.
+     */
+    private buildDiskCards(drives: DiskDriveInfo[]): CardPayload[] {
+        if (!drives || !this.config.showDisk) return [];
+        if (drives.length === 0) return [];
+
+        return drives.map((disk, index) => {
+            const usedPct = Math.round(disk.used_percent ?? 0);
+            const usedStr = formatBytes(disk.total_used_bytes ?? 0);
+            const temp = disk.temperature;
+            const hasTemp = temp != null && temp > 0 && Number.isFinite(temp);
+            const life = disk.life_remaining_percent;
+
+            // Update all per-disk history maps inline
+            let hist = this.diskHistories.get(index);
+            if (!hist) { hist = []; this.diskHistories.set(index, hist); }
+            pushHistory(hist, usedPct);
+
+            const readRate = disk.read_rate ?? 0;
+            let readHist = this.diskReadHistory.get(index);
+            if (!readHist) { readHist = []; this.diskReadHistory.set(index, readHist); }
+            pushHistory(readHist, readRate);
+
+            const writeRate = disk.write_rate ?? 0;
+            let writeHist = this.diskWriteHistory.get(index);
+            if (!writeHist) { writeHist = []; this.diskWriteHistory.set(index, writeHist); }
+            pushHistory(writeHist, writeRate);
+
+            const activity = disk.total_activity ?? 0;
+            let actHist = this.diskActivityHistory.get(index);
+            if (!actHist) { actHist = []; this.diskActivityHistory.set(index, actHist); }
+            pushHistory(actHist, activity);
+
+            const busLabel = disk.is_nvme ? 'NVMe' : disk.is_ssd ? 'SSD' : disk.is_hdd ? 'HDD' : disk.bus_type;
+
+            const lastReadBps = readHist[readHist.length - 1] ?? 0;
+            const lastWriteBps = writeHist[writeHist.length - 1] ?? 0;
+
+            // Primary value = TotalActivity (disk I/O utilisation %)
+            const primaryStr = `${activity.toFixed(1)}%`;
+
+            // Build sparks: Read, Write, then Util
+            const sparks: SparkChannel[] = [];
+            if (readHist.length > 1) {
+                sparks.push({
+                    kind: 'read',
+                    history: [...readHist],
+                    displayValue: `${formatBytes(lastReadBps)}/s`,
+                    range: { lo: 0, hi: Math.ceil(Math.max(...readHist) * 1.2) } as TempRange,
+                });
+            }
+            if (writeHist.length > 1) {
+                sparks.push({
+                    kind: 'write',
+                    history: [...writeHist],
+                    displayValue: `${formatBytes(lastWriteBps)}/s`,
+                    range: { lo: 0, hi: Math.ceil(Math.max(...writeHist) * 1.2) } as TempRange,
+                });
+            }
+            sparks.push({
+                kind: 'activity',
+                history: [...actHist],
+                displayValue: `${activity.toFixed(1)}%`,
+            });
+
+            const sparkLayout: CardPayload['sparkLayout'] =
+                sparks.length >= 3 ? 'double-full' : sparks.length === 2 ? 'dual' : 'solo';
+
+            const meta: Array<{ label: string; value: string }> = [
+                { label: i18n('sysmon_card_used'), value: usedStr },
+                { label: i18n('sysmon_card_free'), value: formatBytes(disk.total_free_bytes ?? 0) },
+            ];
+            if (hasTemp) meta.push({ label: i18n('sysmon_card_temp'), value: `${Math.round(temp)}°C` });
+            if (life != null) meta.push({ label: i18n('sysmon_card_life'), value: `${Math.round(life)}%` });
+            if (disk.host_reads_gb != null) meta.push({ label: i18n('sysmon_card_read'), value: `${disk.host_reads_gb.toFixed(1)} GB` });
+            if (disk.host_writes_gb != null) meta.push({ label: i18n('sysmon_card_write'), value: `${disk.host_writes_gb.toFixed(1)} GB` });
+
+            return {
+                label: `${i18n('sysmon_card_label_disk')} #${index} · ${disk.model} · ${busLabel}`,
+                value: primaryStr,
+                extra: null,
+                meta,
+                sparks,
+                sparkLayout,
+            };
+        });
     }
 
     /**
@@ -211,12 +578,10 @@ export class SystemMonitor {
 
     public updateConfig(newConfig: Partial<SystemMonitorConfig>): void {
         const wasEnabled = this.config.enabled;
+        const wasStyle = this.config.displayStyle;
         this.config = { ...this.config, ...newConfig };
 
         if (newConfig.serverPort !== undefined) {
-            // Same as DEFAULT_CONFIG.serverUrl:
-            // origin only, the api helpers append
-            // the endpoint path.
             this.config.serverUrl = `http://localhost:${this.config.serverPort}`;
         }
 
@@ -224,15 +589,56 @@ export class SystemMonitor {
             this.setEnabled(newConfig.enabled);
         }
 
+        // Handle displayStyle toggle
+        if (newConfig.displayStyle !== undefined && newConfig.displayStyle !== wasStyle) {
+            this.toggleDisplayStyle(newConfig.displayStyle);
+        }
+
         this.applyConfig();
+    }
+
+    private toggleDisplayStyle(style: 'rows' | 'cards'): void {
+        // Save current style
+        this.lastDisplayStyle = style;
+        this.config.displayStyle = style;
+
+        if (style === 'cards') {
+            // Hide row background, build card DOM
+            if (this.refs?.background) this.refs.background.style.display = 'none';
+            if (this.refs?.container) {
+                this.cardRefs = buildCards(this.refs.container);
+            }
+        } else {
+            // Destroy card DOM, show row background
+            if (this.refs?.container) destroyCards(this.refs.container);
+            if (this.refs?.background) this.refs.background.style.display = '';
+            this.cardRefs = null;
+        }
     }
 
     private applyConfig(): void {
         applyConfig(this.refs, this.config);
 
-        // Only re-render when alignment changes (performance optimization)
+        // Apply font color and size to card elements immediately
+        if (this.cardRefs) {
+            const { monitorColor, monitorSize } = this.config;
+            const allCards = [
+                this.cardRefs.cards.cpu,
+                this.cardRefs.cards.gpu,
+                this.cardRefs.cards.memory,
+                this.cardRefs.cards.network,
+                ...this.cardRefs.cards.disks,
+            ];
+            for (const card of allCards) {
+                if (!card) continue;
+                if (monitorColor) card.style.color = monitorColor;
+                if (monitorSize) card.style.fontSize = `${monitorSize}px`;
+            }
+        }
+
+        // Only re-render when alignment changes (rows mode)
         const alignmentChanged = this.lastMonitorPosition !== this.config.monitorPosition;
-        if (alignmentChanged) {
+        if (alignmentChanged && this.config.displayStyle === 'rows') {
             this.lastMonitorPosition = this.config.monitorPosition;
             this.rerenderAllRows();
         }
@@ -241,9 +647,6 @@ export class SystemMonitor {
     private rerenderAllRows(): void {
         if (!this.refs) return;
 
-        // Force re-render of all visible rows to reposition viz elements.
-        // The last cached value/extra are not preserved across alignment
-        // flips; we emit an empty payload which still clears the viz slot.
         if (this.config.showCpu) {
             renderRow(
                 this.refs.cpuRow,
@@ -286,6 +689,8 @@ export class SystemMonitor {
 
     public destroy(): void {
         this.stopPolling();
+        if (this.refs?.container) destroyCards(this.refs.container);
+        this.cardRefs = null;
         instance = null;
     }
 
@@ -302,6 +707,7 @@ export class SystemMonitor {
         if (enabled) {
             this.startPolling();
             if (this.refs?.container) this.refs.container.style.display = '';
+            // In card mode, cards container visibility is controlled by buildCards/destroyCards
         } else {
             this.stopPolling();
             if (this.refs?.container) this.refs.container.style.display = 'none';

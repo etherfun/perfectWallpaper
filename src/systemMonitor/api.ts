@@ -9,6 +9,7 @@ import {
     type ClearCacheResponse,
     type ConfigView,
     type CustomIconResponse,
+    type DiskSummaryInfo,
     type FileListResult,
     type IconData,
     type MediaControlResult,
@@ -140,6 +141,33 @@ export function fetchAggregate(
     signal?: AbortSignal
 ): Promise<AggregateInfo | null> {
     return apiFetch<AggregateInfo>(`/api/sysinfo`, { baseUrl, signal }).then(r => r?.data ?? null);
+}
+
+/**
+ * `/api/sysinfo/disk` —— 物理磁盘 + 各自卷的容量 / 温度 / SMART。
+ *
+ * Why a separate endpoint (instead of reading
+ * `aggregate.disks`):
+ *   - Disk SMART poll is the most expensive sensor
+ *     read in the .NET sidecar (~150-300ms on first
+ *     call per process). Polling it on the same
+ *     cadence as the 1-Hz aggregate wastes 10% of
+ *     every CPU cycle.
+ *   - The dashboard has a dedicated "storage" card
+ *     that polls on a slower 2-3s cadence; the
+ *     aggregate caller can keep its 1-Hz cadence
+ *     for CPU/MEM/NET.
+ *   - User-mode users still get the per-volume
+ *     capacity data even when SMART is null, so the
+ *     card degrades gracefully on a non-admin run.
+ */
+export function fetchDisk(
+    baseUrl: string,
+    signal?: AbortSignal
+): Promise<DiskSummaryInfo | null> {
+    return apiFetch<DiskSummaryInfo>(`/api/sysinfo/disk`, { baseUrl, signal }).then(
+        r => r?.data ?? null
+    );
 }
 
 export function fetchConfig(baseUrl: string): Promise<ConfigView | null> {

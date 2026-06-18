@@ -472,6 +472,10 @@
 				"ui_sysmon_yakeli" : "Acrylic opacity",
 				"ui_sysmon_yakeli_show" : "Acrylic background",
 				"ui_sysmon_yakelicolor" : "Acrylic color",
+				"ui_sysmon_display_style" : "Display Style",
+				"ui_sysmon_display_style_rows" : "Rows",
+				"ui_sysmon_display_style_cards" : "Cards",
+				"ui_sysmon_show_disk" : "Show Disk",
 				"ui_text_onlychina" : "China Location or IP Only↓",
 				"ui_text_worldwidesupport" : "Worldwide support↓",
 				"ui_ui_global_settings_language" : "Language setting",
@@ -981,6 +985,10 @@
 				"ui_sysmon_yakeli" : "亚克力不透明程度",
 				"ui_sysmon_yakeli_show" : "亚克力背景",
 				"ui_sysmon_yakelicolor" : "亚克力颜色",
+				"ui_sysmon_display_style" : "显示风格",
+				"ui_sysmon_display_style_rows" : "行模式",
+				"ui_sysmon_display_style_cards" : "卡片模式",
+				"ui_sysmon_show_disk" : "显示磁盘",
 				"ui_text_onlychina" : "仅中国位置或IP↓",
 				"ui_text_worldwidesupport" : "全球支持↓",
 				"ui_ui_global_settings_language" : "语言设置",
@@ -5343,6 +5351,35 @@
 				"index" : 400,
 				"order" : 500,
 				"text" : "ui_sysmon_show_network",
+				"type" : "bool",
+				"value" : false
+			},
+			"sysmon_display_style" : 
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 413,
+				"order" : 513,
+				"options" : 
+				[
+					{
+						"label" : "ui_sysmon_display_style_rows",
+						"value" : 0
+					},
+					{
+						"label" : "ui_sysmon_display_style_cards",
+						"value" : 1
+					}
+				],
+				"text" : "ui_sysmon_display_style",
+				"type" : "combo",
+				"value" : 0
+			},
+			"sysmon_show_disk" : 
+			{
+				"condition" : "sysmon_enabled.value == true",
+				"index" : 414,
+				"order" : 514,
+				"text" : "ui_sysmon_show_disk",
 				"type" : "bool",
 				"value" : false
 			},

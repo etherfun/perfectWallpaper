@@ -4,6 +4,7 @@ export const MAX_HISTORY_LENGTH = 60;
 
 export const DEFAULT_CONFIG: SystemMonitorConfig = {
     enabled: false,
+    displayStyle: 'rows',
     barLayout: 'horizontal',
     monitorPosition: 'right',
     disconnectTimeout: 10000,
@@ -27,6 +28,7 @@ export const DEFAULT_CONFIG: SystemMonitorConfig = {
     showGpu: true,
     showMemory: true,
     showNetwork: false,
+    showDisk: false,
     monitorX: 95,
     monitorY: 5,
     monitorSize: 14,

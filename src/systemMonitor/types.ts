@@ -219,6 +219,126 @@ export interface NetworkInfo {
     interfaces: NetworkInterface[];
 }
 
+/**
+ * `/api/sysinfo/disk` —— 单个卷（盘符）。
+ *
+ * Always populated: user mode and admin mode both
+ * surface volume-level capacity, free space, file
+ * system, and drive type via the BCL `DriveInfo`
+ * enumeration. Admin mode enriches the parent
+ * `DiskDriveInfo` with SMART data and serial number.
+ */
+export interface DiskPartitionInfo {
+    /** "C" / "D" — drive letter without colon/back-slash */
+    drive_letter: string;
+    /** "C:\\" — fully qualified volume path; may be empty for un-mounted partitions */
+    volume_path: string;
+    /** "Windows" / "Data" / "" — friendly volume label */
+    label: string;
+    /** "NTFS" / "exFAT" / "FAT32" / "Unknown" */
+    file_system: string;
+    /** "Fixed" / "Removable" / "Network" / "CDRom" / "Unknown" */
+    drive_type: string;
+    /** bytes — 0 if `is_ready === false` */
+    total_bytes: number;
+    used_bytes: number;
+    free_bytes: number;
+    /** 0-100 */
+    used_percent: number;
+    is_ready: boolean;
+    /** %SystemDrive% */
+    is_boot: boolean;
+    /** 卷根目录存在 `\\Windows` 子目录 */
+    is_system: boolean;
+}
+
+/**
+ * `/api/sysinfo/disk` —— 单个物理磁盘。
+ *
+ * 字段分两层：
+ *   1. **user mode** 也能填的：bus_type、controller_type、
+ *      total_bytes / total_free_bytes / total_used_bytes、
+ *      used_percent、partitions（卷信息）。
+ *   2. **admin mode** 独占：model、vendor、serial_number、
+ *      firmware、temperature、SMART 计数器、is_ssd / is_nvme
+ *      / is_hdd / is_removable / is_usb。
+ */
+export interface DiskDriveInfo {
+    /** 0-based 索引，渲染时直接当 key 用 */
+    index: number;
+    /** "Samsung SSD 980 PRO 2TB" — user mode 退化为盘符 */
+    model: string;
+    vendor: string;
+    product_id: string;
+    vendor_id: string;
+    serial_number: string;
+    firmware: string;
+    firmware_rev: string;
+    /** "NVMe" / "SATA" / "USB" / "RAID" / "Unknown" */
+    bus_type: string;
+    /** "NVMe" / "ATA" / "SCSI" / "USB" / "Unknown" */
+    controller_type: string;
+    /** "\\\\?\\SCSI#Disk&Ven_Samsung..." — Win32 device path */
+    device_id: string;
+    physical_path: string;
+    /** OS drive number — 可能为 null（外设无 OS drive） */
+    drive_number: number | null;
+    is_nvme: boolean;
+    is_ssd: boolean;
+    is_hdd: boolean;
+    is_removable: boolean;
+    is_usb: boolean;
+    is_virtual: boolean;
+    /** bytes */
+    total_bytes: number;
+    total_free_bytes: number;
+    total_used_bytes: number;
+    /** 0-100 */
+    used_percent: number;
+    /** admin mode 才为 true（SMART 读到才算） */
+    smart_available: boolean;
+    /** "Good" / "Caution" / "Bad" / "Unknown" */
+    disk_status: string;
+    /** °C，null 表示 SMART 没暴露温度传感器 */
+    temperature: number | null;
+    temperature_warning: number | null;
+    temperature_critical: number | null;
+    /** 当前磁盘 I/O 活动率 0-100%（admin mode via DiskInfoToolkit；user mode 为 null） */
+    total_activity: number | null;
+    /** bytes/s，LHM Throughput sensor（admin mode）；null 表示不可用 */
+    read_rate: number | null;
+    /** bytes/s，LHM Throughput sensor（admin mode）；null 表示不可用 */
+    write_rate: number | null;
+    /** 0-100 — NVMe Percentage Used 取反，SSD Wear_Leveling_Count 取反 */
+    life_remaining_percent: number | null;
+    /** DiskInfoToolkit 原始 GB，非 byte（参见后端注释） */
+    host_reads_gb: number | null;
+    host_writes_gb: number | null;
+    power_on_count: number | null;
+    power_on_hours: number | null;
+    nand_writes_gb: number | null;
+    wear_leveling_count: number | null;
+    partition_count: number;
+    partitions: DiskPartitionInfo[];
+    /** 后端在 SMART 读取失败时填的错误信息（admin mode only） */
+    read_error: string;
+}
+
+/**
+ * `/api/sysinfo/disk` 的 data 字段。
+ *
+ * 与 `MemoryInfo` 同构：先是总览（drive_count、
+ * total_bytes、used_percent），再是每块盘的 `drives` 数组。
+ */
+export interface DiskSummaryInfo {
+    drive_count: number;
+    total_bytes: number;
+    total_free_bytes: number;
+    total_used_bytes: number;
+    used_percent: number;
+    drives: DiskDriveInfo[];
+}
+
 export interface OsInfo {
     name: string;
     /**
@@ -262,13 +382,14 @@ export interface TimeInfo {
 /**
  * `GET /api/sysinfo` 的 data 字段。
  * 后端是 `C# class AggregateInfo`，按字段顺序：
- * Cpu → Memory → Gpu → Network → System → Time。
+ * Cpu → Memory → Gpu → Network → Disks → System → Time。
  */
 export interface AggregateInfo {
     cpu: CpuInfo[];
     memory: MemoryInfo;
     gpu: GpuInfo[];
     network: NetworkInfo;
+    disks: DiskSummaryInfo;
     system: SystemInfo;
     time: TimeInfo;
 }
@@ -607,6 +728,8 @@ export interface SystemMonitorData {
 
 export interface SystemMonitorConfig {
     enabled: boolean;
+    /** 'rows' — existing compact row layout; 'cards' — rich card layout with sparklines */
+    displayStyle: 'rows' | 'cards';
     barLayout: 'horizontal' | 'vertical';
     monitorPosition: 'left' | 'right';
     disconnectTimeout: number;
@@ -621,6 +744,7 @@ export interface SystemMonitorConfig {
     showGpu: boolean;
     showMemory: boolean;
     showNetwork: boolean;
+    showDisk: boolean;
     monitorX: number;
     monitorY: number;
     monitorSize: number;
@@ -634,4 +758,78 @@ export interface SystemMonitorDomRefs {
     gpuRow: HTMLElement | null;
     memoryRow: HTMLElement | null;
     networkRow: HTMLElement | null;
+}
+
+/**
+ * DOM references for card-mode elements.
+ * Created dynamically by cardRenderer.buildCards().
+ */
+export interface SystemMonitorCardDomRefs {
+    container: HTMLElement;
+    cards: {
+        cpu: HTMLElement | null;
+        gpu: HTMLElement | null;
+        memory: HTMLElement | null;
+        network: HTMLElement | null;
+        disks: HTMLElement[];
+    };
+    /** Canvas elements by metric: `cpu.util`, `gpu.temp`, etc. */
+    canvases: Map<string, HTMLCanvasElement>;
+}
+
+/* =================================================================
+ *  10. Card-mode render payloads
+ * ================================================================= */
+
+/** Temperature axis range for a sparkline. */
+export interface TempRange {
+    lo: number;
+    hi: number;
+    crit: number;
+}
+
+/** Meta row entry in a card (e.g. "Freq 5065 MHz"). */
+export interface CardMetaEntry {
+    label: string;
+    value: string;
+}
+
+/** Sparkline data for a single channel in a card. */
+export interface SparkChannel {
+    kind: 'util' | 'temp' | 'power' | 'vram' | 'read' | 'write' | 'rx' | 'tx' | 'rx-tx' | 'activity';
+    history: number[];
+    range?: TempRange;
+    /** Optional override for the head display value (e.g. "68.1 W", "414 B/s") */
+    displayValue?: string;
+    /** Optional tag text shown after the value (e.g. "max 92") */
+    tag?: string;
+    /** Optional separate history for the secondary direction in a combined sparkline */
+    dirRx?: number[];
+    /** Optional secondary direction value for combined rx-tx sparkline */
+    dirTxDisplay?: string;
+}
+
+/** Data payload to render a single card. */
+export interface CardPayload {
+    /** Metric label, e.g. "CPU · AMD Ryzen 9 7845HX" */
+    label: string;
+    /** Primary value, e.g. "13%" */
+    value: string;
+    /** Optional extra text, e.g. "(89°C)" */
+    extra: string | null;
+    /** Meta information grid */
+    meta: CardMetaEntry[];
+    /** Sparkline channels */
+    sparks: SparkChannel[];
+    /** Spark-cell layout variant */
+    sparkLayout: 'solo' | 'dual' | 'triple' | 'quad' | 'double-full' | 'combined';
+}
+
+/** All card data for one render cycle. */
+export interface CardRenderData {
+    cpu: CardPayload | null;
+    gpu: CardPayload | null;
+    memory: CardPayload | null;
+    network: CardPayload | null;
+    disks: CardPayload[];
 }

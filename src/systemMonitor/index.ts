@@ -19,6 +19,7 @@ export {
     uploadCustomIcon,
 } from './api';
 export { getSystemMonitor, initSystemMonitor, SystemMonitor } from './SystemMonitor';
+export { buildCards, destroyCards, updateCards } from './cardRenderer';
 export type {
     AggregateInfo,
     AllIconItem,
@@ -56,6 +57,12 @@ export type {
     SystemMonitorConfig,
     SystemMonitorData,
     SystemMonitorDomRefs,
+    SystemMonitorCardDomRefs,
+    CardPayload,
+    CardMetaEntry,
+    SparkChannel,
+    CardRenderData,
+    TempRange,
     TempComponent,
     TimeInfo,
     UpdateConfigRequest,

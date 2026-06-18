@@ -263,12 +263,165 @@ namespace PerfectWall.Server.Models
         [JsonProperty("uptime")] public long Uptime { get; set; }
     }
 
+    // =================================================================
+    //  Disk
+    // =================================================================
+
+    /// <summary>
+    /// One volume (drive letter) on a physical disk. Always
+    /// populated: in user mode it comes from
+    /// <see cref="System.IO.DriveInfo"/>; in admin mode it
+    /// comes from <c>DiskInfoToolkit.Partition</c> and is
+    /// cross-referenced back to the physical drive via the
+    /// <c>DriveLetter</c> + <c>VolumePath</c> pairing.
+    /// </summary>
+    public sealed class DiskPartitionInfo
+    {
+        // ---- Identity ----
+        [JsonProperty("drive_letter")] public string DriveLetter { get; set; } // "C" or "" for un-mounted partitions
+        [JsonProperty("volume_path")] public string VolumePath { get; set; }   // "C:\"
+        [JsonProperty("label")] public string Label { get; set; }               // "Windows" / "Data" / ""
+        [JsonProperty("file_system")] public string FileSystem { get; set; }   // "NTFS" / "exFAT" / "FAT32"
+        [JsonProperty("drive_type")] public string DriveType { get; set; }     // "Fixed" / "Removable" / "Network" / "CDRom" / "Unknown"
+
+        // ---- Capacity (bytes; 0 if the drive isn't ready) ----
+        [JsonProperty("total_bytes")] public long TotalBytes { get; set; }
+        [JsonProperty("used_bytes")] public long UsedBytes { get; set; }
+        [JsonProperty("free_bytes")] public long FreeBytes { get; set; }
+        [JsonProperty("used_percent")] public float UsedPercent { get; set; }
+
+        // ---- State ----
+        [JsonProperty("is_ready")] public bool IsReady { get; set; }
+        [JsonProperty("is_boot")] public bool IsBoot { get; set; }              // %SystemDrive% / boot partition
+        [JsonProperty("is_system")] public bool IsSystem { get; set; }          // hosts the OS install
+    }
+
+    /// <summary>
+    /// One physical disk (NVMe / SATA SSD / SATA HDD / USB).
+    /// Fields are populated incrementally:
+    /// <list type="bullet">
+    ///   <item><description>
+    ///     In **user mode** we only have <c>DriveInfo</c> data,
+    ///     so <see cref="Model"/> stays at the volume-derived
+    ///     placeholder, and SMART fields stay null.
+    ///   </description></item>
+    ///   <item><description>
+    ///     In **admin mode** DiskInfoToolkit fills in model /
+    ///     serial / firmware / SMART / temperature / lifetime.
+    ///   </description></item>
+    /// </list>
+    /// </summary>
+    public sealed class DiskDriveInfo
+    {
+        [JsonProperty("index")] public int Index { get; set; }                // 0-based index in the drives array
+        [JsonProperty("model")] public string Model { get; set; }             // "Samsung SSD 980 PRO 2TB"
+        [JsonProperty("vendor")] public string Vendor { get; set; }           // "Samsung" / "WDC" / ...
+        [JsonProperty("product_id")] public string ProductId { get; set; }    // raw INQUIRY product
+        [JsonProperty("vendor_id")] public string VendorId { get; set; }      // raw INQUIRY vendor
+        [JsonProperty("serial_number")] public string SerialNumber { get; set; }
+        [JsonProperty("firmware")] public string Firmware { get; set; }       // "5B2QGXA7"
+        [JsonProperty("firmware_rev")] public string FirmwareRev { get; set; }// older LHM "FirmwareRev"
+        [JsonProperty("bus_type")] public string BusType { get; set; }        // "NVMe" / "SATA" / "USB" / "RAID"
+        [JsonProperty("controller_type")] public string ControllerType { get; set; } // "NVMe" / "ATA" / "SCSI" / "USB"
+        [JsonProperty("device_id")] public string DeviceId { get; set; }      // "\\\\?\\SCSI#Disk&Ven_Samsung..."
+        [JsonProperty("physical_path")] public string PhysicalPath { get; set; }
+        [JsonProperty("drive_number")] public int? DriveNumber { get; set; }  // OS drive number (-1 if unknown)
+
+        // ---- Kind flags ----
+        [JsonProperty("is_nvme")] public bool IsNVMe { get; set; }
+        [JsonProperty("is_ssd")] public bool IsSSD { get; set; }
+        [JsonProperty("is_hdd")] public bool IsHDD { get; set; }
+        [JsonProperty("is_removable")] public bool IsRemovable { get; set; }
+        [JsonProperty("is_usb")] public bool IsUSB { get; set; }
+        [JsonProperty("is_virtual")] public bool IsVirtual { get; set; }      // VHD / VHDX / iSCSI LUN
+
+        // ---- Capacity (bytes; 0 if unknown) ----
+        [JsonProperty("total_bytes")] public long TotalBytes { get; set; }
+        [JsonProperty("total_free_bytes")] public long TotalFreeBytes { get; set; }
+        [JsonProperty("total_used_bytes")] public long TotalUsedBytes { get; set; }
+        [JsonProperty("used_percent")] public float UsedPercent { get; set; }
+
+        // ---- SMART (admin mode only) ----
+        [JsonProperty("smart_available")] public bool SmartAvailable { get; set; }
+        [JsonProperty("disk_status")] public string DiskStatus { get; set; }   // "Good" / "Caution" / "Bad" / "Unknown"
+        [JsonProperty("temperature")] public float? Temperature { get; set; } // °C, null if SMART didn't report
+        [JsonProperty("temperature_warning")] public float? TemperatureWarning { get; set; }
+        [JsonProperty("temperature_critical")] public float? TemperatureCritical { get; set; }
+
+        // ---- Activity (always-on, user + admin) ----
+        // TotalActivity = current disk I/O utilisation as a
+        // percentage (0-100). Populated via DiskInfoToolkit in
+        // admin mode; falls back to PDH % Disk Time in user
+        // mode. null if no counter was accessible.
+        [JsonProperty("total_activity")] public float? TotalActivity { get; set; }
+        [JsonProperty("read_rate")] public long? ReadRate { get; set; }    // bytes/s, LHM Throughput sensor
+        [JsonProperty("write_rate")] public long? WriteRate { get; set; }   // bytes/s, LHM Throughput sensor
+
+        // ---- Wear / usage counters (admin mode only) ----
+        // HostReads / HostWrites / NandWrites come from
+        // DiskInfoToolkit in **GB** (CrystalDiskInfo
+        // convention). The field name carries the unit so
+        // the consumer knows what to expect without a
+        // stale byte-conversion from user mode.
+        [JsonProperty("life_remaining_percent")] public float? LifeRemainingPercent { get; set; } // 0-100, NVMe: Percentage Used; SSD: Wear_Leveling_Count inverted
+        [JsonProperty("host_reads_gb")] public long? HostReadsGb { get; set; }
+        [JsonProperty("host_writes_gb")] public long? HostWritesGb { get; set; }
+        [JsonProperty("power_on_count")] public long? PowerOnCount { get; set; }
+        [JsonProperty("power_on_hours")] public long? PowerOnHours { get; set; }
+        [JsonProperty("nand_writes_gb")] public long? NandWritesGb { get; set; }
+        [JsonProperty("wear_leveling_count")] public int? WearLevelingCount { get; set; }
+
+        // ---- Partitions (volumes on this drive) ----
+        [JsonProperty("partition_count")] public int PartitionCount { get; set; }
+        [JsonProperty("partitions")] public List<DiskPartitionInfo> Partitions { get; set; } = new List<DiskPartitionInfo>();
+
+        // ---- Diagnostics ----
+        [JsonProperty("read_error")] public string ReadError { get; set; }   // populated if SMART poll failed
+    }
+
+    /// <summary>
+    /// Aggregate disk info: total bytes across every drive,
+    /// plus the per-drive list. Mirrors <see cref="MemoryInfo"/>'s
+    /// pattern: scalar totals first, then a list of children.
+    /// </summary>
+    public sealed class DiskSummaryInfo
+    {
+        [JsonProperty("drive_count")] public int DriveCount { get; set; }
+        [JsonProperty("total_bytes")] public long TotalBytes { get; set; }
+        [JsonProperty("total_free_bytes")] public long TotalFreeBytes { get; set; }
+        [JsonProperty("total_used_bytes")] public long TotalUsedBytes { get; set; }
+        [JsonProperty("used_percent")] public float UsedPercent { get; set; }
+        [JsonProperty("drives")] public List<DiskDriveInfo> Drives { get; set; } = new List<DiskDriveInfo>();
+    }
+
+    /// <summary>
+    /// Lightweight per-drive activity reading extracted from
+    /// LHM <c>HardwareType.Storage</c> sensors. Populated
+    /// only in admin mode via <c>CollectStorageActivities()</c>;
+    /// passed directly to <see cref="DiskInfoService"/> to
+    /// avoid a double-enumeration of storage hardware.
+    /// Key = hardware identifier string (name or DeviceID).
+    /// </summary>
+    public sealed class DiskActivityInfo
+    {
+        [JsonProperty("total_activity")] public float? TotalActivity { get; set; }
+        [JsonProperty("read_activity")] public float? ReadActivity { get; set; }
+        [JsonProperty("write_activity")] public float? WriteActivity { get; set; }
+        [JsonProperty("read_rate")] public long? ReadRate { get; set; }   // bytes/s, Throughput sensor
+        [JsonProperty("write_rate")] public long? WriteRate { get; set; }  // bytes/s, Throughput sensor
+    }
+
+    // =================================================================
+    //  Aggregate
+    // =================================================================
+
     public sealed class AggregateInfo
     {
         [JsonProperty("cpu")] public List<CpuInfo> Cpu { get; set; } = new List<CpuInfo>();
         [JsonProperty("memory")] public MemoryInfo Memory { get; set; } = new MemoryInfo();
         [JsonProperty("gpu")] public List<GpuInfo> Gpu { get; set; } = new List<GpuInfo>();
         [JsonProperty("network")] public NetworkInfo Network { get; set; } = new NetworkInfo();
+        [JsonProperty("disks")] public DiskSummaryInfo Disks { get; set; } = new DiskSummaryInfo();
         [JsonProperty("system")] public SystemInfo System { get; set; } = new SystemInfo();
         [JsonProperty("time")] public TimeInfo Time { get; set; } = new TimeInfo();
     }

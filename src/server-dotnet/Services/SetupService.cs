@@ -200,7 +200,27 @@ namespace PerfectWall.Server.Services
                 using var key = Registry.CurrentUser.OpenSubKey(HkcuRunKey, writable: true);
                 if (enable)
                 {
-                    key.SetValue(AppName, GetExePath(), RegistryValueKind.String);
+                    // Append --no-open so the logon-
+                    // launched copy of perfectwall-server
+                    // does NOT pop a browser window.
+                    // Without this, the EXE inherits a
+                    // user-interactive token at logon
+                    // (winlogon / taskhostw is the
+                    // parent) and the default-browser
+                    // launch can land in a fresh
+                    // browser instance with a blank
+                    // profile, silently losing the
+                    // user's cookies, extensions, and
+                    // saved logins.
+                    //
+                    // The HTTP server still starts on
+                    // the saved port, so any other
+                    // already-running browser tab
+                    // pointed at http://localhost:<port>
+                    // keeps working, and the user can
+                    // reach /setup by opening the URL
+                    // manually if they want to.
+                    key.SetValue(AppName, "\"" + GetExePath() + "\" --no-open", RegistryValueKind.String);
                 }
                 else
                 {
@@ -292,10 +312,20 @@ namespace PerfectWall.Server.Services
             //    execute at logon. We pass the EXE path
             //    in quotes so a Program Files install
             //    (with the space) doesn't break the
-            //    command line, and append --admin so
-            //    the EXE picks admin mode regardless of
-            //    how Main() would otherwise auto-detect.
-            var tr = "\"" + exePath + "\" --admin";
+            //    command line. We append both
+            //    <c>--admin</c> (so Main() picks admin
+            //    mode regardless of how it would
+            //    otherwise auto-detect) and
+            //    <c>--no-open</c> (so the logon-launched
+            //    copy does NOT pop a browser). The
+            //    latter is critical on multi-account /
+            //    RDP systems where a default-browser
+            //    launch from a Task Scheduler ONLOGON
+            //    context can land in a brand-new
+            //    browser instance with a blank profile,
+            //    silently losing cookies, extensions,
+            //    and saved logins.
+            var tr = "\"" + exePath + "\" --admin --no-open";
             // 3. The /SC ONLOGON + /RL HIGHEST combo is
             //    the whole point of the move: ONLOGON
             //    fires on every user logon, HIGHEST tells

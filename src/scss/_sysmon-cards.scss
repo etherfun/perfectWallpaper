@@ -1,0 +1,307 @@
+// ============================================
+// System Monitor — Card Mode Styles
+// ============================================
+// Activated when displayStyle === 'cards'. Each metric is rendered as
+// a rich glass card with large value, meta info grid, and sparklines.
+//
+// DOM structure (built by cardRenderer.ts):
+//   .sysmon-cards
+//     .sysmon-card
+//       .sysmon-card__label-row  → metric label
+//       .sysmon-card__value-row  → value + extra
+//       .sysmon-card__meta       → info grid
+//       .sysmon-card__sparks     → sparkline area
+//         .spark-pair
+//           .head                → label + current + axis
+//           canvas.spark         → sparkline
+//
+// All cards sit inside #system-monitor and inherit its positioning.
+
+@use 'mixins' as *;
+@use 'config' as *;
+@use 'variables' as *;
+
+// ─── Cards container ─────────────────────────────────────────────
+// Positioned inside #system-monitor, replaces .background when active.
+#system-monitor .sysmon-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    pointer-events: none;
+    user-select: none;
+    max-width: 520px;
+    min-width: 280px;
+
+    // horizontal-layout mirrors the row-mode bar layout: cards sit
+    // side by side in a single row like a taskbar. Cards on the right
+    // anchor to the right edge so the group visually mirrors left-side.
+    &.horizontal-layout {
+        flex-direction: row;
+        align-items: stretch;
+        gap: 10px;
+        max-width: none;
+        min-width: 0;
+
+        &.right-side {
+            justify-content: flex-end;
+        }
+
+        // Fixed width per card so the row reads as a uniform taskbar
+        // regardless of each metric's label/value length.
+        .sysmon-card {
+            flex: 0 0 280px;
+            min-width: 350px;
+        }
+    }
+}
+
+// ─── Single card ─────────────────────────────────────────────────
+.sysmon-card {
+    @include yakeli-effect(sysmon);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 14px;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+
+    // Hide card when its metric is disabled
+    &[style*='display: none'] {
+        display: none !important;
+    }
+}
+
+// ─── Label row ───────────────────────────────────────────────────
+.sysmon-card__label-row {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.sysmon-card__label {
+    font-size: 1.05em;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: var(--fg, #e6e9ef);
+}
+
+// ─── Value row ───────────────────────────────────────────────────
+// The value-row owns the primary value AND the meta grid so they share
+// one horizontal line (right of the value, wraps under on narrow cards).
+.sysmon-card__value-row {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 10px;
+    row-gap: 2px;
+}
+
+.sysmon-card__value {
+    font-size: 1.8em;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.05;
+}
+
+.sysmon-card__extra {
+    font-size: 0.75em;
+    opacity: 0.7;
+    white-space: nowrap;
+}
+
+// ─── Meta grid (lives next to the value) ─────────────────────────
+// Inlined into the value-row via :has() so the primary value + meta
+// share a single visual line; meta wraps under only when the card is
+// too narrow to fit it on the right.
+.sysmon-card:has(.sysmon-card__value-row .sysmon-card__meta) .sysmon-card__value-row {
+    // value-row already contains meta — nothing to do beyond the
+    // baseline alignment below.
+}
+
+.sysmon-card__value-row .sysmon-card__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    font-size: 0.72em;
+    opacity: 0.7;
+    align-self: center;
+    margin-left: auto;
+
+    b {
+        font-weight: 600;
+        font-variant-numeric: tabular-nums;
+        color: var(--fg, #e6e9ef);
+        opacity: 1;
+    }
+}
+
+// Standalone meta element (placed outside value-row, legacy): collapse
+// to zero height so it doesn't open a new line.
+.sysmon-card__meta:not(.sysmon-card__value-row .sysmon-card__meta) {
+    display: none;
+}
+
+// ─── Sparkline area ──────────────────────────────────────────────
+.sysmon-card__sparks {
+    display: grid;
+    gap: 4px 10px;
+    margin-top: 2px;
+}
+
+// ─── Spark pair (head + canvas) ──────────────────────────────────
+.spark-pair {
+    display: grid;
+    grid-template-rows: auto auto;
+    gap: 2px;
+    min-width: 0;
+
+    .head {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 6px;
+        font-size: 0.7em;
+        opacity: 0.7;
+
+        b {
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            color: var(--fg, #e6e9ef);
+            opacity: 1;
+        }
+
+        .axis {
+            opacity: 0.6;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .dir-rx {
+            color: #6ea8ff;
+        }
+
+        .dir-tx {
+            color: #ffa726;
+        }
+    }
+
+    canvas.spark {
+        display: block;
+        width: 100%;
+        height: 28px;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 4px;
+    }
+}
+
+// ─── Tag badge ───────────────────────────────────────────────────
+.tag {
+    display: inline-block;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    background: rgba(110, 168, 255, 0.2);
+    color: #6ea8ff;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Spark-cell layout variants
+// ═══════════════════════════════════════════════════════════════════
+
+// Solo — single sparklane (MEM, single-channel)
+.spark-cell--solo {
+    grid-template-columns: 1fr;
+}
+
+// Dual — two side-by-side sparklanes (NET rx/tx)
+.spark-cell--dual {
+    grid-template-columns: 1fr;
+
+    .spark-pair canvas.spark {
+        height: 22px;
+    }
+
+    .spark-pair .head {
+        font-size: 0.65em;
+    }
+}
+
+// Triple — 2x2 grid where the 3rd item spans full width (GPU w/o VRAM)
+.spark-cell--triple {
+    grid-template-columns: 1fr 1fr;
+
+    .spark-pair canvas.spark {
+        height: 22px;
+    }
+
+    .spark-pair .head {
+        font-size: 0.62em;
+    }
+
+    .spark-pair:nth-child(3) {
+        grid-column: 1 / -1;
+    }
+}
+
+// Quad — pure 2x2 grid (GPU with all 4 channels)
+.spark-cell--quad {
+    grid-template-columns: 1fr 1fr;
+
+    .spark-pair canvas.spark {
+        height: 22px;
+    }
+
+    .spark-pair .head {
+        font-size: 0.62em;
+    }
+}
+
+// Double-full — 2 side-by-side + 1 full-width below (CPU)
+.spark-cell--double-full {
+    grid-template-columns: 1fr 1fr;
+
+    .spark-pair canvas.spark {
+        height: 22px;
+    }
+
+    .spark-pair .head {
+        font-size: 0.62em;
+    }
+
+    .spark-pair:nth-child(3) {
+        grid-column: 1 / -1;
+    }
+}
+
+// Combined — single sparklane for overlaid rx+tx traces (NET)
+.spark-cell--combined {
+    grid-template-columns: 1fr;
+
+    .spark-pair canvas.spark {
+        height: 28px;
+    }
+
+    .spark-pair .head {
+        font-size: 0.65em;
+    }
+}
+
+// ═══════════════════════════════════════════════════════════════════
+// Responsive: narrow → single column
+// ═══════════════════════════════════════════════════════════════════
+@media (max-width: 360px) {
+    #system-monitor .sysmon-cards {
+        max-width: 100%;
+        min-width: 0;
+    }
+
+    .spark-cell--triple,
+    .spark-cell--quad,
+    .spark-cell--double-full {
+        grid-template-columns: 1fr;
+    }
+}

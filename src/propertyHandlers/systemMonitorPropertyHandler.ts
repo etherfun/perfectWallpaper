@@ -196,6 +196,18 @@ export function handleSystemMonitorProperties(
         );
     }
 
+    if (properties.sysmon_display_style) {
+        const styles: Array<'rows' | 'cards'> = ['rows', 'cards'];
+        const style = styles[properties.sysmon_display_style.value] || 'rows';
+        monitor.updateConfig({ displayStyle: style });
+    }
+
+    if (properties.sysmon_show_disk) {
+        monitor.updateConfig({
+            showDisk: properties.sysmon_show_disk.value,
+        });
+    }
+
     if (FirstLoad) {
         logInitComplete('[Sysmon]', '系统性能', FirstLoad);
     }

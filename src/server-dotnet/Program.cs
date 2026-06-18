@@ -74,11 +74,12 @@ namespace PerfectWall.Server
             HardwareMonitorService.RunMode mode;
             bool console, noServer, autoStart, removeAutoStart, relaunch;
             bool adminExplicit = false, userExplicit = false;
+            bool noOpen = false;
             try
             {
                 ParseFlags(args, out cfg, out mode, out console, out noServer,
                     out autoStart, out removeAutoStart, out relaunch,
-                    out adminExplicit, out userExplicit);
+                    out adminExplicit, out userExplicit, out noOpen);
             }
             catch (Exception ex)
             {
@@ -227,6 +228,17 @@ namespace PerfectWall.Server
             //      to user-mode data) ----
             var hw = new HardwareMonitorService(mode);
             var sampler = new SystemSampler();
+            // DiskInfoService is its own type because disk
+            // info is hybrid: it has a *always-on* user-mode
+            // path (System.IO.DriveInfo for volume sizes and
+            // filesystem labels) and a *admin-mode* SMART
+            // path (DiskInfoToolkit for model, serial,
+            // firmware, temperature, lifetime counters).
+            // Mixing the two into HardwareMonitorService would
+            // force user mode to load the DiskInfoToolkit
+            // assembly on every startup; splitting them keeps
+            // the JIT cost off the cold path.
+            var disks = new DiskInfoService(mode);
 
             Console.WriteLine($"[Server] mode={mode}, port={cfg.Port}, elevated={ElevationHelper.IsElevated()}");
             if (mode == HardwareMonitorService.RunMode.User)
@@ -262,7 +274,7 @@ namespace PerfectWall.Server
             }
             var router = new Router();
 
-            SysInfoEndpoints.Map(router, hw, sampler);
+            SysInfoEndpoints.Map(router, hw, sampler, disks);
             FileEndpoints.Map(router);
             IconEndpoints.Map(router);
             DockbarEndpoints.Map(router);
@@ -302,28 +314,36 @@ namespace PerfectWall.Server
             // browser. The console fallback menu (type `s` in
             // the terminal) is kept as a no-GUI option.
             //
-            // We only auto-open when the EXE was launched
-            // interactively (double-click from Explorer).
-            // Wallpaper Engine spawns us headless, so a
-            // silent context skips the open and the user can
-            // still reach /setup manually.
-            try
+            // Auto-open policy:
+            //   * Wallpaper Engine spawns us headless, so the
+            //     UserInteractive check is already enough for
+            //     that case.
+            //   * HKCU\…\Run and Task Scheduler logon tasks
+            //     *also* have a user-interactive token (the
+            //     user is logged in when the process starts),
+            //     but they are spawned by `winlogon.exe` /
+            //     `taskhostw.exe` and a Process.Start from
+            //     such a parent will pop a browser in a
+            //     context the user can't see — worse, on
+            //     multi-account / RDP systems the new browser
+            //     instance can have a blank profile and lose
+            //     cookies, extensions, and saved logins.
+            //     Therefore the auto-start registration code
+            //     always appends `--no-open` to the EXE path,
+            //     and `LaunchContext.CanOpenBrowser` adds a
+            //     belt-and-suspenders parent-process check so
+            //     we never pop a browser from a headless
+            //     launcher even if the flag is forgotten.
+            //     Additionally, FirstLaunch is checked so that
+            //     setup only auto-opens on the very first run on
+            //     this machine; subsequent cold starts are silent.
+            //     The user can still open setup via the console
+            //     menu ('s') or the dockbar at any time.
+            if (!noOpen && cfg.FirstLaunch)
             {
-                if (Environment.UserInteractive)
-                {
-                    System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
-                    {
-                        FileName = "http://localhost:" + cfg.Port + "/setup",
-                        UseShellExecute = true
-                    });
-                }
-            }
-            catch (Exception ex)
-            {
-                // No default browser registered, no GUI session,
-                // or the user is on Server Core / Nano. Log and
-                // fall through to console-only.
-                Console.Error.WriteLine($"[Setup] failed to open browser: {ex.Message}");
+                TryOpenSetupPage(cfg.Port);
+                cfg.FirstLaunch = false;
+                cfg.Save();
             }
             PerfectWall.Server.Gui.ConsoleMenu.StartInBackground(Console.ForegroundColor);
 
@@ -447,7 +467,8 @@ namespace PerfectWall.Server
             out bool removeAutoStart,
             out bool relaunch,
             out bool adminExplicit,
-            out bool userExplicit)
+            out bool userExplicit,
+            out bool noOpen)
         {
             cfg = ServerConfig.Load();
             // Default to user mode. If neither --user nor --admin
@@ -462,6 +483,19 @@ namespace PerfectWall.Server
             relaunch = false;
             adminExplicit = false;
             userExplicit = false;
+            // --no-open is appended by the auto-start
+            // registration code (HKCU\…\Run and Task
+            // Scheduler). When it's present, Main() will
+            // still start the HTTP server, but it will
+            // NOT call Process.Start on the user's
+            // default browser — critical for the
+            // "auto-start at logon" path, where a
+            // headless launch (winlogon → EXE) would
+            // otherwise pop a browser window that lands
+            // in a brand-new instance with a blank
+            // profile, silently losing the user's
+            // cookies / extensions / saved logins.
+            noOpen = false;
 
             for (int i = 0; i < args.Length; i++)
             {
@@ -496,6 +530,19 @@ namespace PerfectWall.Server
                         break;
                     case "--relaunch":
                         relaunch = true;
+                        break;
+                    case "--no-open":
+                        // Suppress the
+                        // "Process.Start(setup page)"
+                        // side effect. The HTTP
+                        // server still starts so the
+                        // existing instance can be
+                        // reached on the saved port;
+                        // the user just has to open
+                        // the URL themselves (or
+                        // click "Open setup page" in
+                        // the dockbar / setup menu).
+                        noOpen = true;
                         break;
                     case "--probe":
                         relaunch = true; // RunProbe is keyed off this
@@ -560,6 +607,80 @@ namespace PerfectWall.Server
             }
         }
 
+        /// <summary>
+        /// Best-effort: launch the user's default
+        /// browser at <c>http://localhost:{port}/setup</c>.
+        /// No-op (with a one-line log) if any of the
+        /// following is true:
+        ///
+        /// <list type="bullet">
+        ///   <item><description>
+        ///     We're in Session 0 (services).
+        ///   </description></item>
+        ///   <item><description>
+        ///     We're in a different session than the
+        ///     active console (RDP focus theft).
+        ///   </description></item>
+        ///   <item><description>
+        ///     The parent process is on the
+        ///     <see cref="Utils.LaunchContext"/>
+        ///     headless-list (winlogon, taskhost,
+        ///     services, Wallpaper Engine, ...).
+        ///   </description></item>
+        ///   <item><description>
+        ///     The user has no default browser
+        ///     registered.
+        ///   </description></item>
+        /// </list>
+        ///
+        /// The "silent log" is intentional. We do
+        /// <em>not</em> raise a console error when we
+        /// skip the open — every auto-start at logon
+        /// would otherwise print "[Setup] skipped"
+        /// once per user per boot, which looks like a
+        /// problem to anyone reading the log.
+        /// </summary>
+        private static void TryOpenSetupPage(int port)
+        {
+            if (!PerfectWall.Server.Utils.LaunchContext.CanOpenBrowser())
+            {
+                return;
+            }
+            try
+            {
+                // We deliberately use UseShellExecute=true
+                // here (not the lower-level CreateProcess
+                // path) because the Shell knows how to
+                // resolve the user's default HTTP handler
+                // from the registered ProgId, including
+                // per-protocol preferences (e.g. "open
+                // localhost links in Firefox, not Edge").
+                // The trade-off is that ShellExecute can
+                // take a few hundred ms on a cold start
+                // while the Shell association cache warms
+                // up; the success rate is much higher
+                // than the CreateProcess path on systems
+                // where the default browser is a UWP /
+                // packaged app (Edge Chromium, Firefox
+                // MSIX, etc.).
+                System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                {
+                    FileName = "http://localhost:" + port + "/setup",
+                    UseShellExecute = true
+                });
+            }
+            catch (Exception ex)
+            {
+                // No default browser registered, no GUI
+                // session, or the user is on Server
+                // Core / Nano. Log at info level so a
+                // debug-mode user can see why the page
+                // didn't pop, but a casual user gets a
+                // clean startup.
+                Console.WriteLine($"[Setup] browser auto-open skipped: {ex.Message}");
+            }
+        }
+
         private static void PrintHelp()
         {
             Console.WriteLine("perfectwall-server (.NET Framework 4.8)");
@@ -588,6 +709,10 @@ namespace PerfectWall.Server
             Console.WriteLine("  -p, --port <N>           override listening port");
             Console.WriteLine("      --user               force user mode (LHM disabled)");
             Console.WriteLine("      --admin              force admin mode (LHM enabled, requires UAC)");
+            Console.WriteLine("      --no-open            do NOT auto-open /setup in the default browser");
+            Console.WriteLine("                           (used by the auto-start registration paths so a");
+            Console.WriteLine("                           logon-launched copy never pops a fresh browser");
+            Console.WriteLine("                           instance that would lose the user's profile)");
             Console.WriteLine("      --probe              print a JSON diagnostic and exit");
             Console.WriteLine("      --dump-sensors       print every LHM sensor name (diagnostic) and exit");
             Console.WriteLine("      --auto-start         register for Windows login and exit");

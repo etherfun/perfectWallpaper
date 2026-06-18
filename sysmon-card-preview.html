@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <title>System Monitor – Card Style Preview</title>
+    <style>
+        /* =========================================================
+         * Global page chrome (preview only, NOT shipped)
+         * ========================================================= */
+        :root {
+            --bg: #1c1f24;
+            --bg-2: #252932;
+            --fg: #e6e9ef;
+            --fg-dim: rgba(230, 233, 239, 0.6);
+            --accent: #6ea8ff;
+            --border: rgba(255, 255, 255, 0.12);
+
+            --color-ok: #4caf50;
+            --color-warn: #ffc107;
+            --color-bad: #f44336;
+
+            --sysmon-height: 50px;
+            --sysmon-blur-yakeli: 14px;
+            --sysmon-yakeli: 0.18;
+            --sysmon-yakeli-enabled: 1;
+            --sysmon-yakeli-color: 255, 255, 255;
+            --sysmon-roundedcorners: 18;
+            --sysmon-monitor-size: 14px;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background:
+                radial-gradient(ellipse at 20% 30%, #2a3140 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 70%, #2d3a4a 0%, transparent 60%),
+                var(--bg);
+            color: var(--fg);
+            font-family: '绛←嚎 Light', 'Microsoft Yahei Light', system-ui, sans-serif;
+            min-height: 100vh;
+            padding: 32px;
+        }
+
+        /* ---- Top controls ---- */
+        .toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 24px;
+            padding: 12px 16px;
+            background: var(--bg-2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+        }
+
+        .toolbar h1 {
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0 16px 0 0;
+            letter-spacing: 0.04em;
+        }
+
+        .toolbar .seg {
+            display: inline-flex;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 2px;
+        }
+
+        .toolbar .seg button {
+            appearance: none;
+            background: transparent;
+            color: var(--fg-dim);
+            border: 0;
+            padding: 6px 14px;
+            font: inherit;
+            font-size: 13px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+        }
+
+        .toolbar .seg button:hover {
+            color: var(--fg);
+        }
+
+        .toolbar .seg button.active {
+            background: var(--accent);
+            color: #0d1117;
+            font-weight: 600;
+        }
+
+        .toolbar .legend {
+            font-size: 12px;
+            color: var(--fg-dim);
+            margin-left: auto;
+        }
+
+        .toolbar .legend kbd {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 1px 6px;
+            font-family: inherit;
+            font-size: 11px;
+        }
+
+        /* ---- Stage ---- */
+        .stage {
+            position: relative;
+            min-height: 420px;
+            padding: 32px;
+            background:
+                linear-gradient(135deg, rgba(255, 255, 255, 0.04), rgba(0, 0, 0, 0.18)),
+                var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .stage::after {
+            /* faint wallpaper-like backdrop so you can read contrast */
+            content: "";
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 75% 20%, rgba(110, 168, 255, 0.18), transparent 40%),
+                radial-gradient(circle at 15% 80%, rgba(244, 67, 54, 0.12), transparent 45%);
+            pointer-events: none;
+        }
+
+        .style-wrap {
+            position: relative;
+            z-index: 1;
+        }
+
+        .style-wrap.is-hidden {
+            display: none;
+        }
+
+        /* =========================================================
+         * Yakeli glass surface (shared by every card style)
+         * Mirrors src/scss/_sysmon.scss + _mixins.scss
+         * ========================================================= */
+        .glass {
+            text-shadow: 0 0 12px rgba(255, 255, 255, 0.18);
+            background-color: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(14px) saturate(180%);
+            -webkit-backdrop-filter: blur(14px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+        }
+
+        /* =========================================================
+         * Per-card stat primitives
+         * ========================================================= */
+        .stat-grid {
+            display: grid;
+            gap: 8px 12px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .stat-label {
+            font-size: 0.7em;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--fg-dim);
+            font-weight: 600;
+        }
+
+        .stat-value {
+            font-size: 1.05em;
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .spark {
+            display: block;
+            width: 100%;
+            height: 28px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        .bar-mini {
+            position: relative;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.18);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .bar-mini>span {
+            position: absolute;
+            inset: 0 auto 0 0;
+            background: var(--color-ok);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .tag {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.7em;
+            background: rgba(110, 168, 255, 0.2);
+            color: var(--accent);
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        /* =========================================================
+         * A. HERO + STAT (1 large + 3 narrow)
+         *   CPU takes the prominent slot because it has the
+         *   richest sensor tree; GPU / MEM / NET sit below.
+         * ========================================================= */
+        .style-a {
+            display: grid;
+            grid-template-columns: minmax(360px, 2fr) minmax(220px, 1fr);
+            grid-template-rows: auto auto;
+            gap: 14px;
+        }
+
+        .style-a .hero-cpu {
+            grid-row: 1 / span 2;
+            padding: 20px 22px;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .style-a .hero-cpu .head {
+            display: flex;
+            align-items: baseline;
+            gap: 14px;
+        }
+
+        .style-a .hero-cpu .head .label {
+            font-size: 1em;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: var(--fg-dim);
+        }
+
+        .style-a .hero-cpu .head .value {
+            font-size: 3.2em;
+            font-weight: 700;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-a .hero-cpu .head .extra {
+            font-size: 0.95em;
+            color: var(--fg-dim);
+        }
+
+        .style-a .hero-cpu .subname {
+            font-size: 0.8em;
+            color: var(--fg-dim);
+            margin-top: -6px;
+        }
+
+        .style-a .hero-cpu .stat-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        .style-a .hero-cpu .sensors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+            font-size: 0.78em;
+            color: var(--fg-dim);
+        }
+
+        .style-a .hero-cpu .sensors span {
+            background: rgba(0, 0, 0, 0.25);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .style-a .hero-cpu .sensors b {
+            color: var(--fg);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-a .side-card {
+            padding: 14px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .style-a .side-card .head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .style-a .side-card .head .label {
+            font-size: 0.9em;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: var(--fg-dim);
+        }
+
+        .style-a .side-card .head .value {
+            font-size: 1.6em;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-a .side-card .stat-grid {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        /* =========================================================
+         * B. DASHBOARD GRID (2x2 equal cards)
+         * ========================================================= */
+        .style-b {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .style-b .card {
+            padding: 16px 18px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .style-b .card .head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+        }
+
+        .style-b .card .head .label {
+            font-size: 0.85em;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--fg-dim);
+        }
+
+        .style-b .card .head .value {
+            font-size: 2.4em;
+            font-weight: 700;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-b .card .head .extra {
+            font-size: 0.78em;
+            color: var(--fg-dim);
+        }
+
+        .style-b .card .stat-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .style-b .card .subname {
+            font-size: 0.78em;
+            color: var(--fg-dim);
+            margin-top: -6px;
+        }
+
+        /* =========================================================
+         * C. TICKER (1x4 horizontal)
+         *   Slim, dense, reads like a stock ticker.
+         * ========================================================= */
+        .style-c {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+
+        .style-c .ticker {
+            padding: 12px 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .style-c .ticker .head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 6px;
+        }
+
+        .style-c .ticker .label {
+            font-size: 0.75em;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--fg-dim);
+        }
+
+        .style-c .ticker .value {
+            font-size: 1.6em;
+            font-weight: 700;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-c .ticker .stat-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 8px;
+        }
+
+        .style-c .ticker .stat-label {
+            font-size: 0.62em;
+        }
+
+        .style-c .ticker .stat-value {
+            font-size: 0.9em;
+        }
+
+        .style-c .ticker .spark {
+            height: 18px;
+        }
+
+        /* =========================================================
+         * D. COMPACT LIST (4 stacked cards, current row layout
+         *   but each row is now a richer card)
+         * ========================================================= */
+        .style-d {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 460px;
+        }
+
+        .style-d .row {
+            padding: 10px 14px;
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: center;
+            gap: 4px 14px;
+        }
+
+        .style-d .row .label-row {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+        }
+
+        .style-d .row .value-row {
+            grid-column: 1 / -1;
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .style-d .row .top {
+            display: flex;
+            align-items: baseline;
+            gap: 8px;
+        }
+
+        .style-d .row .label {
+            font-size: 1.05em;
+            font-weight: 700;
+            color: var(--fg);
+            letter-spacing: 0.02em;
+        }
+
+        /* When the label carries a brand+model (CPU / GPU), the model
+           text after "CPU ·" / "GPU ·" / "NET ·" is dimmed so the
+           metric name stays the visual anchor. The base label style
+           (size, weight, color) is shared with plain labels so all
+           four cards in the column have the same heading. */
+        .style-d .row .label.label--with-model .model {
+            color: var(--fg-dim);
+            font-weight: 500;
+        }
+
+        /* Trailing type segment of the NET label (e.g. "· WIFI"). Same
+           gray as the model text but a touch smaller so the three
+           segments read as a single descending hierarchy. */
+        .style-d .row .label.label--with-model .model--type {
+            font-size: 0.85em;
+        }
+
+        .style-d .row .value {
+            font-size: 1.8em;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+            line-height: 1.05;
+        }
+
+        .style-d .row .extra {
+            font-size: 0.75em;
+            color: var(--fg-dim);
+        }
+
+        .style-d .row .meta {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 4px 10px;
+            font-size: 0.72em;
+            color: var(--fg-dim);
+        }
+
+        .style-d .row .meta b {
+            color: var(--fg);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-d .row .spark-cell {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 8px 14px;
+        }
+
+        /* Single-sparklane variant: only one channel available (no
+           temperature sensor on this metric). */
+        .style-d .row .spark-cell.spark-cell--solo {
+            grid-template-columns: 1fr;
+        }
+
+        /* Dual-sparklane variant: two stacked sparklines, each spanning
+           the full row width. Used for NET to show rx and tx as
+           separate traces. */
+        .style-d .row .spark-cell.spark-cell--dual {
+            grid-template-columns: 1fr;
+        }
+
+        .style-d .row .spark-cell.spark-cell--dual .spark {
+            height: 22px;
+        }
+
+        .style-d .row .spark-cell.spark-cell--dual .spark-pair .head {
+            font-size: 0.65em;
+        }
+
+        /* Color hint in the spark-pair head (e.g. for the rx/tx badge). */
+        .style-d .row .spark-pair .head .dir-rx {
+            color: #6ea8ff;
+        }
+
+        .style-d .row .spark-pair .head .dir-tx {
+            color: #ffa726;
+        }
+
+        /* Triple-sparklane variant (GPU has Util + Temp + VRAM).
+           The grid is 2脳2: Util and Temp sit on the top row
+           (1fr 1fr), VRAM wraps to the second row and spans
+           the full width (1fr 1fr + 1fr on the second row, which
+           CSS-GRID auto-flows as a single full-width line). */
+        .style-d .row .spark-cell.spark-cell--triple {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .style-d .row .spark-cell.spark-cell--triple .spark {
+            height: 22px;
+        }
+
+        .style-d .row .spark-cell.spark-cell--triple .spark-pair .head {
+            font-size: 0.62em;
+        }
+
+        /* The last spark-pair in a triple cell (the VRAM row) spans
+           both columns so its sparkline reads as a full-width band
+           below the Util+Temp pair, not a narrow right-hand card. */
+        .style-d .row .spark-cell.spark-cell--triple .spark-pair:nth-child(3) {
+            grid-column: 1 / -1;
+        }
+
+        /* Quad-sparklane variant (GPU has Util + Temp + Power + VRAM).
+           Pure 2脳2 grid: every spark-pair occupies an equal quarter
+           so the four channels read as a single balanced table. */
+        .style-d .row .spark-cell.spark-cell--quad {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .style-d .row .spark-cell.spark-cell--quad .spark {
+            height: 22px;
+        }
+
+        .style-d .row .spark-cell.spark-cell--quad .spark-pair .head {
+            font-size: 0.62em;
+        }
+
+        /* Double-plus-full variant (CPU has Util + Temp + Power).
+           The first two spark-pairs sit side-by-side on the top row;
+           the third (Power) wraps to a second row and spans the full
+           width, mirroring the GPU's VRAM-row geometry. */
+        .style-d .row .spark-cell.spark-cell--double-full {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .style-d .row .spark-cell.spark-cell--double-full .spark {
+            height: 22px;
+        }
+
+        .style-d .row .spark-cell.spark-cell--double-full .spark-pair .head {
+            font-size: 0.62em;
+        }
+
+        .style-d .row .spark-cell.spark-cell--double-full .spark-pair:nth-child(3) {
+            grid-column: 1 / -1;
+        }
+
+        /* Combined-sparklane variant (NET): rx and tx are drawn on
+           the same canvas as two overlapping traces, so the user
+           sees a single sparkline area (no per-direction duplicate
+           labels or canvas). The head keeps current rx/tx values
+           for at-a-glance read-out. */
+        .style-d .row .spark-cell.spark-cell--combined {
+            grid-template-columns: 1fr;
+        }
+
+        .style-d .row .spark-cell.spark-cell--combined .spark {
+            height: 28px;
+        }
+
+        .style-d .row .spark-cell.spark-cell--combined .spark-pair .head {
+            font-size: 0.65em;
+        }
+
+        .style-d .row .spark-cell .spark-pair {
+            display: grid;
+            grid-template-rows: auto auto;
+            gap: 2px;
+            min-width: 0;
+        }
+
+        .style-d .row .spark-cell .spark-pair .head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 6px;
+            font-size: 0.7em;
+            color: var(--fg-dim);
+        }
+
+        .style-d .row .spark-cell .spark-pair .head b {
+            color: var(--fg);
+            font-weight: 600;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .style-d .row .spark-cell .spark-pair .head .axis {
+            color: var(--fg-dim);
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .style-d .row .spark-cell .spark {
+            height: 28px;
+        }
+
+        .style-d .row .spark-cell .iface {
+            grid-column: 1 / -1;
+            font-size: 0.75em;
+            color: var(--fg-dim);
+        }
+
+        /* Responsive: on narrow screens, fall back to single column
+           so the user can still read everything. */
+        @media (max-width: 460px) {
+            .style-d {
+                max-width: 100%;
+            }
+
+            .style-d .row {
+                grid-template-columns: 1fr;
+            }
+
+            .style-d .row .label-row,
+            .style-d .row .value-row,
+            .style-d .row .meta,
+            .style-d .row .spark-cell {
+                grid-column: 1 / -1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toolbar">
+        <h1>SysMon card preview (D — Stacked list)</h1>
+        <div class="legend">
+            Data: <kbd>AMD Ryzen 9 7845HX</kbd> · <kbd>RTX 5060 Laptop</kbd> · <kbd>32 GB</kbd> · <kbd>WiFi 6E</kbd>
+        </div>
+    </div>
+
+    <div class="stage">
+        <div class="style-wrap" data-style="d">
+            <div class="style-d">
+                <div class="row glass">
+                    <div class="label-row">
+                        <span class="label label--with-model">CPU · <span class="model">AMD Ryzen 9 7845HX</span></span>
+                    </div>
+                    <div class="value-row">
+                        <span class="value">13%</span>
+                        <span class="extra">(89°C)</span>
+                    </div>
+                    <div class="meta">
+                        <span>Freq <b>5065 MHz</b></span>
+                        <span>Power <b>68.1 W</b></span>
+                        <span>Hot <b>#19 36%</b></span>
+                        <span>V <b>0.21</b></span>
+                    </div>
+                    <div class="spark-cell spark-cell--overlay">
+                        <div class="spark-overlay">
+                            <div class="spark-pair">
+                                <div class="head">
+                                    <span><span class="dir-rx">温度 89°C</span> &nbsp; <span class="dir-tx">功耗 68.1 W</span></span>
+                                    <span class="axis">last 2 min · overlaid</span>
+                                </div>
+                                <canvas class="spark" data-spark="cpu" data-kind="temp-power" data-crit="95" data-power-peak="142" width="180" height="28"></canvas>
+                            </div>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>使用率 <b>13%</b></span>
+                                <span class="axis">0–100%</span>
+                            </div>
+                            <canvas class="spark" data-spark="cpu" data-kind="util" width="180" height="22"></canvas>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>功耗 <b>68.1 W</b> <span class="tag">峰值 92</span></span>
+                                <span class="axis">0–142 W</span>
+                            </div>
+                            <canvas class="spark" data-spark="cpu" data-kind="power" width="180" height="22"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row glass">
+                    <div class="label-row">
+                        <span class="label label--with-model">GPU · <span class="model">NVIDIA GeForce RTX 5060
+                                Laptop</span></span>
+                    </div>
+                    <div class="value-row">
+                        <span class="value">17%</span>
+                        <span class="extra">(56°C)</span>
+                    </div>
+                    <div class="meta">
+                        <span>Power <b>25.5 W</b></span>
+                        <span>VRAM <b>2.7/8.0 GB</b></span>
+                        <span>Core <b>1792 MHz</b></span>
+                        <span>Mem Junc <b>62°C</b></span>
+                    </div>
+                    <div class="spark-cell spark-cell--overlay">
+                        <div class="spark-overlay">
+                            <div class="spark-pair">
+                                <div class="head">
+                                    <span><span class="dir-rx">温度 56°C</span> &nbsp; <span class="dir-tx">功耗 25.5 W</span></span>
+                                    <span class="axis">last 2 min · overlaid</span>
+                                </div>
+                                <canvas class="spark" data-spark="gpu" data-kind="temp-power" data-crit="92" data-power-peak="115" width="180" height="28"></canvas>
+                            </div>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>使用率 <b>17%</b></span>
+                                <span class="axis">0–100%</span>
+                            </div>
+                            <canvas class="spark" data-spark="gpu" data-kind="util" width="180" height="22"></canvas>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>显存 <b>34%</b></span>
+                                <span class="axis">0–8 GB</span>
+                            </div>
+                            <canvas class="spark" data-spark="gpu" data-kind="vram" width="180" height="22"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row glass">
+                    <div class="label-row">
+                        <span class="label label--with-model">MEM · <span class="model">DDR5</span></span>
+                    </div>
+                    <div class="value-row">
+                        <span class="value">57%</span>
+                        <span class="extra">(18.9/33.5 GB)</span>
+                    </div>
+                    <div class="meta">
+                        <span>Used <b>18.9 GB</b></span>
+                        <span>Total <b>33.5 GB</b></span>
+                        <span>Page <b>60%</b></span>
+                        <span>Virt <b>0.03%</b></span>
+                    </div>
+                    <div class="spark-cell spark-cell--solo">
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Util <b>57%</b></span>
+                                <span class="axis">0–100% · last 2 min</span>
+                            </div>
+                            <canvas class="spark" data-spark="mem" data-kind="util" width="180" height="28"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row glass">
+                    <div class="label-row">
+                        <span class="label label--with-model">NET · <span class="model">MediaTek Wi-Fi 6E MT7922</span>
+                            <span class="model model--type">· WIFI</span></span>
+                    </div>
+                    <div class="value-row">
+                        <span class="value">552 B/s</span>
+                    </div>
+                    <div class="meta">
+                        <span>下行 <b>414 B/s</b></span>
+                        <span>上行 <b>138 B/s</b></span>
+                        <span>链路 <b>1201 Mbps</b></span>
+                        <span>IP <b>192.168.0.222</b></span>
+                    </div>
+                    <div class="spark-cell spark-cell--combined">
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span><span class="dir-rx">↓下行 414 B/s</span> &nbsp; <span class="dir-tx">↑上行 138 B/s</span></span>
+                                <span class="axis">last 2 min · overlaid</span>
+                            </div>
+                            <canvas class="spark" data-spark="net" data-kind="rx-tx" width="180" height="28"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row glass">
+                    <div class="label-row">
+                        <span class="label label--with-model">DISK #0 · <span class="model">YMTC PC411 · NVMe</span></span>
+                    </div>
+                    <div class="value-row">
+                        <span class="value">42%</span>
+                        <span class="extra">(215 GB / 512 GB)</span>
+                    </div>
+                    <div class="meta">
+                        <span>Used <b>215 GB</b></span>
+                        <span>Free <b>297 GB</b></span>
+                        <span>Temp <b>45°C</b></span>
+                        <span>Life <b>82%</b></span>
+                        <span>Read <b>24.4 TB</b></span>
+                        <span>Write <b>37.0 TB</b></span>
+                    </div>
+                    <div class="spark-cell spark-cell--double-full">
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Read <b>120 MB/s</b></span>
+                                <span class="axis">0–250 MB/s</span>
+                            </div>
+                            <canvas class="spark" data-spark="disk0" data-kind="read" width="180" height="22"></canvas>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Write <b>45 MB/s</b></span>
+                                <span class="axis">0–120 MB/s</span>
+                            </div>
+                            <canvas class="spark" data-spark="disk0" data-kind="write" width="180" height="22"></canvas>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Total Activity <b>42%</b></span>
+                                <span class="axis">0–100% · last 2 min</span>
+                            </div>
+                            <canvas class="spark" data-spark="disk0" data-kind="util" width="180" height="22"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="row glass">
+                    <div class="label-row">
+                        <span class="label label--with-model">DISK #1 · <span class="model">BIWIN NV7400 · NVMe</span></span>
+                    </div>
+                    <div class="value-row">
+                        <span class="value">28%</span>
+                        <span class="extra">(545 GB / 2 TB)</span>
+                    </div>
+                    <div class="meta">
+                        <span>Used <b>545 GB</b></span>
+                        <span>Free <b>1.5 TB</b></span>
+                        <span>Temp <b>42°C</b></span>
+                        <span>Life <b>99%</b></span>
+                        <span>Read <b>8.5 TB</b></span>
+                        <span>Write <b>5.2 TB</b></span>
+                    </div>
+                    <div class="spark-cell spark-cell--double-full">
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Read <b>85 MB/s</b></span>
+                                <span class="axis">0–250 MB/s</span>
+                            </div>
+                            <canvas class="spark" data-spark="disk1" data-kind="read" width="180" height="22"></canvas>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Write <b>32 MB/s</b></span>
+                                <span class="axis">0–120 MB/s</span>
+                            </div>
+                            <canvas class="spark" data-spark="disk1" data-kind="write" width="180" height="22"></canvas>
+                        </div>
+                        <div class="spark-pair">
+                            <div class="head">
+                                <span>Total Activity <b>28%</b></span>
+                                <span class="axis">0–100% · last 2 min</span>
+                            </div>
+                            <canvas class="spark" data-spark="disk1" data-kind="util" width="180" height="22"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* =============================================================
+         * Sparkline drawer
+         * Mirrors src/systemMonitor/renderer.ts →drawCurveInto so the
+         * visual is 1:1 with what the wallpaper will actually render.
+         * ============================================================= */
+        // Pseudo-random but deterministic per metric (so the preview is
+        // stable across reloads).
+        function seededHistory(seed, length, base, swing) {
+            const out = [];
+            let s = seed;
+            for (let i = 0; i < length; i++) {
+                s = (s * 9301 + 49297) % 233280;
+                const noise = (s / 233280 - 0.5) * 2; // [-1, 1]
+                const drift = Math.sin(i / 8 + seed) * 0.4;
+                const v = base + (noise + drift) * swing;
+                out.push(Math.max(0, Math.min(100, v)));
+            }
+            return out;
+        }
+
+        const colorFor = (v) => {
+            if (v < 50) return 'rgba(76,175,80,0.95)';
+            if (v < 80) return 'rgba(255,193,7,0.95)';
+            return 'rgba(244,67,54,0.95)';
+        };
+        const colorForAlpha = (v, a) => colorFor(v).replace('0.95', String(a));
+
+        function drawSpark(canvas, history) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+            if (history.length < 2) return;
+
+            // Dynamic Y axis: zoom to actual data range so low values
+            // fill the chart height instead of hugging the bottom.
+            const dataMax = Math.max(1, ...history);
+            const dataMin = Math.min(...history);
+            // Add breathing room: 5% padding above and below
+            const range = (dataMax - dataMin) * 1.05 || dataMax * 1.05;
+            const lo = Math.max(0, dataMin - range * 0.05);
+            const hi = lo + range;
+
+            const last = history[history.length - 1];
+            const fill = colorForAlpha(last, 0.3);
+            const step = w / (60 - 1);
+            const startX = w - (history.length - 1) * step;
+            const toY = (v) => h - ((v - lo) / (hi - lo)) * h;
+
+            // baseline
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(0, h - 0.5);
+            ctx.lineTo(w, h - 0.5);
+            ctx.stroke();
+            ctx.restore();
+
+            // area
+            ctx.beginPath();
+            ctx.moveTo(startX, h);
+            history.forEach((v, i) => {
+                const x = startX + i * step;
+                ctx.lineTo(x, toY(v));
+            });
+            const lastX = startX + (history.length - 1) * step;
+            ctx.lineTo(lastX, h);
+            ctx.closePath();
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, fill);
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Per-segment color: each piece of the polyline is colored
+            // by its own severity so the whole chart doesn't flip to
+            // one color when the last point changes.
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+
+            // Stroke each segment with the color appropriate for that segment.
+            for (let i = 0; i < history.length - 1; i++) {
+                const v0 = history[i], v1 = history[i + 1];
+                ctx.beginPath();
+                ctx.moveTo(startX + i * step, toY(v0));
+                ctx.lineTo(startX + (i + 1) * step, toY(v1));
+                ctx.strokeStyle = colorFor(v1);
+                ctx.stroke();
+            }
+
+            // End dot
+            ctx.beginPath();
+            ctx.arc(lastX, toY(last), 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = colorFor(last);
+            ctx.fill();
+        }
+
+        function drawAllSparks() {
+            const sparks = document.querySelectorAll('canvas.spark');
+            sparks.forEach(c => {
+                const metric = c.dataset.spark;
+                const kind = c.dataset.kind ?? 'util';
+                const isEmpty = c.dataset.empty === '1';
+
+                if (isEmpty) {
+                    drawEmptySpark(c);
+                    return;
+                }
+
+                if (kind === 'temp') {
+                    // Per-metric temperature ranges (°C). The low end of the
+                    // axis is room temperature-ish (so an idle CPU/GPU doesn't
+                    // pin to the bottom); the high end is just past the
+                    // critical threshold so users can see "how close am I".
+                    const range = {
+                        cpu: { lo: 40, hi: 95, crit: parseFloat(c.dataset.crit) || 95, base: 75, swing: 12 },
+                        gpu: { lo: 30, hi: 95, crit: parseFloat(c.dataset.crit) || 92, base: 55, swing: 12 },
+                    }[metric] ?? { lo: 30, hi: 100, crit: 90, base: 50, swing: 20 };
+                    const seed = { cpu: 211, gpu: 233 }[metric] ?? 251;
+                    const histC = seededHistory(seed, 60, range.base, range.swing);
+                    drawTempSpark(c, histC, range);
+                } else if (kind === 'power') {
+                    // CPU/GPU core clock frequency in MHz. Normalized
+                    // to a plausible peak (5.2 GHz for CPU, 2.0 GHz for GPU).
+                    const isCpu = metric === 'cpu';
+                    const peak = isCpu ? 5200 : 2000;
+                    const base = isCpu ? 4000 : 1500;
+                    const swing = isCpu ? 800 : 300;
+                    const hist = seededHistory(isCpu ? 177 : 311, 60,
+                        (base / peak) * 100, (swing / peak) * 100);
+                    drawFreqSpark(c, hist, peak);
+                } else if (kind === 'power') {
+                    // CPU/GPU power draw in watts. Same axis as util
+                    // (0–peak) so the user can correlate utilization
+                    // with power. CPU peaks around 142 W on a 7845HX;
+                    // GPU peaks around 115 W on an RTX 5060 Laptop.
+                    const seed = { cpu: 13, gpu: 89 }[metric] ?? 151;
+                    const base = { cpu: 55, gpu: 32 }[metric] ?? 40;
+                    const swing = { cpu: 20, gpu: 14 }[metric] ?? 18;
+                    const hist = seededHistory(seed, 60, base, swing);
+                    drawSpark(c, hist);
+                } else if (kind === 'rx-tx') {
+                    // NET card with both directions overlaid on the same
+                    // canvas. Each direction keeps its own seed/base/swing
+                    // so the two traces feel independent (rx downloads
+                    // are bursty; tx uploads are smaller and steadier).
+                    const histRx = seededHistory(401, 60, 28, 20);
+                    const histTx = seededHistory(419, 60, 14, 12);
+                    drawNetCombined(c, histRx, histTx);
+                } else if (kind === 'read' || kind === 'write') {
+                    // Disk read/write throughput. Each disk and direction
+                    // gets its own seed/base/swing so read bursts higher
+                    // than write and both feel like real IO traffic.
+                    const isRead = kind === 'read';
+                    const diskSeed = isRead
+                        ? { disk0: 31, disk1: 67 }[metric] ?? 47
+                        : { disk0: 79, disk1: 41 }[metric] ?? 19;
+                    const diskBase = isRead
+                        ? { disk0: 55, disk1: 38 }[metric] ?? 30
+                        : { disk0: 22, disk1: 16 }[metric] ?? 12;
+                    const diskSwing = isRead
+                        ? { disk0: 32, disk1: 22 }[metric] ?? 20
+                        : { disk0: 18, disk1: 12 }[metric] ?? 10;
+                    const hist = seededHistory(diskSeed, 60, diskBase, diskSwing);
+                    drawSpark(c, hist);
+                } else if (kind === 'rx' || kind === 'tx') {
+                    // Network rx and tx share the same axis but get
+                    // their own color (blue / amber) and independent
+                    // histories. The draw helper normalizes each line
+                    // against its own peak so a tiny tx (138 B/s) and a
+                    // larger rx (414 B/s) are both visually meaningful
+                    // instead of one pinning the bottom.
+                    const hist = seededHistory(
+                        kind === 'rx' ? 401 : 419,
+                        60,
+                        kind === 'rx' ? 28 : 14,
+                        kind === 'rx' ? 20 : 12
+                    );
+                    drawNetDirection(c, hist, kind);
+                } else {
+                    const seed = { cpu: 17, gpu: 41, mem: 73, net: 109, disk0: 59, disk1: 97 }[metric] ?? 1;
+                    const base = { cpu: 35, gpu: 28, mem: 55, net: 22, disk0: 42, disk1: 28 }[metric] ?? 30;
+                    const swing = { cpu: 35, gpu: 30, mem: 12, net: 25, disk0: 6, disk1: 5 }[metric] ?? 20;
+                    const hist = seededHistory(seed, 60, base, swing);
+                    drawSpark(c, hist);
+                }
+            });
+        }
+
+        /**
+         * Draw a temperature sparkline. The history is in °C; we map it to
+         * the 0–100 canvas-Y using the [lo, hi] axis. The critical threshold
+         * is rendered as a horizontal dashed red reference line.
+         */
+        function drawTempSpark(canvas, historyC, range) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            const { lo: fixedLo, hi: fixedHi, crit } = range;
+            // Dynamic Y axis: zoom to actual [min, max] of temperature data
+            // with 5% breathing room so idle CPU/GPU doesn't pin to bottom.
+            const dataMin = Math.min(...historyC);
+            const dataMax = Math.max(...historyC);
+            const pad = (dataMax - dataMin) * 0.05 || 5;
+            const lo = Math.max(0, dataMin - pad);
+            const hi = dataMax + pad;
+
+            const toY = (c) => {
+                const t = (c - lo) / (hi - lo);
+                return h - Math.max(0, Math.min(1, t)) * h;
+            };
+            const step = w / (60 - 1);
+            const startX = w - (historyC.length - 1) * step;
+
+            // Critical reference line (red, dashed) – only if it falls inside
+            // the visible [lo, hi] band.
+            if (crit >= lo && crit <= hi) {
+                const yc = toY(crit);
+                ctx.save();
+                ctx.strokeStyle = 'rgba(244, 67, 54, 0.55)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(0, yc);
+                ctx.lineTo(w, yc);
+                ctx.stroke();
+                // Tiny "crit °C" tag at the right edge of the line.
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(244, 67, 54, 0.75)';
+                ctx.font = '9px ' + getComputedStyle(document.body).fontFamily;
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(crit + '°', w - ctx.measureText(crit + '°').width - 2, yc - 1);
+                ctx.restore();
+            }
+
+            if (historyC.length < 2) return;
+
+            // Temperature is colored by thermal severity, not the % color
+            // ramp. <70°C green, 70–85°C amber, ≥85°C red. Per-segment
+            // coloring so the whole line doesn't flip when the last point changes.
+            const last = historyC[historyC.length - 1];
+
+            // area
+            ctx.beginPath();
+            ctx.moveTo(startX, h);
+            historyC.forEach((c, i) => {
+                ctx.lineTo(startX + i * step, toY(c));
+            });
+            const lastX = startX + (historyC.length - 1) * step;
+            ctx.lineTo(lastX, h);
+            ctx.closePath();
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, 'rgba(76,175,80,0.22)');
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Per-segment stroke with thermal color
+            for (let i = 0; i < historyC.length - 1; i++) {
+                const c0 = historyC[i], c1 = historyC[i + 1];
+                const segColor = c1 >= 85 ? 'rgba(244,67,54,0.95)'
+                    : c1 >= 70 ? 'rgba(255,193,7,0.95)'
+                        : 'rgba(76,175,80,0.95)';
+                ctx.beginPath();
+                ctx.moveTo(startX + i * step, toY(c0));
+                ctx.lineTo(startX + (i + 1) * step, toY(c1));
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = segColor;
+                ctx.stroke();
+            }
+
+            // end dot
+            const endColor = last >= 85 ? 'rgba(244,67,54,0.95)'
+                : last >= 70 ? 'rgba(255,193,7,0.95)'
+                    : 'rgba(76,175,80,0.95)';
+            ctx.beginPath();
+            ctx.arc(lastX, toY(last), 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = endColor;
+            ctx.fill();
+        }
+
+        /**
+         * Draw a single-direction throughput sparkline (rx or tx). Each
+         * direction is its own canvas with its own color, so the user can
+         * read them independently. The history is normalized against the
+         * local peak rather than a global one – that way a tiny tx
+         * (138 B/s) is still visually distinguishable from a larger rx
+         * (414 B/s) on the same axis.
+         */
+        function drawNetDirection(canvas, historyBps, dir) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            // rx is download (blue), tx is upload (warm orange). The
+            // palette mirrors the head's `.dir-rx` / `.dir-tx` tint so the
+            // user can pair the badge with the trace.
+            const color = dir === 'rx' ? '110,168,255' : '255,167,38';
+
+            if (historyBps.length < 2) return;
+            const peak = Math.max(1, ...historyBps);
+            const step = w / (60 - 1);
+            const startX = w - (historyBps.length - 1) * step;
+            const toY = (bps) => h - (bps / peak) * h;
+
+            // Baseline
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(0, h - 0.5);
+            ctx.lineTo(w, h - 0.5);
+            ctx.stroke();
+            ctx.restore();
+
+            // Area
+            ctx.beginPath();
+            ctx.moveTo(startX, h);
+            historyBps.forEach((bps, i) => {
+                ctx.lineTo(startX + i * step, toY(bps));
+            });
+            const lastX = startX + (historyBps.length - 1) * step;
+            ctx.lineTo(lastX, h);
+            ctx.closePath();
+            const grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, `rgba(${color},0.3)`);
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fill();
+
+            // Stroke
+            ctx.beginPath();
+            historyBps.forEach((bps, i) => {
+                const x = startX + i * step;
+                const y = toY(bps);
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = `rgba(${color},0.95)`;
+            ctx.stroke();
+
+            // End dot
+            const lastBps = historyBps[historyBps.length - 1];
+            ctx.beginPath();
+            ctx.arc(lastX, toY(lastBps), 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${color},0.95)`;
+            ctx.fill();
+        }
+
+        /**
+         * Draw both rx and tx as two overlaid traces on the same canvas.
+         * Each direction uses its own history and gets its own color
+         * (blue for download, amber for upload). Peak is taken from
+         * the larger of the two so a tiny tx (138 B/s) and a larger
+         * rx (414 B/s) are both visually meaningful, matching the
+         * behaviour of drawNetDirection.
+         */
+        function drawNetCombined(canvas, historyRx, historyTx) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            const RX_RGB = '110,168,255';
+            const TX_RGB = '255,167,38';
+
+            if (historyRx.length < 2 || historyTx.length < 2) return;
+
+            // Shared peak so both lines sit on the same Y axis. A larger
+            // rx doesn't visually crush a smaller tx (and vice versa).
+            const peak = Math.max(1, ...historyRx, ...historyTx);
+            const step = w / (60 - 1);
+            const startX = w - (historyRx.length - 1) * step;
+            const toY = (bps) => h - (bps / peak) * h;
+
+            // Baseline
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(0, h - 0.5);
+            ctx.lineTo(w, h - 0.5);
+            ctx.stroke();
+            ctx.restore();
+
+            // Helper: draw a single direction's area + stroke + end dot
+            // so we can call it twice with different colors without
+            // copy-pasting the math.
+            const drawTrace = (hist, rgb) => {
+                // Area
+                ctx.beginPath();
+                ctx.moveTo(startX, h);
+                hist.forEach((bps, i) => {
+                    ctx.lineTo(startX + i * step, toY(bps));
+                });
+                const lastX = startX + (hist.length - 1) * step;
+                ctx.lineTo(lastX, h);
+                ctx.closePath();
+                const grad = ctx.createLinearGradient(0, 0, 0, h);
+                grad.addColorStop(0, `rgba(${rgb},0.22)`);
+                grad.addColorStop(1, 'transparent');
+                ctx.fillStyle = grad;
+                ctx.fill();
+
+                // Stroke
+                ctx.beginPath();
+                hist.forEach((bps, i) => {
+                    const x = startX + i * step;
+                    const y = toY(bps);
+                    if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+                });
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = `rgba(${rgb},0.95)`;
+                ctx.stroke();
+
+                // End dot
+                const lastBps = hist[hist.length - 1];
+                ctx.beginPath();
+                ctx.arc(lastX, toY(lastBps), 1.8, 0, Math.PI * 2);
+                ctx.fillStyle = `rgba(${rgb},0.95)`;
+                ctx.fill();
+            };
+
+            // Draw tx first (warm), then rx on top (cool) so rx is the
+            // visually leading line in the rare case they overlap.
+            drawTrace(historyTx, TX_RGB);
+            drawTrace(historyRx, RX_RGB);
+        }
+
+        /**
+         * Draw a CPU/GPU combined temperature + power overlay sparkline.
+         * Temperature (°C) is drawn with the thermal color ramp
+         * (green/amber/red); power (W) is drawn with a fixed blue tone.
+         * Each trace has its own Y axis mapped to its own peak so both
+         * are visually meaningful regardless of their absolute values.
+         */
+        function drawTempPowerOverlay(canvas, historyTempC, historyPowerW, tempRange, powerPeakW) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            const { lo: fixedLo, hi: fixedHi, crit } = tempRange;
+            const step = w / (60 - 1);
+            const startX = w - (historyTempC.length - 1) * step;
+
+            // Dynamic Y axis for temperature: zoom to actual data range
+            // with 5% breathing room so idle doesn't pin to bottom.
+            const tempMin = Math.min(...historyTempC);
+            const tempMax = Math.max(...historyTempC);
+            const tempPad = (tempMax - tempMin) * 0.05 || 5;
+            const lo = Math.max(0, tempMin - tempPad);
+            const hi = tempMax + tempPad;
+
+            // Y mapper for temperature (0–100 canvas → [lo, hi] °C)
+            const toYTemp = (c) => {
+                const t = (c - lo) / (hi - lo);
+                return h - Math.max(0, Math.min(1, t)) * h;
+            };
+            // Y mapper for power (0–100 canvas → [0, powerPeakW] W)
+            const toYPower = (w_) => h - (w_ / powerPeakW) * h;
+
+            // Helper: color for a temperature value
+            const tempColor = (c) => c >= 85 ? 'rgba(244,67,54,0.95)'
+                : c >= 70 ? 'rgba(255,193,7,0.95)'
+                    : 'rgba(76,175,80,0.95)';
+
+            if (historyTempC.length < 2 || historyPowerW.length < 2) return;
+
+            // Critical threshold line
+            if (crit >= lo && crit <= hi) {
+                const yc = toYTemp(crit);
+                ctx.save();
+                ctx.strokeStyle = 'rgba(244, 67, 54, 0.55)';
+                ctx.lineWidth = 1;
+                ctx.setLineDash([3, 3]);
+                ctx.beginPath();
+                ctx.moveTo(0, yc);
+                ctx.lineTo(w, yc);
+                ctx.stroke();
+                ctx.setLineDash([]);
+                ctx.fillStyle = 'rgba(244, 67, 54, 0.75)';
+                ctx.font = '9px ' + getComputedStyle(document.body).fontFamily;
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(crit + '°', w - ctx.measureText(crit + '°').width - 2, yc - 1);
+                ctx.restore();
+            }
+
+            // Baseline
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(0, h - 0.5);
+            ctx.lineTo(w, h - 0.5);
+            ctx.stroke();
+            ctx.restore();
+
+            // Draw power trace first (blue, below) then temperature (on top)
+            const POWER_RGB = '110,168,255';
+
+            // Power area + stroke
+            ctx.beginPath();
+            ctx.moveTo(startX, h);
+            historyPowerW.forEach((pw, i) => ctx.lineTo(startX + i * step, toYPower(pw)));
+            const lastX = startX + (historyPowerW.length - 1) * step;
+            ctx.lineTo(lastX, h);
+            ctx.closePath();
+            let grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, `rgba(${POWER_RGB},0.18)`);
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fill();
+            ctx.beginPath();
+            historyPowerW.forEach((pw, i) => {
+                const x = startX + i * step, y = toYPower(pw);
+                if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+            });
+            ctx.lineWidth = 1.5;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.strokeStyle = `rgba(${POWER_RGB},0.85)`;
+            ctx.stroke();
+
+            // Temperature area + per-segment stroke
+            ctx.beginPath();
+            ctx.moveTo(startX, h);
+            historyTempC.forEach((c, i) => ctx.lineTo(startX + i * step, toYTemp(c)));
+            ctx.lineTo(lastX, h);
+            ctx.closePath();
+            grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, 'rgba(244,67,54,0.22)');
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fill();
+            for (let i = 0; i < historyTempC.length - 1; i++) {
+                const c0 = historyTempC[i], c1 = historyTempC[i + 1];
+                ctx.beginPath();
+                ctx.moveTo(startX + i * step, toYTemp(c0));
+                ctx.lineTo(startX + (i + 1) * step, toYTemp(c1));
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = tempColor(c1);
+                ctx.stroke();
+            }
+
+            // End dots
+            const lastTemp = historyTempC[historyTempC.length - 1];
+            const lastPower = historyPowerW[historyPowerW.length - 1];
+            ctx.beginPath();
+            ctx.arc(lastX, toYTemp(lastTemp), 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = tempColor(lastTemp);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(lastX, toYPower(lastPower), 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(${POWER_RGB},0.85)`;
+            ctx.fill();
+        }
+
+        /**
+         * Draw a frequency sparkline. The history values are percentages
+         * of `peak` MHz; the axis label shows the actual peak so the
+         * user can read real MHz from the visual.
+         */
+        function drawFreqSpark(canvas, history, peakMHz) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+            if (history.length < 2) return;
+            const step = w / (60 - 1);
+            const startX = w - (history.length - 1) * step;
+            const last = history[history.length - 1];
+            const lastMHz = Math.round((last / 100) * peakMHz);
+            const stroke = colorFor(last);
+            const fill = colorForAlpha(last, 0.3);
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.18)';
+            ctx.lineWidth = 1;
+            ctx.setLineDash([2, 2]);
+            ctx.beginPath();
+            ctx.moveTo(0, h - 0.5);
+            ctx.lineTo(w, h - 0.5);
+            ctx.stroke();
+            ctx.restore();
+            ctx.beginPath();
+            ctx.moveTo(startX, h);
+            history.forEach((v, i) => ctx.lineTo(startX + i * step, h - (v / 100) * h));
+            const lastX = startX + (history.length - 1) * step;
+            ctx.lineTo(lastX, h);
+            ctx.closePath();
+            let grad = ctx.createLinearGradient(0, 0, 0, h);
+            grad.addColorStop(0, fill);
+            grad.addColorStop(1, 'transparent');
+            ctx.fillStyle = grad;
+            ctx.fill();
+            for (let i = 0; i < history.length - 1; i++) {
+                const v0 = history[i], v1 = history[i + 1];
+                ctx.beginPath();
+                ctx.moveTo(startX + i * step, h - (v0 / 100) * h);
+                ctx.lineTo(startX + (i + 1) * step, h - (v1 / 100) * h);
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+                ctx.strokeStyle = colorFor(v1);
+                ctx.stroke();
+            }
+            ctx.beginPath();
+            ctx.arc(lastX, h - (last / 100) * h, 1.8, 0, Math.PI * 2);
+            ctx.fillStyle = stroke;
+            ctx.fill();
+        }
+
+        /**
+         * Draw a "no data" placeholder for sparks that have no source metric
+         * (memory temp, network temp). Faint diagonal hatch + "N/A" text.
+         */
+        function drawEmptySpark(canvas) {
+            const dpr = window.devicePixelRatio || 1;
+            const rect = canvas.getBoundingClientRect();
+            const w = Math.max(1, Math.round(rect.width));
+            const h = Math.max(1, Math.round(rect.height));
+            canvas.width = Math.round(w * dpr);
+            canvas.height = Math.round(h * dpr);
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.scale(dpr, dpr);
+            ctx.clearRect(0, 0, w, h);
+
+            // Faint background
+            ctx.fillStyle = 'rgba(255,255,255,0.03)';
+            ctx.fillRect(0, 0, w, h);
+
+            // Diagonal hatch
+            ctx.save();
+            ctx.strokeStyle = 'rgba(255,255,255,0.10)';
+            ctx.lineWidth = 1;
+            const gap = 6;
+            ctx.beginPath();
+            for (let x = -h; x < w; x += gap) {
+                ctx.moveTo(x, h);
+                ctx.lineTo(x + h, 0);
+            }
+            ctx.stroke();
+            ctx.restore();
+
+            // Center text
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.font = "italic 10px " + getComputedStyle(document.body).fontFamily;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('N/A', w / 2, h / 2);
+        }
+        window.addEventListener('load', drawAllSparks);
+        window.addEventListener('resize', () => requestAnimationFrame(drawAllSparks));
+    </script>
+</body>
+
+</html>

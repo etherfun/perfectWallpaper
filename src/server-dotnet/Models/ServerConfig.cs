@@ -36,6 +36,12 @@ namespace PerfectWall.Server.Models
         // Loc/Strings.SupportedCultures for the list of
         // currently recognised values.
         [JsonProperty("lang")] public string Lang { get; set; } = "";
+        // When true, the setup page auto-opens on the
+        // first launch. After the first launch this is
+        // set to false so subsequent launches skip the
+        // auto-open. The user can still open setup via
+        // the console menu ('s') or the dockbar.
+        [JsonProperty("first_launch")] public bool FirstLaunch { get; set; } = true;
 
         public static string ConfigPath
         {

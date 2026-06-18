@@ -665,6 +665,76 @@ namespace PerfectWall.Server.Services
             return result;
         }
 
+        // -----------------------------------------------------------------
+        // Storage
+        // -----------------------------------------------------------------
+
+        /// <summary>
+        /// Extract per-drive I/O activity percentages from LHM
+        /// <c>HardwareType.Storage</c> sensors. Returns a
+        /// dictionary keyed by hardware name (the same name
+        /// LHM uses for the <c>IHardware.Name</c> that appears
+        /// in the storage hardware list). Only populated when
+        /// LHM is available (admin mode). Returns an empty
+        /// dictionary in user mode.
+        /// </summary>
+        public Dictionary<string, DiskActivityInfo> CollectStorageActivities()
+        {
+            var result = new Dictionary<string, DiskActivityInfo>(StringComparer.OrdinalIgnoreCase);
+            if (!IsLhmAvailable) return result;
+
+            lock (_lock)
+            {
+                EnumerateStorageHardware(_computer.Hardware, result);
+            }
+            return result;
+        }
+
+        private static void EnumerateStorageHardware(IEnumerable<IHardware> hardwareList, Dictionary<string, DiskActivityInfo> result)
+        {
+            foreach (var hw in hardwareList)
+            {
+                if (hw.HardwareType == HardwareType.Storage)
+                {
+                    hw.Update(); // Refresh sensor values before reading
+                    var info = new DiskActivityInfo();
+                    foreach (var s in hw.Sensors)
+                    {
+                        // s.Value is typed as object; LHM stores Load sensors
+                        // as double on most hardware. Also accept float for
+                        // robustness.  Null values are intentionally skipped.
+                        if (s.SensorType == SensorType.Load)
+                        {
+                            if (s.Value is double) { var d = (double)s.Value; if (s.Name == "Total Activity") info.TotalActivity = (float?)d; else if (s.Name == "Read Activity") info.ReadActivity = (float?)d; else if (s.Name == "Write Activity") info.WriteActivity = (float?)d; }
+                            else if (s.Value is float) { var f = (float)s.Value; if (s.Name == "Total Activity") info.TotalActivity = f; else if (s.Name == "Read Activity") info.ReadActivity = f; else if (s.Name == "Write Activity") info.WriteActivity = f; }
+                        }
+                        // Throughput sensors: "Read Rate" / "Write Rate" in bytes/s
+                        if (s.SensorType == SensorType.Throughput && s.Value != null)
+                        {
+                            long bpsVal = 0;
+                            bool bpsValid = false;
+                            var vb = s.Value;
+                            if (vb is double) { bpsVal = (long)(double)vb; bpsValid = true; }
+                            else if (vb is float) { bpsVal = (long)(float)vb; bpsValid = true; }
+                            else if (vb is long) { bpsVal = (long)vb; bpsValid = true; }
+                            else if (vb is int) { bpsVal = (int)vb; bpsValid = true; }
+                            if (bpsValid)
+                            {
+                                if (s.Name == "Read Rate") info.ReadRate = bpsVal;
+                                else if (s.Name == "Write Rate") info.WriteRate = bpsVal;
+                            }
+                        }
+                    }
+                    if (!result.ContainsKey(hw.Name))
+                        result[hw.Name] = info;
+                }
+                // Recurse into sub-hardware (storage can appear as a
+                // sub-device under a controller or motherboard node).
+                if (hw.SubHardware.Any())
+                    EnumerateStorageHardware(hw.SubHardware, result);
+            }
+        }
+
         private static string VendorName(HardwareType t) => t switch
         {
             HardwareType.GpuNvidia => "NVIDIA",

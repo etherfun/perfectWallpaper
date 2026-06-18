@@ -551,6 +551,8 @@ export interface WallpaperProperties {
     sysmon_yakeli?: { value: number };
     sysmon_yakelicolor?: { value: string };
     sysmon_roundedcorners?: { value: number };
+    sysmon_display_style?: { value: number };
+    sysmon_show_disk?: { value: boolean };
 
     // Dock栏参数
     dockbar_enabled?: { value: boolean };

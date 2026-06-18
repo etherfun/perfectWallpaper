@@ -2,8 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.Win32;
 using PerfectWall.Server.Models;
 using PerfectWall.Server.Utils;
@@ -560,10 +564,19 @@ namespace PerfectWall.Server.Services
             //   supported Windows version.
             try
             {
+                // Escape single quotes by doubling
+                // them (PowerShell convention) so a
+                // LogFilePath containing `'`
+                // can't break out of the quoted
+                // string. LogFilePath is built from
+                // %LOCALAPPDATA% which is normally
+                // safe but can be redirected by a
+                // malicious Roaming profile.
+                var escapedPath = LogFilePath.Replace("'", "''");
                 var psi = new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = "powershell.exe",
-                    Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Get-Content -Path '" + LogFilePath + "' -Wait\"",
+                    Arguments = "-NoProfile -ExecutionPolicy Bypass -Command \"Get-Content -Path '" + escapedPath + "' -Wait\"",
                     UseShellExecute = true,
                     CreateNoWindow = false,
                 };
@@ -582,10 +595,18 @@ namespace PerfectWall.Server.Services
                 // nothing.
                 try
                 {
+                    // Wrap the path in double-quotes
+                    // and escape any embedded `"` by
+                    // doubling. cmd.exe quoting rules:
+                    // backslash-quote pairs are
+                    // passed through; an unbalanced
+                    // `"` would terminate the
+                    // argument early.
+                    var escapedCmdPath = LogFilePath.Replace("\"", "\\\"");
                     var psi = new System.Diagnostics.ProcessStartInfo
                     {
                         FileName = "cmd.exe",
-                        Arguments = "/c \"title PerfectWall Server Log && type \"" + LogFilePath + "\" && echo. && echo --- end of log; refresh by running type again --- && pause\"",
+                        Arguments = "/c \"title PerfectWall Server Log && type \"" + escapedCmdPath + "\" && echo. && echo --- end of log; refresh by running type again --- && pause\"",
                         UseShellExecute = true,
                         CreateNoWindow = false,
                     };
@@ -945,6 +966,21 @@ namespace PerfectWall.Server.Services
         private static readonly object _latestPawnioFetchLock = new object();
         private static readonly TimeSpan LatestPawnioCacheTtl = TimeSpan.FromHours(1);
 
+        // HttpClient is designed to be a long-lived
+        // singleton — creating one per fetch is the
+        // canonical .NET anti-pattern (socket
+        // exhaustion under load). Lazy-init on first
+        // use; never disposed because the process
+        // owns it for its entire lifetime.
+        private static readonly Lazy<HttpClient> _pawnioHttp =
+            new Lazy<HttpClient>(() =>
+            {
+                var c = new HttpClient();
+                c.Timeout = TimeSpan.FromSeconds(5);
+                c.DefaultRequestHeaders.UserAgent.ParseAdd("perfectwall-server");
+                return c;
+            });
+
         private static void MaybeRefreshLatestPawnioVersion()
         {
             // Fast path: cache is still fresh.
@@ -969,62 +1005,72 @@ namespace PerfectWall.Server.Services
                 }
                 _latestPawnioFetchedAtUtc = DateTime.UtcNow;  // prevent stampede
             }
-            System.Threading.ThreadPool.QueueUserWorkItem(_ =>
+            // Fire-and-forget. The previous implementation
+            // queued a `ThreadPool` work item that did a
+            // sync-over-async `.Result` on the network
+            // call, blocking a ThreadPool worker for up
+            // to 5 s per fetch. Replacing with
+            // `Task.Run(async () => ...)` properly
+            // awaits the HTTP call without blocking a
+            // pool thread.
+            _ = Task.Run(RefreshLatestPawnioVersionAsync);
+        }
+
+        private static async Task RefreshLatestPawnioVersionAsync()
+        {
+            try
             {
-                try
+                // The unauthenticated REST API
+                // (api.github.com/repos/.../
+                // releases/latest) is rate-limited
+                // at 60 req/h per IP — too easy
+                // to exhaust on a long-lived
+                // setup page. We use the Atom
+                // release feed instead, which
+                // GitHub does not rate-limit
+                // (the /releases page renders
+                // from the same feed). The first
+                // <entry>/<title> is the latest
+                // tag, which is what we want.
+                var atom = await _pawnioHttp.Value.GetStringAsync(
+                    "https://github.com/namazso/PawnIO.Setup/releases.atom"
+                ).ConfigureAwait(false);
+                // Parse with XDocument — the previous
+                // regex parser broke on the nested
+                // <entry> shape that GitHub started
+                // emitting in mid-2024.
+                var doc = XDocument.Parse(atom);
+                var ns = doc.Root?.GetDefaultNamespace() ?? XNamespace.None;
+                var firstEntry = doc.Descendants(ns + "entry").FirstOrDefault();
+                if (firstEntry != null)
                 {
-                    // The unauthenticated REST API
-                    // (api.github.com/repos/.../
-                    // releases/latest) is rate-limited
-                    // at 60 req/h per IP — too easy
-                    // to exhaust on a long-lived
-                    // setup page. We use the Atom
-                    // release feed instead, which
-                    // GitHub does not rate-limit
-                    // (the /releases page renders
-                    // from the same feed). The first
-                    // <entry>/<title> is the latest
-                    // tag, which is what we want.
-                    using var client = new System.Net.Http.HttpClient();
-                    client.Timeout = TimeSpan.FromSeconds(5);
-                    client.DefaultRequestHeaders.UserAgent.ParseAdd("perfectwall-server");
-                    var atom = client.GetStringAsync(
-                        "https://github.com/namazso/PawnIO.Setup/releases.atom"
-                    ).Result;
-                    // The first <entry> in the feed
-                    // is the latest release. We pull
-                    // the version from the entry's
-                    // <link rel="alternate" ... href
-                    // = ".../releases/tag/VERSION"/>
-                    // attribute rather than from the
-                    // <title> element, because the
-                    // title is humanised ("Release
-                    // 2.2.0") while the tag is the
-                    // exact machine version
-                    // ("2.2.0").
-                    var firstEntry = System.Text.RegularExpressions.Regex.Match(
-                        atom, "<entry>(.*?)</entry>",
-                        System.Text.RegularExpressions.RegexOptions.Singleline);
-                    if (firstEntry.Success)
+                    // The version is in the entry's
+                    // <link rel="alternate" href=".../releases/tag/VERSION"/>
+                    // attribute. The <title> element is
+                    // humanised ("Release 2.2.0") so we
+                    // ignore it.
+                    var link = firstEntry.Elements(ns + "link")
+                        .FirstOrDefault(e => (string?)e.Attribute("rel") == "alternate");
+                    var href = (string?)link?.Attribute("href");
+                    if (!string.IsNullOrEmpty(href))
                     {
-                        var link = System.Text.RegularExpressions.Regex.Match(
-                            firstEntry.Groups[1].Value,
-                            "href=\"[^\"]*/releases/tag/([^\"]+)\"");
-                        if (link.Success)
+                        var idx = href.LastIndexOf("/tag/", StringComparison.Ordinal);
+                        if (idx >= 0)
                         {
-                            _cachedLatestPawnioVersion = link.Groups[1].Value.Trim().TrimStart('v');
+                            var tag = href.Substring(idx + "/tag/".Length);
+                            _cachedLatestPawnioVersion = tag.Trim().TrimStart('v');
                         }
                     }
                 }
-                catch
-                {
-                    // Network error, timeout, etc.
-                    // Leave the cache as-is so the
-                    // next successful fetch still
-                    // wins. The UI renders null as
-                    // "无网络".
-                }
-            });
+            }
+            catch
+            {
+                // Network error, timeout, parse
+                // failure, etc. Leave the cache
+                // as-is so the next successful
+                // fetch still wins. The UI
+                // renders null as "无网络".
+            }
         }
 
         /// <summary>

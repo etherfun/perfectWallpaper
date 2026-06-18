@@ -42,6 +42,18 @@ namespace PerfectWall.Server.Server
 
         public string ReadBody()
         {
+            // Refuse bodies > 16 MB before allocating a buffer.
+            // Convert.FromBase64String on a 1 GB string would
+            // otherwise allocate ~1.3 GB of byte[] in one shot
+            // and crash the process. Callers that need a smaller
+            // cap can re-check ContentLength64 themselves
+            // (IconEndpoints caps at 8 MB decoded, 16 MB raw).
+            const long MaxBodyBytes = 16L * 1024 * 1024;
+            if (Request.ContentLength64 > MaxBodyBytes)
+            {
+                throw new InvalidOperationException(
+                    $"Request body exceeds {MaxBodyBytes} bytes (Content-Length: {Request.ContentLength64})");
+            }
             using (var reader = new StreamReader(Request.InputStream, Request.ContentEncoding ?? Encoding.UTF8))
             {
                 return reader.ReadToEnd();

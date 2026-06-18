@@ -29,11 +29,31 @@ namespace PerfectWall.Server.Endpoints
                 string verb = null;
                 if (req.Type == "url" && !string.IsNullOrEmpty(req.Url))
                 {
+                    // Allowlist http(s) only. Reject
+                    // `ms-settings:`, `shell:AppsFolder`,
+                    // `file:`, `javascript:`, etc. — they
+                    // are open-redirect / RCE pivots.
+                    if (!IsAllowedUrl(req.Url, out var urlErr))
+                    {
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail(urlErr));
+                        return;
+                    }
                     target = req.Url;
                     verb = null; // open
                 }
                 else if ((req.Type == "app" || req.Type == "file") && !string.IsNullOrEmpty(req.Path))
                 {
+                    // Sanity check: absolute path, file must
+                    // exist. We can't restrict to a user-approved
+                    // root without storing the dockbar config
+                    // server-side, but at least we filter out
+                    // shell: schemes that smuggle in via the
+                    // `path` field.
+                    if (req.Path.Contains("://", StringComparison.Ordinal))
+                    {
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail("path must not be a URI"));
+                        return;
+                    }
                     target = req.Path;
                     verb = null; // open
                 }
@@ -57,6 +77,23 @@ namespace PerfectWall.Server.Endpoints
             {
                 await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
             }
+        }
+
+        private static bool IsAllowedUrl(string url, out string error)
+        {
+            error = null;
+            if (string.IsNullOrEmpty(url)) { error = "url is empty"; return false; }
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri))
+            {
+                error = "url is not an absolute URI";
+                return false;
+            }
+            if (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps)
+            {
+                error = $"scheme '{uri.Scheme}' is not allowed (only http/https)";
+                return false;
+            }
+            return true;
         }
 
         private static async Task SelectFile(HttpContext ctx)

@@ -50,6 +50,25 @@ namespace PerfectWall.Server.Endpoints
     /// </summary>
     public static class SetupEndpoints
     {
+        // Set to 1 the moment a SelfRestart is scheduled.
+        // Subsequent handlers see this and return a 503
+        // instead of touching config state or talking to
+        // LHM — the process is about to exit, so any
+        // work they do is wasted (and any state mutation
+        // they perform is racy with the new EXE that
+        // takes over the port). Interlocked because the
+        // race is across HTTP request threads, the
+        // SelfRestart background thread, and the
+        // ConsoleMenu thread.
+        private static int _restartScheduled = 0;
+        private static bool IsRestartScheduled => System.Threading.Interlocked.CompareExchange(ref _restartScheduled, 0, 0) == 1;
+
+        // How long SelfRestart waits between writing the
+        // response and spawning the new EXE. Long enough
+        // for the client to receive the JSON, short enough
+        // that the user doesn't see a "hanging" page.
+        private const int SelfRestartDelayMs = 800;
+
         public static void Map(
             Router router,
             Func<ServerConfig> configGetter,
@@ -76,6 +95,19 @@ namespace PerfectWall.Server.Endpoints
             Func<ServerConfig> configGetter,
             Func<HardwareMonitorService.RunMode> runModeGetter)
         {
+            if (IsRestartScheduled)
+            {
+                // We're in the middle of self-restarting.
+                // The current process is on its way out;
+                // any further work is wasted. Tell the
+                // client to retry the new port.
+                await ctx.WriteJsonAsync(new
+                {
+                    success = false,
+                    error = "server is restarting; retry shortly"
+                }, 503);
+                return;
+            }
             // We build the page as a constant string instead
             // of an embedded resource so the WinForms setup
             // window can load it via a `WebBrowser.DocumentText`
@@ -636,6 +668,15 @@ setInterval(refresh, 2000);
             Func<ServerConfig> configGetter,
             Func<HardwareMonitorService.RunMode> runModeGetter)
         {
+            if (IsRestartScheduled)
+            {
+                await ctx.WriteJsonAsync(new
+                {
+                    success = false,
+                    error = "server is restarting; retry shortly"
+                }, 503);
+                return;
+            }
             var s = SetupService.Inspect(runModeGetter());
             var culture = ResolveCurrentCultureName(s.Config);
             var strings = BuildStrings(culture, s.Config.Port);
@@ -754,6 +795,15 @@ setInterval(refresh, 2000);
             Action<ServerConfig> configSetter,
             Func<HardwareMonitorService.RunMode> runModeGetter)
         {
+            if (IsRestartScheduled)
+            {
+                await ctx.WriteJsonAsync(new
+                {
+                    success = false,
+                    error = "server is restarting; retry shortly"
+                }, 503);
+                return;
+            }
             try
             {
                 var body = ctx.ReadBody();
@@ -963,9 +1013,23 @@ setInterval(refresh, 2000);
         /// then waits, spawns, and exits. This avoids the
         /// race where the new EXE binds the port before
         /// we've told the client the rebind happened.
+        ///
+        /// <para>
+        /// Sets <see cref="_restartScheduled"/> so any
+        /// in-flight /api/setup/* call after this point
+        /// short-circuits with 503 — saves the user from
+        /// a half-finished response or a state-mutation
+        /// race with the new EXE.
+        /// </para>
         /// </summary>
         private static void SelfRestart()
         {
+            // CompareExchange so a concurrent caller doesn't
+            // spawn two restart threads.
+            if (System.Threading.Interlocked.CompareExchange(ref _restartScheduled, 1, 0) != 0)
+            {
+                return;
+            }
             try
             {
                 var exe = System.Diagnostics.Process.GetCurrentProcess().MainModule?.FileName;
@@ -982,7 +1046,7 @@ setInterval(refresh, 2000);
                 {
                     try
                     {
-                        System.Threading.Thread.Sleep(800);
+                        System.Threading.Thread.Sleep(SelfRestartDelayMs);
                         var psi = new System.Diagnostics.ProcessStartInfo
                         {
                             FileName = exe,
@@ -1007,6 +1071,20 @@ setInterval(refresh, 2000);
             }
             catch { /* best effort */ }
         }
+
+        /// <summary>
+        /// Public entry point used by <c>ConsoleMenu.ChangePort</c>
+        /// after it persists a new port to
+        /// <c>server-config.json</c>. The console flow has
+        /// no HTTP response to flush, so we still want the
+        /// same deferred-spawn-then-exit behaviour (and the
+        /// same <c>_restartScheduled</c> gate) as the
+        /// HTTP-driven set_port path.
+        /// </summary>
+        public static void TriggerSelfRestart() => SelfRestart();
+
+        /// <summary>True while a self-restart is in flight.</summary>
+        public static bool IsRestartInProgress => IsRestartScheduled;
 
         /// <summary>
         /// Quote a single command-line argument for

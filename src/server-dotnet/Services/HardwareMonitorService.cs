@@ -44,6 +44,14 @@ namespace PerfectWall.Server.Services
     /// </summary>
     public sealed class HardwareMonitorService : IDisposable
     {
+        // Hard ceiling on the per-core loop bounds below.
+        // 64 covers current Threadripper / Epyc parts
+        // with room to spare. Raising the number just
+        // allocates a few extra empty slots when a
+        // smaller CPU is detected (the inner loops
+        // break on the first missing sensor).
+        private const int MAX_CORES = 64;
+
         public enum RunMode
         {
             /// <summary>
@@ -180,18 +188,33 @@ namespace PerfectWall.Server.Services
                         info.Brand = cpu.Name ?? string.Empty;
                         info.Manufacturer = ClassifyManufacturer(info.Brand);
 
+                        // Build a (type, name) → ISensor lookup
+                        // ONCE. The per-core loops below look
+                        // up ~200 sensors on a 64-core part;
+                        // doing them as `cpu.Sensors.FirstOrDefault(...)`
+                        // is O(n) per call → O(n²) overall. With
+                        // the dictionary the whole CPU block is
+                        // O(n + m) where m is the per-core
+                        // range.
+                        var sensorMap = new Dictionary<(SensorType, string), ISensor>(cpu.Sensors.Count);
+                        foreach (var s in cpu.Sensors)
+                        {
+                            // Last write wins on duplicate
+                            // (type, name) — LHM doesn't
+                            // normally emit them, but the
+                            // SubHardware path can.
+                            sensorMap[(s.SensorType, s.Name ?? string.Empty)] = s;
+                        }
+
                         // ---- Clocks ----
-                        var busSpeed = cpu.Sensors.FirstOrDefault(s =>
-                            s.SensorType == SensorType.Clock && s.Name == "Bus Speed");
-                        if (busSpeed?.Value is float busMhz) info.BusSpeed = busMhz;
+                        if (sensorMap.TryGetValue((SensorType.Clock, "Bus Speed"), out var busSpeed)
+                            && busSpeed.Value is float busMhz) info.BusSpeed = busMhz;
 
-                        var avg = cpu.Sensors.FirstOrDefault(s =>
-                            s.SensorType == SensorType.Clock && s.Name == "Cores (Average)");
-                        if (avg?.Value is float avgMhz) info.ClockAverage = avgMhz;
+                        if (sensorMap.TryGetValue((SensorType.Clock, "Cores (Average)"), out var avg)
+                            && avg.Value is float avgMhz) info.ClockAverage = avgMhz;
 
-                        var avgEff = cpu.Sensors.FirstOrDefault(s =>
-                            s.SensorType == SensorType.Clock && s.Name == "Cores (Average Effective)");
-                        if (avgEff?.Value is float avgEffMhz) info.ClockAverageEffective = avgEffMhz;
+                        if (sensorMap.TryGetValue((SensorType.Clock, "Cores (Average Effective)"), out var avgEff)
+                            && avgEff.Value is float avgEffMhz) info.ClockAverageEffective = avgEffMhz;
 
                         // Per-core clocks. LHM exposes Core #N
                         // (actual) and Core #N (Effective) (P-state
@@ -199,15 +222,15 @@ namespace PerfectWall.Server.Services
                         // index.
                         var coreClocks = new List<float>();
                         var coreClocksEff = new List<float>();
-                        for (int i = 1; i <= 64; i++)
+                        for (int i = 1; i <= MAX_CORES; i++)
                         {
-                            var sActual = cpu.Sensors.FirstOrDefault(s =>
-                                s.SensorType == SensorType.Clock && s.Name == $"Core #{i}");
-                            var sEff = cpu.Sensors.FirstOrDefault(s =>
-                                s.SensorType == SensorType.Clock && s.Name == $"Core #{i} (Effective)");
-                            if (sActual == null && sEff == null) break; // end of physical cores
-                            if (sActual?.Value is float a) coreClocks.Add(a); else coreClocks.Add(0);
-                            if (sEff?.Value is float e) coreClocksEff.Add(e); else coreClocksEff.Add(0);
+                            var keyActual = (SensorType.Clock, $"Core #{i}");
+                            var keyEff = (SensorType.Clock, $"Core #{i} (Effective)");
+                            var hasActual = sensorMap.TryGetValue(keyActual, out var sActual);
+                            var hasEff = sensorMap.TryGetValue(keyEff, out var sEff);
+                            if (!hasActual && !hasEff) break; // end of physical cores
+                            if (hasActual && sActual.Value is float a) coreClocks.Add(a); else coreClocks.Add(0);
+                            if (hasEff && sEff.Value is float e) coreClocksEff.Add(e); else coreClocksEff.Add(0);
                         }
                         info.ClocksPerCore = coreClocks.Count > 0 ? coreClocks.ToArray() : null;
                         info.ClocksEffectivePerCore = coreClocksEff.Count > 0 ? coreClocksEff.ToArray() : null;
@@ -227,9 +250,8 @@ namespace PerfectWall.Server.Services
                         if (info.ClockAverage > 0 && info.ClockAverage > info.Speed) info.MaxSpeed = info.ClockAverage;
 
                         // ---- Usage ----
-                        var cpuTotal = cpu.Sensors.FirstOrDefault(s =>
-                            s.SensorType == SensorType.Load && s.Name == "CPU Total");
-                        if (cpuTotal?.Value is float ut) info.Usage = ut;
+                        if (sensorMap.TryGetValue((SensorType.Load, "CPU Total"), out var cpuTotal)
+                            && cpuTotal.Value is float ut) info.Usage = ut;
 
                         // Per-core usage. LHM exposes CPU Core #1
                         // through #N, where N matches logical
@@ -238,9 +260,8 @@ namespace PerfectWall.Server.Services
                         float usageMax = 0; int usageMaxIdx = -1;
                         for (int i = 1; i <= Environment.ProcessorCount; i++)
                         {
-                            var s = cpu.Sensors.FirstOrDefault(s =>
-                                s.SensorType == SensorType.Load && s.Name == $"CPU Core #{i}");
-                            if (s == null) break;
+                            if (!sensorMap.TryGetValue((SensorType.Load, $"CPU Core #{i}"), out var s))
+                                break;
                             var v = s.Value is float f ? f : 0f;
                             usagePer.Add(v);
                             if (v > usageMax) { usageMax = v; usageMaxIdx = i; }
@@ -255,11 +276,10 @@ namespace PerfectWall.Server.Services
                         // ---- Voltage (VID per core + aggregates) ----
                         var voltages = new List<float>();
                         float vMin = float.MaxValue, vMax = 0;
-                        for (int i = 1; i <= 64; i++)
+                        for (int i = 1; i <= MAX_CORES; i++)
                         {
-                            var s = cpu.Sensors.FirstOrDefault(s =>
-                                s.SensorType == SensorType.Voltage && s.Name == $"Core #{i} VID");
-                            if (s == null) break;
+                            if (!sensorMap.TryGetValue((SensorType.Voltage, $"Core #{i} VID"), out var s))
+                                break;
                             var v = s.Value is float f ? f : 0f;
                             voltages.Add(v);
                             if (v > 0) { if (v < vMin) vMin = v; if (v > vMax) vMax = v; }
@@ -275,16 +295,14 @@ namespace PerfectWall.Server.Services
                         }
 
                         // ---- Power (Package + per core) ----
-                        var pkg = cpu.Sensors.FirstOrDefault(s =>
-                            s.SensorType == SensorType.Power && s.Name == "Package");
-                        if (pkg?.Value is float pw) info.PowerPackage = pw;
+                        if (sensorMap.TryGetValue((SensorType.Power, "Package"), out var pkg)
+                            && pkg.Value is float pw) info.PowerPackage = pw;
 
                         var powers = new List<float>();
-                        for (int i = 1; i <= 64; i++)
+                        for (int i = 1; i <= MAX_CORES; i++)
                         {
-                            var s = cpu.Sensors.FirstOrDefault(s =>
-                                s.SensorType == SensorType.Power && s.Name == $"Core #{i} (SMU)");
-                            if (s == null) break;
+                            if (!sensorMap.TryGetValue((SensorType.Power, $"Core #{i} (SMU)"), out var s))
+                                break;
                             powers.Add(s.Value is float f ? f : 0f);
                         }
                         info.PowerPerCore = powers.Count > 0 ? powers.ToArray() : null;
@@ -306,9 +324,19 @@ namespace PerfectWall.Server.Services
                         var preferred = new[] { "Tctl", "Tdie", "Package", "CPU" };
                         foreach (var token in preferred)
                         {
-                            packageTemp = cpu.Sensors.FirstOrDefault(s =>
-                                s.SensorType == SensorType.Temperature &&
-                                s.Name.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0);
+                            // Walk the cached list once instead
+                            // of re-scanning `cpu.Sensors` per
+                            // token.
+                            foreach (var s in sensorMap.Keys)
+                            {
+                                if (s.Item1 == SensorType.Temperature &&
+                                    !string.IsNullOrEmpty(s.Item2) &&
+                                    s.Item2.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+                                {
+                                    packageTemp = sensorMap[s];
+                                    break;
+                                }
+                            }
                             if (packageTemp != null) break;
                         }
                         if (packageTemp != null && packageTemp.Value is float pt)

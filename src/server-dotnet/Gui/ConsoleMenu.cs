@@ -167,15 +167,36 @@ namespace PerfectWall.Server.Gui
             Console.Write(Strings.Get("Console_PortPrompt", culture));
             var line = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(line)) return;
-            if (!int.TryParse(line.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var p) || p < 1024 || p > 65535)
+            if (!int.TryParse(line.Trim(), NumberStyles.Integer, CultureInfo.InvariantCulture, out var p))
             {
                 Console.WriteLine(Strings.Get("Console_PortInvalid", culture));
+                return;
+            }
+            // Reuse the same bounds check as /api/config and
+            // /api/setup so the three entry points can never
+            // drift. Without this gate the user could write
+            // a malformed port number to server-config.json
+            // and the listener would refuse to bind on the
+            // next launch.
+            var portErr = ServerConfig.ValidatePort(p);
+            if (portErr != null)
+            {
+                Console.WriteLine(string.Format(Strings.Get("Console_PortInvalid", culture), portErr));
                 return;
             }
             var cfg = ServerConfig.Load();
             cfg.Port = p;
             cfg.Save();
             Console.WriteLine(Strings.Get("Console_PortSaved", culture));
+            // The HTTP listener is bound to the old port
+            // and can't be rebound in-process on .NET
+            // Framework's HttpListener. Kick off the same
+            // self-restart path /api/setup set_port uses so
+            // the change actually takes effect — otherwise
+            // the user would see "Port saved" but the
+            // listener would still be on the old port until
+            // they manually restarted the EXE.
+            SetupEndpoints.TriggerSelfRestart();
         }
     }
 }

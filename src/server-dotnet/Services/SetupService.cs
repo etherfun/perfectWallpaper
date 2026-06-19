@@ -965,6 +965,17 @@ namespace PerfectWall.Server.Services
         private static DateTime _latestPawnioFetchedAtUtc = DateTime.MinValue;
         private static readonly object _latestPawnioFetchLock = new object();
         private static readonly TimeSpan LatestPawnioCacheTtl = TimeSpan.FromHours(1);
+        // In-flight gate. The previous round-1 fix
+        // only deduped by timestamp — between the
+        // moment a fetch started and the moment it
+        // populated the cache, every concurrent
+        // /api/setup call would also see
+        // `_cachedLatestPawnioVersion == null` and
+        // spawn its own HTTP fetch. The Interlocked
+        // gate below ensures only one in-flight
+        // request at a time, with callers outside
+        // the gate bailing immediately.
+        private static int _fetchInFlight = 0;
 
         // HttpClient is designed to be a long-lived
         // singleton — creating one per fetch is the
@@ -989,31 +1000,42 @@ namespace PerfectWall.Server.Services
             {
                 return;
             }
-            // Slow path: claim the fetch slot. We use
-            // a lock to dedupe concurrent /api/setup
-            // calls — only one background HTTP
-            // request is in flight at a time, the
-            // rest bail and reuse whatever's already
-            // cached (null on first call, populated
-            // on subsequent).
+            // In-flight gate. If a fetch is already
+            // running, bail — don't enqueue a
+            // duplicate. The previous round-1 fix
+            // used a lock + timestamp to dedupe,
+            // which has a window between the
+            // timestamp claim and the actual HTTP
+            // request start where concurrent
+            // callers all decide to spawn their own
+            // fetch.
+            if (Interlocked.CompareExchange(ref _fetchInFlight, 1, 0) != 0)
+            {
+                return;
+            }
+            // The previous round-1 fix also kept
+            // the lock + timestamp around in case
+            // the new code missed a path. The
+            // Interlocked gate above is sufficient;
+            // the lock is retained only for the
+            // TTL-write below so the timestamp
+            // update is atomic w.r.t. the cache
+            // read in the fast path.
             lock (_latestPawnioFetchLock)
             {
-                if (_cachedLatestPawnioVersion != null &&
-                    DateTime.UtcNow - _latestPawnioFetchedAtUtc < LatestPawnioCacheTtl)
-                {
-                    return;
-                }
-                _latestPawnioFetchedAtUtc = DateTime.UtcNow;  // prevent stampede
+                _latestPawnioFetchedAtUtc = DateTime.UtcNow;
             }
-            // Fire-and-forget. The previous implementation
-            // queued a `ThreadPool` work item that did a
-            // sync-over-async `.Result` on the network
-            // call, blocking a ThreadPool worker for up
-            // to 5 s per fetch. Replacing with
-            // `Task.Run(async () => ...)` properly
-            // awaits the HTTP call without blocking a
-            // pool thread.
-            _ = Task.Run(RefreshLatestPawnioVersionAsync);
+            // Fire-and-forget. The round-1 fix
+            // replaced the previous
+            // `ThreadPool.QueueUserWorkItem` +
+            // `.Result` (sync-over-async) with
+            // `Task.Run(async () => ...)` which
+            // properly awaits the HTTP call.
+            _ = Task.Run(async () =>
+            {
+                try { await RefreshLatestPawnioVersionAsync().ConfigureAwait(false); }
+                finally { Interlocked.Exchange(ref _fetchInFlight, 0); }
+            });
         }
 
         private static async Task RefreshLatestPawnioVersionAsync()

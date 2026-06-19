@@ -138,6 +138,23 @@ namespace PerfectWall.Server.Endpoints
                     var buffer = new byte[81920];
                     while (remaining > 0)
                     {
+                        // Observe the server-stop
+                        // token. The previous
+                        // round-1 fix plumbed
+                        // `RequestAborted` through
+                        // the request context but
+                        // nothing actually read it,
+                        // so a Ctrl+C mid-1 GB
+                        // FLAC stream kept
+                        // allocating until
+                        // OutputStream.Write
+                        // finally threw. Bail
+                        // promptly when the
+                        // server is tearing down.
+                        if (ctx.RequestAborted.IsCancellationRequested)
+                        {
+                            break;
+                        }
                         var toRead = (int)Math.Min(buffer.Length, remaining);
                         var read = await fs.ReadAsync(buffer, 0, toRead);
                         if (read <= 0) break;
@@ -150,7 +167,36 @@ namespace PerfectWall.Server.Endpoints
             catch (Exception ex)
             {
                 Console.Error.WriteLine($"[files/audio] stream failed: {ex.Message}");
-                try { ctx.Response.OutputStream.Close(); } catch { /* already closed */ }
+                // The previous catch block silently
+                // dropped the response. The client
+                // would see a connection drop with
+                // no JSON body and no status code,
+                // making failures impossible to
+                // diagnose. Try to write a minimal
+                // JSON error envelope instead. The
+                // OutputStream may already be
+                // closed, in which case the write
+                // throws and we swallow.
+                try
+                {
+                    if (!ctx.Response.OutputStream.CanWrite) return;
+                    var body = Newtonsoft.Json.JsonConvert.SerializeObject(new
+                    {
+                        success = false,
+                        error = ex.Message,
+                        timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()
+                    });
+                    var errBytes = System.Text.Encoding.UTF8.GetBytes(body);
+                    ctx.Response.StatusCode = 500;
+                    ctx.Response.ContentType = "application/json; charset=utf-8";
+                    ctx.Response.ContentLength64 = errBytes.LongLength;
+                    await ctx.Response.OutputStream.WriteAsync(errBytes, 0, errBytes.Length);
+                }
+                catch { /* stream already closed, nothing to do */ }
+                finally
+                {
+                    try { ctx.Response.OutputStream.Close(); } catch { /* already closed */ }
+                }
             }
         }
 

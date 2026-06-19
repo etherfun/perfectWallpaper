@@ -18,8 +18,8 @@ export {
     updateConfig,
     uploadCustomIcon,
 } from './api';
-export { getSystemMonitor, initSystemMonitor, SystemMonitor } from './SystemMonitor';
 export { buildCards, destroyCards, updateCards } from './cardRenderer';
+export { getSystemMonitor, initSystemMonitor, SystemMonitor } from './SystemMonitor';
 export type {
     AggregateInfo,
     AllIconItem,
@@ -32,6 +32,9 @@ export type {
     ApiResponse,
     ApiStringKey,
     AudioMetadata,
+    CardMetaEntry,
+    CardPayload,
+    CardRenderData,
     ClearCacheResponse,
     ConfigView,
     CpuInfo,
@@ -53,17 +56,14 @@ export type {
     SetupActionRequest,
     SetupConfig,
     SetupState,
+    SparkChannel,
     SystemInfo,
+    SystemMonitorCardDomRefs,
     SystemMonitorConfig,
     SystemMonitorData,
     SystemMonitorDomRefs,
-    SystemMonitorCardDomRefs,
-    CardPayload,
-    CardMetaEntry,
-    SparkChannel,
-    CardRenderData,
-    TempRange,
     TempComponent,
+    TempRange,
     TimeInfo,
     UpdateConfigRequest,
 } from './types';

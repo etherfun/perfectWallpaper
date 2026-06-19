@@ -1,3 +1,5 @@
+import { i18n } from '@/utils/i18n';
+
 import { fetchAggregate } from './api';
 import { buildCards, destroyCards, updateCards } from './cardRenderer';
 import { applyConfig } from './configApply';
@@ -6,7 +8,6 @@ import { queryDomElements } from './domRefs';
 import { formatBytes, formatTemperature } from './formatters';
 import { pickPrimaryGpu } from './gpuSelector';
 import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './renderer';
-import { i18n } from '@/utils/i18n';
 import type {
     AggregateInfo,
     CardPayload,
@@ -202,8 +203,10 @@ export class SystemMonitor {
         // Push history buffers
         if (cpu0) {
             pushHistory(this.cpuHistory, Math.round(cpu0.usage ?? 0));
-            if (cpu0.temperature > 0) pushHistory(this.cpuTempHistory, Math.round(cpu0.temperature));
-            if ((cpu0.power_package ?? 0) > 0) pushHistory(this.cpuPowerHistory, cpu0.power_package ?? 0);
+            if (cpu0.temperature > 0)
+                pushHistory(this.cpuTempHistory, Math.round(cpu0.temperature));
+            if ((cpu0.power_package ?? 0) > 0)
+                pushHistory(this.cpuPowerHistory, cpu0.power_package ?? 0);
         }
         if (gpu) {
             pushHistory(this.gpuHistory, Math.round(gpu.utilization ?? 0));
@@ -275,14 +278,16 @@ export class SystemMonitor {
         }
 
         const freq = cpu.speed > 0 ? `${cpu.speed} MHz` : null;
-        const maxCoreUsage = cpu.usage_max_core != null
-            ? `#${cpu.usage_max_core_index ?? 0} ${Math.round(cpu.usage_max_core)}%`
-            : null;
+        const maxCoreUsage =
+            cpu.usage_max_core != null
+                ? `#${cpu.usage_max_core_index ?? 0} ${Math.round(cpu.usage_max_core)}%`
+                : null;
         const voltage = cpu.voltage_core != null ? `${cpu.voltage_core.toFixed(2)} V` : null;
 
         const meta: Array<{ label: string; value: string }> = [];
         if (freq) meta.push({ label: i18n('sysmon_card_freq'), value: freq });
-        if (power != null) meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
+        if (power != null)
+            meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
         if (maxCoreUsage) meta.push({ label: i18n('sysmon_card_hot'), value: maxCoreUsage });
         if (voltage) meta.push({ label: i18n('sysmon_card_vcore'), value: voltage });
 
@@ -346,21 +351,27 @@ export class SystemMonitor {
         }
 
         // Choose layout variant based on spark count
-        const sparkLayout = sparkCount === 4 ? 'quad'
-            : sparkCount === 3 ? 'triple'
-            : sparkCount === 2 ? 'double-full'
-            : 'solo';
+        const sparkLayout =
+            sparkCount === 4
+                ? 'quad'
+                : sparkCount === 3
+                  ? 'triple'
+                  : sparkCount === 2
+                    ? 'double-full'
+                    : 'solo';
 
         const vramStr = formatBytes(gpu.vram_total ?? 0);
         const vramUsedStr = formatBytes(gpu.vram_used ?? 0);
         const coreClock = gpu.core_clock != null ? `${gpu.core_clock} MHz` : null;
         const memJunc = gpu.temperature_memory_junction;
-        const memJuncStr = memJunc != null && memJunc > 0 && Number.isFinite(memJunc)
-            ? `${Math.round(memJunc)}°C`
-            : null;
+        const memJuncStr =
+            memJunc != null && memJunc > 0 && Number.isFinite(memJunc)
+                ? `${Math.round(memJunc)}°C`
+                : null;
 
         const meta: Array<{ label: string; value: string }> = [];
-        if (power != null) meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
+        if (power != null)
+            meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
         meta.push({ label: i18n('sysmon_card_vram_meta'), value: `${vramUsedStr}/${vramStr}` });
         if (coreClock) meta.push({ label: i18n('sysmon_card_core_clock'), value: coreClock });
         if (memJuncStr) meta.push({ label: i18n('sysmon_card_mem_junc'), value: memJuncStr });
@@ -376,7 +387,11 @@ export class SystemMonitor {
     }
 
     /** Build the memory card payload. */
-    private buildMemoryCard(memory: { total: number; used: number; used_percent: number }): CardPayload | null {
+    private buildMemoryCard(memory: {
+        total: number;
+        used: number;
+        used_percent: number;
+    }): CardPayload | null {
         if (!this.config.showMemory) return null;
         const usedPct = Math.round(memory.used_percent ?? 0);
         const usedStr = formatBytes(memory.used ?? 0);
@@ -462,25 +477,43 @@ export class SystemMonitor {
 
             // Update all per-disk history maps inline
             let hist = this.diskHistories.get(index);
-            if (!hist) { hist = []; this.diskHistories.set(index, hist); }
+            if (!hist) {
+                hist = [];
+                this.diskHistories.set(index, hist);
+            }
             pushHistory(hist, usedPct);
 
             const readRate = disk.read_rate ?? 0;
             let readHist = this.diskReadHistory.get(index);
-            if (!readHist) { readHist = []; this.diskReadHistory.set(index, readHist); }
+            if (!readHist) {
+                readHist = [];
+                this.diskReadHistory.set(index, readHist);
+            }
             pushHistory(readHist, readRate);
 
             const writeRate = disk.write_rate ?? 0;
             let writeHist = this.diskWriteHistory.get(index);
-            if (!writeHist) { writeHist = []; this.diskWriteHistory.set(index, writeHist); }
+            if (!writeHist) {
+                writeHist = [];
+                this.diskWriteHistory.set(index, writeHist);
+            }
             pushHistory(writeHist, writeRate);
 
             const activity = disk.total_activity ?? 0;
             let actHist = this.diskActivityHistory.get(index);
-            if (!actHist) { actHist = []; this.diskActivityHistory.set(index, actHist); }
+            if (!actHist) {
+                actHist = [];
+                this.diskActivityHistory.set(index, actHist);
+            }
             pushHistory(actHist, activity);
 
-            const busLabel = disk.is_nvme ? 'NVMe' : disk.is_ssd ? 'SSD' : disk.is_hdd ? 'HDD' : disk.bus_type;
+            const busLabel = disk.is_nvme
+                ? 'NVMe'
+                : disk.is_ssd
+                  ? 'SSD'
+                  : disk.is_hdd
+                    ? 'HDD'
+                    : disk.bus_type;
 
             const lastReadBps = readHist[readHist.length - 1] ?? 0;
             const lastWriteBps = writeHist[writeHist.length - 1] ?? 0;
@@ -519,10 +552,20 @@ export class SystemMonitor {
                 { label: i18n('sysmon_card_used'), value: usedStr },
                 { label: i18n('sysmon_card_free'), value: formatBytes(disk.total_free_bytes ?? 0) },
             ];
-            if (hasTemp) meta.push({ label: i18n('sysmon_card_temp'), value: `${Math.round(temp)}°C` });
-            if (life != null) meta.push({ label: i18n('sysmon_card_life'), value: `${Math.round(life)}%` });
-            if (disk.host_reads_gb != null) meta.push({ label: i18n('sysmon_card_read'), value: `${disk.host_reads_gb.toFixed(1)} GB` });
-            if (disk.host_writes_gb != null) meta.push({ label: i18n('sysmon_card_write'), value: `${disk.host_writes_gb.toFixed(1)} GB` });
+            if (hasTemp)
+                meta.push({ label: i18n('sysmon_card_temp'), value: `${Math.round(temp)}°C` });
+            if (life != null)
+                meta.push({ label: i18n('sysmon_card_life'), value: `${Math.round(life)}%` });
+            if (disk.host_reads_gb != null)
+                meta.push({
+                    label: i18n('sysmon_card_read'),
+                    value: `${disk.host_reads_gb.toFixed(1)} GB`,
+                });
+            if (disk.host_writes_gb != null)
+                meta.push({
+                    label: i18n('sysmon_card_write'),
+                    value: `${disk.host_writes_gb.toFixed(1)} GB`,
+                });
 
             return {
                 label: `${i18n('sysmon_card_label_disk')} #${index} · ${disk.model} · ${busLabel}`,

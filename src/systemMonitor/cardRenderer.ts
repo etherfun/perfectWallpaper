@@ -18,9 +18,10 @@
  *         canvas.spark         → the sparkline canvas
  */
 
+import { i18n } from '@/utils/i18n';
+
 import { MAX_HISTORY_LENGTH } from './constants';
 import { formatBytes, getColorForValue } from './formatters';
-import { i18n } from '@/utils/i18n';
 import type {
     CardPayload,
     CardRenderData,
@@ -181,11 +182,7 @@ function drawUtilSpark(canvas: HTMLCanvasElement, history: number[]): void {
  * mapped to the canvas Y axis via [lo, hi]. A critical threshold
  * line is drawn in dashed red.
  */
-function drawTempSpark(
-    canvas: HTMLCanvasElement,
-    historyC: number[],
-    range: TempRange
-): void {
+function drawTempSpark(canvas: HTMLCanvasElement, historyC: number[], range: TempRange): void {
     if (historyC.length < 2) return;
     const ctx = setupCanvas(canvas);
     if (!ctx) return;
@@ -384,7 +381,13 @@ function drawRxTxCombinedSpark(
     drawBaseline(ctx, w, h);
 
     // Helper to draw one direction's curve with its own peak scale
-    const drawDir = (history: number[], peak: number, rgb: string, alpha: number, lineWidth: number) => {
+    const drawDir = (
+        history: number[],
+        peak: number,
+        rgb: string,
+        alpha: number,
+        lineWidth: number
+    ) => {
         if (history.length < 2) return;
         const toY = (bps: number) => h - (bps / peak) * h;
 
@@ -464,7 +467,10 @@ function drawCurvePath(
 
     // Stroke — per-segment coloring when segmentColors is provided
     if (segmentColors) {
-        const pts: [number, number][] = history.map((v, i) => [startX + i * step, h - (v / 100) * h]);
+        const pts: [number, number][] = history.map((v, i) => [
+            startX + i * step,
+            h - (v / 100) * h,
+        ]);
         drawSmoothStroke(ctx, pts, i => segmentColors[i] ?? fillColor, 1.5, 4);
     } else {
         ctx.beginPath();
@@ -483,7 +489,7 @@ function drawCurvePath(
 
     // End dot — color based on last value
     const lastColor = segmentColors
-        ? segmentColors[segmentColors.length - 1] ?? fillColor
+        ? (segmentColors[segmentColors.length - 1] ?? fillColor)
         : fillColor;
     ctx.beginPath();
     ctx.arc(lastX, h - (lastValue / 100) * h, 1.8, 0, Math.PI * 2);
@@ -747,7 +753,11 @@ function tagHtml(text: string): string {
 }
 
 function escapeHtml(s: string): string {
-    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    return s
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
 function updateDiskCards(

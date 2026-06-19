@@ -161,10 +161,7 @@ export function fetchAggregate(
  *     capacity data even when SMART is null, so the
  *     card degrades gracefully on a non-admin run.
  */
-export function fetchDisk(
-    baseUrl: string,
-    signal?: AbortSignal
-): Promise<DiskSummaryInfo | null> {
+export function fetchDisk(baseUrl: string, signal?: AbortSignal): Promise<DiskSummaryInfo | null> {
     return apiFetch<DiskSummaryInfo>(`/api/sysinfo/disk`, { baseUrl, signal }).then(
         r => r?.data ?? null
     );

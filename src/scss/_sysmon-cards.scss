@@ -62,7 +62,7 @@
     flex-direction: column;
     gap: 6px;
     padding: 10px 14px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.1);
 
     // Hide card when its metric is disabled
     &[style*='display: none'] {

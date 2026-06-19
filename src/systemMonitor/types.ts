@@ -796,7 +796,17 @@ export interface CardMetaEntry {
 
 /** Sparkline data for a single channel in a card. */
 export interface SparkChannel {
-    kind: 'util' | 'temp' | 'power' | 'vram' | 'read' | 'write' | 'rx' | 'tx' | 'rx-tx' | 'activity';
+    kind:
+        | 'util'
+        | 'temp'
+        | 'power'
+        | 'vram'
+        | 'read'
+        | 'write'
+        | 'rx'
+        | 'tx'
+        | 'rx-tx'
+        | 'activity';
     history: number[];
     range?: TempRange;
     /** Optional override for the head display value (e.g. "68.1 W", "414 B/s") */

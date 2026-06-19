@@ -85,7 +85,13 @@ namespace PerfectWall.Server.Server
 
         public async Task WriteJsonAsync(object payload, int status = 200)
         {
-            var json = JsonConvert.SerializeObject(payload);
+            // Cache the JsonSerializerSettings so we
+            // don't allocate a fresh one (and pay the
+            // contract cache miss penalty) per request.
+            // DateFormatHandling.IsoDateTimeFormat matches
+            // the default for DateTimeOffset fields so
+            // the wire shape is unchanged.
+            var json = JsonConvert.SerializeObject(payload, JsonSettings);
             var bytes = Encoding.UTF8.GetBytes(json);
             Response.StatusCode = status;
             Response.ContentType = "application/json; charset=utf-8";
@@ -115,6 +121,18 @@ namespace PerfectWall.Server.Server
     /// </summary>
     public sealed class HttpServer
     {
+        // Shared, immutable settings for every JSON
+        // serialisation on the request path. Cached to
+        // avoid allocating a new JsonSerializerSettings
+        // (and re-running contract cache lookup) on each
+        // request.
+        private static readonly JsonSerializerSettings JsonSettings =
+            new JsonSerializerSettings
+            {
+                DateFormatHandling = DateFormatHandling.IsoDateTimeFormat,
+                NullValueHandling = NullValueHandling.Include
+            };
+
         private readonly Router _router;
         private readonly HttpListener _listener = new HttpListener();
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();

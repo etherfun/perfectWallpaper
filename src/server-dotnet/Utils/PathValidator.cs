@@ -27,14 +27,11 @@ namespace PerfectWall.Server.Utils
             // Canonicalise: collapse `.\` / `..\`
             // separators, resolve `C:\foo\.\bar` →
             // `C:\foo\bar`, etc. The result is only used
-            // for the contains-check; we leave the
-            // caller's original string untouched so
-            // error messages still quote what they sent.
-            string full;
-            try { full = Path.GetFullPath(path); }
+            // to ensure the path can be resolved by the
+            // OS; a failure here is itself the error
+            // signal.
+            try { Path.GetFullPath(path); }
             catch { return "Invalid path"; }
-            if (full.Contains(".."))
-                return "Invalid path characters";
             return null;
         }
     }

@@ -1116,9 +1116,6 @@ setInterval(refresh, 2000);
         /// </summary>
         public static void TriggerSelfRestart() => SelfRestart();
 
-        /// <summary>True while a self-restart is in flight.</summary>
-        public static bool IsRestartInProgress => IsRestartScheduled;
-
         /// <summary>
         /// Quote a single command-line argument for
         /// <see cref="System.Diagnostics.ProcessStartInfo.Arguments"/>.

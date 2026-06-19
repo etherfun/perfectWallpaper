@@ -196,7 +196,16 @@ namespace PerfectWall.Server.Services
                         // the dictionary the whole CPU block is
                         // O(n + m) where m is the per-core
                         // range.
-                        var sensorMap = new Dictionary<(SensorType, string), ISensor>(cpu.Sensors.Count);
+                        //
+                        // Note: LHM exposes `IHardware.Sensors`
+                        // as `IEnumerable<ISensor>`, not a
+                        // collection with a `.Count` property —
+                        // the .NET Framework 4.8 BCL can't
+                        // take an IEnumerable.Count as a
+                        // dictionary capacity hint. The
+                        // default-capacity constructor lets the
+                        // dictionary resize on demand.
+                        var sensorMap = new Dictionary<(SensorType, string), ISensor>();
                         foreach (var s in cpu.Sensors)
                         {
                             // Last write wins on duplicate

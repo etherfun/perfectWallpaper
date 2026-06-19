@@ -71,5 +71,13 @@ namespace PerfectWall.Server.Models
         [JsonProperty("port")] public int Port { get; set; }
         [JsonProperty("auto_start")] public bool AutoStart { get; set; }
         [JsonProperty("log_level")] public string LogLevel { get; set; }
+        // Non-null when a sub-step of the update
+        // succeeded in memory but failed to persist
+        // (e.g. the registry write for auto-start
+        // failed because the user declined UAC).
+        // Optional so existing frontend code that
+        // doesn't read the field keeps working.
+        [JsonProperty("warning", NullValueHandling = NullValueHandling.Ignore)]
+        public string Warning { get; set; }
     }
 }

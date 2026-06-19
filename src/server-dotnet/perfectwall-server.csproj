@@ -17,7 +17,7 @@
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>PerfectWall.Server</RootNamespace>
     <AssemblyName>perfectwall-server</AssemblyName>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>

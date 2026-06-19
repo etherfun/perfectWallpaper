@@ -1,6 +1,7 @@
 using System;
 using System.Globalization;
 using System.Threading;
+using PerfectWall.Server.Endpoints;
 using PerfectWall.Server.Loc;
 using PerfectWall.Server.Models;
 using PerfectWall.Server.Services;

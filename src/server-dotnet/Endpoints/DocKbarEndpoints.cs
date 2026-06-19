@@ -49,7 +49,10 @@ namespace PerfectWall.Server.Endpoints
                     // server-side, but at least we filter out
                     // shell: schemes that smuggle in via the
                     // `path` field.
-                    if (req.Path.Contains("://", StringComparison.Ordinal))
+                    // String.Contains(string, StringComparison)
+                    // is not available on .NET Framework 4.8;
+                    // use IndexOf with the explicit comparison.
+                    if (req.Path.IndexOf("://", StringComparison.Ordinal) >= 0)
                     {
                         await ctx.WriteJsonAsync(ApiResponse<object>.Fail("path must not be a URI"));
                         return;

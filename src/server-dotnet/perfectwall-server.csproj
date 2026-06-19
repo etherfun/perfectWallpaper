@@ -17,10 +17,10 @@
     <TargetFramework>net48</TargetFramework>
     <RootNamespace>PerfectWall.Server</RootNamespace>
     <AssemblyName>perfectwall-server</AssemblyName>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>7.3</LangVersion>
     <PlatformTarget>x64</PlatformTarget>
     <Prefer32Bit>false</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <ApplicationIcon />
     <StartupObject>PerfectWall.Server.Program</StartupObject>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -267,6 +267,14 @@
       <_TransitiveRid Include="$(NuGetPackageRoot)*\*\runtimes\win-x64\lib\net472\*.dll" />
       <_TransitiveDlls Include="@(_TransitiveLib472);@(_TransitiveRid)">
         <DestinationFolder>$(OutputPath)</DestinationFolder>
+        <!-- Drop satellite resource assemblies and
+             XML doc stubs from transitive packages.
+             `*.resources.dll` is a satellite
+             (en-US/ja/etc.) and we don't ship those
+             localisations; `*.xml` is the XML doc
+             that the runtime never needs and that
+             would bloat dist/ by ~5 MB. -->
+        <Exclude>*.resources.dll;*.xml</Exclude>
       </_TransitiveDlls>
     </ItemGroup>
     <Copy SourceFiles="@(_TransitiveDlls)" DestinationFolder="$(OutputPath)" SkipUnchangedFiles="true" Condition="'@(_TransitiveDlls)' != ''" />

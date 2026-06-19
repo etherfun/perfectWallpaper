@@ -54,16 +54,24 @@
 - [X]  一言（Hitokoto）随机语录
 - [X]  DockBar 快捷栏（应用、文件、网址）
 
-## 服务器 (Rust)
+## 服务器 (.NET)
 
-Rust 编写的系统信息服务器，提供 API 给前端调用。
-请自行查看对应文件夹的README
+.NET Framework 4.8 系统信息服务器，提供 API 给前端调用。
+提供两种运行模式：
+
+- **用户模式（默认）**：纯托管 API 实现的 CPU/内存/网络/系统信息；
+  温度、风扇、时钟字段保持 0 / unavailable。
+- **管理员模式（`--admin`）**：通过 LibreHardwareMonitor 读取 CPU/GPU
+  温度、风扇、时钟。需要 UAC 提升，会触发 WinRing0 驱动的 Defender 警告
+  （用户主动选择）。
+
+前端代码与运行模式无关 — JSON 契约在两种模式下保持一致。
 
 ## 技术栈
 
 - **前端**: TypeScript、HTML5 Canvas、WebGL
-- **服务器**: Rust、Axum、Tower
-- **构建**: esbuild、TypeScript、SASS
+- **服务器**: .NET Framework 4.8、LibreHardwareMonitor、Newtonsoft.Json、TagLibSharp
+- **构建**: esbuild、TypeScript、SASS、dotnet build
 
 ## 项目结构
 

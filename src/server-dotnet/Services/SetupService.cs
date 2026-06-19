@@ -138,7 +138,16 @@ namespace PerfectWall.Server.Services
                 using (var p = Process.GetCurrentProcess())
                 {
                     state.ProcessId = p.Id;
-                    state.StartTime = p.StartTime;
+                    // Process.StartTime is DateTimeKind.Local on
+                    // .NET Framework 4.8. The setup page
+                    // renders it via `new Date(s.start_time)
+                    // .toLocaleString()` which correctly
+                    // respects the embedded offset, but the
+                    // inline comment in the page says "ISO
+                    // 8601 locale-agnostic" — a lie when
+                    // Kind==Local. Normalise to UTC here so
+                    // the round-trip is genuinely locale-free.
+                    state.StartTime = p.StartTime.ToUniversalTime();
                     try { state.ExePath = p.MainModule?.FileName; } catch { /* access denied on some AVs */ }
                 }
             }

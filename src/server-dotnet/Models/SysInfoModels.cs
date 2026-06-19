@@ -234,7 +234,14 @@ namespace PerfectWall.Server.Models
         [JsonProperty("name")] public string Name { get; set; } // "Microsoft Windows 11 Pro"
         [JsonProperty("version")] public string Version { get; set; } // "10.0.22631"
         [JsonProperty("build")] public string Build { get; set; } // "22631"
-        [JsonProperty("ubr")] public int? Ubr { get; set; } // Update Build Revision (e.g. 4391)
+        // Typed as string to match the TypeScript contract
+        // (src/systemMonitor/types.ts:351 declares
+        // `ubr: string | null`). The round-1 audit flagged
+        // the type drift; an int? would serialise as a
+        // bare number ("ubr": 4391) and break any TS
+        // consumer that does a string equality check.
+        // Convert Ubr to its string form in BuildOsInfo().
+        [JsonProperty("ubr")] public string Ubr { get; set; } // Update Build Revision (e.g. "4391")
         [JsonProperty("display")] public string Display { get; set; } // compat field
     }
 

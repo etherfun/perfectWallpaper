@@ -418,15 +418,18 @@ namespace PerfectWall.Server.Services
         /// </summary>
         public SystemInfo CollectSystem()
         {
-            // Boot time = now - uptime (Environment.TickCount is
-            // milliseconds since process start, but we need
-            // system boot time — same idea, applied to
-            // PerformanceCounter-less code: rely on
-            // Environment.TickCount == system uptime on
-            // Windows .NET Framework, which has been true since
-            // Win7).
+            // Boot time = now - uptime. Environment.TickCount
+            // is a 32-bit int that overflows (wraps to
+            // negative) after ~24.8 days of system uptime.
+            // On a long-lived wallpaper host that's a real
+            // case: boot_time would jump into the future.
+            // Use Stopwatch which is a 64-bit counter.
+            // Stopwatch.Frequency is the ticks-per-second of
+            // the underlying high-resolution timer, not
+            // necessarily 1000.
             var nowMs = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-            var uptimeSec = (long)(Environment.TickCount / 1000);
+            var uptimeTicks = System.Diagnostics.Stopwatch.GetTimestamp();
+            var uptimeSec = (long)(uptimeTicks / System.Diagnostics.Stopwatch.Frequency);
             var bootTime = nowMs - uptimeSec * 1000L;
 
             var tz = TimeZoneInfo.Local;
@@ -471,7 +474,7 @@ namespace PerfectWall.Server.Services
                     if (!string.IsNullOrEmpty(pn)) info.Name = pn;
                     var cb = key.GetValue("CurrentBuild") as string;
                     if (!string.IsNullOrEmpty(cb)) info.Build = cb;
-                    if (int.TryParse(key.GetValue("UBR") as string, out var ubr)) info.Ubr = ubr;
+                    if (int.TryParse(key.GetValue("UBR") as string, out var ubr)) info.Ubr = ubr.ToString(System.Globalization.CultureInfo.InvariantCulture);
                 }
             }
             catch

@@ -646,15 +646,48 @@ setInterval(refresh, 2000);
         /// Missing keys are left as-is (the browser renders
         /// them literally) so a missing translation is
         /// obvious in QA.
+        ///
+        /// <para>
+        /// The implementation is a single-pass scan
+        /// rather than a per-key <see cref="StringBuilder.Replace"/>
+        /// loop. The previous loop was vulnerable to
+        /// double-substitution: a translation value
+        /// containing the literal text
+        /// <c>{{Api_SomeKey}}</c> would be replaced again
+        /// when the loop reached that key. Today no
+        /// <c>Strings.resx</c> value contains
+        /// <c>{{...}}</c>, but any future translation that
+        /// did would be silently corrupted.
+        /// </para>
         /// </summary>
         private static string ApplyPlaceholders(string template, System.Collections.Generic.Dictionary<string, string> strings)
         {
             if (strings == null || strings.Count == 0) return template;
-            var sb = new System.Text.StringBuilder(template);
-            foreach (var kvp in strings)
+            if (string.IsNullOrEmpty(template)) return template;
+            var sb = new System.Text.StringBuilder(template.Length);
+            int i = 0;
+            int len = template.Length;
+            while (i < len)
             {
-                var token = "{{" + kvp.Key + "}}";
-                sb.Replace(token, kvp.Value ?? string.Empty);
+                // Look for the start of a placeholder
+                // token. "{{x}}" is 3 chars minimum
+                // (two braces + 1 char key).
+                if (i + 2 < len && template[i] == '{' && template[i + 1] == '{')
+                {
+                    int closeIdx = template.IndexOf("}}", i + 2, StringComparison.Ordinal);
+                    if (closeIdx > i + 2)
+                    {
+                        var key = template.Substring(i + 2, closeIdx - (i + 2));
+                        if (strings.TryGetValue(key, out var value))
+                        {
+                            sb.Append(value ?? string.Empty);
+                            i = closeIdx + 2;
+                            continue;
+                        }
+                    }
+                }
+                sb.Append(template[i]);
+                i++;
             }
             return sb.ToString();
         }

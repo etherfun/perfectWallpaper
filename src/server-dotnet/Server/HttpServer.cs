@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace PerfectWall.Server.Server
 {
@@ -85,13 +86,13 @@ namespace PerfectWall.Server.Server
 
         public async Task WriteJsonAsync(object payload, int status = 200)
         {
-            // Cache the JsonSerializerSettings so we
-            // don't allocate a fresh one (and pay the
-            // contract cache miss penalty) per request.
-            // DateFormatHandling.IsoDateTimeFormat matches
-            // the default for DateTimeOffset fields so
-            // the wire shape is unchanged.
-            var json = JsonConvert.SerializeObject(payload, JsonSettings);
+            // Use the cached JsonSerializerSettings from
+            // HttpServer to avoid paying the contract
+            // cache miss penalty on every request. ISO
+            // date format is the default for
+            // DateTimeOffset fields, so the wire shape
+            // is unchanged.
+            var json = JsonConvert.SerializeObject(payload, HttpServer.JsonSettings);
             var bytes = Encoding.UTF8.GetBytes(json);
             Response.StatusCode = status;
             Response.ContentType = "application/json; charset=utf-8";
@@ -125,11 +126,20 @@ namespace PerfectWall.Server.Server
         // serialisation on the request path. Cached to
         // avoid allocating a new JsonSerializerSettings
         // (and re-running contract cache lookup) on each
-        // request.
-        private static readonly JsonSerializerSettings JsonSettings =
+        // request. ISO date format is the default for
+        // DateTimeOffset fields, so the wire shape is
+        // unchanged.
+        public static readonly JsonSerializerSettings JsonSettings =
             new JsonSerializerSettings
             {
-                DateFormatHandling = DateFormatHandling.IsoDateTimeFormat,
+                // Newtonsoft.Json 13.x renamed
+                // DateFormatHandling.IsoDateTimeFormat
+                // to DateFormatHandling.IsoDateFormat.
+                // The new name has been the canonical
+                // one since 12.0; the old alias was
+                // removed in 13.0. IsoDateFormat is
+                // the wire-compatible default.
+                DateFormatHandling = DateFormatHandling.IsoDateFormat,
                 NullValueHandling = NullValueHandling.Include
             };
 

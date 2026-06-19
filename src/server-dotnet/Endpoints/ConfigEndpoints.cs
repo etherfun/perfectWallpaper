@@ -32,7 +32,7 @@ namespace PerfectWall.Server.Endpoints
             {
                 var body = ctx.ReadBody();
                 var req = JsonConvert.DeserializeObject<UpdateConfigRequest>(body);
-                if (req == null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid body")); return; }
+                if (req == null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid body"), 400); return; }
                 var c = getter();
                 var errors = new System.Collections.Generic.List<string>();
                 if (req.Port.HasValue)
@@ -45,7 +45,7 @@ namespace PerfectWall.Server.Endpoints
                     var portErr = ServerConfig.ValidatePort(req.Port.Value);
                     if (portErr != null)
                     {
-                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail(portErr));
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail(portErr), 400);
                         return;
                     }
                     c.Port = req.Port.Value;
@@ -90,7 +90,7 @@ namespace PerfectWall.Server.Endpoints
             }
             catch (Exception ex)
             {
-                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
+                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
             }
         }
     }

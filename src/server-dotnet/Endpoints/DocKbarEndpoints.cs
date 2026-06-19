@@ -23,7 +23,7 @@ namespace PerfectWall.Server.Endpoints
             {
                 var body = ctx.ReadBody();
                 var req = JsonConvert.DeserializeObject<OpenItemRequest>(body);
-                if (req == null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid body")); return; }
+                if (req == null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid body"), 400); return; }
 
                 string target = null;
                 string verb = null;
@@ -35,7 +35,7 @@ namespace PerfectWall.Server.Endpoints
                     // are open-redirect / RCE pivots.
                     if (!IsAllowedUrl(req.Url, out var urlErr))
                     {
-                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail(urlErr));
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail(urlErr), 400);
                         return;
                     }
                     target = req.Url;
@@ -54,7 +54,7 @@ namespace PerfectWall.Server.Endpoints
                     // use IndexOf with the explicit comparison.
                     if (req.Path.IndexOf("://", StringComparison.Ordinal) >= 0)
                     {
-                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail("path must not be a URI"));
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail("path must not be a URI"), 400);
                         return;
                     }
                     target = req.Path;
@@ -62,7 +62,7 @@ namespace PerfectWall.Server.Endpoints
                 }
                 else
                 {
-                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid type or missing path/url"));
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid type or missing path/url"), 400);
                     return;
                 }
 
@@ -73,12 +73,12 @@ namespace PerfectWall.Server.Endpoints
                 }
                 else
                 {
-                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail($"ShellExecute returned {result.ToInt64()}"));
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail($"ShellExecute returned {result.ToInt64()}"), 500);
                 }
             }
             catch (Exception ex)
             {
-                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
+                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
             }
         }
 
@@ -117,7 +117,7 @@ namespace PerfectWall.Server.Endpoints
             }
             catch (Exception ex)
             {
-                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
+                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
             }
         }
     }

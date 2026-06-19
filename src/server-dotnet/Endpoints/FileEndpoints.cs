@@ -329,14 +329,14 @@ namespace PerfectWall.Server.Endpoints
                         SendKey(NativeMethods.VK_MEDIA_STOP);
                         break;
                     default:
-                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Unknown action"));
+                        await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Unknown action"), 400);
                         return;
                 }
                 await ctx.WriteJsonAsync(ApiResponse<object>.Ok(new { opened = true }));
             }
             catch (Exception ex)
             {
-                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
+                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
             }
         }
 

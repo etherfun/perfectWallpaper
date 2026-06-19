@@ -27,6 +27,14 @@ namespace PerfectWall.Server.Services
         {
             var result = new NetworkInfo();
             ulong totalRx = 0, totalTx = 0;
+            // Snapshot the set of currently-up interfaces
+            // so we can prune `_perIface` at the end of
+            // the call. Without the prune, hot-pluggable
+            // NICs (USB Ethernet, VPN, Hyper-V virtual
+            // switches) that come and go would leak keys
+            // forever and grow the dictionary unbounded
+            // over the process lifetime.
+            var liveNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
             try
             {
@@ -37,6 +45,7 @@ namespace PerfectWall.Server.Services
                     var info = BuildInterfaceInfo(ni, now);
                     if (info == null) continue;
                     result.Interfaces.Add(info);
+                    liveNames.Add(info.Name);
                     if (info.RxBytes.HasValue) totalRx += (ulong)info.RxBytes.Value;
                     if (info.TxBytes.HasValue) totalTx += (ulong)info.TxBytes.Value;
                 }
@@ -45,6 +54,22 @@ namespace PerfectWall.Server.Services
             {
                 // network enumeration can throw on a NIC that
                 // disappeared mid-poll — swallow
+            }
+
+            // Prune keys that no longer correspond to a
+            // live interface. O(n) over the cache which
+            // is itself bounded by the number of NICs a
+            // machine can plausibly have (~20 in the
+            // worst case with every VPN / VM switched
+            // on).
+            lock (_lock)
+            {
+                var toRemove = new List<string>();
+                foreach (var key in _perIface.Keys)
+                {
+                    if (!liveNames.Contains(key)) toRemove.Add(key);
+                }
+                foreach (var key in toRemove) _perIface.Remove(key);
             }
 
             result.InterfaceCount = result.Interfaces.Count;

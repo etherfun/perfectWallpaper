@@ -81,7 +81,7 @@ namespace PerfectWall.Server.Endpoints
             }
             catch (Exception ex)
             {
-                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
+                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
             }
         }
 
@@ -176,7 +176,7 @@ namespace PerfectWall.Server.Endpoints
             }
             catch (Exception ex)
             {
-                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message));
+                await ctx.WriteJsonAsync(ApiResponse<object>.Fail(ex.Message), 500);
             }
         }
 

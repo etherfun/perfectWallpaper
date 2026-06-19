@@ -1,6 +1,6 @@
 ﻿// See ElevationHelper.cs for the rationale: Fody pulls a
 // 4.0.1.0 NuGet RuntimeInformation that conflicts with
-// the mscorlib 4.0.0.0 one. Don't `using` the namespace 鈥?
+// the mscorlib 4.0.0.0 one. Don't `using` the namespace —
 // reference the BCL type by its fully-qualified name at
 // each use site.
 // We need System.Runtime.InteropServices for the
@@ -248,7 +248,14 @@ namespace PerfectWall.Server
             }
             else if (hw.IsLhmAvailable)
             {
-                Console.WriteLine("[Server] LHM initialised 鈥?temperatures, clocks, " +
+                // The em-dash below was historically
+                // corrupted to `?` in the C# source
+                // (same UTF-8 byte-corruption pattern
+                // as sysmon-card-preview.html). Now
+                // written directly as U+2014 so editors
+                // without auto-detect show the right
+                // glyph.
+                Console.WriteLine("[Server] LHM initialised \u2014 temperatures, clocks, " +
                     "and fan speeds will be reported.");
             }
             else
@@ -353,7 +360,15 @@ namespace PerfectWall.Server
             AppDomain.CurrentDomain.ProcessExit += (s, e) => { exit.Set(); };
             exit.Wait();
             server.Stop();
+            // Dispose the LHM service first — it owns
+            // the (unmanaged) `Computer` instance — then
+            // the disk service. `DiskInfoService.Dispose`
+            // is a documented no-op today but calling it
+            // keeps the cleanup pattern symmetric so a
+            // future real teardown doesn't have to
+            // retrofit the call site.
             hw.Dispose();
+            disks.Dispose();
             return 0;
         }
 

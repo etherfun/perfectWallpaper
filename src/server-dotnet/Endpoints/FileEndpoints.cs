@@ -37,7 +37,12 @@ namespace PerfectWall.Server.Endpoints
                 var exts = string.IsNullOrEmpty(filter)
                     ? new HashSet<string>(StringComparer.OrdinalIgnoreCase)
                     : new HashSet<string>(
-                        filter.Split(',').Select(e => e.Trim().TrimStart('.').ToLowerInvariant()),
+                        // OrdinalIgnoreCase comparer
+                        // handles casing for us, so
+                        // the per-element
+                        // .ToLowerInvariant() was
+                        // redundant allocation.
+                        filter.Split(',').Select(e => e.Trim().TrimStart('.')),
                         StringComparer.OrdinalIgnoreCase);
 
                 var files = new List<FileEntry>();
@@ -46,7 +51,10 @@ namespace PerfectWall.Server.Endpoints
                     var name = Path.GetFileName(path);
                     if (exts.Count > 0)
                     {
-                        var ext = (Path.GetExtension(name) ?? "").TrimStart('.').ToLowerInvariant();
+                        // .TrimStart('.') and case
+                        // normalisation are handled
+                        // by the HashSet's comparer.
+                        var ext = (Path.GetExtension(name) ?? "").TrimStart('.');
                         if (!exts.Contains(ext)) continue;
                     }
                     files.Add(new FileEntry { Name = name, Path = path });

@@ -739,6 +739,18 @@ namespace PerfectWall.Server.Services
         {
             if (_disposed) return;
             _disposed = true;
+            // Intentionally a no-op. The class owns no
+            // managed resources that need explicit
+            // teardown: the reflected `DiskInfoToolkit`
+            // assembly has no IDisposable surface, no
+            // open handles, and the `PropertyInfo`
+            // cache is GC'd with the instance. The
+            // `IDisposable` implementation is here for
+            // parity with `HardwareMonitorService` (which
+            // does own LHM resources) and so future
+            // `using` patterns at the call site don't
+            // have to be retrofitted if a real teardown
+            // is ever needed.
         }
     }
 }

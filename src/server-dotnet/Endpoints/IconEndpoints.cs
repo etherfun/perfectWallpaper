@@ -25,7 +25,17 @@ namespace PerfectWall.Server.Endpoints
         private static async Task GetIcon(HttpContext ctx)
         {
             var path = ctx.QueryParam("path");
-            var bypass = ctx.QueryParam("t") != null;
+            // Only bypass the cache when the client
+            // passes the magic value `bypass`. Any
+            // other value (or no value) hits the
+            // cache. The previous code accepted any
+            // non-empty `?t=` as a bypass, which a
+            // user could trip accidentally by adding
+            // `?t=${Date.now()}` for a one-off
+            // refresh and then forgetting to remove
+            // it on the next click — they'd bypass
+            // the cache forever.
+            var bypass = ctx.QueryParam("t") == "bypass";
             if (!bypass && Cache.TryGet(path, out var cached))
             {
                 await ctx.WriteJsonAsync(ApiResponse<object>.Ok(new IconData { Icon = cached, Cached = true }));

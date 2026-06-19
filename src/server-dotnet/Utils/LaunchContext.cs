@@ -402,14 +402,25 @@ namespace PerfectWall.Server.Utils
             // pop the "Choose default browser" OOBE.
             try
             {
-                using var userChoice = Registry.CurrentUser.OpenSubKey(
+                // Pin the 64-bit view explicitly. The
+                // default `Registry.CurrentUser` is fine
+                // for native 64-bit processes, but the
+                // EXE is `AnyCPU` and may run under WOW
+                // in some hosts (e.g. some MSBuild
+                // task hosts). Without the explicit view
+                // the wrong hive can be read on
+                // `Software\Classes` paths that have
+                // redirected `Wow6432Node` siblings.
+                using var classesRoot = RegistryKey.OpenBaseKey(
+                    RegistryHive.CurrentUser, RegistryView.Registry64);
+                using var userChoice = classesRoot.OpenSubKey(
                     @"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice");
                 if (userChoice != null)
                 {
                     var progId = userChoice.GetValue("ProgId") as string;
                     if (!string.IsNullOrEmpty(progId))
                     {
-                        using var cmd = Registry.CurrentUser.OpenSubKey(
+                        using var cmd = classesRoot.OpenSubKey(
                             $@"Software\Classes\{progId}\shell\open\command");
                         if (cmd != null)
                         {

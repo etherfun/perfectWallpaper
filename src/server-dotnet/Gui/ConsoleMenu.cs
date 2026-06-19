@@ -186,6 +186,16 @@ namespace PerfectWall.Server.Gui
                 return;
             }
             var cfg = ServerConfig.Load();
+            // Skip the restart if the user typed the same
+            // number they already had. Restarting on a no-op
+            // is a 800 ms service outage for nothing and
+            // can confuse the user ("why did it bounce
+            // when I didn't change anything?").
+            if (cfg.Port == p)
+            {
+                Console.WriteLine(Strings.Get("Console_PortSaved", culture));
+                return;
+            }
             cfg.Port = p;
             cfg.Save();
             Console.WriteLine(Strings.Get("Console_PortSaved", culture));

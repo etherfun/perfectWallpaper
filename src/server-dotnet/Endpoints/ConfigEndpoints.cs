@@ -56,16 +56,25 @@ namespace PerfectWall.Server.Endpoints
                     // Route the actual registry write through
                     // SetupService so the user-mode and admin-mode
                     // paths share the same error handling. If the
-                    // registry write fails, surface the error in
-                    // the response (HTTP 200 with `warning` field
-                    // + non-null `error` so the caller knows the
-                    // value was updated in memory but the OS-level
-                    // registration did not take).
+                    // registry write fails, roll back the
+                    // in-memory value to its previous state so
+                    // the persisted config matches reality.
+                    var prevAutoStart = !c.AutoStart;
                     try { SetupService.SetAutoStartUser(c.AutoStart); }
                     catch (Exception ex)
                     {
                         Console.Error.WriteLine($"[config] auto-start registration failed: {ex.Message}");
                         errors.Add(ex.Message);
+                        // Roll back: the registry entry
+                        // didn't take, so writing
+                        // auto_start=true to disk would
+                        // diverge from the actual OS state
+                        // — next launch would think
+                        // auto-start was enabled and the
+                        // dashboard would show 'Enabled'
+                        // forever even though no entry
+                        // exists.
+                        c.AutoStart = prevAutoStart;
                     }
                 }
                 if (!string.IsNullOrEmpty(req.LogLevel)) c.LogLevel = req.LogLevel;

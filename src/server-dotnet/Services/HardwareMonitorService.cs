@@ -1053,14 +1053,32 @@ namespace PerfectWall.Server.Services
                         t0 = p.TotalProcessorTime;
                         w0 = DateTime.UtcNow;
                     }
-                    catch { Thread.Sleep(CPU_SAMPLE_INTERVAL_MS); continue; }
+                    catch
+                    {
+                        // Without a baseline the next iteration
+                        // can't compute a usage delta. Sleep
+                        // for the sample interval so a
+                        // persistently-throwing Process (AV
+                        // hook, job-object teardown) doesn't
+                        // spin at 100% CPU on this thread.
+                        Thread.Sleep(CPU_SAMPLE_INTERVAL_MS);
+                        continue;
+                    }
 
                     Thread.Sleep(CPU_SAMPLE_INTERVAL_MS);
 
                     TimeSpan t1;
                     DateTime w1;
                     try { p.Refresh(); t1 = p.TotalProcessorTime; w1 = DateTime.UtcNow; }
-                    catch { continue; }
+                    catch
+                    {
+                        // Same reasoning: if Refresh keeps
+                        // failing we'd otherwise tight-loop.
+                        // Throttle and retry on the next
+                        // interval.
+                        Thread.Sleep(CPU_SAMPLE_INTERVAL_MS);
+                        continue;
+                    }
 
                     var cpuMs = (t1 - t0).TotalMilliseconds;
                     var wallMs = (w1 - w0).TotalMilliseconds;

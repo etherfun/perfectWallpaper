@@ -48,6 +48,15 @@ namespace PerfectWall.Server.Server
             // and crash the process. Callers that need a smaller
             // cap can re-check ContentLength64 themselves
             // (IconEndpoints caps at 8 MB decoded, 16 MB raw).
+            //
+            // ContentLength64 is -1 for `Transfer-Encoding:
+            // chunked` — the simple header check would miss a
+            // chunked 4 GB POST entirely. We enforce the cap
+            // cumulatively by counting characters as the
+            // StreamReader pulls them off the wire. The reader
+            // builds the string incrementally so a 4 GB body is
+            // rejected at ~16 MB without ever having allocated
+            // the full 4 GB of string memory.
             const long MaxBodyBytes = 16L * 1024 * 1024;
             if (Request.ContentLength64 > MaxBodyBytes)
             {
@@ -56,7 +65,21 @@ namespace PerfectWall.Server.Server
             }
             using (var reader = new StreamReader(Request.InputStream, Request.ContentEncoding ?? Encoding.UTF8))
             {
-                return reader.ReadToEnd();
+                var sb = new System.Text.StringBuilder();
+                var buffer = new char[8192];
+                long total = 0;
+                int read;
+                while ((read = reader.Read(buffer, 0, buffer.Length)) > 0)
+                {
+                    total += read;
+                    if (total > MaxBodyBytes)
+                    {
+                        throw new InvalidOperationException(
+                            $"Request body exceeds {MaxBodyBytes} bytes (chunked, observed {total})");
+                    }
+                    sb.Append(buffer, 0, read);
+                }
+                return sb.ToString();
             }
         }
 

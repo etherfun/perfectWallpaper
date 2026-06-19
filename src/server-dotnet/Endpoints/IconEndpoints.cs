@@ -92,7 +92,11 @@ namespace PerfectWall.Server.Endpoints
                 // Cap request size before allocating. A 50 MB
                 // base64 blob in the request body would otherwise
                 // allocate ~50 MB of `string` memory on this
-                // thread.
+                // thread. Note: ContentLength64 is -1 for
+                // chunked transfer-encoding; ReadBody() in
+                // HttpServer enforces the cap cumulatively
+                // (see ReadBody) so chunked bodies are also
+                // bounded.
                 if (ctx.Request.ContentLength64 is long len && len > 16 * 1024 * 1024)
                 {
                     await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Request body exceeds 16 MB limit"), 413);
@@ -103,7 +107,25 @@ namespace PerfectWall.Server.Endpoints
                 var req = JsonConvert.DeserializeObject<CustomIconRequest>(body);
                 if (req == null || string.IsNullOrEmpty(req.Data))
                 {
-                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid request body"));
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid request body"), 400);
+                    return;
+                }
+                // Reject oversized base64 *before* decoding.
+                // Base64 inflates by 4/3, so a 1.2 GB raw
+                // string would decode to 900 MB. The decoded
+                // cap is 8 MB → encoded cap is 8 MB * 4 / 3 =
+                // ~10.7 MB. Round up to 11 MB to keep the
+                // check simple. The previous code decoded
+                // first, allocating the full input before
+                // checking the limit — turning the 8 MB cap
+                // into dead code.
+                const int MaxDecodedBytes = 8 * 1024 * 1024;
+                const long MaxEncodedChars = 11L * 1024 * 1024;
+                if (req.Data.Length > MaxEncodedChars)
+                {
+                    await ctx.WriteJsonAsync(
+                        ApiResponse<object>.Fail($"Encoded icon exceeds {MaxDecodedBytes / 1024 / 1024} MB limit"),
+                        413);
                     return;
                 }
                 var mime = req.Type switch
@@ -118,17 +140,22 @@ namespace PerfectWall.Server.Endpoints
                 };
                 byte[] bytes;
                 try { bytes = Convert.FromBase64String(req.Data); }
-                catch (FormatException ex)
+                catch (FormatException)
                 {
-                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail($"Invalid base64: {ex.Message}"));
+                    // Don't echo the exception message —
+                    // FormatException's Message includes
+                    // positional text like
+                    // "Invalid character '.' at position 13"
+                    // which can leak snippet data from a
+                    // malicious payload.
+                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Invalid base64 payload"), 400);
                     return;
                 }
-                // Reject >8 MB decoded payloads (PNG icons rarely
-                // exceed 1 MB; anything larger is almost
-                // certainly a misuse of the endpoint).
-                if (bytes.LongLength > 8 * 1024 * 1024)
+                if (bytes.LongLength > MaxDecodedBytes)
                 {
-                    await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Decoded icon exceeds 8 MB limit"), 413);
+                    await ctx.WriteJsonAsync(
+                        ApiResponse<object>.Fail($"Decoded icon exceeds {MaxDecodedBytes / 1024 / 1024} MB limit"),
+                        413);
                     return;
                 }
                 // The dockbar persists custom icons in

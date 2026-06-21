@@ -9,7 +9,10 @@
  */
 import { getColor, getPalette } from 'colorthief';
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+
+const config = useConfigStore();
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 import { hasPlaybackContent } from '@/utils/playback';
@@ -27,8 +30,8 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
     const img = elements.playerControl.thumbnail;
     if (!img || !img.complete || !img.naturalWidth) return;
 
-    const playerControlYakelicColor = config.player_control_yakelic_color;
-    const playerControlColor = config.player_control_color;
+    const playerControlYakelicColor = config.player_control_yakelic_color ?? [255, 255, 255];
+    const playerControlColor = config.player_control_color ?? [255, 255, 255];
 
     let palette: Awaited<ReturnType<typeof getPalette>> | null = null;
     let dominantColor: Awaited<ReturnType<typeof getColor>> | null = null;
@@ -44,7 +47,7 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
         debugLogger.warn('[Player] Color extraction failed', { error: e });
     }
 
-    config.runtime.playerInfo.colorGroup = event
+    appConfig.runtime.playerInfo.colorGroup = event
         ? buildEventColorGroup(
               event,
               dominantColor,
@@ -104,11 +107,11 @@ function buildCustomColorGroup(
 }
 
 function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
-    if (config.runtime.FluidEffect?.enabled) {
+    if (appConfig.runtime.FluidEffect?.enabled) {
         const hasContent = hasPlaybackContent();
         if (hasContent) {
-            config.runtime.FluidEffect.initNormalEffect();
-            const existingEffect = config.runtime.FluidEffect.normalEffect;
+            appConfig.runtime.FluidEffect.initNormalEffect();
+            const existingEffect = appConfig.runtime.FluidEffect.normalEffect;
             if (existingEffect && event?.thumbnail) {
                 const img = elements.playerControl.thumbnail;
                 if (img?.complete && img?.naturalWidth) {
@@ -124,7 +127,7 @@ function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
         }
     }
 
-    if (config.runtime.FluidEffect?.fullscreenEnabled && hasPlaybackContent()) {
-        config.runtime.FluidEffect.updateFullscreenSource();
+    if (appConfig.runtime.FluidEffect?.fullscreenEnabled && hasPlaybackContent()) {
+        appConfig.runtime.FluidEffect.updateFullscreenSource();
     }
 }

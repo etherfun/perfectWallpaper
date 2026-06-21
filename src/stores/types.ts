@@ -318,10 +318,10 @@ export interface ConfigStoreState {
     player_control_blurcolor_show?: boolean;
     player_control_bluryakeli?: number;
     player_control_color?: [number, number, number];
-    player_control_fontusetb?: boolean;
-    player_control_hdong?: boolean;
+    player_control_fontusetb?: number;
+    player_control_hdong?: number;
     player_control_roundedcorners?: number;
-    player_control_samealbum_title?: boolean;
+    player_control_samealbum_title?: boolean; // preserved
     player_control_scalefactor?: number;
     player_control_showwidth?: number;
     player_control_size_value?: number;
@@ -331,7 +331,7 @@ export interface ConfigStoreState {
     player_control_timetransparency?: number;
     player_control_yakeli?: number;
     player_control_yakeli_show?: boolean;
-    player_control_yakelibgusetb?: boolean;
+    player_control_yakelibgusetb?: number;
     player_control_yakelic_color?: [number, number, number];
     playerx?: number;
     playery?: number;

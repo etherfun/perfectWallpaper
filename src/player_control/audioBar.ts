@@ -5,11 +5,14 @@
  * requestAnimationFrame 循环；当 `aubarstop` 被置 true、
  * 或可视化被关闭、或播放器停止时自动退出。
  */
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '@/utils/config'; // runtime.playerInfo (Stage 3.5-B)
 import { elements } from '@/utils/elementManager';
 
 import { AUDIO_BAR_COUNT } from './constants';
 import { PLAYER_STATE } from './types';
+
+const config = useConfigStore();
 
 /** 线性插值 */
 function lerp(start: number, end: number, amount: number): number {
@@ -22,9 +25,9 @@ function lerp(start: number, end: number, amount: number): number {
  */
 function shouldContinueDrawing(): boolean {
     return (
-        !config.runtime.playerInfo.aubarstop &&
+        !appConfig.runtime.playerInfo.aubarstop &&
         Boolean(config.player_control_visualaudiobar) &&
-        config.runtime.playerInfo.playerState !== PLAYER_STATE.STOPPED
+        appConfig.runtime.playerInfo.playerState !== PLAYER_STATE.STOPPED
     );
 }
 
@@ -48,7 +51,7 @@ export function pc_aubar(): void {
     aubar.style.width = `${width}px`;
     aubar.style.height = `${height}px`;
 
-    config.runtime.playerInfo.aubarstop = false;
+    appConfig.runtime.playerInfo.aubarstop = false;
 
     const previousHeights = new Array(AUDIO_BAR_COUNT).fill(aubar.height);
     const barHeights = new Array(AUDIO_BAR_COUNT).fill(0);
@@ -56,19 +59,23 @@ export function pc_aubar(): void {
     const draw = (): void => {
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         const barWidth = aubar.width / AUDIO_BAR_COUNT;
-        rgbbg.fillStyle = 'rgb(' + config.runtime.playerInfo.fontcolor + ')';
+        rgbbg.fillStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
 
-        const currentAudioArr = config.runtime.playerInfo.audioArray;
+        const currentAudioArr = appConfig.runtime.playerInfo.audioArray;
 
         for (let i = 0, l = AUDIO_BAR_COUNT; i < AUDIO_BAR_COUNT; ++i, ++l) {
             const lo = currentAudioArr[i] ?? 0;
             const hi = currentAudioArr[l] ?? 0;
             const bar = (lo + hi) / 2;
             const targetHeight =
-                aubar.height * Math.min(bar, 1) * config.player_control_scalefactor;
+                aubar.height * Math.min(bar, 1) * (config.player_control_scalefactor ?? 1);
             const actualHeight = Math.min(targetHeight, aubar.height);
 
-            barHeights[i] = lerp(barHeights[i] ?? 0, actualHeight, config.player_control_hdong);
+            barHeights[i] = lerp(
+                barHeights[i] ?? 0,
+                actualHeight,
+                config.player_control_hdong ?? 0.5
+            );
 
             rgbbg.fillRect(
                 barWidth * i,
@@ -88,10 +95,10 @@ export function pc_aubar(): void {
     const drawline = (): void => {
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         rgbbg.lineWidth = 2;
-        rgbbg.strokeStyle = 'rgb(' + config.runtime.playerInfo.fontcolor + ')';
+        rgbbg.strokeStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
         const spacing = aubar.width / AUDIO_BAR_COUNT;
 
-        const currentAudioArr = config.runtime.playerInfo.audioArray;
+        const currentAudioArr = appConfig.runtime.playerInfo.audioArray;
 
         rgbbg.beginPath();
 
@@ -102,12 +109,12 @@ export function pc_aubar(): void {
             const amplitude = (lo + hi) / 2;
             let targetHeight =
                 aubar.height -
-                aubar.height * Math.min(amplitude, 1) * config.player_control_scalefactor;
+                aubar.height * Math.min(amplitude, 1) * (config.player_control_scalefactor ?? 1);
             targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
             previousHeights[i] = lerp(
                 previousHeights[i] ?? aubar.height,
                 targetHeight,
-                config.player_control_hdong
+                config.player_control_hdong ?? 0.5
             );
             heights[i] = previousHeights[i] ?? 0;
         }

@@ -1,13 +1,16 @@
 /**
  * WE MediaPlaybackEvent 回调：处理 PLAYING / PAUSED / STOPPED 状态。
- *   - 同步 config.runtime.playerInfo.playerState
+ *   - 同步 appConfig.runtime.playerInfo.playerState
  *   - 状态真正变化时刷新 UI（applyPlayerStateUI）
  *   - WE 停止时恢复内置播放器
  *   - 控制封面旋转动画
  *   - 通过 body class 联动流体效果暂停
  */
 import { fullscreenLyrics } from '@/fullscreenLyrics';
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+
+const config = useConfigStore();
 import { debugLogger } from '@/utils/logger';
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/video';
 
@@ -32,9 +35,9 @@ export function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void 
     }
 
     const playerControlShow = config.player_control_show;
-    const playerControlAutohide = config.player_control_autohide;
+    const playerControlAutohide = (config as unknown as { player_control_autohide?: boolean }).player_control_autohide === true;
     const playerControlThumbnailRotation = config.player_control_thumbnail_rotation;
-    const playerControlThumbnailRotationSpeed = config.player_control_thumbnail_rotation_speed;
+    const playerControlThumbnailRotationSpeed = config.player_control_thumbnail_rotation_speed ?? 10;
 
     if (playerControlShow) {
         applyVisibility(event.state, playerControlAutohide);
@@ -60,7 +63,7 @@ function decodePlaybackState(state: number): number {
 }
 
 function handleStateChange(newState: number): void {
-    config.runtime.playerInfo.playerState = newState;
+    appConfig.runtime.playerInfo.playerState = newState;
 
     // 状态真变化时让全屏歌词按 playing/non-playing 决定 show/hide
     fullscreenLyrics.checkPlayerState();
@@ -73,7 +76,7 @@ function handleStateChange(newState: number): void {
         debugLogger.info('[Player] 停止');
 
         // WE 停止时恢复内置播放器（优先级逻辑）
-        if (config.runtime.playerInfo.externalMediaActive) {
+        if (appConfig.runtime.playerInfo.externalMediaActive) {
             setExternalMediaActive(false);
             resumeBuiltInPlayer();
         }

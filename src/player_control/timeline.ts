@@ -4,7 +4,10 @@
  * WE 只会在歌曲时间发生变化时发一次 MediaTimelineEvent，
  * 期间需要本地用定时器每 100ms 推进 0.1 秒，营造平滑动画。
  */
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+
+const config = useConfigStore();
 
 import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from './constants';
 import { player_control_timeline } from './domRefs';
@@ -33,8 +36,8 @@ export function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void 
 
         // 暂停或停止时只轮询，不推进
         if (
-            config.runtime.playerInfo.playerState === PLAYER_STATE.STOPPED ||
-            config.runtime.playerInfo.playerState === PLAYER_STATE.PAUSED
+            appConfig.runtime.playerInfo.playerState === PLAYER_STATE.STOPPED ||
+            appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PAUSED
         ) {
             timelineTimer = setTimeout(updateTimeline, TIMELINE_WAIT_MS);
             return;

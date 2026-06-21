@@ -4,7 +4,10 @@
  *   - 仅 server_mode = true 时启用（否则永久隐藏）
  *   - 用事件委托派发到 video.ts 的 TogglePlayPause / PlayNextTrack / PlayPrevTrack
  */
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+
+const config = useConfigStore();
 import { debugLogger } from '@/utils/logger';
 import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from '@/video';
 

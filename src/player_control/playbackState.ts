@@ -4,7 +4,10 @@
  *   - #player_control 容器的 `.paused` 类
  *   - <body> 上的 `.paused` 类（供 CSS / 流体效果联动）
  */
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+
+const config = useConfigStore();
 
 import { player_control } from './domRefs';
 import { PLAYER_STATE } from './types';
@@ -31,7 +34,7 @@ export function setLastPlaybackState(state: number): void {
 function updatePlayPauseButton(): void {
     if (!player_control_playPauseBtn) return;
 
-    const isPlaying = config.runtime.playerInfo.playerState === PLAYER_STATE.PLAYING;
+    const isPlaying = appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PLAYING;
     if (isPlaying) {
         player_control_playPauseBtn.classList.add('playing');
     } else {
@@ -41,7 +44,7 @@ function updatePlayPauseButton(): void {
 
 /** 暂停时显示半透明遮罩 */
 function updatePauseOverlay(): void {
-    const isPaused = config.runtime.playerInfo.playerState === PLAYER_STATE.PAUSED;
+    const isPaused = appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PAUSED;
     if (isPaused) {
         player_control?.classList.add('paused');
     } else {

@@ -29,11 +29,13 @@ Wallpaper Engine 加载 `dist/index.html`，通过 `dist/project.json` 加载项
   - 6 个 Canvas/WebGL（Sakura / PWCircle / PWLine / PWParticles / RgbEffect / FluidEffect）
   - 3 个弹窗与全屏（Version / DebugModal / FullscreenLyrics）
   - 1 个背景（Background）
-- **保留 46 个**（Phase 7 待删）：
-  - 根级：`audioVisualizer` `bundle` `debugModal` `main` `PWCircle` `PWLine` `PWParticles` `RGB` `video` `WallpaperEffectController`（10 个）
+- **保留 47 个**（Stage 3.5 待删）：
+  - 根级：`audioVisualizer` `bundle` `debugModal` `main` `PWCircle` `PWLine` `PWParticles` `RGB` `video` `WallpaperEffectController`（10 个） + 4 个已深替换叶子（time/date/countdown/hitokoto）= 14 个
   - 子目录：`dockbar/` 12 `fluid/` 3 `fullscreenLyrics/` 10 `player_control/` 15 `propertyHandlers/` 18 `sakura/` 10 `slide/` 5 `systemMonitor/` 10 `weather/` 10（93 个）
-  - 工具：`utils/` 11 + `utils/config/` + `utils/elementManager/`
+  - 工具：`utils/` 10（去掉 utils/i18n.ts，已删）+ `utils/config/` + `utils/elementManager/`
   - 类型：`types/` 3 个 .d.ts
+
+**Stage 3 已删**：`src/utils/i18n.ts`（241 行）
 
 ## 关键架构事实（已实施）
 
@@ -85,7 +87,9 @@ Wallpaper Engine 加载 `dist/index.html`，通过 `dist/project.json` 加载项
 - vitest + jsdom，**245 测试已暂停**（按用户决策"vue 重构稳定后再重建"）
 - 现有 `tests/setup.ts` 仍可工作
 
-## 重构步骤（8 Phase 完成状态）
+## 重构步骤（8 Phase + Stage 1-5 详细状态）
+
+### Phase 完成状态（plan-ex.md 原定 8 Phase）
 
 | Phase | 内容 | 状态 | Commit |
 |---|---|---|---|
@@ -99,20 +103,47 @@ Wallpaper Engine 加载 `dist/index.html`，通过 `dist/project.json` 加载项
 | Phase 7 | 删除全部旧 .ts | ⚠️ 推迟为 3 批删除路径 | f124a73 |
 | Phase 8 | 验证 | ✅ 完成 | f124a73 |
 
+### Stage 详细状态（vue-migration plan-ex.md 后续）
+
+| Stage | 内容 | 状态 | Commit |
+|---|---|---|---|
+| Stage 1 | ConfigStoreBridge（config.xxx setter 镜像到 Pinia） | ✅ 完成 | 5e964e0 |
+| Stage 1.x | Standalone mode fallback（5s 无 WE 注入则推 properties） | ✅ 完成 | 94fa0bc |
+| Stage 2 | weather/version vue-i18n 迁移（124 处 i18n() → globalT()） | ✅ 完成 | ea97fcc |
+| Stage 3 | 删除 `src/utils/i18n.ts`（38 处迁移） | ✅ 完成 | fee653d |
+| Stage 4 | 重建 19 个 SFC mount 测试 + 4 个 leaf content 测试 | ✅ 完成 | 653b5d0 |
+| Stage 5-A | wrap `PWCircle.ts` → `usePWCircle()` composable | ✅ 完成 | 0c23007 |
+| Stage 5-B | wrap `PWLine.ts` → `usePWLine()` composable | ⏳ 待做 | — |
+| Stage 5-C | wrap `PWParticles` + `RGB` + `sakura/*` + `fluid/*` | ⏳ 待做 | — |
+| Stage 3.5 | 删除 `src/utils/config.ts` + `src/utils/elementManager.ts` | ⏳ 待做（须 Stage 5-C 后） | — |
+| Stage 6 | 合并 `vue-migration` 分支到 `main` | ⏳ 待做（须用户确认 push） | — |
+
 ## 实施约束（用户决策，已执行）
 - ✅ 自主包含：Vue 组件内部完全自包含，canvas/WebGL 命令式代码也搬进 .vue 内部（4 个深替换）
 - ⚠️ 删除：Phase 7 后立即删除旧 .ts（推迟，详见 migration-status.md）
 - ✅ 引用库：i18n 用 `vue-i18n`（替换自写 utils/i18n.ts）
 
-## 验收硬指标（已全部通过）
+## 验收硬指标（已全部通过 + Stage 1-5 新增）
+
+### 原 Phase 0-8 验收
+
 - ✅ `yarn build` 输出 dist/bundle.js (IIFE) + dist/index.html，体积 **445.90 KB < 500 KB**
-- ✅ `yarn lint` 0 errors（7 warnings 全为预存）
-- ⏸️ `yarn test` 245 测试（未运行，待 Vue 重构稳定后重建）
+- ✅ `yarn lint` 0 errors
+- ✅ `yarn test` **310 测试 / 23 文件通过**（Stage 4 重建 + Stage 5-A 增量）
 - ✅ 在 WE 之外打开 `dist/index.html` 也能跑（三层回退保底自动降级）
-- ⚠️ 245 测试零修改通过（**已暂停**，用户决策"vue 重构稳定后再重建"）
 - ⚠️ 旧 .ts 模块全部删除（**推迟**为 3 批删除路径）
 - ✅ `vue-i18n` 替代自写 utils/i18n.ts
 - ✅ project.json 三层回退全部生效
+
+### Stage 1-5 新增验收
+
+- ✅ vue-tsc 0 errors
+- ✅ eslint 0 errors / 5 warnings（全部 pre-existing，与本次无关）
+- ✅ ConfigStoreBridge：setter 拦截自动 $patch Pinia store（R10 解决）
+- ✅ Standalone fallback：5s 内 WE 未注入则 armStandaloneFallback 推 properties
+- ✅ weather/version vue-i18n：124 处 `i18n()` → `globalT()`
+- ✅ utils/i18n.ts 删除：38 处迁移 + loadI18nData 改 vue-i18n 版本
+- ✅ 19 个 SFC mount 测试 + 4 个 leaf content 测试 + 6 个 composable 测试
 
 ## 风险点（已应对 / 仍存在）
 
@@ -124,8 +155,10 @@ Wallpaper Engine 加载 `dist/index.html`，通过 `dist/project.json` 加载项
 | R7：project.json fetch 失败时降级 | ✅ useProjectJsonDefaults 已实现 try/catch 降级到 BUILTIN_DEFAULTS |
 | R8：三层回退合并必须保持 `value` 嵌套结构 | ✅ Pinia store 三个 apply 方法都接受 `Record<string, { value: unknown }>` |
 | R9：project.json 的 properties 键名与 WallpaperProperties 字段名 1:1 映射 | ✅ 已通过 vue-tsc 类型检查验证 |
-| **新增风险 R10**：Pinia store 与 config 单例双状态不同步 | ⚠️ 已知约束，需 Phase 7 批次 2 解决 |
-| **新增风险 R11**：Vue 薄壳与旧 .ts 双重启动可能导致 RAF 冲突 | ⚠️ 当前通过 propertyHandler 按需触发规避，需 Phase 7 批次 3 解决 |
+| **新增风险 R10**：Pinia store 与 config 单例双状态不同步 | ✅ **已解决**（ConfigStoreBridge 拦截 setter 自动 $patch） |
+| **新增风险 R11**：Vue 薄壳与旧 .ts 双重启动可能导致 RAF 冲突 | ⚠️ 当前通过 propertyHandler 按需触发规避，需 Stage 5 全 6 个组件 wrapper 后统一解决 |
+| **新增风险 R12**：独立模式浏览器无 WE 注入时 14 个 handler 不触发 | ✅ **已解决**（useStandaloneProperties 5s 后推 properties，handler 收到后正常初始化 DOM） |
+| **新增风险 R13**：vue-i18n 9 useI18n 依赖 inject 上下文，.ts 模块顶层调会抛错 | ✅ **已解决**（globalT() 函数绕过 inject 限制） |
 
 ## 历史会话参考（更新）
 - `perfectwall.md`（/memories/repo/）—— 项目事实、API 契约、WE 集成约束
@@ -137,29 +170,43 @@ Wallpaper Engine 加载 `dist/index.html`，通过 `dist/project.json` 加载项
 
 ## 下次会话建议
 
-### 高优先级（建议先做）
-1. **Phase 7 批次 1**：删除 `src/time.ts` `src/date.ts` `src/countdown.ts` `src/hitokoto.ts` `src/utils/i18n.ts`，从 `src/bundle.ts` 移除注释的 4 个 import
-2. **重建测试**：用 `@vue/test-utils` 写 19 个 SFC 的 mount 测试
+### 高优先级（Stage 5 收尾）
+1. **Stage 5-B**：wrap `PWLine.ts` → `usePWLine()` composable（同 5-A 模式）
+2. **Stage 5-C**：wrap `PWParticles.ts` + `RGB.ts` + `sakura/*` + `fluid/*` → composable（同 5-A 模式）
+3. **Stage 3.5**：删除 `src/utils/config.ts` + `src/utils/elementManager.ts`（须 Stage 5-C 后才能安全删除，因为 sakura/PWCircle/fluid 还写 `config.xxx`）
 
 ### 中优先级
-3. **Phase 7 批次 2**：重写 propertyHandler 14 个为 composable，删除 `src/utils/elementManager/` 和 `src/utils/config/` 旧版
-4. **配置 store 与 config 单例同步**：让 `config.xxx = ...` 自动 patch Pinia store（Proxy 拦截）
+4. **Stage 6 合并**：用户同意后 push vue-migration 分支 + `git checkout main && git merge vue-migration`
+5. **Phase 7 批次 1**：删除 4 个已深替换的叶子 .ts（time/date/countdown/hitokoto），从 `src/bundle.ts` 移除注释的 4 个 import
+6. **Phase 7 批次 2**：重写 propertyHandler 14 个为 composable（音频/RGB/樱花/fluid/weather 5 个最复杂）
 
 ### 低优先级
-5. **Phase 7 批次 3**：重写 Canvas/WebGL 6 个组件深替换（参考 Phase 1 叶子深替换模式）
-6. **类型补强**：将 `src/stores/types.ts` 的 `optional` 字段收紧为具体类型
+7. **类型补强**：将 `src/stores/types.ts` 的 `optional` 字段收紧为具体类型
+8. **性能优化**：观察 bundle size 是否还有压缩空间（当前 445 KB / 500 KB 限）
 
-## 当前 git 状态
+## 当前 git 状态（2026-06-21）
+
+vue-migration 分支（领先 main 11 个 commit，全部未推送，遵守 plan.md 用户约定"push only when user says so"）：
 
 ```
-vue-migration 分支（领先 main 5 个 commit）：
 eab1475  feat(vue-migration): Phase 0 + Phase 1 — Vite 脚手架 + 4 个叶子组件迁移
-507c583  feat(vue-migration): Phase 2 — 5 个中等组件薄壳
+507c583  feat(vue-migration): Phase 2 — 5 个中等组件薄壳 (Weather/SysMon/DockBar/Player/PictureInfo)
 6682b31  feat(vue-migration): Phase 3-5 — 10 个薄壳 SFC (Canvas/WebGL/弹窗/全屏/背景)
 a1ae343  feat(vue-migration): Phase 6 — useWallpaperProperties + useStoredProperties + 三层回退顺序接入
 f124a73  docs(vue-migration): Phase 7 推迟 + Phase 8 验证 — migration-status 报告 + lint 0 errors
+5e964e0  feat(stage1): ConfigStoreBridge — config.xxx setter 自动镜像到 Pinia (R10 解决)
+94fa0bc  feat(stage1.x): standalone mode fallback — 5s 内 WE 未注入则推一次完整 properties
+ea97fcc  feat(stage2): migrate weather/version to vue-i18n (124 call sites)
+fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
+653b5d0  feat(stage4): rebuild 26 SFC mount tests (304 tests pass total)
+0c23007  feat(stage5-A): wrap PWCircle.ts in usePWCircle composable
 ```
 
 main 分支状态：`b6e8534 refactor(systemMonitor): sort imports/exports and apply consistent formatting`
 
-如需合并到 main，需手动 push vue-migration 分支（plan.md 用户约定"push only when user says so"）。
+合并步骤：
+```bash
+git push origin vue-migration   # 需用户确认
+git checkout main
+git merge vue-migration --no-ff -m "Merge vue-migration: Vue 3 + Vite + Pinia migration"
+```

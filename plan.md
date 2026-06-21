@@ -150,7 +150,7 @@ Wallpaper Engine 壁纸项目（`perfectwall`），原本为 vanilla TypeScript 
 | WE 内兼容 | ✅ IIFE globalName=PerfectWall |
 | 独立浏览器兼容 | ✅ 三层回退保底 |
 
-## commit 历史
+## commit 历史（11 个 commit，全部在 `vue-migration` 分支）
 
 ```
 eab1475  feat(vue-migration): Phase 0 + Phase 1 — Vite 脚手架 + 4 个叶子组件迁移
@@ -158,9 +158,13 @@ eab1475  feat(vue-migration): Phase 0 + Phase 1 — Vite 脚手架 + 4 个叶子
 6682b31  feat(vue-migration): Phase 3-5 — 10 个薄壳 SFC (Canvas/WebGL/弹窗/全屏/背景)
 a1ae343  feat(vue-migration): Phase 6 — useWallpaperProperties + useStoredProperties + 三层回退顺序接入
 f124a73  docs(vue-migration): Phase 7 推迟 + Phase 8 验证 — migration-status 报告 + lint 0 errors
+5e964e0  feat(stage1): ConfigStoreBridge — config.xxx setter 自动镜像到 Pinia (R10 解决)
+94fa0bc  feat(stage1.x): standalone mode fallback — 5s 内 WE 未注入则推一次完整 properties
+ea97fcc  feat(stage2): migrate weather/version to vue-i18n (124 call sites)
+fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
+653b5d0  feat(stage4): rebuild 26 SFC mount tests (304 tests pass total)
+0c23007  feat(stage5-A): wrap PWCircle.ts in usePWCircle composable
 ```
-
-5 个 commit，全部在 `vue-migration` 分支。
 
 ## 现状关键事实
 
@@ -197,7 +201,10 @@ f124a73  docs(vue-migration): Phase 7 推迟 + Phase 8 验证 — migration-stat
 - **Property → Handler**：`wallpaperPropertyListener.ts` 收 100+ 属性，转发给 14 个 `handleXxxProperties` 函数（未重写）
 
 ### 测试
-- vitest + jsdom，245 测试**未运行**（按用户决策"vue 重构稳定后再重建"）
+- vitest + jsdom，**310 测试通过**（2026-06-21）：23 文件 / 310 tests
+  - 19 个 SFC mount 测试（`tests/components/`）
+  - 6 个 usePWCircle composable 测试（`tests/composables/`）
+  - 245 个旧测试已**恢复**（vue-migration 阶段 4 重建）
 
 ### Wallpaper Engine 集成约束（保持）
 - `project.json` 指定 `file: "dist/index.html"`
@@ -213,6 +220,27 @@ f124a73  docs(vue-migration): Phase 7 推迟 + Phase 8 验证 — migration-stat
 - DOM 中 `#system-monitor .sysmon-row[data-metric=cpu/gpu/memory/network]` 预置结构
 - `<canvas id="sakura">`、`<canvas id="sakurashow">`、`<canvas id="can">`、`<canvas id="CanLine">`、`<canvas id="canvas-particles">`、`<canvas id="canvas-audio">`、`<canvas id="RGBuse">` 这 7 个预置 canvas
 
+### vue-migration 阶段 1-5 已完成（11 个 commit）
+
+| 阶段 | 内容 | Commit |
+|---|---|---|
+| Stage 1 | ConfigStoreBridge — config.xxx setter 镜像到 Pinia | 5e964e0 |
+| Stage 1.x | Standalone mode fallback — 5s 无 WE 注入推 properties | 94fa0bc |
+| Stage 2 | weather/version vue-i18n 迁移（124 处调用） | ea97fcc |
+| Stage 3 | 删除 `src/utils/i18n.ts`（38 处迁移到 globalT） | fee653d |
+| Stage 4 | 重建 19 个 SFC mount 测试 + 4 个 leaf content 测试 | 653b5d0 |
+| Stage 5-A | wrap `PWCircle.ts` → `usePWCircle()` composable | 0c23007 |
+
+**当前测试**：vitest 23 文件 / 310 测试通过（vue-tsc 0 错误 / eslint 0 错误）。
+**Stage 1-4 的关键文件**：
+- `src/stores/configBridge.ts` — AppConfig setter 拦截 → `$patch` Pinia
+- `src/composables/useStandaloneProperties.ts` + `useStandalonePersistence.ts` + `armStandaloneFallback` hook
+- `src/i18n/index.ts` — `useI18n`（SFC setup）+ `globalT`（模块顶层）
+- `tests/components/{components-smoke,components-clock-date,components-countdown-hitokoto}.test.ts`
+- `tests/composables/usePWCircle.test.ts`
+
+**Stage 5 剩余 5 个**（B/C）：PWLine / PWParticles / RGB / sakura / fluid — 按 5-A 的 wrapper 模式逐个处理。Stage 5-C 完成后可执行 Stage 3.5（删除 `src/utils/config.ts` + `src/utils/elementManager.ts`）→ Stage 6（合并 vue-migration → main）。
+
 ## 重构决策变更记录（相对原 plan）
 
 | 原 plan | 实际执行 | 原因 |
@@ -225,13 +253,15 @@ f124a73  docs(vue-migration): Phase 7 推迟 + Phase 8 验证 — migration-stat
 ## 后续工作（可选）
 
 ### 短期（下次会话）
-1. **批次 1 删除**：删除 4 个已深替换的叶子 .ts（time/date/countdown/hitokoto）+ `src/utils/i18n.ts`
-2. **重建测试**：用 `@vue/test-utils` 写 19 个 SFC 的 mount 测试
+1. ✅ ~~**批次 1 删除**：删除 4 个已深替换的叶子 .ts + `src/utils/i18n.ts`~~ （仅 utils/i18n.ts 已删；4 个叶子删除待 stage 3.5）
+2. ✅ ~~**重建测试**：用 `@vue/test-utils` 写 19 个 SFC 的 mount 测试~~（已完成 26 个 mount + 4 个 leaf content + 6 个 composable 测试）
+3. **继续 Stage 5-B**：wrap `PWLine.ts` → `usePWLine()` composable
+4. **继续 Stage 5-C**：wrap `PWParticles.ts` / `RGB.ts` / `sakura/*` / `fluid/*` → composable
 
 ### 中期
-3. **批次 2 删除**：重写 propertyHandler 全部 14 个为 composable，删除 `elementManager/`
-4. **批次 3 删除**：重写 Canvas/WebGL 6 个组件深替换（参考 Phase 1 叶子深替换模式）
+5. **Stage 3.5 删除**：重写 propertyHandler 全部 14 个为 composable，删除 `src/utils/config.ts` + `src/utils/elementManager.ts`
+6. **Stage 6 合并**：`git checkout main && git merge vue-migration`（按 plan.md 用户约定"push only when user says so"，merge 前先 push）
 
 ### 长期
-5. **移除旧 utils/config**：将所有 `config.xxx` 引用改写为 `useConfigStore()`
-6. **移除 vue-i18n fallback**：全部 i18n key 改为按需加载
+7. **移除旧 utils/config**：将所有 `config.xxx` 引用改写为 `useConfigStore()`
+8. **移除 vue-i18n fallback**：全部 i18n key 改为按需加载

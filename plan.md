@@ -150,7 +150,7 @@ Wallpaper Engine 壁纸项目（`perfectwall`），原本为 vanilla TypeScript 
 | WE 内兼容 | ✅ IIFE globalName=PerfectWall |
 | 独立浏览器兼容 | ✅ 三层回退保底 |
 
-## commit 历史（11 个 commit，全部在 `vue-migration` 分支）
+## commit 历史（13 个 commit，全部在 `vue-migration` 分支）
 
 ```
 eab1475  feat(vue-migration): Phase 0 + Phase 1 — Vite 脚手架 + 4 个叶子组件迁移
@@ -163,7 +163,9 @@ f124a73  docs(vue-migration): Phase 7 推迟 + Phase 8 验证 — migration-stat
 ea97fcc  feat(stage2): migrate weather/version to vue-i18n (124 call sites)
 fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
 653b5d0  feat(stage4): rebuild 26 SFC mount tests (304 tests pass total)
+fdcc19d  docs: update plan.md and plan-ex.md with Stage 1-5 progress (11 commits)
 0c23007  feat(stage5-A): wrap PWCircle.ts in usePWCircle composable
+8c211ce  feat(stage5-B): wrap PWLine.ts in usePWLine composable + jsdom canvas stub fix
 ```
 
 ## 现状关键事实
@@ -201,9 +203,10 @@ fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
 - **Property → Handler**：`wallpaperPropertyListener.ts` 收 100+ 属性，转发给 14 个 `handleXxxProperties` 函数（未重写）
 
 ### 测试
-- vitest + jsdom，**310 测试通过**（2026-06-21）：23 文件 / 310 tests
-  - 19 个 SFC mount 测试（`tests/components/`）
-  - 6 个 usePWCircle composable 测试（`tests/composables/`）
+- vitest + jsdom，**316 测试通过**（2026-06-22）：24 文件 / 316 tests
+  - 19 个 SFC mount 测试（`tests/components/`） — 含 PWLine/PWCircle 在 jsdom 下可 mount（canvas stub 修复）
+  - 4 个 leaf content 测试（Clock/Date/Countdown/Hitokoto）
+  - 12 个 composable 测试（usePWCircle 6 + usePWLine 6）
   - 245 个旧测试已**恢复**（vue-migration 阶段 4 重建）
 
 ### Wallpaper Engine 集成约束（保持）
@@ -220,7 +223,7 @@ fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
 - DOM 中 `#system-monitor .sysmon-row[data-metric=cpu/gpu/memory/network]` 预置结构
 - `<canvas id="sakura">`、`<canvas id="sakurashow">`、`<canvas id="can">`、`<canvas id="CanLine">`、`<canvas id="canvas-particles">`、`<canvas id="canvas-audio">`、`<canvas id="RGBuse">` 这 7 个预置 canvas
 
-### vue-migration 阶段 1-5 已完成（11 个 commit）
+### vue-migration 阶段 1-5 已完成（13 个 commit）
 
 | 阶段 | 内容 | Commit |
 |---|---|---|
@@ -230,16 +233,25 @@ fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
 | Stage 3 | 删除 `src/utils/i18n.ts`（38 处迁移到 globalT） | fee653d |
 | Stage 4 | 重建 19 个 SFC mount 测试 + 4 个 leaf content 测试 | 653b5d0 |
 | Stage 5-A | wrap `PWCircle.ts` → `usePWCircle()` composable | 0c23007 |
+| Stage 5-B | wrap `PWLine.ts` → `usePWLine()` composable + jsdom canvas stub fix | 8c211ce |
 
-**当前测试**：vitest 23 文件 / 310 测试通过（vue-tsc 0 错误 / eslint 0 错误）。
-**Stage 1-4 的关键文件**：
+**当前测试**：vitest 24 文件 / 316 测试通过（vue-tsc 0 错误 / eslint 0 errors）。
+**Stage 1-5-B 的关键文件**：
 - `src/stores/configBridge.ts` — AppConfig setter 拦截 → `$patch` Pinia
 - `src/composables/useStandaloneProperties.ts` + `useStandalonePersistence.ts` + `armStandaloneFallback` hook
 - `src/i18n/index.ts` — `useI18n`（SFC setup）+ `globalT`（模块顶层）
+- `src/composables/usePWCircle.ts` + `usePWLine.ts` — Canvas lifecycle wrapper
 - `tests/components/{components-smoke,components-clock-date,components-countdown-hitokoto}.test.ts`
-- `tests/composables/usePWCircle.test.ts`
+- `tests/composables/{usePWCircle,usePWLine}.test.ts`
 
-**Stage 5 剩余 5 个**（B/C）：PWLine / PWParticles / RGB / sakura / fluid — 按 5-A 的 wrapper 模式逐个处理。Stage 5-C 完成后可执行 Stage 3.5（删除 `src/utils/config.ts` + `src/utils/elementManager.ts`）→ Stage 6（合并 vue-migration → main）。
+**Stage 5-C jsdom canvas stub 修复（必读）**：
+jsdom 不实现 canvas 2D backend，导致 PWCircle/PWLine 在测试 mount 时 `canvasEl.getContext('2d')` 抛 `Error: Not implemented`。在 `tests/components/components-smoke.test.ts` 的 beforeAll 中：
+
+1. `Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', ...)` stub 返回 no-op mock object（vi.spyOn 在 jsdom read-only proto 上不工作）
+2. 预创建 7 个 index.html canvas 元素（`#can`, `#CanLine`, `#canvas-particles`, `#canvas-audio`, `#RGBuse`, `#sakura`, `#sakurashow`）让 querySelector 找到它们
+3. PWLine.ts 的 null guard（`if (!canvasEl) return`）会让 CTXLine 保持 null，下次 setCTXLine 崩 — 必须预创建 canvas
+
+**Stage 5 剩余 4 个**（C）：PWParticles / RGB / sakura / fluid — 按 5-A/5-B 的 wrapper 模式逐个处理。Stage 5-C 完成后可执行 Stage 3.5（删除 `src/utils/config.ts` + `src/utils/elementManager.ts`）→ Stage 6（合并 vue-migration → main）。
 
 ## 重构决策变更记录（相对原 plan）
 
@@ -254,14 +266,15 @@ fee653d  feat(stage3): delete src/utils/i18n.ts (migrate 38 callers to globalT)
 
 ### 短期（下次会话）
 1. ✅ ~~**批次 1 删除**：删除 4 个已深替换的叶子 .ts + `src/utils/i18n.ts`~~ （仅 utils/i18n.ts 已删；4 个叶子删除待 stage 3.5）
-2. ✅ ~~**重建测试**：用 `@vue/test-utils` 写 19 个 SFC 的 mount 测试~~（已完成 26 个 mount + 4 个 leaf content + 6 个 composable 测试）
-3. **继续 Stage 5-B**：wrap `PWLine.ts` → `usePWLine()` composable
-4. **继续 Stage 5-C**：wrap `PWParticles.ts` / `RGB.ts` / `sakura/*` / `fluid/*` → composable
+2. ✅ ~~**重建测试**：用 `@vue/test-utils` 写 19 个 SFC 的 mount 测试~~（已完成 26 个 mount + 4 个 leaf content + 12 个 composable 测试）
+3. ✅ ~~**Stage 5-A**：wrap `PWCircle.ts` → `usePWCircle()` composable~~ (0c23007)
+4. ✅ ~~**Stage 5-B**：wrap `PWLine.ts` → `usePWLine()` composable~~ (8c211ce)
+5. **继续 Stage 5-C**：wrap `PWParticles.ts` / `RGB.ts` / `sakura/*` / `fluid/*` → composable（同 5-A/5-B 模式 + jsdom stub 已就位）
 
 ### 中期
-5. **Stage 3.5 删除**：重写 propertyHandler 全部 14 个为 composable，删除 `src/utils/config.ts` + `src/utils/elementManager.ts`
-6. **Stage 6 合并**：`git checkout main && git merge vue-migration`（按 plan.md 用户约定"push only when user says so"，merge 前先 push）
+6. **Stage 3.5 删除**：重写 propertyHandler 全部 14 个为 composable，删除 `src/utils/config.ts` + `src/utils/elementManager.ts`
+7. **Stage 6 合并**：`git checkout main && git merge vue-migration`（按 plan.md 用户约定"push only when user says so"，merge 前先 push）
 
 ### 长期
-7. **移除旧 utils/config**：将所有 `config.xxx` 引用改写为 `useConfigStore()`
-8. **移除 vue-i18n fallback**：全部 i18n key 改为按需加载
+8. **移除旧 utils/config**：将所有 `config.xxx` 引用改写为 `useConfigStore()`
+9. **移除 vue-i18n fallback**：全部 i18n key 改为按需加载

@@ -1,5 +1,5 @@
 import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/systemMonitor';
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
@@ -138,7 +138,7 @@ export function handleSystemMonitorProperties(
         });
     }
 
-    if (properties.sysmon_enabled !== undefined && config.server_mode) {
+    if (properties.sysmon_enabled !== undefined && useConfigStore().server_mode === true) {
         monitor.setEnabled(properties.sysmon_enabled.value);
     }
 

@@ -1,21 +1,29 @@
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+// config.runtime is preserved for WallpaperEffectController instance (Stage 3.5-B)
+import { config as appConfig } from '@/utils/config';
 
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
  * 处理粒子效果相关属性
- * @param properties 属性对象
- * @param FirstLoad 是否首次加载
+ *
+ * Stage 7-C (Phase 7 批次 2-C):
+ *   - Pinia 字段改用 useConfigStore().$patch({...})。
+ *   - wallpaper?.particles(...) 命令式调用需要 config.runtime.wallpaper 实例，
+ *     此实例是非 Pinia 的运行时控制器，保留对 utils/config 单例的访问。
  */
 export function handleParticleProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
-    const wallpaper = config.runtime.wallpaper;
+    const store = useConfigStore();
+    const wallpaper = appConfig.runtime.wallpaper;
+    const patch: Record<string, unknown> = {};
+    let cusmapRoute: string | null = null;
 
     if (properties.particles_isParticles) {
-        config.particles_is_particles = properties.particles_isParticles.value;
+        patch.particles_is_particles = properties.particles_isParticles.value;
         if (properties.particles_isParticles.value) {
             wallpaper?.particles('startParticles');
         } else {
@@ -24,45 +32,43 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_number) {
-        config.particles_number = properties.particles_number.value;
+        patch.particles_number = properties.particles_number.value;
         wallpaper?.particles('addParticles', properties.particles_number.value);
     }
 
     if (properties.particles_opacity) {
-        config.particles_opacity = properties.particles_opacity.value;
+        patch.particles_opacity = properties.particles_opacity.value;
         wallpaper?.particles('set', 'opacity', properties.particles_opacity.value / 100);
     }
 
     if (properties.particles_opacityRandom) {
-        config.particles_opacity_random = properties.particles_opacityRandom.value;
+        patch.particles_opacity_random = properties.particles_opacityRandom.value;
         wallpaper?.particles('set', 'opacityRandom', properties.particles_opacityRandom.value);
     }
 
     if (properties.particles_color) {
         const color = properties.particles_color.value
             .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
-        config.particles_color = color;
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+        patch.particles_color = color;
         wallpaper?.particles('set', 'color', color);
     }
 
     if (properties.particles_shadowColor) {
         const color = properties.particles_shadowColor.value
             .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
-        config.particles_shadow_color = color;
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+        patch.particles_shadow_color = color;
         wallpaper?.particles('set', 'shadowColor', color);
     }
 
     if (properties.particles_shadowBlur) {
-        config.particles_shadow_blur = properties.particles_shadowBlur.value;
+        patch.particles_shadow_blur = properties.particles_shadowBlur.value;
         wallpaper?.particles('set', 'shadowBlur', properties.particles_shadowBlur.value);
     }
 
-    let cusmapRoute: string | null = null;
-
     if (properties.particles_image) {
-        config.particles_image = properties.particles_image.value;
+        patch.particles_image = properties.particles_image.value;
         cusmapRoute = properties.particles_image.value;
         if (wallpaper && typeof wallpaper?.particles === 'function') {
             wallpaper?.particles('particlesImage', cusmapRoute, 'false');
@@ -70,7 +76,7 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_shapeType) {
-        config.particles_shape_type = properties.particles_shapeType.value;
+        patch.particles_shape_type = properties.particles_shapeType.value;
         switch (properties.particles_shapeType.value) {
             case 1:
                 wallpaper?.particles('set', 'shapeType', 'circle');
@@ -90,7 +96,7 @@ export function handleParticleProperties(
                     if (cusmapRoute) {
                         wallpaper?.particles('particlesImage', cusmapRoute, 'false');
                     } else {
-                        wallpaper?.particles('particlesImage', config.map_route, 'true');
+                        wallpaper?.particles('particlesImage', store.map_route ?? '', 'true');
                     }
                 }
                 break;
@@ -101,67 +107,67 @@ export function handleParticleProperties(
 
     if (properties.particles_picdef) {
         const mapRoute = 'map/' + properties.particles_picdef.value + '.png';
-        config.map_route = mapRoute;
+        patch.map_route = mapRoute;
         if (wallpaper && typeof wallpaper?.particles === 'function') {
             wallpaper?.particles('particlesImage', mapRoute, 'true');
         }
     }
 
     if (properties.particles_sizeValue) {
-        config.particles_size_value = properties.particles_sizeValue.value;
+        patch.particles_size_value = properties.particles_sizeValue.value;
         wallpaper?.particles('set', 'sizeValue', properties.particles_sizeValue.value);
     }
 
     if (properties.particles_sizeRandom) {
-        config.particles_size_random = properties.particles_sizeRandom.value;
+        patch.particles_size_random = properties.particles_sizeRandom.value;
         wallpaper?.particles('set', 'sizeRandom', properties.particles_sizeRandom.value);
     }
 
     if (properties.particles_linkEnable) {
-        config.particles_link_enable = properties.particles_linkEnable.value;
+        patch.particles_link_enable = properties.particles_linkEnable.value;
         wallpaper?.particles('set', 'linkEnable', properties.particles_linkEnable.value);
     }
 
     if (properties.particles_linkDistance) {
-        config.particles_link_distance = properties.particles_linkDistance.value;
+        patch.particles_link_distance = properties.particles_linkDistance.value;
         wallpaper?.particles('set', 'linkDistance', properties.particles_linkDistance.value);
     }
 
     if (properties.particles_linkWidth) {
-        config.particles_link_width = properties.particles_linkWidth.value;
+        patch.particles_link_width = properties.particles_linkWidth.value;
         wallpaper?.particles('set', 'linkWidth', properties.particles_linkWidth.value);
     }
 
     if (properties.particles_linkColor) {
         const color = properties.particles_linkColor.value
             .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
-        config.particles_link_color = color;
+            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+        patch.particles_link_color = color;
         wallpaper?.particles('set', 'linkColor', color);
     }
 
     if (properties.particles_linkOpacity) {
-        config.particles_link_opacity = properties.particles_linkOpacity.value;
+        patch.particles_link_opacity = properties.particles_linkOpacity.value;
         wallpaper?.particles('set', 'linkOpacity', properties.particles_linkOpacity.value / 100);
     }
 
     if (properties.particles_isMove) {
-        config.particles_is_move = properties.particles_isMove.value;
+        patch.particles_is_move = properties.particles_isMove.value;
         wallpaper?.particles('set', 'isMove', properties.particles_isMove.value);
     }
 
     if (properties.particles_speed) {
-        config.particles_speed = properties.particles_speed.value;
+        patch.particles_speed = properties.particles_speed.value;
         wallpaper?.particles('set', 'speed', properties.particles_speed.value);
     }
 
     if (properties.particles_speedRandom) {
-        config.particles_speed_random = properties.particles_speedRandom.value;
+        patch.particles_speed_random = properties.particles_speedRandom.value;
         wallpaper?.particles('set', 'speedRandom', properties.particles_speedRandom.value);
     }
 
     if (properties.particles_direction) {
-        config.particles_direction = properties.particles_direction.value;
+        patch.particles_direction = properties.particles_direction.value;
         switch (properties.particles_direction.value) {
             case 1:
                 wallpaper?.particles('set', 'direction', 'none');
@@ -196,17 +202,17 @@ export function handleParticleProperties(
     }
 
     if (properties.particles_isStraight) {
-        config.particles_is_straight = properties.particles_isStraight.value;
+        patch.particles_is_straight = properties.particles_isStraight.value;
         wallpaper?.particles('set', 'isStraight', properties.particles_isStraight.value);
     }
 
     if (properties.particles_isBounce) {
-        config.particles_is_bounce = properties.particles_isBounce.value;
+        patch.particles_is_bounce = properties.particles_isBounce.value;
         wallpaper?.particles('set', 'isBounce', properties.particles_isBounce.value);
     }
 
     if (properties.particles_moveOutMode) {
-        config.particles_move_out_mode = properties.particles_moveOutMode.value;
+        patch.particles_move_out_mode = properties.particles_moveOutMode.value;
         switch (properties.particles_moveOutMode.value) {
             case 1:
                 wallpaper?.particles('set', 'moveOutMode', 'out');
@@ -217,6 +223,10 @@ export function handleParticleProperties(
             default:
                 wallpaper?.particles('set', 'moveOutMode', 'out');
         }
+    }
+
+    if (Object.keys(patch).length > 0) {
+        store.$patch(patch);
     }
 
     if (FirstLoad) {

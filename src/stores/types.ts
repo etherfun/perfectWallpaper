@@ -280,6 +280,125 @@ export interface ConfigStoreState {
     customdirectory?: string;
     /** 背景图片显示风格 (1-6) */
     imagedisplaystlye?: number;
+
+    // ===== Phase 6 字段补强 — 仅添加原本缺失的字段 =====
+    // 大部分已在前面 Phase 1-5 中定义；此处仅添加 weather/player/particle 的剩余字段。
+
+    // Weather 补强
+    api_host?: string;
+    city_key?: string;
+    qweather_api_paymode?: boolean;
+    visual_crossing_key?: string;
+    weather_app_id?: string;
+    weather_app_secret?: string;
+    weather_blurcolor?: [number, number, number];
+    weather_blurcolor_show?: boolean;
+    weather_bluryakeli?: number;
+    weather_city_text?: string;
+    weather_color?: [number, number, number];
+    weather_daily_tip?: boolean;
+    weather_lang?: string;
+    weather_latitude?: string;
+    weather_longitude?: string;
+    weather_roundedcorners?: number;
+    weather_showwidth?: number;
+    weather_size?: number;
+    weather_timetransparency?: number;
+    weather_unit?: string;
+    weather_x?: number;
+    weather_y?: number;
+    weather_yakeli?: number;
+    weather_yakeli_show?: boolean;
+    weather_yakelic_color?: [number, number, number];
+
+    // PlayerControl 补强
+    color_pickup_method?: number;
+    player_control_barline?: number;
+    player_control_blurcolor?: [number, number, number];
+    player_control_blurcolor_show?: boolean;
+    player_control_bluryakeli?: number;
+    player_control_color?: [number, number, number];
+    player_control_fontusetb?: boolean;
+    player_control_hdong?: boolean;
+    player_control_roundedcorners?: number;
+    player_control_samealbum_title?: boolean;
+    player_control_scalefactor?: number;
+    player_control_showwidth?: number;
+    player_control_size_value?: number;
+    player_control_thumbnail_rotation_speed?: number;
+    player_control_thumbnail_size_value?: number;
+    player_control_thumbnailrorl?: boolean;
+    player_control_timetransparency?: number;
+    player_control_yakeli?: number;
+    player_control_yakeli_show?: boolean;
+    player_control_yakelibgusetb?: boolean;
+    player_control_yakelic_color?: [number, number, number];
+    playerx?: number;
+    playery?: number;
+
+    // Particle 补强
+    map_route?: string;
+    particles_color?: [number, number, number];
+    particles_direction?: number;
+    particles_image?: string;
+    particles_is_bounce?: boolean;
+    particles_is_move?: boolean;
+    particles_is_particles?: boolean;
+    particles_is_straight?: boolean;
+    particles_link_color?: [number, number, number];
+    particles_link_distance?: number;
+    particles_link_enable?: boolean;
+    particles_link_opacity?: number;
+    particles_link_width?: number;
+    particles_move_out_mode?: number;
+    particles_number?: number;
+    particles_opacity?: number;
+    particles_opacity_random?: number;
+    particles_shadow_blur?: number;
+    particles_shadow_color?: [number, number, number];
+    particles_shape_type?: number;
+    particles_size_random?: number;
+    particles_size_value?: number;
+    particles_speed?: number;
+    particles_speed_random?: number;
+
+    // AudioVisual (partial — full pw_circle_*/pw_line_*/audio_* fields handled in Stage 3.5-B)
+    audio_smooth_enabled?: boolean;
+    audio_smooth_factor?: number;
+    audio_spatial_window?: number;
+    pw_circle_show_bool?: boolean;
+    pw_line_show_bool?: boolean;
+    polygon_angle?: number;
+
+    // Shared flags (used by wallpaperPropertyListener + background + systemMonitor)
+    server_mode?: boolean;
+
+    // Background 补强（server_mode + bg_style 等未在前面定义）
+    bg_style?: number;
+    bgs?: string;
+    bgx?: number;
+    bgy?: number;
+    chiyuanapi?: string;
+    cusaudio_route?: string;
+    custom?: string;
+    cusvideo_route?: string;
+    frist_picturesinfo?: boolean;
+    galaxy_api?: string;
+    music_playlist_random?: boolean;
+    music_playlist_repeat?: boolean;
+    music_volume?: number;
+    musicdirectory?: string;
+    pictures_url?: string;
+    select_video?: boolean;
+    selectmusic?: string;
+    speed?: number;
+    switch_interval_input?: number;
+    transition_mode?: number;
+    transition_mode_choose_0?: boolean;
+    transition_mode_choose_1?: boolean;
+    transition_mode_choose_4?: boolean;
+    video_volume?: number;
+    wallpaper_mode?: number;
 }
 
 export interface HitokotoRuntime {

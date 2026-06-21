@@ -178,6 +178,44 @@ export interface ConfigStoreState {
 
     /** 显示图片信息（slide 模式） */
     picturesinfo_show?: boolean;
+
+    // ===== Phase 3 字段 (Sakura/PWCircle/PWLine/PWParticles/RGB/FluidEffect) =====
+    /** 启用樱花 */
+    showSakura?: boolean;
+    /** PWCircle 显示 */
+    PWCircle_show_bool?: boolean;
+    /** PWLine 显示 */
+    PWLine_show_bool?: boolean;
+    /** 可视化音频模式 (0-4) */
+    visual_audio_model?: number;
+    /** RGB 灯光启用 */
+    rgb_show?: boolean;
+    /** 流体效果启用 */
+    fluidEffectEnabled?: boolean;
+
+    // ===== Phase 4 字段 (Version/DebugModal/FullscreenLyrics) =====
+    /** 调试日志启用 */
+    debugger_copy?: boolean;
+    /** 全屏歌词启用 */
+    fullscreen_lyrics_enabled?: boolean;
+    /** 更新日志自动打开 */
+    wallpaper_updata_open_on_update?: boolean;
+
+    // ===== Phase 5 字段 (Background/Slide/Video) =====
+    /** 壁纸模式 (1-9) */
+    wallpapermode?: number;
+    /** 随机播放 */
+    random?: boolean;
+    /** 切换时间 */
+    imageswitchtimes?: number | string;
+    /** 单图片文件 */
+    image?: string;
+    /** 自定义视频 */
+    selectvideo?: string;
+    /** 自定义目录 */
+    customdirectory?: string;
+    /** 背景图片显示风格 (1-6) */
+    imagedisplaystlye?: number;
 }
 
 export interface HitokotoRuntime {

@@ -1,10 +1,11 @@
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config } from '@/utils/config'; // config.runtime preserved for runtime.param / runtime.PWLineParam (Stage 3.5-B)
 
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
 /**
- * 获取圆圈可视化canvas的2D上下文
+ * 获取圆圈可视化canvas�?D上下�?
  */
 function getCircleCtx(): CanvasRenderingContext2D | null {
     const can = document.querySelector('#can') as HTMLCanvasElement | null;
@@ -12,7 +13,7 @@ function getCircleCtx(): CanvasRenderingContext2D | null {
 }
 
 /**
- * 获取直线可视化canvas的2D上下文
+ * 获取直线可视化canvas�?D上下�?
  */
 function getLineCtx(): CanvasRenderingContext2D | null {
     const canLine = document.querySelector('#CanLine') as HTMLCanvasElement | null;
@@ -20,8 +21,8 @@ function getLineCtx(): CanvasRenderingContext2D | null {
 }
 
 /**
- * 处理音频可视化相关属性
- * @param properties 属性对象
+ * 处理音频可视化相关属�?
+ * @param properties 属性对�?
  * @param FirstLoad 是否首次加载
  * @returns 处理结果
  */
@@ -31,14 +32,16 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
     const param = config.runtime.param;
     const PWLineParam = config.runtime.PWLineParam;
     const wallpaper = config.runtime.wallpaper;
+    const store = useConfigStore();
+    const patch: Record<string, unknown> = {};
 
     if (properties.visual_audio_model) {
         const model = properties.visual_audio_model.value;
-        config.visual_audio_model = model;
+        patch.visual_audio_model = model;
 
         // 根据模式控制显示
         switch (model) {
-            case 0: // 无
+            case 0: // �?
                 if (param) param.showCircle = false;
                 if (PWLineParam) PWLineParam.showLine = false;
                 break;
@@ -63,8 +66,8 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
 
     if (properties.PWCircle_show_bool) {
         const show = properties.PWCircle_show_bool.value;
-        config.pw_circle_show_bool = show;
-        // 如果当前是模式1，也要更新showCircle
+        patch.pw_circle_show_bool = show;
+        // 如果当前是模�?，也要更新showCircle
         if (param && config.visual_audio_model === 1) {
             param.showCircle = show;
         }
@@ -72,18 +75,18 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
 
     if (properties.PWLine_show_bool) {
         const show = properties.PWLine_show_bool.value;
-        config.pw_line_show_bool = show;
-        // 如果当前是模式2，也要更新showLine
+        patch.pw_line_show_bool = show;
+        // 如果当前是模�?，也要更新showLine
         if (PWLineParam && config.visual_audio_model === 2) {
             PWLineParam.showLine = show;
         }
     }
 
-    // 多边形变换
+    // 多边形变�?
     if (properties.PolygonAngle && param) {
         const mode = properties.PolygonAngle.value;
-        config.polygon_angle = mode;
-        // 根据模式设置 PolygonAngle 和 Polygon 值 (与原始JS版本一致)
+        patch.polygon_angle = mode;
+        // 根据模式设置 PolygonAngle �?Polygon �?(与原始JS版本一�?
         switch (mode) {
             case 1:
                 config.runtime.param.PolygonAngle = 1;
@@ -139,19 +142,19 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
 
     if (properties.style && param) {
         param.style = properties.style.value;
-        config.pw_circle_style = properties.style.value;
+        patch.pw_circle_style = properties.style.value;
     }
 
     // 半径
     if (properties.radius && param) {
         param.r = properties.radius.value / 100;
-        config.pw_circle_radius = properties.radius.value;
+        patch.pw_circle_radius = properties.radius.value;
     }
 
     // 幅度
     if (properties.range && param) {
         param.range = properties.range.value / 5;
-        config.pw_circle_range = properties.range.value;
+        patch.pw_circle_range = properties.range.value;
     }
 
     // 颜色
@@ -160,7 +163,7 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
         ctx.strokeStyle = param.color = 'rgba(' + c + ',0.8)';
-        config.pw_circle_color = c as [number, number, number];
+        patch.pw_circle_color = c as [number, number, number];
     }
 
     // 模糊颜色
@@ -169,82 +172,82 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
         ctx.shadowColor = param.blurColor = 'rgb(' + c + ')';
-        config.pw_circle_blur_color = c as [number, number, number];
+        patch.pw_circle_blur_color = c as [number, number, number];
     }
 
     // 圆的位置
     if (properties.cX && param) {
         param.cX = properties.cX.value * 0.01;
-        config.pw_circle_x = properties.cX.value;
+        patch.pw_circle_x = properties.cX.value;
     }
 
     if (properties.cY && param) {
         param.cY = properties.cY.value * 0.01;
-        config.pw_circle_y = properties.cY.value;
+        patch.pw_circle_y = properties.cY.value;
     }
 
     // 色彩模式
     if (properties.ColorMode && param) {
         param.ColorMode = properties.ColorMode.value;
-        config.pw_circle_color_mode = properties.ColorMode.value;
+        patch.pw_circle_color_mode = properties.ColorMode.value;
     }
 
     // 纯色渐变
     if (properties.SolidColorGradient && param) {
         param.SolidColorGradient = properties.SolidColorGradient.value;
-        config.pw_circle_solid_color_gradient = properties.SolidColorGradient.value;
+        patch.pw_circle_solid_color_gradient = properties.SolidColorGradient.value;
         if (!properties.SolidColorGradient.value && ctx) {
             ctx.strokeStyle = param.color;
         }
     }
 
-    // 模糊色渐变
+    // 模糊色渐�?
     if (properties.BlurColorGradient && param) {
         param.BlurColorGradient = properties.BlurColorGradient.value;
-        config.pw_circle_blur_color_gradient = properties.BlurColorGradient.value;
+        patch.pw_circle_blur_color_gradient = properties.BlurColorGradient.value;
     }
 
     // 彩虹律动
     if (properties.ColorRhythm && param) {
         param.ColorRhythm = properties.ColorRhythm.value;
-        config.pw_circle_color_rhythm = properties.ColorRhythm.value;
+        patch.pw_circle_color_rhythm = properties.ColorRhythm.value;
     }
 
     // 渐变速率
     if (properties.GradientRate && param) {
         param.GradientRate = properties.GradientRate.value / 10;
-        config.pw_circle_gradient_rate = properties.GradientRate.value;
+        patch.pw_circle_gradient_rate = properties.GradientRate.value;
     }
 
     // 线宽
     if (properties.lineWidth && ctx && param) {
         ctx.lineWidth = param.lineWidth = properties.lineWidth.value;
-        config.pw_circle_line_width = properties.lineWidth.value;
+        patch.pw_circle_line_width = properties.lineWidth.value;
     }
 
     // 是否旋转
     if (properties.rotation && param) {
         param.rotation = properties.rotation.value;
         config.runtime.param.rotationcopy = param.rotation;
-        config.pw_circle_rotation = properties.rotation.value;
+        patch.pw_circle_rotation = properties.rotation.value;
     }
 
     // 方向
     if (properties.direction && param) {
         param.direction = properties.direction.value;
-        config.pw_circle_direction = properties.direction.value;
+        patch.pw_circle_direction = properties.direction.value;
     }
 
     if (properties.wavetransparency && ctx && param) {
         param.wavetransparency = properties.wavetransparency.value / 100;
         ctx.globalAlpha = param.wavetransparency;
-        config.pw_circle_wavetransparency = properties.wavetransparency.value;
+        patch.pw_circle_wavetransparency = properties.wavetransparency.value;
     }
 
-    // 显示为半圆
+    // 显示为半�?
     if (properties.showSemiCircle && param) {
         param.showSemiCircle = properties.showSemiCircle.value;
-        config.pw_circle_show_semi_circle = properties.showSemiCircle.value;
+        patch.pw_circle_show_semi_circle = properties.showSemiCircle.value;
         if (properties.showSemiCircle.value) {
             config.runtime.param.rotationcopy = param.rotation;
             param.rotation = 0;
@@ -257,55 +260,55 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
     // 半圆方向
     if (properties.SemiCircledirection && param) {
         param.SemiCircledirection = properties.SemiCircledirection.value;
-        config.pw_circle_semicircle_direction = properties.SemiCircledirection.value;
+        patch.pw_circle_semicircle_direction = properties.SemiCircledirection.value;
     }
 
     if (properties.PWLinePosition && PWLineParam) {
         PWLineParam.LinePosition = properties.PWLinePosition.value;
-        config.pw_line_position = properties.PWLinePosition.value;
+        patch.pw_line_position = properties.PWLinePosition.value;
     }
 
     // 样式
     if (properties.PWLineStyle && PWLineParam) {
         PWLineParam.style = properties.PWLineStyle.value;
-        config.pw_line_style = properties.PWLineStyle.value;
+        patch.pw_line_style = properties.PWLineStyle.value;
     }
 
     // 方向
     if (properties.PWLineDirection && PWLineParam) {
         PWLineParam.Direction = properties.PWLineDirection.value;
-        config.pw_line_direction = properties.PWLineDirection.value;
+        patch.pw_line_direction = properties.PWLineDirection.value;
     }
 
     // 线宽
     if (properties.PWLineWidth && CTXLine && PWLineParam) {
         CTXLine.lineWidth = PWLineParam.lineWidth = properties.PWLineWidth.value;
-        config.pw_line_width = properties.PWLineWidth.value;
+        patch.pw_line_width = properties.PWLineWidth.value;
     }
 
     // 间距
     if (properties.PWLineSpacing && PWLineParam) {
         PWLineParam.sw = properties.PWLineSpacing.value / 10;
-        config.pw_line_spacing = properties.PWLineSpacing.value;
+        patch.pw_line_spacing = properties.PWLineSpacing.value;
     }
 
     // 疏密
     if (properties.PWLineDensity && PWLineParam) {
         PWLineParam.LineDensity = properties.PWLineDensity.value * 10;
-        config.pw_line_density = properties.PWLineDensity.value;
+        patch.pw_line_density = properties.PWLineDensity.value;
     }
 
     // 幅度
     if (properties.PWLineRange && PWLineParam) {
         PWLineParam.range = properties.PWLineRange.value / 5;
-        config.pw_line_range = properties.PWLineRange.value;
+        patch.pw_line_range = properties.PWLineRange.value;
     }
 
-    // 可视化音频透明度
+    // 可视化音频透明�?
     if (properties.PWLineTransparency && CTXLine && PWLineParam) {
         PWLineParam.LineTransparency = properties.PWLineTransparency.value / 100;
         CTXLine.globalAlpha = PWLineParam.LineTransparency;
-        config.pw_line_transparency = properties.PWLineTransparency.value;
+        patch.pw_line_transparency = properties.PWLineTransparency.value;
     }
 
     // 颜色
@@ -314,7 +317,7 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
         CTXLine.strokeStyle = PWLineParam.color = 'rgba(' + c + ',0.8)';
-        config.pw_line_color = c as [number, number, number];
+        patch.pw_line_color = c as [number, number, number];
     }
 
     // 模糊颜色
@@ -323,109 +326,109 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
         CTXLine.shadowColor = PWLineParam.blurColor = 'rgb(' + c + ')';
-        config.pw_line_blur_color = c as [number, number, number];
+        patch.pw_line_blur_color = c as [number, number, number];
     }
 
     // 圆的位置
     if (properties.PWLineX && PWLineParam) {
         PWLineParam.LineX = properties.PWLineX.value / 100.0;
-        config.pw_line_x = properties.PWLineX.value;
+        patch.pw_line_x = properties.PWLineX.value;
     }
 
     if (properties.PWLineY && PWLineParam) {
         PWLineParam.LineY = properties.PWLineY.value / 100.0;
-        config.pw_line_y = properties.PWLineY.value;
+        patch.pw_line_y = properties.PWLineY.value;
     }
 
-    // 中间线
+    // 中间�?
     if (properties.PWMiddleLine && PWLineParam) {
         PWLineParam.MiddleLine = properties.PWMiddleLine.value;
-        config.pw_line_middle_line = properties.PWMiddleLine.value;
+        patch.pw_line_middle_line = properties.PWMiddleLine.value;
     }
 
     // 色彩模式
     if (properties.PWLineColorMode && PWLineParam) {
         PWLineParam.ColorMode = properties.PWLineColorMode.value;
-        config.pw_line_color_mode = properties.PWLineColorMode.value;
+        patch.pw_line_color_mode = properties.PWLineColorMode.value;
     }
 
     // 纯色渐变
     if (properties.PWLineSolidColorGradient && CTXLine && PWLineParam) {
         PWLineParam.SolidColorGradient = properties.PWLineSolidColorGradient.value;
-        config.pw_line_solid_color_gradient = properties.PWLineSolidColorGradient.value;
+        patch.pw_line_solid_color_gradient = properties.PWLineSolidColorGradient.value;
         if (!properties.PWLineSolidColorGradient.value) {
             CTXLine.strokeStyle = PWLineParam.color;
         }
     }
 
-    // 模糊色渐变
+    // 模糊色渐�?
     if (properties.PWLineBlurColorGradient && PWLineParam) {
         PWLineParam.BlurColorGradient = properties.PWLineBlurColorGradient.value;
-        config.pw_line_blur_color_gradient = properties.PWLineBlurColorGradient.value;
+        patch.pw_line_blur_color_gradient = properties.PWLineBlurColorGradient.value;
     }
 
     // 彩虹律动
     if (properties.PWLineColorRhythm && PWLineParam) {
         PWLineParam.ColorRhythm = properties.PWLineColorRhythm.value;
-        config.pw_line_color_rhythm = properties.PWLineColorRhythm.value;
+        patch.pw_line_color_rhythm = properties.PWLineColorRhythm.value;
     }
 
     // 渐变速率
     if (properties.PWLineGradientRate && PWLineParam) {
         PWLineParam.GradientRate = properties.PWLineGradientRate.value / 10;
-        config.pw_line_gradient_rate = properties.PWLineGradientRate.value;
+        patch.pw_line_gradient_rate = properties.PWLineGradientRate.value;
     }
 
     if (properties.audio_amplitude) {
-        config.audio_amplitude = properties.audio_amplitude.value;
+        patch.audio_amplitude = properties.audio_amplitude.value;
         wallpaper?.getAudioVisualizer()?.set('amplitude', properties.audio_amplitude.value);
     }
 
     // 音频衰弱
     if (properties.audio_decline) {
-        config.audio_decline = properties.audio_decline.value;
+        patch.audio_decline = properties.audio_decline.value;
         wallpaper?.getAudioVisualizer()?.set('decline', properties.audio_decline.value / 100);
     }
 
     // 显示圆环
     if (properties.audio_isRing) {
-        config.audio_is_ring = properties.audio_isRing.value;
+        patch.audio_is_ring = properties.audio_isRing.value;
         wallpaper?.getAudioVisualizer()?.set('isRing', properties.audio_isRing.value);
     }
 
     // 显示静态环
     if (properties.audio_isStaticRing) {
-        config.audio_is_static_ring = properties.audio_isStaticRing.value;
+        patch.audio_is_static_ring = properties.audio_isStaticRing.value;
         wallpaper?.getAudioVisualizer()?.set('isStaticRing', properties.audio_isStaticRing.value);
     }
 
     // 显示内环
     if (properties.audio_isInnerRing) {
-        config.audio_is_inner_ring = properties.audio_isInnerRing.value;
+        patch.audio_is_inner_ring = properties.audio_isInnerRing.value;
         wallpaper?.getAudioVisualizer()?.set('isInnerRing', properties.audio_isInnerRing.value);
     }
 
     // 显示外环
     if (properties.audio_isOuterRing) {
-        config.audio_is_outer_ring = properties.audio_isOuterRing.value;
+        patch.audio_is_outer_ring = properties.audio_isOuterRing.value;
         wallpaper?.getAudioVisualizer()?.set('isOuterRing', properties.audio_isOuterRing.value);
     }
 
     // 圆环半径
     if (properties.audio_radius) {
-        config.audio_radius = properties.audio_radius.value;
+        patch.audio_radius = properties.audio_radius.value;
         wallpaper?.getAudioVisualizer()?.set('radius', properties.audio_radius.value / 10);
     }
 
     // 圆环旋转
     if (properties.audio_ringRotation) {
-        config.audio_ring_rotation = properties.audio_ringRotation.value;
+        patch.audio_ring_rotation = properties.audio_ringRotation.value;
         wallpaper?.getAudioVisualizer()?.set('ringRotation', properties.audio_ringRotation.value);
     }
 
-    // 不透明度
+    // 不透明�?
     if (properties.audio_opacity) {
-        config.audio_opacity = properties.audio_opacity.value;
+        patch.audio_opacity = properties.audio_opacity.value;
         wallpaper?.getAudioVisualizer()?.set('opacity', properties.audio_opacity.value / 100);
     }
 
@@ -434,7 +437,7 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
         const c = properties.audio_color.value
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.audio_color = c as [number, number, number];
+        patch.audio_color = c as [number, number, number];
         wallpaper?.getAudioVisualizer()?.set('color', c);
     }
 
@@ -443,112 +446,116 @@ export function handleAudioVisualProperties(properties: WallpaperProperties, Fir
         const c = properties.audio_shadowColor.value
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
-        config.audio_shadow_color = c as [number, number, number];
+        patch.audio_shadow_color = c as [number, number, number];
         wallpaper?.getAudioVisualizer()?.set('shadowColor', c);
     }
 
     // 模糊大小
     if (properties.audio_shadowBlur) {
-        config.audio_shadow_blur = properties.audio_shadowBlur.value;
+        patch.audio_shadow_blur = properties.audio_shadowBlur.value;
         wallpaper?.getAudioVisualizer()?.set('shadowBlur', properties.audio_shadowBlur.value);
     }
 
-    // X轴偏移
+    // X轴偏�?
     if (properties.audio_offsetX) {
-        config.audio_offset_x = properties.audio_offsetX.value;
+        patch.audio_offset_x = properties.audio_offsetX.value;
         wallpaper?.getAudioVisualizer()?.set('offsetX', properties.audio_offsetX.value / 100);
     }
 
-    // Y轴偏移
+    // Y轴偏�?
     if (properties.audio_offsetY) {
-        config.audio_offset_y = properties.audio_offsetY.value;
+        patch.audio_offset_y = properties.audio_offsetY.value;
         wallpaper?.getAudioVisualizer()?.set('offsetY', properties.audio_offsetY.value / 100);
     }
 
     // 鼠标坐标偏移
     if (properties.audio_isClickOffset) {
-        config.audio_is_click_offset = properties.audio_isClickOffset.value;
+        patch.audio_is_click_offset = properties.audio_isClickOffset.value;
         wallpaper?.getAudioVisualizer()?.set('isClickOffset', properties.audio_isClickOffset.value);
     }
 
     // 是否连线
     if (properties.audio_isLineTo) {
-        config.audio_is_line_to = properties.audio_isLineTo.value;
+        patch.audio_is_line_to = properties.audio_isLineTo.value;
         wallpaper?.getAudioVisualizer()?.set('isLineTo', properties.audio_isLineTo.value);
     }
 
-    // 第一点
+    // 第一�?
     if (properties.audio_firstPoint) {
-        config.audio_first_point = properties.audio_firstPoint.value;
+        patch.audio_first_point = properties.audio_firstPoint.value;
         wallpaper?.getAudioVisualizer()?.set('firstPoint', properties.audio_firstPoint.value);
     }
 
-    // 第二点
+    // 第二�?
     if (properties.audio_secondPoint) {
-        config.audio_second_point = properties.audio_secondPoint.value;
+        patch.audio_second_point = properties.audio_secondPoint.value;
         wallpaper?.getAudioVisualizer()?.set('secondPoint', properties.audio_secondPoint.value);
     }
 
     // 圆环点数
     if (properties.audio_pointNum) {
-        config.audio_point_num = properties.audio_pointNum.value;
+        patch.audio_point_num = properties.audio_pointNum.value;
         wallpaper?.getAudioVisualizer()?.set('pointNum', properties.audio_pointNum.value);
     }
 
-    // 内外环距离
+    // 内外环距�?
     if (properties.audio_distance) {
-        config.audio_distance = properties.audio_distance.value;
+        patch.audio_distance = properties.audio_distance.value;
         wallpaper?.getAudioVisualizer()?.set('distance', properties.audio_distance.value);
     }
 
     // 线条粗细
     if (properties.audio_lineWidth) {
-        config.audio_line_width = properties.audio_lineWidth.value;
+        patch.audio_line_width = properties.audio_lineWidth.value;
         wallpaper?.getAudioVisualizer()?.set('lineWidth', properties.audio_lineWidth.value);
     }
 
     // 显示小球
     if (properties.audio_isBall) {
-        config.audio_is_ball = properties.audio_isBall.value;
+        patch.audio_is_ball = properties.audio_isBall.value;
         wallpaper?.getAudioVisualizer()?.set('isBall', properties.audio_isBall.value);
     }
 
     // 小球间隔
     if (properties.audio_ballSpacer) {
-        config.audio_ball_spacer = properties.audio_ballSpacer.value;
+        patch.audio_ball_spacer = properties.audio_ballSpacer.value;
         wallpaper?.getAudioVisualizer()?.set('ballSpacer', properties.audio_ballSpacer.value);
     }
 
     // 小球大小
     if (properties.audio_ballSize) {
-        config.audio_ball_size = properties.audio_ballSize.value;
+        patch.audio_ball_size = properties.audio_ballSize.value;
         wallpaper?.getAudioVisualizer()?.set('ballSize', properties.audio_ballSize.value);
     }
 
     // 小球旋转
     if (properties.audio_ballRotation) {
-        config.audio_ball_rotation = properties.audio_ballRotation.value;
+        patch.audio_ball_rotation = properties.audio_ballRotation.value;
         wallpaper?.getAudioVisualizer()?.set('ballRotation', properties.audio_ballRotation.value);
     }
 
     // 启用平滑效果
     if (properties.audioSmoothEnabled) {
-        config.audio_smooth_enabled = properties.audioSmoothEnabled.value;
+        patch.audio_smooth_enabled = properties.audioSmoothEnabled.value;
     }
 
     // 平滑强度
     if (properties.audioSmoothFactor) {
-        config.audio_smooth_factor = properties.audioSmoothFactor.value;
+        patch.audio_smooth_factor = properties.audioSmoothFactor.value;
     }
 
     // 空间窗口大小
     if (properties.audioSpatialWindow) {
         const windowValue = properties.audioSpatialWindow.value;
-        // 确保窗口大小为奇数
-        config.audio_spatial_window = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
+        // 确保窗口大小为奇�?
+        patch.audio_spatial_window = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
     }
 
     if (FirstLoad) {
         logInitComplete('[audioVisualizer]', '可视化音频', FirstLoad);
+    }
+
+    if (Object.keys(patch).length > 0) {
+        store.$patch(patch);
     }
 }

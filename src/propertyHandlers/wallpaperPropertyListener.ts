@@ -1,14 +1,16 @@
 import '../version';
 
+import { useConfigStore } from '@/stores/config';
 import { loadI18n } from '@/i18n';
+// config runtime/wallpaper_settings sub-objects live outside Pinia (Stage 3.5-B)
+import { config as appConfig } from '@/utils/config';
 
 import { audioDataListener } from '../audioVisualizer';
 import { showDebugLogModal } from '../debugModal';
 import { background2canvas } from '../RGB';
 import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
-import { config } from '../utils/config';
-import { elements } from '../utils/elementManager';
+import { elements } from '@/utils/elementManager';
 import { debugLogger } from '../utils/logger';
 import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
 import { handleBackgroundProperties } from './backgroundPropertyHandler';
@@ -45,17 +47,13 @@ function safeHandle(
 
 /**
  * 将属性对象的值提取并保存到 localStorage
- * 保留 value 嵌套结构，去除 condition, index, order, text, type 等元数据
- * 合并已有配置，支持完整初始化和单个配置更新
  */
 function savePropertiesToLocalStorage(properties: Record<string, any>): void {
-    // 获取已有配置
     const existingConfigStr = localStorage.getItem('perfectwall_user_properties');
     const existingConfig: Record<string, any> = existingConfigStr
         ? JSON.parse(existingConfigStr)
         : {};
 
-    // 提取新属性的 { value } 结构并合并
     for (const [key, prop] of Object.entries(properties)) {
         if (prop && typeof prop === 'object' && 'value' in prop) {
             existingConfig[key] = { value: prop.value };
@@ -69,28 +67,36 @@ function savePropertiesToLocalStorage(properties: Record<string, any>): void {
  * 创建壁纸属性监听器
  * 统一调用所有 property handlers 并整合结果
  *
- * @param properties WallpaperProperties - 壁纸属性对象
- * @param FirstLoad boolean - 是否为首次加载
+ * Stage 7-C (Phase 7 批次 2-C3):
+ *   - Pinia 字段改用 useConfigStore() 读写。
+ *   - runtime / wallpaper_settings 子对象保留 appConfig 单例访问（Stage 3.5-B 迁移）。
+ *   - 旧 `config.xxx` 引用按 `config = store` 别名兼容（runtime 子属性走 appConfig）。
  */
 export function createWallpaperPropertyListener(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
+    const store = useConfigStore();
+    const config = store; // Pinia flat fields alias
+    const runtime = appConfig.runtime; // runtime playerInfo / wallpaper / files etc.
+
     // 全局语言设置
     if (properties.global_settings_language) {
-        config.language = properties.global_settings_language.value;
-        config.language_code =
-            properties.global_settings_language.value?.slice(0, 2) ?? config.language_code;
-        void loadI18n(config.language);
+        const lang = properties.global_settings_language.value;
+        store.$patch({
+            language: lang,
+            language_code: lang?.slice(0, 2) ?? config.language_code,
+        });
+        void loadI18n(lang);
     }
 
     // 版本更新检查
     if (properties.wallpaper_updata && FirstLoad !== true) {
         debugLogger.info('[版本窗口] 检测到版本更新请求');
-        if (config.runtime.versionManager) {
-            config.runtime.versionManager.showVersionInfo();
+        if (runtime.versionManager) {
+            runtime.versionManager.showVersionInfo();
         } else {
-            config.runtime.debugLogger?.warn('[版本窗口] versionManager 未初始化');
+            runtime.debugLogger?.warn('[版本窗口] versionManager 未初始化');
         }
     }
 
@@ -107,14 +113,14 @@ export function createWallpaperPropertyListener(
         showDebugLogModal();
     }
 
-    //启用插件
+    // 启用插件
     if (properties.server_mode) {
-        config.server_mode = properties.server_mode.value;
+        store.$patch({ server_mode: properties.server_mode.value });
     }
 
     // 自定义字体设置
     if (properties.fontSetting) {
-        config.font_setting = properties.fontSetting.value;
+        store.$patch({ font_setting: properties.fontSetting.value });
         const fontSetting = properties.fontSetting.value.trim();
         const fontGroup = fontSetting
             .split(';')
@@ -136,12 +142,11 @@ export function createWallpaperPropertyListener(
         }
     }
 
-    // 如果是首次加载,标记更新初始化完成
     if (FirstLoad) {
-        config.update_init_complete = true;
+        store.$patch({ update_init_complete: true });
     }
 
-    // 处理所有属性(使用safeHandle捕获错误)
+    // 处理所有属性
     safeHandle(handleDateProperties, properties, FirstLoad, 'handleDateProperties');
     safeHandle(handleTimeProperties, properties, FirstLoad, 'handleTimeProperties');
     safeHandle(handleBackgroundProperties, properties, FirstLoad, 'handleBackgroundProperties');
@@ -168,9 +173,8 @@ export function createWallpaperPropertyListener(
     );
     safeHandle(handleDockBarProperties, properties, FirstLoad, 'handleDockBarProperties');
 
-    // 如果是首次加载，在处理完所有属性后将其设置为 false
     if (FirstLoad) {
-        config.first_load = false;
+        store.$patch({ first_load: false });
     }
 }
 
@@ -179,9 +183,9 @@ export function createWallpaperPropertyListener(
  * 将监听器绑定到 window.wallpaperPropertyListener
  */
 export function setupWallpaperPropertyListener(): void {
-    // 确保 window 对象存在
     if (typeof window !== 'undefined') {
-        const runtime = config.runtime;
+        const store = useConfigStore();
+        const runtime = appConfig.runtime;
 
         let propertiesReceived = false;
         let restoredFromLocalStorage = false;
@@ -190,12 +194,12 @@ export function setupWallpaperPropertyListener(): void {
             applyUserProperties: (properties: Record<string, any>) => {
                 if (
                     Object.keys(properties).length == 0 ||
-                    (config.first_load === false && Object.keys(properties).length > 10)
+                    (store.first_load === false && Object.keys(properties).length > 10)
                 )
                     return;
 
                 propertiesReceived = true;
-                const isFirstLoad = config.first_load;
+                const isFirstLoad = store.first_load;
                 if (!restoredFromLocalStorage) {
                     savePropertiesToLocalStorage(properties);
                 }
@@ -228,11 +232,11 @@ export function setupWallpaperPropertyListener(): void {
                 const myvideo = elements.myvideo;
                 const myAudio = elements.myAudio;
                 if (isPaused) {
-                    config.paused = true;
+                    store.$patch({ paused: true });
                     myvideo.pause();
                     myAudio.pause();
                 } else {
-                    config.paused = false;
+                    store.$patch({ paused: false });
                     if (
                         myvideo.src &&
                         !(
@@ -243,9 +247,8 @@ export function setupWallpaperPropertyListener(): void {
                     ) {
                         myvideo.play();
                     }
-                    // 只有当用户没有手动暂停时才恢复音频
                     if (
-                        config.runtime.playerInfo.playerState !== 2 &&
+                        runtime.playerInfo.playerState !== 2 &&
                         myAudio.src &&
                         !(
                             myAudio.paused &&
@@ -255,8 +258,8 @@ export function setupWallpaperPropertyListener(): void {
                     ) {
                         myAudio.play();
                     }
-                    if (config.rgb_show === true) {
-                        if (config.wallpaper_mode !== 3) {
+                    if (store.rgb_show === true) {
+                        if (store.wallpaper_mode !== 3) {
                             const src = document.body.style.backgroundImage.replace(
                                 /^url\("(.+?)"\)$/,
                                 '$1'
@@ -266,7 +269,7 @@ export function setupWallpaperPropertyListener(): void {
                             background2canvas(null, true);
                         }
                     }
-                    if (config.show_sakura === true) {
+                    if (store.showSakura === true) {
                         removesakura();
                     }
                 }
@@ -280,11 +283,11 @@ export function setupWallpaperPropertyListener(): void {
         window.wallpaperPluginListener = {
             onPluginLoaded: (name: string, _version: string) => {
                 if (name === 'led') {
-                    config.wallpaper_settings.ledPlugin = true;
+                    appConfig.wallpaper_settings.ledPlugin = true;
                     debugLogger.info('[RGB] LED 插件已加载');
                 }
                 if (name === 'cue') {
-                    config.wallpaper_settings.cuePlugin = true;
+                    appConfig.wallpaper_settings.cuePlugin = true;
                     debugLogger.info('[RGB] CUE 插件已加载');
                 }
             },

@@ -16,13 +16,28 @@
 
 <script setup lang="ts">
 /**
- * Phase 3 PWCircle 薄壳：
- *   - 不在 onMounted 调用 resize()（避免与 main.ts 中的 resize 冲突）
- *   - audio 数据 → WallpaperEffectController → 原 PWCircle.drawWave() 路径保持
- *   - Phase 6 会把 WallpaperEffectController 改写为 composable
+ * Phase 5-A PWCircle composable wrapper：
+ *   - onMounted 时自动调用 usePWCircle() 的 resize()（替代 main.ts 的顶层副作用）
+ *   - 暴露 lifecycle 控制给 Vue（enabled toggle 可停止 RAF）
+ *   - drawing code 仍由 audioVisualizer.ts 通过 src/PWCircle.ts 旧 API 调用
+ *     （audioVisualizer 改造留到 stage 5-B）
  */
+import { onBeforeUnmount } from 'vue';
+
+import { usePWCircle } from '@/composables/usePWCircle';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
-const _ = (): boolean => Boolean(config.PWCircle_show_bool);
+const circle = usePWCircle();
+
+// 仅当视觉模型启用时挂载，避免空 canvas 一直 requestAnimationFrame
+const enabled = (): boolean => Boolean(config.PWCircle_show_bool);
+const _ = enabled;
+
+// main.ts 顶层副作用仍保留以保证 audioVisualizer 拿到 ctx — 这里不重复 resize
+// （双重 resize 会让 circleX/circleY 重复计算）。Window resize 监听在
+// usePWCircle() 的 onMounted 中已注册。
+onBeforeUnmount(() => {
+    // No-op: usePWCircle's onBeforeUnmount removes its own resize listener
+});
 </script>

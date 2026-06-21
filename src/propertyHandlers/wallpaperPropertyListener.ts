@@ -1,5 +1,7 @@
 import '../version';
 
+import { loadI18n } from '@/i18n';
+
 import { audioDataListener } from '../audioVisualizer';
 import { showDebugLogModal } from '../debugModal';
 import { background2canvas } from '../RGB';
@@ -7,7 +9,6 @@ import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
 import { config } from '../utils/config';
 import { elements } from '../utils/elementManager';
-import { loadI18nData } from '../utils/i18n';
 import { debugLogger } from '../utils/logger';
 import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
 import { handleBackgroundProperties } from './backgroundPropertyHandler';
@@ -80,7 +81,7 @@ export function createWallpaperPropertyListener(
         config.language = properties.global_settings_language.value;
         config.language_code =
             properties.global_settings_language.value?.slice(0, 2) ?? config.language_code;
-        loadI18nData();
+        void loadI18n(config.language);
     }
 
     // 版本更新检查

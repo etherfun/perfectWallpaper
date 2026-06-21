@@ -1,4 +1,4 @@
-import { i18n } from '@/utils/i18n';
+import { globalT } from '@/i18n';
 
 import { fetchAggregate } from './api';
 import { buildCards, destroyCards, updateCards } from './cardRenderer';
@@ -285,14 +285,14 @@ export class SystemMonitor {
         const voltage = cpu.voltage_core != null ? `${cpu.voltage_core.toFixed(2)} V` : null;
 
         const meta: Array<{ label: string; value: string }> = [];
-        if (freq) meta.push({ label: i18n('sysmon_card_freq'), value: freq });
+        if (freq) meta.push({ label: globalT('sysmon_card_freq'), value: freq });
         if (power != null)
-            meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
-        if (maxCoreUsage) meta.push({ label: i18n('sysmon_card_hot'), value: maxCoreUsage });
-        if (voltage) meta.push({ label: i18n('sysmon_card_vcore'), value: voltage });
+            meta.push({ label: globalT('sysmon_card_power'), value: `${power.toFixed(1)} W` });
+        if (maxCoreUsage) meta.push({ label: globalT('sysmon_card_hot'), value: maxCoreUsage });
+        if (voltage) meta.push({ label: globalT('sysmon_card_vcore'), value: voltage });
 
         return {
-            label: `${i18n('sysmon_card_label_cpu')} · ${cpu.brand}`,
+            label: `${globalT('sysmon_card_label_cpu')} · ${cpu.brand}`,
             value: `${usage}%`,
             extra: hasTemp ? `(${Math.round(temp)}°C)` : null,
             meta,
@@ -371,13 +371,13 @@ export class SystemMonitor {
 
         const meta: Array<{ label: string; value: string }> = [];
         if (power != null)
-            meta.push({ label: i18n('sysmon_card_power'), value: `${power.toFixed(1)} W` });
-        meta.push({ label: i18n('sysmon_card_vram_meta'), value: `${vramUsedStr}/${vramStr}` });
-        if (coreClock) meta.push({ label: i18n('sysmon_card_core_clock'), value: coreClock });
-        if (memJuncStr) meta.push({ label: i18n('sysmon_card_mem_junc'), value: memJuncStr });
+            meta.push({ label: globalT('sysmon_card_power'), value: `${power.toFixed(1)} W` });
+        meta.push({ label: globalT('sysmon_card_vram_meta'), value: `${vramUsedStr}/${vramStr}` });
+        if (coreClock) meta.push({ label: globalT('sysmon_card_core_clock'), value: coreClock });
+        if (memJuncStr) meta.push({ label: globalT('sysmon_card_mem_junc'), value: memJuncStr });
 
         return {
-            label: `${i18n('sysmon_card_label_gpu')} · ${gpu.model}`,
+            label: `${globalT('sysmon_card_label_gpu')} · ${gpu.model}`,
             value: `${usage}%`,
             extra: hasTemp ? `(${Math.round(temp)}°C)` : null,
             meta,
@@ -406,12 +406,12 @@ export class SystemMonitor {
         ];
 
         const meta: Array<{ label: string; value: string }> = [
-            { label: i18n('sysmon_card_used'), value: usedStr },
+            { label: globalT('sysmon_card_used'), value: usedStr },
             { label: 'Total', value: totalStr },
         ];
 
         return {
-            label: `${i18n('sysmon_card_label_mem')}`,
+            label: `${globalT('sysmon_card_label_mem')}`,
             value: `${usedPct}%`,
             extra: `(${usedStr}/${totalStr})`,
             meta,
@@ -441,8 +441,8 @@ export class SystemMonitor {
         }
 
         const meta: Array<{ label: string; value: string }> = [
-            // { label: i18n('sysmon_card_rx_meta'), value: rxStr },
-            // { label: i18n('sysmon_card_tx_meta'), value: txStr },
+            // { label: globalT('sysmon_card_rx_meta'), value: rxStr },
+            // { label: globalT('sysmon_card_tx_meta'), value: txStr },
         ];
 
         // Use combined throughput for main value display
@@ -450,7 +450,7 @@ export class SystemMonitor {
         const primaryStr = `${formatBytes(primary)}/s`;
 
         return {
-            label: `${i18n('sysmon_card_label_net')}`,
+            label: `${globalT('sysmon_card_label_net')}`,
             value: primaryStr,
             extra: null,
             meta,
@@ -549,26 +549,26 @@ export class SystemMonitor {
                 sparks.length >= 3 ? 'double-full' : sparks.length === 2 ? 'dual' : 'solo';
 
             const meta: Array<{ label: string; value: string }> = [
-                { label: i18n('sysmon_card_used'), value: usedStr },
-                { label: i18n('sysmon_card_free'), value: formatBytes(disk.total_free_bytes ?? 0) },
+                { label: globalT('sysmon_card_used'), value: usedStr },
+                { label: globalT('sysmon_card_free'), value: formatBytes(disk.total_free_bytes ?? 0) },
             ];
             if (hasTemp)
-                meta.push({ label: i18n('sysmon_card_temp'), value: `${Math.round(temp)}°C` });
+                meta.push({ label: globalT('sysmon_card_temp'), value: `${Math.round(temp)}°C` });
             if (life != null)
-                meta.push({ label: i18n('sysmon_card_life'), value: `${Math.round(life)}%` });
+                meta.push({ label: globalT('sysmon_card_life'), value: `${Math.round(life)}%` });
             if (disk.host_reads_gb != null)
                 meta.push({
-                    label: i18n('sysmon_card_read'),
+                    label: globalT('sysmon_card_read'),
                     value: `${disk.host_reads_gb.toFixed(1)} GB`,
                 });
             if (disk.host_writes_gb != null)
                 meta.push({
-                    label: i18n('sysmon_card_write'),
+                    label: globalT('sysmon_card_write'),
                     value: `${disk.host_writes_gb.toFixed(1)} GB`,
                 });
 
             return {
-                label: `${i18n('sysmon_card_label_disk')} #${index} · ${disk.model} · ${busLabel}`,
+                label: `${globalT('sysmon_card_label_disk')} #${index} · ${disk.model} · ${busLabel}`,
                 value: primaryStr,
                 extra: null,
                 meta,

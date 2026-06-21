@@ -15,8 +15,8 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 import { buildCards, destroyCards, updateCards } from '@/systemMonitor/cardRenderer';
 import type { CardRenderData } from '@/systemMonitor/types';
 
-vi.mock('@/utils/i18n', () => ({
-    i18n: vi.fn((key: string) => {
+vi.mock('@/i18n', () => ({
+    globalT: vi.fn((key: string) => {
         const map: Record<string, string> = {
             sysmon_card_util: 'Util',
             sysmon_card_temp: 'Temp',

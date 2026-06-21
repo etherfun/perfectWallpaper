@@ -18,7 +18,7 @@
  *         canvas.spark         → the sparkline canvas
  */
 
-import { i18n } from '@/utils/i18n';
+import { globalT } from '@/i18n';
 
 import { MAX_HISTORY_LENGTH } from './constants';
 import { formatBytes, getColorForValue } from './formatters';
@@ -718,31 +718,31 @@ function buildSparkHead(ch: SparkChannel): string {
 
     switch (kind) {
         case 'util':
-            return `<span>${i18n('sysmon_card_util')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${i18n('sysmon_card_axis_util')}</span>`;
+            return `<span>${globalT('sysmon_card_util')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_util')}</span>`;
         case 'temp': {
             const rangeStr = range ? `${range.lo}–${range.hi}°C` : '';
-            return `<span>${i18n('sysmon_card_temp')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${rangeStr}</span>`;
+            return `<span>${globalT('sysmon_card_temp')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${rangeStr}</span>`;
         }
         case 'power':
-            return `<span>${i18n('sysmon_card_power')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${i18n('sysmon_card_axis_power')}</span>`;
+            return `<span>${globalT('sysmon_card_power')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_power')}</span>`;
         case 'vram':
-            return `<span>${i18n('sysmon_card_vram')} <b>${display}</b></span><span class="axis">${i18n('sysmon_card_axis_util')}</span>`;
+            return `<span>${globalT('sysmon_card_vram')} <b>${display}</b></span><span class="axis">${globalT('sysmon_card_axis_util')}</span>`;
         case 'read': {
             const rangeStr = range ? `0–${formatBytes(range.hi)}/s` : '';
-            return `<span>${i18n('sysmon_card_read')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
+            return `<span>${globalT('sysmon_card_read')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
         }
         case 'write': {
             const rangeStr = range ? `0–${formatBytes(range.hi)}/s` : '';
-            return `<span>${i18n('sysmon_card_write')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
+            return `<span>${globalT('sysmon_card_write')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
         }
         case 'activity':
-            return `<span>${i18n('sysmon_card_activity')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${i18n('sysmon_card_axis_activity')}</span>`;
+            return `<span>${globalT('sysmon_card_activity')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_activity')}</span>`;
         case 'rx':
-            return `<span class="dir-rx">${i18n('sysmon_card_rx')} <b>${display}</b></span>`;
+            return `<span class="dir-rx">${globalT('sysmon_card_rx')} <b>${display}</b></span>`;
         case 'tx':
-            return `<span class="dir-tx">${i18n('sysmon_card_tx')} <b>${display}</b></span>`;
+            return `<span class="dir-tx">${globalT('sysmon_card_tx')} <b>${display}</b></span>`;
         case 'rx-tx':
-            return `<span><span class="dir-rx">${i18n('sysmon_card_rx')} <b>${display}</b></span> &nbsp; <span class="dir-tx">${i18n('sysmon_card_tx')} <b>${ch.dirTxDisplay ?? display}</b></span></span><span class="axis">${i18n('sysmon_card_axis_last_2_min')}</span>`;
+            return `<span><span class="dir-rx">${globalT('sysmon_card_rx')} <b>${display}</b></span> &nbsp; <span class="dir-tx">${globalT('sysmon_card_tx')} <b>${ch.dirTxDisplay ?? display}</b></span></span><span class="axis">${globalT('sysmon_card_axis_last_2_min')}</span>`;
         default:
             return `<span>${kind} <b>${display}</b></span>`;
     }

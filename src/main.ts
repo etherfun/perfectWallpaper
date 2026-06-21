@@ -27,6 +27,7 @@ import { useProjectJsonDefaults } from '@/composables/useProjectJsonDefaults';
 import { useStoredProperties } from '@/composables/useStoredProperties';
 import { useWallpaperProperties } from '@/composables/useWallpaperProperties';
 import { i18n } from '@/i18n';
+import { installConfigStoreBridge } from '@/stores/configBridge';
 import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { resize as pwCircleResize } from './PWCircle';
 import { PWLineInit } from './PWLine';
@@ -59,7 +60,12 @@ async function bootstrap(): Promise<void> {
     //    第 1 层 WE：注册包装 listener（push 时自动 patch store）
     useWallpaperProperties();
 
-    // 3. mount 到 <div id="app-root">
+    // 3. 安装 config → store 桥接（plan-ex.md R10 解决）
+    //    让旧 .ts 的 `config.xxx = y` 写入自动镜像到 Pinia，
+    //    保证 Vue 组件与命令式模块状态同步
+    installConfigStoreBridge();
+
+    // 4. mount 到 <div id="app-root">
     const root = document.getElementById('app-root');
     if (!root) {
         console.error('[main.ts] #app-root not found in index.html');

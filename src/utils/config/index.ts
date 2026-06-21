@@ -1,3 +1,4 @@
+import { patchStoreFromConfig } from '../../stores/configBridge';
 import { debugLogger, registerDebugLogger } from '../logger';
 import { SYNC_DEFAULTS, type SyncDefaults } from './defaults';
 import type { RuntimeData } from './runtime';
@@ -115,6 +116,9 @@ for (const key of Object.keys(SYNC_DEFAULTS)) {
         },
         set(this: AppConfig, value: unknown) {
             (this as unknown as Record<string, unknown>)[internalKey] = value;
+            // 镜像到 Pinia store，让 Vue 组件响应（plan-ex.md R10 解决）
+            // bridge 未安装时（Pinia 还没 active）静默跳过
+            patchStoreFromConfig(key, value);
         },
         configurable: true,
         enumerable: true,

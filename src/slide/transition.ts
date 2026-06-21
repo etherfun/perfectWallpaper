@@ -2,7 +2,7 @@
  * Background transition logic
  * Handles two-layer background system with fade transitions
  */
-import { config } from '../utils/config';
+import { config as appConfig } from '../utils/config'; // runtime.myList (Stage 3.5-B)
 import { applyBackgroundStyle } from './styles';
 import { backgroundLayers } from './types';
 
@@ -85,8 +85,8 @@ export function transitionBackground(newImageUrl: string): void {
 export function updateFileList(currentFiles: string[]): void {
     for (let i = 0; i < currentFiles.length; ++i) {
         const file = currentFiles[i];
-        if (file && config.runtime.myList.indexOf(file) === -1) {
-            config.runtime.myList.push(file);
+        if (file && appConfig.runtime.myList.indexOf(file) === -1) {
+            appConfig.runtime.myList.push(file);
         }
     }
 }

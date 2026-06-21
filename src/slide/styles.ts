@@ -2,9 +2,11 @@
  * Background styles and transition effects
  */
 
-import { config } from '../utils/config';
+import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '../utils/logger';
 import { backgroundLayers } from './types';
+
+const config = useConfigStore();
 
 /** Get switch interval based on speed setting or custom input */
 export function getSwitchInterval(): number {
@@ -56,9 +58,9 @@ export function TransitionSwith(): void {
     let transitionValue = '';
 
     const TransitionMode = config.transition_mode;
-    const TransitionMode_choose_0 = config.transition_mode_choose_0;
-    const TransitionMode_choose_1 = config.transition_mode_choose_1;
-    const TransitionMode_choose_4 = config.transition_mode_choose_4;
+    const TransitionMode_choose_0 = (config.transition_mode_choose_0 as unknown as number) ?? 0;
+    const TransitionMode_choose_1 = (config.transition_mode_choose_1 as unknown as number) ?? 0;
+    const TransitionMode_choose_4 = (config.transition_mode_choose_4 as unknown as string) ?? '';
 
     switch (TransitionMode) {
         case 0:

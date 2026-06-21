@@ -6,7 +6,7 @@
     "allowJs": true,
     "checkJs": false,
     "outDir": "dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
@@ -17,10 +17,13 @@
     "noEmitOnError": true,
     "sourceMap": false,
     "declaration": false,
-    "noEmit": false,
+    "noEmit": true,
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "noUncheckedIndexedAccess": true,
+    "jsx": "preserve",
+    "jsxImportSource": "vue",
+    "types": ["node", "vite/client"],
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
@@ -28,6 +31,12 @@
     },
     "ignoreDeprecations": "6.0"
   },
-  "include": ["src/**/*", "src/types/**/*"],
-  "exclude": ["node_modules", "dist", "js/lib", "js/**/*.js"]
+  "include": [
+    "src/**/*",
+    "src/**/*.vue",
+    "src/types/**/*",
+    "vite.config.ts",
+    "vitest.config.ts"
+  ],
+  "exclude": ["node_modules", "dist", "coverage", "js/lib", "js/**/*.js"]
 }

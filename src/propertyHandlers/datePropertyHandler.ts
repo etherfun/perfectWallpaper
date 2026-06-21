@@ -1,7 +1,5 @@
 import { elements } from '@/utils/elementManager';
 
-import { getdate } from '../date';
-import { startDateColorRhythmLoop, stopDateColorRhythmLoop } from '../date';
 import { config } from '../utils/config';
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
@@ -13,16 +11,17 @@ const oDate = elements.date.container as HTMLElement;
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  * @returns 处理结果
+ *
+ * Stage 7-B (Phase 7 批次 1):
+ *   - src/date.ts 已删除；startDateColorRhythmLoop/stopDateColorRhythmLoop 由
+ *     Date.vue useColorRhythm 通过 watch(config.date_color_rhythm) 自动管理。
+ *   - getdate() 由 Date.vue 每 10 分钟的 useUpdateInterval 自动调用，
+ *     date_format 变化时 computed 立即重算 — handler 不再显式调用 getdate()。
  */
 export function handleDateProperties(properties: WallpaperProperties, FirstLoad: boolean) {
-    // 日期颜色律动
+    // 日期颜色律动（Vue Date.vue useColorRhythm 自动响应）
     if (properties.odateColorhythm) {
         config.date_color_rhythm = properties.odateColorhythm.value;
-        if (properties.odateColorhythm.value) {
-            startDateColorRhythmLoop();
-        } else {
-            stopDateColorRhythmLoop();
-        }
     }
 
     // 是否显示日期
@@ -31,7 +30,8 @@ export function handleDateProperties(properties: WallpaperProperties, FirstLoad:
         const oDate_show = properties.showDate.value;
         elements.body.style.setProperty('--date-display', oDate_show ? 'flex' : 'none');
         elements.body.style.setProperty('--date-visibility', oDate_show ? 'visible' : 'hidden');
-        if (!oDate_show) stopDateColorRhythmLoop();
+        // showDate=false → Date.vue useColorRhythm 自动停止（enabled=false）
+        if (!oDate_show) config.date_color_rhythm = false;
     }
 
     // 日期圆角
@@ -142,42 +142,37 @@ export function handleDateProperties(properties: WallpaperProperties, FirstLoad:
         const date_format = config.date_format;
         date_format.separator = properties.date_separator.value;
         config.date_format = date_format;
-        if (!FirstLoad) getdate();
+        // Date.vue computed rebuilds string automatically — no need to call getdate()
     }
 
     if (properties.date_order) {
         const date_format = config.date_format;
         date_format.order = properties.date_order.value;
         config.date_format = date_format;
-        if (!FirstLoad) getdate();
     }
 
     if (properties.date_yearFormat) {
         const date_format = config.date_format;
         date_format.year_format = properties.date_yearFormat.value;
         config.date_format = date_format;
-        if (!FirstLoad) getdate();
     }
 
     if (properties.date_monthFormat) {
         const date_format = config.date_format;
         date_format.month_format = properties.date_monthFormat.value;
         config.date_format = date_format;
-        if (!FirstLoad) getdate();
     }
 
     if (properties.date_dayFormat) {
         const date_format = config.date_format;
         date_format.day_format = properties.date_dayFormat.value;
         config.date_format = date_format;
-        if (!FirstLoad) getdate();
     }
 
     if (properties.date_weekFormat) {
         const date_format = config.date_format;
         date_format.week_format = properties.date_weekFormat.value;
         config.date_format = date_format;
-        if (!FirstLoad) getdate();
     }
 
     // 日期透明度

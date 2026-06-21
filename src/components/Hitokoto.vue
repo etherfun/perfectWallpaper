@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import { useUpdateInterval } from '@/composables/useUpdateInterval';
 import { useConfigStore } from '@/stores/config';
@@ -68,5 +68,21 @@ const rendered = computed(() => {
 
 // hitokoto_update 单位为分钟，原模块使用 setInterval(updateTime, hitokoto_update * 60 * 1000)。
 // Phase 1 保留默认 6 分钟，可由 propertyHandlers 在 Phase 6 改造。
-useUpdateInterval(6 * 60 * 1000, fetchHitokoto, { immediate: true });
+// Stage 7-B: refresh when hitokoto_show toggles from off → on; stop when off.
+const { stop, restart } = useUpdateInterval(6 * 60 * 1000, fetchHitokoto, {
+    immediate: false,
+});
+
+watch(
+    () => config.hitokoto_show,
+    (show) => {
+        if (show) {
+            void fetchHitokoto();
+            restart();
+        } else {
+            stop();
+        }
+    },
+    { immediate: true }
+);
 </script>

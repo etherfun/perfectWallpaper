@@ -1,6 +1,5 @@
 import { elements } from '@/utils/elementManager';
 
-import { setcountdown_a } from '../countdown';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
 import { logInitComplete } from './_helpers';
@@ -13,6 +12,10 @@ const countdown = elements.countdown.container;
  * 处理倒计时相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
+ *
+ * Stage 7-B (Phase 7 批次 1):
+ *   - src/countdown.ts 已删除；setcountdown_a 由 Countdown.vue 的 useUpdateInterval
+ *     每秒自动调用，handler 不再显式启动 interval。
  */
 export function handleCountdownProperties(
     properties: WallpaperProperties,
@@ -61,9 +64,7 @@ export function handleCountdownProperties(
             '--countdown-visibility',
             properties.countdown_show.value ? 'visible' : 'hidden'
         );
-        if (properties.countdown_show.value) {
-            setcountdown_a();
-        }
+        // Countdown.vue useUpdateInterval 每秒自动调用 setcountdown 逻辑
     }
 
     // 倒计时目标日期

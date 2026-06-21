@@ -1,19 +1,20 @@
 import { elements } from '@/utils/elementManager';
 
-import { autoHitokto } from '../hitokoto';
 import { config } from '../utils/config';
 import { timerManager } from '../utils/timer';
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-let hitokotoInit = false;
 const hitokoto = elements.hitokoto.container as HTMLElement;
 
 /**
  * 处理一言相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
+ *
+ * Stage 7-B (Phase 7 批次 1):
+ *   - src/hitokoto.ts 已删除；autoHitokto 由 Hitokoto.vue 的 watch(config.hitokoto_show)
+ *     自动触发 fetchHitokoto + 启停 interval，handler 不再显式调用。
  */
 export function handleHitokotoProperties(
     properties: WallpaperProperties,
@@ -77,10 +78,7 @@ export function handleHitokotoProperties(
             '--hitokoto-visibility',
             hitokoto_show ? 'visible' : 'hidden'
         );
-        if (hitokoto_show) {
-            hitokotoInit = false;
-            autoHitokto();
-        }
+        // Hitokoto.vue watch(hitokoto_show) 自动 fetch + restart interval
     }
 
     // 一言外观

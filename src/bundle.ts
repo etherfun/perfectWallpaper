@@ -7,12 +7,8 @@
 // that depend on them (like PWLine, PWCircle, PWParticles) are loaded.
 import './main';
 
-// Phase 1: 4 个叶子组件已迁移到 Vue SFC，注释掉旧 .ts 入口避免双重渲染。
-// Phase 7 将删除这些 .ts 文件。
-// import './time';
-// import './date';
-// import './hitokoto';
-// import './countdown';
+// Stage 7-B (Phase 7 批次 1): 4 个叶子 .ts 已删除 — 时间/日期/倒计时/一言
+// 已由 Clock.vue / Date.vue / Countdown.vue / Hitokoto.vue (Phase 1) 完全替代。
 
 import './version';
 import './sakura';

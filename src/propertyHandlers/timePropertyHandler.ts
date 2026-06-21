@@ -1,6 +1,5 @@
 import { elements } from '@/utils/elementManager';
 
-import { startTimeColorRhythmLoop, stopTimeColorRhythmLoop } from '../time';
 import { config } from '../utils/config';
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
@@ -11,16 +10,18 @@ const oClock = elements.clock.container;
  * 处理时间/时钟相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
+ *
+ * Stage 7-B (Phase 7 批次 1):
+ *   - src/time.ts 已删除；startTimeColorRhythmLoop/stopTimeColorRhythmLoop
+ *     由 Clock.vue 的 useColorRhythm composable 通过 watch(config.time_color_rhythm)
+ *     自动管理。
+ *   - handler 不再显式调用 start/stop loop — 写 config.time_color_rhythm
+ *     即可让 Vue 组件响应。
  */
 export function handleTimeProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
-    // 时钟颜色律动
+    // 时钟颜色律动（Vue Clock.vue useColorRhythm 自动响应）
     if (properties.time_color_rhythm) {
         config.time_color_rhythm = properties.time_color_rhythm.value;
-        if (properties.time_color_rhythm.value) {
-            startTimeColorRhythmLoop();
-        } else {
-            stopTimeColorRhythmLoop();
-        }
     }
 
     // 是否显示时间
@@ -29,7 +30,8 @@ export function handleTimeProperties(properties: WallpaperProperties, FirstLoad:
         config.show_time = oClock_show;
         elements.body.style.setProperty('--clock-display', oClock_show ? 'flex' : 'none');
         elements.body.style.setProperty('--clock-visibility', oClock_show ? 'visible' : 'hidden');
-        if (!oClock_show) stopTimeColorRhythmLoop();
+        // showTime=false → Clock.vue useColorRhythm 自动停止（enabled=false）
+        if (!oClock_show) config.time_color_rhythm = false;
     }
 
     // 是否显示秒

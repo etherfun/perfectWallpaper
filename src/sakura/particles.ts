@@ -6,7 +6,9 @@
  * createPointFlowers / initPointFlowers 负责分配缓冲和随机播种。
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+
+const config = useConfigStore();
 import { Vector3 } from '@/utils/webgl-math';
 
 import { createShader, unuseShader, useShader } from './glUtils';
@@ -54,7 +56,7 @@ export function createPointFlowers(): void {
     pointFlower.offset = new Float32Array([0.0, 0.0, 0.0]);
     pointFlower.fader = Vector3.create(0.0, 10.0, 0.0);
 
-    pointFlower.numFlowers = config.sakura_point_number;
+    pointFlower.numFlowers = config.sakura_point_number ?? 0;
     pointFlower.particles = new Array(pointFlower.numFlowers);
     pointFlower.dataArray = new Float32Array(pointFlower.numFlowers * (3 + 3 + 2));
     pointFlower.positionArrayOffset = 0;

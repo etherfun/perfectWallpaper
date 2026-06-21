@@ -11,7 +11,9 @@
  *  7. 9 次 drawArrays (4 角 * 2 z + main) 实现场景平铺
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+
+const config = useConfigStore();
 import { Vector3 } from '@/utils/webgl-math';
 
 import { unuseShader, useShader } from './glUtils';

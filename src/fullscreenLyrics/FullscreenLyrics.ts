@@ -13,7 +13,11 @@
  *   - visibility.ts       → hide/restore overlapping page chrome
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+// appConfig.runtime preserved for runtime.playerInfo (Stage 3.5-B migration)
+import { config as appConfig } from '../utils/config';
+
+const config = useConfigStore();
 
 import { startClockUpdate } from './clock';
 import { DEFAULT_CONFIG } from './constants';
@@ -71,7 +75,7 @@ export class FullscreenLyrics {
         }
 
         // Check if music is playing (playerState: 1 = playing)
-        const playerState = config.runtime.playerInfo.playerState;
+        const playerState = appConfig.runtime.playerInfo.playerState;
         if (playerState === 1 && !this.isVisible && this.config.enabled) {
             this.show();
         } else if ((playerState === null || playerState === 0) && this.isVisible) {

@@ -38,7 +38,7 @@ export {
 
 import { globalT } from '@/i18n';
 
-import { config } from '../utils/config';
+import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { fetch_with_retry } from '../utils/tool';
@@ -46,6 +46,8 @@ import type { WeatherAPIHandler } from './api/base';
 import type { SevenHourlyData, WeatherAddress, WeatherData } from './types';
 import { generateWeatherTable } from './ui/generateWeatherTable';
 import { showWeatherError, showWeatherLoading } from './ui/states';
+
+const config = useConfigStore();
 
 // 导出类型
 export type { SevenHourlyData, WeatherAddress, WeatherData };

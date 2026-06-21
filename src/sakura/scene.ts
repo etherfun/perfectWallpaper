@@ -7,7 +7,9 @@
  * setViewports 重新分配 5 个 RenderTarget；onResize 包装为窗口尺寸变化入口
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+
+const config = useConfigStore();
 import { elements } from '@/utils/elementManager';
 import { Matrix44 } from '@/utils/webgl-math';
 

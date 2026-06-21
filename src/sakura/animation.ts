@@ -9,8 +9,10 @@
  * 暴露 stepAnimation 用于樱花关闭时按需启动一帧。
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
+
+const config = useConfigStore();
 
 import { renderScene } from './scene';
 import { getAnimating, setAnimating, timeInfo } from './state';
@@ -19,7 +21,7 @@ import { getAnimating, setAnimating, timeInfo } from './state';
 function copyCanvasTo2D(): void {
     const raw = elements.sakura;
     const ctx = elements.sakurashow.getContext('2d');
-    if (ctx && raw && raw.width > 0 && config.show_sakura) {
+    if (ctx && raw && raw.width > 0 && config.showSakura) {
         ctx.drawImage(
             raw,
             0,

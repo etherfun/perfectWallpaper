@@ -9,7 +9,9 @@
  * 流程：提亮 -> 两次方向模糊 -> 最终合成输出到主画布。
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from '@/stores/config';
+
+const config = useConfigStore();
 
 import { createShader, unuseShader, useShader } from './glUtils';
 import { effectLib } from './particles';
@@ -97,7 +99,7 @@ export function createEffectLib(): void {
 
     // final composite
     const vtxsrc = (document.getElementById('pp_final_vsh') as HTMLScriptElement).textContent || '';
-    const sakuraBackLight = config.sakura_back_light;
+    const sakuraBackLight = config.sakura_back_light ?? 0;
     frgsrc =
         ppFinalFsh +
         'gl_FragColor = vec4(col.rgb, ' +

@@ -1,16 +1,25 @@
 <!--
   App.vue — 根组件
-  Phase 1：仅挂载 4 个叶子组件（Clock/Date/Countdown/Hitokoto）。
-  其他组件（背景 / 樱花 / 天气 / 系统监控 / 播放器 / Dock栏 / 弹窗 / 全屏歌词）
-  将在 Phase 2-5 陆续挂载。
+  Phase 1：4 个叶子组件（Clock/Date/Countdown/Hitokoto）
+  Phase 2：+ Weather/SystemMonitor/DockBar/PlayerControl/PictureInfo（薄壳）
+  Phase 3-5：背景 / 樱花 / Canvas / WebGL
+  Phase 4：弹窗与全屏
+
+  Vue 设计原则（plan.md 用户决策）：
+    - Vue 包装薄壳，原生命令式代码维持（Phase 1-2）
+    - Phase 3+ 深挖后逐步替换旧 .ts
 -->
 <template>
     <div id="app-root">
-        <!-- 保持 index.html 原生结构：4 个容器节点由原生模板提供，组件渲染覆盖其内容 -->
         <Clock />
         <Date />
         <Countdown />
         <Hitokoto />
+        <Weather />
+        <SystemMonitor />
+        <DockBar />
+        <PlayerControl />
+        <PictureInfo />
     </div>
 </template>
 
@@ -19,4 +28,9 @@ import Clock from './Clock.vue';
 import Date from './Date.vue';
 import Countdown from './Countdown.vue';
 import Hitokoto from './Hitokoto.vue';
+import Weather from './Weather.vue';
+import SystemMonitor from './SystemMonitor.vue';
+import DockBar from './DockBar.vue';
+import PlayerControl from './PlayerControl.vue';
+import PictureInfo from './PictureInfo.vue';
 </script>

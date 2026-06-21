@@ -134,6 +134,50 @@ export interface ConfigStoreState {
     tY?: number;
     time_color_rhythm_alias?: boolean;
     odateColorhythm?: boolean;
+
+    // ===== Phase 2 字段 (Weather/SystemMonitor/DockBar/PlayerControl/PictureInfo) =====
+    /** 启用天气 */
+    weather_show?: boolean;
+    /** 天气 API 选择 (1-5) */
+    weather_api_choose?: number;
+    /** 天气更新间隔 (1-5) */
+    weather_updata?: number;
+    /** 天气城市名 */
+    weather_city?: string;
+
+    /** 启用系统监控 */
+    sysmon_enabled?: boolean;
+    /** sysmon 配置 port（与 server 通信） */
+    sysmon_server_port?: number;
+    /** sysmon 显示模式 (rows / cards) */
+    sysmon_display_style?: number;
+    /** sysmon 字体大小 */
+    sysmon_size?: number;
+    /** sysmon 颜色 */
+    sysmon_color?: string;
+    /** sysmon 更新间隔 (秒) */
+    sysmon_update_interval?: number;
+
+    /** 启用 Dock 栏 */
+    dockbar_enabled?: boolean;
+    /** Dock 栏位置 (0=bottom / 1=top / 2=left / 3=right) */
+    dockbar_position?: number;
+    /** Dock 栏图标大小 */
+    dockbar_icon_size?: number;
+    /** Dock 栏亚克力 */
+    dockbar_yakeli_show?: boolean;
+
+    /** 启用播放器控制 */
+    player_control_show?: boolean;
+    /** 播放器可视化音频条 */
+    player_control_visualaudiobar?: boolean;
+    /** 播放器封面旋转 */
+    player_control_thumbnail_rotation?: boolean;
+    /** 播放器缩略图大小 */
+    player_control_thumbnail_size?: boolean;
+
+    /** 显示图片信息（slide 模式） */
+    picturesinfo_show?: boolean;
 }
 
 export interface HitokotoRuntime {

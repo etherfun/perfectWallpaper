@@ -1,5 +1,5 @@
 <!--
-  RgbEffect.vue — RGB 灯光合成组件 (Phase 3)
+  RgbEffect.vue — RGB 灯光合成组件 (Stage 5-C1)
   替换原 src/RGB.ts。
 
   原模块：
@@ -8,8 +8,10 @@
     - 注册 visibilitychange 监听器
     - 暴露 background2canvas(src, videoORimages)
 
-  Phase 3 薄壳：保留全部副作用，由 WallpaperEffectController / propertyHandler
-  控制 background2canvas 调用。
+  Stage 5-C1 composable wrapper:
+    - useRgbEffect() owns the visibilitychange lifecycle (mount/unmount)
+    - render() passthrough available via the composable's API
+    - drawing code stays in src/RGB.ts (single source of truth)
 -->
 <template>
     <!-- 兼容 #RGBuse 容器 — 由 index.html 预置 -->
@@ -17,12 +19,19 @@
 
 <script setup lang="ts">
 /**
- * Phase 3 RgbEffect 薄壳：
- *   - visibilitychange 监听器在 RGB.ts 顶层注册，保留
- *   - background2canvas() 由 WallpaperEffectController 调用
+ * Stage 5-C1 RgbEffect composable wrapper:
+ *   - useRgbEffect() mounts a visibilitychange listener and exposes render()
+ *   - rgb_show toggle triggers an initial render
+ *   - WallpaperEffectController still drives the actual LED refresh cycle
  */
+import { useRgbEffect } from '@/composables/useRgbEffect';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
+const rgb = useRgbEffect();
+
 const _ = (): boolean => Boolean(config.rgb_show);
+
+// Expose rgb API for parent components / debugging if needed.
+defineExpose({ render: rgb.render });
 </script>

@@ -198,8 +198,72 @@ export interface ConfigStoreState {
     debugger_copy?: boolean;
     /** 全屏歌词启用 */
     fullscreen_lyrics_enabled?: boolean;
+    /** 全屏歌词显示翻译 */
+    fullscreen_lyrics_show_translation?: boolean;
+    /** 全屏歌词显示罗马音 */
+    fullscreen_lyrics_show_roman?: boolean;
+    /** 全屏歌词延迟 (秒) */
+    fullscreen_lyrics_delay?: number;
+    /** 全屏歌词启用模糊 */
+    fullscreen_lyrics_enable_blur?: boolean;
+    /** 全屏歌词隐藏其他元素 */
+    fullscreen_lyrics_hide_other?: boolean;
+    /** 全屏歌词显示时钟 */
+    fullscreen_lyrics_show_clock?: boolean;
     /** 更新日志自动打开 */
     wallpaper_updata_open_on_update?: boolean;
+
+    // ===== Phase 3 字段补强 (FluidEffect / RGB / Sakura / Weather / Player / Audio) =====
+    /** RGB 刷新间隔 (ms) */
+    rgb_refresh?: number;
+    /** RGB 背景 */
+    background_rgb?: boolean;
+    /** RGB 樱花 */
+    sakura_rgb?: boolean;
+    /** RGB 粒子 */
+    particles_rgb?: boolean;
+    /** RGB 音频条 */
+    audiobar_rgb?: boolean;
+    /** 樱花 RGB 不透明度 */
+    opacity_sa_rgb?: number;
+    /** RGB 音频条高度 */
+    aurgbhigh?: number;
+    /** RGB 音频条颜色 */
+    aurgbcolor?: string;
+    /** 彩虹颜色模式 */
+    audiobar_rainbow_color?: boolean;
+    /** 彩虹移动 */
+    rainbow_move?: boolean;
+    /** 彩虹移动速度 */
+    rainbow_move_speed?: number;
+    /** 樱花透明 */
+    sakura_transparency?: number;
+    /** 樱花背景 */
+    sakura_background?: boolean;
+    /** 樱花背景色 */
+    sakura_back_color?: string;
+    /** 樱花反转 */
+    sakura_reverse?: boolean;
+    /** 樱花点数 */
+    sakura_point_number?: number;
+    /** 樱花背光 */
+    sakura_back_light?: number;
+    /** 流体效果全屏启用 */
+    fluid_effect_enabled_fullscreen?: boolean;
+    /** 流体效果分辨率 */
+    fluid_effect_resolution?: number;
+    /** 流体效果模糊 */
+    fluid_effect_blur_amount?: number;
+    /** 流体效果置换图缩放 */
+    fluid_effect_displacement_scale?: number;
+    /** 流体效果湍流八度 */
+    fluid_effect_turbulence_octaves?: number;
+    /** 流体效果画布位移幅度 */
+    fluid_effect_canvas_displacement?: number;
+    /** 流体效果暗化 */
+    fluid_effect_dark_overlay_strength?: number;
+    /** 流体效果模糊背景 */
+    fluid_effect_backdrop_filter_strength?: number;
 
     // ===== Phase 5 字段 (Background/Slide/Video) =====
     /** 壁纸模式 (1-9) */

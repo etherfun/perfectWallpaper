@@ -1,4 +1,5 @@
-import { config } from '../utils/config';
+import { useConfigStore } from '@/stores/config';
+
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
@@ -6,8 +7,14 @@ import { WallpaperProperties } from './types';
  * 处理RGB灯光效果相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
+ *
+ * Stage 7-B: 改写 config.xxx = ... 为 useConfigStore().$patch({...})，
+ * 解除本 handler 对 src/utils/config 单例的依赖（Stage 3.5 准备）。
  */
 export function handleRGBProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
+    const store = useConfigStore();
+    const patch: Record<string, unknown> = {};
+
     // RGB FPS刷新率
     if (properties.rgb_fps) {
         const fpsMap: Record<number, number> = {
@@ -18,43 +25,43 @@ export function handleRGBProperties(properties: WallpaperProperties, FirstLoad: 
         };
         const fps = properties.rgb_fps.value;
         if (fpsMap[fps] !== undefined) {
-            config.rgb_refresh = fpsMap[fps];
+            patch.rgb_refresh = fpsMap[fps];
         }
     }
 
     // 是否显示RGB效果
     if (properties.rgb_show) {
-        config.rgb_show = properties.rgb_show.value;
+        patch.rgb_show = properties.rgb_show.value;
     }
 
     // 背景RGB开关
     if (properties.rgb_bg) {
-        config.background_rgb = properties.rgb_bg.value;
+        patch.background_rgb = properties.rgb_bg.value;
     }
 
     // 樱花RGB开关
     if (properties.rgb_sa) {
-        config.sakura_rgb = properties.rgb_sa.value;
+        patch.sakura_rgb = properties.rgb_sa.value;
     }
 
     // 粒子RGB开关
     if (properties.rgb_pa) {
-        config.particles_rgb = properties.rgb_pa.value;
+        patch.particles_rgb = properties.rgb_pa.value;
     }
 
     // 音频条RGB开关
     if (properties.rgb_au) {
-        config.audiobar_rgb = properties.rgb_au.value;
+        patch.audiobar_rgb = properties.rgb_au.value;
     }
 
     // 樱花不透明度
     if (properties.rgb_sa_op) {
-        config.opacity_sa_rgb = properties.rgb_sa_op.value / 100;
+        patch.opacity_sa_rgb = properties.rgb_sa_op.value / 100;
     }
 
     // 音频条高度
     if (properties.rgb_au_high) {
-        config.aurgbhigh = properties.rgb_au_high.value / 2;
+        patch.aurgbhigh = properties.rgb_au_high.value / 2;
     }
 
     // 音频条颜色
@@ -62,22 +69,27 @@ export function handleRGBProperties(properties: WallpaperProperties, FirstLoad: 
         const color = properties.rgb_au_color.value
             .split(' ')
             .map(c => Math.ceil(parseFloat(c) * 255));
-        config.aurgbcolor = color.join(',');
+        patch.aurgbcolor = color.join(',');
     }
 
     // 彩虹颜色模式
     if (properties.rgb_color_rainbow) {
-        config.audiobar_rainbow_color = properties.rgb_color_rainbow.value;
+        patch.audiobar_rainbow_color = properties.rgb_color_rainbow.value;
     }
 
     // 彩虹移动
     if (properties.rgb_color_rainbow_move) {
-        config.rainbow_move = properties.rgb_color_rainbow_move.value;
+        patch.rainbow_move = properties.rgb_color_rainbow_move.value;
     }
 
     // 彩虹移动速度
     if (properties.rgb_color_rainbow_movespeed) {
-        config.rainbow_move_speed = properties.rgb_color_rainbow_movespeed.value;
+        patch.rainbow_move_speed = properties.rgb_color_rainbow_movespeed.value;
+    }
+
+    // Single batched $patch (one Vue reactivity trigger instead of 14)
+    if (Object.keys(patch).length > 0) {
+        store.$patch(patch);
     }
 
     if (FirstLoad) {

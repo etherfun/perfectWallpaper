@@ -1,5 +1,6 @@
+import { useConfigStore } from '@/stores/config';
+
 import { fullscreenLyrics } from '../fullscreenLyrics';
-import { config } from '../utils/config';
 import { logInitComplete } from './_helpers';
 import { WallpaperProperties } from './types';
 
@@ -7,52 +8,70 @@ import { WallpaperProperties } from './types';
  * 处理全屏歌词相关属性
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
+ *
+ * Stage 7-B: 改写 config.xxx = ... 为 useConfigStore().$patch({...})，
+ * 解除本 handler 对 src/utils/config 单例的依赖（Stage 3.5 准备）。
  */
 export function handleLyricsProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
-    if (properties.fullscreen_lyrics_enabled) {
-        config.fullscreen_lyrics_enabled = properties.fullscreen_lyrics_enabled.value;
+    const store = useConfigStore();
+    const patch: Record<string, unknown> = {};
+    let fullscreenLyricsShow = false;
 
-        if (config.fullscreen_lyrics_enabled) {
-            fullscreenLyrics.show();
-        } else {
-            fullscreenLyrics.hide();
-        }
+    if (properties.fullscreen_lyrics_enabled) {
+        const enabled = properties.fullscreen_lyrics_enabled.value;
+        patch.fullscreen_lyrics_enabled = enabled;
+        fullscreenLyricsShow = enabled;
     }
 
     if (properties.fullscreen_lyrics_show_translation) {
-        config.fullscreen_lyrics_show_translation =
+        patch.fullscreen_lyrics_show_translation =
             properties.fullscreen_lyrics_show_translation.value;
-        fullscreenLyrics.setConfig({ showTranslation: config.fullscreen_lyrics_show_translation });
     }
 
     if (properties.fullscreen_lyrics_show_roman) {
-        config.fullscreen_lyrics_show_roman = properties.fullscreen_lyrics_show_roman.value;
-        fullscreenLyrics.setConfig({ showRoman: config.fullscreen_lyrics_show_roman });
+        patch.fullscreen_lyrics_show_roman = properties.fullscreen_lyrics_show_roman.value;
     }
 
     if (properties.fullscreen_lyrics_delay) {
-        config.fullscreen_lyrics_delay = properties.fullscreen_lyrics_delay.value;
-        fullscreenLyrics.setConfig({ delay: config.fullscreen_lyrics_delay });
+        patch.fullscreen_lyrics_delay = properties.fullscreen_lyrics_delay.value;
     }
 
     if (properties.fullscreen_lyrics_enable_blur) {
-        config.fullscreen_lyrics_enable_blur = properties.fullscreen_lyrics_enable_blur.value;
-        fullscreenLyrics.setConfig({ enableBlur: config.fullscreen_lyrics_enable_blur });
+        patch.fullscreen_lyrics_enable_blur = properties.fullscreen_lyrics_enable_blur.value;
     }
 
     if (properties.fullscreen_lyrics_hide_other) {
-        config.fullscreen_lyrics_hide_other = properties.fullscreen_lyrics_hide_other.value;
-        fullscreenLyrics.setConfig({ hideOtherElements: config.fullscreen_lyrics_hide_other });
+        patch.fullscreen_lyrics_hide_other = properties.fullscreen_lyrics_hide_other.value;
     }
 
     if (properties.fullscreen_lyrics_show_clock) {
-        config.fullscreen_lyrics_show_clock = properties.fullscreen_lyrics_show_clock.value;
-        fullscreenLyrics.setConfig({ showClock: config.fullscreen_lyrics_show_clock });
+        patch.fullscreen_lyrics_show_clock = properties.fullscreen_lyrics_show_clock.value;
     }
 
-    if (FirstLoad) {
-        if (config.fullscreen_lyrics_enabled) fullscreenLyrics.show();
+    // Apply patch first so fullscreenLyrics.setConfig reads up-to-date values.
+    if (Object.keys(patch).length > 0) {
+        store.$patch(patch);
+    }
 
+    // Now call side-effects with values pulled from the (patched) store.
+    if (fullscreenLyricsShow) {
+        fullscreenLyrics.show();
+    } else if (properties.fullscreen_lyrics_enabled) {
+        fullscreenLyrics.hide();
+    }
+
+    // Re-apply the rest of the config to the live fullscreenLyrics instance.
+    fullscreenLyrics.setConfig({
+        showTranslation: store.fullscreen_lyrics_show_translation === true,
+        showRoman: store.fullscreen_lyrics_show_roman === true,
+        delay: store.fullscreen_lyrics_delay,
+        enableBlur: store.fullscreen_lyrics_enable_blur === true,
+        hideOtherElements: store.fullscreen_lyrics_hide_other === true,
+        showClock: store.fullscreen_lyrics_show_clock === true,
+    });
+
+    if (FirstLoad) {
+        if (store.fullscreen_lyrics_enabled === true) fullscreenLyrics.show();
         logInitComplete('[FullscreenLyrics]', '全屏歌词', FirstLoad);
     }
 }

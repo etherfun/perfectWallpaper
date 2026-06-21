@@ -1,4 +1,5 @@
-import { i18n } from '../../utils/i18n';
+import { globalT } from '@/i18n';
+
 import { fetch_with_retry } from '../../utils/tool';
 import type { SevenHourlyData, WeatherAddress, WeatherData } from '../types';
 import { OPEN_METEO_TO_QWEATHER } from '../types';
@@ -76,16 +77,16 @@ function getPrecipTypeFromCode(weatherCode: number): string {
 
     if (rainCodes.includes(weatherCode)) {
         if (freezingRainCodes.includes(weatherCode)) {
-            return i18n('weather_precip_type_freezing_rain');
+            return globalT('weather_precip_type_freezing_rain');
         } else if (hailCodes.includes(weatherCode)) {
-            return i18n('weather_precip_type_hail');
+            return globalT('weather_precip_type_hail');
         }
-        return i18n('weather_precip_type_rain');
+        return globalT('weather_precip_type_rain');
     } else if (snowCodes.includes(weatherCode)) {
-        return i18n('weather_precip_type_snow');
+        return globalT('weather_precip_type_snow');
     }
 
-    return i18n('weather_precip_type_none');
+    return globalT('weather_precip_type_none');
 }
 
 const DIRECTIONS = [
@@ -126,11 +127,11 @@ export async function openmeteo(
 
     // 天气状况
     weather_data.weathernow =
-        i18n(`weather_openmeteo_${res.current.weather_code}`) || i18n('weather_no_data');
+        globalT(`weather_openmeteo_${res.current.weather_code}`) || globalT('weather_no_data');
 
     // 风向
     const windDirIndex = Math.floor((res.current.wind_direction_10m + 22.5) / 45) % 8;
-    weather_data.wind = i18n(DIRECTIONS[windDirIndex] ?? 'weather_no_data');
+    weather_data.wind = globalT(DIRECTIONS[windDirIndex] ?? 'weather_no_data');
 
     weather_data.precip = res.current.precipitation;
     weather_data.sunrise = res.daily.sunrise[0] ?? '';
@@ -139,7 +140,7 @@ export async function openmeteo(
     weather_data.pressure = res.current.pressure_msl;
     weather_data.obstime = res.current.time.replace('T', ' ');
     weather_data.rangetemperature = `${res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.temperature_2m_max[0] ?? '0'}`;
-    weather_data.uvindex = res.daily.uv_index_max?.[0] || i18n('weather_no_data');
+    weather_data.uvindex = res.daily.uv_index_max?.[0] || globalT('weather_no_data');
     weather_data.rangefeelstemperature = `${res.daily.apparent_temperature_min?.[0] || res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.apparent_temperature_max?.[0] || res.daily.temperature_2m_max[0] || '0'}`;
     // @ts-ignore - rain属性用于Open-Meteo特定数据
     weather_data.rain = res.current.rain || '0';
@@ -193,12 +194,12 @@ export async function openmeteo(
             const weatherCode = res.hourly.weather_code?.[idx] ?? res.current.weather_code;
             sevenHourlyData.Icons.push(getOpenMeteoIcon(weatherCode, timeStr).toString());
             sevenHourlyData.Texts.push(
-                i18n(`weather_openmeteo_${weatherCode}`) || i18n('weather_no_data')
+                globalT(`weather_openmeteo_${weatherCode}`) || globalT('weather_no_data')
             );
 
             const windDir = res.hourly.wind_direction_10m?.[idx] ?? res.current.wind_direction_10m;
             const dirIndex = Math.floor((windDir + 22.5) / 45) % 8;
-            sevenHourlyData.Winds.push(i18n(DIRECTIONS[dirIndex] ?? 'weather_no_data'));
+            sevenHourlyData.Winds.push(globalT(DIRECTIONS[dirIndex] ?? 'weather_no_data'));
             sevenHourlyData.Wind360s.push(windDir.toString());
 
             sevenHourlyData.WindSpeeds.push(
@@ -224,7 +225,7 @@ export async function openmeteo(
             sevenHourlyData.Pops.push('——');
             sevenHourlyData.Temps.push('--');
             sevenHourlyData.Icons.push('999');
-            sevenHourlyData.Texts.push(i18n('weather_no_data'));
+            sevenHourlyData.Texts.push(globalT('weather_no_data'));
             sevenHourlyData.Winds.push('--');
             sevenHourlyData.Wind360s.push('--');
             sevenHourlyData.WindSpeeds.push('--');

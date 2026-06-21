@@ -3,7 +3,8 @@
  * Handles basic markdown formatting
  */
 
-import { i18n } from '../utils/i18n';
+import { globalT } from '@/i18n';
+
 import { debugLogger } from '../utils/logger';
 import {
     type ListItem,
@@ -86,9 +87,9 @@ export class SimpleMarkdown {
             <div class="notification-content">
                 <div class="notification-icon">📋</div>
                 <div class="notification-text">
-                    <div class="notification-title">${i18n('already_copy')}</div>
+                    <div class="notification-title">${globalT('already_copy')}</div>
                     <div class="notification-url">${truncateUrl(url, 40)}</div>
-                    <div class="notification-hint">${i18n('already_copy_tip')}</div>
+                    <div class="notification-hint">${globalT('already_copy_tip')}</div>
                 </div>
                 <button class="notification-close">&times;</button>
             </div>

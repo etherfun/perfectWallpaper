@@ -1,5 +1,6 @@
+import { globalT } from '@/i18n';
+
 import { config } from '../../utils/config';
-import { i18n } from '../../utils/i18n';
 import { fetch_with_retry, weather_paymode } from '../../utils/tool';
 import type { WeatherAddress, WeatherData } from '../types';
 import type {
@@ -86,7 +87,7 @@ async function fetchNowWeather(
     weather_data.temperature = res.now.temp;
     weather_data.feels = res.now.feelsLike;
     weather_data.weathernow = res.now.text;
-    weather_data.wind = i18n(WIND_DIR_MAP[res.now.windDir] ?? 'weather_wind_north');
+    weather_data.wind = globalT(WIND_DIR_MAP[res.now.windDir] ?? 'weather_wind_north');
     weather_data.windLv = res.now.windScale;
     weather_data.precip = res.now.precip;
     weather_data.cloud = res.now.cloud;
@@ -129,23 +130,23 @@ async function fetchAirQuality(
 
             if (aqiIndex) {
                 weather_data.air =
-                    aqiIndex.aqi?.toString() || aqiIndex.aqiDisplay || i18n('weather_no_data');
+                    aqiIndex.aqi?.toString() || aqiIndex.aqiDisplay || globalT('weather_no_data');
             } else {
                 const firstIndex = day.indexes[0];
                 if (firstIndex) {
                     weather_data.air =
                         firstIndex.aqi?.toString() ||
                         firstIndex.aqiDisplay ||
-                        i18n('weather_no_data');
+                        globalT('weather_no_data');
                 } else {
-                    weather_data.air = i18n('weather_no_data');
+                    weather_data.air = globalT('weather_no_data');
                 }
             }
         } else {
-            weather_data.air = i18n('weather_no_data');
+            weather_data.air = globalT('weather_no_data');
         }
     } else {
-        weather_data.air = i18n('weather_no_data');
+        weather_data.air = globalT('weather_no_data');
     }
 }
 
@@ -310,7 +311,7 @@ export async function qweather(
     weather_data: WeatherData
 ): Promise<void> {
     if (checkQuota()) {
-        throw new Error(i18n('error_get_weather_data_over_usage'));
+        throw new Error(globalT('error_get_weather_data_over_usage'));
     }
 
     // 如果没有城市编号，先查询

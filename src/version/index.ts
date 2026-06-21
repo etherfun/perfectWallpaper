@@ -4,8 +4,9 @@
 
 export { SimpleMarkdown } from './simple-markdown';
 
+import { globalT } from '@/i18n';
+
 import { config } from '../utils/config';
-import { i18n } from '../utils/i18n';
 import { waitAndExecute } from '../utils/timer';
 import { fetch_with_retry } from '../utils/tool';
 import { SimpleMarkdown } from './simple-markdown';
@@ -164,7 +165,7 @@ class versionManager {
                         <div class="header-left">
                             <h2 class="modal-title">
                                 <i class="version-icon">📱</i>
-                                ${this.isNewVersion ? i18n('version_update_title') : i18n('version_info_title')}
+                                ${this.isNewVersion ? globalT('version_update_title') : globalT('version_info_title')}
                             </h2>
                             <div class="version-indicator">
                                 ${this.isNewVersion ? '<span class="new-badge">NEW</span>' : ''}
@@ -178,7 +179,7 @@ class versionManager {
                             <!-- 左侧版本列表 -->
                             <div class="version-list-column">
                                 <div class="version-list-header">
-                                    <h3>${i18n('version_history_title')}</h3>
+                                    <h3>${globalT('version_history_title')}</h3>
                                     <div class="version-list-count">
                                         <span class="total-count">0</span>
                                     </div>
@@ -187,7 +188,7 @@ class versionManager {
                                 <div class="version-list-container" id="version-list-container">
                                     <div class="loading-indicator">
                                         <div class="loading-spinner"></div>
-                                        <div class="loading-text">${i18n('version_loading')}</div>
+                                        <div class="loading-text">${globalT('version_loading')}</div>
                                     </div>
                                 </div>
                             </div>
@@ -195,7 +196,7 @@ class versionManager {
                             <!-- 右侧版本详情 -->
                             <div class="version-detail-column">
                                 <div class="version-detail-header">
-                                    <h3 id="detail-version-title">${i18n('version_current_tab')}</h3>
+                                    <h3 id="detail-version-title">${globalT('version_current_tab')}</h3>
                                     <div class="version-detail-meta" id="detail-version-meta">
                                         <span class="detail-version">v${this.currentVersion}</span>
                                         <span class="detail-date"></span>
@@ -205,7 +206,7 @@ class versionManager {
                                 <div class="version-detail-content" id="version-detail-content">
                                     <div class="loading-indicator">
                                         <div class="loading-spinner"></div>
-                                        <div class="loading-text">${i18n('version_loading_details')}</div>
+                                        <div class="loading-text">${globalT('version_loading_details')}</div>
                                     </div>
                                 </div>
 
@@ -214,7 +215,7 @@ class versionManager {
 
                                 <!-- 滚动提示 -->
                                 <div class="scroll-hint" id="scroll-hint">
-                                    ${i18n('version_scroll_hint')}
+                                    ${globalT('version_scroll_hint')}
                                 </div>
                             </div>
                         </div>
@@ -223,12 +224,12 @@ class versionManager {
                     <div class="modal-footer">
                         <div class="footer-left">
                             <button class="action-btn secondary-btn" id="dont-show-btn">
-                                ${i18n('version_dont_show_again')}
+                                ${globalT('version_dont_show_again')}
                             </button>
                         </div>
                         <div class="footer-right">
                             <button class="action-btn" id="understand-btn">
-                                ${i18n('version_i_understand')}
+                                ${globalT('version_i_understand')}
                                 <span class="countdown-text" id="countdown-text"></span>
                             </button>
                         </div>
@@ -612,7 +613,7 @@ class versionManager {
         if (listContainer && countElement) {
             listContainer.innerHTML = this.renderVersionList();
             countElement.textContent =
-                versionConfig.VERSION_HISTORY.length + ' ' + i18n('version_units');
+                versionConfig.VERSION_HISTORY.length + ' ' + globalT('version_units');
         }
 
         // 填充当前版本详情
@@ -655,7 +656,7 @@ class versionManager {
 
     // 渲染版本详情内容
     private renderVersionDetailContent(versionInfo: unknown): string {
-        if (!versionInfo) return '<div class="no-data">' + i18n('version_no_data') + '</div>';
+        if (!versionInfo) return '<div class="no-data">' + globalT('version_no_data') + '</div>';
 
         const info = versionInfo as Record<string, unknown>;
 
@@ -673,7 +674,7 @@ class versionManager {
                              ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}">
                         <div class="image-info">
                             <div class="image-description">
-                                ${SimpleMarkdown.parse(info.imageAlt as string) || i18n('version_image_default_alt')}
+                                ${SimpleMarkdown.parse(info.imageAlt as string) || globalT('version_image_default_alt')}
                             </div>
                         </div>
                     </div>
@@ -682,7 +683,7 @@ class versionManager {
                 }
 
                 <div class="version-changes">
-                    <h4>${i18n('version_changes_title')}</h4>
+                    <h4>${globalT('version_changes_title')}</h4>
                     <div class="changes-content">
                         ${
                             versionConfig.SHOW_SETTINGS.enableMarkdown
@@ -713,14 +714,14 @@ class versionManager {
                     <div class="version-item-header">
                         <div class="version-item-left">
                             <span class="version-number">v${history.version}</span>
-                            ${isCurrent ? '<span class="current-indicator">' + i18n('version_current_badge') + '</span>' : ''}
+                            ${isCurrent ? '<span class="current-indicator">' + globalT('version_current_badge') + '</span>' : ''}
                         </div>
                         <div class="version-item-right">
                             <span class="version-date">${history.date}</span>
                         </div>
                     </div>
                     <div class="version-item-title">
-                        ${versionInfo?.title || (history.titleKey ? i18n(history.titleKey) : '') || i18n('version_fallback_title_with_version') + ' ' + history.version}
+                        ${versionInfo?.title || (history.titleKey ? globalT(history.titleKey) : '') || globalT('version_fallback_title_with_version') + ' ' + history.version}
                     </div>
                 </div>
             `;
@@ -761,25 +762,25 @@ class versionManager {
 
         // 处理标题
         if (rawInfo.titleKey) {
-            processedInfo.title = i18n(rawInfo.titleKey);
+            processedInfo.title = globalT(rawInfo.titleKey);
         } else if (rawInfo.title) {
             processedInfo.title = rawInfo.title;
         } else {
-            processedInfo.title = i18n('version_fallback_title') + rawInfo.version;
+            processedInfo.title = globalT('version_fallback_title') + rawInfo.version;
         }
 
         // 处理图片替代文本
         if (rawInfo.imageAltKey) {
-            processedInfo.imageAlt = i18n(rawInfo.imageAltKey);
+            processedInfo.imageAlt = globalT(rawInfo.imageAltKey);
         } else if (rawInfo.imageAlt) {
             processedInfo.imageAlt = rawInfo.imageAlt;
         } else {
-            processedInfo.imageAlt = i18n('version_image_default_alt');
+            processedInfo.imageAlt = globalT('version_image_default_alt');
         }
 
         // 处理更新内容
         if (rawInfo.changesKey) {
-            const changesText = i18n(rawInfo.changesKey);
+            const changesText = globalT(rawInfo.changesKey);
             processedInfo.changes = changesText
                 .split('\n')
                 .filter((line: string) => line.trim() !== '');
@@ -855,7 +856,7 @@ class versionManager {
                 ${
                     versionInfo.version === this.currentVersion
                         ? '<span class="current-badge">' +
-                          i18n('version_current_version') +
+                          globalT('version_current_version') +
                           '</span>'
                         : ''
                 }

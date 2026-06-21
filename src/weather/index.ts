@@ -36,8 +36,9 @@ export {
     weather_data,
 } from './weatherState';
 
+import { globalT } from '@/i18n';
+
 import { config } from '../utils/config';
-import { i18n } from '../utils/i18n';
 import { debugLogger } from '../utils/logger';
 import { timerManager } from '../utils/timer';
 import { fetch_with_retry } from '../utils/tool';
@@ -130,7 +131,7 @@ export async function weather_init(): Promise<void> {
                 await generateWeatherTable();
             } catch (error) {
                 console.error('Weather fetch error:', error);
-                showWeatherError(i18n('weather_error_loading') || 'Failed to load weather data');
+                showWeatherError(globalT('weather_error_loading') || 'Failed to load weather data');
             }
         }
     } finally {

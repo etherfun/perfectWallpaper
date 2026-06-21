@@ -3,7 +3,8 @@
  * 职责：绑定七小时预报悬停提示
  */
 
-import { i18n } from '../../utils/i18n';
+import { globalT } from '@/i18n';
+
 import { getIconSvg } from '../index';
 import { weather_data } from '../weatherState';
 
@@ -43,17 +44,17 @@ export function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number
         const pWindSpeed = card.querySelector('#pWindSpeed');
         const pIconImg = card.querySelector('#pIconImg');
 
-        if (pTemp) pTemp.textContent = `${temp}${i18n('weather_tooltip_unit_degree')}`;
+        if (pTemp) pTemp.textContent = `${temp}${globalT('weather_tooltip_unit_degree')}`;
         if (pText) pText.textContent = text;
-        if (pHumidity) pHumidity.textContent = `${hum}${i18n('weather_tooltip_unit_percent')}`;
-        if (pPrecip) pPrecip.textContent = `${pop} / ${precip}${i18n('weather_tooltip_unit_mm')}`;
-        if (pPressure) pPressure.textContent = `${pres}${i18n('weather_tooltip_unit_hpa')}`;
-        if (pClouds) pClouds.textContent = `${clouds}${i18n('weather_tooltip_unit_percent')}`;
-        if (pDew) pDew.textContent = `${dew}${i18n('weather_tooltip_unit_degree')}`;
+        if (pHumidity) pHumidity.textContent = `${hum}${globalT('weather_tooltip_unit_percent')}`;
+        if (pPrecip) pPrecip.textContent = `${pop} / ${precip}${globalT('weather_tooltip_unit_mm')}`;
+        if (pPressure) pPressure.textContent = `${pres}${globalT('weather_tooltip_unit_hpa')}`;
+        if (pClouds) pClouds.textContent = `${clouds}${globalT('weather_tooltip_unit_percent')}`;
+        if (pDew) pDew.textContent = `${dew}${globalT('weather_tooltip_unit_degree')}`;
         if (pWindDir)
-            pWindDir.textContent = `${wind} / ${wind360}${i18n('weather_tooltip_unit_degree')}`;
+            pWindDir.textContent = `${wind} / ${wind360}${globalT('weather_tooltip_unit_degree')}`;
         if (pWindLv) pWindLv.textContent = windLv;
-        if (pWindSpeed) pWindSpeed.textContent = `${windSp} ${i18n('weather_tooltip_unit_ms')}`;
+        if (pWindSpeed) pWindSpeed.textContent = `${windSp} ${globalT('weather_tooltip_unit_ms')}`;
 
         getIconSvg(`src/source/QWeather-Icons/icons/${icon}-fill.svg`).then(svg => {
             if (pIconImg) pIconImg.innerHTML = svg;

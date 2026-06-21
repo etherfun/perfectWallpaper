@@ -3,7 +3,8 @@
  * 职责：将天气数据转换为显示用的格式化字符串
  */
 
-import { i18n } from '../utils/i18n';
+import { globalT } from '@/i18n';
+
 import type { WeatherAlert } from './types';
 import { weather_data } from './weatherState';
 
@@ -18,12 +19,12 @@ export function getAirQualityText(airValue: string | number): string {
         return String(airValue);
     }
 
-    if (airNum <= 50) return `${i18n('weather_air_quality_excellent')} (${airNum})`;
-    if (airNum <= 100) return `${i18n('weather_air_quality_good')} (${airNum})`;
-    if (airNum <= 150) return `${i18n('weather_air_quality_light_pollution')} (${airNum})`;
-    if (airNum <= 200) return `${i18n('weather_air_quality_moderate_pollution')} (${airNum})`;
-    if (airNum <= 300) return `${i18n('weather_air_quality_heavy_pollution')} (${airNum})`;
-    return `${i18n('weather_air_quality_severe_pollution')} (${airNum})`;
+    if (airNum <= 50) return `${globalT('weather_air_quality_excellent')} (${airNum})`;
+    if (airNum <= 100) return `${globalT('weather_air_quality_good')} (${airNum})`;
+    if (airNum <= 150) return `${globalT('weather_air_quality_light_pollution')} (${airNum})`;
+    if (airNum <= 200) return `${globalT('weather_air_quality_moderate_pollution')} (${airNum})`;
+    if (airNum <= 300) return `${globalT('weather_air_quality_heavy_pollution')} (${airNum})`;
+    return `${globalT('weather_air_quality_severe_pollution')} (${airNum})`;
 }
 
 /**

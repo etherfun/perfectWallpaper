@@ -1,4 +1,5 @@
-import { i18n } from '../utils/i18n';
+import { globalT } from '@/i18n';
+
 import { WeatherData, WeatherTip } from './types';
 
 /**
@@ -56,105 +57,105 @@ export function getWeatherTips(weatherData: WeatherData): string {
 
     // 优先级 0: 天气预警（最高优先级）
     if (hasWeatherAlert) {
-        tips.push({ priority: 0, text: i18n('weather_tip_alert') });
+        tips.push({ priority: 0, text: globalT('weather_tip_alert') });
     }
 
     // 优先级 1: 极端天气状况
-    const sunnyText = i18n('weather_condition_sunny');
-    const cloudyText = i18n('weather_condition_cloudy');
-    const rainText = i18n('weather_condition_rain');
-    const snowText = i18n('weather_condition_snow');
+    const sunnyText = globalT('weather_condition_sunny');
+    const cloudyText = globalT('weather_condition_cloudy');
+    const rainText = globalT('weather_condition_rain');
+    const snowText = globalT('weather_condition_snow');
 
     if (weatherText.includes(rainText)) {
-        tips.push({ priority: 1, text: i18n('weather_tip_rain') });
+        tips.push({ priority: 1, text: globalT('weather_tip_rain') });
     }
 
     if (weatherText.includes(snowText)) {
-        tips.push({ priority: 1, text: i18n('weather_tip_snow') });
+        tips.push({ priority: 1, text: globalT('weather_tip_snow') });
     }
 
     if (windScale >= 6) {
-        tips.push({ priority: 1, text: i18n('weather_tip_windy_strong') });
+        tips.push({ priority: 1, text: globalT('weather_tip_windy_strong') });
     } else if (windScale >= 4) {
-        tips.push({ priority: 1, text: i18n('weather_tip_windy') });
+        tips.push({ priority: 1, text: globalT('weather_tip_windy') });
     }
 
     // 优先级 2: 健康相关建议
     if (airQuality > 150) {
-        tips.push({ priority: 2, text: i18n('weather_tip_air_quality_poor') });
+        tips.push({ priority: 2, text: globalT('weather_tip_air_quality_poor') });
     } else if (airQuality > 100) {
-        tips.push({ priority: 2, text: i18n('weather_tip_air_quality') });
+        tips.push({ priority: 2, text: globalT('weather_tip_air_quality') });
     }
 
     if (uvIndex >= 8) {
-        tips.push({ priority: 2, text: i18n('weather_tip_uv_extreme') });
+        tips.push({ priority: 2, text: globalT('weather_tip_uv_extreme') });
     } else if (uvIndex >= 6) {
-        tips.push({ priority: 2, text: i18n('weather_tip_uv_high') });
+        tips.push({ priority: 2, text: globalT('weather_tip_uv_high') });
     } else if (uvIndex >= 3 && !isNight) {
-        tips.push({ priority: 2, text: i18n('weather_tip_uv_moderate') });
+        tips.push({ priority: 2, text: globalT('weather_tip_uv_moderate') });
     }
 
     // 优先级 3: 温度相关建议
     if (maxTemp >= 35) {
-        tips.push({ priority: 3, text: i18n('weather_tip_hot_extreme') });
+        tips.push({ priority: 3, text: globalT('weather_tip_hot_extreme') });
     } else if (maxTemp >= 30) {
-        tips.push({ priority: 3, text: i18n('weather_tip_hot') });
+        tips.push({ priority: 3, text: globalT('weather_tip_hot') });
     } else if (minTemp <= -10) {
-        tips.push({ priority: 3, text: i18n('weather_tip_cold_extreme') });
+        tips.push({ priority: 3, text: globalT('weather_tip_cold_extreme') });
     } else if (minTemp <= 0) {
-        tips.push({ priority: 3, text: i18n('weather_tip_cold') });
+        tips.push({ priority: 3, text: globalT('weather_tip_cold') });
     }
 
     // 体感温度与实测温度差异
     const tempDiff = Math.abs(feelsTemp - currentTemp);
     if (tempDiff >= 5 && !isNight) {
         if (feelsTemp > currentTemp) {
-            tips.push({ priority: 3, text: i18n('weather_tip_feels_hotter') });
+            tips.push({ priority: 3, text: globalT('weather_tip_feels_hotter') });
         } else {
-            tips.push({ priority: 3, text: i18n('weather_tip_feels_colder') });
+            tips.push({ priority: 3, text: globalT('weather_tip_feels_colder') });
         }
     }
 
     // 优先级 4: 湿度相关建议
     if (humidity >= 80) {
-        tips.push({ priority: 4, text: i18n('weather_tip_humidity_high') });
+        tips.push({ priority: 4, text: globalT('weather_tip_humidity_high') });
     } else if (humidity <= 30) {
-        tips.push({ priority: 4, text: i18n('weather_tip_humidity_low') });
+        tips.push({ priority: 4, text: globalT('weather_tip_humidity_low') });
     }
 
     // 优先级 5: 能见度建议
     if (visibility > 0 && visibility < 1) {
-        tips.push({ priority: 5, text: i18n('weather_tip_visibility_poor') });
+        tips.push({ priority: 5, text: globalT('weather_tip_visibility_poor') });
     } else if (visibility >= 1 && visibility < 5) {
-        tips.push({ priority: 5, text: i18n('weather_tip_visibility_low') });
+        tips.push({ priority: 5, text: globalT('weather_tip_visibility_low') });
     }
 
     // 优先级 6: 时间相关建议
     if ((weatherText.includes(sunnyText) || weatherText.includes(cloudyText)) && !isNight) {
         if (isMorning) {
-            tips.push({ priority: 6, text: i18n('weather_tip_morning_sunny') });
+            tips.push({ priority: 6, text: globalT('weather_tip_morning_sunny') });
         } else if (isAfternoon) {
-            tips.push({ priority: 6, text: i18n('weather_tip_afternoon_sunny') });
+            tips.push({ priority: 6, text: globalT('weather_tip_afternoon_sunny') });
         } else if (isEvening) {
-            tips.push({ priority: 6, text: i18n('weather_tip_evening_sunny') });
+            tips.push({ priority: 6, text: globalT('weather_tip_evening_sunny') });
         }
     }
 
     if ((weatherText.includes(sunnyText) || weatherText.includes(cloudyText)) && isNight) {
-        tips.push({ priority: 6, text: i18n('weather_tip_sunny_night') });
+        tips.push({ priority: 6, text: globalT('weather_tip_sunny_night') });
     }
 
     // 优先级 7: 通用建议
     if (cloudCover >= 80) {
-        tips.push({ priority: 7, text: i18n('weather_tip_cloudy_heavy') });
+        tips.push({ priority: 7, text: globalT('weather_tip_cloudy_heavy') });
     } else if (cloudCover >= 50) {
-        tips.push({ priority: 7, text: i18n('weather_tip_cloudy') });
+        tips.push({ priority: 7, text: globalT('weather_tip_cloudy') });
     }
 
     if (precipitation > 10) {
-        tips.push({ priority: 7, text: i18n('weather_tip_heavy_precip') });
+        tips.push({ priority: 7, text: globalT('weather_tip_heavy_precip') });
     } else if (precipitation > 1) {
-        tips.push({ priority: 7, text: i18n('weather_tip_moderate_precip') });
+        tips.push({ priority: 7, text: globalT('weather_tip_moderate_precip') });
     }
 
     // 按优先级排序，取优先级最高的
@@ -165,12 +166,12 @@ export function getWeatherTips(weatherData: WeatherData): string {
 
     // 默认建议
     if (isMorning) {
-        return i18n('weather_tip_default_morning');
+        return globalT('weather_tip_default_morning');
     } else if (isAfternoon) {
-        return i18n('weather_tip_default_afternoon');
+        return globalT('weather_tip_default_afternoon');
     } else if (isEvening) {
-        return i18n('weather_tip_default_evening');
+        return globalT('weather_tip_default_evening');
     } else {
-        return i18n('weather_tip_default_night');
+        return globalT('weather_tip_default_night');
     }
 }

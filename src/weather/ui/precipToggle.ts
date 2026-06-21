@@ -3,8 +3,9 @@
  * 职责：处理降水概率和温度显示的定时切换及动画
  */
 
+import { globalT } from '@/i18n';
+
 import { config } from '../../utils/config';
-import { i18n } from '../../utils/i18n';
 import { getWeatherUnit } from '../weatherState';
 import {
     clearPrecipTimer,
@@ -34,8 +35,8 @@ export function togglePrecipTemperatureDisplay(): void {
     const labelElement = document.querySelector('.precip-label');
     if (labelElement) {
         const label = showTemperatureInsteadOfPrecip
-            ? i18n('weather_show_temperature')
-            : i18n('weather_show_precipprob');
+            ? globalT('weather_show_temperature')
+            : globalT('weather_show_precipprob');
 
         // 添加动画类
         labelElement.classList.add('animate');

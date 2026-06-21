@@ -8,11 +8,32 @@
  * 切换语言：`useI18n().locale.value = 'en-US'`
  *
  * 在 .vue 中：`const { t } = useI18n(); t('ui_setting_show')`
+ * 在 .ts 中：`const { t } = useI18n(); t('ui_setting_show')`  ← 同样可用
  */
 
-import { createI18n } from 'vue-i18n';
+import { createI18n, useI18n } from 'vue-i18n';
 
 import { useConfigStore } from '@/stores/config';
+
+export { useI18n };
+
+/**
+ * 静态 i18n 翻译函数 — 适用于非 setup 上下文（.ts 模块顶层 / 普通函数 / 异步回调）。
+ *
+ * vue-i18n 9 在 `legacy: false` 模式下，`useI18n()` 必须有 inject 上下文
+ * （SFC setup / 显式 runWithContext）。在 .ts 模块顶层或普通函数中调用
+ * 会抛 "inject() can only be used inside setup()"。
+ *
+ * 本函数绕过该限制，直接访问 i18n 全局实例的 t() 方法：
+ *   - 响应式（locale 变化时全局 messages 重新映射，调用处自动更新）
+ *   - 不依赖 inject 上下文
+ *   - 适用于 weather/version 等命令式模块的迁移
+ */
+export function globalT(key: string, ...args: unknown[]): string {
+    // vue-i18n 类型未导出 Composer.t 的多参数重载，用 any 绕过
+     
+    return (i18n.global as any).t(key, ...args);
+}
 
 /**
  * 最小内置 fallback 字典
@@ -51,7 +72,7 @@ export async function loadI18n(lang?: string): Promise<void> {
         const res = await fetch(`source/i18n/${target}.json`);
         if (res.ok) {
             const messages = await res.json();
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             (i18n as any).global.setLocaleMessage(target, messages);
             i18n.global.locale.value = target as 'zh-CN' | 'en-US';
         }

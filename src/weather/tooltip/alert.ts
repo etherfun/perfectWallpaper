@@ -3,7 +3,8 @@
  * 职责：绑定天气预警悬停提示
  */
 
-import { i18n } from '../../utils/i18n';
+import { globalT } from '@/i18n';
+
 import { getIconSvg } from '../index';
 import { weather_data } from '../weatherState';
 import { getTime } from './time';
@@ -19,7 +20,7 @@ export function attachWeatherAlertTooltip(element: HTMLElement): void {
     ) as HTMLTemplateElement | null;
     const alertName = element.innerHTML;
 
-    if (element.innerText === i18n('weather_alert_everything_ok')) return;
+    if (element.innerText === globalT('weather_alert_everything_ok')) return;
 
     element.addEventListener('mouseenter', () => {
         if (!cardsContainer || !cardTemplate) return;
@@ -53,9 +54,9 @@ export function attachWeatherAlertTooltip(element: HTMLElement): void {
             if (sender) sender.textContent = alert.sender;
             if (tooltipTimeText) tooltipTimeText.textContent = getTime(alert.releaseTime, true);
             if (tooltipTimeState)
-                tooltipTimeState.textContent = i18n(`weather_alert_${alert.status}`);
+                tooltipTimeState.textContent = globalT(`weather_alert_${alert.status}`);
             const severityKey = `weather_alert_severity_${alert.level}`;
-            const severityText = i18n(severityKey);
+            const severityText = globalT(severityKey);
             if (eventSeverity)
                 eventSeverity.textContent =
                     severityText !== severityKey ? severityText : alert.level;

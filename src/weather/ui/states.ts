@@ -3,8 +3,9 @@
  * 职责：控制天气加载、错误等 UI 状态
  */
 
+import { globalT } from '@/i18n';
+
 import { elements } from '../../utils/elementManager';
-import { i18n } from '../../utils/i18n';
 
 const weatherChildrenStore = new WeakMap<HTMLElement, Element[]>();
 
@@ -37,7 +38,7 @@ export function showWeatherLoading(): void {
     leftContainer.style.alignItems = 'center';
     rightContainer.classList.add('hidden');
 
-    leftContainer.innerHTML = `<div class="weather-loading">${i18n('weather_loading')}</div>`;
+    leftContainer.innerHTML = `<div class="weather-loading">${globalT('weather_loading')}</div>`;
 }
 
 /**

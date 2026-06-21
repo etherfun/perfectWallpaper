@@ -3,9 +3,10 @@
  * 职责：更新天气显示的各个部分
  */
 
+import { globalT } from '@/i18n';
+
 import { config } from '../../utils/config';
 import { elements } from '../../utils/elementManager';
-import { i18n } from '../../utils/i18n';
 import { fetch_with_retry } from '../../utils/tool';
 import { generateAlertHTML, getAirQualityText } from '../formatters';
 import { getWeatherTips } from '../tips';
@@ -42,7 +43,7 @@ export async function updateMainWeatherDisplay(): Promise<void> {
     // 体感温度（条件显示）
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.feels.style.display = '';
-        e.feels.textContent = `${i18n('weather_feels_label')} ${weather_data.feels}${getWeatherUnit().temp || '℃'}`;
+        e.feels.textContent = `${globalT('weather_feels_label')} ${weather_data.feels}${getWeatherUnit().temp || '℃'}`;
     } else {
         e.feels.style.display = 'none';
     }
@@ -68,7 +69,7 @@ export function updateWeatherDetails(): void {
     // 湿度（条件显示）
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.humidity.style.display = '';
-        e.humidity.textContent = `${i18n('weather_humidity_label')}${weather_data.humidity}%`;
+        e.humidity.textContent = `${globalT('weather_humidity_label')}${weather_data.humidity}%`;
     } else {
         e.humidity.style.display = 'none';
     }
@@ -79,7 +80,7 @@ export function updateWeatherDetails(): void {
     // 风级（条件显示）
     if ([1, 2].includes(config.weather_api_choose ?? 0)) {
         e.windLevel.style.display = '';
-        e.windLevel.textContent = `${weather_data.windLv}${i18n('weather_wind_level_label')}`;
+        e.windLevel.textContent = `${weather_data.windLv}${globalT('weather_wind_level_label')}`;
     } else {
         e.windLevel.style.display = 'none';
     }
@@ -95,7 +96,7 @@ export function updateWeatherDetails(): void {
     // 能见度（条件显示）
     if ([1].includes(config.weather_api_choose ?? 0)) {
         e.visibility.style.display = '';
-        e.visibility.textContent = `${i18n('weather_visibility_label')}${weather_data.vis}${getWeatherUnit().vis || 'km'}`;
+        e.visibility.textContent = `${globalT('weather_visibility_label')}${weather_data.vis}${getWeatherUnit().vis || 'km'}`;
     } else {
         e.visibility.style.display = 'none';
     }
@@ -109,18 +110,18 @@ export function updateWeatherExtendedInfo(): void {
 
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.detailRow.style.display = '';
-        e.uvIndex.textContent = `${i18n('weather_uv_label')}${weather_data.uvindex}`;
+        e.uvIndex.textContent = `${globalT('weather_uv_label')}${weather_data.uvindex}`;
 
         // 云量（条件显示）
         if ([1, 4, 5].includes(config.weather_api_choose ?? 0)) {
             e.cloud.style.display = '';
-            e.cloud.textContent = `${i18n('weather_cloud_label')}${weather_data.cloud}%`;
+            e.cloud.textContent = `${globalT('weather_cloud_label')}${weather_data.cloud}%`;
         } else {
             e.cloud.style.display = 'none';
         }
 
-        e.sunrise.textContent = `${i18n('weather_sunrise_label')}${formatTime(weather_data.sunrise)}`;
-        e.sunset.textContent = `${i18n('weather_sunset_label')}${formatTime(weather_data.sunset)}`;
+        e.sunrise.textContent = `${globalT('weather_sunrise_label')}${formatTime(weather_data.sunrise)}`;
+        e.sunset.textContent = `${globalT('weather_sunset_label')}${formatTime(weather_data.sunset)}`;
 
         // 月相（条件显示）
         if ([1, 4].includes(config.weather_api_choose ?? 0)) {
@@ -144,13 +145,13 @@ export function updateAirQualityAndAlerts(): void {
 
     if ([1].includes(config.weather_api_choose ?? 0)) {
         e.airRow.style.display = '';
-        e.airQuality.textContent = i18n('weather_air_quality_label');
+        e.airQuality.textContent = globalT('weather_air_quality_label');
         e.airValue.textContent = getAirQualityText(weather_data.air);
 
         const alertsHTML = generateAlertHTML();
         if (alertsHTML) {
             e.alertContainer.style.display = '';
-            e.alertContainer.innerHTML = `${i18n('weather_alert_label')}<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div></div>`;
+            e.alertContainer.innerHTML = `${globalT('weather_alert_label')}<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div></div>`;
         } else {
             e.alertContainer.style.display = 'none';
         }
@@ -161,7 +162,7 @@ export function updateAirQualityAndAlerts(): void {
         const alertsHTML = generateAlertHTML();
         if (alertsHTML) {
             e.alertContainer.style.display = '';
-            e.alertContainer.innerHTML = `${i18n('weather_alert_label')}<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div></div>`;
+            e.alertContainer.innerHTML = `${globalT('weather_alert_label')}<div class="weather-alert-items-warp"><div class="weather-alert-items">${alertsHTML}</div></div>`;
         } else {
             e.alertContainer.style.display = 'none';
         }
@@ -179,7 +180,7 @@ export function updatePrecipContainer(): void {
     if ([1, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.precipContainer.style.display = '';
         const showTemp = showTemperatureInsteadOfPrecip;
-        const label = showTemp ? i18n('weather_show_temperature') : i18n('weather_show_precipprob');
+        const label = showTemp ? globalT('weather_show_temperature') : globalT('weather_show_precipprob');
         const dataValues = showTemp
             ? weather_data.sevenHourlyData.Temps
             : weather_data.sevenHourlyData.Pops;

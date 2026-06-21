@@ -1,5 +1,6 @@
+import { globalT } from '@/i18n';
+
 import { config } from '../../utils/config';
-import { i18n } from '../../utils/i18n';
 import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../utils/tool';
 import type { WeatherAddress, WeatherData } from '../types';
 
@@ -147,7 +148,7 @@ export async function visualcrossing(
     weather_data.weathernow = resNow.conditions
         .split(',')
         .map(c => c.trim())
-        .map(c => i18n(`weather_visualcrossing_${c}`))
+        .map(c => globalT(`weather_visualcrossing_${c}`))
         .join(' <br/> ');
     weather_data.preciptype = Array.isArray(resNow.preciptype)
         ? resNow.preciptype.join(',')
@@ -174,13 +175,13 @@ export async function visualcrossing(
     // 风向
     {
         const index = Math.floor((resNow.winddir + 22.5) / 45) % 8;
-        weather_data.wind = i18n(DIRECTIONS[index] ?? 'weather_no_data');
+        weather_data.wind = globalT(DIRECTIONS[index] ?? 'weather_no_data');
     }
 
     // 月相
     {
         const index = Math.floor((today.moonphase + 0.0625) * 8) % 8;
-        weather_data.moonphase = i18n(MOON_PHASE_KEYS[index] ?? 'weather_no_data');
+        weather_data.moonphase = globalT(MOON_PHASE_KEYS[index] ?? 'weather_no_data');
     }
 
     // 七小时预报
@@ -201,14 +202,14 @@ export async function visualcrossing(
         return hour.conditions
             .split(',')
             .map(c => c.trim())
-            .map(c => i18n(`weather_visualcrossing_${c}`))
+            .map(c => globalT(`weather_visualcrossing_${c}`))
             .join(' <br/> ');
     });
     weather_data.sevenHourlyData.Wind360s = resHourly.map(hour => hour.winddir.toString());
     weather_data.sevenHourlyData.WindSpeeds = resHourly.map(hour => hour.windspeed);
     weather_data.sevenHourlyData.Winds = resHourly.map(hour => {
         const index = Math.floor((hour.winddir + 22.5) / 45) % 8;
-        return i18n(DIRECTIONS[index] ?? 'weather_no_data');
+        return globalT(DIRECTIONS[index] ?? 'weather_no_data');
     });
     weather_data.sevenHourlyData.preciptype = resHourly.map(hour =>
         Array.isArray(hour.preciptype) ? hour.preciptype.join(',') : hour.preciptype || ''

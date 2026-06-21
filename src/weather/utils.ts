@@ -1,4 +1,5 @@
-import { i18n } from '../utils/i18n';
+import { globalT } from '@/i18n';
+
 import { OPEN_METEO_TO_QWEATHER } from './types';
 
 /**
@@ -67,14 +68,14 @@ export function getPrecipTypeFromCode(weatherCode: number): string {
 
     if (rainCodes.includes(weatherCode)) {
         if (freezingRainCodes.includes(weatherCode)) {
-            return i18n('weather_precip_type_freezing_rain');
+            return globalT('weather_precip_type_freezing_rain');
         } else if (hailCodes.includes(weatherCode)) {
-            return i18n('weather_precip_type_hail');
+            return globalT('weather_precip_type_hail');
         }
-        return i18n('weather_precip_type_rain');
+        return globalT('weather_precip_type_rain');
     } else if (snowCodes.includes(weatherCode)) {
-        return i18n('weather_precip_type_snow');
+        return globalT('weather_precip_type_snow');
     }
 
-    return i18n('weather_precip_type_none');
+    return globalT('weather_precip_type_none');
 }

@@ -16,12 +16,27 @@
 
 <script setup lang="ts">
 /**
- * Phase 3 PWLine 薄壳：
- *   - 不在 onMounted 调用 PWLineInit()
- *   - 音频数据流维持原 WallpaperEffectController → 原 PWLine.drawWave 链路
+ * Phase 5-B PWLine composable wrapper：
+ *   - onMounted 时自动调用 usePWLine() 的 init()（替代 main.ts 的顶层副作用）
+ *   - 暴露 lifecycle 控制给 Vue（enabled toggle 可停止 RAF）
+ *   - drawing code 仍由 audioVisualizer.ts 通过 src/PWLine.ts 旧 API 调用
+ *     （audioVisualizer 改造留到 stage 5-C）
  */
+import { onBeforeUnmount } from 'vue';
+
+import { usePWLine } from '@/composables/usePWLine';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
-const _ = (): boolean => Boolean(config.PWLine_show_bool);
+const line = usePWLine();
+
+const enabled = (): boolean => Boolean(config.PWLine_show_bool);
+const _ = enabled;
+
+// main.ts 顶层副作用仍保留以保证 audioVisualizer 拿到 ctx — 这里不重复 init
+// （双重 init 会让 lineX/lineY 重复计算）。Window resize 监听在
+// usePWLine() 的 onMounted 中已注册。
+onBeforeUnmount(() => {
+    // No-op: usePWLine's onBeforeUnmount removes its own resize listener
+});
 </script>

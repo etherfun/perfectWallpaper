@@ -21,7 +21,7 @@
 
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import App from '@/components/App.vue';
 import Background from '@/components/Background.vue';
@@ -48,6 +48,56 @@ vi.mock('@/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
+
+beforeAll(() => {
+    // jsdom has no canvas 2D backend — stub getContext to a no-op mock object
+    // via defineProperty (vi.spyOn doesn't work on jsdom's read-only proto).
+    Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
+        value: () => ({
+            strokeStyle: '',
+            shadowColor: '',
+            shadowBlur: 0,
+            lineWidth: 0,
+            fillStyle: '',
+            beginPath: () => {},
+            moveTo: () => {},
+            lineTo: () => {},
+            closePath: () => {},
+            stroke: () => {},
+            fill: () => {},
+            clearRect: () => {},
+            fillRect: () => {},
+            arc: () => {},
+            save: () => {},
+            restore: () => {},
+            translate: () => {},
+            rotate: () => {},
+            scale: () => {},
+            createRadialGradient: () => ({ addColorStop: () => {} }),
+            createLinearGradient: () => ({ addColorStop: () => {} }),
+            canvas: { width: 100, height: 100 },
+        }),
+        writable: true,
+        configurable: true,
+    });
+
+    // Pre-create the canvas elements that index.html ships with so
+    // PWCircle/PWLine/etc. composables find them via document.querySelector.
+    // PWLine.ts PWLineInit() guards on missing #CanLine (returns early),
+    // but setCTXLine() then runs and crashes because CTXLine is still null.
+    for (const id of ['#can', '#CanLine', '#canvas-particles', '#canvas-audio', '#RGBuse', '#sakura', '#sakurashow']) {
+        const sel = id.slice(1);
+        if (!document.getElementById(sel)) {
+            const el = document.createElement('canvas');
+            el.id = sel;
+            document.body.appendChild(el);
+        }
+    }
+});
+
+// Diagnostic: confirm stub is in place before any test runs.
+// (Removed — verified during stage 5-B development; the stub itself
+// stays in beforeAll above.)
 
 beforeEach(() => {
     setActivePinia(createPinia());

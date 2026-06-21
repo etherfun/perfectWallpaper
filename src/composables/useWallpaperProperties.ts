@@ -14,10 +14,13 @@ import { useConfigStore } from '@/stores/config';
 
 type PushProperties = Record<string, { value: unknown }>;
 
+let cancelStandaloneFallback: (() => void) | null = null;
+
 /**
  * 注册一个 mock-friendly 的 window.wallpaperPropertyListener：
  * - 若 window.wallpaperPropertyListener 已被 setupWallpaperPropertyListener() 占用，
  *   包装它的 applyUserProperties，在转发前先 patch Pinia store
+ *   （同时取消 5 秒独立模式兜底 — 真实 WE 已注入）
  * - 否则直接挂一个 fallback，仅 patch Pinia store（用于独立浏览器模式）
  */
 export function useWallpaperProperties(): void {
@@ -35,6 +38,11 @@ export function useWallpaperProperties(): void {
             } catch (err) {
                 console.warn('[WallpaperProperties] failed to patch store', err);
             }
+            // WE 真的注入了 — 取消独立模式兜底定时器
+            if (cancelStandaloneFallback) {
+                cancelStandaloneFallback();
+                cancelStandaloneFallback = null;
+            }
             originalApply(properties);
         };
         console.log('[WallpaperProperties] patched existing window.wallpaperPropertyListener');
@@ -47,4 +55,14 @@ export function useWallpaperProperties(): void {
         };
         console.log('[WallpaperProperties] installed standalone fallback listener');
     }
+}
+
+/**
+ * 注入取消函数（由 useStandaloneProperties 模块调用，避免循环依赖）。
+ *
+ * 当 useWallpaperProperties() 收到真实 WE 注入时会调用 cancelStandaloneFallback()，
+ * 阻止独立模式兜底的 5 秒定时器。
+ */
+export function setStandaloneFallbackCanceller(fn: () => void): void {
+    cancelStandaloneFallback = fn;
 }

@@ -19,15 +19,18 @@
 import './audioVisualizer';
 import './fullscreenLyrics';
 
-import { createApp } from 'vue';
 import { createPinia } from 'pinia';
+import { createApp } from 'vue';
 
 import App from '@/components/App.vue';
 import { useProjectJsonDefaults } from '@/composables/useProjectJsonDefaults';
+import { useStandalonePersistence } from '@/composables/useStandalonePersistence';
+import { armStandaloneFallback } from '@/composables/useStandaloneProperties';
 import { useStoredProperties } from '@/composables/useStoredProperties';
 import { useWallpaperProperties } from '@/composables/useWallpaperProperties';
 import { i18n } from '@/i18n';
 import { installConfigStoreBridge } from '@/stores/configBridge';
+
 import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { resize as pwCircleResize } from './PWCircle';
 import { PWLineInit } from './PWLine';
@@ -72,6 +75,14 @@ async function bootstrap(): Promise<void> {
         return;
     }
     app.mount(root);
+
+    // 5. 独立模式增强（阶段 1.x）：
+    //    - 5 秒内 WE 没注入 → armStandaloneFallback 兜底推一次完整 properties，
+    //      让 14 个旧 handler 触发薄壳组件 DOM 创建
+    //    - store → localStorage 持久化（仅独立模式需要 — WE 模式由 propertyListener
+    //      内 savePropertiesToLocalStorage 处理；这里写也只是覆盖但不会冲突）
+    armStandaloneFallback();
+    useStandalonePersistence();
 }
 
 bootstrap().catch(err => {

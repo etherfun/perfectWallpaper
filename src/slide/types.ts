@@ -2,25 +2,45 @@
  * Slide module type definitions
  */
 
-import { elements } from '../utils/elementManager';
-
-// DOM elements for picture info
+// DOM elements for picture info (queried lazily, not at module-load time)
 export const pictures = {
-    picture_info: elements.slide.picture_info,
-    info: elements.slide.info,
-    title: elements.slide.title,
-    author: elements.slide.author,
-    where: elements.slide.location,
-    text: elements.slide.description,
+    get picture_info(): HTMLElement | null {
+        return document.querySelector('#picture_info') as HTMLElement | null;
+    },
+    get info(): HTMLElement | null {
+        return document.querySelector('#picture_info .info') as HTMLElement | null;
+    },
+    get title(): HTMLElement | null {
+        return document.querySelector('#picture_info .title') as HTMLElement | null;
+    },
+    get author(): HTMLElement | null {
+        return document.querySelector('#picture_info .author') as HTMLElement | null;
+    },
+    get where(): HTMLElement | null {
+        return document.querySelector('#picture_info .location') as HTMLElement | null;
+    },
+    get text(): HTMLElement | null {
+        return document.querySelector('#picture_info .description') as HTMLElement | null;
+    },
 };
 
 // Background layers (DOM elements) - shared between modules
 export const backgroundLayers = {
-    container: elements.background.container,
-    layer1: elements.background.layer1,
-    layer2: elements.background.layer2,
-    blurLayer1: elements.background.blurLayer1,
-    blurLayer2: elements.background.blurLayer2,
+    get container(): HTMLElement | null {
+        return document.querySelector('#background-container') as HTMLElement | null;
+    },
+    get layer1(): HTMLElement | null {
+        return document.querySelector('#background-layer1') as HTMLElement | null;
+    },
+    get layer2(): HTMLElement | null {
+        return document.querySelector('#background-layer2') as HTMLElement | null;
+    },
+    get blurLayer1(): HTMLElement | null {
+        return document.querySelector('#background-blur-layer1') as HTMLElement | null;
+    },
+    get blurLayer2(): HTMLElement | null {
+        return document.querySelector('#background-blur-layer2') as HTMLElement | null;
+    },
     currentActive: 1 as 1 | 2,
     blurCurrentActive: 1 as 1 | 2,
     isTransitioning: false,

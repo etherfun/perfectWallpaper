@@ -13,7 +13,6 @@
  */
 
 import { config } from '@/utils/config';
-import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
 import { animate } from './animation';
@@ -38,8 +37,8 @@ export function sakuraResize(): void {
 
 /** 初始化 WebGL 上下文并启动场景 */
 export function sakuraLoad(): void {
-    const canvasshow = elements.sakurashow;
-    const canvas = elements.sakura;
+    const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
+    const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
 
     if (!canvas || !canvasshow) {
         debugLogger.error('[Sakura] Canvas elements not found', {
@@ -76,8 +75,9 @@ export function sakuraLoad(): void {
 
 /** 把当前 WebGL 帧拷贝到 2D 显示画布（樱花切换为显示时由 propertyHandler 调用） */
 export function removesakura(): void {
-    const raw = elements.sakura;
-    const ctx = elements.sakurashow.getContext('2d');
+    const raw = document.getElementById('sakura') as HTMLCanvasElement | null;
+    const showCanvas = document.getElementById('sakurashow') as HTMLCanvasElement | null;
+    const ctx = showCanvas?.getContext('2d') ?? null;
     if (!ctx || !raw) return;
 
     if (raw.width > 0 && config.show_sakura) {
@@ -103,7 +103,7 @@ export function initSakura(): void {
 /** 把 #sakurashow 的 opacity 设为 config.sakura_transparency */
 export function applySakuraTransparency(): void {
     const transparency = config.sakura_transparency;
-    const ctx = elements.sakurashow.getContext('2d');
+    const ctx = (document.getElementById('sakurashow') as HTMLCanvasElement | null)?.getContext('2d') ?? null;
     if (ctx) {
         ctx.canvas.style.opacity = String(transparency);
     }

@@ -9,18 +9,17 @@
  *   - 卸载渲染器时清理背景
  */
 
-import { elements } from '@/utils/elementManager';
-
 import { FULLSCREEN_BACKGROUND_STYLE } from './constants';
 import type { FluidEffect2Renderer } from './FluidEffect2Renderer';
 import { loadImageFromUrl } from './imageSource';
 
 const WRAPPER_SELECTOR = '.fluid-effect-wrapper';
 const NORMAL_CONTAINER_SELECTOR = '#player_control .background';
+const THUMBNAIL_SELECTOR = '#player_control .thumbnail';
 
 /** 返回当前播放器缩略图（已加载或未加载） */
 export function getCurrentThumbnail(): HTMLImageElement | undefined {
-    return elements.playerControl.thumbnail as HTMLImageElement | undefined;
+    return document.querySelector(THUMBNAIL_SELECTOR) as HTMLImageElement | undefined;
 }
 
 /** 查找普通模式的容器；`#player_control .background` */
@@ -100,7 +99,7 @@ export function setNormalContainerStyle(container: HTMLElement): void {
 
 /** 清除普通模式容器样式（恢复默认背景） */
 export function clearNormalContainerStyle(): void {
-    const background = elements.playerControl.background;
+    const background = document.querySelector(NORMAL_CONTAINER_SELECTOR) as HTMLElement | null;
     if (background) {
         background.style.background = '';
     }

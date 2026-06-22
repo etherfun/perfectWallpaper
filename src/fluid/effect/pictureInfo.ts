@@ -6,13 +6,13 @@
  */
 
 import { config } from '@/utils/config';
-import { elements } from '@/utils/elementManager';
 
 const HIDDEN_CLASS = 'fluid-hidden';
+const PICTURE_INFO_SELECTOR = '#picture_info';
 
 /** 全屏流体效果进入时调用：隐藏图片信息元素并标记运行时状态 */
 export function addPictureInfoHideStyle(): void {
-    const pictureInfo = elements.slide.picture_info;
+    const pictureInfo = document.querySelector(PICTURE_INFO_SELECTOR) as HTMLElement | null;
     if (pictureInfo) {
         pictureInfo.classList.add(HIDDEN_CLASS);
     }
@@ -21,7 +21,7 @@ export function addPictureInfoHideStyle(): void {
 
 /** 全屏流体效果退出时调用：恢复图片信息元素可见并清除标记 */
 export function removePictureInfoHideStyle(): void {
-    const pictureInfo = elements.slide.picture_info;
+    const pictureInfo = document.querySelector(PICTURE_INFO_SELECTOR) as HTMLElement | null;
     if (pictureInfo) {
         pictureInfo.classList.remove(HIDDEN_CLASS);
     }

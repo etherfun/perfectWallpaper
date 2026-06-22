@@ -10,7 +10,6 @@
  */
 
 import { useConfigStore } from '@/stores/config';
-import { elements } from '@/utils/elementManager';
 
 const config = useConfigStore();
 
@@ -19,8 +18,9 @@ import { getAnimating, setAnimating, timeInfo } from './state';
 
 /** 把 WebGL 画布当前内容绘制到 2D 显示画布 */
 function copyCanvasTo2D(): void {
-    const raw = elements.sakura;
-    const ctx = elements.sakurashow.getContext('2d');
+    const raw = document.getElementById('sakura') as HTMLCanvasElement | null;
+    const showCanvas = document.getElementById('sakurashow') as HTMLCanvasElement | null;
+    const ctx = showCanvas?.getContext('2d') ?? null;
     if (ctx && raw && raw.width > 0 && config.showSakura) {
         ctx.drawImage(
             raw,

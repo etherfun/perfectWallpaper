@@ -18,7 +18,6 @@
 
 import { background2canvas } from '../../RGB';
 import { config } from '../../utils/config';
-import { elements } from '../../utils/elementManager';
 import { ChangeVideoModel } from '../../video';
 import { transitionBackground } from '../transition';
 import { backgroundLayers, pictures } from '../types';
@@ -29,6 +28,10 @@ import { onImageError, onImageLoad } from './loader';
 import { loadNasa } from './nasa';
 import { loadWindowsSpotlight } from './spotlight';
 
+function getMyVideo(): HTMLVideoElement | null {
+    return document.getElementById('myvideo') as HTMLVideoElement | null;
+}
+
 /** Should show wallpaper based on current mode */
 export function shouldShow(): void {
     document.body.style.backgroundImage = '';
@@ -36,7 +39,8 @@ export function shouldShow(): void {
     switch (config.wallpaper_mode) {
         case 1: // Single wallpaper mode
             {
-                (elements.myvideo as HTMLVideoElement).src = '';
+                const v = getMyVideo();
+                if (v) v.src = '';
                 backgroundLayers.container.style.display = 'block';
                 document.body.style.backgroundImage = '';
 
@@ -62,7 +66,10 @@ export function shouldShow(): void {
             break;
 
         case 2: // Random mode
-            (elements.myvideo as HTMLVideoElement).src = '';
+            {
+                const v = getMyVideo();
+                if (v) v.src = '';
+            }
             backgroundLayers.container.style.display = 'block';
             if (config.runtime.myList.length) {
                 transitionBackground('file:///' + config.runtime.photo.currentImg!);
@@ -98,14 +105,18 @@ export function shouldShow(): void {
             // 静默加载: 容器显示由 picturesinfo_showrl() 在 loader
             // 拿到真实版权/标题数据后再 display=flex,
             // 不再在此处提前 show,避免 fetch 期间出现空框架。
-            elements.myvideo.src = '';
+            {
+                const v = getMyVideo();
+                if (v) v.src = '';
+            }
             backgroundLayers.container.style.display = 'block';
             loadBing();
             break;
 
         case 5: // Lorem Picsum
             {
-                elements.myvideo.src = '';
+                const v = getMyVideo();
+                if (v) v.src = '';
                 backgroundLayers.container.style.display = 'block';
                 const timestamp = new Date().getTime();
 
@@ -126,24 +137,29 @@ export function shouldShow(): void {
         case 6: // NASA
             {
                 // 静默加载: 同 case 4, 由 picturesinfo_showrl() 负责显示。
-                elements.myvideo.src = '';
+                const v6 = getMyVideo();
+                if (v6) v6.src = '';
                 backgroundLayers.container.style.display = 'block';
                 loadNasa();
             }
             break;
 
         case 7: // 次元api
-            elements.myvideo.src = '';
-            backgroundLayers.container.style.display = 'block';
-            loadChiyuan();
-            clearpicturesinfo();
-            pictures.picture_info.style.display = 'none';
+            {
+                const v7 = getMyVideo();
+                if (v7) v7.src = '';
+                backgroundLayers.container.style.display = 'block';
+                loadChiyuan();
+                clearpicturesinfo();
+                pictures.picture_info.style.display = 'none';
+            }
             break;
 
         case 8: // Windows聚焦
             {
                 // 静默加载: 同 case 4, 由 picturesinfo_showrl() 负责显示。
-                elements.myvideo.src = '';
+                const v8 = getMyVideo();
+                if (v8) v8.src = '';
                 backgroundLayers.container.style.display = 'block';
                 loadWindowsSpotlight();
             }
@@ -152,7 +168,8 @@ export function shouldShow(): void {
         case 9: // Custom
             {
                 // 静默加载: 同 case 4, 由 picturesinfo_showrl() 负责显示。
-                elements.myvideo.src = '';
+                const v9 = getMyVideo();
+                if (v9) v9.src = '';
                 backgroundLayers.container.style.display = 'block';
                 const customImg = new Image();
                 customImg.src = config.pictures_url;

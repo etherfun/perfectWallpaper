@@ -10,7 +10,6 @@
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
-import { elements } from '@/utils/elementManager';
 import { Matrix44 } from '@/utils/webgl-math';
 
 import { makeCanvasFullScreen } from './canvas';
@@ -97,8 +96,8 @@ export function setViewports(): void {
 
 /** 窗口尺寸变化：canvas 重置 + 视口重建 + 场景重播种 */
 export function onResize(): void {
-    const canvas = elements.sakura;
-    const canvasshow = elements.sakurashow;
+    const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
+    const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
 
     if (canvas && canvasshow) {
         makeCanvasFullScreen(canvas, canvasshow);

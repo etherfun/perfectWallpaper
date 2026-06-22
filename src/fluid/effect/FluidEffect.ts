@@ -6,7 +6,6 @@
  * `lifecycleImpl`，DOM 原子操作委托给 `lifecycle` / `pictureInfo`。
  */
 
-import { elements } from '@/utils/elementManager';
 import { timerManager } from '@/utils/timer';
 
 import { FluidEffectState as FluidEffectStateEnum } from '../types';
@@ -171,7 +170,7 @@ export class FluidEffect {
         const numValue = Number(value);
         if (key === 'resolution') {
             effect.updateOptions({ resolution: numValue });
-            const thumbnail = elements.playerControl.thumbnail;
+            const thumbnail = document.querySelector('#player_control .thumbnail') as HTMLImageElement | null;
             if (thumbnail instanceof HTMLImageElement && thumbnail.complete) {
                 effect.setSourceFromImage(thumbnail);
             }

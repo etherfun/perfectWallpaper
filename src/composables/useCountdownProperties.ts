@@ -1,9 +1,16 @@
+/**
+ * useCountdownProperties — Vue 3 composable 包装 countdown 属性处理
+ *
+ * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/countdownPropertyHandler.ts
+ * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
+ * Pinia patch / ResizeObserver / timerManager），不引入行为变更。
+ */
 import { elements } from '@/utils/elementManager';
 import { useConfigStore } from '@/stores/config';
 
 import { timerManager } from '../utils/timer';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
 const bodyElement = elements.body;
 const countdown = elements.countdown.container;
@@ -15,7 +22,7 @@ const countdown = elements.countdown.container;
  *   - config.xxx = ... 改为 useConfigStore().$patch({...})，解除对 utils/config 单例的依赖。
  *   - src/countdown.ts 已删除；setcountdown_a 由 Countdown.vue useUpdateInterval 自动触发。
  */
-export function handleCountdownProperties(
+export function useCountdownProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {

@@ -1,8 +1,18 @@
+/**
+ * useLyricsProperties — Vue 3 composable 包装全屏歌词属性处理
+ *
+ * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/lyricsPropertyHandler.ts
+ * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（fullscreenLyrics 实例
+ * 调用 + Pinia patch），不引入行为变更。
+ *
+ * 注意：lyrics handler 是唯一不依赖 elementManager 的 handler，
+ * 直接 Pinia $patch + 调 fullscreenLyrics 实例方法。
+ */
 import { useConfigStore } from '@/stores/config';
 
 import { fullscreenLyrics } from '../fullscreenLyrics';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
 /**
  * 处理全屏歌词相关属性
@@ -12,7 +22,7 @@ import { WallpaperProperties } from './types';
  * Stage 7-B: 改写 config.xxx = ... 为 useConfigStore().$patch({...})，
  * 解除本 handler 对 src/utils/config 单例的依赖（Stage 3.5 准备）。
  */
-export function handleLyricsProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
+export function useLyricsProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
     let fullscreenLyricsShow = false;

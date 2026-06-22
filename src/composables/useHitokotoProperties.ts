@@ -1,9 +1,16 @@
+/**
+ * useHitokotoProperties — Vue 3 composable 包装 hitokoto 属性处理
+ *
+ * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/hitokotoPropertyHandler.ts
+ * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
+ * Pinia patch / timerManager），不引入行为变更。
+ */
 import { elements } from '@/utils/elementManager';
 import { useConfigStore } from '@/stores/config';
 
 import { timerManager } from '../utils/timer';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
 const hitokoto = elements.hitokoto.container as HTMLElement;
 
@@ -15,7 +22,7 @@ const hitokoto = elements.hitokoto.container as HTMLElement;
  *   - src/hitokoto.ts 已删除；autoHitokto 由 Hitokoto.vue watch(config.hitokoto_show)
  *     自动触发 fetchHitokoto + 启停 interval。
  */
-export function handleHitokotoProperties(
+export function useHitokotoProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {

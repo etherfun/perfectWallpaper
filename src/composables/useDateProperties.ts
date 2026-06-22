@@ -1,8 +1,18 @@
+/**
+ * useDateProperties — Vue 3 composable 包装 date 属性处理
+ *
+ * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/datePropertyHandler.ts
+ * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
+ * Pinia patch / ResizeObserver），不引入行为变更。
+ *
+ * 关键变更点（相对于原 handler）：
+ * - date_format 子对象通过 Pinia $patch 整体更新（保持 handler 的 read-modify-write 模式）
+ */
 import { elements } from '@/utils/elementManager';
 import { useConfigStore } from '@/stores/config';
 
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
 const oDate = elements.date.container as HTMLElement;
 
@@ -14,7 +24,7 @@ const oDate = elements.date.container as HTMLElement;
  *   - src/date.ts 已删除；startDateColorRhythmLoop/stopDateColorRhythmLoop 由
  *     Date.vue useColorRhythm 自动管理；date_format 变化由 Date.vue computed 自动响应。
  */
-export function handleDateProperties(properties: WallpaperProperties, FirstLoad: boolean) {
+export function useDateProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
 

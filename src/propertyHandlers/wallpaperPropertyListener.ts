@@ -4,6 +4,11 @@ import { useConfigStore } from '@/stores/config';
 import { loadI18n } from '@/i18n';
 // config runtime/wallpaper_settings sub-objects live outside Pinia (Stage 3.5-B)
 import { config as appConfig } from '@/utils/config';
+import { useCountdownProperties } from '@/composables/useCountdownProperties';
+import { useDateProperties } from '@/composables/useDateProperties';
+import { useHitokotoProperties } from '@/composables/useHitokotoProperties';
+import { useLyricsProperties } from '@/composables/useLyricsProperties';
+import { useTimeProperties } from '@/composables/useTimeProperties';
 
 import { audioDataListener } from '../audioVisualizer';
 import { showDebugLogModal } from '../debugModal';
@@ -14,18 +19,13 @@ import { elements } from '@/utils/elementManager';
 import { debugLogger } from '../utils/logger';
 import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
 import { handleBackgroundProperties } from './backgroundPropertyHandler';
-import { handleCountdownProperties } from './countdownPropertyHandler';
-import { handleDateProperties } from './datePropertyHandler';
 import { handleDockBarProperties } from './dockbarPropertyHandler';
 import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
-import { handleHitokotoProperties } from './hitokotoPropertyHandler';
-import { handleLyricsProperties } from './lyricsPropertyHandler';
 import { handleParticleProperties } from './particlePropertyHandler';
 import { handlePlayerControlProperties } from './playerControlPropertyHandler';
 import { handleRGBProperties } from './rgbPropertyHandler';
 import { handleSakuraProperties } from './sakuraPropertyHandler';
 import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
-import { handleTimeProperties } from './timePropertyHandler';
 import { WallpaperProperties } from './types';
 import { handleWeatherProperties } from './weatherPropertyHandler';
 
@@ -147,12 +147,12 @@ export function createWallpaperPropertyListener(
     }
 
     // 处理所有属性
-    safeHandle(handleDateProperties, properties, FirstLoad, 'handleDateProperties');
-    safeHandle(handleTimeProperties, properties, FirstLoad, 'handleTimeProperties');
+    safeHandle(useDateProperties, properties, FirstLoad, 'useDateProperties');
+    safeHandle(useTimeProperties, properties, FirstLoad, 'useTimeProperties');
     safeHandle(handleBackgroundProperties, properties, FirstLoad, 'handleBackgroundProperties');
     safeHandle(handleWeatherProperties, properties, FirstLoad, 'handleWeatherProperties');
-    safeHandle(handleHitokotoProperties, properties, FirstLoad, 'handleHitokotoProperties');
-    safeHandle(handleCountdownProperties, properties, FirstLoad, 'handleCountdownProperties');
+    safeHandle(useHitokotoProperties, properties, FirstLoad, 'useHitokotoProperties');
+    safeHandle(useCountdownProperties, properties, FirstLoad, 'useCountdownProperties');
     safeHandle(
         handlePlayerControlProperties,
         properties,
@@ -164,7 +164,7 @@ export function createWallpaperPropertyListener(
     safeHandle(handleAudioVisualProperties, properties, FirstLoad, 'handleAudioVisualProperties');
     safeHandle(handleSakuraProperties, properties, FirstLoad, 'handleSakuraProperties');
     safeHandle(handleFluidEffectProperties, properties, FirstLoad, 'handleFluidEffectProperties');
-    safeHandle(handleLyricsProperties, properties, FirstLoad, 'handleLyricsProperties');
+    safeHandle(useLyricsProperties, properties, FirstLoad, 'useLyricsProperties');
     safeHandle(
         handleSystemMonitorProperties,
         properties,

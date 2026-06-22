@@ -1,10 +1,23 @@
+/**
+ * useSystemMonitorProperties — Vue 3 composable 包装 sysmon 属性处理
+ *
+ * Stage 3-2 (Phase 7 批次 3-2): 把 src/propertyHandlers/systemMonitorPropertyHandler.ts
+ * 的全部逻辑迁移到 composable。
+ *
+ * 关键依赖（保留）：
+ * - `getSystemMonitor() / initSystemMonitor() / updateConfig()` —
+ *   systemMonitor 实例的命令式 API
+ * - `handleAutoStart()` 内部 async 调 .NET sidecar
+ * - `useConfigStore()` 只读 `server_mode` 字段
+ * - `elements.body.style.setProperty` 写 yakeli CSS 变量
+ */
 import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/systemMonitor';
-import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
+import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '@/utils/logger';
 
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
 /**
  * Handle auto-start setting change.
@@ -36,7 +49,7 @@ async function handleAutoStart(enabled: boolean): Promise<void> {
  * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
-export function handleSystemMonitorProperties(
+export function useSystemMonitorProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
@@ -132,7 +145,7 @@ export function handleSystemMonitorProperties(
     if (properties.sysmon_color) {
         const c = properties.sysmon_color.value
             .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+            .map((v: string) => Math.ceil(parseFloat(v) * 255));
         monitor.updateConfig({
             monitorColor: `rgba(${c.join(',')})`,
         });

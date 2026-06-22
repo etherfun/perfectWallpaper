@@ -6,9 +6,12 @@ import { loadI18n } from '@/i18n';
 import { config as appConfig } from '@/utils/config';
 import { useCountdownProperties } from '@/composables/useCountdownProperties';
 import { useDateProperties } from '@/composables/useDateProperties';
+import { useDockBarProperties } from '@/composables/useDockBarProperties';
 import { useHitokotoProperties } from '@/composables/useHitokotoProperties';
 import { useLyricsProperties } from '@/composables/useLyricsProperties';
+import { useSystemMonitorProperties } from '@/composables/useSystemMonitorProperties';
 import { useTimeProperties } from '@/composables/useTimeProperties';
+import { useWeatherProperties } from '@/composables/useWeatherProperties';
 
 import { audioDataListener } from '../audioVisualizer';
 import { showDebugLogModal } from '../debugModal';
@@ -19,15 +22,12 @@ import { elements } from '@/utils/elementManager';
 import { debugLogger } from '../utils/logger';
 import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
 import { handleBackgroundProperties } from './backgroundPropertyHandler';
-import { handleDockBarProperties } from './dockbarPropertyHandler';
 import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
 import { handleParticleProperties } from './particlePropertyHandler';
 import { handlePlayerControlProperties } from './playerControlPropertyHandler';
 import { handleRGBProperties } from './rgbPropertyHandler';
 import { handleSakuraProperties } from './sakuraPropertyHandler';
-import { handleSystemMonitorProperties } from './systemMonitorPropertyHandler';
 import { WallpaperProperties } from './types';
-import { handleWeatherProperties } from './weatherPropertyHandler';
 
 /**
  * 安全执行属性处理函数,捕获并记录错误
@@ -150,7 +150,7 @@ export function createWallpaperPropertyListener(
     safeHandle(useDateProperties, properties, FirstLoad, 'useDateProperties');
     safeHandle(useTimeProperties, properties, FirstLoad, 'useTimeProperties');
     safeHandle(handleBackgroundProperties, properties, FirstLoad, 'handleBackgroundProperties');
-    safeHandle(handleWeatherProperties, properties, FirstLoad, 'handleWeatherProperties');
+    safeHandle(useWeatherProperties, properties, FirstLoad, 'useWeatherProperties');
     safeHandle(useHitokotoProperties, properties, FirstLoad, 'useHitokotoProperties');
     safeHandle(useCountdownProperties, properties, FirstLoad, 'useCountdownProperties');
     safeHandle(
@@ -166,12 +166,12 @@ export function createWallpaperPropertyListener(
     safeHandle(handleFluidEffectProperties, properties, FirstLoad, 'handleFluidEffectProperties');
     safeHandle(useLyricsProperties, properties, FirstLoad, 'useLyricsProperties');
     safeHandle(
-        handleSystemMonitorProperties,
+        useSystemMonitorProperties,
         properties,
         FirstLoad,
-        'handleSystemMonitorProperties'
+        'useSystemMonitorProperties'
     );
-    safeHandle(handleDockBarProperties, properties, FirstLoad, 'handleDockBarProperties');
+    safeHandle(useDockBarProperties, properties, FirstLoad, 'useDockBarProperties');
 
     if (FirstLoad) {
         store.$patch({ first_load: false });

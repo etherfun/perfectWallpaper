@@ -1,12 +1,30 @@
+/**
+ * useWeatherProperties — Vue 3 composable 包装 weather 属性处理
+ *
+ * Stage 3-2 (Phase 7 批次 3-2): 把 src/propertyHandlers/weatherPropertyHandler.ts
+ * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
+ * Pinia patch / weather 区域 display / autoWeather 触发），不引入行为变更。
+ *
+ * 关键依赖（保留）：
+ * - `weather_address` 模块顶层变量（不在 Pinia）— 用于 runtime 坐标
+ * - `autoWeather / generateWeatherTable / weather_init / setWeatherUnitByName` —
+ *   天气子模块的命令式 API
+ * - `debounce / timerManager` — 通用工具
+ */
 import { elements } from '@/utils/elementManager';
 import { useConfigStore } from '@/stores/config';
 
 import { timerManager } from '../utils/timer';
 import { debounce } from '../utils/tool';
-import { autoWeather, generateWeatherTable, weather_address, weather_init } from '../weather';
+import {
+    autoWeather,
+    generateWeatherTable,
+    weather_address,
+    weather_init,
+} from '../weather';
 import { setWeatherUnitByName } from '../weather/weatherState';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
 const weather = elements.weather.weather as HTMLElement;
 
@@ -17,7 +35,7 @@ const weather = elements.weather.weather as HTMLElement;
  *   - Pinia 字段改用 useConfigStore().$patch({...})。
  *   - weather_address.latitude 等运行时坐标仍用 module 顶层变量（不在 Pinia）。
  */
-export function handleWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
+export function useWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
 
@@ -218,7 +236,7 @@ export function handleWeatherProperties(properties: WallpaperProperties, FirstLo
         );
         store.$patch({ weather_roundedcorners: properties.weather_roundedcorners.value });
 
-        const updateHeight = () => {
+        const updateHeight = (): void => {
             const height = weather.getBoundingClientRect().height;
             if (!height) return;
             elements.body.style.setProperty('--weather-height', height + 'px');

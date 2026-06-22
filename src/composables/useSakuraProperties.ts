@@ -1,27 +1,26 @@
-import * as sakuraModule from '../sakura';
+/**
+ * useSakuraProperties — Vue 3 composable wrapper for sakura properties
+ *
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/sakuraPropertyHandler.ts
+ * as a composable so Vue 组件 can subscribe to individual config changes.
+ * Keeps the original side effects (sakura scene toggle, transparency,
+ * resize, reload-effect) — the imperative calls into src/sakura/* stay.
+ */
+import * as sakuraModule from '@/sakura';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
 
-/**
- * 处理樱花效果相关属性
- * @param properties 属性对象
- * @param FirstLoad 是否首次加载
- *
- * Stage 7-B: 改写 config.xxx = ... 为 useConfigStore().$patch({...})，
- * 解除本 handler 对 src/utils/config 单例的依赖（Stage 3.5 准备）。
- *
- * 保留 src/utils/elementManager 引用（Stage 3.5 之后才会迁移 DOM refs）。
- */
-export function handleSakuraProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
+
+export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
 
     // 樱花特效
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;
-        patch.show_sakura = showSakura;
+        patch.showSakura = showSakura;
     }
 
     // 樱花透明度

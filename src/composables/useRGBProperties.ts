@@ -1,17 +1,15 @@
+/**
+ * useRGBProperties — Vue 3 composable wrapper for RGB lighting properties
+ *
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/rgbPropertyHandler.ts
+ * as a composable. Pure Pinia-side effects (no DOM, no runtime calls).
+ */
 import { useConfigStore } from '@/stores/config';
 
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
-/**
- * 处理RGB灯光效果相关属性
- * @param properties 属性对象
- * @param FirstLoad 是否首次加载
- *
- * Stage 7-B: 改写 config.xxx = ... 为 useConfigStore().$patch({...})，
- * 解除本 handler 对 src/utils/config 单例的依赖（Stage 3.5 准备）。
- */
-export function handleRGBProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
+export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
 

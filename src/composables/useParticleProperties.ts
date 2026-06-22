@@ -1,22 +1,20 @@
+/**
+ * useParticleProperties — Vue 3 composable wrapper for particle effect properties
+ *
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/particlePropertyHandler.ts
+ * as a composable.
+ *
+ * runtime.wallpaper is the WallpaperEffectController instance — a non-Pinia
+ * imperative object that manages the canvas/RAF lifecycle. The Pinia store
+ * mirrors every user-tweakable setting.
+ */
 import { useConfigStore } from '@/stores/config';
-// config.runtime is preserved for WallpaperEffectController instance (Stage 3.5-B)
 import { config as appConfig } from '@/utils/config';
 
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
-/**
- * 处理粒子效果相关属性
- *
- * Stage 7-C (Phase 7 批次 2-C):
- *   - Pinia 字段改用 useConfigStore().$patch({...})。
- *   - wallpaper?.particles(...) 命令式调用需要 config.runtime.wallpaper 实例，
- *     此实例是非 Pinia 的运行时控制器，保留对 utils/config 单例的访问。
- */
-export function handleParticleProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
+export function useParticleProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const wallpaper = appConfig.runtime.wallpaper;
     const patch: Record<string, unknown> = {};
@@ -27,7 +25,8 @@ export function handleParticleProperties(
         if (properties.particles_isParticles.value) {
             wallpaper?.particles('startParticles');
         } else {
-            wallpaper?.particles('clearCanvas').particles('stopParticles');
+            wallpaper?.particles('clearCanvas');
+            wallpaper?.particles('stopParticles');
         }
     }
 
@@ -231,5 +230,6 @@ export function handleParticleProperties(
 
     if (FirstLoad) {
         logInitComplete('[Particles]', '粒子效果', FirstLoad);
+        store.$patch({ particles_init_complete: true });
     }
 }

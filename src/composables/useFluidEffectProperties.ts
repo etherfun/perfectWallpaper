@@ -1,21 +1,22 @@
+/**
+ * useFluidEffectProperties — Vue 3 composable wrapper for fluid effect properties
+ *
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/fluidEffectPropertyHandler.ts
+ * as a composable.
+ *
+ * runtime.FluidEffect is a WebGL-bound imperative instance kept on the
+ * legacy `config` singleton (Stage 3.5-B). All Pinia-bound config fields
+ * are mirrored via useConfigStore().$patch.
+ */
 import { useConfigStore } from '@/stores/config';
 import { config } from '@/utils/config'; // kept for runtime.FluidEffect instance (Stage 3.5-B)
 
-import { FluidEffect } from '../fluid';
-import { elements } from '../utils/elementManager';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { FluidEffect } from '@/fluid';
+import { elements } from '@/utils/elementManager';
+import { logInitComplete } from '../propertyHandlers/_helpers';
+import { WallpaperProperties } from '../propertyHandlers/types';
 
-/**
- * 处理流体效果相关属性
- * @param properties 属性对象
- * @param FirstLoad 是否首次加载
- *
- * Stage 7-B: config Pinia 字段改写为 useConfigStore().$patch({...})。
- * 但 `config.runtime.FluidEffect` 是非 Pinia 的运行时实例（管理 WebGL 资源），
- * 保留对 utils/config 单例的访问（Stage 3.5-B 才会迁移 runtime）。
- */
-export function handleFluidEffectProperties(
+export function useFluidEffectProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
@@ -108,7 +109,6 @@ export function handleFluidEffectProperties(
 
     if (FirstLoad) {
         logInitComplete('[FluidEffect]', '流体', FirstLoad);
-        patch.fluid_effect_init_complete = true;
-        store.$patch(patch);
+        store.$patch({ fluid_effect_init_complete: true });
     }
 }

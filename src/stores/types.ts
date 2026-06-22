@@ -18,6 +18,7 @@ export interface ConfigStoreState {
     bg_init_complete: boolean;
     weather_init_complete: boolean;
     fluid_effect_init_complete: boolean;
+    particles_init_complete: boolean;
     update_init_complete: boolean;
 
     // time/date
@@ -241,7 +242,7 @@ export interface ConfigStoreState {
     /** 樱花背景 */
     sakura_background?: boolean;
     /** 樱花背景色 */
-    sakura_back_color?: string;
+    sakura_back_color?: boolean;
     /** 樱花反转 */
     sakura_reverse?: boolean;
     /** 樱花点数 */
@@ -353,14 +354,14 @@ export interface ConfigStoreState {
     particles_move_out_mode?: number;
     particles_number?: number;
     particles_opacity?: number;
-    particles_opacity_random?: number;
+    particles_opacity_random?: boolean;
     particles_shadow_blur?: number;
     particles_shadow_color?: [number, number, number];
     particles_shape_type?: number;
-    particles_size_random?: number;
+    particles_size_random?: boolean;
     particles_size_value?: number;
     particles_speed?: number;
-    particles_speed_random?: number;
+    particles_speed_random?: boolean;
 
     // AudioVisual (partial — full pw_circle_*/pw_line_*/audio_* fields handled in Stage 3.5-B)
     audio_smooth_enabled?: boolean;
@@ -369,6 +370,67 @@ export interface ConfigStoreState {
     pw_circle_show_bool?: boolean;
     pw_line_show_bool?: boolean;
     polygon_angle?: number;
+    pw_circle_style?: number;
+    pw_circle_radius?: number;
+    pw_circle_range?: number;
+    pw_circle_color?: [number, number, number];
+    pw_circle_blur_color?: [number, number, number];
+    pw_circle_x?: number;
+    pw_circle_y?: number;
+    pw_circle_color_mode?: number;
+    pw_circle_solid_color_gradient?: boolean;
+    pw_circle_blur_color_gradient?: boolean;
+    pw_circle_color_rhythm?: boolean;
+    pw_circle_gradient_rate?: number;
+    pw_circle_line_width?: number;
+    pw_circle_rotation?: number;
+    pw_circle_direction?: number;
+    pw_circle_wavetransparency?: number;
+    pw_circle_show_semi_circle?: boolean;
+    pw_circle_semicircle_direction?: number;
+    pw_line_position?: number;
+    pw_line_style?: number;
+    pw_line_direction?: number;
+    pw_line_width?: number;
+    pw_line_spacing?: number;
+    pw_line_density?: number;
+    pw_line_range?: number;
+    pw_line_transparency?: number;
+    pw_line_color?: [number, number, number];
+    pw_line_blur_color?: [number, number, number];
+    pw_line_x?: number;
+    pw_line_y?: number;
+    pw_line_middle_line?: boolean;
+    pw_line_color_mode?: number;
+    pw_line_solid_color_gradient?: boolean;
+    pw_line_blur_color_gradient?: boolean;
+    pw_line_color_rhythm?: boolean;
+    pw_line_gradient_rate?: number;
+    audio_amplitude?: number;
+    audio_decline?: number;
+    audio_is_ring?: boolean;
+    audio_is_static_ring?: boolean;
+    audio_is_inner_ring?: boolean;
+    audio_is_outer_ring?: boolean;
+    audio_radius?: number;
+    audio_ring_rotation?: number;
+    audio_opacity?: number;
+    audio_color?: [number, number, number];
+    audio_shadow_color?: [number, number, number];
+    audio_shadow_blur?: number;
+    audio_offset_x?: number;
+    audio_offset_y?: number;
+    audio_is_click_offset?: boolean;
+    audio_is_line_to?: boolean;
+    audio_first_point?: number;
+    audio_second_point?: number;
+    audio_point_num?: number;
+    audio_distance?: number;
+    audio_line_width?: number;
+    audio_is_ball?: boolean;
+    audio_ball_spacer?: number;
+    audio_ball_size?: number;
+    audio_ball_rotation?: number;
 
     // Shared flags (used by wallpaperPropertyListener + background + systemMonitor)
     server_mode?: boolean;

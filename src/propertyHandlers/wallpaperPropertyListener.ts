@@ -20,13 +20,13 @@ import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '../utils/logger';
-import { handleAudioVisualProperties } from './audioVisualPropertyHandler';
+import { useAudioVisualProperties } from '@/composables/useAudioVisualProperties';
+import { useFluidEffectProperties } from '@/composables/useFluidEffectProperties';
+import { useParticleProperties } from '@/composables/useParticleProperties';
+import { useRGBProperties } from '@/composables/useRGBProperties';
+import { useSakuraProperties } from '@/composables/useSakuraProperties';
 import { handleBackgroundProperties } from './backgroundPropertyHandler';
-import { handleFluidEffectProperties } from './fluidEffectPropertyHandler';
-import { handleParticleProperties } from './particlePropertyHandler';
 import { handlePlayerControlProperties } from './playerControlPropertyHandler';
-import { handleRGBProperties } from './rgbPropertyHandler';
-import { handleSakuraProperties } from './sakuraPropertyHandler';
 import { WallpaperProperties } from './types';
 
 /**
@@ -159,11 +159,11 @@ export function createWallpaperPropertyListener(
         FirstLoad,
         'handlePlayerControlProperties'
     );
-    safeHandle(handleRGBProperties, properties, FirstLoad, 'handleRGBProperties');
-    safeHandle(handleParticleProperties, properties, FirstLoad, 'handleParticleProperties');
-    safeHandle(handleAudioVisualProperties, properties, FirstLoad, 'handleAudioVisualProperties');
-    safeHandle(handleSakuraProperties, properties, FirstLoad, 'handleSakuraProperties');
-    safeHandle(handleFluidEffectProperties, properties, FirstLoad, 'handleFluidEffectProperties');
+    safeHandle(useRGBProperties, properties, FirstLoad, 'useRGBProperties');
+    safeHandle(useParticleProperties, properties, FirstLoad, 'useParticleProperties');
+    safeHandle(useAudioVisualProperties, properties, FirstLoad, 'useAudioVisualProperties');
+    safeHandle(useSakuraProperties, properties, FirstLoad, 'useSakuraProperties');
+    safeHandle(useFluidEffectProperties, properties, FirstLoad, 'useFluidEffectProperties');
     safeHandle(useLyricsProperties, properties, FirstLoad, 'useLyricsProperties');
     safeHandle(
         useSystemMonitorProperties,

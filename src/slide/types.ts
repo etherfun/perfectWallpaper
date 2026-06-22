@@ -4,42 +4,42 @@
 
 // DOM elements for picture info (queried lazily, not at module-load time)
 export const pictures = {
-    get picture_info(): HTMLElement | null {
-        return document.querySelector('#picture_info') as HTMLElement | null;
+    get picture_info(): HTMLElement {
+        return document.querySelector('#picture_info') as HTMLElement;
     },
-    get info(): HTMLElement | null {
-        return document.querySelector('#picture_info .info') as HTMLElement | null;
+    get info(): HTMLElement {
+        return document.querySelector('#picture_info .info') as HTMLElement;
     },
-    get title(): HTMLElement | null {
-        return document.querySelector('#picture_info .title') as HTMLElement | null;
+    get title(): HTMLElement {
+        return document.querySelector('#picture_info .title') as HTMLElement;
     },
-    get author(): HTMLElement | null {
-        return document.querySelector('#picture_info .author') as HTMLElement | null;
+    get author(): HTMLElement {
+        return document.querySelector('#picture_info .author') as HTMLElement;
     },
-    get where(): HTMLElement | null {
-        return document.querySelector('#picture_info .location') as HTMLElement | null;
+    get where(): HTMLElement {
+        return document.querySelector('#picture_info .location') as HTMLElement;
     },
-    get text(): HTMLElement | null {
-        return document.querySelector('#picture_info .description') as HTMLElement | null;
+    get text(): HTMLElement {
+        return document.querySelector('#picture_info .description') as HTMLElement;
     },
 };
 
 // Background layers (DOM elements) - shared between modules
 export const backgroundLayers = {
-    get container(): HTMLElement | null {
-        return document.querySelector('#background-container') as HTMLElement | null;
+    get container(): HTMLElement {
+        return document.querySelector('#background-container') as HTMLElement;
     },
-    get layer1(): HTMLElement | null {
-        return document.querySelector('#background-layer1') as HTMLElement | null;
+    get layer1(): HTMLElement {
+        return document.querySelector('#background-layer1') as HTMLElement;
     },
-    get layer2(): HTMLElement | null {
-        return document.querySelector('#background-layer2') as HTMLElement | null;
+    get layer2(): HTMLElement {
+        return document.querySelector('#background-layer2') as HTMLElement;
     },
-    get blurLayer1(): HTMLElement | null {
-        return document.querySelector('#background-blur-layer1') as HTMLElement | null;
+    get blurLayer1(): HTMLElement {
+        return document.querySelector('#background-blur-layer1') as HTMLElement;
     },
-    get blurLayer2(): HTMLElement | null {
-        return document.querySelector('#background-blur-layer2') as HTMLElement | null;
+    get blurLayer2(): HTMLElement {
+        return document.querySelector('#background-blur-layer2') as HTMLElement;
     },
     currentActive: 1 as 1 | 2,
     blurCurrentActive: 1 as 1 | 2,

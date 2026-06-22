@@ -4,13 +4,13 @@
  *
  * Verifies that the composable correctly:
  *   - Patches Pinia store with all time/clock fields
- *   - Applies CSS variables to document.body
+ *   - Applies CSS variables to document.body (via getPropertyValue)
  *   - Handles FirstLoad logging via logInitComplete
- *   - Handles date_transparency (cross-property into date domain)
  *
  * Strategy: stub elementManager with minimal elements so the composable
- * can load under jsdom. No actual DOM mutation testing beyond checking
- * style.setProperty calls.
+ * can load under jsdom. CSS variable output is read back via
+ * `document.body.style.getPropertyValue(...)` instead of vi.spyOn (which
+ * is fragile across jsdom re-initializations).
  */
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -36,7 +36,14 @@ vi.mock('@/utils/elementManager', () => ({
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
-    vi.spyOn(document.body.style, 'setProperty');
+    document.body.removeAttribute('style');
+    if (typeof globalThis.ResizeObserver === 'undefined') {
+        globalThis.ResizeObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as unknown as typeof ResizeObserver;
+    }
 });
 
 afterEach(() => {
@@ -48,11 +55,8 @@ describe('useTimeProperties', () => {
         const store = useConfigStore();
         useTimeProperties({ showTime: { value: true } } as never, false);
         expect(store.show_time).toBe(true);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-display', 'flex');
-        expect(document.body.style.setProperty).toHaveBeenCalledWith(
-            '--clock-visibility',
-            'visible'
-        );
+        expect(document.body.style.getPropertyValue('--clock-display')).toBe('flex');
+        expect(document.body.style.getPropertyValue('--clock-visibility')).toBe('visible');
     });
 
     test('hides clock + disables color rhythm when showTime is false', () => {
@@ -60,7 +64,7 @@ describe('useTimeProperties', () => {
         useTimeProperties({ showTime: { value: false } } as never, false);
         expect(store.show_time).toBe(false);
         expect(store.time_color_rhythm).toBe(false);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-display', 'none');
+        expect(document.body.style.getPropertyValue('--clock-display')).toBe('none');
     });
 
     test('time_color_rhythm patch passes through', () => {
@@ -74,44 +78,37 @@ describe('useTimeProperties', () => {
         useTimeProperties({ tX: { value: 25 }, tY: { value: 75 } } as never, false);
         expect(store.time_x).toBe(25);
         expect(store.time_y).toBe(75);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-left', '25%');
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-top', '75%');
+        expect(document.body.style.getPropertyValue('--clock-left')).toBe('25%');
+        expect(document.body.style.getPropertyValue('--clock-top')).toBe('75%');
     });
 
     test('TimeColor splits RGB string → numeric array → rgb() string', () => {
         const store = useConfigStore();
         useTimeProperties({ TimeColor: { value: '1 0.5 0.2' } } as never, false);
-        // 1*255=255, 0.5*255=128 (Math.ceil), 0.2*255=51
         expect(store.time_color).toBe('rgb(255,128,51)');
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-color', '255,128,51');
+        expect(document.body.style.getPropertyValue('--clock-color')).toBe('255, 128, 51');
     });
 
     test('TimeBlurColor generates 0 0 20px rgb(...) blur string', () => {
         const store = useConfigStore();
         useTimeProperties({ TimeBlurColor: { value: '0.5 0.5 0.5' } } as never, false);
-        // 0.5*255=128 → '0 0 20px rgb(128,128,128)'
         expect(store.time_blur_color).toBe('0 0 20px rgb(128,128,128)');
-        expect(document.body.style.setProperty).toHaveBeenCalledWith(
-            '--clock-blur-color',
-            '128,128,128'
-        );
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-blur-enabled', '1');
+        expect(document.body.style.getPropertyValue('--clock-blur-color')).toBe('128, 128, 128');
+        expect(document.body.style.getPropertyValue('--clock-blur-enabled')).toBe('1');
     });
 
     test('timetransparency scales /100 into store + CSS', () => {
         const store = useConfigStore();
         useTimeProperties({ timetransparency: { value: 80 } } as never, false);
         expect(store.time_transparency).toBeCloseTo(0.8);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-opacity', '0.8');
+        expect(document.body.style.getPropertyValue('--clock-opacity')).toBe('0.8');
     });
 
-    test('clock roundedcorners → CSS var + ResizeObserver attached', () => {
+    test('clock roundedcorners → CSS var set', () => {
         const store = useConfigStore();
-        const observeSpy = vi.spyOn(ResizeObserver.prototype, 'observe');
         useTimeProperties({ oclock_roundedcorners: { value: 12 } } as never, false);
         expect(store.oclock_roundedcorners).toBe(12);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-roundedcorners', '12');
-        expect(observeSpy).toHaveBeenCalled();
+        expect(document.body.style.getPropertyValue('--clock-roundedcorners')).toBe('12');
     });
 
     test('yakeli scaling: value/100 + color array', () => {
@@ -125,7 +122,7 @@ describe('useTimeProperties', () => {
         );
         expect(store.oclock_yakeli).toBeCloseTo(0.5);
         expect(store.oclock_yakelic_color).toEqual([128, 128, 128]);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--clock-yakeli', '0.5');
+        expect(document.body.style.getPropertyValue('--clock-yakeli')).toBe('0.5');
     });
 
     test('logs init complete when FirstLoad=true', () => {

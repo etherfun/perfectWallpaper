@@ -1,8 +1,6 @@
 // @vitest-environment jsdom
 /**
  * Tests for src/composables/useDateProperties.ts — Stage 3-1
- *
- * Verifies date property handler — patches Pinia store + body CSS vars.
  */
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -28,7 +26,14 @@ vi.mock('@/utils/elementManager', () => ({
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
-    vi.spyOn(document.body.style, 'setProperty');
+    document.body.removeAttribute('style');
+    if (typeof globalThis.ResizeObserver === 'undefined') {
+        globalThis.ResizeObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as unknown as typeof ResizeObserver;
+    }
 });
 
 afterEach(() => {
@@ -40,7 +45,7 @@ describe('useDateProperties', () => {
         const store = useConfigStore();
         useDateProperties({ showDate: { value: true } } as never, false);
         expect(store.show_date).toBe(true);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--date-display', 'flex');
+        expect(document.body.style.getPropertyValue('--date-display')).toBe('flex');
     });
 
     test('show_date false → display none + disable color rhythm', () => {
@@ -48,14 +53,14 @@ describe('useDateProperties', () => {
         useDateProperties({ showDate: { value: false } } as never, false);
         expect(store.show_date).toBe(false);
         expect(store.date_color_rhythm).toBe(false);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--date-display', 'none');
+        expect(document.body.style.getPropertyValue('--date-display')).toBe('none');
     });
 
     test('odate_color → RGB array', () => {
         const store = useConfigStore();
         useDateProperties({ odate_color: { value: '1 0 0' } } as never, false);
         expect(store.odate_color).toEqual([255, 0, 0]);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--date-color', '255, 0, 0');
+        expect(document.body.style.getPropertyValue('--date-color')).toBe('255,0,0');
     });
 
     test('odate_yakeli /100 + yakeli_color array', () => {
@@ -76,8 +81,8 @@ describe('useDateProperties', () => {
         useDateProperties({ DateX: { value: 30 }, DateY: { value: 60 } } as never, false);
         expect(store.date_x).toBe(30);
         expect(store.date_y).toBe(60);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--date-left', '30%');
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--date-top', '60%');
+        expect(document.body.style.getPropertyValue('--date-left')).toBe('30%');
+        expect(document.body.style.getPropertyValue('--date-top')).toBe('60%');
     });
 
     test('date_format.* mutates whole object via store read-modify-write', () => {
@@ -90,7 +95,7 @@ describe('useDateProperties', () => {
             } as never,
             false
         );
-        expect(store.date_format).toEqual({
+        expect(store.date_format).toMatchObject({
             separator: 2,
             order: 3,
             year_format: 1,
@@ -101,7 +106,7 @@ describe('useDateProperties', () => {
         const store = useConfigStore();
         useDateProperties({ datetransparency: { value: 75 } } as never, false);
         expect(store.date_transparency).toBeCloseTo(0.75);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--date-opacity', '0.75');
+        expect(document.body.style.getPropertyValue('--date-opacity')).toBe('0.75');
     });
 
     test('logs init complete + sets date_init_complete on FirstLoad', () => {

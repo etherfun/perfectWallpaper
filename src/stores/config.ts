@@ -129,6 +129,15 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     countdown_show: false,
     countdown_timetransparency: 80,
     countdown_roundedcorners: 0,
+
+    // Fullscreen lyrics (Stage 3-1) — defaults from utils/config/defaults/fullscreenLyrics.ts
+    fullscreen_lyrics_enabled: false,
+    fullscreen_lyrics_show_translation: true,
+    fullscreen_lyrics_show_roman: false,
+    fullscreen_lyrics_delay: 0,
+    fullscreen_lyrics_enable_blur: true,
+    fullscreen_lyrics_hide_other: true,
+    fullscreen_lyrics_show_clock: false,
 };
 
 export const useConfigStore = defineStore('config', {

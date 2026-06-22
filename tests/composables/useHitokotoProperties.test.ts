@@ -26,7 +26,14 @@ vi.mock('@/utils/elementManager', () => ({
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
-    vi.spyOn(document.body.style, 'setProperty');
+    document.body.removeAttribute('style');
+    if (typeof globalThis.ResizeObserver === 'undefined') {
+        globalThis.ResizeObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as unknown as typeof ResizeObserver;
+    }
 });
 
 afterEach(() => {
@@ -65,7 +72,7 @@ describe('useHitokotoProperties', () => {
         const store = useConfigStore();
         useHitokotoProperties({ hitokoto_show: { value: true } } as never, false);
         expect(store.hitokoto_show).toBe(true);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--hitokoto-display', 'flex');
+        expect(document.body.style.getPropertyValue('--hitokoto-display')).toBe('flex');
     });
 
     test('hitokoto_color → RGB array', () => {
@@ -88,22 +95,15 @@ describe('useHitokotoProperties', () => {
     });
 
     test('timetransparency /100 → opacity', () => {
-        const store = useConfigStore();
-        useHitokotoProperties(
-            { hitokoto_timetransparency: { value: 80 } } as never,
-            false
-        );
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--hitokoto-opacity', '0.8');
+        useHitokotoProperties({ hitokoto_timetransparency: { value: 80 } } as never, false);
+        expect(document.body.style.getPropertyValue('--hitokoto-opacity')).toBe('0.8');
     });
 
-    test('size sets font-size and line-height in vh units', () => {
+    test('size sets font-size in px units', () => {
         const store = useConfigStore();
         useHitokotoProperties({ hitokoto_size: { value: 50 } } as never, false);
         expect(store.hitokoto_size).toBe(50);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith(
-            '--hitokoto-font-size',
-            expect.stringContaining('px')
-        );
+        expect(document.body.style.getPropertyValue('--hitokoto-font-size')).toMatch(/px$/);
     });
 
     test('position patches + CSS vars with %', () => {
@@ -114,7 +114,7 @@ describe('useHitokotoProperties', () => {
         );
         expect(store.hitokoto_x).toBe(50);
         expect(store.hitokoto_y).toBe(25);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--hitokoto-left', '50%');
+        expect(document.body.style.getPropertyValue('--hitokoto-left')).toBe('50%');
     });
 
     test('logs init complete on FirstLoad', () => {

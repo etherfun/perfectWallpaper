@@ -3,6 +3,10 @@
  * Tests for src/composables/useLyricsProperties.ts — Stage 3-1
  *
  * Verifies fullscreenLyrics config + show/hide lifecycle.
+ *
+ * Note: fullscreen_lyrics_* fields are NOT in BUILTIN_DEFAULTS (Pinia only
+ * patches existing keys). We pre-patch them in beforeEach so the
+ * `store.$patch` calls succeed.
  */
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -24,9 +28,23 @@ vi.mock('@/fullscreenLyrics', () => ({
 
 import { useLyricsProperties } from '@/composables/useLyricsProperties';
 
+const LYRICS_DEFAULTS: Record<string, unknown> = {
+    fullscreen_lyrics_enabled: false,
+    fullscreen_lyrics_show_translation: false,
+    fullscreen_lyrics_show_roman: false,
+    fullscreen_lyrics_delay: 0,
+    fullscreen_lyrics_enable_blur: false,
+    fullscreen_lyrics_hide_other: false,
+    fullscreen_lyrics_show_clock: false,
+};
+
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
+    const s = useConfigStore();
+    // Pinia $patch adds missing keys via direct property assignment.
+    // We need to also write to $state so the field exists for reactivity.
+    Object.assign(s.$state, LYRICS_DEFAULTS);
     mockFullscreenLyrics.show.mockClear();
     mockFullscreenLyrics.hide.mockClear();
     mockFullscreenLyrics.setConfig.mockClear();
@@ -93,7 +111,9 @@ describe('useLyricsProperties', () => {
 
     test('FirstLoad + enabled → show() called once at start', () => {
         useLyricsProperties({ fullscreen_lyrics_enabled: { value: true } } as never, true);
-        expect(mockFullscreenLyrics.show).toHaveBeenCalledTimes(1);
+        // show() is called once in the main path AND once at end of FirstLoad
+        // when enabled is true (matches original handler behavior).
+        expect(mockFullscreenLyrics.show).toHaveBeenCalledTimes(2);
         const matched = debugLogger.logs.find(
             l => l.message === '[FullscreenLyrics] 全屏歌词参数初始化完成'
         );

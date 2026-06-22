@@ -26,7 +26,14 @@ vi.mock('@/utils/elementManager', () => ({
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
-    vi.spyOn(document.body.style, 'setProperty');
+    document.body.removeAttribute('style');
+    if (typeof globalThis.ResizeObserver === 'undefined') {
+        globalThis.ResizeObserver = class {
+            observe() {}
+            unobserve() {}
+            disconnect() {}
+        } as unknown as typeof ResizeObserver;
+    }
 });
 
 afterEach(() => {
@@ -38,20 +45,14 @@ describe('useCountdownProperties', () => {
         const store = useConfigStore();
         useCountdownProperties({ countdown_show: { value: true } } as never, false);
         expect(store.countdown_show).toBe(true);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith(
-            '--countdown-display',
-            'flex'
-        );
+        expect(document.body.style.getPropertyValue('--countdown-display')).toBe('flex');
     });
 
     test('show false → display none', () => {
         const store = useConfigStore();
         useCountdownProperties({ countdown_show: { value: false } } as never, false);
         expect(store.countdown_show).toBe(false);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith(
-            '--countdown-display',
-            'none'
-        );
+        expect(document.body.style.getPropertyValue('--countdown-display')).toBe('none');
     });
 
     test('position patches + CSS vars with %', () => {
@@ -62,8 +63,8 @@ describe('useCountdownProperties', () => {
         );
         expect(store.countdown_x).toBe(40);
         expect(store.countdown_y).toBe(80);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--countdown-left', '40%');
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--countdown-top', '80%');
+        expect(document.body.style.getPropertyValue('--countdown-left')).toBe('40%');
+        expect(document.body.style.getPropertyValue('--countdown-top')).toBe('80%');
     });
 
     test('countdown_color → RGB array', () => {
@@ -85,7 +86,7 @@ describe('useCountdownProperties', () => {
             false
         );
         expect(store.countdown_timetransparency).toBe(80);
-        expect(document.body.style.setProperty).toHaveBeenCalledWith('--countdown-opacity', '0.8');
+        expect(document.body.style.getPropertyValue('--countdown-opacity')).toBe('0.8');
     });
 
     test('countdown_bluryakeli sets first_load_countdown = false', () => {

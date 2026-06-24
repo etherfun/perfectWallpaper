@@ -21,12 +21,12 @@ import { updateFileList } from '../slide';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '../utils/logger';
 import { useAudioVisualProperties } from '@/composables/useAudioVisualProperties';
+import { useBackgroundProperties } from '@/composables/useBackgroundProperties';
 import { useFluidEffectProperties } from '@/composables/useFluidEffectProperties';
 import { useParticleProperties } from '@/composables/useParticleProperties';
+import { usePlayerControlProperties } from '@/composables/usePlayerControlProperties';
 import { useRGBProperties } from '@/composables/useRGBProperties';
 import { useSakuraProperties } from '@/composables/useSakuraProperties';
-import { handleBackgroundProperties } from './backgroundPropertyHandler';
-import { handlePlayerControlProperties } from './playerControlPropertyHandler';
 import { WallpaperProperties } from './types';
 
 /**
@@ -149,15 +149,15 @@ export function createWallpaperPropertyListener(
     // 处理所有属性
     safeHandle(useDateProperties, properties, FirstLoad, 'useDateProperties');
     safeHandle(useTimeProperties, properties, FirstLoad, 'useTimeProperties');
-    safeHandle(handleBackgroundProperties, properties, FirstLoad, 'handleBackgroundProperties');
+    safeHandle(useBackgroundProperties, properties, FirstLoad, 'useBackgroundProperties');
     safeHandle(useWeatherProperties, properties, FirstLoad, 'useWeatherProperties');
     safeHandle(useHitokotoProperties, properties, FirstLoad, 'useHitokotoProperties');
     safeHandle(useCountdownProperties, properties, FirstLoad, 'useCountdownProperties');
     safeHandle(
-        handlePlayerControlProperties,
+        usePlayerControlProperties,
         properties,
         FirstLoad,
-        'handlePlayerControlProperties'
+        'usePlayerControlProperties'
     );
     safeHandle(useRGBProperties, properties, FirstLoad, 'useRGBProperties');
     safeHandle(useParticleProperties, properties, FirstLoad, 'useParticleProperties');

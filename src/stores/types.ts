@@ -171,11 +171,11 @@ export interface ConfigStoreState {
     /** 启用播放器控制 */
     player_control_show?: boolean;
     /** 播放器可视化音频条 */
-    player_control_visualaudiobar?: boolean;
+    player_control_visualaudiobar?: number;
     /** 播放器封面旋转 */
     player_control_thumbnail_rotation?: boolean;
     /** 播放器缩略图大小 */
-    player_control_thumbnail_size?: boolean;
+    player_control_thumbnail_size?: number;
 
     /** 显示图片信息（slide 模式） */
     picturesinfo_show?: boolean;
@@ -270,7 +270,7 @@ export interface ConfigStoreState {
     /** 壁纸模式 (1-9) */
     wallpapermode?: number;
     /** 随机播放 */
-    random?: boolean;
+    random?: number;
     /** 切换时间 */
     imageswitchtimes?: number | string;
     /** 单图片文件 */
@@ -315,6 +315,24 @@ export interface ConfigStoreState {
     // PlayerControl 补强
     color_pickup_method?: number;
     player_control_barline?: number;
+    pictures_info_show?: boolean | null;
+    pictures_info_y?: number;
+    pictures_info_x?: number;
+    pictures_info_size?: number;
+    pictures_info_timetransparency?: number;
+    pictures_info_roundedcorners?: number;
+    pictures_info_showaway?: boolean;
+    pictures_info_showwidth?: number;
+    pictures_info_description?: boolean;
+    pictures_info_color?: [number, number, number] | null;
+    pictures_info_blurcolor_show?: boolean | null;
+    pictures_info_blurcolor?: [number, number, number] | null;
+    pictures_info_yakeli_show?: boolean | null;
+    pictures_info_yakelic_color?: [number, number, number] | null;
+    pictures_info_yakeli?: number | null;
+    pictures_info_bluryakeli?: number | null;
+    frist_picturesinfo?: boolean;
+    pictures_info_show_ror_l?: boolean | null;
     player_control_blurcolor?: [number, number, number];
     player_control_blurcolor_show?: boolean;
     player_control_bluryakeli?: number;
@@ -438,20 +456,19 @@ export interface ConfigStoreState {
     // Background 补强（server_mode + bg_style 等未在前面定义）
     bg_style?: number;
     bgs?: string;
-    bgx?: number;
-    bgy?: number;
+    bgx?: string;
+    bgy?: string;
     chiyuanapi?: string;
     cusaudio_route?: string;
     custom?: string;
     cusvideo_route?: string;
-    frist_picturesinfo?: boolean;
-    galaxy_api?: string;
+    galaxy_api?: number;
     music_playlist_random?: boolean;
-    music_playlist_repeat?: boolean;
+    music_playlist_repeat?: number;
     music_volume?: number;
     musicdirectory?: string;
     pictures_url?: string;
-    select_video?: boolean;
+    select_video?: string;
     selectmusic?: string;
     speed?: number;
     switch_interval_input?: number;

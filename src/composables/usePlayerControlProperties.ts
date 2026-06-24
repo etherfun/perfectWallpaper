@@ -1,9 +1,18 @@
+/**
+ * usePlayerControlProperties — Vue 3 composable wrapper for player control
+ * properties (show, color, position, size, thumbnail, animation).
+ *
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/playerControlPropertyHandler.ts
+ * as a composable. Module-level state (player_control_show / thumbnail_size_value)
+ * preserved as local closure variables since they reflect "current state of
+ * the player control DOM" and are not surfaced to consumers.
+ */
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 
-import { pc_aubar, playertitle, thumbnailsue } from '../player_control';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { logInitComplete } from '@/propertyHandlers/_helpers';
+import { WallpaperProperties } from '@/propertyHandlers/types';
+import { pc_aubar, playertitle, thumbnailsue } from '@/player_control';
 
 const player_control = elements.playerControl.container;
 const player_control_thumbnail = elements.playerControl.thumbnail;
@@ -16,15 +25,7 @@ const player_control_albumTitle = elements.playerControl.albumTitle;
 let player_control_show = false;
 let player_control_thumbnail_size_value = 100;
 
-/**
- * 处理播放器相关属性
- *
- * Stage 7-C (Phase 7 批次 2-C):
- *   - Pinia 字段改用 useConfigStore().$patch({...})。
- *   - DOM 命令式操作（style / classList / animation）保留 — 不入 Pinia。
- *   - Module 顶层变量 player_control_show / thumbnail_size_value 保留 — handler 局部状态。
- */
-export function handlePlayerControlProperties(
+export function usePlayerControlProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
@@ -159,7 +160,7 @@ export function handlePlayerControlProperties(
         patch.player_control_thumbnail_size_value =
             properties.player_control_thumbnail_size_value.value;
         const ss = s * (properties.player_control_thumbnail_size_value.value / 100);
-        if (store.player_control_thumbnail_size === true) {
+        if (store.player_control_thumbnail_size) {
             player_control_thumbnailWrap.style.setProperty('--player-thumb-size', s + 'px');
             player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', ss + 'px');
             player_control_thumbnail.style.setProperty('--player-thumb-inner-size', ss + 'px');
@@ -180,7 +181,7 @@ export function handlePlayerControlProperties(
             player_control.style.borderRadius = radius + 'px';
             player_control_background.style.paddingRight = padding + 'px';
 
-            if (store.player_control_thumbnail_rotation !== true) {
+            if (!store.player_control_thumbnail_rotation) {
                 player_control_thumbnailWrap.style.setProperty(
                     '--player-thumb-radius',
                     radius + 'px'
@@ -192,7 +193,7 @@ export function handlePlayerControlProperties(
         updateCorners();
 
         const observer = new ResizeObserver(() => {
-            if (store.player_control_thumbnail_rotation === false) updateCorners();
+            if (!store.player_control_thumbnail_rotation) updateCorners();
         });
         observer.observe(player_control_thumbnail);
     }

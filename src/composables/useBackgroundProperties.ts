@@ -1,26 +1,28 @@
+/**
+ * useBackgroundProperties — Vue 3 composable wrapper for background/wallpaper
+ * properties (image, video, music, transitions, picture-info, audio bar).
+ *
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/backgroundPropertyHandler.ts
+ * as a composable.
+ *
+ * Side effects live in @/slide and @/video (changeBackground, TransitionSwith,
+ * ChangeVideoModel, ChangeAudioModel, updateMusicPlaylist) — these are
+ * imperative and stay outside Pinia. Batched $patch mirrors every user-tweakable
+ * setting.
+ */
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 
-import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '../slide';
-import { debugLogger } from '../utils/logger';
-import { timerManager } from '../utils/timer';
-import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '../video';
-import { logInitComplete } from './_helpers';
-import { WallpaperProperties } from './types';
+import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/slide';
+import { logInitComplete } from '@/propertyHandlers/_helpers';
+import { WallpaperProperties } from '@/propertyHandlers/types';
+import { debugLogger } from '@/utils/logger';
+import { timerManager } from '@/utils/timer';
+import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/video';
 
-/**
- * 处理壁纸/背景相关属性
- *
- * Stage 7-C (Phase 7 批次 2-C):
- *   - Pinia 字段改用 useConfigStore().$patch({...})。
- *   - DOM 命令式操作（style.setProperty / myvideo.volume）保留。
- */
-export function handleBackgroundProperties(
-    properties: WallpaperProperties,
-    FirstLoad: boolean
-): void {
+export function useBackgroundProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     debugLogger.warn(
-        `[handleBackgroundProperties] FirstLoad=${FirstLoad}, keys=${Object.keys(properties).join(', ')}`
+        `[useBackgroundProperties] FirstLoad=${FirstLoad}, keys=${Object.keys(properties).join(', ')}`
     );
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
@@ -64,7 +66,7 @@ export function handleBackgroundProperties(
 
     if (properties.customdirectory) {
         debugLogger.warn(
-            `[handleBackgroundProperties] customdirectory changed, FirstLoad=${FirstLoad}`
+            `[useBackgroundProperties] customdirectory changed, FirstLoad=${FirstLoad}`
         );
         patch.customdirectory = properties.customdirectory.value;
         timerManager.remove('backgroundChange');
@@ -75,7 +77,7 @@ export function handleBackgroundProperties(
 
     if (properties.wallpapermode) {
         debugLogger.warn(
-            `[handleBackgroundProperties] wallpapermode changed, FirstLoad=${FirstLoad}`
+            `[useBackgroundProperties] wallpapermode changed, FirstLoad=${FirstLoad}`
         );
         timerManager.remove('backgroundChange');
         patch.wallpaper_mode = properties.wallpapermode.value;
@@ -139,7 +141,9 @@ export function handleBackgroundProperties(
 
     if (properties.VideoVolume) {
         patch.video_volume = properties.VideoVolume.value / 100;
-        elements.myvideo.volume = properties.VideoVolume.value / 100;
+        if (elements.myvideo) {
+            elements.myvideo.volume = properties.VideoVolume.value / 100;
+        }
     }
 
     if (properties.selectmusic) {
@@ -167,7 +171,9 @@ export function handleBackgroundProperties(
 
     if (properties.MuiscVolume) {
         patch.music_volume = properties.MuiscVolume.value / 100;
-        elements.myAudio.volume = properties.MuiscVolume.value / 100;
+        if (elements.myAudio) {
+            elements.myAudio.volume = properties.MuiscVolume.value / 100;
+        }
     }
 
     if (properties.random) {
@@ -307,15 +313,18 @@ export function handleBackgroundProperties(
         patch.pictures_info_roundedcorners = roundedcorners;
         elements.body.style.setProperty('--picture-info-roundedcorners', String(roundedcorners));
 
+        const picInfoEl = elements.slide?.picture_info;
         const updateHeight = () => {
-            const height = elements.slide.picture_info?.getBoundingClientRect().height;
+            const height = picInfoEl?.getBoundingClientRect().height;
             if (!height) return;
             elements.body.style.setProperty('--picture-info-height', height + 'px');
         };
 
         updateHeight();
-        const observer = new ResizeObserver(updateHeight);
-        observer.observe(elements.slide.picture_info);
+        if (picInfoEl) {
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(picInfoEl);
+        }
     }
 
     if (properties.picturesinfo_showaway) {

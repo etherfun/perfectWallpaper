@@ -3,6 +3,26 @@ import { versionManager } from '../../version';
 import type { WallpaperEffectController } from '../../WallpaperEffectController';
 import type { DebugLogger } from '../logger';
 
+// ────────────────────────────────────────────────────────────────────────
+// Stage 3.5-B 架构边界（锁定）：
+//
+// 以下类型描述的命令式单例，**不**通过 Pinia 管理：
+//   - PlayerRuntime.playerInfo（媒体元数据 + 高频 FFT/color 数据）
+//   - VisualRuntime.param / PWLineParam（PWCircle/PWLine 渲染参数，60 Hz 写入）
+//   - FluidRuntime.*（WebGL 流体实例）
+//   - PhotoRuntime.photo（幻灯片状态）
+//   - HitokotoRuntime.hitokoto（仅 hitokoto 已 Pinia 化，见 src/stores/runtime.ts）
+//   - DockRuntime.{files, myList}（文件列表）
+//   - WallpaperRuntime.wallpaper（WallpaperEffectController）
+//   - ServiceRuntime.{versionManager, debugLogger}（服务实例）
+//
+// 这些字段被 WebGL / RAF / FFT 以 60 Hz 写入；Pinia 化会引入每帧 Vue 响应式
+// 触发，导致性能崩溃。详见 src/stores/configBridge.ts 顶部架构边界说明。
+//
+// Vue 组件如需读这些字段：通过 useConfigStore()（已镜像的 user-tweakable 设置）
+// + appConfig.runtime.xxx（未 Pinia 化的字段）混合访问。
+// ────────────────────────────────────────────────────────────────────────
+
 export interface PlayerRuntime {
     playerInfo: {
         audioArray: number[];

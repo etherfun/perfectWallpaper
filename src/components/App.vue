@@ -13,28 +13,38 @@
   所有 SFC 都是"薄壳"——模板为空，DOM 由 index.html 预置或原 .ts 模块动态创建，
   Vue 组件仅作为 Pinia store / i18n / composable 的接入点。
 -->
+<!--
+  App.vue — 根组件
+
+  template is a Vue 3 multi-root fragment (no wrapper <div>) because
+  src/main.ts calls `app.mount('#app-root')` — Vue replaces the inner
+  content of the existing #app-root element. If we wrapped the template
+  in another <div id="app-root">, Vue would create a NESTED second
+  #app-root inside the original one, producing a doubled mount point.
+
+  The SFC components below each render directly into the existing
+  #app-root element as flat children.
+-->
 <template>
-    <div id="app-root">
-        <Clock />
-        <Date />
-        <Countdown />
-        <Hitokoto />
-        <Weather />
-        <SystemMonitor />
-        <DockBar />
-        <PlayerControl />
-        <PictureInfo />
-        <Sakura />
-        <PWCircle />
-        <PWLine />
-        <PWParticles />
-        <RgbEffect />
-        <FluidEffect />
-        <Version />
-        <DebugModal />
-        <FullscreenLyrics />
-        <Background />
-    </div>
+    <Clock />
+    <Date />
+    <Countdown />
+    <Hitokoto />
+    <Weather />
+    <SystemMonitor />
+    <DockBar />
+    <PlayerControl />
+    <PictureInfo />
+    <Sakura />
+    <PWCircle />
+    <PWLine />
+    <PWParticles />
+    <RgbEffect />
+    <FluidEffect />
+    <Version />
+    <DebugModal />
+    <FullscreenLyrics />
+    <Background />
 </template>
 
 <script setup lang="ts">

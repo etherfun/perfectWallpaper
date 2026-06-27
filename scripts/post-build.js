@@ -79,6 +79,39 @@ async function copyDirectory(src, dest, force = false) {
     }
 }
 
+/**
+ * Strip legacy widget markup from the processed HTML.
+ *
+ * Phase 1 design left 8 legacy widget shells in index.html (clock, oDate,
+ * countdown, weather, player_control, system-monitor, dockbar, hitokoto,
+ * picture_info) that the imperative propertyHandlers populate at runtime.
+ * The Vue wrappers in src/components/ ALSO render equivalents inside
+ * #app-root, producing two stacked #clock / #oDate / etc. elements that
+ * fight for the same screen position.
+ *
+ * Phase 8+: Vue fully takes over. We strip the legacy shells so the
+ * compiled dist/index.html contains only:
+ *   - background containers + audio/video + 7 canvas elements
+ *   - sakura shader scripts
+ *   - weather tooltip shells + alert template (used by Vue Weather.vue)
+ *   - #app-root (Vue mount target)
+ */
+function stripLegacyWidgets(html) {
+    const ids = [
+        'clock', 'countdown', 'oDate', 'weather', 'player_control',
+        'system-monitor', 'dockbar', 'hitokoto', 'picture_info',
+    ];
+    let out = html;
+    for (const id of ids) {
+        const re = new RegExp(
+            `<div\\s+id="${id}"[^>]*>[\\s\\S]*?</div>\\s*`,
+            'i',
+        );
+        out = out.replace(re, '');
+    }
+    return out;
+}
+
 async function processHtml() {
     const srcHtml = path.join(srcDir, 'index.html');
     const destHtml = path.join(distDir, 'index.html');
@@ -90,8 +123,16 @@ async function processHtml() {
     for (const [original, replacement] of htmlPathReplacements) {
         content = content.replaceAll(original, replacement);
     }
+    content = stripLegacyWidgets(content);
+    // Hide the <audio> fallback "music note" icon that some browsers render
+    // when <audio> has no src attribute. The audio element is still functional
+    // (player_control.ts uses it for streaming) — just visually hidden.
+    content = content.replaceAll(
+        '<audio id="myAudio" autoplay loop></audio>',
+        '<audio id="myAudio" autoplay loop style="display:none"></audio>',
+    );
     fs.writeFileSync(destHtml, content);
-    console.log(`  Processed: index.html`);
+    console.log(`  Processed: index.html (legacy widgets stripped)`);
 }
 
 async function processProjectJson() {

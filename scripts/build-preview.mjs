@@ -44,7 +44,12 @@ html5 = html5
     // background-image url(./source/imgs/...) → url(./dist/source/imgs/...)
     .replace(/url\('\.\/source\//g, "url('./dist/source/");
 
-// 2. Inject preview status overlay + WE global shim just after <body>
+// 3. Legacy widget markup stripping is now done by scripts/post-build.js
+//    (Phase 8+: Vue fully takes over; legacy shells removed from dist/index.html).
+//    dist/index.html coming out of post-build already has no #clock, #oDate,
+//    etc. — only the Vue components render those inside #app-root.
+
+// 4. Inject preview status overlay + WE global shim just after <body>
 const shim = `
     <!-- Browser-preview only: status overlay + WE global stubs -->
     <div id="__preview_status">loading…</div>
@@ -61,7 +66,7 @@ const shim = `
 
 const withShim = html5.replace(/<body[^>]*>/i, (m) => m + '\n' + shim);
 
-// 3. Inject preview-only CSS + status logger script just before </body>
+// 5. Inject preview-only CSS + status logger script just before </body>
 const tail = `
     <style id="__preview_theme">
         /* Preview defaults — mimic Wallpaper Engine's default theme so the

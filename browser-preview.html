@@ -28,32 +28,21 @@
         <div id="background-layer2" class="background-layer"></div>
     </div>
 
-    <audio id="myAudio" autoplay loop></audio>
+    <audio id="myAudio" autoplay loop style="display:none"></audio>
 
     <video id="myvideo" width="100%" height="100%" autoplay loop></video>
 
-    <div id="clock">
-        <div class="clock-block">
-            <div class="min">17:00</div>
-            <div class="time-indicators">
+    <div class="time-indicators">
                 <div class="st">AM</div>
                 <div class="sec">00</div>
             </div>
         </div>
     </div>
-    <div id="countdown">
-        <div class="text">1</div>
     </div>
 
-    <div id="oDate">
-        <div class="text">2017</div>
     </div>
 
-    <div id="weather">
-        <div class="weather-container">
-            <div class="weather-left">
-                <div class="weather-icon" id="weatherIcon"></div>
-                <div class="weather-temp" id="weatherTemp"></div>
+    <div class="weather-temp" id="weatherTemp"></div>
                 <div class="weather-text" id="weatherText"></div>
                 <div class="weather-feels" id="weatherFeels"></div>
                 <div class="weather-city" id="weatherCity"></div>
@@ -207,17 +196,7 @@
         </div>
     </template>
 
-    <div id="player_control">
-        <div class="background">
-            <div class="thumbnail-wrap">
-                <img class="thumbnail">
-                <div class="pause-overlay">
-                    <svg viewBox="0 0 24 24" fill="currentColor">
-                        <rect x="6" y="4" width="4" height="16" />
-                        <rect x="14" y="4" width="4" height="16" />
-                    </svg>
-                </div>
-            </div>
+    </div>
             <div class="info-container">
                 <div class="info">
                     <div class="title">
@@ -277,15 +256,7 @@
         </div>
     </div>
 
-    <div id="system-monitor">
-        <div class="background">
-            <div class="sysmon-row sysmon-cpu" data-metric="cpu">
-                <div class="sysmon-text">
-                    <span class="sysmon-label">CPU</span>
-                    <span class="sysmon-value">0%</span>
-                    <span class="sysmon-extra"></span>
-                </div>
-                <div class="sysmon-viz"></div>
+    <div class="sysmon-viz"></div>
             </div>
             <div class="sysmon-row sysmon-gpu" data-metric="gpu">
                 <div class="sysmon-text">
@@ -314,10 +285,7 @@
         </div>
     </div>
 
-    <div id="dockbar">
-        <div class="dockbar-background">
-            <div class="dockbar-items" id="dockbar-items"></div>
-            <button class="dockbar-add-btn" id="dockbar-add-btn" title="添加项目">
+    <button class="dockbar-add-btn" id="dockbar-add-btn" title="添加项目">
                 <svg viewBox="0 0 24 24" fill="currentColor">
                     <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
                 </svg>
@@ -325,24 +293,9 @@
         </div>
     </div>
 
-    <div id="hitokoto">
-        <div class="text">
-            一言
-        </div>
     </div>
 
-    <div id="picture_info">
-        <div class="info">
-            <div class="title">
-                <span class="right">
-                </span>
-                <img class="titleicon"
-                    src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzI1ODg0MjQ2MTA0IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjcxMjIiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTSA4OTAgNjMuOTEgSCAxMzQgYSA3MCA3MCAwIDAgMCAtNzAgNzAgdiA3NTYgYSA3MCA3MCAwIDAgMCA3MCA3MCBoIDc1NiBhIDcwIDcwIDAgMCAwIDcwIC03MCB2IC03NTYgYSA3MCA3MCAwIDAgMCAtNzAgLTcwIFogTSAxNDQuMjUgODE1LjU2IGwgMTUwLjA5IC0xNTAuNDggTCA0NTYuMiA4MjYuNTMgYSA0MC43OSA0MC43OSAwIDAgMCA1Ny4xMiAwIGwgODcuOTQgLTg4LjMgbCAxNDIgMTQxLjcxIEggMjE0IGEgNzAgNzAgMCAwIDEgLTY5Ljc1IC02NC4zOCBaIE0gODgwIDgwOS45MSBhIDcwIDcwIDAgMCAxIC0zMy45NCA2MCBMIDYyOS40MyA2NTMuNzIgYSA0MC4xIDQwLjEgMCAwIDAgLTU2LjU1IDAgbCAtODguMjMgODguNiBsIC0xNjIuMjIgLTE2MS43OSBhIDQwIDQwIDAgMCAwIC01Ni40MyAwIGMgLTAuNiAwLjYgLTEuMTcgMS4yMSAtMS43MiAxLjg0IEwgMTQ0IDcwMyBWIDIxNCBhIDcwIDcwIDAgMCAxIDcwIC03MCBoIDU5NiBhIDcwIDcwIDAgMCAxIDcwIDcwIFoiIGZpbGw9IiM5OTk5OTkiIHAtaWQ9IjcxMjMiPjwvcGF0aD48cGF0aCBkPSJNIDY0OC40MyAyMjMuOTEgYSAxNTEgMTUxIDAgMSAwIDE1MSAxNTEgYSAxNTEgMTUxIDAgMCAwIC0xNTEgLTE1MSBaIG0gMCAyMjIgYSA3MSA3MSAwIDEgMSA3MSAtNzEgYSA3MSA3MSAwIDAgMSAtNzEgNzEgWiIgZmlsbD0iIzk5OTk5OSIgcC1pZD0iNzEyNCI+PC9wYXRoPjwvc3ZnPg=='>
-                <span class="left">
-                    UNKNOW
-                </span>
-            </div>
-            <div class="author">
+    <div class="author">
                 <span class="right">
                 </span>
                 <img class="authoricon"

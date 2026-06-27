@@ -61,6 +61,21 @@ canvas {
     white-space: pre-line;
 }
 
+// Vue mount target — explicit display + position rules to override the UA
+// <div> default (`display: block`). `position: relative` gives an anchor
+// for absolutely-positioned Vue children that don't have their own
+// positioned ancestor. Without these explicit rules, #app-root falls
+// back to UA `display: block` + `position: static`, which has caused
+// subtle layout bugs where inner <div> children's display values are
+// swallowed by the block-level parent.
+#app-root {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
 // Global scrollbar hiding utility
 .hide-scrollbar {
     @include hide-scrollbar;

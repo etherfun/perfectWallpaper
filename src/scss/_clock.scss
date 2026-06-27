@@ -22,24 +22,29 @@
 
         .min {
             grid-column: 1;
+            display: block; // explicit override of UA div default
             white-space: nowrap;
         }
 
         .time-indicators {
             display: flex;
             justify-content: flex-end;
+            align-items: baseline; // align seconds + meridiem on the same baseline
             grid-column: 2;
             height: 100%;
-            flex-direction: column;
+            flex-direction: row; // PM/AM + seconds side-by-side, not stacked
             margin-left: 10px;
 
             .sec {
+                display: block; // explicit override of UA div default
                 font-size: 0.5em;
                 line-height: 0.9;
                 position: relative;
+                margin-left: 6px;
             }
 
             .st {
+                display: flex; // explicit override of UA div default
                 justify-content: space-around;
                 position: relative;
                 font-size: 0.25em;

@@ -23,6 +23,65 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
+// Module-level Pinia guards: the legacy .ts wrappers under src/sakura/, src/weather/,
+// src/slide/, src/player_control/, src/version/, src/fullscreenLyrics/, src/fluid/
+// (all still on Stage 5-C backlog) call useConfigStore() at module top. They execute
+// during `import { Sakura } from '@/components/Sakura.vue'` because the composable
+// transitive chain pulls them in. We mock every such legacy barrel to a no-op so
+// the SFC mount chain never reaches a top-level Pinia call.
+vi.mock('@/sakura', () => ({
+    default: {},
+    makeCanvasFullScreen: () => {},
+    makeCanvasHide: () => {},
+    setAnimating: () => {},
+    animate: () => {},
+    removesakura: () => {},
+    sakuraResize: () => {},
+    sakuraReLoadEffect: () => {},
+    applySakuraTransparency: () => {},
+    load: () => {},
+    reloadEffect: () => {},
+    resize: () => {},
+    copyToDisplay: () => {},
+    applyTransparency: () => {},
+}));
+vi.mock('@/fluid', () => ({
+    FluidEffect: { create: () => ({ set: () => {}, enable: () => {}, disable: () => {} }) },
+}));
+vi.mock('@/player_control', () => ({
+    pc_aubar: () => {},
+    playertitle: () => {},
+    thumbnailsue: () => {},
+}));
+vi.mock('@/slide', () => ({
+    applyBackgroundStyle: () => {},
+    changeBackground: () => {},
+    shouldShow: () => {},
+    TransitionSwith: () => {},
+    updateFileList: () => {},
+}));
+vi.mock('@/weather', () => ({
+    fetchWeather: () => {},
+    initWeather: () => {},
+    renderWeather: () => {},
+    showTooltip: () => {},
+    hideTooltip: () => {},
+}));
+vi.mock('@/version', () => ({
+    versionManager: undefined,
+    checkForUpdates: () => {},
+    showVersionInfo: () => {},
+}));
+vi.mock('@/fullscreenLyrics', () => ({
+    initLyrics: () => {},
+    renderLyrics: () => {},
+}));
+vi.mock('@/video', () => ({
+    ChangeAudioModel: () => {},
+    ChangeVideoModel: () => {},
+    updateMusicPlaylist: () => {},
+}));
+
 import App from '@/components/App.vue';
 import Background from '@/components/Background.vue';
 import DebugModal from '@/components/DebugModal.vue';
@@ -112,8 +171,11 @@ function mountSfc(component: Parameters<typeof mount>[0]) {
     return mount(component, {
         attachTo: document.body,
         global: {
-            // stubs avoid pulling in real DOM ids (#sakura / #weather / ...)
-            // that index.html pre-creates but jsdom doesn't ship with.
+            // vue-test-utils v2 requires the active Pinia to be registered
+            // as a plugin (not just setActivePinia), otherwise
+            // `wrapper.vm.$.appContext.config.globalProperties.$pinia._s`
+            // resolves to undefined inside use*PiniaStore composables.
+            plugins: [createPinia()],
             stubs: {
                 // no stubs — SFCs are all template-only or single-DOM-node
             },

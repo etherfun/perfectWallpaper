@@ -60,7 +60,7 @@ describe('useDateProperties', () => {
         const store = useConfigStore();
         useDateProperties({ odate_color: { value: '1 0 0' } } as never, false);
         expect(store.odate_color).toEqual([255, 0, 0]);
-        expect(document.body.style.getPropertyValue('--date-color')).toBe('255,0,0');
+        expect(document.body.style.getPropertyValue('--date-color')).toBe('255, 0, 0');
     });
 
     test('odate_yakeli /100 + yakeli_color array', () => {

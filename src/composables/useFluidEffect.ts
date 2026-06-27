@@ -18,7 +18,7 @@
  * Drawing logic stays in src/fluid/effect/* (single source of truth).
  */
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 
 import { FluidEffect } from '@/fluid';
 import { useConfigStore } from '@/stores/config';
@@ -46,7 +46,16 @@ export function useFluidEffect(): UseFluidEffectApi {
     // We hold it as `unknown` internally and only expose the public API
     // surface (enable/disable/toggle/etc.) via the returned object.
     // This avoids leaking the class's private shape into tests.
-    const instance = ref<unknown>(null);
+    //
+    // shallowRef: keeps the FluidEffect object NON-reactive (the underlying
+    // WebGL instance must not be wrapped in a Vue Proxy — the class holds
+    // GPU resources + RAF handles that don't tolerate Proxy traps), while
+    // still triggering component-level reactivity on `.value` REASSIGNMENT.
+    // Per-field mutations on the FluidEffect itself (e.g. `instance.enabled = true`)
+    // are picked up via manual `triggerRef()` calls if needed, but for the
+    // isEnabled/isFullscreen computeds we explicitly read `instance.value`
+    // inside the computed so a `triggerRef()` after mutation re-runs them.
+    const instance = shallowRef<unknown>(null);
 
     // Lazy create — only when first enabled.
     function ensureInstance(): FluidEffect {

@@ -27,6 +27,15 @@ vi.mock('@/utils/config', () => {
     };
 });
 
+// slide/transition.ts transitive imports @/slide/styles which calls
+// useConfigStore() at module top. Stub a fake store so the import chain succeeds.
+vi.mock('@/stores/config', () => ({
+    useConfigStore: () => ({
+        speed: 1,
+        switch_interval_input: 5,
+    }),
+}));
+
 import { config } from '@/utils/config';
 import { updateFileList } from '@/slide/transition';
 

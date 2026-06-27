@@ -59,8 +59,10 @@ function makeHost() {
     };
 }
 
+let pinia: ReturnType<typeof createPinia>;
 beforeEach(() => {
-    setActivePinia(createPinia());
+    pinia = createPinia();
+    setActivePinia(pinia);
     spies.background2canvas.mockClear();
     listeners.add.mockClear();
     listeners.remove.mockClear();
@@ -74,21 +76,21 @@ describe('useRgbEffect', () => {
     test('mount registers a visibilitychange listener', () => {
         const before = listeners.add.mock.calls.length;
         const { Host } = makeHost();
-        mount(Host, { attachTo: document.body });
+        mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
         expect(listeners.add.mock.calls.length).toBe(before + 1);
     });
 
     test('unmount removes the visibilitychange listener', () => {
         const before = listeners.remove.mock.calls.length;
         const { Host } = makeHost();
-        const wrapper = mount(Host, { attachTo: document.body });
+        const wrapper = mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
         wrapper.unmount();
         expect(listeners.remove.mock.calls.length).toBe(before + 1);
     });
 
     test('api.render() delegates to RGB.background2canvas', () => {
         const { Host, getApi } = makeHost();
-        mount(Host, { attachTo: document.body });
+        mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
         const api = getApi();
 
         api.render('img.png', true);
@@ -103,12 +105,14 @@ describe('useRgbEffect', () => {
 
     test('watch on rgb_show triggers render when toggled off → on', async () => {
         const { Host } = makeHost();
-        const wrapper = mount(Host, { attachTo: document.body });
+        const wrapper = mount(Host, {
+            attachTo: document.body,
+            global: { plugins: [pinia] },
+        });
         // BUILTIN_DEFAULTS.rgb_show is false initially → no kick yet
         const beforeToggle = spies.background2canvas.mock.calls.length;
 
         // Trigger reactive change via Pinia store
-        const pinia = wrapper.vm.$.appContext.config.globalProperties.$pinia;
         const store = pinia._s.get('config');
         store.rgb_show = true;
         // wait for watch flush
@@ -118,8 +122,10 @@ describe('useRgbEffect', () => {
 
     test('watch on rgb_show does NOT trigger render when toggled on → off', async () => {
         const { Host } = makeHost();
-        const wrapper = mount(Host, { attachTo: document.body });
-        const pinia = wrapper.vm.$.appContext.config.globalProperties.$pinia;
+        const wrapper = mount(Host, {
+            attachTo: document.body,
+            global: { plugins: [pinia] },
+        });
         const store = pinia._s.get('config');
         store.rgb_show = true;
         await wrapper.vm.$nextTick();
@@ -132,7 +138,10 @@ describe('useRgbEffect', () => {
 
     test('unmount completes without throwing', () => {
         const { Host } = makeHost();
-        const wrapper = mount(Host, { attachTo: document.body });
+        const wrapper = mount(Host, {
+            attachTo: document.body,
+            global: { plugins: [pinia] },
+        });
         expect(() => wrapper.unmount()).not.toThrow();
     });
 });

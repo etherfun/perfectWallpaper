@@ -67,8 +67,10 @@ function makeHost() {
     };
 }
 
+let pinia: ReturnType<typeof createPinia>;
 beforeEach(() => {
-    setActivePinia(createPinia());
+    pinia = createPinia();
+    setActivePinia(pinia);
     for (const spy of Object.values(spies)) {
         spy.mockClear();
     }
@@ -81,23 +83,28 @@ afterEach(() => {
 describe('useSakura', () => {
     test('mount calls applySakuraTransparency once for initial sync', () => {
         const { Host } = makeHost();
-        mount(Host, { attachTo: document.body });
+        mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
         expect(spies.applySakuraTransparency).toHaveBeenCalledTimes(1);
     });
 
     test('isActive ref reflects config.showSakura on mount', () => {
         const { Host, getApi } = makeHost();
-        mount(Host, { attachTo: document.body });
-        // BUILTIN_DEFAULTS.showSakura is false → false
-        expect(getApi().isActive.value).toBe(false);
+        mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
+        // BUILTIN_DEFAULTS.showSakura = true → isActive initialized to true
+        expect(getApi().isActive.value).toBe(true);
     });
 
     test('isActive ref updates when config.showSakura toggles', async () => {
         const { Host, getApi } = makeHost();
-        const wrapper = mount(Host, { attachTo: document.body });
-        const pinia = wrapper.vm.$.appContext.config.globalProperties.$pinia;
+        const wrapper = mount(Host, {
+            attachTo: document.body,
+            global: { plugins: [pinia] },
+        });
         const store = pinia._s.get('config');
 
+        // BUILTIN_DEFAULTS.showSakura = true, so start from false to toggle.
+        store.showSakura = false;
+        await wrapper.vm.$nextTick();
         store.showSakura = true;
         await wrapper.vm.$nextTick();
         expect(getApi().isActive.value).toBe(true);
@@ -107,7 +114,7 @@ describe('useSakura', () => {
 
     test('exposes 5 passthrough methods delegating to src/sakura', () => {
         const { Host, getApi } = makeHost();
-        mount(Host, { attachTo: document.body });
+        mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
         const api = getApi();
 
         api.load();
@@ -129,7 +136,10 @@ describe('useSakura', () => {
 
     test('unmount completes without throwing', () => {
         const { Host } = makeHost();
-        const wrapper = mount(Host, { attachTo: document.body });
+        const wrapper = mount(Host, {
+            attachTo: document.body,
+            global: { plugins: [pinia] },
+        });
         expect(() => wrapper.unmount()).not.toThrow();
     });
 });

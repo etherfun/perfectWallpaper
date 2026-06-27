@@ -1,91 +1,17 @@
 <!DOCTYPE html>
-<!--
-  Browser-preview shim — for testing the built bundle outside Wallpaper Engine.
-
-  Replaces the XHTML 1.0 doctype that dist/index.html uses (parse5 / modern
-  browsers reject the inline PUBLIC identifier in HTML5 parsing mode) with a
-  vanilla HTML5 doctype, but keeps all asset references identical so the
-  same `dist/bundle.js` + `dist/default.css` are loaded.
-
-  This file lives at the project root so that relative `./dist/...` paths
-  work without modification. It is NOT shipped to Wallpaper Engine — the
-  post-build pipeline only touches `dist/`.
--->
-<html lang="zh-CN">
+<html xmlns="http://www.w3.org/1999/xhtml">
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="./dist/default.css" />
-    <title>PerfectWall — browser preview</title>
-    <style>
-        /* Reset the body's black canvas to something friendlier for dev */
-        html,
-        body {
-            background: #1a1a1a;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-        /* Lightweight overlay so the browser-test screenshot has visible state */
-        #__preview_status {
-            position: fixed;
-            top: 8px;
-            left: 8px;
-            z-index: 999999;
-            background: rgba(0, 0, 0, 0.6);
-            color: #0f0;
-            font: 12px/1.4 ui-monospace, Consolas, monospace;
-            padding: 4px 8px;
-            border-radius: 4px;
-            pointer-events: none;
-            max-width: calc(100vw - 16px);
-            white-space: pre-wrap;
-        }
-    </style>
+    <title id="page-title">完美壁纸</title>
 </head>
 
 <body>
+
+    <!-- Browser-preview only: status overlay + WE global stubs -->
     <div id="__preview_status">loading…</div>
-
-    <!-- Reuse dist/index.html markup by inlining its content via fetch -->
-    <div id="background-container">
-        <div id="background-blur-layer1" class="background-blur-layer"></div>
-        <div id="background-blur-layer2" class="background-blur-layer"></div>
-        <div id="background-layer1" class="background-layer"
-            style="background-image: url('./dist/source/imgs/1.jpg');"></div>
-        <div id="background-layer2" class="background-layer"></div>
-    </div>
-
-    <audio id="myAudio" autoplay loop></audio>
-    <video id="myvideo" width="100%" height="100%" autoplay loop muted></video>
-
-    <!-- Vue mount target — src/main.ts calls app.mount('#app-root') -->
-    <div id="app-root"></div>
-
-    <div id="clock">
-        <div class="clock-block">
-            <div class="min">--:--</div>
-            <div class="time-indicators">
-                <div class="st">--</div>
-                <div class="sec">--</div>
-            </div>
-        </div>
-    </div>
-    <div id="countdown">
-        <div class="text">--</div>
-    </div>
-    <div id="oDate">
-        <div class="text">----</div>
-    </div>
-
-    <!-- Wallpaper Engine shim — provide a no-op stub for window.wallpaperPropertyListener.
-         Without this, bundle.ts → main.ts will throw at import time. -->
     <script>
-        // Pinia is created inside the bundle itself (src/piniaInit.ts is the
-        // first import in bundle.ts). We only need to stub the WE globals here.
         const noop = function () {};
         window.wallpaperPropertyListener = {
             applyUserProperties: noop,
@@ -95,14 +21,745 @@
         window.__previewPiniaReady = true;
     </script>
 
+    <div id="background-container">
+        <div id="background-blur-layer1" class="background-blur-layer"></div>
+        <div id="background-blur-layer2" class="background-blur-layer"></div>
+        <div id="background-layer1" class="background-layer" style="background-image: url('./dist/source/imgs/1.jpg');"></div>
+        <div id="background-layer2" class="background-layer"></div>
+    </div>
+
+    <audio id="myAudio" autoplay loop></audio>
+
+    <video id="myvideo" width="100%" height="100%" autoplay loop></video>
+
+    <div id="clock">
+        <div class="clock-block">
+            <div class="min">17:00</div>
+            <div class="time-indicators">
+                <div class="st">AM</div>
+                <div class="sec">00</div>
+            </div>
+        </div>
+    </div>
+    <div id="countdown">
+        <div class="text">1</div>
+    </div>
+
+    <div id="oDate">
+        <div class="text">2017</div>
+    </div>
+
+    <div id="weather">
+        <div class="weather-container">
+            <div class="weather-left">
+                <div class="weather-icon" id="weatherIcon"></div>
+                <div class="weather-temp" id="weatherTemp"></div>
+                <div class="weather-text" id="weatherText"></div>
+                <div class="weather-feels" id="weatherFeels"></div>
+                <div class="weather-city" id="weatherCity"></div>
+            </div>
+            <div class="weather-right">
+                <div class="weather-right-content">
+                    <div class="weather-main-row">
+                        <div class="weather-info-item temp-range" id="weatherTempRange">-- ~ --℃</div>
+                        <div class="weather-info-item humidity" id="weatherHumidity" style="display:none;"></div>
+                        <div class="weather-info-item wind-direction" id="weatherWindDirection"></div>
+                        <div class="weather-info-item wind-level" id="weatherWindLevel" style="display:none;"></div>
+                        <div class="weather-info-item wind-speed" id="weatherWindSpeed" style="display:none;"></div>
+                        <div class="weather-info-item visibility" id="weatherVisibility" style="display:none;"></div>
+                    </div>
+                    <div class="weather-detail-row" id="weatherDetailRow" style="display:none;">
+                        <div class="weather-detail-item uv-index" id="weatherUvIndex"></div>
+                        <div class="weather-info-item cloud" id="weatherCloud" style="display:none;"></div>
+                        <div class="weather-detail-item sunrise" id="weatherSunrise"></div>
+                        <div class="weather-detail-item sunset" id="weatherSunset"></div>
+                        <div class="weather-detail-item moonphase" id="weatherMoonphase" style="display:none;"></div>
+                    </div>
+                    <div class="weather-air-row" id="weatherAirRow" style="display:none;">
+                        <div class="weather-air-item air-quality" id="weatherAirQuality"></div>
+                        <div class="weather-air-item air-value" id="weatherAirValue"></div>
+                        <div class="weather-alert-container" id="weatherAlertContainer" style="display:none;"></div>
+                    </div>
+                    <div class="weather-precip-container" id="weatherPrecipContainer" style="display:none;">
+                        <div class="precip-label" id="weatherPrecipLabel" data-display-type="precipitation" data-i18n="weather_show_precipprob"></div>
+                        <div class="precip-content">
+                            <div class="precip-times" id="weatherPrecipTimes">
+                                <span class="precip-time-cell" id="weatherPrecipTime0">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime1">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime2">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime3">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime4">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime5">--:--</span>
+                                <span class="precip-time-cell" id="weatherPrecipTime6">--:--</span>
+                            </div>
+                            <div class="precip-values" id="weatherPrecipValues">
+                                <span class="precip-prob-cell" id="weatherPrecipValue0" data-hour-index="0">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue1" data-hour-index="1">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue2" data-hour-index="2">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue3" data-hour-index="3">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue4" data-hour-index="4">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue5" data-hour-index="5">--</span>
+                                <span class="precip-prob-cell" id="weatherPrecipValue6" data-hour-index="6">--</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="weather-row weather-tip" id="weatherTip" style="display:none;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="weatherAlertTooltip" class="weather-tooltip">
+        <div class="tooltip-cards-container">
+        </div>
+    </div>
+    <div id="weatherHourlyTooltip" role="document">
+        <div class="popup-main">
+            <div>
+                <div class="big-icon" id="pIcon">
+                    <div id="pIconImg" class="icon-box"></div>
+                    <div>
+                        <div class="big-temp" id="pTemp">--°</div>
+                        <div class="popup-sub" id="pText" data-i18n="weather_tooltip_default_weather">多云</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_relative_humidity">相对湿度</div>
+                        <div class="detail-value" id="pHumidity">--%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_precipitation_rate">降水率 / 降水量</div>
+                        <div class="detail-value" id="pPrecip">-- mm</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_pressure">气压</div>
+                        <div class="detail-value" id="pPressure">-- hPa</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_cloud_cover">云量</div>
+                        <div class="detail-value" id="pClouds">--%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_dew_point">露点</div>
+                        <div class="detail-value" id="pDew">--°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_wind_direction">风向 / 角度</div>
+                        <div class="detail-value" id="pWindDir">— / —°</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_wind_level">风力等级</div>
+                        <div class="detail-value" id="pWindLv">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_wind_speed">风速</div>
+                        <div class="detail-value" id="pWindSpeed">— m/s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template id="weatherAlerttooltipCardTemplate">
+        <div class="tooltip-card">
+            <!-- 头部信息 -->
+            <div class="tooltip-header">
+                <div class="left">
+                    <div class="tooltip-title"></div>
+                    <div class="sender"></div>
+                    <div class="tooltip-time"><span class="text"></span> <span class="state"></span></div>
+
+                    <!-- 事件信息 -->
+                    <div class="tooltip-event">
+                        <div class="event-severity"><span class="text"></span></div>
+                        <div class="event-timing">
+                            <span class="start" data-i18n="weather_alert_start_time"><span class="time"></span></span>
+                            <br>
+                            <span class="end" data-i18n="weather_alert_expect_end_time">
+                                <span class="time"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!--图标-->
+                <div class="tooltip-icon"></div>
+            </div>
+
+            <!-- 预警信息 -->
+            <div class="tooltip-headline"></div>
+            <div class="tooltip-description"></div>
+
+            <!-- 预警标准 -->
+            <div class="tooltip-criteria"></div>
+
+            <!-- 防范措施 -->
+            <div class="tooltip-instructions">
+                <strong data-i18n="weather_alert_action"></strong>
+                <ol></ol>
+            </div>
+
+            <!-- 数据来源 -->
+            <div class="tooltip-source"></div>
+        </div>
+    </template>
+
+    <div id="player_control">
+        <div class="background">
+            <div class="thumbnail-wrap">
+                <img class="thumbnail">
+                <div class="pause-overlay">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <rect x="6" y="4" width="4" height="16" />
+                        <rect x="14" y="4" width="4" height="16" />
+                    </svg>
+                </div>
+            </div>
+            <div class="info-container">
+                <div class="info">
+                    <div class="title">
+                        <span class="right">
+                        </span>
+                        <img class='titleicon'
+                            src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNTAwIiBoZWlnaHQ9IjUwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB0PSIxNzIxNTQwMzA2MzU0IiBjbGFzcz0iaWNvbiIgdmVyc2lvbj0iMS4xIiBwLWlkPSIxNDA1Ij4KIDxnPgogIDx0aXRsZT5MYXllciAxPC90aXRsZT4KICA8cGF0aCBzdHJva2U9Im51bGwiIGQ9Im00OTkuMDk0MDIsNTkuMjUxODVsMC40OTk3Nyw0Ljg1NTRsMC4xODE3Myw0LjkwMTQzbDAsMjkyLjEwNjYzYTkwLjg2Njg4LDkyLjA0NTU3IDAgMSAxIC00NS40MTA3MiwtNzkuNzExNDdsLTAuMDIyNzIsLTEyMy44NzAzM2wtMjcyLjYwMDY0LDM5LjQ0MTUzbDAsMjEwLjE2MzA1YTkwLjg2Njg4LDkyLjA0NTU3IDAgMCAxIC04Ni4zMjM1NCw5MS45MzA1MmwtNC41NDMzNCwwLjExNTA2YTkwLjg2Njg4LDkyLjA0NTU3IDAgMSAxIDQ1LjQ1NjE2LC0xNzEuNzU3MDRsLTAuMDIyNzIsLTIyNS41MzQ2N2E2OC4xNTAxNiw2OS4wMzQxOCAwIDAgMSA1NC41MjAxMywtNjcuNjUzNWwzLjk5ODE0LC0wLjY5MDM0bDIyNy4xNjcyLC0zMi44ODMyOGE2OC4xNTAxNiw2OS4wMzQxOCAwIDAgMSA3Ny4xMDA1NSw1OC41ODcwMXptLTQwOC4yMTk0NiwzMDEuODYzNDZhNDUuNDMzNDQsNDYuMDIyNzkgMCAxIDAgMCw5Mi4wNDU1N2E0NS40MzM0NCw0Ni4wMjI3OSAwIDAgMCAwLC05Mi4wNDU1N3ptMzE4LjAzNDA4LC00Ni4wMjI3OWE0NS40MzM0NCw0Ni4wMjI3OSAwIDEgMCAwLDkyLjA0NTU3YTQ1LjQzMzQ0LDQ2LjAyMjc5IDAgMCAwIDAsLTkyLjA0NTU3em0yMi4xNDg4LC0yNjkuMDk1MjNsLTIuNjM1MTQsMC4yMzAxMWwtMjI3LjE2NzIsMzIuODgzMjhhMjIuNzE2NzIsMjMuMDExMzkgMCAwIDAgLTE5LjM3NzM2LDIwLjE1Nzk4bC0wLjEzNjMsMi42MjMzbDAsNDguNjAwMDZsMjcyLjYwMDY0LC0zOS40NDE1M2wwLC00Mi4wNDE4MmEyMi43MTY3MiwyMy4wMTEzOSAwIDAgMCAtMjMuMjg0NjQsLTIzLjAxMTM5eiIgZmlsbD0iIzAwMDAwMCIgcC1pZD0iMTQwNiIgaWQ9InN2Z18xIi8+CiAgPGxpbmUgZmlsbD0ibm9uZSIgeDE9IjM3IiB5MT0iODciIHgyPSI3NSIgeTI9IjE2MiIgaWQ9InN2Z18yIi8+CiA8L2c+Cgo8L3N2Zz4='>
+                        <span class="left">
+                            loading...
+                        </span>
+                    </div>
+                    <div class="artist">
+                        <span class="right">
+                        </span>
+                        <img class='artisticon'
+                            src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA2NDAgNTEyJz48IS0tIEZvbnQgQXdlc29tZSBQcm8gNi4wLjAtYWxwaGEyIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIC0tPjxwYXRoIGQ9J00zODkuNDE4IDM0Ny42NjRDMzU4LjgzNCAzMjAuNTc4IDMxOC43MzIgMzA0IDI3NC42NjQgMzA0SDE3My4zMzZDNzcuNjA5IDMwNCAwIDM4MS42MDIgMCA0NzcuMzMyQzAgNDk2LjQ3NyAxNS41MjMgNTEyIDM0LjY2NCA1MTJIMzU1LjE5M0MzMzMuNCA0OTMuNDMyIDMyMCA0NjguMjcgMzIwIDQ0MEMzMjAgMzk5LjA0NSAzNDguMDQxIDM2NC43MDkgMzg5LjQxOCAzNDcuNjY0Wk0yMjQgMjU2QzI5NC42OTUgMjU2IDM1MiAxOTguNjkxIDM1MiAxMjhTMjk0LjY5NSAwIDIyNCAwQzE1My4zMTIgMCA5NiA1Ny4zMDkgOTYgMTI4UzE1My4zMTIgMjU2IDIyNCAyNTZaTTYwMS43MjUgMTYwLjYzMUw1MDUuNzI1IDE3OS44MzJDNDkwLjc2OCAxODIuODI0IDQ4MCAxOTUuOTU3IDQ4MCAyMTEuMjExVjM3Mi40MDhDNDY5Ljk0NSAzNjkuNzI3IDQ1OS4yODEgMzY4IDQ0OCAzNjhDMzk0Ljk4IDM2OCAzNTIgNDAwLjIzNCAzNTIgNDQwQzM1MiA0NzkuNzY0IDM5NC45OCA1MTIgNDQ4IDUxMlM1NDQgNDc5Ljc2NCA1NDQgNDQwVjMwMC4xNzZMNjE0LjI3NSAyODYuMTIxQzYyOS4yMzIgMjgzLjEzMSA2NDAgMjY5Ljk5NiA2NDAgMjU0Ljc0MlYxOTIuMDFDNjQwIDE3MS44MTYgNjIxLjUyNSAxNTYuNjcyIDYwMS43MjUgMTYwLjYzMVonLz48L3N2Zz4='>
+                        <span class="left">
+                        </span>
+                    </div>
+                    <div class="albumTitle">
+                        <span class="right">
+                        </span>
+                        <img class='albumTitleicon'
+                            src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0naHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmcnIHZpZXdCb3g9JzAgMCA1MTIgNTEyJz48IS0tIEZvbnQgQXdlc29tZSBQcm8gNi4wLjAtYWxwaGEyIGJ5IEBmb250YXdlc29tZSAtIGh0dHBzOi8vZm9udGF3ZXNvbWUuY29tIExpY2Vuc2UgLSBodHRwczovL2ZvbnRhd2Vzb21lLmNvbS9saWNlbnNlIChDb21tZXJjaWFsIExpY2Vuc2UpIC0tPjxwYXRoIGQ9J00yNTYgMTZDMTIzLjQ2MSAxNiAxNiAxMjMuNDE5IDE2IDI1NlMxMjMuNDYxIDQ5NiAyNTYgNDk2UzQ5NiAzODguNTgxIDQ5NiAyNTZTMzg4LjUzOSAxNiAyNTYgMTZaTTgwLjcxNSAyNTZINzkuNjI3QzcwLjU0OSAyNTYgNjMuMjI5IDI0Ny45OSA2NC4wNjUgMjM4LjY1OEM3Mi4zNjQgMTQ2LjAxNyAxNDYuNDkgNzIuMDYgMjM5LjI3NCA2NC4wNTVDMjQ4LjI5MSA2My4yNzggMjU2IDcwLjc5MSAyNTYgODAuMTMyVjgwLjEzMkMyNTYgODguNDgyIDI0OS43ODYgOTUuMzYzIDI0MS43MjcgOTYuMDc3QzE2NC43NDUgMTAyLjg5OCAxMDMuMTQ4IDE2NC4zNDcgOTYuMTUzIDI0MS4zNTRDOTUuNDAxIDI0OS42MzQgODguNzcxIDI1NiA4MC43MTUgMjU2Wk0yNTYgMzUyQzIwMi45NzYgMzUyIDE2MCAzMDkgMTYwIDI1NlMyMDIuOTc2IDE2MCAyNTYgMTYwUzM1MiAyMDMgMzUyIDI1NlMzMDkuMDI0IDM1MiAyNTYgMzUyWk0yNTYgMjI0QzIzOC4zMDMgMjI0IDIyNCAyMzguMjUgMjI0IDI1NlMyMzguMzAzIDI4OCAyNTYgMjg4QzI3My42OTcgMjg4IDI4OCAyNzMuNzUgMjg4IDI1NlMyNzMuNjk3IDIyNCAyNTYgMjI0WicvPjwvc3ZnPg=='>
+                        <span class="left">
+                        </span>
+                    </div>
+                    <div class="timeline">
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+                <div class="aubar-wrapper">
+                    <canvas class="aubar" width="0" height="0"></canvas>
+                    <div class="aubar-controls">
+                        <button class="control-btn prev" title="Previous">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z" />
+                            </svg>
+                        </button>
+                        <button class="control-btn play-pause" title="Play/Pause">
+                            <svg class="play-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M8 5v14l11-7z" />
+                            </svg>
+                            <svg class="pause-icon" viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="6" y="4" width="4" height="16" />
+                                <rect x="14" y="4" width="4" height="16" />
+                            </svg>
+                        </button>
+                        <button class="control-btn next" title="Next">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="system-monitor">
+        <div class="background">
+            <div class="sysmon-row sysmon-cpu" data-metric="cpu">
+                <div class="sysmon-text">
+                    <span class="sysmon-label">CPU</span>
+                    <span class="sysmon-value">0%</span>
+                    <span class="sysmon-extra"></span>
+                </div>
+                <div class="sysmon-viz"></div>
+            </div>
+            <div class="sysmon-row sysmon-gpu" data-metric="gpu">
+                <div class="sysmon-text">
+                    <span class="sysmon-label">GPU</span>
+                    <span class="sysmon-value">0%</span>
+                    <span class="sysmon-extra"></span>
+                </div>
+                <div class="sysmon-viz"></div>
+            </div>
+            <div class="sysmon-row sysmon-memory" data-metric="memory">
+                <div class="sysmon-text">
+                    <span class="sysmon-label" data-i18n="sysmon_label_memory"></span>
+                    <span class="sysmon-value">0%</span>
+                    <span class="sysmon-extra"></span>
+                </div>
+                <div class="sysmon-viz"></div>
+            </div>
+            <div class="sysmon-row sysmon-network" data-metric="network">
+                <div class="sysmon-text">
+                    <span class="sysmon-label" data-i18n="sysmon_label_network"></span>
+                    <span class="sysmon-net sysmon-net-down">↓0 B/s</span>
+                    <span class="sysmon-net sysmon-net-up">↑0 B/s</span>
+                </div>
+                <div class="sysmon-viz"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="dockbar">
+        <div class="dockbar-background">
+            <div class="dockbar-items" id="dockbar-items"></div>
+            <button class="dockbar-add-btn" id="dockbar-add-btn" title="添加项目">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <div id="hitokoto">
+        <div class="text">
+            一言
+        </div>
+    </div>
+
+    <div id="picture_info">
+        <div class="info">
+            <div class="title">
+                <span class="right">
+                </span>
+                <img class="titleicon"
+                    src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzI1ODg0MjQ2MTA0IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjcxMjIiIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCI+PHBhdGggZD0iTSA4OTAgNjMuOTEgSCAxMzQgYSA3MCA3MCAwIDAgMCAtNzAgNzAgdiA3NTYgYSA3MCA3MCAwIDAgMCA3MCA3MCBoIDc1NiBhIDcwIDcwIDAgMCAwIDcwIC03MCB2IC03NTYgYSA3MCA3MCAwIDAgMCAtNzAgLTcwIFogTSAxNDQuMjUgODE1LjU2IGwgMTUwLjA5IC0xNTAuNDggTCA0NTYuMiA4MjYuNTMgYSA0MC43OSA0MC43OSAwIDAgMCA1Ny4xMiAwIGwgODcuOTQgLTg4LjMgbCAxNDIgMTQxLjcxIEggMjE0IGEgNzAgNzAgMCAwIDEgLTY5Ljc1IC02NC4zOCBaIE0gODgwIDgwOS45MSBhIDcwIDcwIDAgMCAxIC0zMy45NCA2MCBMIDYyOS40MyA2NTMuNzIgYSA0MC4xIDQwLjEgMCAwIDAgLTU2LjU1IDAgbCAtODguMjMgODguNiBsIC0xNjIuMjIgLTE2MS43OSBhIDQwIDQwIDAgMCAwIC01Ni40MyAwIGMgLTAuNiAwLjYgLTEuMTcgMS4yMSAtMS43MiAxLjg0IEwgMTQ0IDcwMyBWIDIxNCBhIDcwIDcwIDAgMCAxIDcwIC03MCBoIDU5NiBhIDcwIDcwIDAgMCAxIDcwIDcwIFoiIGZpbGw9IiM5OTk5OTkiIHAtaWQ9IjcxMjMiPjwvcGF0aD48cGF0aCBkPSJNIDY0OC40MyAyMjMuOTEgYSAxNTEgMTUxIDAgMSAwIDE1MSAxNTEgYSAxNTEgMTUxIDAgMCAwIC0xNTEgLTE1MSBaIG0gMCAyMjIgYSA3MSA3MSAwIDEgMSA3MSAtNzEgYSA3MSA3MSAwIDAgMSAtNzEgNzEgWiIgZmlsbD0iIzk5OTk5OSIgcC1pZD0iNzEyNCI+PC9wYXRoPjwvc3ZnPg=='>
+                <span class="left">
+                    UNKNOW
+                </span>
+            </div>
+            <div class="author">
+                <span class="right">
+                </span>
+                <img class="authoricon"
+                    src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzI1ODg0MzU1MDc1IiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjE2ODI5IiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiPjxwYXRoIGQ9Ik0zODYuMDQ4IDUwMi40NDNhMjI3LjU1NiAyMjcuNTU2IDAgMSAxIDI1MS44NzYgMGMxNzQuMjIyIDUzLjczMSAzMDAuNzQzIDIxNS45NzggMzAwLjc0MyA0MDcuNzhhMjguNDQ0IDI4LjQ0NCAwIDAgMS0yOC40NDUgMjguNDQ0SDExMy43NzhhMjguNDQ0IDI4LjQ0NCAwIDAgMS0yOC40NDUtMjguNDQ1YzAtMTkxLjggMTI2LjU3OC0zNTQuMDQ4IDMwMC43MTUtNDA3Ljc4eiIgZmlsbD0iIzJDMkMyQyIgcC1pZD0iMTY4MzAiPjwvcGF0aD48L3N2Zz4='>
+                <span class="left">
+                    Author: UNKNOW
+                </span>
+            </div>
+
+            <div class="location">
+                <span class="right">
+                </span>
+                <img class="locationicon"
+                    src='data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBzdGFuZGFsb25lPSJubyI/PjwhRE9DVFlQRSBzdmcgUFVCTElDICItLy9XM0MvL0RURCBTVkcgMS4xLy9FTiIgImh0dHA6Ly93d3cudzMub3JnL0dyYXBoaWNzL1NWRy8xLjEvRFREL3N2ZzExLmR0ZCI+PHN2ZyB0PSIxNzI1ODg0Mzk1MTIwIiBjbGFzcz0iaWNvbiIgdmlld0JveD0iMCAwIDEwMjQgMTAyNCIgdmVyc2lvbj0iMS4xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHAtaWQ9IjIwNDIwIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiPjxwYXRoIGQ9Ik00NTkuODgwMjQgOTIyLjgyNjM0N2MtMTEwLjM3MTI1NyAwLTIxNy42NzY2NDctMzkuODU2Mjg3LTMwMC40NTUwOS0xMTMuNDM3MTI1bC0yMS40NjEwNzgtMTguMzk1MjEgMTUuMzI5MzQxLTIxLjQ2MTA3OGM2MS4zMTczNjUtOTEuOTc2MDQ4IDE4MC44ODYyMjgtMTQ3LjE2MTY3NyAzMDkuNjUyNjk1LTE0Ny4xNjE2NzcgMTI1LjcwMDU5OSAwIDI0NS4yNjk0NjEgNTUuMTg1NjI5IDMwNi41ODY4MjYgMTQxLjAyOTk0MWwxNS4zMjkzNDEgMjEuNDYxMDc3LTIxLjQ2MTA3NyAxOC4zOTUyMWMtNzkuNzEyNTc1IDc2LjY0NjcwNy0xOTAuMDgzODMyIDExOS41Njg4NjItMzAzLjUyMDk1OCAxMTkuNTY4ODYyeiBtLTIzOS4xMzc3MjUtMTQxLjAyOTk0YzY3LjQ0OTEwMiA1Mi4xMTk3NiAxNTMuMjkzNDEzIDc5LjcxMjU3NSAyMzkuMTM3NzI1IDc5LjcxMjU3NSA4OC45MTAxOCAwIDE3NC43NTQ0OTEtMzAuNjU4NjgzIDI0Mi4yMDM1OTItODIuNzc4NDQzLTU1LjE4NTYyOS01OC4yNTE0OTctMTQ0LjA5NTgwOC05NS4wNDE5MTYtMjM5LjEzNzcyNC05NS4wNDE5MTYtOTguMTA3Nzg0IDAtMTg3LjAxNzk2NCAzNi43OTA0MTktMjQyLjIwMzU5MyA5OC4xMDc3ODR6IiBmaWxsPSIjMmMyYzJjIiBwLWlkPSIyMDQyMSI+PC9wYXRoPjxwYXRoIGQ9Ik0zNi43OTA0MTkgNDY5LjA3Nzg0NGg4NTIuMzExMzc3djYxLjMxNzM2NkgzNi43OTA0MTl6IiBmaWxsPSIjMmMyYzJjIiBwLWlkPSIyMDQyMiI+PC9wYXRoPjxwYXRoIGQ9Ik00NTkuODgwMjQgOTIyLjgyNjM0N2MtMTEwLjM3MTI1NyAwLTIxNy42NzY2NDctMzkuODU2Mjg3LTMwMC40NTUwOS0xMTMuNDM3MTI1bC0yMS40NjEwNzgtMTguMzk1MjEgMTUuMzI5MzQxLTIxLjQ2MTA3OGM2MS4zMTczNjUtOTEuOTc2MDQ4IDE4MC44ODYyMjgtMTQ3LjE2MTY3NyAzMDkuNjUyNjk1LTE0Ny4xNjE2NzcgMTI1LjcwMDU5OSAwIDI0NS4yNjk0NjEgNTUuMTg1NjI5IDMwNi41ODY4MjYgMTQxLjAyOTk0MWwxNS4zMjkzNDEgMjEuNDYxMDc3LTIxLjQ2MTA3NyAxOC4zOTUyMWMtNzkuNzEyNTc1IDc2LjY0NjcwNy0xOTAuMDgzODMyIDExOS41Njg4NjItMzAzLjUyMDk1OCAxMTkuNTY4ODYyeiBtLTIzOS4xMzc3MjUtMTQxLjAyOTk0YzY3LjQ0OTEwMiA1Mi4xMTk3NiAxNTMuMjkzNDEzIDc5LjcxMjU3NSAyMzkuMTM3NzI1IDc5LjcxMjU3NSA4OC45MTAxOCAwIDE3NC43NTQ0OTEtMzAuNjU4NjgzIDI0Mi4yMDM1OTItODIuNzc4NDQzLTU1LjE4NTYyOS01OC4yNTE0OTctMTQ0LjA5NTgwOC05NS4wNDE5MTYtMjM5LjEzNzcyNC05NS4wNDE5MTYtOTguMTA3Nzg0IDAtMTg3LjAxNzk2NCAzNi43OTA0MTktMjQyLjIwMzU5MyA5OC4xMDc3ODR6TTQ2Mi45NDYxMDggMzUyLjU3NDg1Yy0xNDcuMTYxNjc3IDAtMjc1LjkyODE0NC03MC41MTQ5Ny0zMjguMDQ3OTA0LTE3Ny44MjAzNTlMMTI1LjcwMDU5OSAxNTYuMzU5MjgxbDE1LjMyOTM0MS0xNS4zMjkzNDFDMjI2Ljg3NDI1MSA1NS4xODU2MjkgMzQwLjMxMTM3NyA2LjEzMTczNyA0NjIuOTQ2MTA4IDYuMTMxNzM3czIzNi4wNzE4NTYgNDUuOTg4MDI0IDMyMS45MTYxNjcgMTMxLjgzMjMzNWwxNS4zMjkzNDIgMTguMzk1MjA5LTkuMTk3NjA1IDE4LjM5NTIxQzczOC44NzQyNTEgMjgyLjA1OTg4IDYxMC4xMDc3ODQgMzUyLjU3NDg1IDQ2Mi45NDYxMDggMzUyLjU3NDg1eiBtLTI2My42NjQ2NzEtMTgzLjk1MjA5NmM0OS4wNTM4OTIgNzMuNTgwODM4IDE1MC4yMjc1NDUgMTIyLjYzNDczMSAyNjMuNjY0NjcxIDEyMi42MzQ3MzEgMTEzLjQzNzEyNiAwIDIxNC42MTA3NzgtNDkuMDUzODkyIDI2My42NjQ2Ny0xMjUuNzAwNTk5LTczLjU4MDgzOC02NC4zODMyMzQtMTY1LjU1Njg4Ni05OC4xMDc3ODQtMjYzLjY2NDY3LTk4LjEwNzc4NC05OC4xMDc3ODQgMC0xOTAuMDgzODMyIDM2Ljc5MDQxOS0yNjMuNjY0NjcxIDEwMS4xNzM2NTJ6IiBmaWxsPSIjMmMyYzJjIiBwLWlkPSIyMDQyMyI+PC9wYXRoPjxwYXRoIGQ9Ik00MzIuMjg3NDI1IDU4LjI1MTQ5N2g2MS4zMTczNjV2ODUyLjMxMTM3N2gtNjEuMzE3MzY1eiIgZmlsbD0iIzJjMmMyYyIgcC1pZD0iMjA0MjQiPjwvcGF0aD48cGF0aCBkPSJNNDYyLjk0NjEwOCA4ODkuMTAxNzk2Yy0xMzQuODk4MjA0IDAtMjQyLjIwMzU5My0xODcuMDE3OTY0LTI0Mi4yMDM1OTMtNDI2LjE1NTY4OCAwLTIzOS4xMzc3MjUgMTA3LjMwNTM4OS00MjYuMTU1Njg5IDI0Mi4yMDM1OTMtNDI2LjE1NTY4OXMyNDIuMjAzNTkzIDE4Ny4wMTc5NjQgMjQyLjIwMzU5MyA0MjYuMTU1Njg5YzAgMjM5LjEzNzcyNS0xMDcuMzA1Mzg5IDQyNi4xNTU2ODktMjQyLjIwMzU5MyA0MjYuMTU1Njg4eiBtMC03ODcuOTI4MTQzYy05OC4xMDc3ODQgMC0xODAuODg2MjI4IDE2NS41NTY4ODYtMTgwLjg4NjIyOCAzNjQuODM4MzIzUzM2NC44MzgzMjMgODI3Ljc4NDQzMSA0NjIuOTQ2MTA4IDgyNy43ODQ0MzFzMTgwLjg4NjIyOC0xNjUuNTU2ODg2IDE4MC44ODYyMjctMzY0LjgzODMyM1M1NjEuMDUzODkyIDEwMS4xNzM2NTMgNDYyLjk0NjEwOCAxMDEuMTczNjUzeiIgZmlsbD0iIzJjMmMyYyIgcC1pZD0iMjA0MjUiPjwvcGF0aD48cGF0aCBkPSJNNDYyLjk0NjEwOCAzNTIuNTc0ODVjLTE0Ny4xNjE2NzcgMC0yNzUuOTI4MTQ0LTcwLjUxNDk3LTMyOC4wNDc5MDQtMTc3LjgyMDM1OUwxMjUuNzAwNTk5IDE1Ni4zNTkyODFsMTUuMzI5MzQxLTE1LjMyOTM0MUMyMjYuODc0MjUxIDU1LjE4NTYyOSAzNDAuMzExMzc3IDYuMTMxNzM3IDQ2Mi45NDYxMDggNi4xMzE3MzdzMjM2LjA3MTg1NiA0NS45ODgwMjQgMzIxLjkxNjE2NyAxMzEuODMyMzM1bDE1LjMyOTM0MiAxOC4zOTUyMDktOS4xOTc2MDUgMTguMzk1MjFDNzM4Ljg3NDI1MSAyODIuMDU5ODggNjEwLjEwNzc4NCAzNTIuNTc0ODUgNDYyLjk0NjEwOCAzNTIuNTc0ODV6IG0tMjYzLjY2NDY3MS0xODMuOTUyMDk2YzQ5LjA1Mzg5MiA3My41ODA4MzggMTUwLjIyNzU0NSAxMjIuNjM0NzMxIDI2My42NjQ2NzEgMTIyLjYzNDczMSAxMTMuNDM3MTI2IDAgMjE0LjYxMDc3OC00OS4wNTM4OTIgMjYzLjY2NDY3LTEyNS43MDA1OTktNzMuNTgwODM4LTY0LjM4MzIzNC0xNjUuNTU2ODg2LTk4LjEwNzc4NC0yNjMuNjY0NjctOTguMTA3Nzg0LTk4LjEwNzc4NCAwLTE5MC4wODM4MzIgMzYuNzkwNDE5LTI2My42NjQ2NzEgMTAxLjE3MzY1MnpNNDU5Ljg4MDI0IDkyMi44MjYzNDdjLTExMC4zNzEyNTcgMC0yMTcuNjc2NjQ3LTM5Ljg1NjI4Ny0zMDAuNDU1MDktMTEzLjQzNzEyNWwtMjEuNDYxMDc4LTE4LjM5NTIxIDE1LjMyOTM0MS0yMS40NjEwNzhjNjEuMzE3MzY1LTkxLjk3NjA0OCAxODAuODg2MjI4LTE0Ny4xNjE2NzcgMzA5LjY1MjY5NS0xNDcuMTYxNjc3IDEyNS43MDA1OTkgMCAyNDUuMjY5NDYxIDU1LjE4NTYyOSAzMDYuNTg2ODI2IDE0MS4wMjk5NDFsMTUuMzI5MzQxIDIxLjQ2MTA3Ny0yMS40NjEwNzcgMTguMzk1MjFjLTc5LjcxMjU3NSA3Ni42NDY3MDctMTkwLjA4MzgzMiAxMTkuNTY4ODYyLTMwMy41MjA5NTggMTE5LjU2ODg2MnogbS0yMzkuMTM3NzI1LTE0MS4wMjk5NGM2Ny40NDkxMDIgNTIuMTE5NzYgMTUzLjI5MzQxMyA3OS43MTI1NzUgMjM5LjEzNzcyNSA3OS43MTI1NzUgODguOTEwMTggMCAxNzQuNzU0NDkxLTMwLjY1ODY4MyAyNDIuMjAzNTkyLTgyLjc3ODQ0My01NS4xODU2MjktNTguMjUxNDk3LTE0NC4wOTU4MDgtOTUuMDQxOTE2LTIzOS4xMzc3MjQtOTUuMDQxOTE2LTk4LjEwNzc4NCAwLTE4Ny4wMTc5NjQgMzYuNzkwNDE5LTI0Mi4yMDM1OTMgOTguMTA3Nzg0eiIgZmlsbD0iIzJjMmMyYyIgcC1pZD0iMjA0MjYiPjwvcGF0aD48cGF0aCBkPSJNNDYyLjk0NjEwOCA5MTkuNzYwNDc5QzIwOC40NzkwNDIgOTE5Ljc2MDQ3OSAzLjA2NTg2OCA3MTQuMzQ3MzA1IDMuMDY1ODY4IDQ1OS44ODAyNFMyMDguNDc5MDQyIDAgNDYyLjk0NjEwOCAwczQ1OS44ODAyNCAyMDUuNDEzMTc0IDQ1OS44ODAyMzkgNDU5Ljg4MDI0LTIwNS40MTMxNzQgNDU5Ljg4MDI0LTQ1OS44ODAyMzkgNDU5Ljg4MDIzOXogbTAtODU4LjQ0MzExNEMyNDIuMjAzNTkzIDYxLjMxNzM2NSA2NC4zODMyMzQgMjM5LjEzNzcyNSA2NC4zODMyMzQgNDU5Ljg4MDI0czE3Ny44MjAzNTkgMzk4LjU2Mjg3NCAzOTguNTYyODc0IDM5OC41NjI4NzQgMzk4LjU2Mjg3NC0xNzcuODIwMzU5IDM5OC41NjI4NzQtMzk4LjU2Mjg3NFM2ODMuNjg4NjIzIDYxLjMxNzM2NSA0NjIuOTQ2MTA4IDYxLjMxNzM2NXoiIGZpbGw9IiMyYzJjMmMiIHAtaWQ9IjIwNDI3Ij48L3BhdGg+PHBhdGggZD0iTTk5MC4yNzU0NDkgNzAyLjA4MzgzMmMwLTExOS41Njg4NjItOTUuMDQxOTE2LTIxNC42MTA3NzgtMjE0LjYxMDc3OC0yMTQuNjEwNzc4cy0yMTQuNjEwNzc4IDk1LjA0MTkxNi0yMTQuNjEwNzc5IDIxNC42MTA3NzhjMCA2NC4zODMyMzQgMjcuNTkyODE0IDExOS41Njg4NjIgNzAuNTE0OTcgMTU5LjQyNTE1bDEyMi42MzQ3MzEgMTIyLjYzNDczMWMxMi4yNjM0NzMgMTIuMjYzNDczIDMwLjY1ODY4MyAxMi4yNjM0NzMgNDIuOTIyMTU2IDBsMTIyLjYzNDczLTEyMi42MzQ3MzFjNDIuOTIyMTU2LTM5Ljg1NjI4NyA3MC41MTQ5Ny05NS4wNDE5MTYgNzAuNTE0OTctMTU5LjQyNTE1eiIgZmlsbD0iIzJjMmMyYyIgcC1pZD0iMjA0MjgiPjwvcGF0aD48cGF0aCBkPSJNNzc1LjY2NDY3MSAxMDI0Yy0xNS4zMjkzNDEgMC0zMC42NTg2ODMtNi4xMzE3MzctNDIuOTIyMTU2LTE4LjM5NTIxbC0xMjIuNjM0NzMxLTEyMi42MzQ3M2MtNDkuMDUzODkyLTQ1Ljk4ODAyNC03OS43MTI1NzUtMTEwLjM3MTI1Ny03OS43MTI1NzQtMTgwLjg4NjIyOCAwLTEzNC44OTgyMDQgMTEwLjM3MTI1Ny0yNDUuMjY5NDYxIDI0NS4yNjk0NjEtMjQ1LjI2OTQ2MXMyNDUuMjY5NDYxIDExMC4zNzEyNTcgMjQ1LjI2OTQ2MSAyNDUuMjY5NDYxYzAgNjcuNDQ5MTAyLTMwLjY1ODY4MyAxMzQuODk4MjA0LTc5LjcxMjU3NSAxODAuODg2MjI4bC0xMjIuNjM0NzMxIDEyMi42MzQ3M2MtMTIuMjYzNDczIDEyLjI2MzQ3My0yNy41OTI4MTQgMTguMzk1MjEtNDIuOTIyMTU1IDE4LjM5NTIxeiBtMC01MDUuODY4MjYzYy0xMDEuMTczNjUzIDAtMTgzLjk1MjA5NiA4Mi43Nzg0NDMtMTgzLjk1MjA5NiAxODMuOTUyMDk1IDAgNTIuMTE5NzYgMjEuNDYxMDc4IDEwMS4xNzM2NTMgNjEuMzE3MzY1IDEzNC44OTgyMDRsMTI1LjcwMDU5OSAxMjUuNzAwNTk5IDEyMi42MzQ3My0xMjIuNjM0NzMxYzM5Ljg1NjI4Ny0zNi43OTA0MTkgNjEuMzE3MzY1LTg1Ljg0NDMxMSA2MS4zMTczNjYtMTM3Ljk2NDA3Mi0zLjA2NTg2OC0xMDEuMTczNjUzLTg1Ljg0NDMxMS0xODMuOTUyMDk2LTE4Ny4wMTc5NjQtMTgzLjk1MjA5NXoiIGZpbGw9IiMyYzJjMmMiIHAtaWQ9IjIwNDI5Ij48L3BhdGg+PHBhdGggZD0iTTc3NS42NjQ2NzEgNzAyLjA4MzgzMm0tNzAuNTE0OTcgMGE3MC41MTQ5NyA3MC41MTQ5NyAwIDEgMCAxNDEuMDI5OTQgMCA3MC41MTQ5NyA3MC41MTQ5NyAwIDEgMC0xNDEuMDI5OTQgMFoiIGZpbGw9IiMyYzJjMmMiIHAtaWQ9IjIwNDMwIj48L3BhdGg+PHBhdGggZD0iTTc3NS42NjQ2NzEgODA2LjMyMzM1M2MtNTUuMTg1NjI5IDAtMTAxLjE3MzY1My00NS45ODgwMjQtMTAxLjE3MzY1My0xMDEuMTczNjUyczQ1Ljk4ODAyNC0xMDEuMTczNjUzIDEwMS4xNzM2NTMtMTAxLjE3MzY1MyAxMDEuMTczNjUzIDQ1Ljk4ODAyNCAxMDEuMTczNjUyIDEwMS4xNzM2NTMtNDUuOTg4MDI0IDEwMS4xNzM2NTMtMTAxLjE3MzY1MiAxMDEuMTczNjUyeiBtMC0xNDQuMDk1ODA4Yy0yMS40NjEwNzggMC0zOS44NTYyODcgMTguMzk1MjEtMzkuODU2Mjg4IDM5Ljg1NjI4N3MxOC4zOTUyMSAzOS44NTYyODcgMzkuODU2Mjg4IDM5Ljg1NjI4OCAzOS44NTYyODctMTguMzk1MjEgMzkuODU2Mjg3LTM5Ljg1NjI4OC0xOC4zOTUyMS0zOS44NTYyODctMzkuODU2Mjg3LTM5Ljg1NjI4N3oiIGZpbGw9IiMyYzJjMmMiIHAtaWQ9IjIwNDMxIj48L3BhdGg+PC9zdmc+'>
+                <span class="left">
+                    Location: UNKNOW
+                </span>
+            </div>
+
+            <span class="description">
+                Description: UNKNOW
+            </span>
+        </div>
+    </div>
+
+    <canvas id="sakura" style="visibility: hidden;"></canvas>
+    <canvas id="sakurashow"></canvas>
+    <canvas id="canvas-particles"></canvas>
+    <canvas id="canvas-audio"></canvas>
+
+    <canvas id="can">您的浏览器不支持canvas标签</canvas>
+    <canvas id="CanLine">您的浏览器不支持canvas标签</canvas>
+
+    <canvas id="RGBuse" width="100px" height="20px"></canvas>
+
+    <!-- sakura shader -->
+    <script id="sakura_point_vsh" type="x-shader/x_vertex">
+    //樱花
+    uniform mat4 uProjection;
+    uniform mat4 uModelview;
+    uniform vec3 uResolution;
+    uniform vec3 uOffset;
+    uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+    uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+    attribute vec3 aPosition;
+    attribute vec3 aEuler;
+    attribute vec2 aMisc; //x:size, y:fade
+
+    varying vec3 pposition;
+    varying float psize;
+    varying float palpha;
+    varying float pdist;
+
+    //varying mat3 rotMat;
+    varying vec3 normX;
+    varying vec3 normY;
+    varying vec3 normZ;
+    varying vec3 normal;
+
+    varying float diffuse;
+    varying float specular;
+    varying float rstop;
+    varying float distancefade;
+
+    void main(void) {
+        // Projection is based on vertical angle
+        vec4 pos = uModelview * vec4(aPosition + uOffset, 1.0);
+        gl_Position = uProjection * pos;
+        gl_PointSize = aMisc.x * uProjection[1][1] / -pos.z * uResolution.y * 0.5;
+
+        pposition = pos.xyz;
+        psize = aMisc.x;
+        pdist = length(pos.xyz);
+        palpha = smoothstep(0.0, 1.0, (pdist - 0.1) / uFade.z);
+
+        vec3 elrsn = sin(aEuler);
+        vec3 elrcs = cos(aEuler);
+        mat3 rotx = mat3(
+            1.0, 0.0, 0.0,
+            0.0, elrcs.x, elrsn.x,
+            0.0, -elrsn.x, elrcs.x
+        );
+        mat3 roty = mat3(
+            elrcs.y, 0.0, -elrsn.y,
+            0.0, 1.0, 0.0,
+            elrsn.y, 0.0, elrcs.y
+        );
+        mat3 rotz = mat3(
+            elrcs.z, elrsn.z, 0.0,
+            -elrsn.z, elrcs.z, 0.0,
+            0.0, 0.0, 1.0
+        );
+        mat3 rotmat = rotx * roty * rotz;
+        normal = rotmat[2];
+
+        mat3 trrotm = mat3(
+            rotmat[0][0], rotmat[1][0], rotmat[2][0],
+            rotmat[0][1], rotmat[1][1], rotmat[2][1],
+            rotmat[0][2], rotmat[1][2], rotmat[2][2]
+        );
+        normX = trrotm[0];
+        normY = trrotm[1];
+        normZ = trrotm[2];
+
+        const vec3 lit = vec3(0.6917144638660746, 0.6917144638660746, -0.20751433915982237);
+
+        float tmpdfs = dot(lit, normal);
+        if(tmpdfs < 0.0) {
+            normal = -normal;
+            tmpdfs = dot(lit, normal);
+        }
+        diffuse = 0.4 + tmpdfs;
+
+        vec3 eyev = normalize(-pos.xyz);
+        if(dot(eyev, normal) > 0.0) {
+            vec3 hv = normalize(eyev + lit);
+            specular = pow(max(dot(hv, normal), 0.0), 20.0);
+        }
+        else {
+            specular = 0.0;
+        }
+
+        rstop = clamp((abs(pdist - uDOF.x) - uDOF.y) / uDOF.z, 0.0, 1.0);
+        rstop = pow(rstop, 0.5);
+        //-0.69315 = ln(0.5)
+        distancefade = min(1.0, exp((uFade.x - pdist) * 0.69315 / uFade.y));
+    }
+    </script>
+    <script id="sakura_point_fsh" type="x-shader/x_fragment">
+    #ifdef GL_ES
+    //precision mediump float;
+    precision highp float;
+    #endif
+
+    uniform vec3 uDOF;  //x:focus distance, y:focus radius, z:max radius
+    uniform vec3 uFade; //x:start distance, y:half distance, z:near fade start
+
+    const vec3 fadeCol = vec3(0.08, 0.03, 0.06);
+
+    varying vec3 pposition;
+    varying float psize;
+    varying float palpha;
+    varying float pdist;
+
+    //varying mat3 rotMat;
+    varying vec3 normX;
+    varying vec3 normY;
+    varying vec3 normZ;
+    varying vec3 normal;
+
+    varying float diffuse;
+    varying float specular;
+    varying float rstop;
+    varying float distancefade;
+
+    float ellipse(vec2 p, vec2 o, vec2 r) {
+        vec2 lp = (p - o) / r;
+        return length(lp) - 1.0;
+    }
+
+    void main(void) {
+        vec3 p = vec3(gl_PointCoord - vec2(0.5, 0.5), 0.0) * 2.0;
+        vec3 d = vec3(0.0, 0.0, -1.0);
+        float nd = normZ.z; //dot(-normZ, d);
+        if(abs(nd) < 0.0001) discard;
+
+        float np = dot(normZ, p);
+        vec3 tp = p + d * np / nd;
+        vec2 coord = vec2(dot(normX, tp), dot(normY, tp));
+
+        //angle = 15 degree
+        const float flwrsn = 0.28819045102521;
+        const float flwrcs = 0.965925826289068;
+        mat2 flwrm = mat2(flwrcs, -flwrsn, flwrsn, flwrcs);
+        vec2 flwrp = vec2(abs(coord.x), coord.y) * flwrm;
+
+        float r;
+        if(flwrp.x < 0.0) {
+            r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.36, 0.96) * 0.5);
+        }
+        else {
+            r = ellipse(flwrp, vec2(0.065, 0.024) * 0.5, vec2(0.58, 0.96) * 0.5);
+        }
+
+        if(r > rstop) discard;
+        //花瓣颜色
+        vec3 col = mix(vec3(1.0, 0.9, 0.75), vec3(1.0, 0.9, 0.87), r);
+        float grady = mix(0.0, 1.0, pow(coord.y * 0.5 + 0.5, 0.35));
+        col *= vec3(3.0, grady, grady);
+        col *= mix(0.9, 1.0, pow(abs(coord.x), 1.0));
+        col = col * diffuse + specular;
+
+        col = mix(fadeCol, col, distancefade);
+
+        float alpha = (rstop > 0.001)? (0.5 - r / (rstop * 2.0)) : 1.0;
+        alpha = smoothstep(0.0, 1.0, alpha) * palpha;
+
+        gl_FragColor = vec4(col * 3.0, alpha);
+    }
+    </script>
+    <!-- effects -->
+    <script id="fx_common_vsh" type="x-shader/x_vertex">
+    uniform vec3 uResolution;
+    attribute vec2 aPosition;
+
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+
+    void main(void) {
+        gl_Position = vec4(aPosition, 0.0, 1.0);
+        texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+        screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+    }
+    </script>
+    <script id="bg_fsh" type="x-shader/x_fragment">
+    #ifdef GL_ES
+    //precision mediump float;
+    precision highp float;
+    #endif
+
+    uniform vec2 uTimes;
+
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+
+    void main(void) {
+        vec3 col;
+        float c;
+        vec2 tmpv = texCoord * vec2(0.8, 1.0) - vec2(0.95, 1.0);
+        c = exp(-pow(length(tmpv) * 1.2, 2.0));
+        col = mix(vec3(0.05, 0.0, 0.03), vec3(0.96,0.88, 1.0) * 1.5, c);
+        gl_FragColor = vec4(col * 0.5, 1.0);
+    }
+    </script>
+    <script id="fx_brightbuf_fsh" type="x-shader/x_fragment">
+    #ifdef GL_ES
+    //precision mediump float;
+    precision highp float;
+    #endif
+    uniform sampler2D uSrc;
+    uniform vec2 uDelta;
+
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+
+    void main(void) {
+        vec4 col = texture2D(uSrc, texCoord);
+        gl_FragColor = vec4(col.rgb * 2.0 - vec3(0.5), 1.0);
+    }
+    </script>
+    <script id="fx_dirblur_r4_fsh" type="x-shader/x_fragment">
+    #ifdef GL_ES
+    //precision mediump float;
+    precision highp float;
+    #endif
+    uniform sampler2D uSrc;
+    uniform vec2 uDelta;
+    uniform vec4 uBlurDir; //dir(x, y), stride(z, w)
+
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+
+    void main(void) {
+        vec4 col = texture2D(uSrc, texCoord);
+        col = col + texture2D(uSrc, texCoord + uBlurDir.xy * uDelta);
+        col = col + texture2D(uSrc, texCoord - uBlurDir.xy * uDelta);
+        col = col + texture2D(uSrc, texCoord + (uBlurDir.xy + uBlurDir.zw) * uDelta);
+        col = col + texture2D(uSrc, texCoord - (uBlurDir.xy + uBlurDir.zw) * uDelta);
+        gl_FragColor = col / 7.5;
+    }
+    </script>
+    <!-- effect fragment shader template -->
+    <script id="fx_common_fsh" type="x-shader/x_fragment">
+    #ifdef GL_ES
+    //precision mediump float;
+    precision highp float;
+    #endif
+    uniform sampler2D uSrc;
+    uniform vec2 uDelta;
+
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+
+    void main(void) {
+        gl_FragColor = texture2D(uSrc, texCoord);
+    }
+    </script>
+    <!-- post processing -->
+    <script id="pp_final_vsh" type="x-shader/x_vertex">
+    uniform vec3 uResolution;
+    attribute vec2 aPosition;
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+    void main(void) {
+        gl_Position = vec4(aPosition, 0.0, 1.0);
+        texCoord = aPosition.xy * 0.5 + vec2(0.5, 0.5);
+        screenCoord = aPosition.xy * vec2(uResolution.z, 1.0);
+    }
+    </script>
+    <script id="pp_final_fsh" type="x-shader/x_fragment">
+    #ifdef GL_ES
+    //precision mediump float;
+    precision highp float;
+    #endif
+    uniform sampler2D uSrc;
+    uniform sampler2D uBloom;
+    uniform vec2 uDelta;
+    varying vec2 texCoord;
+    varying vec2 screenCoord;
+    void main(void) {
+        vec4 srccol = texture2D(uSrc, texCoord) * 2.0;
+        vec4 bloomcol = texture2D(uBloom, texCoord);
+        vec4 col;
+        col = srccol + bloomcol * (vec4(1.0) + srccol);
+        col *= smoothstep(1.0, 0.0, pow(length((texCoord - vec2(0.5)) * 2.0), 1.2) * 0.5);
+        col = pow(col, vec4(0.45454545454545)); //(1.0 / 2.2)
+
+        gl_FragColor = vec4(col.rgb, 0.01);
+        gl_FragColor.a = 0.01;
+    }
+    </script>
+
+    <!-- Vue 应用挂载点 — Phase 1+ Vue 组件在此渲染 -->
+    <div id="app-root"></div>
+
     <script src="./dist/bundle.js"></script>
+
+    <style id="__preview_theme">
+        /* Preview defaults — mimic Wallpaper Engine's default theme so the
+           CSS-variable-driven layout works even when the WE property listener
+           never fires. Spreads widgets across the viewport.
+
+           IMPORTANT: must be set on body (not :root) because the property
+           composables do elements.body.style.setProperty('--clock-top', ...)
+           which sets inline style on body. Inline style on body wins over
+           :root declarations but loses to <style> declarations also on
+           body. We use body { --var: value !important; } so our defaults
+           survive any subsequent inline setProperty calls — we want the
+           preview layout to be predictable, not fighting with the bundle. */
+        body {
+            /* Clock — center-top */
+            --clock-visibility: visible !important;
+            --clock-display: flex !important;
+            --clock-top: 35% !important;
+            --clock-left: 50% !important;
+            --clock-font-size: 8vh !important;
+            --clock-line-height: 1 !important;
+            --clock-opacity: 1 !important;
+            --clock-color: 255 255 255 !important;
+
+            /* Date — directly below clock */
+            --date-visibility: visible !important;
+            --date-display: flex !important;
+            --date-top: 50% !important;
+            --date-left: 50% !important;
+            --date-font-size: 4vh !important;
+            --date-opacity: 1 !important;
+            --date-color: 255 255 255 !important;
+            --date-blur-color: 0 0 0 !important;
+
+            /* Countdown — bottom-left */
+            --countdown-visibility: visible !important;
+            --countdown-display: flex !important;
+            --countdown-top: 78% !important;
+            --countdown-left: 25% !important;
+            --countdown-font-size: 5vh !important;
+            --countdown-color: 255 255 255 !important;
+
+            /* Weather — top-right */
+            --weather-visibility: visible !important;
+            --weather-display: flex !important;
+            --weather-top: 15% !important;
+            --weather-left: 80% !important;
+            --weather-font-size: 2.5vh !important;
+            --weather-color: 255 255 255 !important;
+
+            /* Hitokoto — bottom-center */
+            --hitokoto-visibility: visible !important;
+            --hitokoto-display: flex !important;
+            --hitokoto-top: 88% !important;
+            --hitokoto-left: 50% !important;
+            --hitokoto-font-size: 2.5vh !important;
+            --hitokoto-color: 255 255 255 !important;
+
+            /* Dockbar — bottom edge */
+            --dockbar-visibility: visible !important;
+            --dockbar-display: flex !important;
+            --dockbar-bottom: 5% !important;
+            --dockbar-left: 50% !important;
+
+            /* System monitor — top-left */
+            --systemmonitor-visibility: visible !important;
+            --systemmonitor-display: flex !important;
+            --systemmonitor-top: 12% !important;
+            --systemmonitor-left: 12% !important;
+
+            /* Player control — hide by default (no audio) */
+            --player-control-visibility: hidden !important;
+        }
+        html, body { background: #1a1a1a; margin: 0; min-height: 100vh; overflow: hidden; }
+        #__preview_status {
+            position: fixed; top: 8px; left: 8px; z-index: 999999;
+            background: rgba(0,0,0,0.6); color: #0f0;
+            font: 12px/1.4 ui-monospace, Consolas, monospace;
+            padding: 4px 8px; border-radius: 4px;
+            pointer-events: none; max-width: calc(100vw - 16px);
+            white-space: pre-wrap;
+        }
+    </style>
     <script>
         (function () {
             const status = document.getElementById('__preview_status');
             const t0 = performance.now();
             const lines = [];
             function push(line) {
-                lines.push(`[+${Math.round(performance.now() - t0)}ms] ${line}`);
+                lines.push('[+' + Math.round(performance.now() - t0) + 'ms] ' + line);
                 status.textContent = lines.join('\n');
             }
             window.addEventListener('error', (e) => push('ERROR: ' + e.message));
@@ -111,15 +768,14 @@
             requestAnimationFrame(() => push('RAF tick (event loop alive)'));
             setTimeout(() => push('+500ms (timer alive)'), 500);
             setTimeout(() => {
-                const cw = document.getElementById('clock');
-                const bg = document.getElementById('background-layer1');
-                push('clock el: ' + !!cw);
-                push('bg el: ' + !!bg);
-                push('PerfectWall global: ' + (typeof window.PerfectWall));
+                push('clock el: ' + !!document.getElementById('clock'));
+                push('app-root: ' + !!document.getElementById('app-root'));
+                push('bg layer1: ' + !!document.getElementById('background-layer1'));
                 push('bundle loaded — preview ready');
             }, 1000);
         })();
     </script>
+
 </body>
 
 </html>

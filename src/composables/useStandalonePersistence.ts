@@ -45,7 +45,11 @@ export function useStandalonePersistence(): () => void {
                 if (value === null || value === undefined) continue;
                 if (typeof value === 'function') continue;
                 if (typeof value === 'object') {
-                    existing[key] = { value: structuredClone(value) };
+                    // NOTE: do NOT use structuredClone() here — Pinia wraps state
+                    // values in Vue Proxy objects that structuredClone rejects
+                    // with DataCloneError. JSON round-trip goes through Vue's
+                    // reactive proxy and produces a plain serializable object.
+                    existing[key] = { value: JSON.parse(JSON.stringify(value)) };
                 } else {
                     existing[key] = { value };
                 }

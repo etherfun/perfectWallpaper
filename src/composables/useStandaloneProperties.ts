@@ -51,7 +51,10 @@ export function useStandaloneProperties(): void {
         if (value === null || value === undefined) continue;
         if (typeof value === 'object') {
             // date_format 是嵌套对象，深拷贝为 { value: {...} }
-            properties[key] = { value: structuredClone(value) };
+            // NOTE: 不能用 structuredClone() — Pinia 把 state 用 Vue Proxy 包装，
+            // structuredClone 会抛 DataCloneError。改用 JSON 走一遍会经过
+            // reactive proxy 的 toJSON 转换，输出纯可序列化对象。
+            properties[key] = { value: JSON.parse(JSON.stringify(value)) };
         } else if (typeof value === 'function') {
             continue;
         } else {

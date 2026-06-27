@@ -16,11 +16,14 @@
  *   6. Vue mount
  */
 
+// pinia 已在 `./piniaInit` 中创建并 setActivePinia（bundle.ts 的第一个 import）。
+// 这里复用同一个实例，避免双 pinia 导致 store 状态分裂。
+import { pinia } from './piniaInit';
+
+import { createApp } from 'vue';
+
 import './audioVisualizer';
 import './fullscreenLyrics';
-
-import { createPinia } from 'pinia';
-import { createApp } from 'vue';
 
 import App from '@/components/App.vue';
 import { useProjectJsonDefaults } from '@/composables/useProjectJsonDefaults';
@@ -50,8 +53,8 @@ PWLineInit();
 
 async function bootstrap(): Promise<void> {
     // 1. 创建 app + 安装 pinia + 安装 vue-i18n
+    //    pinia 由 `./piniaInit` 创建并 setActivePinia，这里复用同一个实例。
     const app = createApp(App);
-    const pinia = createPinia();
     app.use(pinia);
     app.use(i18n);
 

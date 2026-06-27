@@ -3,6 +3,12 @@
  * This file imports all modules to be bundled into a single file
  */
 
+// piniaInit MUST be the first import. ES module evaluation is post-order DFS,
+// so piniaInit's top-level `setActivePinia()` runs before any subsequent
+// module's top-level code, including legacy modules that call
+// `useConfigStore()` at module scope.
+import './piniaInit';
+
 // IMPORTANT: main.ts must be imported FIRST to set up globals before other modules
 // that depend on them (like PWLine, PWCircle, PWParticles) are loaded.
 import './main';

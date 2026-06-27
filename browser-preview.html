@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<!--
+  Browser-preview shim — for testing the built bundle outside Wallpaper Engine.
+
+  Replaces the XHTML 1.0 doctype that dist/index.html uses (parse5 / modern
+  browsers reject the inline PUBLIC identifier in HTML5 parsing mode) with a
+  vanilla HTML5 doctype, but keeps all asset references identical so the
+  same `dist/bundle.js` + `dist/default.css` are loaded.
+
+  This file lives at the project root so that relative `./dist/...` paths
+  work without modification. It is NOT shipped to Wallpaper Engine — the
+  post-build pipeline only touches `dist/`.
+-->
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./dist/default.css" />
+    <title>PerfectWall — browser preview</title>
+    <style>
+        /* Reset the body's black canvas to something friendlier for dev */
+        html,
+        body {
+            background: #1a1a1a;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+        /* Lightweight overlay so the browser-test screenshot has visible state */
+        #__preview_status {
+            position: fixed;
+            top: 8px;
+            left: 8px;
+            z-index: 999999;
+            background: rgba(0, 0, 0, 0.6);
+            color: #0f0;
+            font: 12px/1.4 ui-monospace, Consolas, monospace;
+            padding: 4px 8px;
+            border-radius: 4px;
+            pointer-events: none;
+            max-width: calc(100vw - 16px);
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="__preview_status">loading…</div>
+
+    <!-- Reuse dist/index.html markup by inlining its content via fetch -->
+    <div id="background-container">
+        <div id="background-blur-layer1" class="background-blur-layer"></div>
+        <div id="background-blur-layer2" class="background-blur-layer"></div>
+        <div id="background-layer1" class="background-layer"
+            style="background-image: url('./dist/source/imgs/1.jpg');"></div>
+        <div id="background-layer2" class="background-layer"></div>
+    </div>
+
+    <audio id="myAudio" autoplay loop></audio>
+    <video id="myvideo" width="100%" height="100%" autoplay loop muted></video>
+
+    <!-- Vue mount target — src/main.ts calls app.mount('#app-root') -->
+    <div id="app-root"></div>
+
+    <div id="clock">
+        <div class="clock-block">
+            <div class="min">--:--</div>
+            <div class="time-indicators">
+                <div class="st">--</div>
+                <div class="sec">--</div>
+            </div>
+        </div>
+    </div>
+    <div id="countdown">
+        <div class="text">--</div>
+    </div>
+    <div id="oDate">
+        <div class="text">----</div>
+    </div>
+
+    <!-- Wallpaper Engine shim — provide a no-op stub for window.wallpaperPropertyListener.
+         Without this, bundle.ts → main.ts will throw at import time. -->
+    <script>
+        // Pinia is created inside the bundle itself (src/piniaInit.ts is the
+        // first import in bundle.ts). We only need to stub the WE globals here.
+        const noop = function () {};
+        window.wallpaperPropertyListener = {
+            applyUserProperties: noop,
+            applyGeneralProperties: noop,
+        };
+        window.wallpaperRegisterAudioListener = noop;
+        window.__previewPiniaReady = true;
+    </script>
+
+    <script src="./dist/bundle.js"></script>
+    <script>
+        (function () {
+            const status = document.getElementById('__preview_status');
+            const t0 = performance.now();
+            const lines = [];
+            function push(line) {
+                lines.push(`[+${Math.round(performance.now() - t0)}ms] ${line}`);
+                status.textContent = lines.join('\n');
+            }
+            window.addEventListener('error', (e) => push('ERROR: ' + e.message));
+            window.addEventListener('unhandledrejection', (e) => push('REJECT: ' + (e.reason && e.reason.message)));
+            push('script loaded');
+            requestAnimationFrame(() => push('RAF tick (event loop alive)'));
+            setTimeout(() => push('+500ms (timer alive)'), 500);
+            setTimeout(() => {
+                const cw = document.getElementById('clock');
+                const bg = document.getElementById('background-layer1');
+                push('clock el: ' + !!cw);
+                push('bg el: ' + !!bg);
+                push('PerfectWall global: ' + (typeof window.PerfectWall));
+                push('bundle loaded — preview ready');
+            }, 1000);
+        })();
+    </script>
+</body>
+
+</html>

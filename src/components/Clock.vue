@@ -45,7 +45,7 @@ useColorRhythm(
 );
 
 const now = ref(new Date());
-const use24h = computed(() => Boolean(config.tStyle ?? false));
+const use24h = computed(() => Boolean(config.time_style ?? true));
 
 const formattedSec = computed(() => String(now.value.getSeconds()).padStart(2, '0'));
 

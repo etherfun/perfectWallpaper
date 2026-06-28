@@ -31,7 +31,8 @@ import { useStandalonePersistence } from '@/composables/useStandalonePersistence
 import { armStandaloneFallback } from '@/composables/useStandaloneProperties';
 import { useStoredProperties } from '@/composables/useStoredProperties';
 import { useWallpaperProperties } from '@/composables/useWallpaperProperties';
-import { i18n } from '@/i18n';
+import { i18n, loadI18n } from '@/i18n';
+import { useConfigStore } from '@/stores/config';
 import { installConfigStoreBridge } from '@/stores/configBridge';
 
 import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
@@ -58,6 +59,12 @@ async function bootstrap(): Promise<void> {
     const app = createApp(App);
     app.use(pinia);
     app.use(i18n);
+
+    // 1.5 立即加载 i18n 翻译字典（独立模式下无 WE 推送 global_settings_language）
+    //    - 先加载 source/i18n/{lang}.json（完整字典）
+    //    - 若失败则静默回退到内置 FALLBACK_MESSAGES
+    const configStore = useConfigStore();
+    await loadI18n(configStore.language);
 
     // 2. 三层回退顺序合并到 Pinia store
     //    第 3 层 project.json：保底

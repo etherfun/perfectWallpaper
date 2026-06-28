@@ -62,6 +62,11 @@ export function useStandaloneProperties(): void {
         }
     }
 
+    // 补充 global_settings_language（wallpaperPropertyListener 依赖此键触发 loadI18n）
+    if (!properties.global_settings_language) {
+        properties.global_settings_language = { value: store.language || 'zh-CN' };
+    }
+
     // 调用现有 listener（WE 模式也会走到这里 — 重叠调用安全）
     const listener = (
         window as unknown as {

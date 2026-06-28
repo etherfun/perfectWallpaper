@@ -67,6 +67,32 @@ export function useStandaloneProperties(): void {
         properties.global_settings_language = { value: store.language || 'zh-CN' };
     }
 
+    // ===== 独立模式开启/默认值 =====
+    // 以下字段在 WE 模式下由 settings panel 推送，但在独立模式下从不存在于 store.$state
+    // 中（因为它们不在 BUILTIN_DEFAULTS 内）。不加默认值会导致对应 handler 永远
+    // 收不到这些属性，功能无法启用。此处统一注入独立模式的合理默认值。
+
+    // server_mode — 插件服务模式（系统监控/播放器控制等功能依赖）
+    if (!properties.server_mode) {
+        properties.server_mode = { value: true };
+    }
+    // dockbar_enabled — Dock 栏
+    if (!properties.dockbar_enabled) {
+        properties.dockbar_enabled = { value: true };
+    }
+    // sysmon_enabled — 系统监控
+    if (!properties.sysmon_enabled) {
+        properties.sysmon_enabled = { value: true };
+    }
+    // wallpaper_updata_open_on_update — 更新日志自动打开
+    if (!properties.wallpaper_updata_open_on_update) {
+        properties.wallpaper_updata_open_on_update = { value: true };
+    }
+    // wallpaper_updata — 触发一次更新日志打开（FirstLoad 不会触发，需要额外处理）
+    if (!properties.wallpaper_updata) {
+        properties.wallpaper_updata = { value: 1 };
+    }
+
     // 调用现有 listener（WE 模式也会走到这里 — 重叠调用安全）
     const listener = (
         window as unknown as {

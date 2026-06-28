@@ -91,7 +91,10 @@ export function createWallpaperPropertyListener(
     }
 
     // 版本更新检查
-    if (properties.wallpaper_updata && FirstLoad !== true) {
+    // 移除 FirstLoad 守卫：独立模式下 useStandaloneProperties 会注入此 key 触发弹窗。
+    // WE 模式下 project.json 默认值为 false(0)，只有在用户点击"检查更新"按钮时 WE
+    // 才会发 value=1，所以用 truthy 值做区分不会误触。
+    if (properties.wallpaper_updata && properties.wallpaper_updata.value) {
         debugLogger.info('[版本窗口] 检测到版本更新请求');
         if (runtime.versionManager) {
             runtime.versionManager.showVersionInfo();

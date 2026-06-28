@@ -79,6 +79,18 @@ async function bootstrap(): Promise<void> {
     }
     app.mount(root);
 
+    // 4.4 刷新 #player_control 模块层 DOM 引用
+    //   Phase 8+ 把 widget 渲染交给 Vue，#player_control 在 module-load
+    //   时还不存在（querySelector 返回 null）。这里在 Vue mount 之后
+    //   重新查询 DOM，让 usePlayerControlProperties / playbackState 等
+    //   命令式模块拿到真实的 DOM 引用。
+    const { refreshDomRefs } = await import('@/player_control/domRefs');
+    const { refreshPlayerControlRefs } = await import(
+        '@/composables/usePlayerControlProperties'
+    );
+    refreshDomRefs();
+    refreshPlayerControlRefs();
+
     // 5. 独立模式增强（阶段 1.x）：
     //    - 5 秒内 WE 没注入 → armStandaloneFallback 兜底推一次完整 properties，
     //      让 14 个旧 handler 触发薄壳组件 DOM 创建

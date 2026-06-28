@@ -103,13 +103,64 @@ function stripLegacyWidgets(html) {
     ];
     let out = html;
     for (const id of ids) {
-        const re = new RegExp(
-            `<div\\s+id="${id}"[^>]*>[\\s\\S]*?</div>\\s*`,
-            'i',
-        );
-        out = out.replace(re, '');
+        out = stripBalancedWidget(out, id);
     }
     return out;
+}
+
+/**
+ * 找到 <div id="X"> ... </div> 整块并移除。
+ *
+ * 旧版用非贪婪正则 `<div id="X"[^>]*>[\s\S]*?</div>`，在嵌套 DOM 上
+ * 只匹配到第一个 </div> 就停止，导致留下撕裂的内层节点
+ * （例如 #player_control > .background > .thumbnail-wrap 被剥离后，
+ * .info-container / .aubar-wrapper 变成了 <body> 的孤儿直接子节点，
+ * 破坏了 DOM 结构）。
+ *
+ * 这个版本用括号匹配算法：扫描整个块，平衡 <div> vs </div> 数量，
+ * 找到使深度归零的 </div>，删除整块。
+ */
+function stripBalancedWidget(html, id) {
+    const openRe = new RegExp(`<div\\s+id="${id}"[^>]*>`, 'i');
+    const m = openRe.exec(html);
+    if (!m) return html;
+
+    const startIdx = m.index;
+    let depth = 0;
+    let i = startIdx;
+    while (i < html.length) {
+        // 跳过 HTML 注释
+        if (html.startsWith('<!--', i)) {
+            const end = html.indexOf('-->', i);
+            if (end === -1) break;
+            i = end + 3;
+            continue;
+        }
+        const nextLt = html.indexOf('<', i);
+        if (nextLt === -1) break;
+        const nextGt = html.indexOf('>', nextLt);
+        if (nextGt === -1) break;
+        const tag = html.substring(nextLt, nextGt + 1);
+        const tagLower = tag.toLowerCase();
+        if (tagLower.startsWith('<div') && !tag.endsWith('/>')) {
+            depth++;
+        } else if (tagLower.startsWith('</div>')) {
+            depth--;
+            if (depth === 0) {
+                // 跳过尾部空白直到换行
+                let end = nextGt + 1;
+                while (
+                    end < html.length &&
+                    (html[end] === ' ' || html[end] === '\t' || html[end] === '\n' || html[end] === '\r')
+                ) {
+                    end++;
+                }
+                return html.substring(0, startIdx) + html.substring(end);
+            }
+        }
+        i = nextGt + 1;
+    }
+    return html;
 }
 
 async function processHtml() {

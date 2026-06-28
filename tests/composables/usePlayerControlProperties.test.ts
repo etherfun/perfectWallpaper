@@ -51,12 +51,16 @@ vi.mock('@/player_control', () => mockPlayerControl);
 
 vi.mock('@/utils/elementManager', () => ({ elements: mockElements }));
 
-import { usePlayerControlProperties } from '@/composables/usePlayerControlProperties';
+import { refreshPlayerControlRefs, usePlayerControlProperties } from '@/composables/usePlayerControlProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
     Object.values(mockPlayerControl).forEach(fn => fn.mockClear());
+    // Phase 8+：#player_control 容器由 Vue mount 后才存在，
+    // usePlayerControlProperties 的 let refs 在 module-load 时为 null。
+    // 测试必须显式 refresh 让 let 指向 mockElements 的真实 DOM 节点。
+    refreshPlayerControlRefs();
 });
 
 afterEach(() => {

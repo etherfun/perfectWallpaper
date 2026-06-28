@@ -14,13 +14,42 @@ import { logInitComplete } from '@/propertyHandlers/_helpers';
 import { WallpaperProperties } from '@/propertyHandlers/types';
 import { pc_aubar, playertitle, thumbnailsue } from '@/player_control';
 
-const player_control = elements.playerControl.container;
-const player_control_thumbnail = elements.playerControl.thumbnail;
-const player_control_thumbnailWrap = elements.playerControl.thumbnailWrap;
-const player_control_background = elements.playerControl.background;
-const player_control_info = elements.playerControl.info;
-const player_control_artist = elements.playerControl.artist;
-const player_control_albumTitle = elements.playerControl.albumTitle;
+/**
+ * 模块顶层 DOM 引用缓存。
+ *
+ * Phase 8+ 把 widget 渲染交给 Vue，因此 #player_control 在 module-load
+ * 时还不存在（querySelector 返回 null）。但 usePlayerControlProperties 中
+ * 有 30+ 处 `player_control.style.xxx = ...` 这种直接属性赋值写法，
+ * 无法在不破坏调用点的情况下把 `const player_control` 改成函数 getter。
+ *
+ * 解决方案：把 const 改成 let，**初始为 null**，并在 main.ts 的
+ * `app.mount(root)` 之后调用 `refreshPlayerControlRefs()` 重新查询 DOM。
+ * 调用点保持原样（`player_control.style.xxx`），类型断言为非 null 让
+ * TypeScript 不报错，运行时由 `app.mount` 之后的 refresh 保证引用有效。
+ */
+export let player_control: HTMLElement = null as unknown as HTMLElement;
+export let player_control_thumbnail: HTMLImageElement =
+    null as unknown as HTMLImageElement;
+export let player_control_thumbnailWrap: HTMLElement =
+    null as unknown as HTMLElement;
+export let player_control_background: HTMLElement = null as unknown as HTMLElement;
+export let player_control_info: HTMLElement = null as unknown as HTMLElement;
+export let player_control_artist: HTMLElement = null as unknown as HTMLElement;
+export let player_control_albumTitle: HTMLElement = null as unknown as HTMLElement;
+
+/**
+ * 在 Vue mount 完成后（#player_control 容器已存在）调用，重新查询
+ * DOM 并刷新模块顶层 let 引用。
+ */
+export function refreshPlayerControlRefs(): void {
+    player_control = elements.playerControl.container;
+    player_control_thumbnail = elements.playerControl.thumbnail;
+    player_control_thumbnailWrap = elements.playerControl.thumbnailWrap;
+    player_control_background = elements.playerControl.background;
+    player_control_info = elements.playerControl.info;
+    player_control_artist = elements.playerControl.artist;
+    player_control_albumTitle = elements.playerControl.albumTitle;
+}
 
 let player_control_show = false;
 let player_control_thumbnail_size_value = 100;

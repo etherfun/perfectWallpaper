@@ -119,23 +119,6 @@ export interface ConfigStoreState {
     countdown_timetransparency: number;
     countdown_roundedcorners: number;
 
-    // propertyHandlers 通过 WE 推送的字段（phase 6 之后会迁移到独立 store）
-    // 为兼容旧模块，仅声明本次涉及到的字段
-    tStyle?: boolean;
-    timetransparency?: number;
-    datetransparency?: number;
-    TimeColor?: string;
-    showTime?: boolean;
-    showDate?: boolean;
-    tSize?: number;
-    DateSize?: number;
-    DateX?: number;
-    DateY?: number;
-    tX?: number;
-    tY?: number;
-    time_color_rhythm_alias?: boolean;
-    odateColorhythm?: boolean;
-
     // ===== Phase 2 字段 (Weather/SystemMonitor/DockBar/PlayerControl/PictureInfo) =====
     /** 启用天气 */
     weather_show?: boolean;

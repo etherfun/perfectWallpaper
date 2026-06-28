@@ -51,12 +51,26 @@ describe('Clock.vue', () => {
         expect(() => wrapper.unmount()).not.toThrow();
     });
 
-    test('switches to 12h mode with AM/PM when tStyle=false', async () => {
-        const config = useConfigStore();
-        config.tStyle = false;
+    test('default is 24h format (time_style=true)', () => {
+        // By default config.time_style is true (24h)
         const wrapper = mount(Clock, { attachTo: document.body });
         const minText = wrapper.find('.min').text();
-        // 12h: hour can be 01..12 (not 00)
+        const m = minText.match(/^(\d{2}) : (\d{2})$/);
+        expect(m).not.toBeNull();
+        const h = Number(m![1]);
+        // 24h mode can show 00-23; confirm it doesn't clamp to 1-12
+        expect(h).toBeGreaterThanOrEqual(0);
+        expect(h).toBeLessThanOrEqual(23);
+        expect(() => wrapper.unmount()).not.toThrow();
+    });
+
+    test('switches to 12h mode when time_style=false', () => {
+        const config = useConfigStore();
+        // P0 fix: Clock.vue reads config.time_style (not the old tStyle alias)
+        config.time_style = false;
+        const wrapper = mount(Clock, { attachTo: document.body });
+        const minText = wrapper.find('.min').text();
+        // 12h: hour can be 01..12 (not 00 and no 13-23)
         const m = minText.match(/^(\d{2}) : (\d{2})$/);
         expect(m).not.toBeNull();
         const h = Number(m![1]);

@@ -19,10 +19,12 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import {
     applySakuraTransparency,
+    makeCanvasHide,
     removesakura,
     sakuraLoad,
     sakuraReLoadEffect,
     sakuraResize,
+    setAnimating,
 } from '@/sakura';
 import { useConfigStore } from '@/stores/config';
 
@@ -58,16 +60,47 @@ export function useSakura(): UseSakuraApi {
         // in a real browser the lifecycle ends with the page).
     });
 
-    // React to showSakura toggle — purely reactive bookkeeping. The
-    // actual WebGL init is owned by sakuraLoad() which propertyHandler
-    // calls directly via the legacy module.
+    // React to showSakura toggle
     watch(
         () => config.showSakura,
         (show) => {
             isActive.value = show === true;
             if (show === true) {
                 applySakuraTransparency();
+            } else {
+                // 关闭时隐藏 canvas（Phase 7：useSakuraProperties 可能在 canvas 不存在时跳过）
+                const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
+                const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
+                if (canvas && canvasshow) {
+                    makeCanvasHide(canvas, canvasshow);
+                }
+                setAnimating(false);
             }
+        }
+    );
+
+    // Phase 7 重放保护：useSakuraProperties 在 WE 初始推送时运行，
+    // 写入旧 config 单例并 $patch -> Pinia，但元素的 DOM 侧效果
+    // （透明度/resize/reload）因 canvas 尚未存在而丢失。
+    // 当 $patch 更新 Pinia 后，以下 watcher 自动重放这些效果。
+    watch(
+        () => config.sakura_transparency,
+        () => {
+            applySakuraTransparency();
+        }
+    );
+
+    watch(
+        () => config.sakura_point_number,
+        () => {
+            sakuraResize();
+        }
+    );
+
+    watch(
+        () => config.sakura_back_light,
+        () => {
+            sakuraReLoadEffect();
         }
     );
 

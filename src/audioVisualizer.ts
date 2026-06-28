@@ -12,6 +12,7 @@ import { debugLogger } from './utils/logger';
 /** 预分配的缓冲区（避免每帧分配新数组） */
 let _clampBuffer: number[] = [];
 let _spatialBuffer: number[] = [];
+let _rearrangedBuffer: number[] = [];
 /** 上一帧的音频数据（用于时序平滑） */
 let _prevAudioData: number[] | null = null;
 
@@ -111,13 +112,30 @@ function smoothAudioData(rawData: number[]): number[] {
         return _clampBuffer;
     }
 
-    // Step 2: 空间平滑（原地操作）
-    ensureBufferSize(_spatialBuffer, len);
-    spatialSmooth(_clampBuffer, spatialWindow, _spatialBuffer);
+    // Step 2: 重排为 63→0→127→64（使原 0 与 127 在空间平滑中相邻）
+    ensureBufferSize(_rearrangedBuffer, len);
+    for (let i = 0; i < 64; i++) {
+        _rearrangedBuffer[i] = _clampBuffer[63 - i] ?? 0;         // 63, 62, …, 0
+    }
+    for (let i = 0; i < 64; i++) {
+        _rearrangedBuffer[64 + i] = _clampBuffer[127 - i] ?? 0;   // 127, 126, …, 64
+    }
 
-    // Step 3: 时序平滑（原地操作）
+    // Step 3: 空间平滑（在重排后的数组上操作）
+    ensureBufferSize(_spatialBuffer, len);
+    spatialSmooth(_rearrangedBuffer, spatialWindow, _spatialBuffer);
+
+    // Step 4: 逆重排回 0-127 顺序（复用 _clampBuffer 作为输出）
+    for (let i = 0; i < 64; i++) {
+        _clampBuffer[63 - i] = _spatialBuffer[i] ?? 0;
+    }
+    for (let i = 0; i < 64; i++) {
+        _clampBuffer[127 - i] = _spatialBuffer[64 + i] ?? 0;
+    }
+
+    // Step 5: 时序平滑（原地操作）
     if (_prevAudioData) {
-        temporalSmooth(_spatialBuffer, _prevAudioData, smoothFactor, _spatialBuffer);
+        temporalSmooth(_clampBuffer, _prevAudioData, smoothFactor, _clampBuffer);
     }
 
     // 更新上一帧数据（原地更新，避免每次分配新数组）
@@ -125,10 +143,10 @@ function smoothAudioData(rawData: number[]): number[] {
         _prevAudioData = new Array(len);
     }
     for (let i = 0; i < len; i++) {
-        _prevAudioData[i] = _spatialBuffer[i] ?? 0;
+        _prevAudioData[i] = _clampBuffer[i] ?? 0;
     }
 
-    return _spatialBuffer;
+    return _clampBuffer;
 }
 
 /**

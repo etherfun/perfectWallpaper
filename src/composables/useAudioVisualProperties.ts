@@ -37,6 +37,7 @@ export function useAudioVisualProperties(
     if (properties.visual_audio_model) {
         const model = properties.visual_audio_model.value;
         patch.visual_audio_model = model;
+        config.visual_audio_model = model; // sync
 
         switch (model) {
             case 0:
@@ -474,16 +475,22 @@ export function useAudioVisualProperties(
     }
 
     if (properties.audioSmoothEnabled) {
-        patch.audio_smooth_enabled = properties.audioSmoothEnabled.value;
+        const v = properties.audioSmoothEnabled.value;
+        patch.audio_smooth_enabled = v;
+        config.audio_smooth_enabled = v; // 同步到旧 config（audioVisualizer.ts 读取）
     }
 
     if (properties.audioSmoothFactor) {
-        patch.audio_smooth_factor = properties.audioSmoothFactor.value;
+        const v = properties.audioSmoothFactor.value;
+        patch.audio_smooth_factor = v;
+        config.audio_smooth_factor = v; // 同步到旧 config
     }
 
     if (properties.audioSpatialWindow) {
-        const windowValue = properties.audioSpatialWindow.value;
-        patch.audio_spatial_window = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
+        let windowValue = properties.audioSpatialWindow.value;
+        windowValue = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
+        patch.audio_spatial_window = windowValue;
+        config.audio_spatial_window = windowValue; // 同步到旧 config
     }
 
     if (Object.keys(patch).length > 0) {

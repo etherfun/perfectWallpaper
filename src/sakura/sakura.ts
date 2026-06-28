@@ -37,6 +37,10 @@ export function sakuraResize(): void {
 
 /** 初始化 WebGL 上下文并启动场景 */
 export function sakuraLoad(): void {
+    // Phase 7 保护：canvas 元素从 index.html 迁移至 Sakura.vue，
+    // window.load / onMounted 都可能触发此函数。gl 非空表示已初始化，跳过。
+    if (gl) return;
+
     const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
     const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
 

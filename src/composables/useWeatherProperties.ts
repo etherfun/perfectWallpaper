@@ -14,6 +14,7 @@
 import { elements } from '@/utils/elementManager';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
+import { config } from '@/utils/config';
 
 import { timerManager } from '../utils/timer';
 import { debounce } from '../utils/tool';
@@ -39,41 +40,58 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     const patch: Record<string, unknown> = {};
 
     if (properties.getcitykey_qweather) {
-        patch.city_key = properties.getcitykey_qweather.value;
+        const v = properties.getcitykey_qweather.value;
+        patch.city_key = v;
+        config.city_key = v; // sync
     }
 
     if (properties.getAPIHOST_qweather) {
-        patch.api_host = properties.getAPIHOST_qweather.value;
+        const v = properties.getAPIHOST_qweather.value;
+        patch.api_host = v;
+        config.api_host = v; // sync
     }
 
     if (properties.getcityappid_tianqiapi) {
-        patch.weather_app_id = properties.getcityappid_tianqiapi.value;
+        const v = properties.getcityappid_tianqiapi.value;
+        patch.weather_app_id = v;
+        config.weather_app_id = v; // sync
     }
 
     if (properties.getcityappsecret_tianqiapi) {
-        patch.weather_app_secret = properties.getcityappsecret_tianqiapi.value;
+        const v = properties.getcityappsecret_tianqiapi.value;
+        patch.weather_app_secret = v;
+        config.weather_app_secret = v; // sync
     }
 
     if (properties.getcitykey_visualcrossing) {
-        patch.visual_crossing_key = properties.getcitykey_visualcrossing.value;
+        const v = properties.getcitykey_visualcrossing.value;
+        patch.visual_crossing_key = v;
+        config.visual_crossing_key = v; // sync
     }
 
     if (properties.weather_updata) {
-        patch.weather_updata = properties.weather_updata.value;
+        const v = properties.weather_updata.value;
+        patch.weather_updata = v;
+        config.weather_updata = v; // sync
     }
 
     if (properties.weather_lang) {
-        patch.weather_lang = properties.weather_lang.value;
+        const v = properties.weather_lang.value;
+        patch.weather_lang = v;
+        config.weather_lang = v; // sync
     }
 
     if (properties.weather_unit) {
         const unit = properties.weather_unit.value;
         patch.weather_unit = unit;
+        config.weather_unit = unit; // sync
         setWeatherUnitByName(unit || 'metric');
     }
 
     if (properties.weather_daliy_tip) {
-        patch.weather_daily_tip = properties.weather_daliy_tip.value;
+        const v = properties.weather_daliy_tip.value;
+        patch.weather_daily_tip = v;
+        config.weather_daily_tip = v; // sync
         if (!FirstLoad) {
             generateWeatherTable();
         }
@@ -106,6 +124,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.freeapi) {
         if (properties.freeapi.value) {
             patch.weather_api_choose = 2;
+            config.weather_api_choose = 2; // sync
             if (!FirstLoad) debounce(weather_init, 1500);
         }
     }
@@ -113,17 +132,21 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.qweatherapi) {
         if (properties.qweatherapi.value) {
             patch.weather_api_choose = 1;
+            config.weather_api_choose = 1; // sync
             if (!FirstLoad) debounce(weather_init, 1500);
         }
     }
 
     if (properties.qweatherapi_paymode) {
-        patch.qweather_api_paymode = properties.qweatherapi_paymode.value;
+        const v = properties.qweatherapi_paymode.value;
+        patch.qweather_api_paymode = v;
+        config.qweather_api_paymode = v; // sync
     }
 
     if (properties.tianqiapi) {
         if (properties.tianqiapi.value) {
             patch.weather_api_choose = 3;
+            config.weather_api_choose = 3; // sync
             if (!FirstLoad) debounce(weather_init, 1500);
         }
     }
@@ -131,6 +154,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.visualcrossingapi) {
         if (properties.visualcrossingapi.value) {
             patch.weather_api_choose = 4;
+            config.weather_api_choose = 4; // sync
             if (!FirstLoad) debounce(weather_init, 1500);
         }
     }
@@ -138,6 +162,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.open_meteoapi) {
         if (properties.open_meteoapi.value) {
             patch.weather_api_choose = 5;
+            config.weather_api_choose = 5; // sync
             if (!FirstLoad) debounce(weather_init, 1500);
         }
     }

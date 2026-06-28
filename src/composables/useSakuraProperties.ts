@@ -7,7 +7,9 @@
  * resize, reload-effect) — the imperative calls into src/sakura/* stay.
  */
 import * as sakuraModule from '@/sakura';
+import { gl } from '@/sakura/state';
 import { useConfigStore } from '@/stores/config';
+import { config } from '@/utils/config';
 import { elements } from '@/utils/elementManager';
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
@@ -21,37 +23,49 @@ export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: 
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;
         patch.showSakura = showSakura;
+        config.show_sakura = showSakura; // sync
     }
 
     // 樱花透明度
     if (properties.sakuratransparency) {
         const transparency = properties.sakuratransparency.value / 100;
         patch.sakura_transparency = transparency;
+        config.sakura_transparency = transparency; // sync
     }
 
     // 樱花背景
     if (properties.sakurabackground) {
-        patch.sakura_background = properties.sakurabackground.value;
+        const v = properties.sakurabackground.value;
+        patch.sakura_background = v;
+        config.sakura_background = v; // sync
     }
 
     // 樱花背景色
     if (properties.sakurabackcolor) {
-        patch.sakura_back_color = properties.sakurabackcolor.value;
+        const v = properties.sakurabackcolor.value;
+        patch.sakura_back_color = v;
+        config.sakura_back_color = v; // sync
     }
 
     // 樱花反转
     if (properties.sakurareverse) {
-        patch.sakura_reverse = properties.sakurareverse.value;
+        const v = properties.sakurareverse.value;
+        patch.sakura_reverse = v;
+        config.sakura_reverse = v; // sync
     }
 
     // 樱花数量
     if (properties.sakurapointnumber) {
-        patch.sakura_point_number = properties.sakurapointnumber.value;
+        const v = properties.sakurapointnumber.value;
+        patch.sakura_point_number = v;
+        config.sakura_point_number = v; // sync
     }
 
     // 背景亮度
     if (properties.sakurabacklight) {
-        patch.sakura_back_light = properties.sakurabacklight.value / 100;
+        const v = properties.sakurabacklight.value / 100;
+        patch.sakura_back_light = v;
+        config.sakura_back_light = v; // sync
     }
 
     // Batched $patch
@@ -65,14 +79,19 @@ export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: 
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;
         if (showSakura) {
-            // 开启樱花，全屏樱花
-            const canvas = elements.sakura;
-            const canvasshow = elements.sakurashow;
-            if (canvas && canvasshow) {
-                sakuraModule.makeCanvasFullScreen(canvas, canvasshow);
+            // Phase 7 保护：canvas 从 index.html 迁移到 Vue 模板，
+            // window.load 时 canvas 不存在导致 sakuraLoad() 跳过。
+            if (!gl) {
+                sakuraModule.sakuraLoad();
+            } else {
+                const canvas = elements.sakura;
+                const canvasshow = elements.sakurashow;
+                if (canvas && canvasshow) {
+                    sakuraModule.makeCanvasFullScreen(canvas, canvasshow);
+                }
+                sakuraModule.setAnimating(true);
+                sakuraModule.animate();
             }
-            sakuraModule.setAnimating(true);
-            sakuraModule.animate();
             sakuraModule.removesakura();
         } else {
             // 关闭樱花，隐藏樱花

@@ -11,7 +11,8 @@
   Phase 3 薄壳：保留原启动逻辑。
 -->
 <template>
-    <!-- 兼容 #CanLine 容器 — 由 index.html 预置 -->
+    <!-- 折线音频可视化 canvas — 从 index.html 迁移至此处 (Phase 7) -->
+    <canvas id="CanLine">您的浏览器不支持canvas标签</canvas>
 </template>
 
 <script setup lang="ts">

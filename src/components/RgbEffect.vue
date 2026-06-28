@@ -14,7 +14,8 @@
     - drawing code stays in src/RGB.ts (single source of truth)
 -->
 <template>
-    <!-- 兼容 #RGBuse 容器 — 由 index.html 预置 -->
+    <!-- RGB 灯光合成 canvas — 从 index.html 迁移至此处 (Phase 7) -->
+    <canvas id="RGBuse" width="100px" height="20px"></canvas>
 </template>
 
 <script setup lang="ts">

@@ -11,7 +11,8 @@
   Phase 3 薄壳：保留原 resize()/PWLineInit() 在 main.ts 调用，不重复初始化。
 -->
 <template>
-    <!-- 兼容 #can 容器 — 由 index.html 预置 -->
+    <!-- 圆形音频可视化 canvas — 从 index.html 迁移至此处 (Phase 7) -->
+    <canvas id="can">您的浏览器不支持canvas标签</canvas>
 </template>
 
 <script setup lang="ts">

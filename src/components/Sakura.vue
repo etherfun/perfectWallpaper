@@ -21,7 +21,10 @@
   与 GLSL 脚本标签 <script id="sakura_point_vsh"> 等保持原状。
 -->
 <template>
-    <!-- 兼容 #sakura / #sakurashow 容器 — 由 index.html 预置 -->
+    <!-- 樱花 canvas — 从 index.html 迁移至此处 (Phase 7) -->
+    <canvas id="sakura" style="visibility: hidden;"></canvas>
+    <canvas id="sakurashow"></canvas>
+    <!-- GLSL shader scripts 保留在 index.html — Vue SFC 编译器无法处理 script 标签内的 GLSL 内容 -->
 </template>
 
 <script setup lang="ts">
@@ -30,7 +33,15 @@
  *   - useSakura() handles transparency sync + showSakura toggle watching
  *   - exposes load/reloadEffect/resize/copyToDisplay for parent / debug
  *   - WebGL scene + RAF loop remains owned by src/sakura/* (single source)
+ *
+ * Phase 7 时序修复：canvas 元素从 index.html 迁移至本模板，不再随 DOM 就绪存在。
+ * window.load 可能在 Vue mount 前触发，导致 sakuraLoad() 找不到 canvas 元素。
+ * 在 onMounted 中检测 gl 状态并手动启动。
  */
+import { onMounted } from 'vue';
+
+import { makeCanvasHide, sakuraLoad } from '@/sakura';
+import { gl as sakuraGl } from '@/sakura/state';
 import { useSakura } from '@/composables/useSakura';
 import { useConfigStore } from '@/stores/config';
 
@@ -38,6 +49,25 @@ const config = useConfigStore();
 const sakura = useSakura();
 
 const _ = (): boolean => Boolean(config.showSakura);
+
+// 确保 WebGL 初始化：如果 window.load 已在 Vue mount 前触发，
+// initSakura() 注册的 load 监听器找不到 canvas 元素。这里补一次。
+// 必须尊重 showSakura 配置——关闭时不启动。
+onMounted(() => {
+    if (!sakuraGl) {
+        if (config.showSakura) {
+            sakuraLoad();
+        } else {
+            // showSakura 关闭时确保 canvas 隐藏（useSakuraProperties 的 hide 逻辑
+            // 可能在 canvas 不存在时跳过）。
+            const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
+            const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
+            if (canvas && canvasshow) {
+                makeCanvasHide(canvas, canvasshow);
+            }
+        }
+    }
+});
 
 defineExpose({
     load: sakura.load,

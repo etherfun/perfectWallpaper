@@ -14,7 +14,103 @@
        → config.weather_init_complete=true → debounce(weather_init) 或 autoWeather()
 -->
 <template>
-    <!-- 兼容 #weather 容器：Vue 不重新渲染 DOM，让旧 weatherPropertyHandler 控制其内容 -->
+    <!-- 天气提示工具 + 小时详情 + 预警卡片模板 — 从 index.html 迁移至此处 (Phase 7) -->
+    <div id="weatherAlertTooltip" class="weather-tooltip">
+        <div class="tooltip-cards-container"></div>
+    </div>
+    <div id="weatherHourlyTooltip" role="document">
+        <div class="popup-main">
+            <div>
+                <div class="big-icon" id="pIcon">
+                    <div id="pIconImg" class="icon-box"></div>
+                    <div>
+                        <div class="big-temp" id="pTemp">--°</div>
+                        <div class="popup-sub" id="pText" data-i18n="weather_tooltip_default_weather">多云</div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="details-grid">
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_relative_humidity">相对湿度</div>
+                        <div class="detail-value" id="pHumidity">--%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_precipitation_rate">降水率 / 降水量</div>
+                        <div class="detail-value" id="pPrecip">-- mm</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_pressure">气压</div>
+                        <div class="detail-value" id="pPressure">-- hPa</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_cloud_cover">云量</div>
+                        <div class="detail-value" id="pClouds">--%</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_dew_point">露点</div>
+                        <div class="detail-value" id="pDew">--°C</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_wind_direction">风向 / 角度</div>
+                        <div class="detail-value" id="pWindDir">— / —°</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_wind_level">风力等级</div>
+                        <div class="detail-value" id="pWindLv">—</div>
+                    </div>
+                    <div class="detail-item">
+                        <div class="detail-label" data-i18n="weather_tooltip_wind_speed">风速</div>
+                        <div class="detail-value" id="pWindSpeed">— m/s</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <template id="weatherAlerttooltipCardTemplate">
+        <div class="tooltip-card">
+            <!-- 头部信息 -->
+            <div class="tooltip-header">
+                <div class="left">
+                    <div class="tooltip-title"></div>
+                    <div class="sender"></div>
+                    <div class="tooltip-time"><span class="text"></span> <span class="state"></span></div>
+
+                    <!-- 事件信息 -->
+                    <div class="tooltip-event">
+                        <div class="event-severity"><span class="text"></span></div>
+                        <div class="event-timing">
+                            <span class="start" data-i18n="weather_alert_start_time"><span class="time"></span></span>
+                            <br>
+                            <span class="end" data-i18n="weather_alert_expect_end_time">
+                                <span class="time"></span>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <!--图标-->
+                <div class="tooltip-icon"></div>
+            </div>
+
+            <!-- 预警信息 -->
+            <div class="tooltip-headline"></div>
+            <div class="tooltip-description"></div>
+
+            <!-- 预警标准 -->
+            <div class="tooltip-criteria"></div>
+
+            <!-- 防范措施 -->
+            <div class="tooltip-instructions">
+                <strong data-i18n="weather_alert_action"></strong>
+                <ol></ol>
+            </div>
+
+            <!-- 数据来源 -->
+            <div class="tooltip-source"></div>
+        </div>
+    </template>
 </template>
 
 <script setup lang="ts">

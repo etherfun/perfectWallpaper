@@ -11,7 +11,17 @@
   在 wallpapermode 变化时调用 changeBackground()。
 -->
 <template>
-    <!-- #background-container / #background-layer1/2 / <video> / <audio> 由 index.html 预置 -->
+    <!-- 背景容器 — #myAudio / #myvideo 保留在 index.html（JS 基础设施） -->
+    <div id="background-container">
+        <div id="background-blur-layer1" class="background-blur-layer"></div>
+        <div id="background-blur-layer2" class="background-blur-layer"></div>
+        <div
+            id="background-layer1"
+            class="background-layer"
+            style="background-image: url('./src/source/imgs/1.jpg');"
+        ></div>
+        <div id="background-layer2" class="background-layer"></div>
+    </div>
 </template>
 
 <script setup lang="ts">

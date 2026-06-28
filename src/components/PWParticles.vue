@@ -13,7 +13,8 @@
     - drawing code stays in src/PWParticles.ts (single source of truth)
 -->
 <template>
-    <!-- 兼容 #canvas-particles 容器 — 由 index.html 预置 -->
+    <!-- Alice 音频粒子 canvas — 从 index.html 迁移至此处 (Phase 7) -->
+    <canvas id="canvas-particles"></canvas>
 </template>
 
 <script setup lang="ts">

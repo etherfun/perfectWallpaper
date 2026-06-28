@@ -11,7 +11,7 @@
     <div ref="container" id="clock" :style="{ color: containerColor }">
         <div class="clock-block">
             <div class="min">{{ timeLabel }}</div>
-            <div class="time-indicators">
+            <div class="time-indicators" :style="indicatorsStyle">
                 <div class="st" :style="{ display: showMeridiem ? 'flex' : 'none' }">
                     {{ meridiem }}
                 </div>
@@ -58,6 +58,17 @@ const timeLabel = computed(() => {
 
 const showMeridiem = computed(() => !use24h.value);
 const meridiem = computed(() => (now.value.getHours() < 12 ? 'AM' : 'PM'));
+
+/**
+ * 24h 模式下 AM/PM 标签隐藏，秒数容器应下沉到底部与 .min 的底部对齐。
+ * 12h 模式下保持基线对齐（AM/PM + 秒数并列在 .min 文本基线）。
+ */
+const indicatorsStyle = computed(() => {
+    if (use24h.value) {
+        return { 'align-self': 'end' as const };
+    }
+    return {};
+});
 
 useUpdateInterval(1000, () => {
     now.value = new Date();

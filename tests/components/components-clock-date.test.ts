@@ -78,6 +78,23 @@ describe('Clock.vue', () => {
         expect(h).toBeLessThanOrEqual(12);
         expect(() => wrapper.unmount()).not.toThrow();
     });
+
+    test('in 24h mode, time-indicators has align-self: end to push seconds to bottom', () => {
+        // Default is 24h (time_style=true)
+        const wrapper = mount(Clock, { attachTo: document.body });
+        const indicators = wrapper.find('.time-indicators');
+        // Inline style should contain align-self: end
+        const style = indicators.attributes('style');
+        expect(style).toContain('end');
+
+        // Switch to 12h mode — align-self should be removed
+        const config = useConfigStore();
+        config.time_style = false;
+        const wrapper2 = mount(Clock, { attachTo: document.body });
+        const indicators2 = wrapper2.find('.time-indicators');
+        const style2 = indicators2.attributes('style');
+        expect(style2 ?? '').not.toContain('end');
+    });
 });
 
 describe('Date.vue', () => {

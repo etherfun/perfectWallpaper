@@ -21,8 +21,6 @@ import { colorToRgb, hexToRgb } from './colorUtils';
 import { player_control_thumbnail } from './domRefs';
 import type { RgbTuple } from './types';
 
-const BLACK: RgbTuple = [0, 0, 0];
-
 /**
  * 从封面图片提取颜色（供外部调用）
  */
@@ -96,11 +94,12 @@ function buildCustomColorGroup(
     yakelicColor: RgbTuple,
     fontColor: RgbTuple
 ) {
+    // 颜色提取失败时用用户配置的亚克力色代替纯黑，避免背景变黑
     const extracted: RgbTuple[] = [
-        colorToRgb(dominantColor) || BLACK,
-        colorToRgb(palette?.[0]) || BLACK,
-        colorToRgb(palette?.[1]) || BLACK,
-        colorToRgb(palette?.[2]) || BLACK,
+        colorToRgb(dominantColor) || yakelicColor,
+        colorToRgb(palette?.[0]) || yakelicColor,
+        colorToRgb(palette?.[1]) || yakelicColor,
+        colorToRgb(palette?.[2]) || yakelicColor,
     ];
 
     return [extracted, [...extracted], [yakelicColor], [fontColor]];

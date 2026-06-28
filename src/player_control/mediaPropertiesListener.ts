@@ -12,13 +12,13 @@ const config = useConfigStore();
 import { debugLogger } from '@/utils/logger';
 import { pauseBuiltInPlayer, setExternalMediaActive } from '@/video';
 
-import { player_control, player_control_aubar } from './domRefs';
+import { player_control, setPendingMediaEvent } from './domRefs';
 import { playertitle } from './titleDisplay';
 
 export function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {
     if (event) {
         debugLogger.info(
-            `[Player] 收到新歌曲信�? ${event.title || '未知'} - ${event.artist || '未知'}`
+            `[Player] 收到新歌曲信息 ${event.title || '未知'} - ${event.artist || '未知'}`
         );
 
         // 外部媒体源激活（收到歌曲信息�?
@@ -32,32 +32,39 @@ export function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): v
         appConfig.runtime.playerInfo.singalbumTitle = event.albumTitle || '';
         appConfig.runtime.playerInfo.aubarstop = true;
 
-        player_control_aubar.width = 0;
-        player_control_aubar.height = 0;
+        // pc_aubar() 被 playertitle 调用时会重新计算 canvas 尺寸
 
-        const playerControlShow = config.player_control_show;
+        // 读 appConfig（旧 config 单例），与 usePlayerControlProperties 同步写入的源一致。
+        // 不读 Pinia store，因为 store.$patch 在 handler 末尾才提交，
+        // 同批次属性中 player_control_show 新值在 Pinia 中可能尚未可见。
+        const playerControlShow = appConfig.player_control_show;
         if (
             playerControlShow &&
             appConfig.runtime.playerInfo.singtitle &&
             appConfig.runtime.playerInfo.singtitle !== ''
         ) {
-            player_control.style.display = 'flex';
+            if (player_control) {
+                player_control.style.display = 'flex';
+            } else {
+                // Vue 尚未 mount → 暂存媒体事件，refreshPlayerControlRefs 时重放
+                setPendingMediaEvent(appConfig.runtime.playerInfo.singtitle);
+            }
         } else {
-            player_control.style.display = 'none';
+            if (player_control) player_control.style.display = 'none';
         }
     } else {
         // Wallpaper Engine 没有媒体信息（event 为空或无效）
-        player_control.style.display = 'none';
+        if (player_control) player_control.style.display = 'none';
     }
 
-    const playerControlShow = config.player_control_show;
+    const playerControlShow2 = appConfig.player_control_show;
     if (
-        !playerControlShow ||
+        !playerControlShow2 ||
         appConfig.runtime.playerInfo.singtitle === undefined ||
         appConfig.runtime.playerInfo.singtitle === ''
     ) {
         return;
     }
 
-    playertitle(Boolean(config.player_control_visualaudiobar));
+    playertitle(Boolean(appConfig.player_control_visualaudiobar));
 }

@@ -5,13 +5,32 @@ import type { PaletteColor, RgbTuple } from './types';
 
 /**
  * 把 #rrggbb / rrggbb 形式的十六进制颜色转为 [r, g, b] 元组。
- * 解析失败时回退为黑色。
+ * 也支持 WE 空格分隔格式 "r g b"。
+ * 解析失败时回退为白色（避免盖掉 SCSS CSS 变量）。
  */
 export function hexToRgb(hex: string): RgbTuple {
-    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-    return result && result[1] && result[2] && result[3]
-        ? [parseInt(result[1], 16), parseInt(result[2], 16), parseInt(result[3], 16)]
-        : [0, 0, 0];
+    // 尝试十六进制
+    const hexResult = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    if (hexResult?.[1] && hexResult[2] && hexResult[3]) {
+        return [
+            parseInt(hexResult[1], 16),
+            parseInt(hexResult[2], 16),
+            parseInt(hexResult[3], 16),
+        ];
+    }
+
+    // 尝试 WE 空格分隔 "r g b" 格式
+    const spaceResult = /^(\d+)\s+(\d+)\s+(\d+)$/.exec(hex);
+    if (spaceResult?.[1] && spaceResult[2] && spaceResult[3]) {
+        return [
+            parseInt(spaceResult[1], 10),
+            parseInt(spaceResult[2], 10),
+            parseInt(spaceResult[3], 10),
+        ];
+    }
+
+    // 解析失败 → 白色，避免黑色盖掉 SCSS CSS 变量
+    return [255, 255, 255];
 }
 
 /**

@@ -36,8 +36,14 @@ export function thumbnailsue(): void {
             ? (methodGroup?.[playerControlFontusetb - 1] ?? null)
             : playerControlColor ?? null;
 
-    player_control_background.style.background =
-        'rgba(' + thumbnailcolor + ',' + playerControlYakeli + ')';
+    if (thumbnailcolor) {
+        // 通过 body 级 CSS 变量更新背景色，SCSS 的 rgba(var(--player-yakeli-color), ...) 自动响应
+        // 设置到 body 以确保所有子元素都能继承，且不受 Vue mount 时序影响。
+        elements.body.style.setProperty('--player-yakeli-color', String(thumbnailcolor));
+    } else {
+        // 颜色未就绪时，移除 body 级的 CSS 变量，回退到用户配置值
+        elements.body.style.removeProperty('--player-yakeli-color');
+    }
     player_control_info.style.color = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
     applyIconColor(appConfig.runtime.playerInfo.fontcolor);
     player_control_timeline.style.backgroundColor =

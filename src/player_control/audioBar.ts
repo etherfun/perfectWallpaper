@@ -43,13 +43,17 @@ export function pc_aubar(): void {
     const rgbbg = aubar.getContext('2d');
     if (!rgbbg) return;
 
-    const height = full.clientHeight - usage.clientHeight;
-    const width = usage.clientWidth;
+    // 用 CSS flexbox 布局尺寸（flex-grow:1 已自动分配剩余高度）
+    const width = aubar.clientWidth;
+    const height = aubar.clientHeight;
+    if (width <= 0 || height <= 0) {
+        // 布局尚未完成，等下一帧再试
+        requestAnimationFrame(pc_aubar);
+        return;
+    }
 
     aubar.width = width;
     aubar.height = height;
-    aubar.style.width = `${width}px`;
-    aubar.style.height = `${height}px`;
 
     appConfig.runtime.playerInfo.aubarstop = false;
 

@@ -6,6 +6,7 @@
  */
 import { useConfigStore } from '@/stores/config';
 import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+import { registerDeferred } from '@/utils/deferredScheduler';
 
 const config = useConfigStore();
 import { debugLogger } from '@/utils/logger';
@@ -14,49 +15,65 @@ import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from '@/video';
 import { SERVER_MODE_PROBE_DELAY_MS } from './constants';
 import { player_control } from './domRefs';
 
-const player_control_aubarWrapper = player_control?.querySelector(
-    '.aubar-wrapper'
-) as HTMLElement | null;
-const player_control_aubarControls = player_control?.querySelector(
-    '.aubar-controls'
-) as HTMLElement | null;
+/** 惰性获取 aubar-wrapper 引用（Vue mount 后 player_control 才非 null） */
+function getAubarWrapper(): HTMLElement | null {
+    return player_control?.querySelector('.aubar-wrapper') as HTMLElement | null;
+}
+
+/** 惰性获取 aubar-controls 引用（Vue mount 后 player_control 才非 null） */
+function getAubarControls(): HTMLElement | null {
+    return player_control?.querySelector('.aubar-controls') as HTMLElement | null;
+}
 
 function showControls(): void {
-    player_control_aubarControls?.classList.add('visible');
+    getAubarControls()?.classList.add('visible');
 }
 
 function hideControls(): void {
-    player_control_aubarControls?.classList.remove('visible');
+    getAubarControls()?.classList.remove('visible');
 }
 
 /**
  * 初始化播放控制按钮的事件监听（鼠标进入显示 + 点击委托）。
  * 服务端模式未开启时，按钮永远隐藏。
+ *
+ * DOM 操作通过 registerDeferred 延后到 Vue mount + refreshDomRefs 之后执行。
  */
 export function initPlayerControls(): void {
+    // server_mode 探针：只需 aubar-controls 元素存在即可，无需完整 DOM
     setTimeout(() => {
+        const controls = getAubarControls();
+        if (!controls) return;
         debugLogger.info('[PlayerControl] server_mode probe', {
             serverMode: config.server_mode,
         });
-        if (!config.server_mode) {
-            player_control_aubarControls?.style.setProperty('display', 'none', 'important');
-            return;
-        }
+        // 用 CSS 变量控制 display：避免 !important 锁死后无法被 .visible 覆盖
+        controls.style.setProperty(
+            '--aubar-display',
+            config.server_mode ? '' : 'none'
+        );
     }, SERVER_MODE_PROBE_DELAY_MS);
 
-    if (!player_control_aubarWrapper || !player_control_aubarControls) return;
+    // 事件绑定依赖 #player_control DOM 存在，延迟到 Vue mount 后执行
+    registerDeferred('player:controls-ui', () => {
+        const wrapper = getAubarWrapper();
+        const controls = getAubarControls();
+        if (!wrapper || !controls) return;
 
-    player_control_aubarWrapper.addEventListener('mouseenter', showControls);
-    player_control_aubarWrapper.addEventListener('mouseleave', hideControls);
+        wrapper.addEventListener('mouseenter', showControls);
+        wrapper.addEventListener('mouseleave', hideControls);
 
-    player_control_aubarControls.addEventListener('click', e => {
-        const target = e.target as HTMLElement;
-        if (target.closest('.prev')) {
-            PlayPrevTrack();
-        } else if (target.closest('.next')) {
-            PlayNextTrack();
-        } else if (target.closest('.play-pause')) {
-            TogglePlayPause();
-        }
+        controls.addEventListener('click', e => {
+            const target = e.target as HTMLElement;
+            if (target.closest('.prev')) {
+                PlayPrevTrack();
+            } else if (target.closest('.next')) {
+                PlayNextTrack();
+            } else if (target.closest('.play-pause')) {
+                TogglePlayPause();
+            }
+        });
+
+        debugLogger.info('[PlayerControl] 控制按钮事件绑定完成');
     });
 }

@@ -167,6 +167,7 @@
                 }
 
                 .aubar-controls {
+                    display: var(--aubar-display, flex);
                     position: absolute;
                     top: 0;
                     left: 0;

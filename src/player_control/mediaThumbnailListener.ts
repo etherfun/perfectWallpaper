@@ -14,7 +14,9 @@ import { player_control_thumbnail } from './domRefs';
 import { thumbnailsue } from './thumbnailColor';
 
 export async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {
-    if (event && config.player_control_show) {
+    // 读 appConfig（旧 config 单例）而非 Pinia，确保与 usePlayerControlProperties
+    // 同步写入的源一致（Pinia $patch 在 handler 末尾才生效）。
+    if (event && appConfig.player_control_show) {
         player_control_thumbnail.src = event.thumbnail;
 
         const img = elements.playerControl.thumbnail;

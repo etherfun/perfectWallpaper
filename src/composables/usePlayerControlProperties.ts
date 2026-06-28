@@ -8,6 +8,7 @@
  * the player control DOM" and are not surfaced to consumers.
  */
 import { useConfigStore } from '@/stores/config';
+import { config } from '@/utils/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
@@ -40,7 +41,7 @@ export let player_control_albumTitle: HTMLElement = null as unknown as HTMLEleme
 
 /**
  * 在 Vue mount 完成后（#player_control 容器已存在）调用，重新查询
- * DOM 并刷新模块顶层 let 引用。
+ * DOM 并刷新模块顶层 let 引用，然后重放所有待处理的样式。
  */
 export function refreshPlayerControlRefs(): void {
     player_control = elements.playerControl.container;
@@ -50,6 +51,64 @@ export function refreshPlayerControlRefs(): void {
     player_control_info = elements.playerControl.info;
     player_control_artist = elements.playerControl.artist;
     player_control_albumTitle = elements.playerControl.albumTitle;
+
+    // 重放之前因元素不存在而未生效的样式
+    applyPendingPlayerStyles();
+
+    // 重放先于 Vue mount 到达的媒体事件 display:flex
+    applyPendingMediaDisplay();
+}
+
+/** 待重放的 player 内联样式值（在元素不存在时暂存） */
+let pendingVisibility: string | null = null;
+let pendingDisplay: string | null = null;
+let pendingTop: string | null = null;
+let pendingLeft: string | null = null;
+let pendingFontSize: string | null = null;
+let pendingLineHeight: string | null = null;
+let pendingArtistLineHeight: string | null = null;
+let pendingAlbumLineHeight: string | null = null;
+let pendingOpacity: string | null = null;
+
+function applyPendingPlayerStyles(): void {
+    if (!player_control) return;
+    if (pendingVisibility !== null) player_control.style.visibility = pendingVisibility;
+    if (pendingDisplay !== null) player_control.style.display = pendingDisplay;
+    if (pendingTop !== null) player_control.style.top = pendingTop;
+    if (pendingLeft !== null) player_control.style.left = pendingLeft;
+    if (pendingFontSize !== null) player_control.style.fontSize = pendingFontSize;
+    if (pendingLineHeight !== null) player_control.style.lineHeight = pendingLineHeight;
+    if (pendingArtistLineHeight !== null && player_control_artist)
+        player_control_artist.style.lineHeight = pendingArtistLineHeight;
+    if (pendingAlbumLineHeight !== null && player_control_albumTitle)
+        player_control_albumTitle.style.lineHeight = pendingAlbumLineHeight;
+    if (pendingOpacity !== null) player_control.style.opacity = pendingOpacity;
+}
+
+/**
+ * 重放媒体集成可能错过的 display:flex。
+ *
+ * 时序问题：WE 注入属性 → usePlayerControlProperties 设 display:none（FirstLoad）
+ * → WE 推送媒体事件 → wallpaperMediaPropertiesListener 想设 display:flex
+ * 但 #player_control 还不存在（Vue 未 mount）→ 丢失。
+ *
+ * 替代方案：mediaPropertiesListener 在 player_control 为 null 时把完整事件
+ * 暂存到 pendingMediaEvent，本函数在 refresh 时直接重放。
+ */
+import { pendingMediaEvent, clearPendingMediaEvent } from '@/player_control/domRefs';
+
+function applyPendingMediaDisplay(): void {
+    if (!player_control) return;
+    const evt = pendingMediaEvent();
+    if (!evt) return;
+    clearPendingMediaEvent();
+
+    // 检查 player_control_show —— 用旧 config 单例（同步写入立即可见）
+    if (config.player_control_show) {
+        player_control.style.display = 'flex';
+        playertitle(Boolean(config.player_control_visualaudiobar));
+    }
+    // player_control_show 为 false 时暂不显示，等后续属性推送或用户开启时再处理
 }
 
 let player_control_show = false;
@@ -62,45 +121,75 @@ export function usePlayerControlProperties(
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
 
+    /**
+     * 获取有效的 player_control_size_value：
+     * 优先用本次 patch 中的（同一批 WE 属性中可能已更新 player_control_size），
+     * 回落至 store 当前值（默认或上次运行时保存的）。
+     * 原始 main 分支用 config 同步赋值可立即读到；$patch 是延迟批量的，必须用本函数。
+     */
+    function getSizeValue(): number {
+        return (patch.player_control_size_value as number | undefined) ?? store.player_control_size_value ?? 100;
+    }
+
     if (properties.player_control_show) {
-        patch.player_control_show = properties.player_control_show.value;
+        const v = properties.player_control_show.value;
+        patch.player_control_show = v;
+        config.player_control_show = v; // sync
         player_control_show = properties.player_control_show.value;
-        if (FirstLoad === false) {
-            player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
-            player_control.style.display = player_control_show ? 'flex' : 'none';
-            if (player_control_show) {
-                thumbnailsue();
+        // visibility/display 是内联样式，必须在元素存在时设置
+        const setVis = (show: boolean, firstLoad: boolean): void => {
+            if (player_control) {
+                player_control.style.visibility = show ? 'visible' : 'hidden';
+                player_control.style.display = firstLoad ? 'none' : show ? 'flex' : 'none';
+                if (show && !firstLoad) thumbnailsue();
+            } else {
+                pendingVisibility = show ? 'visible' : 'hidden';
+                pendingDisplay = firstLoad ? 'none' : show ? 'flex' : 'none';
             }
-        } else {
-            player_control.style.visibility = player_control_show ? 'visible' : 'hidden';
-            player_control.style.display = 'none';
-        }
+        };
+        setVis(player_control_show, FirstLoad);
     }
 
     if (properties.player_control_scalefactor) {
-        patch.player_control_scalefactor = properties.player_control_scalefactor.value;
+        const v = properties.player_control_scalefactor.value;
+        patch.player_control_scalefactor = v;
+        config.player_control_scalefactor = v; // sync
     }
 
     if (properties.playery) {
         patch.playery = properties.playery.value;
-        player_control.style.top = properties.playery.value + '%';
+        const topVal = properties.playery.value + '%';
+        if (player_control) {
+            player_control.style.top = topVal;
+        } else {
+            pendingTop = topVal;
+        }
     }
 
     if (properties.playerx) {
         patch.playerx = properties.playerx.value;
-        player_control.style.left = properties.playerx.value + '%';
+        const leftVal = properties.playerx.value + '%';
+        if (player_control) {
+            player_control.style.left = leftVal;
+        } else {
+            pendingLeft = leftVal;
+        }
     }
 
     if (properties.player_control_color) {
         const color = properties.player_control_color.value
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
-        patch.player_control_color = color;
+        const v = color as [number, number, number];
+        patch.player_control_color = v;
+        config.player_control_color = v; // sync
         elements.body.style.setProperty('--player-color', color.join(', '));
     }
 
     if (properties.player_control_blurcolor_show) {
-        patch.player_control_blurcolor_show = properties.player_control_blurcolor_show.value;
+        const v = properties.player_control_blurcolor_show.value;
+        patch.player_control_blurcolor_show = v;
+        config.player_control_blurcolor_show = v; // sync
         elements.body.style.setProperty(
             '--player-blur-enabled',
             properties.player_control_blurcolor_show.value ? '1' : '0'
@@ -111,12 +200,16 @@ export function usePlayerControlProperties(
         const blurcolor = properties.player_control_blurcolor.value
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
-        patch.player_control_blurcolor = blurcolor;
+        const v = blurcolor as [number, number, number];
+        patch.player_control_blurcolor = v;
+        config.player_control_blurcolor = v; // sync
         elements.body.style.setProperty('--player-blur-color', blurcolor.join(', '));
     }
 
     if (properties.player_control_yakeli_show) {
-        patch.player_control_yakeli_show = properties.player_control_yakeli_show.value;
+        const v = properties.player_control_yakeli_show.value;
+        patch.player_control_yakeli_show = v;
+        config.player_control_yakeli_show = v; // sync
         elements.body.style.setProperty(
             '--player-yakeli-enabled',
             properties.player_control_yakeli_show.value ? '1' : '0'
@@ -127,18 +220,23 @@ export function usePlayerControlProperties(
         const yakeliccolor = properties.player_control_yakelicolor.value
             .split(' ')
             .map((c: string) => Math.ceil(parseFloat(c) * 255));
-        patch.player_control_yakelic_color = yakeliccolor;
+        const v = yakeliccolor as [number, number, number];
+        patch.player_control_yakelic_color = v;
+        config.player_control_yakelic_color = v; // sync
         elements.body.style.setProperty('--player-yakeli-color', yakeliccolor.join(', '));
     }
 
     if (properties.player_control_yakeli) {
         const yakeli = properties.player_control_yakeli.value / 100;
         patch.player_control_yakeli = yakeli;
+        config.player_control_yakeli = yakeli; // sync
         elements.body.style.setProperty('--player-yakeli', String(yakeli));
     }
 
     if (properties.player_control_bluryakeli) {
-        patch.player_control_bluryakeli = properties.player_control_bluryakeli.value;
+        const v = properties.player_control_bluryakeli.value;
+        patch.player_control_bluryakeli = v;
+        config.player_control_bluryakeli = v; // sync
         elements.body.style.setProperty(
             '--player-blur-yakeli',
             `${properties.player_control_bluryakeli.value}px`
@@ -148,53 +246,53 @@ export function usePlayerControlProperties(
     if (properties.player_control_size) {
         const s = properties.player_control_size.value;
         patch.player_control_size_value = Math.floor((window.innerHeight / 150) * s);
-        player_control.style.fontSize = Math.floor((window.innerHeight / 300) * s) + 'px';
-        player_control.style.lineHeight = Math.floor((window.innerHeight / 700) * s) + 'px';
-        player_control_artist.style.lineHeight = Math.floor((window.innerHeight / 1000) * s) + 'px';
-        player_control_albumTitle.style.lineHeight =
-            Math.floor((window.innerHeight / 1000) * s) + 'px';
+        const fontSize = Math.floor((window.innerHeight / 300) * s) + 'px';
+        const lineHeight = Math.floor((window.innerHeight / 700) * s) + 'px';
+        const subLineHeight = Math.floor((window.innerHeight / 1000) * s) + 'px';
+        if (player_control) {
+            player_control.style.fontSize = fontSize;
+            player_control.style.lineHeight = lineHeight;
+        } else {
+            pendingFontSize = fontSize;
+            pendingLineHeight = lineHeight;
+        }
+        if (player_control_artist) {
+            player_control_artist.style.lineHeight = subLineHeight;
+        } else {
+            pendingArtistLineHeight = subLineHeight;
+        }
+        if (player_control_albumTitle) {
+            player_control_albumTitle.style.lineHeight = subLineHeight;
+        } else {
+            pendingAlbumLineHeight = subLineHeight;
+        }
     }
 
     if (properties.player_control_thumbnail_size !== undefined) {
         const thumbEnabled = properties.player_control_thumbnail_size.value;
         patch.player_control_thumbnail_size = thumbEnabled;
+        config.player_control_thumbnail_size = thumbEnabled; // sync
+        const sizeVal = getSizeValue();
+        elements.body.style.setProperty('--player-thumb-size', sizeVal + 'px');
         if (thumbEnabled) {
-            player_control_thumbnailWrap.classList.add('flex-center');
-            player_control_thumbnailWrap.style.setProperty(
-                '--player-thumb-size',
-                (store.player_control_size_value ?? 0) + 'px'
-            );
+            if (player_control_thumbnailWrap) player_control_thumbnailWrap.classList.add('flex-center');
             if (FirstLoad === false) {
-                const ss =
-                    (store.player_control_size_value ?? 0) *
-                    (player_control_thumbnail_size_value / 100);
-                player_control_thumbnailWrap.style.setProperty(
-                    '--player-thumb-inner-size',
-                    ss + 'px'
-                );
-                player_control_thumbnail.style.setProperty('--player-thumb-inner-size', ss + 'px');
+                const ss = sizeVal * (player_control_thumbnail_size_value / 100);
+                elements.body.style.setProperty('--player-thumb-inner-size', ss + 'px');
             }
         } else {
-            player_control_thumbnailWrap.classList.remove('flex-center');
-            player_control_thumbnailWrap.style.setProperty(
-                '--player-thumb-size',
-                (store.player_control_size_value ?? 0) + 'px'
-            );
-            player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', '100%');
-            player_control_thumbnail.style.setProperty('--player-thumb-inner-size', '100%');
+            if (player_control_thumbnailWrap) player_control_thumbnailWrap.classList.remove('flex-center');
+            elements.body.style.setProperty('--player-thumb-inner-size', '100%');
         }
     }
 
     if (properties.player_control_thumbnail_size_value) {
-        const s = store.player_control_size_value ?? 0;
+        const s = getSizeValue();
         patch.player_control_thumbnail_size_value =
             properties.player_control_thumbnail_size_value.value;
         const ss = s * (properties.player_control_thumbnail_size_value.value / 100);
-        if (store.player_control_thumbnail_size) {
-            player_control_thumbnailWrap.style.setProperty('--player-thumb-size', s + 'px');
-            player_control_thumbnailWrap.style.setProperty('--player-thumb-inner-size', ss + 'px');
-            player_control_thumbnail.style.setProperty('--player-thumb-inner-size', ss + 'px');
-        }
+        elements.body.style.setProperty('--player-thumb-size', s + 'px');
+        elements.body.style.setProperty('--player-thumb-inner-size', ss + 'px');
     }
 
     if (properties.player_control_roundedcorners) {
@@ -223,7 +321,8 @@ export function usePlayerControlProperties(
                 background.style.paddingRight = padding + 'px';
 
                 if (!store.player_control_thumbnail_rotation) {
-                    thumbnailWrap.style.setProperty('--player-thumb-radius', radius + 'px');
+                    // 设置到 body 上，确保所有子元素都能继承
+                    elements.body.style.setProperty('--player-thumb-radius', radius + 'px');
                     thumbnailWrap.classList.remove('circular');
                 }
             };
@@ -238,21 +337,25 @@ export function usePlayerControlProperties(
     }
 
     if (properties.player_control_thumbnail_rotation) {
-        patch.player_control_thumbnail_rotation =
-            properties.player_control_thumbnail_rotation.value;
-        if (properties.player_control_thumbnail_rotation.value === false) {
-            player_control_thumbnail.style.animation = '';
-            player_control_thumbnailWrap.classList.remove('circular');
-        } else {
-            player_control_thumbnail.style.animation = `spin ${store.player_control_thumbnail_rotation_speed ?? 10}s linear infinite`;
-            player_control_thumbnailWrap.classList.add('circular');
+        const v = properties.player_control_thumbnail_rotation.value;
+        patch.player_control_thumbnail_rotation = v;
+        config.player_control_thumbnail_rotation = v; // sync
+        if (player_control_thumbnail && player_control_thumbnailWrap) {
+            if (v === false) {
+                player_control_thumbnail.style.animation = '';
+                player_control_thumbnailWrap.classList.remove('circular');
+            } else {
+                player_control_thumbnail.style.animation = `spin ${store.player_control_thumbnail_rotation_speed ?? 10}s linear infinite`;
+                player_control_thumbnailWrap.classList.add('circular');
+            }
         }
     }
 
     if (properties.player_control_thumbnail_rotation_speed) {
-        patch.player_control_thumbnail_rotation_speed =
-            10 - properties.player_control_thumbnail_rotation_speed.value;
-        if (player_control_thumbnail.style.animation) {
+        const v = 10 - properties.player_control_thumbnail_rotation_speed.value;
+        patch.player_control_thumbnail_rotation_speed = v;
+        config.player_control_thumbnail_rotation_speed = v; // sync
+        if (player_control_thumbnail?.style.animation) {
             player_control_thumbnail.style.animationDuration =
                 String(store.player_control_thumbnail_rotation_speed ?? 10) + 's';
         }
@@ -260,38 +363,49 @@ export function usePlayerControlProperties(
 
     if (properties.player_control_timetransparency) {
         patch.player_control_timetransparency = properties.player_control_timetransparency.value;
-        player_control.style.opacity = String(
-            properties.player_control_timetransparency.value / 100
-        );
+        const opacityVal = String(properties.player_control_timetransparency.value / 100);
+        if (player_control) {
+            player_control.style.opacity = opacityVal;
+        } else {
+            pendingOpacity = opacityVal;
+        }
     }
 
     if (properties.player_control_showwidth) {
         patch.player_control_showwidth = properties.player_control_showwidth.value;
-        if (properties.player_control_showwidth.value === 0) {
-            player_control_info.style.width = '';
-        } else {
-            const s = properties.player_control_showwidth.value / 100;
-            player_control_info.style.width = window.innerWidth * s + 'px';
+        if (player_control_info) {
+            if (properties.player_control_showwidth.value === 0) {
+                player_control_info.style.width = '';
+            } else {
+                const s = properties.player_control_showwidth.value / 100;
+                player_control_info.style.width = window.innerWidth * s + 'px';
+            }
         }
     }
 
     if (properties.player_control_yakelibgusetb) {
-        patch.player_control_yakelibgusetb = properties.player_control_yakelibgusetb.value;
+        const v = properties.player_control_yakelibgusetb.value;
+        patch.player_control_yakelibgusetb = v;
+        config.player_control_yakelibgusetb = v; // sync
         if (FirstLoad === false) {
             thumbnailsue();
         }
     }
 
     if (properties.player_control_fontusetb) {
-        patch.player_control_fontusetb = properties.player_control_fontusetb.value;
+        const v = properties.player_control_fontusetb.value;
+        patch.player_control_fontusetb = v;
+        config.player_control_fontusetb = v; // sync
         if (FirstLoad === false) {
             thumbnailsue();
         }
     }
 
     if (properties.player_control_thumbnailrorl) {
-        patch.player_control_thumbnailrorl = properties.player_control_thumbnailrorl.value;
-        if (properties.player_control_thumbnailrorl.value === true) {
+        const v = properties.player_control_thumbnailrorl.value;
+        patch.player_control_thumbnailrorl = v;
+        config.player_control_thumbnailrorl = v; // sync
+        if (v === true) {
             setTimeout(function () {
                 player_control_background.classList.add('rtl');
                 const rawpadding = window.getComputedStyle(player_control_background).paddingRight;
@@ -323,35 +437,45 @@ export function usePlayerControlProperties(
     }
 
     if (properties.player_control_samealbumtitle) {
-        patch.player_control_samealbum_title = properties.player_control_samealbumtitle.value;
+        const v = properties.player_control_samealbumtitle.value;
+        patch.player_control_samealbum_title = v;
+        config.player_control_samealbum_title = v; // sync
         if (FirstLoad === false) {
             playertitle();
         }
     }
 
     if (properties.player_control_visualaudiobar) {
-        patch.player_control_visualaudiobar = properties.player_control_visualaudiobar.value;
+        const v = properties.player_control_visualaudiobar.value;
+        patch.player_control_visualaudiobar = v;
+        config.player_control_visualaudiobar = v; // sync
         if (FirstLoad === false) {
             pc_aubar();
         }
     }
 
     if (properties.player_control_barline) {
-        patch.player_control_barline = properties.player_control_barline.value;
+        const v = properties.player_control_barline.value;
+        patch.player_control_barline = v;
+        config.player_control_barline = v; // sync
         if (FirstLoad === false) {
             pc_aubar();
         }
     }
 
     if (properties.player_control_getcolor) {
-        patch.color_pickup_method = properties.player_control_getcolor.value;
+        const v = properties.player_control_getcolor.value;
+        patch.color_pickup_method = v;
+        config.color_pickup_method = v; // sync
         if (FirstLoad === false) {
             thumbnailsue();
         }
     }
 
     if (properties.player_control_hdong) {
-        patch.player_control_hdong = properties.player_control_hdong.value / 500;
+        const v = properties.player_control_hdong.value / 500;
+        patch.player_control_hdong = v;
+        config.player_control_hdong = v; // sync
     }
 
     if (Object.keys(patch).length > 0) {

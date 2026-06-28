@@ -34,10 +34,12 @@ export function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void 
         }
     }
 
-    const playerControlShow = config.player_control_show;
-    const playerControlAutohide = (config as unknown as { player_control_autohide?: boolean }).player_control_autohide === true;
-    const playerControlThumbnailRotation = config.player_control_thumbnail_rotation;
-    const playerControlThumbnailRotationSpeed = config.player_control_thumbnail_rotation_speed ?? 10;
+    // 读 appConfig（旧 config 单例）而非 Pinia，确保与 usePlayerControlProperties
+    // 同步写入的源一致（Pinia $patch 在 handler 末尾才生效）。
+    const playerControlShow = appConfig.player_control_show;
+    const playerControlAutohide = (appConfig as unknown as { player_control_autohide?: boolean }).player_control_autohide === true;
+    const playerControlThumbnailRotation = appConfig.player_control_thumbnail_rotation;
+    const playerControlThumbnailRotationSpeed = appConfig.player_control_thumbnail_rotation_speed ?? 10;
 
     if (playerControlShow) {
         applyVisibility(event.state, playerControlAutohide);

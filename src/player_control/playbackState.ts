@@ -12,9 +12,10 @@ const config = useConfigStore();
 import { player_control } from './domRefs';
 import { PLAYER_STATE } from './types';
 
-const player_control_playPauseBtn = player_control?.querySelector(
-    '.play-pause'
-) as HTMLElement | null;
+/** 惰性获取 .play-pause 按钮引用（Vue mount + refreshDomRefs 后才有效） */
+function getPlayPauseBtn(): HTMLElement | null {
+    return player_control?.querySelector('.play-pause') as HTMLElement | null;
+}
 
 /**
  * 同步上次记录到的播放状态（用于检测真正的状态变化）。
@@ -32,13 +33,14 @@ export function setLastPlaybackState(state: number): void {
 
 /** 同步 .play-pause 按钮 visual state */
 function updatePlayPauseButton(): void {
-    if (!player_control_playPauseBtn) return;
+    const btn = getPlayPauseBtn();
+    if (!btn) return;
 
     const isPlaying = appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PLAYING;
     if (isPlaying) {
-        player_control_playPauseBtn.classList.add('playing');
+        btn.classList.add('playing');
     } else {
-        player_control_playPauseBtn.classList.remove('playing');
+        btn.classList.remove('playing');
     }
 }
 

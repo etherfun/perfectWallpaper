@@ -29,6 +29,15 @@ export let player_control_timeline: HTMLElement = null as unknown as HTMLElement
 export let player_control_aubar: HTMLCanvasElement = null as unknown as HTMLCanvasElement;
 
 /**
+ * 媒体事件暂存：当 mediaPropertiesListener 在 #player_control 不存在时
+ * 收到媒体数据，把事件暂存起来，等 refresh 后由 applyPendingMediaDisplay() 重放。
+ */
+let _pendingMediaTitle: string | null = null;
+export function pendingMediaEvent(): string | null { return _pendingMediaTitle; }
+export function setPendingMediaEvent(title: string): void { _pendingMediaTitle = title; }
+export function clearPendingMediaEvent(): void { _pendingMediaTitle = null; }
+
+/**
  * 重新查询 #player_control 区域的所有 DOM 引用。
  * 在 main.ts 的 app.mount(root) 之后调用，保证 Vue 渲染完成后
  * 引用指向真实节点。

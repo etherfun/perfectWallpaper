@@ -1,35 +1,85 @@
 /**
  * 天气相关 DOM 元素
+ *
+ * lazy getter：天气元素由 Weather.vue 和天气模块动态渲染，
+ * 不在静态 index.html 中。
  */
-export const weatherElements = {
-    weather: document.querySelector('#weather') as HTMLElement,
-    container: document.querySelector('#weather .weather-container') as HTMLElement,
-    leftContainer: document.querySelector('.weather-left') as HTMLElement | null,
-    rightContainer: document.querySelector('.weather-right') as HTMLElement | null,
-    icon: document.getElementById('weatherIcon') as HTMLElement,
-    temp: document.getElementById('weatherTemp') as HTMLElement,
-    text: document.getElementById('weatherText') as HTMLElement,
-    feels: document.getElementById('weatherFeels') as HTMLElement,
-    city: document.getElementById('weatherCity') as HTMLElement,
-    tempRange: document.getElementById('weatherTempRange') as HTMLElement,
-    humidity: document.getElementById('weatherHumidity') as HTMLElement,
-    windDirection: document.getElementById('weatherWindDirection') as HTMLElement,
-    windLevel: document.getElementById('weatherWindLevel') as HTMLElement,
-    windSpeed: document.getElementById('weatherWindSpeed') as HTMLElement,
-    visibility: document.getElementById('weatherVisibility') as HTMLElement,
-    detailRow: document.getElementById('weatherDetailRow') as HTMLElement,
-    uvIndex: document.getElementById('weatherUvIndex') as HTMLElement,
-    cloud: document.getElementById('weatherCloud') as HTMLElement,
-    sunrise: document.getElementById('weatherSunrise') as HTMLElement,
-    sunset: document.getElementById('weatherSunset') as HTMLElement,
-    moonphase: document.getElementById('weatherMoonphase') as HTMLElement,
-    airRow: document.getElementById('weatherAirRow') as HTMLElement,
-    airQuality: document.getElementById('weatherAirQuality') as HTMLElement,
-    airValue: document.getElementById('weatherAirValue') as HTMLElement,
-    alertContainer: document.getElementById('weatherAlertContainer') as HTMLElement,
-    precipContainer: document.getElementById('weatherPrecipContainer') as HTMLElement,
-    precipLabel: document.getElementById('weatherPrecipLabel') as HTMLElement,
-    precipTimes: document.getElementById('weatherPrecipTimes') as HTMLElement,
-    precipValues: document.getElementById('weatherPrecipValues') as HTMLElement,
-    tip: document.getElementById('weatherTip') as HTMLElement,
+import { makeLazyMap, makeLazyIdMap } from '../lazyMap';
+
+const weatherIdSelectors = makeLazyIdMap({
+    weather: 'weather',
+    icon: 'weatherIcon',
+    temp: 'weatherTemp',
+    text: 'weatherText',
+    feels: 'weatherFeels',
+    city: 'weatherCity',
+    tempRange: 'weatherTempRange',
+    humidity: 'weatherHumidity',
+    windDirection: 'weatherWindDirection',
+    windLevel: 'weatherWindLevel',
+    windSpeed: 'weatherWindSpeed',
+    visibility: 'weatherVisibility',
+    detailRow: 'weatherDetailRow',
+    uvIndex: 'weatherUvIndex',
+    cloud: 'weatherCloud',
+    sunrise: 'weatherSunrise',
+    sunset: 'weatherSunset',
+    moonphase: 'weatherMoonphase',
+    airRow: 'weatherAirRow',
+    airQuality: 'weatherAirQuality',
+    airValue: 'weatherAirValue',
+    alertContainer: 'weatherAlertContainer',
+    precipContainer: 'weatherPrecipContainer',
+    precipLabel: 'weatherPrecipLabel',
+    precipTimes: 'weatherPrecipTimes',
+    precipValues: 'weatherPrecipValues',
+    tip: 'weatherTip',
+});
+
+const containerSelectors = {
+    container: '#weather .weather-container',
+    leftContainer: '.weather-left',
+    rightContainer: '.weather-right',
 } as const;
+
+export const weatherElements = {
+    weather: weatherIdSelectors.weather,
+    container: (() => {
+        const map = makeLazyMap<keyof typeof containerSelectors>(containerSelectors);
+        return map.container;
+    })(),
+    leftContainer: (() => {
+        const map = makeLazyMap<keyof typeof containerSelectors>(containerSelectors);
+        return map.leftContainer;
+    })(),
+    rightContainer: (() => {
+        const map = makeLazyMap<keyof typeof containerSelectors>(containerSelectors);
+        return map.rightContainer;
+    })(),
+    icon: weatherIdSelectors.icon,
+    temp: weatherIdSelectors.temp,
+    text: weatherIdSelectors.text,
+    feels: weatherIdSelectors.feels,
+    city: weatherIdSelectors.city,
+    tempRange: weatherIdSelectors.tempRange,
+    humidity: weatherIdSelectors.humidity,
+    windDirection: weatherIdSelectors.windDirection,
+    windLevel: weatherIdSelectors.windLevel,
+    windSpeed: weatherIdSelectors.windSpeed,
+    visibility: weatherIdSelectors.visibility,
+    detailRow: weatherIdSelectors.detailRow,
+    uvIndex: weatherIdSelectors.uvIndex,
+    cloud: weatherIdSelectors.cloud,
+    sunrise: weatherIdSelectors.sunrise,
+    sunset: weatherIdSelectors.sunset,
+    moonphase: weatherIdSelectors.moonphase,
+    airRow: weatherIdSelectors.airRow,
+    airQuality: weatherIdSelectors.airQuality,
+    airValue: weatherIdSelectors.airValue,
+    alertContainer: weatherIdSelectors.alertContainer,
+    precipContainer: weatherIdSelectors.precipContainer,
+    precipLabel: weatherIdSelectors.precipLabel,
+    precipTimes: weatherIdSelectors.precipTimes,
+    precipValues: weatherIdSelectors.precipValues,
+    tip: weatherIdSelectors.tip,
+};

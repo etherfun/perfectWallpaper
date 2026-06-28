@@ -12,6 +12,7 @@
  */
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
+import { registerDeferred } from '@/utils/deferredScheduler';
 
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/slide';
 import { logInitComplete } from '@/propertyHandlers/_helpers';
@@ -313,18 +314,23 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         patch.pictures_info_roundedcorners = roundedcorners;
         elements.body.style.setProperty('--picture-info-roundedcorners', String(roundedcorners));
 
-        const picInfoEl = elements.slide?.picture_info;
-        const updateHeight = () => {
-            const height = picInfoEl?.getBoundingClientRect().height;
-            if (!height) return;
-            elements.body.style.setProperty('--picture-info-height', height + 'px');
-        };
+        // 监听 picture-info 容器尺寸变化，同步 --picture-info-height CSS 变量。
+        // picInfoEl 由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        registerDeferred('pictureinfo:height-observer', () => {
+            const picInfoEl = elements.slide?.picture_info;
+            if (!picInfoEl) return;
 
-        updateHeight();
-        if (picInfoEl) {
+            const updateHeight = () => {
+                const height = picInfoEl.getBoundingClientRect().height;
+                if (!height) return;
+                elements.body.style.setProperty('--picture-info-height', height + 'px');
+            };
+
+            updateHeight();
             const observer = new ResizeObserver(updateHeight);
             observer.observe(picInfoEl);
-        }
+            return () => observer.disconnect();
+        });
     }
 
     if (properties.picturesinfo_showaway) {

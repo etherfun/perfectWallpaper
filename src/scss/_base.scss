@@ -101,7 +101,7 @@ body {
     --clock-yakeli: 0;
     --clock-blur-yakeli: 0px;
     --clock-roundedcorners: 0;
-    --clock-height: auto;
+    --clock-height: 200px;
     --clock-show-width: auto;
     --clock-display: flex;
     --clock-visibility: visible;
@@ -121,7 +121,7 @@ body {
     --date-yakeli: 0;
     --date-blur-yakeli: 0px;
     --date-roundedcorners: 0;
-    --date-height: auto;
+    --date-height: 100px;
     --date-show-width: auto;
     --date-display: flex;
     --date-visibility: visible;
@@ -141,7 +141,7 @@ body {
     --hitokoto-yakeli: 0;
     --hitokoto-blur-yakeli: 0px;
     --hitokoto-roundedcorners: 0;
-    --hitokoto-height: auto;
+    --hitokoto-height: 100px;
     --hitokoto-show-width: auto;
     --hitokoto-display: flex;
     --hitokoto-visibility: visible;
@@ -159,7 +159,7 @@ body {
     --countdown-yakeli: 0;
     --countdown-blur-yakeli: 0px;
     --countdown-roundedcorners: 0;
-    --countdown-height: auto;
+    --countdown-height: 100px;
     --countdown-show-width: auto;
     --countdown-display: flex;
     --countdown-visibility: visible;
@@ -179,7 +179,7 @@ body {
     --player-yakeli: 0;
     --player-blur-yakeli: 0px;
     --player-roundedcorners: 0;
-    --player-height: auto;
+    --player-height: 200px;
     --player-show-width: auto;
     --player-size-value: 200px;
     --player-thumbnail-size: 100%;
@@ -199,7 +199,7 @@ body {
     --picture-info-yakeli: 0;
     --picture-info-blur-yakeli: 0px;
     --picture-info-roundedcorners: 0;
-    --picture-info-height: auto;
+    --picture-info-height: 100px;
 
     // System Monitor Component CSS Variables
     --sysmon-yakeli-enabled: 0;
@@ -214,7 +214,7 @@ body {
     --picture-info-yakeli: 0;
     --picture-info-blur-yakeli: 0px;
     --picture-info-roundedcorners: 0;
-    --picture-info-height: auto;
+    --picture-info-height: 100px;
     --picture-info-show-width: auto;
     // 静默加载: 默认隐藏 #picture_info, 等 loader 写入真实数据
     // (picturesinfo_showrl) 时再 display=flex / visibility=visible。

@@ -10,12 +10,11 @@
  * 不引入行为变更。elements.body 访问保留 — Stage 3.5-A 会统一迁移。
  */
 import { elements } from '@/utils/elementManager';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
-
-const oClock = elements.clock.container;
 
 /**
  * 处理时间/时钟相关属性
@@ -79,15 +78,24 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
             String(properties.oclock_roundedcorners.value)
         );
 
-        const updateHeight = (): void => {
-            const height = oClock.getBoundingClientRect().height;
-            if (!height) return;
-            elements.body.style.setProperty('--clock-height', height + 'px');
-        };
+        // 监听时钟容器尺寸变化，同步 --clock-height CSS 变量。
+        // oClock 在 Vue mount 之后才存在，通过 deferredScheduler 延后挂载 observer；
+        // 重复 push 同一 id 时 registerDeferred 会替换任务并自动 dispose 旧 observer。
+        registerDeferred('time:clock-height-observer', () => {
+            const oClock = elements.clock.container;
+            if (!oClock) return;
 
-        updateHeight();
-        const observer = new ResizeObserver(updateHeight);
-        observer.observe(oClock);
+            const updateHeight = (): void => {
+                const height = oClock.getBoundingClientRect().height;
+                if (!height) return;
+                elements.body.style.setProperty('--clock-height', height + 'px');
+            };
+
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(oClock);
+            return () => observer.disconnect();
+        });
     }
 
     if (properties.odate_roundedcorners) {

@@ -9,12 +9,11 @@
  * - date_format 子对象通过 Pinia $patch 整体更新（保持 handler 的 read-modify-write 模式）
  */
 import { elements } from '@/utils/elementManager';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
-
-const oDate = elements.date.container as HTMLElement;
 
 /**
  * 处理日期相关属性
@@ -47,15 +46,23 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
             String(properties.odate_roundedcorners.value)
         );
 
-        const updateHeight = (): void => {
-            const height = oDate.getBoundingClientRect().height;
-            if (!height) return;
-            elements.body.style.setProperty('--date-height', height + 'px');
-        };
+        // 监听日期容器尺寸变化，同步 --date-height CSS 变量。
+        // oDate 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        registerDeferred('date:height-observer', () => {
+            const oDate = elements.date.container;
+            if (!oDate) return;
 
-        updateHeight();
-        const observer = new ResizeObserver(updateHeight);
-        if (oDate) observer.observe(oDate);
+            const updateHeight = (): void => {
+                const height = oDate.getBoundingClientRect().height;
+                if (!height) return;
+                elements.body.style.setProperty('--date-height', height + 'px');
+            };
+
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(oDate);
+            return () => observer.disconnect();
+        });
     }
 
     if (properties.odate_color) {

@@ -8,6 +8,7 @@
  * the player control DOM" and are not surfaced to consumers.
  */
 import { useConfigStore } from '@/stores/config';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { logInitComplete } from '@/propertyHandlers/_helpers';
@@ -200,31 +201,40 @@ export function usePlayerControlProperties(
         patch.player_control_roundedcorners = properties.player_control_roundedcorners.value;
         const rounded = properties.player_control_roundedcorners.value;
 
-        const updateCorners = () => {
-            const height = parseFloat(getComputedStyle(player_control_thumbnail).height);
-            if (!height) return;
+        // 容器由 PlayerControl.vue 在 Vue mount 之后创建，observer 必须延后挂载。
+        // closure 内通过 refresh 后的 let 引用拿最新节点。
+        registerDeferred('playerControl:roundedcorners-observer', () => {
+            // 模块顶层 let 引用在 main.ts 的 app.mount 之后由
+            // refreshPlayerControlRefs() 重新指向真实节点。
+            const container = player_control;
+            const thumbnail = player_control_thumbnail;
+            const background = player_control_background;
+            const thumbnailWrap = player_control_thumbnailWrap;
+            if (!container || !thumbnail || !background || !thumbnailWrap) return;
 
-            const radius = (height / 2) * (rounded / 100);
-            const padding = (height / 2) * (rounded / 200);
+            const updateCorners = () => {
+                const height = parseFloat(getComputedStyle(thumbnail).height);
+                if (!height) return;
 
-            player_control.style.borderRadius = radius + 'px';
-            player_control_background.style.paddingRight = padding + 'px';
+                const radius = (height / 2) * (rounded / 100);
+                const padding = (height / 2) * (rounded / 200);
 
-            if (!store.player_control_thumbnail_rotation) {
-                player_control_thumbnailWrap.style.setProperty(
-                    '--player-thumb-radius',
-                    radius + 'px'
-                );
-                player_control_thumbnailWrap.classList.remove('circular');
-            }
-        };
+                container.style.borderRadius = radius + 'px';
+                background.style.paddingRight = padding + 'px';
 
-        updateCorners();
+                if (!store.player_control_thumbnail_rotation) {
+                    thumbnailWrap.style.setProperty('--player-thumb-radius', radius + 'px');
+                    thumbnailWrap.classList.remove('circular');
+                }
+            };
 
-        const observer = new ResizeObserver(() => {
-            if (!store.player_control_thumbnail_rotation) updateCorners();
+            updateCorners();
+            const observer = new ResizeObserver(() => {
+                if (!store.player_control_thumbnail_rotation) updateCorners();
+            });
+            observer.observe(thumbnail);
+            return () => observer.disconnect();
         });
-        observer.observe(player_control_thumbnail);
     }
 
     if (properties.player_control_thumbnail_rotation) {

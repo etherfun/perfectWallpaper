@@ -38,6 +38,7 @@ import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperProp
 import { resize as pwCircleResize } from './PWCircle';
 import { PWLineInit } from './PWLine';
 import { config } from './utils/config';
+import { markDeferredReady } from './utils/deferredScheduler';
 import { debugLogger } from './utils/logger';
 import { WallpaperEffectController } from './WallpaperEffectController';
 
@@ -90,6 +91,13 @@ async function bootstrap(): Promise<void> {
     );
     refreshDomRefs();
     refreshPlayerControlRefs();
+
+    // 4.5 通知 deferredScheduler：Vue 已挂载完成
+    //   - 此时 #clock / #oDate / #countdown 等元素已存在
+    //   - 14 个 propertyHandler 在 WE 注入时通过 registerDeferred 注册的任务统一执行
+    //   - 这里必须在 refreshDomRefs 之后调用，让 closure 内 elements.clock.container
+    //     等访问拿到真实节点
+    markDeferredReady();
 
     // 5. 独立模式增强（阶段 1.x）：
     //    - 5 秒内 WE 没注入 → armStandaloneFallback 兜底推一次完整 properties，

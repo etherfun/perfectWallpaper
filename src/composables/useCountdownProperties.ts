@@ -6,6 +6,7 @@
  * Pinia patch / ResizeObserver / timerManager），不引入行为变更。
  */
 import { elements } from '@/utils/elementManager';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
 
 import { timerManager } from '../utils/timer';
@@ -13,7 +14,6 @@ import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
 
 const bodyElement = elements.body;
-const countdown = elements.countdown.container;
 
 /**
  * 处理倒计时相关属性
@@ -149,15 +149,23 @@ export function useCountdownProperties(
             String(properties.countdown_roundedcorners.value)
         );
 
-        const updateHeight = (): void => {
-            const height = countdown.getBoundingClientRect().height;
-            if (!height) return;
-            bodyElement.style.setProperty('--countdown-height', height + 'px');
-        };
+        // 监听倒计时容器尺寸变化，同步 --countdown-height CSS 变量。
+        // countdown 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        registerDeferred('countdown:height-observer', () => {
+            const countdown = elements.countdown.container;
+            if (!countdown) return;
 
-        updateHeight();
-        const observer = new ResizeObserver(updateHeight);
-        observer.observe(countdown);
+            const updateHeight = (): void => {
+                const height = countdown.getBoundingClientRect().height;
+                if (!height) return;
+                bodyElement.style.setProperty('--countdown-height', height + 'px');
+            };
+
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(countdown);
+            return () => observer.disconnect();
+        });
     }
 
     if (properties.countdown_showwidth) {

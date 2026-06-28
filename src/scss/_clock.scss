@@ -27,7 +27,6 @@
         }
 
         .time-indicators {
-            display: flex;
             justify-content: flex-end;
             align-items: baseline; // align seconds + meridiem on the same baseline
             grid-column: 2;

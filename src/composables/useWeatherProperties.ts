@@ -12,6 +12,7 @@
  * - `debounce / timerManager` — 通用工具
  */
 import { elements } from '@/utils/elementManager';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
 
 import { timerManager } from '../utils/timer';
@@ -25,8 +26,6 @@ import {
 import { setWeatherUnitByName } from '../weather/weatherState';
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
-
-const weather = elements.weather.weather as HTMLElement;
 
 /**
  * 处理天气相关属性
@@ -152,13 +151,16 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.weather_show) {
         timerManager.remove('updataWeather');
 
-        if (properties.weather_show.value) {
-            weather.style.display = 'flex';
-            weather.style.visibility = 'visible';
-            autoWeather();
-        } else {
-            weather.style.display = 'none';
-            weather.style.visibility = 'hidden';
+        const weather = elements.weather.weather;
+        if (weather) {
+            if (properties.weather_show.value) {
+                weather.style.display = 'flex';
+                weather.style.visibility = 'visible';
+                autoWeather();
+            } else {
+                weather.style.display = 'none';
+                weather.style.visibility = 'hidden';
+            }
         }
     }
 
@@ -236,16 +238,23 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         );
         store.$patch({ weather_roundedcorners: properties.weather_roundedcorners.value });
 
-        const updateHeight = (): void => {
-            const height = weather.getBoundingClientRect().height;
-            if (!height) return;
-            elements.body.style.setProperty('--weather-height', height + 'px');
-        };
+        // 监听天气容器尺寸变化，同步 --weather-height CSS 变量。
+        // weather 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        registerDeferred('weather:height-observer', () => {
+            const weather = elements.weather.weather;
+            if (!weather) return;
 
-        updateHeight();
+            const updateHeight = (): void => {
+                const height = weather.getBoundingClientRect().height;
+                if (!height) return;
+                elements.body.style.setProperty('--weather-height', height + 'px');
+            };
 
-        const observer = new ResizeObserver(updateHeight);
-        observer.observe(weather);
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(weather);
+            return () => observer.disconnect();
+        });
     }
 
     // 天气大小

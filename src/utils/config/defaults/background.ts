@@ -1,9 +1,9 @@
 export const backgroundDefaults = {
-    background_route: './src/source/imgs/1.jpg',
+    background_route: './source/imgs/1.jpg',
     video_route: '',
     cusvideo_route: '',
     cusaudio_route: '',
-    map_route: './src/source/map/1.png',
+    map_route: './source/map/1.png',
 
     video_model: 1,
     video_volume: 0.5,

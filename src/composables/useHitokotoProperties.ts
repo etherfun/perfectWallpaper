@@ -6,13 +6,12 @@
  * Pinia patch / timerManager），不引入行为变更。
  */
 import { elements } from '@/utils/elementManager';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
 
 import { timerManager } from '../utils/timer';
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
-
-const hitokoto = elements.hitokoto.container as HTMLElement;
 
 /**
  * 处理一言相关属性
@@ -148,15 +147,23 @@ export function useHitokotoProperties(
             String(properties.hitokoto_roundedcorners.value)
         );
 
-        const updateHeight = (): void => {
-            const height = hitokoto?.getBoundingClientRect().height;
-            if (!height) return;
-            elements.body.style.setProperty('--hitokoto-height', height + 'px');
-        };
+        // 监听一言容器尺寸变化，同步 --hitokoto-height CSS 变量。
+        // hitokoto 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        registerDeferred('hitokoto:height-observer', () => {
+            const hitokoto = elements.hitokoto.container;
+            if (!hitokoto) return;
 
-        updateHeight();
-        const observer = new ResizeObserver(updateHeight);
-        if (hitokoto) observer.observe(hitokoto);
+            const updateHeight = (): void => {
+                const height = hitokoto.getBoundingClientRect().height;
+                if (!height) return;
+                elements.body.style.setProperty('--hitokoto-height', height + 'px');
+            };
+
+            updateHeight();
+            const observer = new ResizeObserver(updateHeight);
+            observer.observe(hitokoto);
+            return () => observer.disconnect();
+        });
     }
 
     if (properties.hitokoto_size) {

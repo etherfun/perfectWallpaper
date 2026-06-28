@@ -15,6 +15,7 @@ const { mockSakuraModule, mockElements } = vi.hoisted(() => {
         setAnimating: vi.fn(),
         animate: vi.fn(),
         removesakura: vi.fn(),
+        sakuraLoad: vi.fn(),
         sakuraResize: vi.fn(),
         sakuraReLoadEffect: vi.fn(),
     };
@@ -61,14 +62,14 @@ afterEach(() => {
 });
 
 describe('useSakuraProperties', () => {
-    test('showSakura true → makeCanvasFullScreen + setAnimating(true) + animate + removesakura', () => {
+    test('showSakura true → sakuraLoad (gl null) + removesakura', () => {
         const store = useConfigStore();
         useSakuraProperties({ showSakura: { value: true } } as never, false);
         expect(store.showSakura).toBe(true);
-        // makeCanvasFullScreen only fires when canvas elements exist
-        // (mocked as undefined here, so just verify store + setAnimating)
-        expect(mockSakuraModule.setAnimating).toHaveBeenCalledWith(true);
-        expect(mockSakuraModule.animate).toHaveBeenCalledTimes(1);
+        // In Phase 7 test env, gl is null (WebGL not available in jsdom),
+        // so the code path calls sakuraLoad() instead of setAnimating/animate.
+        // sakuraLoad handles full initialization + starts RAF internally.
+        expect(mockSakuraModule.sakuraLoad).toHaveBeenCalledTimes(1);
         expect(mockSakuraModule.removesakura).toHaveBeenCalledTimes(1);
     });
 

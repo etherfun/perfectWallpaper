@@ -38,6 +38,7 @@ vi.mock('@/sakura', () => ({
     removesakura: () => {},
     sakuraResize: () => {},
     sakuraReLoadEffect: () => {},
+    sakuraLoad: () => {},
     applySakuraTransparency: () => {},
     load: () => {},
     reloadEffect: () => {},

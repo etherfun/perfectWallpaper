@@ -21,11 +21,11 @@ describe('hexToRgb', () => {
         expect(hexToRgb('FF8800')).toEqual([255, 136, 0]);
     });
 
-    test('returns [0, 0, 0] for invalid hex (does not throw)', () => {
-        // Implementation uses a permissive regex; invalid input returns black
-        expect(hexToRgb('not-a-color')).toEqual([0, 0, 0]);
-        expect(hexToRgb('#FFF')).toEqual([0, 0, 0]); // 3-char shorthand rejected
-        expect(hexToRgb('')).toEqual([0, 0, 0]);
+    test('returns [255, 255, 255] for invalid hex (does not throw)', () => {
+        // Invalid input falls back to white to avoid black overriding SCSS
+        expect(hexToRgb('not-a-color')).toEqual([255, 255, 255]);
+        expect(hexToRgb('#FFF')).toEqual([255, 255, 255]); // 3-char shorthand rejected
+        expect(hexToRgb('')).toEqual([255, 255, 255]);
     });
 
     test('returns tuple matching RgbTuple type', () => {

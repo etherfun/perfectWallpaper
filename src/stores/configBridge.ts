@@ -63,6 +63,24 @@ export function installConfigStoreBridge(): void {
 }
 
 /**
+ * config 到 Pinia store 的键名映射。
+ *
+ * 两套系统的键名风格不同：
+ *   - config (SYNC_DEFAULTS)：snake_case（如 `show_sakura`）
+ *   - Pinia store (ConfigStoreState)：camelCase（如 `showSakura`）
+ *
+ * bridge 用 config key 写入 store 时，若 store 中不存在同名声明字段，
+ * $patch 会创建非响应式的未声明属性，导致 Vue 组件无法响应变化。
+ *
+ * 本映射表将 config key 翻译为 store 的声明字段名。
+ * 映射表未覆盖的 key：如果 store 中有同名声明字段则正常写入，
+ * 否则跳过（由调用方 store.$patch 处理）。
+ */
+const CONFIG_TO_STORE_KEY_MAP: Record<string, string> = {
+    show_sakura: 'showSakura',
+};
+
+/**
  * 把单个 key/value 镜像到 Pinia store。
  *
  * 在 AppConfig setter 内调用。如果 bridge 还没安装（pinia 还没 active），
@@ -77,12 +95,13 @@ export function patchStoreFromConfig(key: string, value: unknown): void {
     if (!bridgeInstalled) return;
     try {
         const store = useConfigStore();
-        // 类型擦除：useConfigStore() 返回类型包含具体字段，
-        // 但 AppConfig 的字段是动态的（来自 SYNC_DEFAULTS 合并），
-        // 用 unknown 容器 + $patch 注入单 key
-        (store as unknown as { $patch: (p: Record<string, unknown>) => void }).$patch({
-            [key]: value,
-        });
+        const storeKey = CONFIG_TO_STORE_KEY_MAP[key] ?? key;
+        // 只写入 store 中已声明的字段，避免创建非响应式未声明属性
+        if (storeKey in store.$state) {
+            (store as unknown as { $patch: (p: Record<string, unknown>) => void }).$patch({
+                [storeKey]: value,
+            });
+        }
     } catch {
         // Pinia 已被销毁（卸载 Vue 应用）或其他异常，吞掉
     }

@@ -83,9 +83,10 @@ describe('Clock.vue', () => {
         // Default is 24h (time_style=true)
         const wrapper = mount(Clock, { attachTo: document.body });
         const indicators = wrapper.find('.time-indicators');
-        // Inline style should contain align-self: end
+        // Inline style should contain align-self: end + height: auto
         const style = indicators.attributes('style');
         expect(style).toContain('end');
+        expect(style).toContain('auto');
 
         // Switch to 12h mode — align-self should be removed
         const config = useConfigStore();

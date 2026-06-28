@@ -65,7 +65,9 @@ const meridiem = computed(() => (now.value.getHours() < 12 ? 'AM' : 'PM'));
  */
 const indicatorsStyle = computed(() => {
     if (use24h.value) {
-        return { 'align-self': 'end' as const };
+        // SCSS 中有 height: 100% → 元素撑满网格高度，align-self: end 无效。
+        // 必须同时覆盖 height: auto 让容器缩至内容高度，align-self: end 才能下沉到底部。
+        return { 'align-self': 'end' as const, height: 'auto' };
     }
     return {};
 });

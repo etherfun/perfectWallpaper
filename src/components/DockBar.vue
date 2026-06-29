@@ -8,7 +8,9 @@
     - 本组件渲染容器结构，命令式模块在其中追加/管理 .dock-item 元素。
 -->
 <template>
-    <div id="dockbar" v-show="config.dockbar_enabled === true">
+    <!-- 初始隐藏（display:none），由 DockBar.setEnabled() 控制显示/隐藏。
+         不使用 v-show 以避免与命令式 style.display 冲突。 -->
+    <div id="dockbar" style="display:none">
         <div class="dockbar-background">
             <div class="dockbar-items" id="dockbar-items"></div>
             <button class="dockbar-add-btn" id="dockbar-add-btn" title="添加项目">
@@ -39,11 +41,9 @@ onMounted(() => {
     const dockbar = initDockBar();
     dockbar.ensureInitialized();
 
-    // 同步 Pinia store 当前值到 DockBar（WE 在 Vue mount 前推送的属性已在
-    // useWallpaperProperties 包装器中写入 store，但 dockbar.init() 用的是
-    // DEFAULT_CONFIG，需覆盖为 store 中的值）
-    if (config.dockbar_enabled !== undefined) {
-        dockbar.setEnabled(config.dockbar_enabled);
-    }
+    // 同步 Pinia store 当前值到 DockBar。
+    // dockbar_enabled 不在 BUILTIN_DEFAULTS 中，初始为 undefined。
+    // 此时用 setEnabled(false) 保持隐藏，等 WE 推送后再更新。
+    dockbar.setEnabled(config.dockbar_enabled === true);
 });
 </script>

@@ -95,15 +95,15 @@
             margin-right: 10px;
             z-index: 5;
             position: relative;
+            min-width: 0;
 
             .info {
                 white-space: nowrap;
                 display: flex;
                 flex-direction: column;
                 align-items: flex-start;
-                flex-shrink: 1;
+                flex-shrink: 0;
                 width: min-content;
-                max-width: 100%;
                 overflow: hidden;
 
                 .title {
@@ -114,6 +114,18 @@
                         width: 0.8em;
                         height: 0.8em;
                         vertical-align: middle;
+                        // Vue 模板编译会去掉标签间的空白，导致图标与文字紧贴。
+                        // main 分支靠源代码换行产生的 ~0.25em 空白；这里显式补上。
+                        //
+                        // 每个 .title/.artist/.albumTitle 的 DOM 顺序固定为
+                        //   <span class="right"/><img.icon><span class="left"/>
+                        // thumbnailrorl 决定哪一侧 span 实际容纳文字：
+                        //   false → 文字写到 .left → DOM 顺序 [empty][icon][文字]
+                        //     → 文字位于 icon 右侧 → margin-right
+                        //   true  → 文字写到 .right → DOM 顺序 [文字][icon][empty]
+                        //     → 文字位于 icon 左侧 → margin-left
+                        // 切换由 #player_control 上的 .thumbnail-on-right 触发（见 SCSS 末段）。
+                        margin-right: 0.25em;
                         @include icon-position-hide;
                         overflow: hidden;
                     }
@@ -126,6 +138,8 @@
                         width: 1.2em;
                         height: 1.2em;
                         vertical-align: middle;
+                        // 同 titleicon
+                        margin-right: 0.25em;
                         @include icon-position-hide;
                         overflow: hidden;
                     }
@@ -138,6 +152,8 @@
                         width: 1.2em;
                         height: 1.2em;
                         vertical-align: middle;
+                        // 同 titleicon
+                        margin-right: 0.25em;
                         @include icon-position-hide;
                         overflow: hidden;
                     }
@@ -163,8 +179,8 @@
                 .aubar {
                     flex-grow: 1;
                     display: block;
-                    width: 100%;
-                    height: 100%;
+                    //   width: 100%;
+                    //   height: 100%;
                 }
 
                 .aubar-controls {
@@ -235,9 +251,27 @@
         }
     }
 
-    // RTL direction (for thumbnailrorl toggle)
-    &.rtl .background {
+    // 缩略图位置（由 usePlayerControlProperties 在 player_control_thumbnailrorl
+    // 切换时给 #player_control 添加 .thumbnail-on-right / .thumbnail-on-left）。
+    //
+    // 使用显式 class 标记位置（而非 .rtl + row-reverse）的好处：
+    //   - CSS 直接读语义（"缩略图在哪"），不需要靠 row-reverse 间接推断 paint 顺序
+    //   - 图标与文字间隔 margin 方向可以与位置 class 联动，可读性高
+    //   - 调试时浏览器 DevTools 一眼能看到当前所处位置状态
+    //
+    // thumbnailrorl=true（缩略图在右）：
+    //   1. .background flex-direction 改为 row-reverse 让缩略图渲染在右侧
+    //   2. 文字此时写到 .right span（DOM 第 1 位），位于 icon 左侧
+    //   3. 所以 icon 间距应改为 margin-left
+    &.thumbnail-on-right .background {
         flex-direction: row-reverse;
+
+        .titleicon,
+        .artisticon,
+        .albumTitleicon {
+            margin-right: 0;
+            margin-left: 0.25em;
+        }
     }
 
     // Show-away position (for showaway toggle)

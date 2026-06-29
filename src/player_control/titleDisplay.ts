@@ -60,13 +60,22 @@ export function playertitle(visualaudiobar: boolean = false): void {
     artistEl.innerHTML = `<span>${artistToShow}</span>`;
     albumEl.innerHTML = `<span>${albumToShow}</span>`;
 
+    // main 分支逻辑：samealbum_title 开启时永远显示专辑行（联动模式）；
+    // 关闭时若 album 与 title 文本一致则隐藏，避免冗余。
+    // aubar-wrapper 的高度波动由之前的 grid 布局 + canvas flex-grow 自然吸收，
+    // 此处的 display 切换是 main 分支经过验证的行为。
     if (albumToShow !== titleToShow || playerControlSamealbumTitle === true) {
         player_control_albumTitle.style.display = '';
     } else {
         player_control_albumTitle.style.display = 'none';
     }
 
-    if (visualaudiobar) pc_aubar();
+    if (visualaudiobar) {
+        // 强制同步布局回流，确保 aubar.clientWidth 反映新标题宽度
+        const aubar = elements.playerControl.aubar;
+        if (aubar) void aubar.offsetHeight;
+        pc_aubar();
+    }
 }
 
 /**

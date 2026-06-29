@@ -43,10 +43,13 @@ export function pc_aubar(): void {
     const rgbbg = aubar.getContext('2d');
     if (!rgbbg) return;
 
-    // 用 CSS flexbox 布局尺寸（flex-grow:1 已自动分配剩余高度）
-    const width = aubar.clientWidth;
-    const height = aubar.clientHeight;
-    if (width <= 0 || height <= 0) {
+    // 沿用 main 分支的尺寸算法：让 CSS 把 .info 约束为 min-content（最长
+    // 文本行宽），canvas 用 JS 显式 style.width 覆盖父级约束，从而：
+    //   标题文字变长/变短 → .info 的 min-content 变化 →
+    //   usage.clientWidth 变化 → canvas style.width 跟着变。
+    const height = full.clientHeight - usage.clientHeight;
+    const width = usage.clientWidth;
+    if (height <= 0) {
         // 布局尚未完成，等下一帧再试
         requestAnimationFrame(pc_aubar);
         return;
@@ -54,13 +57,27 @@ export function pc_aubar(): void {
 
     aubar.width = width;
     aubar.height = height;
+    aubar.style.width = `${width}px`;
+    aubar.style.height = `${height}px`;
 
     appConfig.runtime.playerInfo.aubarstop = false;
 
     const previousHeights = new Array(AUDIO_BAR_COUNT).fill(aubar.height);
     const barHeights = new Array(AUDIO_BAR_COUNT).fill(0);
 
+    function syncCanvasSize(): void {
+        const newHeight = full.clientHeight - usage.clientHeight;
+        const newWidth = usage.clientWidth;
+        if (newHeight > 0 && newWidth > 0 && (newWidth !== aubar.width || newHeight !== aubar.height)) {
+            aubar.width = newWidth;
+            aubar.height = newHeight;
+            aubar.style.width = `${newWidth}px`;
+            aubar.style.height = `${newHeight}px`;
+        }
+    }
+
     const draw = (): void => {
+        syncCanvasSize();
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         const barWidth = aubar.width / AUDIO_BAR_COUNT;
         rgbbg.fillStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
@@ -97,6 +114,7 @@ export function pc_aubar(): void {
     };
 
     const drawline = (): void => {
+        syncCanvasSize();
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         rgbbg.lineWidth = 2;
         rgbbg.strokeStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';

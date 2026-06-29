@@ -411,7 +411,13 @@ export function usePlayerControlProperties(
         config.player_control_thumbnailrorl = v; // sync
         if (v === true) {
             setTimeout(function () {
-                player_control_background.classList.add('rtl');
+                // 显式 class 标记缩略图在右侧，让 CSS 根据 class 决定：
+                //   1. flex-direction：缩略图固定在 DOM 顺序末位（row-reverse 仅切换 paint 顺序）
+                //   2. 图标 margin 方向：标题文字在 icon 左侧 → margin-left
+                //   3. info 文字对齐：flex-end 让文字贴向缩略图侧
+                // 不再用模糊的 .rtl 触发 row-reverse 后还要配合 inline className 互换。
+                player_control.classList.add('thumbnail-on-right');
+                player_control.classList.remove('thumbnail-on-left');
                 const rawpadding = window.getComputedStyle(player_control_background).paddingRight;
                 player_control_background.style.paddingRight = '';
                 player_control_background.style.paddingLeft = rawpadding;
@@ -419,7 +425,8 @@ export function usePlayerControlProperties(
             }, 2500);
         } else {
             if (FirstLoad === false) {
-                player_control_background.classList.remove('rtl');
+                player_control.classList.add('thumbnail-on-left');
+                player_control.classList.remove('thumbnail-on-right');
                 const rawpadding = window.getComputedStyle(player_control_background).paddingLeft;
                 player_control_background.style.paddingLeft = '';
                 player_control_background.style.paddingRight = rawpadding;

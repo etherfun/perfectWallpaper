@@ -179,6 +179,10 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     select_video: '',
     cusvideo_route: '',
     cusaudio_route: '',
+    // background_route: single-image mode (case 1) 的本地文件路径
+    // 之前只在 appConfig 单例中定义；slide/sources/index.ts 迁移到 Pinia 后
+    // 需要这个字段在 store 中可读，否则会停在 undefined → 1.jpg 路径丢失。
+    background_route: './source/imgs/1.jpg',
     video_volume: 0.5,
     selectmusic: '',
     music_volume: 0.5,

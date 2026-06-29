@@ -2,9 +2,12 @@
  * NASA 每日天文图源
  * - mode 1: APOD JSON API
  * - mode 2: HTML scraper
+ *
+ * Stage 3.5-A3: galaxy_api 改读 Pinia；runtime.photo.* 保留 appConfig。
  */
 
-import { config } from '../../utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '../../utils/config';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { NasaApodResponse } from './types';
@@ -20,19 +23,19 @@ function loadNasaApod(): void {
                 url = get.hdurl || '';
             }
 
-            config.runtime.photo.infomation.title = get.title;
-            config.runtime.photo.infomation.text = get.explanation;
+            appConfig.runtime.photo.infomation.title = get.title;
+            appConfig.runtime.photo.infomation.text = get.explanation;
             if (get.copyright == undefined) {
-                config.runtime.photo.infomation.copyright = '';
+                appConfig.runtime.photo.infomation.copyright = '';
             } else {
-                config.runtime.photo.infomation.copyright = get.copyright;
+                appConfig.runtime.photo.infomation.copyright = get.copyright;
             }
-            config.runtime.photo.infomation.where = '';
+            appConfig.runtime.photo.infomation.where = '';
             picturesinfo_showrl(
-                config.runtime.photo.infomation.title,
-                config.runtime.photo.infomation.copyright,
-                config.runtime.photo.infomation.where,
-                config.runtime.photo.infomation.text
+                appConfig.runtime.photo.infomation.title,
+                appConfig.runtime.photo.infomation.copyright,
+                appConfig.runtime.photo.infomation.where,
+                appConfig.runtime.photo.infomation.text
             );
 
             const img = new Image();
@@ -55,16 +58,16 @@ function loadNasaApodHtml(): void {
             const url =
                 'https://apod.nasa.gov/apod/' + doc.querySelector('img')?.getAttribute('src');
 
-            config.runtime.photo.infomation.title = doc.querySelector('b')?.textContent || '';
-            config.runtime.photo.infomation.text = doc.querySelectorAll('p')[2]?.textContent || '';
-            config.runtime.photo.infomation.copyright =
+            appConfig.runtime.photo.infomation.title = doc.querySelector('b')?.textContent || '';
+            appConfig.runtime.photo.infomation.text = doc.querySelectorAll('p')[2]?.textContent || '';
+            appConfig.runtime.photo.infomation.copyright =
                 doc.querySelectorAll('a')[2]?.textContent || '';
-            config.runtime.photo.infomation.where = '';
+            appConfig.runtime.photo.infomation.where = '';
             picturesinfo_showrl(
-                config.runtime.photo.infomation.title,
-                config.runtime.photo.infomation.copyright,
-                config.runtime.photo.infomation.where,
-                config.runtime.photo.infomation.text
+                appConfig.runtime.photo.infomation.title,
+                appConfig.runtime.photo.infomation.copyright,
+                appConfig.runtime.photo.infomation.where,
+                appConfig.runtime.photo.infomation.text
             );
 
             const img = new Image();
@@ -79,7 +82,8 @@ function loadNasaApodHtml(): void {
 }
 
 export function loadNasa(): void {
-    const galaxyapi = config.galaxy_api;
+    const store = useConfigStore();
+    const galaxyapi = store.galaxy_api;
     if (galaxyapi === 2) {
         loadNasaApodHtml();
     } else {

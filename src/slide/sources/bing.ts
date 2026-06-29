@@ -1,35 +1,39 @@
 /**
  * Bing 每日壁纸源
+ *
+ * Stage 3.5-A3: 已迁移字段（language）从 Pinia 读；runtime.photo.* 保留 appConfig。
  */
 
-import { config } from '../../utils/config';
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '../../utils/config';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { BingResponse } from './types';
 
 export function loadBing(): void {
-    fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=' + config.language)
+    const store = useConfigStore();
+    fetch('https://www.bing.com/HPImageArchive.aspx?format=js&idx=0&n=1&mkt=' + store.language)
         .then(response => response.json())
         .then((get: BingResponse) => {
             const image = get.images[0];
             if (!image) return;
-            config.runtime.photo.infomation.title = image.title;
-            config.runtime.photo.infomation.text = '';
-            config.runtime.photo.infomation.copyright = '';
-            config.runtime.photo.infomation.where = '';
+            appConfig.runtime.photo.infomation.title = image.title;
+            appConfig.runtime.photo.infomation.text = '';
+            appConfig.runtime.photo.infomation.copyright = '';
+            appConfig.runtime.photo.infomation.where = '';
             const match = image.copyright.match(/\(([^)]+)\)/);
             if (match?.[1]) {
-                config.runtime.photo.infomation.copyright = match[1];
-                config.runtime.photo.infomation.where = image.copyright
+                appConfig.runtime.photo.infomation.copyright = match[1];
+                appConfig.runtime.photo.infomation.where = image.copyright
                     .replace(/\(([^)]+)\)/, '')
                     .trim();
             }
 
             picturesinfo_showrl(
-                config.runtime.photo.infomation.title,
-                config.runtime.photo.infomation.copyright,
-                config.runtime.photo.infomation.where,
-                config.runtime.photo.infomation.text
+                appConfig.runtime.photo.infomation.title,
+                appConfig.runtime.photo.infomation.copyright,
+                appConfig.runtime.photo.infomation.where,
+                appConfig.runtime.photo.infomation.text
             );
 
             const bingurl = 'https://www.bing.com' + image.urlbase;

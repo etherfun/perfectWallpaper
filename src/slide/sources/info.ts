@@ -1,8 +1,10 @@
 /**
  * 图片信息显示
+ *
+ * Stage 3.5-A3: pictures_info_show_ror_l / pictures_info_show 改读 Pinia。
  */
 
-import { config } from '../../utils/config';
+import { useConfigStore } from '@/stores/config';
 
 /** Clear picture info and hide the container */
 export function clearpicturesinfo(): void {
@@ -40,11 +42,12 @@ export function picturesinfo_showrl(
 ): void {
     clearpicturesinfo();
 
+    const store = useConfigStore();
     const text_w = document.querySelector('#picture_info .description');
 
     let title_w: Element | null, author_w: Element | null, where_w: Element | null;
 
-    if (config.pictures_info_show_ror_l) {
+    if (store.pictures_info_show_ror_l) {
         title_w = document.querySelector('#picture_info .title .right');
         author_w = document.querySelector('#picture_info .author .right');
         where_w = document.querySelector('#picture_info .location .right');
@@ -61,7 +64,7 @@ export function picturesinfo_showrl(
 
     // 静默加载: loader 拿到真实版权/标题后才显示容器,
     // 避免 fetch 期间的空框架被用户看到。
-    if (config.pictures_info_show === true) {
+    if (store.pictures_info_show === true) {
         const container = document.querySelector('#picture_info') as HTMLElement | null;
         if (container) {
             container.style.display = 'flex';

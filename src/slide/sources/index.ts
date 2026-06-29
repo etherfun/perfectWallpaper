@@ -14,10 +14,22 @@
  * 1 单张壁纸   2 随机播放   3 视频   4 Bing
  * 5 Lorem     6 NASA       7 次元   8 Windows聚焦
  * 9 自定义URL
+ *
+ * Stage 3.5-A3 (Phase 7 批次 3-3 follow-up):
+ *   之前 `import { config } from '../../utils/config'` 读 appConfig 单例，
+ *   与 slide/index.ts 的 Pinia 版本（`useConfigStore()`）不同步。
+ *   当用户在 WE 中切换 wallpapermode，Pinia wallpaper_mode 已被更新，
+ *   changeBackground 走新 case，但 shouldShow 仍按 appConfig.wallpaper_mode=1
+ *   → 永远停留在 1.jpg。
+ *
+ *   修复：已迁移到 Pinia 的字段（wallpaper_mode / custom / background_route /
+ *   rgb_show / pictures_url 等）改读 useConfigStore()，runtime.*（高频写入：
+ *   photo.nextphoto、photo.infomation、myList 等）保留 appConfig.runtime 访问。
  */
 
+import { useConfigStore } from '@/stores/config';
+import { config as appConfig } from '../../utils/config'; // runtime.photo / myList (高频写入保留)
 import { background2canvas } from '../../RGB';
-import { config } from '../../utils/config';
 import { ChangeVideoModel } from '../../video';
 import { transitionBackground } from '../transition';
 import { backgroundLayers, pictures } from '../types';
@@ -34,9 +46,10 @@ function getMyVideo(): HTMLVideoElement | null {
 
 /** Should show wallpaper based on current mode */
 export function shouldShow(): void {
+    const store = useConfigStore();
     document.body.style.backgroundImage = '';
 
-    switch (config.wallpaper_mode) {
+    switch (store.wallpaper_mode) {
         case 1: // Single wallpaper mode
             {
                 const v = getMyVideo();
@@ -45,21 +58,24 @@ export function shouldShow(): void {
                 document.body.style.backgroundImage = '';
 
                 let imageUrl: string;
-                if (config.custom) {
-                    imageUrl = 'file:///' + config.custom;
+                if (store.custom) {
+                    imageUrl = 'file:///' + store.custom;
                 } else {
-                    imageUrl = config.background_route.replace(/^url\("(.+?)"\)$/, '$1');
+                    imageUrl = (store.background_route ?? './source/imgs/1.jpg').replace(
+                        /^url\("(.+?)"\)$/,
+                        '$1'
+                    );
                 }
 
                 transitionBackground(imageUrl);
 
                 clearpicturesinfo();
                 pictures.picture_info.style.display = 'none';
-                if (config.rgb_show) {
-                    config.runtime.photo.nextphoto = true;
+                if (store.rgb_show) {
+                    appConfig.runtime.photo.nextphoto = true;
                     setTimeout(function () {
                         background2canvas(imageUrl, false);
-                        config.runtime.photo.nextphoto = false;
+                        appConfig.runtime.photo.nextphoto = false;
                     }, 100);
                 }
             }
@@ -71,18 +87,18 @@ export function shouldShow(): void {
                 if (v) v.src = '';
             }
             backgroundLayers.container.style.display = 'block';
-            if (config.runtime.myList.length) {
-                transitionBackground('file:///' + config.runtime.photo.currentImg!);
+            if (appConfig.runtime.myList.length) {
+                transitionBackground('file:///' + appConfig.runtime.photo.currentImg!);
             } else {
                 transitionBackground('imgs/1.jpg');
             }
             clearpicturesinfo();
             pictures.picture_info.style.display = 'none';
-            if (config.rgb_show) {
-                config.runtime.photo.nextphoto = true;
+            if (store.rgb_show) {
+                appConfig.runtime.photo.nextphoto = true;
                 setTimeout(function () {
-                    background2canvas(config.runtime.photo.currentImg!, false);
-                    config.runtime.photo.nextphoto = false;
+                    background2canvas(appConfig.runtime.photo.currentImg!, false);
+                    appConfig.runtime.photo.nextphoto = false;
                 }, 100);
             }
             break;
@@ -92,11 +108,11 @@ export function shouldShow(): void {
             clearpicturesinfo();
             backgroundLayers.container.style.display = 'none';
             pictures.picture_info.style.display = 'none';
-            if (config.rgb_show) {
-                config.runtime.photo.nextphoto = true;
+            if (store.rgb_show) {
+                appConfig.runtime.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(undefined, true);
-                    config.runtime.photo.nextphoto = false;
+                    appConfig.runtime.photo.nextphoto = false;
                 }, 100);
             }
             break;
@@ -172,7 +188,7 @@ export function shouldShow(): void {
                 if (v9) v9.src = '';
                 backgroundLayers.container.style.display = 'block';
                 const customImg = new Image();
-                customImg.src = config.pictures_url;
+                customImg.src = store.pictures_url ?? '';
 
                 customImg.onload = function () {
                     onImageLoad(customImg.src);

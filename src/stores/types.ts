@@ -446,6 +446,9 @@ export interface ConfigStoreState {
     custom?: string;
     cusvideo_route?: string;
     galaxy_api?: number;
+    // Stage 3.5-A3: slide/sources/index.ts 迁移到 useConfigStore() 后需要
+    // 在 store 中读到 single-image mode (case 1) 的本地图片路径。
+    background_route?: string;
     music_playlist_random?: boolean;
     music_playlist_repeat?: number;
     music_volume?: number;

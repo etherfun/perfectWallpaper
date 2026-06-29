@@ -1,12 +1,15 @@
 /**
  * 次元 API 源
+ *
+ * Stage 3.5-A3: chiyuanapi 改读 Pinia。
  */
 
-import { config } from '../../utils/config';
+import { useConfigStore } from '@/stores/config';
 import { onImageError, onImageLoad } from './loader';
 
 export function loadChiyuan(): void {
-    fetch(config.chiyuanapi)
+    const store = useConfigStore();
+    fetch(store.chiyuanapi ?? '')
         .then(response => response.text())
         .then((url: string) => {
             const img = new Image();

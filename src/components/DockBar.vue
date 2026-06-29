@@ -8,7 +8,7 @@
     - 本组件渲染容器结构，命令式模块在其中追加/管理 .dock-item 元素。
 -->
 <template>
-    <div id="dockbar">
+    <div id="dockbar" v-show="config.dockbar_enabled !== false">
         <div class="dockbar-background">
             <div class="dockbar-items" id="dockbar-items"></div>
             <button class="dockbar-add-btn" id="dockbar-add-btn" title="添加项目">

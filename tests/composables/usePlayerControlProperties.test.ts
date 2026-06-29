@@ -52,6 +52,7 @@ vi.mock('@/player_control', () => mockPlayerControl);
 vi.mock('@/utils/elementManager', () => ({ elements: mockElements }));
 
 import { refreshPlayerControlRefs, usePlayerControlProperties } from '@/composables/usePlayerControlProperties';
+import { config } from '@/utils/config';
 
 beforeEach(() => {
     setActivePinia(createPinia());
@@ -61,6 +62,8 @@ beforeEach(() => {
     // usePlayerControlProperties 的 let refs 在 module-load 时为 null。
     // 测试必须显式 refresh 让 let 指向 mockElements 的真实 DOM 节点。
     refreshPlayerControlRefs();
+    // 确保有歌曲信息，让 needShow=true 正常触发 display:flex
+    config.runtime.playerInfo.singtitle = 'Test Song';
 });
 
 afterEach(() => {

@@ -15,7 +15,7 @@
       wallpaperMediaPlaybackListener）无效
 -->
 <template>
-    <div id="player_control" v-show="visible">
+    <div id="player_control">
         <div class="background">
             <div class="thumbnail-wrap">
                 <img class="thumbnail" />
@@ -93,33 +93,8 @@
  *
  * 因此本组件唯一职责：渲染 <div id="player_control"> 容器。
  */
-import { computed, ref, onBeforeUnmount } from 'vue';
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config';
 
 const config = useConfigStore();
-
-/**
- * 是否有歌曲信息。每 500ms 轮询 appConfig.runtime.playerInfo.singtitle
- *（旧命令式模块异步写入，非 Pinia 响应式字段，无法 watch）。
- */
-const hasMediaInfo = ref(!!appConfig.runtime.playerInfo.singtitle);
-
-let pollTimer: ReturnType<typeof setInterval> | undefined;
-function startPoll(): void {
-    pollTimer = setInterval(() => {
-        const title = appConfig.runtime.playerInfo.singtitle;
-        hasMediaInfo.value = !!title && title !== '';
-    }, 500);
-}
-startPoll();
-
-onBeforeUnmount(() => {
-    if (pollTimer) clearInterval(pollTimer);
-});
-
-/**
- * 可见性：用户设置开启（player_control_show = true）且有歌曲信息时显示。
- */
-const visible = computed(() => config.player_control_show === true && hasMediaInfo.value);
+void config;
 </script>

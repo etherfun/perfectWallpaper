@@ -137,14 +137,18 @@ export function usePlayerControlProperties(
         config.player_control_show = v; // sync
         player_control_show = properties.player_control_show.value;
         // visibility/display 是内联样式，必须在元素存在时设置
+        // 修复：当开启 player_control_show 但没有歌曲信息时，不设置 display: flex。
+        // 后续 mediaPropertiesListener 收到歌曲后会触发显示。
+        const hasTitle = !!config.runtime.playerInfo.singtitle;
+        const wantShow = player_control_show && hasTitle;
         const setVis = (show: boolean, firstLoad: boolean): void => {
             if (player_control) {
                 player_control.style.visibility = show ? 'visible' : 'hidden';
-                player_control.style.display = firstLoad ? 'none' : show ? 'flex' : 'none';
-                if (show && !firstLoad) thumbnailsue();
+                player_control.style.display = firstLoad ? 'none' : wantShow ? 'flex' : 'none';
+                if (wantShow && !firstLoad) thumbnailsue();
             } else {
                 pendingVisibility = show ? 'visible' : 'hidden';
-                pendingDisplay = firstLoad ? 'none' : show ? 'flex' : 'none';
+                pendingDisplay = firstLoad ? 'none' : wantShow ? 'flex' : 'none';
             }
         };
         setVis(player_control_show, FirstLoad);

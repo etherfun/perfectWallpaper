@@ -5,7 +5,6 @@
  *   - 用事件委托派发到 video.ts 的 TogglePlayPause / PlayNextTrack / PlayPrevTrack
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
 import { registerDeferred } from '@/utils/deferredScheduler';
 
 const config = useConfigStore();

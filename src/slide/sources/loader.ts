@@ -8,19 +8,21 @@
  */
 
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../../utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { background2canvas } from '../../RGB';
 import { debugLogger } from '../../utils/logger';
 import { transitionBackground } from '../transition';
+
+const runtimeStore = useRuntimeStore();
 
 export function onImageLoad(url: string): void {
     transitionBackground(url);
     const store = useConfigStore();
     if (store.rgb_show) {
-        appConfig.runtime.photo.nextphoto = true;
+        runtimeStore.photo.nextphoto = true;
         setTimeout(() => {
             background2canvas(url, false);
-            appConfig.runtime.photo.nextphoto = false;
+            runtimeStore.photo.nextphoto = false;
         }, 100);
     }
 }

@@ -1,6 +1,9 @@
 import { globalT } from '@/i18n';
 
-import { config } from '../../utils/config';
+import { useConfigStore } from '@/stores/config';
+
+const config = useConfigStore();
+
 import { fetch_with_retry, weather_paymode } from '../../utils/tool';
 import type { WeatherAddress, WeatherData } from '../types';
 import type {
@@ -44,7 +47,7 @@ export async function qweatherLookupCity(weather_address: WeatherAddress): Promi
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.city_key,
+                'X-QW-Api-Key': config.city_key!,
             },
         }
     );
@@ -75,7 +78,7 @@ async function fetchNowWeather(
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.city_key,
+                'X-QW-Api-Key': config.city_key!,
             },
         }
     );
@@ -109,7 +112,7 @@ async function fetchAirQuality(
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.city_key,
+                'X-QW-Api-Key': config.city_key!,
             },
         }
     );
@@ -162,7 +165,7 @@ async function fetchWeatherAlert(
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.city_key,
+                'X-QW-Api-Key': config.city_key!,
             },
         }
     );
@@ -222,7 +225,7 @@ async function fetch24hForecast(
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.city_key,
+                'X-QW-Api-Key': config.city_key!,
             },
         }
     );
@@ -271,7 +274,7 @@ async function fetch3dForecast(
         {
             method: 'GET',
             headers: {
-                'X-QW-Api-Key': config.city_key,
+                'X-QW-Api-Key': config.city_key!,
             },
         }
     );

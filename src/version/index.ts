@@ -6,8 +6,9 @@ export { SimpleMarkdown } from './simple-markdown';
 
 import { globalT } from '@/i18n';
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../utils/config'; // runtime.versionManager (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
+const runtimeStore = useRuntimeStore();
 import { waitAndExecute } from '../utils/timer';
 
 const config = useConfigStore();
@@ -876,9 +877,7 @@ class versionManager {
 
 // 创建全局版本管理器实例并挂载到 runtime
 const versionManagerInstance = new versionManager();
-if (appConfig.runtime) {
-        appConfig.runtime.versionManager = versionManagerInstance;
-}
+runtimeStore.versionManager = versionManagerInstance;
 
 // 暴露 SimpleMarkdown 到全局作用域，使 onclick="SimpleMarkdown.copyLink(this)" 能正常工作
 window.SimpleMarkdown = SimpleMarkdown;
@@ -890,15 +889,16 @@ waitAndExecute(
         return complete;
     },
     () => {
-        if (!appConfig.runtime.versionManager) {
-            appConfig.runtime.versionManager = new versionManager();
+        if (!runtimeStore.versionManager) {
+            runtimeStore.versionManager = new versionManager();
         }
 
         // 延迟显示，确保其他内容已加载
         setTimeout(async () => {
-            if (appConfig.runtime.versionManager) {
+            if (runtimeStore.versionManager) {
                 try {
-                    await appConfig.runtime.versionManager.initUpdateModal();
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    await (runtimeStore.versionManager as any).initUpdateModal();
                 } catch (error) {
                     console.error('初始化版本弹窗失败:', error);
                 }

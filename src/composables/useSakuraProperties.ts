@@ -9,11 +9,12 @@
 import * as sakuraModule from '@/sakura';
 import { gl } from '@/sakura/state';
 import { useConfigStore } from '@/stores/config';
-import { config } from '@/utils/config';
 import { elements } from '@/utils/elementManager';
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
+
+const config = useConfigStore();
 
 export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
@@ -23,7 +24,7 @@ export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: 
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;
         patch.showSakura = showSakura;
-        config.show_sakura = showSakura; // sync
+        store.showSakura = showSakura; // sync
     }
 
     // 樱花透明度

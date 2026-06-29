@@ -464,6 +464,34 @@ export interface ConfigStoreState {
     transition_mode_choose_4?: boolean;
     video_volume?: number;
     wallpaper_mode?: number;
+
+    // ===== Phase 0 迁移 — 补齐 SYNC_DEFAULTS 缺失字段 =====
+    /** 幻灯片启用状态 */
+    slide_now?: boolean;
+    /** Wallpaper Engine 插件状态 */
+    wallpaper_settings?: { ledPlugin: boolean; cuePlugin: boolean };
+    /** 音频播放模式 */
+    music_model?: number;
+    /** 播放列表 */
+    music_playlist?: string[];
+    /** 播放列表当前索引 */
+    music_playlist_index?: number;
+    /** 切换下一张（rgb 默认值） */
+    nextphoto?: boolean;
+    /** 视频文件路径 */
+    video_route?: string;
+    /** 视频播放模式 */
+    video_model?: number;
+    /** 视频当前模式 */
+    video_model_now?: number;
+    /** 背景位置简写 (512px 512px) */
+    bgxy?: string;
+    /** 播放器自动隐藏 */
+    player_control_autohide?: boolean;
+    /** 播放器 X 坐标（独立于 playerx） */
+    player_x?: number;
+    /** 播放器 Y 坐标（独立于 playery） */
+    player_y?: number;
 }
 
 export interface HitokotoRuntime {
@@ -472,8 +500,95 @@ export interface HitokotoRuntime {
     from_who_text: string;
 }
 
+/**
+ * RuntimeStoreState — 运行时数据状态类型。
+ *
+ * 等价于 `RuntimeData`（来自 `src/utils/config/runtime.ts`），
+ * 但使用 ref/shallowRef 包裹实现高性能响应式。
+ *
+ * 高频字段（playerInfo / param / PWLineParam）：shallowRef → 不深度追踪，
+ * 避免 60Hz RAF 更新触发 Vue 响应式开销。
+ * 中低频字段（photo / files / hitokoto）：ref → 正常响应式。
+ * 实例字段（wallpaper / versionManager / fluidEffect*）：shallowRef → 仅引用追踪。
+ */
 export interface RuntimeStoreState {
-    hitokoto: HitokotoRuntime;
-    // 其他 runtime 字段（playerInfo / param / PWLineParam / photo / files 等）
-    // 在 Phase 2+ 实际用到时再补，保持本阶段 store 体积最小。
+    // ── PlayerRuntime ──
+    /** 媒体元数据 + FFT 数据（60Hz 写入，shallowRef） */
+    playerInfo: {
+        audioArray: number[];
+        playerState: number | null;
+        singtitle: string;
+        singartist: string;
+        singalbumTitle: string;
+        aubarstop: boolean;
+        colorGroup: ([number, number, number] | string | null)[][] | null;
+        fontcolor: string | [number, number, number] | null;
+        externalMediaActive: boolean;
+        builtInPlayerInitializing: boolean;
+    };
+
+    // ── VisualRuntime ──
+    /** PWCircle 渲染参数（60Hz 写入，shallowRef） */
+    param: {
+        style: number; r: number; color: string; blurColor: string;
+        arr1: { x: number; y: number }[]; arr2: { x: number; y: number }[];
+        rotation: number; rotationcopy: number; offsetAngle: number;
+        waveArr: number[]; cX: number; cY: number; range: number;
+        shadowBlur: number; lineWidth: number; showCircle: boolean;
+        wavetransparency: number; showSemiCircle: boolean;
+        SemiCircledirection: number; Polygon: number; PolygonAngle: number;
+        direction: number; SolidColorGradient: boolean;
+        BlurColorGradient: boolean; ColorRhythm: boolean;
+        ColorMode: number; TagNow: number; GradientRate: number;
+    };
+    /** PWLine 渲染参数（60Hz 写入，shallowRef） */
+    PWLineParam: {
+        style: number; sw: number; lineWidth: number; waveArr: number[];
+        range: number; color: string; blurColor: string; shadowBlur: number;
+        arr1: { x: number; y: number }[]; arr2: { x: number; y: number }[];
+        arr3: { x: number; y: number }[]; LineX: number; LineY: number;
+        showLine: boolean; LinePosition: number; Direction: number;
+        LineDensity: number; LineTransparency: number; MiddleLine: boolean;
+        TagNow: number; SolidColorGradient: boolean; BlurColorGradient: boolean;
+        ColorRhythm: boolean; ColorMode: number; GradientRate: number;
+    };
+
+    // ── PhotoRuntime ──
+    /** 幻灯片状态 */
+    photo: {
+        currentImg: string | null;
+        nextphoto: boolean;
+        infomation: { title: string; text: string; copyright: string; where: string };
+    };
+
+    // ── HitokotoRuntime ──
+    /** 一言数据 */
+    hitokoto: { hitokoto_text: string; from_text: string; from_who_text: string };
+
+    // ── FluidRuntime ──
+    /** WebGL 流体实例（shallowRef） */
+    FluidEffect2: unknown;
+    fluidEffect: unknown;
+    fullscreenFluidEffect: unknown;
+    FluidEffect: unknown;
+    /** 全屏流体启用 */
+    fullscreenFluidEnabled: boolean;
+    /** 图片信息隐藏样式已添加 */
+    pictureInfoHideStyleAdded: boolean;
+
+    // ── DockRuntime ──
+    /** 文件列表 */
+    files: Record<string, string[]>;
+    /** 文件列表顺序 */
+    myList: string[];
+
+    // ── WallpaperRuntime ──
+    /** WallpaperEffectController 实例（shallowRef） */
+    wallpaper: unknown;
+
+    // ── ServiceRuntime ──
+    /** 版本管理器实例（shallowRef） */
+    versionManager: unknown;
+    /** 调试日志器实例（shallowRef） */
+    debugLogger: unknown;
 }

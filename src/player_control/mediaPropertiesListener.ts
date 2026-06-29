@@ -6,9 +6,10 @@
  * 就把内置播放器暂停、设�?externalMediaActive 标志位�?
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.playerInfo (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
-const config = useConfigStore();
+const appConfig = useConfigStore();
+const runtimeStore = useRuntimeStore();
 import { debugLogger } from '@/utils/logger';
 import { pauseBuiltInPlayer, setExternalMediaActive } from '@/video';
 
@@ -22,15 +23,17 @@ export function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): v
         );
 
         // 外部媒体源激活（收到歌曲信息�?
-        if (!appConfig.runtime.playerInfo.externalMediaActive) {
+        if (!runtimeStore.playerInfo.externalMediaActive) {
             setExternalMediaActive(true);
             pauseBuiltInPlayer();
         }
 
-        appConfig.runtime.playerInfo.singtitle = event.title || '';
-        appConfig.runtime.playerInfo.singartist = event.artist || '';
-        appConfig.runtime.playerInfo.singalbumTitle = event.albumTitle || '';
-        appConfig.runtime.playerInfo.aubarstop = true;
+        runtimeStore.updatePlayerInfo({
+            singtitle: event.title || '',
+            singartist: event.artist || '',
+            singalbumTitle: event.albumTitle || '',
+            aubarstop: true,
+        });
 
         // pc_aubar() 被 playertitle 调用时会重新计算 canvas 尺寸
 
@@ -40,14 +43,14 @@ export function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): v
         const playerControlShow = appConfig.player_control_show;
         if (
             playerControlShow &&
-            appConfig.runtime.playerInfo.singtitle &&
-            appConfig.runtime.playerInfo.singtitle !== ''
+            runtimeStore.playerInfo.singtitle &&
+            runtimeStore.playerInfo.singtitle !== ''
         ) {
             if (player_control) {
                 player_control.style.display = 'flex';
             } else {
                 // Vue 尚未 mount → 暂存媒体事件，refreshPlayerControlRefs 时重放
-                setPendingMediaEvent(appConfig.runtime.playerInfo.singtitle);
+                setPendingMediaEvent(runtimeStore.playerInfo.singtitle);
             }
         } else {
             if (player_control) player_control.style.display = 'none';
@@ -60,8 +63,8 @@ export function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): v
     const playerControlShow2 = appConfig.player_control_show;
     if (
         !playerControlShow2 ||
-        appConfig.runtime.playerInfo.singtitle === undefined ||
-        appConfig.runtime.playerInfo.singtitle === ''
+        runtimeStore.playerInfo.singtitle === undefined ||
+        runtimeStore.playerInfo.singtitle === ''
     ) {
         return;
     }

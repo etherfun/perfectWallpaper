@@ -3,9 +3,7 @@
  * 等待加载完成后提取颜色并触发样式刷新。
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
-
-const config = useConfigStore();
+const appConfig = useConfigStore();
 import { elements } from '@/utils/elementManager';
 
 import { extractColorsFromThumbnail } from './colorExtraction';

@@ -10,9 +10,10 @@
 import { getColor, getPalette } from 'colorthief';
 
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
 const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 import { hasPlaybackContent } from '@/utils/playback';
@@ -45,7 +46,7 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
         debugLogger.warn('[Player] Color extraction failed', { error: e });
     }
 
-    appConfig.runtime.playerInfo.colorGroup = event
+    runtimeStore.updatePlayerInfo({ colorGroup: event
         ? buildEventColorGroup(
               event,
               dominantColor,
@@ -58,7 +59,8 @@ export async function extractColorsFromThumbnail(event: MediaThumbnailEvent | nu
               palette,
               playerControlYakelicColor,
               playerControlColor
-          );
+          ),
+    });
 
     updateFluidEffectSource(event);
 }
@@ -106,11 +108,13 @@ function buildCustomColorGroup(
 }
 
 function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
-    if (appConfig.runtime.FluidEffect?.enabled) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fe = runtimeStore.FluidEffect as any;
+    if (fe?.enabled) {
         const hasContent = hasPlaybackContent();
         if (hasContent) {
-            appConfig.runtime.FluidEffect.initNormalEffect();
-            const existingEffect = appConfig.runtime.FluidEffect.normalEffect;
+            fe?.initNormalEffect();
+            const existingEffect = fe?.normalEffect;
             if (existingEffect && event?.thumbnail) {
                 const img = elements.playerControl.thumbnail;
                 if (img?.complete && img?.naturalWidth) {
@@ -126,7 +130,7 @@ function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
         }
     }
 
-    if (appConfig.runtime.FluidEffect?.fullscreenEnabled && hasPlaybackContent()) {
-        appConfig.runtime.FluidEffect.updateFullscreenSource();
+    if (fe?.fullscreenEnabled && hasPlaybackContent()) {
+        fe?.updateFullscreenSource();
     }
 }

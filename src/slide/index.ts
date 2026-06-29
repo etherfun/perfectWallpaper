@@ -9,12 +9,13 @@ export { updateFileList } from './transition';
 
 import { timerManager } from '@/utils/timer';
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../utils/config'; // runtime.myList/photo (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
 import { shouldShow } from './sources';
 import { applyBackgroundStyle, getSwitchInterval, TransitionSwith } from './styles';
 
 const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 /** Change background based on mode */
 export function changeBackground(): void {
@@ -23,7 +24,7 @@ export function changeBackground(): void {
             shouldShow();
             break;
         case 2: // Random mode
-            if (appConfig.runtime.myList.length) {
+            if (runtimeStore.myList.length) {
                 if (config.random) {
                     nextImage(true);
                 } else {
@@ -76,27 +77,27 @@ export function changeBackground(): void {
 
 /** Switch to next image (sequential or random) */
 export function nextImage(rands: boolean): void {
-    const photoInfo = appConfig.runtime.photo;
+    const photoInfo = runtimeStore.photo;
     let index = -1;
     let indexNow = -1;
 
     // First is empty
     if (photoInfo.currentImg) {
-        indexNow = appConfig.runtime.myList.indexOf(photoInfo.currentImg);
+        indexNow = runtimeStore.myList.indexOf(photoInfo.currentImg);
         index = indexNow;
     }
 
     // Random or sequential
     if (rands) {
         while (index == indexNow) {
-            index = Math.floor(Math.random() * appConfig.runtime.myList.length);
+            index = Math.floor(Math.random() * runtimeStore.myList.length);
         }
-        photoInfo.currentImg = appConfig.runtime.myList[index] ?? null;
+        photoInfo.currentImg = runtimeStore.myList[index] ?? null;
     } else {
-        if (index + 1 == appConfig.runtime.myList.length) {
-            photoInfo.currentImg = appConfig.runtime.myList[0] ?? null;
+        if (index + 1 == runtimeStore.myList.length) {
+            photoInfo.currentImg = runtimeStore.myList[0] ?? null;
         } else {
-            photoInfo.currentImg = appConfig.runtime.myList[index + 1] ?? null;
+            photoInfo.currentImg = runtimeStore.myList[index + 1] ?? null;
         }
     }
     shouldShow();

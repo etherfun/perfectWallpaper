@@ -5,9 +5,10 @@
  * 期间需要本地用定时器每 100ms 推进 0.1 秒，营造平滑动画。
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
 const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from './constants';
 import { player_control_timeline } from './domRefs';
@@ -36,8 +37,8 @@ export function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void 
 
         // 暂停或停止时只轮询，不推进
         if (
-            appConfig.runtime.playerInfo.playerState === PLAYER_STATE.STOPPED ||
-            appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PAUSED
+            runtimeStore.playerInfo.playerState === PLAYER_STATE.STOPPED ||
+            runtimeStore.playerInfo.playerState === PLAYER_STATE.PAUSED
         ) {
             timelineTimer = setTimeout(updateTimeline, TIMELINE_WAIT_MS);
             return;

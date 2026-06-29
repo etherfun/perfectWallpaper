@@ -9,9 +9,13 @@ import {
 import { elements } from '@/utils/elementManager';
 
 import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
-import { config } from './utils/config';
+import { useConfigStore } from "@/stores/config";
+import { useRuntimeStore } from '@/stores/runtime';
 import { debugLogger } from './utils/logger';
 import { debounce } from './utils/tool';
+
+const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 const myvideo = elements.myvideo;
 const myAudio = elements.myAudio;
@@ -82,15 +86,15 @@ async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | nul
  */
 async function updatePlayerInfo(filePath: string): Promise<void> {
     // 如果外部媒体已激活，不更新播放器信息（由外部媒体数据决定）
-    if (config.runtime.playerInfo.externalMediaActive) {
+    if (runtimeStore.playerInfo.externalMediaActive) {
         return;
     }
 
     const metadata = await fetchAudioMetadata(filePath);
     if (metadata) {
-        config.runtime.playerInfo.singtitle = metadata.title;
-        config.runtime.playerInfo.singartist = metadata.artist;
-        config.runtime.playerInfo.singalbumTitle = metadata.album;
+        runtimeStore.playerInfo.singtitle = metadata.title;
+        runtimeStore.playerInfo.singartist = metadata.artist;
+        runtimeStore.playerInfo.singalbumTitle = metadata.album;
 
         // 更新封面图片
         if (metadata.picture) {
@@ -103,9 +107,9 @@ async function updatePlayerInfo(filePath: string): Promise<void> {
         // Fallback: 从文件名提取信息
         const fileName = filePath.split(/[/\\]/).pop() || '';
         const title = fileName.replace(/\.[^.]+$/, '');
-        config.runtime.playerInfo.singtitle = title;
-        config.runtime.playerInfo.singartist = 'Unknown Artist';
-        config.runtime.playerInfo.singalbumTitle = 'Unknown Album';
+        runtimeStore.playerInfo.singtitle = title;
+        runtimeStore.playerInfo.singartist = 'Unknown Artist';
+        runtimeStore.playerInfo.singalbumTitle = 'Unknown Album';
         updatePlayerThumbnail(null);
     }
 
@@ -143,7 +147,7 @@ let isPlaylistUpdating = false;
  * 获取当前音乐播放列表
  */
 function getMusicPlaylist(): string[] {
-    return config.runtime.files['musicdirectory'] || [];
+    return runtimeStore.files['musicdirectory'] || [];
 }
 
 /**
@@ -161,7 +165,7 @@ function playNextTrack(): void {
 
     const repeat = config.music_playlist_repeat;
     const random = config.music_playlist_random;
-    let index = config.music_playlist_index;
+    let index = config.music_playlist_index!;
 
     if (random) {
         index = Math.floor(Math.random() * playlist.length);
@@ -174,7 +178,7 @@ function playNextTrack(): void {
         }
     }
 
-    config.music_playlist_index = index;
+    config.music_playlist_index! = index;
     config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
@@ -197,7 +201,7 @@ function playPrevTrack(): void {
 
     const repeat = config.music_playlist_repeat;
     const random = config.music_playlist_random;
-    let index = config.music_playlist_index;
+    let index = config.music_playlist_index!;
 
     if (random) {
         index = Math.floor(Math.random() * playlist.length);
@@ -212,7 +216,7 @@ function playPrevTrack(): void {
         }
     }
 
-    config.music_playlist_index = index;
+    config.music_playlist_index! = index;
     config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
@@ -228,7 +232,7 @@ function handleAudioEnded(): void {
     if (!playlist || playlist.length === 0) return;
 
     const repeat = config.music_playlist_repeat;
-    const index = config.music_playlist_index;
+    const index = config.music_playlist_index!;
 
     // 单曲循环
     if (repeat === 2) {
@@ -268,7 +272,7 @@ function bindAudioEndedListener(): void {
  * 切换视频模式
  */
 export function ChangeVideoModel(): void {
-    if (config.cusvideo_route != '') {
+    if (config.cusvideo_route) {
         myvideo.src = config.cusvideo_route;
         myvideo.play();
     } else {
@@ -282,7 +286,7 @@ export function ChangeVideoModel(): void {
 export function ChangeAudioModel(): void {
     bindAudioEndedListener();
 
-    if (config.cusaudio_route != '') {
+    if (config.cusaudio_route) {
         myAudio.src = config.cusaudio_route;
         myAudio.play();
     } else {
@@ -307,25 +311,25 @@ export async function updateMusicPlaylist(): Promise<void> {
         const files = await debouncedFetchAudioFiles(directory);
         if (files && files.length > 0) {
             // 保存到 runtime.files 以便后续使用
-            config.runtime.files['musicdirectory'] = files;
+            runtimeStore.files['musicdirectory'] = files;
 
             // 计算初始播放索引（随机模式）
             let initialIndex = 0;
             if (config.music_playlist_random) {
                 initialIndex = Math.floor(Math.random() * files.length);
             }
-            config.music_playlist_index = initialIndex;
+            config.music_playlist_index! = initialIndex;
             config.cusaudio_route = getAudioStreamUrl(files[initialIndex]!);
 
             // 设置标志表示内置播放器正在初始化
             // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
-            config.runtime.playerInfo.builtInPlayerInitializing = true;
+            runtimeStore.playerInfo.builtInPlayerInitializing = true;
             setTimeout(() => {
-                config.runtime.playerInfo.builtInPlayerInitializing = false;
+                runtimeStore.playerInfo.builtInPlayerInitializing = false;
             }, 500);
 
             // 如果外部媒体已激活，不启动内置播放器
-            if (config.runtime.playerInfo.externalMediaActive) {
+            if (runtimeStore.playerInfo.externalMediaActive) {
                 updatePlayerInfo(files[initialIndex]!);
                 return;
             }
@@ -358,10 +362,10 @@ export function PlayNextTrack(): void {
 export function TogglePlayPause(): void {
     if (myAudio.paused) {
         myAudio.play();
-        config.runtime.playerInfo.playerState = 1;
+        runtimeStore.playerInfo.playerState = 1;
     } else {
         myAudio.pause();
-        config.runtime.playerInfo.playerState = 2;
+        runtimeStore.playerInfo.playerState = 2;
     }
     controlExternalPlayer('play-pause');
     applyPlayerStateUI();
@@ -401,15 +405,15 @@ export function isBuiltInPlayerPlaying(): boolean {
  * 如果外部媒体源正在播放，则不允许
  */
 export function shouldBuiltInPlayerPlay(): boolean {
-    return !config.runtime.playerInfo.externalMediaActive;
+    return !runtimeStore.playerInfo.externalMediaActive;
 }
 
 /**
  * 设置外部媒体活跃状态
  */
 export function setExternalMediaActive(active: boolean): void {
-    if (config.runtime.playerInfo.externalMediaActive !== active) {
-        config.runtime.playerInfo.externalMediaActive = active;
+    if (runtimeStore.playerInfo.externalMediaActive !== active) {
+        runtimeStore.playerInfo.externalMediaActive = active;
         console.log(`[Video] externalMediaActive changed to: ${active}`);
     }
 }
@@ -417,13 +421,13 @@ export function setExternalMediaActive(active: boolean): void {
 // // 监听音频播放状态变化，同步到 config
 // // 注意：当外部媒体激活时，不更新 playerState（由外部播放器状态决定）
 // myAudio.addEventListener('play', () => {
-//     if (!config.runtime.playerInfo.externalMediaActive) {
-//         config.runtime.playerInfo.playerState = 1;
+//     if (!runtimeStore.playerInfo.externalMediaActive) {
+//         runtimeStore.playerInfo.playerState = 1;
 //     }
 // });
 
 // myAudio.addEventListener('pause', () => {
-//     if (!config.runtime.playerInfo.externalMediaActive) {
-//         config.runtime.playerInfo.playerState = 2;
+//     if (!runtimeStore.playerInfo.externalMediaActive) {
+//         runtimeStore.playerInfo.playerState = 2;
 //     }
 // });

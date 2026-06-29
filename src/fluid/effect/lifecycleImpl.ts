@@ -6,8 +6,10 @@
  * 调用方（`FluidEffect` 的同名方法）只保留状态守卫和转发逻辑。
  */
 
-import { config } from '@/utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { debugLogger } from '@/utils/logger';
+
+const runtimeStore = useRuntimeStore();
 import { hasPlaybackContent } from '@/utils/playback';
 
 import type { FluidEffectState } from '../types';
@@ -116,7 +118,7 @@ export function performInitFullscreenEffect(ctx: LifecycleContext): void {
         return;
     }
 
-    config.runtime.fullscreenFluidEnabled = true;
+    runtimeStore.fullscreenFluidEnabled = true;
     addPictureInfoHideStyle();
 
     const container = document.body;
@@ -151,7 +153,7 @@ export function performDestroyFullscreenEffect(ctx: LifecycleContext): void {
         ctx._fullscreenEffect.destroy();
         ctx._fullscreenEffect = null;
     }
-    config.runtime.fullscreenFluidEnabled = false;
+    runtimeStore.fullscreenFluidEnabled = false;
     removePictureInfoHideStyle();
     clearWrapperBackground();
 }

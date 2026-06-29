@@ -28,8 +28,10 @@
  */
 
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../../utils/config'; // runtime.photo / myList (高频写入保留)
+import { useRuntimeStore } from '@/stores/runtime';
 import { background2canvas } from '../../RGB';
+
+const runtimeStore = useRuntimeStore();
 import { ChangeVideoModel } from '../../video';
 import { transitionBackground } from '../transition';
 import { backgroundLayers, pictures } from '../types';
@@ -72,10 +74,10 @@ export function shouldShow(): void {
                 clearpicturesinfo();
                 pictures.picture_info.style.display = 'none';
                 if (store.rgb_show) {
-                    appConfig.runtime.photo.nextphoto = true;
+                    runtimeStore.photo.nextphoto = true;
                     setTimeout(function () {
                         background2canvas(imageUrl, false);
-                        appConfig.runtime.photo.nextphoto = false;
+                        runtimeStore.photo.nextphoto = false;
                     }, 100);
                 }
             }
@@ -87,18 +89,18 @@ export function shouldShow(): void {
                 if (v) v.src = '';
             }
             backgroundLayers.container.style.display = 'block';
-            if (appConfig.runtime.myList.length) {
-                transitionBackground('file:///' + appConfig.runtime.photo.currentImg!);
+            if (runtimeStore.myList.length) {
+                transitionBackground('file:///' + runtimeStore.photo.currentImg!);
             } else {
                 transitionBackground('imgs/1.jpg');
             }
             clearpicturesinfo();
             pictures.picture_info.style.display = 'none';
             if (store.rgb_show) {
-                appConfig.runtime.photo.nextphoto = true;
+                runtimeStore.photo.nextphoto = true;
                 setTimeout(function () {
-                    background2canvas(appConfig.runtime.photo.currentImg!, false);
-                    appConfig.runtime.photo.nextphoto = false;
+                    background2canvas(runtimeStore.photo.currentImg!, false);
+                    runtimeStore.photo.nextphoto = false;
                 }, 100);
             }
             break;
@@ -109,10 +111,10 @@ export function shouldShow(): void {
             backgroundLayers.container.style.display = 'none';
             pictures.picture_info.style.display = 'none';
             if (store.rgb_show) {
-                appConfig.runtime.photo.nextphoto = true;
+                runtimeStore.photo.nextphoto = true;
                 setTimeout(function () {
                     background2canvas(undefined, true);
-                    appConfig.runtime.photo.nextphoto = false;
+                    runtimeStore.photo.nextphoto = false;
                 }, 100);
             }
             break;

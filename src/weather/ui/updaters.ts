@@ -5,7 +5,7 @@
 
 import { globalT } from '@/i18n';
 
-import { config } from '../../utils/config';
+import { useConfigStore } from "@/stores/config";
 import { elements } from '../../utils/elementManager';
 import { fetch_with_retry } from '../../utils/tool';
 import { generateAlertHTML, getAirQualityText } from '../formatters';
@@ -14,6 +14,8 @@ import { formatTime } from '../utils';
 import { getWeatherUnit } from '../weatherState';
 import { weather_address, weather_data } from '../weatherState';
 import { showTemperatureInsteadOfPrecip } from '../weatherState';
+
+const config = useConfigStore();
 
 /**
  * 更新左侧主天气信息（图标，温度、天气文字、体感温度、城市）

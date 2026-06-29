@@ -33,19 +33,19 @@ import { useStoredProperties } from '@/composables/useStoredProperties';
 import { useWallpaperProperties } from '@/composables/useWallpaperProperties';
 import { i18n, loadI18n } from '@/i18n';
 import { useConfigStore } from '@/stores/config';
-import { installConfigStoreBridge } from '@/stores/configBridge';
+import { useRuntimeStore } from '@/stores/runtime';
 
 import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { resize as pwCircleResize } from './PWCircle';
 import { PWLineInit } from './PWLine';
-import { config } from './utils/config';
 import { markDeferredReady } from './utils/deferredScheduler';
 import { debugLogger } from './utils/logger';
 import { WallpaperEffectController } from './WallpaperEffectController';
 
 // ===== 顶层副作用（保持 Phase 1 的兼容层） =====
 
-config.runtime.wallpaper = new WallpaperEffectController(document.body);
+const _runtimeStore = useRuntimeStore();
+_runtimeStore.wallpaper = new WallpaperEffectController(document.body);
 
 setupWallpaperPropertyListener();
 pwCircleResize();
@@ -74,10 +74,7 @@ async function bootstrap(): Promise<void> {
     //    第 1 层 WE：注册包装 listener（push 时自动 patch store）
     useWallpaperProperties();
 
-    // 3. 安装 config → store 桥接（plan-ex.md R10 解决）
-    //    让旧 .ts 的 `config.xxx = y` 写入自动镜像到 Pinia，
-    //    保证 Vue 组件与命令式模块状态同步
-    installConfigStoreBridge();
+    // 3. (removed) Bridge layer — all files now use Pinia stores directly
 
     // 4. mount 到 <div id="app-root">
     const root = document.getElementById('app-root');

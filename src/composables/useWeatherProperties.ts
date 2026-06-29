@@ -14,7 +14,6 @@
 import { elements } from '@/utils/elementManager';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
-import { config } from '@/utils/config';
 
 import { timerManager } from '../utils/timer';
 import { debounce } from '../utils/tool';
@@ -27,6 +26,8 @@ import {
 import { setWeatherUnitByName } from '../weather/weatherState';
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
+
+const config = useConfigStore();
 
 /**
  * 处理天气相关属性

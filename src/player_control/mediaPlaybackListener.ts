@@ -8,9 +8,10 @@
  */
 import { fullscreenLyrics } from '@/fullscreenLyrics';
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
-const config = useConfigStore();
+const appConfig = useConfigStore();
+const runtimeStore = useRuntimeStore();
 import { debugLogger } from '@/utils/logger';
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/video';
 
@@ -65,7 +66,7 @@ function decodePlaybackState(state: number): number {
 }
 
 function handleStateChange(newState: number): void {
-    appConfig.runtime.playerInfo.playerState = newState;
+    runtimeStore.updatePlayerInfo({ playerState: newState });
 
     // 状态真变化时让全屏歌词按 playing/non-playing 决定 show/hide
     fullscreenLyrics.checkPlayerState();
@@ -78,7 +79,7 @@ function handleStateChange(newState: number): void {
         debugLogger.info('[Player] 停止');
 
         // WE 停止时恢复内置播放器（优先级逻辑）
-        if (appConfig.runtime.playerInfo.externalMediaActive) {
+        if (runtimeStore.playerInfo.externalMediaActive) {
             setExternalMediaActive(false);
             resumeBuiltInPlayer();
         }

@@ -9,14 +9,17 @@
  * mirrors every user-tweakable setting.
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
+
+const runtimeStore = useRuntimeStore();
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
 
 export function useParticleProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
-    const wallpaper = appConfig.runtime.wallpaper;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const wallpaper = runtimeStore.wallpaper as any;
     const patch: Record<string, unknown> = {};
     let cusmapRoute: string | null = null;
 

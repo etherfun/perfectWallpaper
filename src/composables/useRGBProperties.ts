@@ -5,10 +5,11 @@
  * as a composable. Pure Pinia-side effects (no DOM, no runtime calls).
  */
 import { useConfigStore } from '@/stores/config';
-import { config } from '@/utils/config';
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
 import { WallpaperProperties } from '../propertyHandlers/types';
+
+const config = useConfigStore();
 
 export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();

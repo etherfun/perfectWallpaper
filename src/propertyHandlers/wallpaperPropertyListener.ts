@@ -3,7 +3,9 @@ import '../version';
 import { useConfigStore } from '@/stores/config';
 import { loadI18n } from '@/i18n';
 // config runtime/wallpaper_settings sub-objects live outside Pinia (Stage 3.5-B)
-import { config as appConfig } from '@/utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
+
+const runtimeStore = useRuntimeStore();
 import { useCountdownProperties } from '@/composables/useCountdownProperties';
 import { useDateProperties } from '@/composables/useDateProperties';
 import { useDockBarProperties } from '@/composables/useDockBarProperties';
@@ -78,7 +80,7 @@ export function createWallpaperPropertyListener(
 ): void {
     const store = useConfigStore();
     const config = store; // Pinia flat fields alias
-    const runtime = appConfig.runtime; // runtime playerInfo / wallpaper / files etc.
+    const runtime = runtimeStore; // runtime playerInfo / wallpaper / files etc.
 
     // 全局语言设置
     if (properties.global_settings_language) {
@@ -97,9 +99,11 @@ export function createWallpaperPropertyListener(
     if (properties.wallpaper_updata && properties.wallpaper_updata.value) {
         debugLogger.info('[版本窗口] 检测到版本更新请求');
         if (runtime.versionManager) {
-            runtime.versionManager.showVersionInfo();
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (runtime.versionManager as any).showVersionInfo();
         } else {
-            runtime.debugLogger?.warn('[版本窗口] versionManager 未初始化');
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (runtime.debugLogger as any)?.warn('[版本窗口] versionManager 未初始化');
         }
     }
 
@@ -188,7 +192,7 @@ export function createWallpaperPropertyListener(
 export function setupWallpaperPropertyListener(): void {
     if (typeof window !== 'undefined') {
         const store = useConfigStore();
-        const runtime = appConfig.runtime;
+        const runtime = runtimeStore;
 
         let propertiesReceived = false;
         let restoredFromLocalStorage = false;
@@ -290,11 +294,11 @@ export function setupWallpaperPropertyListener(): void {
         window.wallpaperPluginListener = {
             onPluginLoaded: (name: string, _version: string) => {
                 if (name === 'led') {
-                    appConfig.wallpaper_settings.ledPlugin = true;
+                    store.wallpaper_settings!.ledPlugin = true;
                     debugLogger.info('[RGB] LED 插件已加载');
                 }
                 if (name === 'cue') {
-                    appConfig.wallpaper_settings.cuePlugin = true;
+                    store.wallpaper_settings!.cuePlugin = true;
                     debugLogger.info('[RGB] CUE 插件已加载');
                 }
             },

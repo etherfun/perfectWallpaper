@@ -5,10 +5,12 @@
  */
 
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../../utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { WindowsSpotlightItem, WindowsSpotlightResponse } from './types';
+
+const runtimeStore = useRuntimeStore();
 
 export function loadWindowsSpotlight(): void {
     const store = useConfigStore();
@@ -27,16 +29,16 @@ export function loadWindowsSpotlight(): void {
             const img = new Image();
             img.src = url;
 
-            appConfig.runtime.photo.infomation.title = rawjson.ad.title;
-            appConfig.runtime.photo.infomation.text = rawjson.ad.description;
-            appConfig.runtime.photo.infomation.copyright = rawjson.ad.copyright;
-            appConfig.runtime.photo.infomation.where =
+            runtimeStore.photo.infomation.title = rawjson.ad.title;
+            runtimeStore.photo.infomation.text = rawjson.ad.description;
+            runtimeStore.photo.infomation.copyright = rawjson.ad.copyright;
+            runtimeStore.photo.infomation.where =
                 rawjson.ad.iconHoverText.split(/\r?\n/)[0]?.trim() ?? '';
             picturesinfo_showrl(
-                appConfig.runtime.photo.infomation.title,
-                appConfig.runtime.photo.infomation.copyright,
-                appConfig.runtime.photo.infomation.where,
-                appConfig.runtime.photo.infomation.text
+                runtimeStore.photo.infomation.title,
+                runtimeStore.photo.infomation.copyright,
+                runtimeStore.photo.infomation.where,
+                runtimeStore.photo.infomation.text
             );
 
             img.onload = function () {

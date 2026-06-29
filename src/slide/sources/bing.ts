@@ -5,10 +5,12 @@
  */
 
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../../utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { BingResponse } from './types';
+
+const runtimeStore = useRuntimeStore();
 
 export function loadBing(): void {
     const store = useConfigStore();
@@ -17,23 +19,23 @@ export function loadBing(): void {
         .then((get: BingResponse) => {
             const image = get.images[0];
             if (!image) return;
-            appConfig.runtime.photo.infomation.title = image.title;
-            appConfig.runtime.photo.infomation.text = '';
-            appConfig.runtime.photo.infomation.copyright = '';
-            appConfig.runtime.photo.infomation.where = '';
+            runtimeStore.photo.infomation.title = image.title;
+            runtimeStore.photo.infomation.text = '';
+            runtimeStore.photo.infomation.copyright = '';
+            runtimeStore.photo.infomation.where = '';
             const match = image.copyright.match(/\(([^)]+)\)/);
             if (match?.[1]) {
-                appConfig.runtime.photo.infomation.copyright = match[1];
-                appConfig.runtime.photo.infomation.where = image.copyright
+                runtimeStore.photo.infomation.copyright = match[1];
+                runtimeStore.photo.infomation.where = image.copyright
                     .replace(/\(([^)]+)\)/, '')
                     .trim();
             }
 
             picturesinfo_showrl(
-                appConfig.runtime.photo.infomation.title,
-                appConfig.runtime.photo.infomation.copyright,
-                appConfig.runtime.photo.infomation.where,
-                appConfig.runtime.photo.infomation.text
+                runtimeStore.photo.infomation.title,
+                runtimeStore.photo.infomation.copyright,
+                runtimeStore.photo.infomation.where,
+                runtimeStore.photo.infomation.text
             );
 
             const bingurl = 'https://www.bing.com' + image.urlbase;

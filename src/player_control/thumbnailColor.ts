@@ -2,9 +2,10 @@
  * 把颜色应用到 #player_control 的背景、文字、进度条、图标上。
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.playerInfo (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
 const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 
 import { TIMELINE_BG_ALPHA_OFFSET } from './constants';
@@ -16,7 +17,7 @@ import type { RgbTuple } from './types';
  * 外部模块按需触发。
  */
 export function thumbnailsue(): void {
-    if (!appConfig.runtime.playerInfo.colorGroup) return;
+    if (!runtimeStore.playerInfo.colorGroup) return;
 
     const colorPickupMethod = config.color_pickup_method ?? 1;
     const playerControlYakelibgusetb = config.player_control_yakelibgusetb ?? 1;
@@ -25,16 +26,18 @@ export function thumbnailsue(): void {
     const playerControlYakelicColor = config.player_control_yakelic_color;
     const playerControlColor = config.player_control_color;
 
-    const methodGroup = appConfig.runtime.playerInfo.colorGroup[colorPickupMethod - 1];
+    const methodGroup = runtimeStore.playerInfo.colorGroup[colorPickupMethod - 1];
     const thumbnailcolor =
         playerControlYakelibgusetb !== 5
             ? (methodGroup?.[playerControlYakelibgusetb - 1] ?? null)
             : playerControlYakelicColor ?? null;
 
-    appConfig.runtime.playerInfo.fontcolor =
-        playerControlFontusetb !== 5
-            ? (methodGroup?.[playerControlFontusetb - 1] ?? null)
-            : playerControlColor ?? null;
+    runtimeStore.updatePlayerInfo({
+        fontcolor:
+            playerControlFontusetb !== 5
+                ? (methodGroup?.[playerControlFontusetb - 1] ?? null)
+                : playerControlColor ?? null,
+    });
 
     if (thumbnailcolor) {
         // 通过 body 级 CSS 变量更新背景色，SCSS 的 rgba(var(--player-yakeli-color), ...) 自动响应
@@ -44,10 +47,10 @@ export function thumbnailsue(): void {
         // 颜色未就绪时，移除 body 级的 CSS 变量，回退到用户配置值
         elements.body.style.removeProperty('--player-yakeli-color');
     }
-    player_control_info.style.color = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
-    applyIconColor(appConfig.runtime.playerInfo.fontcolor);
+    player_control_info.style.color = 'rgb(' + runtimeStore.playerInfo.fontcolor + ')';
+    applyIconColor(runtimeStore.playerInfo.fontcolor);
     player_control_timeline.style.backgroundColor =
-        'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
+        'rgb(' + runtimeStore.playerInfo.fontcolor + ')';
 
     const timelineEl = elements.playerControl.timeline?.parentElement;
     if (timelineEl) {

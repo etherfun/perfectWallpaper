@@ -12,7 +12,7 @@
  * 模块加载时自动调用 initSakura()，bundle.ts 只需 import './sakura' 即可挂载。
  */
 
-import { config } from '@/utils/config';
+import { useConfigStore } from "@/stores/config";
 import { debugLogger } from '@/utils/logger';
 
 import { animate } from './animation';
@@ -20,6 +20,8 @@ import { makeCanvasFullScreen, makeCanvasHide } from './canvas';
 import { createEffectLib } from './effects';
 import { createScene, initScene, onResize, setViewports } from './scene';
 import { gl, setAnimating, setGl, timeInfo } from './state';
+
+const config = useConfigStore();
 
 /** 重新编译效果库（sakura_back_light 改变时） */
 export function sakuraReLoadEffect(): void {
@@ -84,7 +86,7 @@ export function removesakura(): void {
     const ctx = showCanvas?.getContext('2d') ?? null;
     if (!ctx || !raw) return;
 
-    if (raw.width > 0 && config.show_sakura) {
+    if (raw.width > 0 && config.showSakura) {
         ctx.drawImage(
             raw,
             0,

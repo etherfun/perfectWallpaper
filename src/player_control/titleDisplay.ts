@@ -2,9 +2,10 @@
  * 标题/艺术家/专辑文本渲染，以及对外暴露的封面刷新接口。
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
 const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 
 import { pc_aubar } from './audioBar';
@@ -24,9 +25,9 @@ import { thumbnailsue } from './thumbnailColor';
  * @param visualaudiobar 是否立即刷新底部音频可视化柱状图
  */
 export function playertitle(visualaudiobar: boolean = false): void {
-    let titleToShow = appConfig.runtime.playerInfo.singtitle || '';
-    let artistToShow = appConfig.runtime.playerInfo.singartist || '';
-    let albumToShow = appConfig.runtime.playerInfo.singalbumTitle || '';
+    let titleToShow = runtimeStore.playerInfo.singtitle || '';
+    let artistToShow = runtimeStore.playerInfo.singartist || '';
+    let albumToShow = runtimeStore.playerInfo.singalbumTitle || '';
     const playerControlThumbnailrorl = config.player_control_thumbnailrorl;
     const playerControlSamealbumTitle = config.player_control_samealbum_title;
 
@@ -99,6 +100,6 @@ export function updatePlayerThumbnail(dataUrl: string | null): void {
         };
     } else {
         player_control_thumbnail.src = '';
-        appConfig.runtime.playerInfo.colorGroup = null;
+        runtimeStore.updatePlayerInfo({ colorGroup: null });
     }
 }

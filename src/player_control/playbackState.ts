@@ -5,9 +5,10 @@
  *   - <body> 上的 `.paused` 类（供 CSS / 流体效果联动）
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.* (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 
 const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 import { player_control } from './domRefs';
 import { PLAYER_STATE } from './types';
@@ -36,7 +37,7 @@ function updatePlayPauseButton(): void {
     const btn = getPlayPauseBtn();
     if (!btn) return;
 
-    const isPlaying = appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PLAYING;
+    const isPlaying = runtimeStore.playerInfo.playerState === PLAYER_STATE.PLAYING;
     if (isPlaying) {
         btn.classList.add('playing');
     } else {
@@ -46,7 +47,7 @@ function updatePlayPauseButton(): void {
 
 /** 暂停时显示半透明遮罩 */
 function updatePauseOverlay(): void {
-    const isPaused = appConfig.runtime.playerInfo.playerState === PLAYER_STATE.PAUSED;
+    const isPaused = runtimeStore.playerInfo.playerState === PLAYER_STATE.PAUSED;
     if (isPaused) {
         player_control?.classList.add('paused');
     } else {

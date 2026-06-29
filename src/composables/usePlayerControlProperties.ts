@@ -8,8 +8,10 @@
  * the player control DOM" and are not surfaced to consumers.
  */
 import { useConfigStore } from '@/stores/config';
-import { config } from '@/utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { registerDeferred } from '@/utils/deferredScheduler';
+
+const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 
 import { logInitComplete } from '@/propertyHandlers/_helpers';
@@ -97,6 +99,8 @@ function applyPendingPlayerStyles(): void {
  */
 import { pendingMediaEvent, clearPendingMediaEvent } from '@/player_control/domRefs';
 
+const config = useConfigStore();
+
 function applyPendingMediaDisplay(): void {
     if (!player_control) return;
     const evt = pendingMediaEvent();
@@ -139,7 +143,7 @@ export function usePlayerControlProperties(
         // visibility/display 是内联样式，必须在元素存在时设置
         // 修复：当开启 player_control_show 但没有歌曲信息时，不设置 display: flex。
         // 后续 mediaPropertiesListener 收到歌曲后会触发显示。
-        const hasTitle = !!config.runtime.playerInfo.singtitle;
+        const hasTitle = !!runtimeStore.playerInfo.singtitle;
         const wantShow = player_control_show && hasTitle;
         const setVis = (show: boolean, firstLoad: boolean): void => {
             if (player_control) {

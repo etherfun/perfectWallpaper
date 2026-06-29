@@ -9,7 +9,10 @@
  * are mirrored via useConfigStore().$patch.
  */
 import { useConfigStore } from '@/stores/config';
-import { config } from '@/utils/config'; // kept for runtime.FluidEffect instance (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
+
+const configStore = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 import { FluidEffect } from '@/fluid';
 import { elements } from '@/utils/elementManager';
@@ -24,11 +27,12 @@ export function useFluidEffectProperties(
     const patch: Record<string, unknown> = {};
 
     if (FirstLoad) {
-        // runtime.FluidEffect 是命令式 WebGL 实例，不入 Pinia store
-        config.runtime.FluidEffect = FluidEffect.create();
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (runtimeStore.fluidEffect as any) = FluidEffect.create();
     }
 
-    const cfg = config.runtime.FluidEffect;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const cfg = runtimeStore.fluidEffect as any;
 
     // 全屏启用 - 优先处理
     if (properties.fluidEffectEnabledFullscreen) {

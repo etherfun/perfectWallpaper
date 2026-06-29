@@ -2,9 +2,11 @@
  * Background transition logic
  * Handles two-layer background system with fade transitions
  */
-import { config as appConfig } from '../utils/config'; // runtime.myList (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 import { applyBackgroundStyle } from './styles';
 import { backgroundLayers } from './types';
+
+const runtimeStore = useRuntimeStore();
 
 /** Use two-layer background for gradient switching */
 export function transitionBackground(newImageUrl: string): void {
@@ -85,8 +87,8 @@ export function transitionBackground(newImageUrl: string): void {
 export function updateFileList(currentFiles: string[]): void {
     for (let i = 0; i < currentFiles.length; ++i) {
         const file = currentFiles[i];
-        if (file && appConfig.runtime.myList.indexOf(file) === -1) {
-            appConfig.runtime.myList.push(file);
+        if (file && runtimeStore.myList.indexOf(file) === -1) {
+            runtimeStore.myList.push(file);
         }
     }
 }

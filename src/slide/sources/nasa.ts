@@ -7,10 +7,12 @@
  */
 
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '../../utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { NasaApodResponse } from './types';
+
+const runtimeStore = useRuntimeStore();
 
 function loadNasaApod(): void {
     fetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY&thumbs=true')
@@ -23,19 +25,19 @@ function loadNasaApod(): void {
                 url = get.hdurl || '';
             }
 
-            appConfig.runtime.photo.infomation.title = get.title;
-            appConfig.runtime.photo.infomation.text = get.explanation;
+            runtimeStore.photo.infomation.title = get.title;
+            runtimeStore.photo.infomation.text = get.explanation;
             if (get.copyright == undefined) {
-                appConfig.runtime.photo.infomation.copyright = '';
+                runtimeStore.photo.infomation.copyright = '';
             } else {
-                appConfig.runtime.photo.infomation.copyright = get.copyright;
+                runtimeStore.photo.infomation.copyright = get.copyright;
             }
-            appConfig.runtime.photo.infomation.where = '';
+            runtimeStore.photo.infomation.where = '';
             picturesinfo_showrl(
-                appConfig.runtime.photo.infomation.title,
-                appConfig.runtime.photo.infomation.copyright,
-                appConfig.runtime.photo.infomation.where,
-                appConfig.runtime.photo.infomation.text
+                runtimeStore.photo.infomation.title,
+                runtimeStore.photo.infomation.copyright,
+                runtimeStore.photo.infomation.where,
+                runtimeStore.photo.infomation.text
             );
 
             const img = new Image();
@@ -58,16 +60,16 @@ function loadNasaApodHtml(): void {
             const url =
                 'https://apod.nasa.gov/apod/' + doc.querySelector('img')?.getAttribute('src');
 
-            appConfig.runtime.photo.infomation.title = doc.querySelector('b')?.textContent || '';
-            appConfig.runtime.photo.infomation.text = doc.querySelectorAll('p')[2]?.textContent || '';
-            appConfig.runtime.photo.infomation.copyright =
+            runtimeStore.photo.infomation.title = doc.querySelector('b')?.textContent || '';
+            runtimeStore.photo.infomation.text = doc.querySelectorAll('p')[2]?.textContent || '';
+            runtimeStore.photo.infomation.copyright =
                 doc.querySelectorAll('a')[2]?.textContent || '';
-            appConfig.runtime.photo.infomation.where = '';
+            runtimeStore.photo.infomation.where = '';
             picturesinfo_showrl(
-                appConfig.runtime.photo.infomation.title,
-                appConfig.runtime.photo.infomation.copyright,
-                appConfig.runtime.photo.infomation.where,
-                appConfig.runtime.photo.infomation.text
+                runtimeStore.photo.infomation.title,
+                runtimeStore.photo.infomation.copyright,
+                runtimeStore.photo.infomation.where,
+                runtimeStore.photo.infomation.text
             );
 
             const img = new Image();

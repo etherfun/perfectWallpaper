@@ -5,7 +5,7 @@
 
 import { globalT } from '@/i18n';
 
-import { config } from '../../utils/config';
+import { useConfigStore } from '@/stores/config';
 import { getWeatherUnit } from '../weatherState';
 import {
     clearPrecipTimer,
@@ -16,6 +16,8 @@ import {
     toggleShowTemperatureInsteadOfPrecip,
     weather_data,
 } from '../weatherState';
+
+const config = useConfigStore();
 
 /**
  * 切换降水/温度显示

@@ -5,8 +5,9 @@
  * （CSS 中定义为透明 + 不可交互），关闭时移除该类。
  */
 
-import { config } from '@/utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
 
+const runtimeStore = useRuntimeStore();
 const HIDDEN_CLASS = 'fluid-hidden';
 const PICTURE_INFO_SELECTOR = '#picture_info';
 
@@ -16,7 +17,7 @@ export function addPictureInfoHideStyle(): void {
     if (pictureInfo) {
         pictureInfo.classList.add(HIDDEN_CLASS);
     }
-    config.runtime.pictureInfoHideStyleAdded = true;
+    runtimeStore.pictureInfoHideStyleAdded = true;
 }
 
 /** 全屏流体效果退出时调用：恢复图片信息元素可见并清除标记 */
@@ -25,5 +26,5 @@ export function removePictureInfoHideStyle(): void {
     if (pictureInfo) {
         pictureInfo.classList.remove(HIDDEN_CLASS);
     }
-    config.runtime.pictureInfoHideStyleAdded = false;
+    runtimeStore.pictureInfoHideStyleAdded = false;
 }

@@ -3,7 +3,9 @@
  * 统一导出公开 API（`FluidEffect` 类 + 渲染器 + 类型/常量）
  */
 
-import { config } from '@/utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
+
+const runtimeStore = useRuntimeStore();
 
 import {
     DEFAULT_FLUID_EFFECT_CONFIG,
@@ -19,7 +21,7 @@ export type { FluidEffectConfigState, FluidEffectOptions };
 export { DEFAULT_FLUID_EFFECT_CONFIG, DEFAULT_FLUID_EFFECT_OPTIONS };
 
 // 初始化运行时状态（保持与原 `effect.ts` 末尾相同的副作用）
-config.runtime.fluidEffect = null;
-config.runtime.fullscreenFluidEffect = null;
-config.runtime.fullscreenFluidEnabled = false;
-config.runtime.pictureInfoHideStyleAdded = false;
+runtimeStore.fluidEffect = null;
+runtimeStore.fullscreenFluidEffect = null;
+runtimeStore.fullscreenFluidEnabled = false;
+runtimeStore.pictureInfoHideStyleAdded = false;

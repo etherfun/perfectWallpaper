@@ -14,7 +14,7 @@
  * 14 个旧 handler 收到 properties 后正常触发，所有薄壳组件渲染。
  *
  * 注：
- *   - 必须 installConfigStoreBridge 之后调用（handler 写 config.xxx 会触发 store $patch）
+ *   - 必须 setConfigStoreRef 之后调用（config.xxx setter 直接写 Pinia store）
  *   - 必须 useWallpaperProperties 之后调用（确保 window.wallpaperPropertyListener 已挂）
  *   - 与 WE 并存：WE 存在时不调用本函数（避免重复触发），WE 不存在时才调用
  */

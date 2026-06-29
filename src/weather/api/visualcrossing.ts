@@ -1,8 +1,10 @@
 import { globalT } from '@/i18n';
 
-import { config } from '../../utils/config';
+import { useConfigStore } from "@/stores/config";
 import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../utils/tool';
 import type { WeatherAddress, WeatherData } from '../types';
+
+const config = useConfigStore();
 
 interface VisualCrossingHour {
     datetime: string;

@@ -4,8 +4,11 @@
  * 并在音频数据到达时触发 PWCircle 和 PWLine 的绘制
  */
 
-import { config } from './utils/config';
+import { useRuntimeStore } from '@/stores/runtime';
+import { useConfigStore } from "@/stores/config";
 import { debugLogger } from './utils/logger';
+
+const runtimeStore = useRuntimeStore();
 
 // PWCircle 绘制函数
 
@@ -165,6 +168,8 @@ function validateAudioData(data: number[]): boolean {
 import { createPoint, setCan, style1, style2, style3 } from './PWCircle';
 import { PWLineCreatePoint, PWLineStyle1, PWLineStyle2, PWLineStyle3, setCTXLine } from './PWLine';
 
+const config = useConfigStore();
+
 const circleStyles = [style1, style2, style3] as const;
 const lineStyles = [PWLineStyle1, PWLineStyle2, PWLineStyle3] as const;
 
@@ -187,7 +192,7 @@ function initCanvasContexts(): void {
  * 清除画布
  */
 function clearCanvases(): void {
-    const wallpaper = config.runtime.wallpaper;
+    const wallpaper = runtimeStore.wallpaper as any;
 
     wallpaper?.audiovisualizer('clearCanvas');
     _lineCtx?.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -199,7 +204,7 @@ function clearCanvases(): void {
  */
 function renderCircle(audioData: number[]): void {
     const ctx = _circleCtx;
-    const param = config.runtime.param;
+    const param = runtimeStore.param;
 
     if (!ctx || !param || !param.showCircle) return;
 
@@ -213,7 +218,7 @@ function renderCircle(audioData: number[]): void {
  */
 function renderLine(audioData: number[]): void {
     const ctx = _lineCtx;
-    const param = config.runtime.PWLineParam;
+    const param = runtimeStore.PWLineParam;
 
     if (!ctx || !param || !param.showLine) return;
 
@@ -244,7 +249,7 @@ export function audioDataListener(audioData: number[]): void {
     }
 
     // 存储处理后的音频数据
-    config.runtime.playerInfo.audioArray = smoothedData;
+    runtimeStore.playerInfo.audioArray = smoothedData;
 
     // 触发渲染（渲染函数会自行判断当前模式）
     renderAudioVisualization();
@@ -255,7 +260,7 @@ export function audioDataListener(audioData: number[]): void {
  * 从 config.runtime 读取音频数据并渲染到 Canvas
  */
 export function renderAudioVisualization(): void {
-    const audioData = config.runtime.playerInfo.audioArray;
+    const audioData = runtimeStore.playerInfo.audioArray;
     if (!audioData?.length) {
         debugLogger.info('[AudioVisual] No audio data to render');
         return;
@@ -279,7 +284,7 @@ export function renderAudioVisualization(): void {
             renderLine(audioData);
             break;
         case 3:
-            config.runtime.wallpaper?.audiovisualizer('drawCanvas', audioData);
+            (runtimeStore.wallpaper as any)?.audiovisualizer('drawCanvas', audioData);
             break;
     }
 }

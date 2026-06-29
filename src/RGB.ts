@@ -3,9 +3,13 @@
  * 将视频/图片/樱花/粒子/音频可视化效果合成为LED灯光数据
  */
 
-import { config } from './utils/config';
+import { useConfigStore } from '@/stores/config';
+import { useRuntimeStore } from '@/stores/runtime';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
+
+const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 // RAF chain tracking to prevent memory leaks
 let currentRafId: number | null = null;
@@ -53,7 +57,7 @@ function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
  * 发送RGB数据到LED设备
  */
 function startRGBInternal(canvas: HTMLCanvasElement): void {
-    if (!config.wallpaper_settings.ledPlugin) return;
+    if (!config.wallpaper_settings?.ledPlugin) return;
     const encodedImageData = getEncodedCanvasImageData(canvas);
     if (window.wpPlugins?.led) {
         window.wpPlugins.led.setAllDevicesByImageData(
@@ -94,15 +98,15 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
             sakuraRGB &&
             sakura.width === window.screen.width &&
             sakura.height === window.screen.height;
-        const opacitySaRGB = config.opacity_sa_rgb;
+        const opacitySaRGB = config.opacity_sa_rgb ?? 1;
         const particlesRGB = config.particles_rgb;
         const audiobarRGB = config.audiobar_rgb;
         const audiobarRainbowColor = config.audiobar_rainbow_color;
         const rainbowMove = config.rainbow_move;
-        const rainbowMoveSpeed = config.rainbow_move_speed;
+        const rainbowMoveSpeed = config.rainbow_move_speed ?? 1;
         const aurgbcolor = config.aurgbcolor;
-        const aurgbhigh = config.aurgbhigh;
-        const RGBRefresh = config.rgb_refresh;
+        const aurgbhigh = config.aurgbhigh ?? 1;
+        const RGBRefresh = config.rgb_refresh ?? 0;
         const RGBShow = config.rgb_show;
         const nextphoto = config.nextphoto;
         const isPaused = config.paused;
@@ -118,7 +122,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
             rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20);
         }
 
-        const audioArray = config.runtime.playerInfo.audioArray;
+        const audioArray = runtimeStore.playerInfo.audioArray;
         if (audiobarRainbowColor) {
             if (audiobarRGB && audioArray && audioArray.length > 0) {
                 const barWidth = bg.width / 128;
@@ -206,7 +210,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         startRGBInternal(bg);
 
         if (
-            config.wallpaper_settings.ledPlugin &&
+            config.wallpaper_settings?.ledPlugin &&
             !nextphoto &&
             !isPaused &&
             RGBShow &&

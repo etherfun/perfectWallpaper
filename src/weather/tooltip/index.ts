@@ -2,9 +2,11 @@
  * Tooltip 模块统一导出
  */
 
-import { config } from '../../utils/config';
+import { useConfigStore } from "@/stores/config";
 import { attachWeatherAlertTooltip } from './alert';
 import { attachSevenHourlyTooltip } from './sevenHourly';
+
+const config = useConfigStore();
 
 /**
  * 统一绑定所有tooltip事件

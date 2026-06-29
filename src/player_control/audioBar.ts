@@ -6,13 +6,14 @@
  * 或可视化被关闭、或播放器停止时自动退出。
  */
 import { useConfigStore } from '@/stores/config';
-import { config as appConfig } from '@/utils/config'; // runtime.playerInfo (Stage 3.5-B)
+import { useRuntimeStore } from '@/stores/runtime';
 import { elements } from '@/utils/elementManager';
+
+const config = useConfigStore();
+const runtimeStore = useRuntimeStore();
 
 import { AUDIO_BAR_COUNT } from './constants';
 import { PLAYER_STATE } from './types';
-
-const config = useConfigStore();
 
 /** 线性插值 */
 function lerp(start: number, end: number, amount: number): number {
@@ -25,9 +26,9 @@ function lerp(start: number, end: number, amount: number): number {
  */
 function shouldContinueDrawing(): boolean {
     return (
-        !appConfig.runtime.playerInfo.aubarstop &&
+        !runtimeStore.playerInfo.aubarstop &&
         Boolean(config.player_control_visualaudiobar) &&
-        appConfig.runtime.playerInfo.playerState !== PLAYER_STATE.STOPPED
+        runtimeStore.playerInfo.playerState !== PLAYER_STATE.STOPPED
     );
 }
 
@@ -60,7 +61,7 @@ export function pc_aubar(): void {
     aubar.style.width = `${width}px`;
     aubar.style.height = `${height}px`;
 
-    appConfig.runtime.playerInfo.aubarstop = false;
+    runtimeStore.updatePlayerInfo({ aubarstop: false });
 
     const previousHeights = new Array(AUDIO_BAR_COUNT).fill(aubar.height);
     const barHeights = new Array(AUDIO_BAR_COUNT).fill(0);
@@ -80,9 +81,9 @@ export function pc_aubar(): void {
         syncCanvasSize();
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         const barWidth = aubar.width / AUDIO_BAR_COUNT;
-        rgbbg.fillStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
+        rgbbg.fillStyle = 'rgb(' + runtimeStore.playerInfo.fontcolor + ')';
 
-        const currentAudioArr = appConfig.runtime.playerInfo.audioArray;
+        const currentAudioArr = runtimeStore.playerInfo.audioArray;
 
         for (let i = 0, l = AUDIO_BAR_COUNT; i < AUDIO_BAR_COUNT; ++i, ++l) {
             const lo = currentAudioArr[i] ?? 0;
@@ -117,10 +118,10 @@ export function pc_aubar(): void {
         syncCanvasSize();
         rgbbg.clearRect(0, 0, aubar.width, aubar.height);
         rgbbg.lineWidth = 2;
-        rgbbg.strokeStyle = 'rgb(' + appConfig.runtime.playerInfo.fontcolor + ')';
+        rgbbg.strokeStyle = 'rgb(' + runtimeStore.playerInfo.fontcolor + ')';
         const spacing = aubar.width / AUDIO_BAR_COUNT;
 
-        const currentAudioArr = appConfig.runtime.playerInfo.audioArray;
+        const currentAudioArr = runtimeStore.playerInfo.audioArray;
 
         rgbbg.beginPath();
 

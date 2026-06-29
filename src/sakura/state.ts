@@ -77,6 +77,22 @@ let animating = true;
 export function getAnimating(): boolean {
     return animating;
 }
+let _rafRunning = false;
+
+/** 查询 RAF 是否在运行 */
+export function getRafRunning(): boolean {
+    return _rafRunning;
+}
+
+/** 设置 RAF 运行状态 */
+export function setRafRunning(value: boolean): void {
+    _rafRunning = value;
+}
+
 export function setAnimating(value: boolean): void {
     animating = value;
+    if (!value) {
+        // 停止动画时同时释放 RAF 锁，允许 animate() 重新进入
+        _rafRunning = false;
+    }
 }

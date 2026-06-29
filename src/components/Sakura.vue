@@ -22,8 +22,9 @@
 -->
 <template>
     <!-- 樱花 canvas — 从 index.html 迁移至此处 (Phase 7) -->
-    <canvas id="sakura" style="visibility: hidden;"></canvas>
-    <canvas id="sakurashow"></canvas>
+    <!-- v-show 由 Vue 响应式控制 display，比命令式 DOM 操作更可靠 -->
+    <canvas id="sakura" style="visibility: hidden;" v-show="config.showSakura"></canvas>
+    <canvas id="sakurashow" v-show="config.showSakura"></canvas>
     <!-- GLSL shader scripts 保留在 index.html — Vue SFC 编译器无法处理 script 标签内的 GLSL 内容 -->
 </template>
 

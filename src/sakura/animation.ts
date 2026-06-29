@@ -14,7 +14,7 @@ import { useConfigStore } from '@/stores/config';
 const config = useConfigStore();
 
 import { renderScene } from './scene';
-import { getAnimating, setAnimating, timeInfo } from './state';
+import { getAnimating, getRafRunning, setAnimating, setRafRunning, timeInfo } from './state';
 
 /** 把 WebGL 画布当前内容绘制到 2D 显示画布 */
 function copyCanvasTo2D(): void {
@@ -47,13 +47,10 @@ export function stepAnimation(): void {
     if (!getAnimating()) animate();
 }
 
-/** RAF 循环是否已在运行 */
-let _rafRunning = false;
-
 /** 启动 RAF 循环（防重入：同一时刻只有一个 RAF 循环在运行） */
 export function animate(): void {
-    if (_rafRunning) return;
-    _rafRunning = true;
+    if (getRafRunning()) return;
+    setRafRunning(true);
 
     const curdate = new Date();
     timeInfo.elapsed = (curdate.getTime() - timeInfo.start.getTime()) / 1000.0;
@@ -74,11 +71,11 @@ export function animate(): void {
             if (getAnimating()) {
                 requestAnimationFrame(tick);
             } else {
-                _rafRunning = false;
+                setRafRunning(false);
             }
         });
     } else {
-        _rafRunning = false;
+        setRafRunning(false);
     }
 }
 

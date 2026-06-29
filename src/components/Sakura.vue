@@ -54,17 +54,18 @@ const _ = (): boolean => Boolean(config.showSakura);
 // initSakura() 注册的 load 监听器找不到 canvas 元素。这里补一次。
 // 必须尊重 showSakura 配置——关闭时不启动。
 onMounted(() => {
-    if (!sakuraGl) {
-        if (config.showSakura) {
-            sakuraLoad();
-        } else {
-            // showSakura 关闭时确保 canvas 隐藏（useSakuraProperties 的 hide 逻辑
-            // 可能在 canvas 不存在时跳过）。
-            const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
-            const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
-            if (canvas && canvasshow) {
-                makeCanvasHide(canvas, canvasshow);
-            }
+    // 防重入：gl 已初始化则跳过（property handler 已启动 WebGL）
+    if (sakuraGl) return;
+
+    if (config.showSakura) {
+        sakuraLoad();
+    } else {
+        // showSakura 关闭时确保 canvas 隐藏（useSakuraProperties 的 hide 逻辑
+        // 可能在 canvas 不存在时跳过）。
+        const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
+        const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
+        if (canvas && canvasshow) {
+            makeCanvasHide(canvas, canvasshow);
         }
     }
 });

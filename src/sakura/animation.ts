@@ -47,15 +47,39 @@ export function stepAnimation(): void {
     if (!getAnimating()) animate();
 }
 
-/** 启动 RAF 循环 */
+/** RAF 循环是否已在运行 */
+let _rafRunning = false;
+
+/** 启动 RAF 循环（防重入：同一时刻只有一个 RAF 循环在运行） */
 export function animate(): void {
+    if (_rafRunning) return;
+    _rafRunning = true;
+
     const curdate = new Date();
     timeInfo.elapsed = (curdate.getTime() - timeInfo.start.getTime()) / 1000.0;
     timeInfo.delta = (curdate.getTime() - timeInfo.prev.getTime()) / 1000.0;
     timeInfo.prev = curdate;
 
-    if (getAnimating()) requestAnimationFrame(animate);
     render();
+
+    if (getAnimating()) {
+        requestAnimationFrame(function tick() {
+            const now = new Date();
+            timeInfo.elapsed = (now.getTime() - timeInfo.start.getTime()) / 1000.0;
+            timeInfo.delta = (now.getTime() - timeInfo.prev.getTime()) / 1000.0;
+            timeInfo.prev = now;
+
+            render();
+
+            if (getAnimating()) {
+                requestAnimationFrame(tick);
+            } else {
+                _rafRunning = false;
+            }
+        });
+    } else {
+        _rafRunning = false;
+    }
 }
 
 export { getAnimating, setAnimating };

@@ -61,6 +61,9 @@ export function useSakura(): UseSakuraApi {
     });
 
     // React to showSakura toggle
+    // 注意：此 watch 在 `applyUserProperties` 之后异步触发，
+    // 而 property handler 同步执行 DOM 操作。watch 仅做"兜底"保护，
+    // 不做重复 DOM 操作——关闭动画由 handler 中的 makeCanvasHide 负责。
     watch(
         () => config.showSakura,
         (show) => {
@@ -68,12 +71,8 @@ export function useSakura(): UseSakuraApi {
             if (show === true) {
                 applySakuraTransparency();
             } else {
-                // 关闭时隐藏 canvas（Phase 7：useSakuraProperties 可能在 canvas 不存在时跳过）
-                const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
-                const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
-                if (canvas && canvasshow) {
-                    makeCanvasHide(canvas, canvasshow);
-                }
+                // 兜底关闭：handler 中的 makeCanvasHide 优先执行，
+                // 这里只在 handler 未生效时（如独立模式早期）隐藏 canvas
                 setAnimating(false);
             }
         }

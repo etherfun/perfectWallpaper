@@ -158,7 +158,11 @@ export class DockBar {
     public setEnabled(enabled: boolean): void {
         this.enabled = enabled;
         if (this.refs) {
-            this.refs.container.style.display = enabled ? '' : 'none';
+            if (enabled) {
+                this.refs.container.style.removeProperty('display');
+            } else {
+                this.refs.container.style.display = 'none';
+            }
         }
     }
 

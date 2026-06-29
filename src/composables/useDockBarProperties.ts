@@ -10,6 +10,7 @@
  * - 不依赖 Pinia store
  */
 import { getDockBar, initDockBar } from '@/dockbar';
+import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 
 import { logInitComplete } from '../propertyHandlers/_helpers';
@@ -35,7 +36,11 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
 
     // 启用/禁用
     if (properties.dockbar_enabled !== undefined) {
-        dockbar.setEnabled(properties.dockbar_enabled.value);
+        const v = properties.dockbar_enabled.value;
+        dockbar.setEnabled(v);
+        // 写入 store 让后续 useStandaloneProperties 能读到正确值，
+        // 避免它因 store 中没有此 key 而注入相反的默认值。
+        useConfigStore().$patch({ dockbar_enabled: v });
     }
 
     // 位置

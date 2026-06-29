@@ -71,25 +71,30 @@ export function useStandaloneProperties(): void {
     // 以下字段在 WE 模式下由 settings panel 推送，但在独立模式下从不存在于 store.$state
     // 中（因为它们不在 BUILTIN_DEFAULTS 内）。不加默认值会导致对应 handler 永远
     // 收不到这些属性，功能无法启用。此处统一注入独立模式的合理默认值。
+    //
+    // 注意：检查 `!properties.X` 还不够——store.$state 中如果已有该 key（例如 WE 已推送过
+    // 但值本身是 false），properties 会包含 `{value: false}`（truthy），`!` 检查能正确跳过。
+    // 真正需要注入的是那些连 key 都不在 store.$state 中的情况。
+    // 因此额外用 `!(key in store.$state)` 守卫，避免覆盖 WE 设置的值。
 
     // server_mode — 插件服务模式（系统监控/播放器控制等功能依赖）
-    if (!properties.server_mode) {
+    if (!properties.server_mode && !('server_mode' in store.$state)) {
         properties.server_mode = { value: true };
     }
     // dockbar_enabled — Dock 栏
-    if (!properties.dockbar_enabled) {
+    if (!properties.dockbar_enabled && !('dockbar_enabled' in store.$state)) {
         properties.dockbar_enabled = { value: true };
     }
     // sysmon_enabled — 系统监控
-    if (!properties.sysmon_enabled) {
+    if (!properties.sysmon_enabled && !('sysmon_enabled' in store.$state)) {
         properties.sysmon_enabled = { value: true };
     }
     // wallpaper_updata_open_on_update — 更新日志自动打开
-    if (!properties.wallpaper_updata_open_on_update) {
+    if (!properties.wallpaper_updata_open_on_update && !('wallpaper_updata_open_on_update' in store.$state)) {
         properties.wallpaper_updata_open_on_update = { value: true };
     }
     // wallpaper_updata — 触发一次更新日志打开（FirstLoad 不会触发，需要额外处理）
-    if (!properties.wallpaper_updata) {
+    if (!properties.wallpaper_updata && !('wallpaper_updata' in store.$state)) {
         properties.wallpaper_updata = { value: 1 };
     }
 

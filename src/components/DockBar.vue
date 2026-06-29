@@ -2,12 +2,22 @@
   DockBar.vue — Dock 栏组件 (Phase 2)
   替换原 src/dockbar/* 模块。
 
-  Phase 2 策略同 Weather/SystemMonitor — 薄壳包装 + 委托。
-  DockBar 实例由 propertyHandlers/dockbarPropertyHandler.ts 在用户启用
-  dockbar_enabled 时调用 initDockBar() 创建。
+  与原 src/dockbar/*（命令式模块）的契约：
+    - 必须存在 <div id="dockbar"> + .dockbar-background + #dockbar-items，
+      否则 renderer.queryDomElements() 返回 null，DockBar 无法初始化。
+    - 本组件渲染容器结构，命令式模块在其中追加/管理 .dock-item 元素。
 -->
 <template>
-    <!-- 兼容 #dock-bar 容器 -->
+    <div id="dockbar">
+        <div class="dockbar-background">
+            <div class="dockbar-items" id="dockbar-items"></div>
+            <button class="dockbar-add-btn" id="dockbar-add-btn" title="添加项目">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z" />
+                </svg>
+            </button>
+        </div>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -15,10 +25,10 @@
  * Phase 2 DockBar 薄壳：
  *   - 不自动启动 initDockBar()
  *   - propertyHandler 控制实例生命周期
- *   - Phase 6 重写 propertyHandler 时接入 Pinia store
+ *   - 本组件仅渲染必要的容器 DOM，由命令式模块填充
  */
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
-const _ = (): boolean => Boolean(config.dockbar_enabled);
+void config;
 </script>

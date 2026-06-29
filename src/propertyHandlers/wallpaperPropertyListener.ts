@@ -195,11 +195,15 @@ export function setupWallpaperPropertyListener(): void {
 
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
-                if (
-                    Object.keys(properties).length == 0 ||
-                    (store.first_load === false && Object.keys(properties).length > 10)
-                )
-                    return;
+                // 跳过空推送
+                if (Object.keys(properties).length == 0) return;
+
+                // ❌ 原守卫 `first_load === false && keys > 10` 已移除。
+                // 该守卫本意是防止 useStandaloneProperties 与 WE 同时注入造成的
+                // 重复处理，但实际上 WE 每次用户修改设置都会推送所有属性（100+ keys），
+                // 首次加载后所有用户操作都被静默丢弃。
+                // 正确的防重机制由 useWallpaperProperties.ts 的
+                // cancelStandaloneFallback 处理。
 
                 propertiesReceived = true;
                 const isFirstLoad = store.first_load;

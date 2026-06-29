@@ -51,12 +51,24 @@
 <script setup lang="ts">
 /**
  * Phase 2 SystemMonitor 薄壳：
- *   - 不自动启动 initSystemMonitor()
- *   - propertyHandler 控制实例生命周期
- *   - 本组件仅渲染必要的容器 DOM，由命令式模块更新
+ *   - 渲染容器 DOM，由命令式 SystemMonitor 类更新内容
+ *   - onMounted 时延时初始化 SystemMonitor，确保 DOM 就绪后
+ *     才调用 ensureInitialized()，解决 WE 提前推送属性时
+ *     queryDomElements 返回 null 的问题。
  */
+import { onMounted } from 'vue';
 import { useConfigStore } from '@/stores/config';
+import { getSystemMonitor, initSystemMonitor } from '@/systemMonitor';
 
 const config = useConfigStore();
-void config;
+
+onMounted(() => {
+    const monitor = initSystemMonitor();
+    monitor.ensureInitialized();
+
+    // 同步 Pinia store 当前配置到 SystemMonitor
+    if (config.sysmon_enabled !== undefined && config.server_mode === true) {
+        monitor.setEnabled(config.sysmon_enabled);
+    }
+});
 </script>

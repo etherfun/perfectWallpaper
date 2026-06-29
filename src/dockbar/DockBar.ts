@@ -38,6 +38,16 @@ export class DockBar {
         void animateEntrance(refs.itemsContainer, this.config.yakeliEnabled);
     }
 
+    /**
+     * 延时初始化：如果构造函数执行时 DOM 尚不存在（Vue 尚未 mount），
+     * 则在 DOM 就绪后由 DockBar.vue 的 onMounted 调用本方法。
+     * 幂等方法——已初始化则跳过。
+     */
+    ensureInitialized(): void {
+        if (this.refs) return;
+        this.init();
+    }
+
     private renderItems(): void {
         if (!this.refs) return;
         render(this.refs.itemsContainer, this.config.items, (item, imgEl) =>

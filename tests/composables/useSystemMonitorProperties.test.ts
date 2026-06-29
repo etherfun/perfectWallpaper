@@ -13,9 +13,11 @@ import { debugLogger } from '@/utils/logger';
 const { mockMonitor, mockInit, mockUpdateConfig } = vi.hoisted(() => {
     const mockUpdateConfig = vi.fn();
     const mockSetEnabled = vi.fn();
+    const mockEnsureInit = vi.fn();
     const mockMonitor = {
         updateConfig: mockUpdateConfig,
         setEnabled: mockSetEnabled,
+        ensureInitialized: mockEnsureInit,
         config: { serverUrl: 'http://localhost:8080' },
     };
     return { mockMonitor, mockInit: vi.fn(), mockUpdateConfig };

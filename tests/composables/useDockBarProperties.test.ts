@@ -13,7 +13,12 @@ import { debugLogger } from '@/utils/logger';
 const { mockDockBar, mockInit } = vi.hoisted(() => {
     const mockUpdateConfig = vi.fn();
     const mockSetEnabled = vi.fn();
-    const mockDockBar = { updateConfig: mockUpdateConfig, setEnabled: mockSetEnabled };
+    const mockEnsureInit = vi.fn();
+    const mockDockBar = {
+        updateConfig: mockUpdateConfig,
+        setEnabled: mockSetEnabled,
+        ensureInitialized: mockEnsureInit,
+    };
     return { mockDockBar, mockInit: vi.fn() };
 });
 

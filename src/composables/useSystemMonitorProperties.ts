@@ -60,6 +60,9 @@ export function useSystemMonitorProperties(
     const monitor = getSystemMonitor();
     if (!monitor) return;
 
+    // 如果之前 initSystemMonitor() 时 DOM 尚未就绪，此时确保重新初始化
+    monitor.ensureInitialized();
+
     if (properties.sysmon_server_port) {
         monitor.updateConfig({
             serverPort: properties.sysmon_server_port.value,

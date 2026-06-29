@@ -96,6 +96,16 @@ export class SystemMonitor {
         }
     }
 
+    /**
+     * 延时初始化：如果构造函数执行时 DOM 尚不存在（Vue 尚未 mount），
+     * 则在 DOM 就绪后由 SystemMonitor.vue 的 onMounted 调用本方法。
+     * 幂等方法——已初始化则跳过。
+     */
+    ensureInitialized(): void {
+        if (this.refs) return;
+        this.init();
+    }
+
     private async pollData(): Promise<void> {
         if (!this.enabled) return;
 

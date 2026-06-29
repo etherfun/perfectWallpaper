@@ -28,6 +28,11 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
     const dockbar = getDockBar();
     if (!dockbar) return;
 
+    // 如果之前 initDockBar() 时 DOM 尚未就绪（queryDomElements 返回 null），
+    // 此时尝试重新初始化。DockBar.vue 的 onMounted 也会调用 ensureInitialized，
+    // 这里作为额外保障，确保 WE 推送属性时 dockbar 可用。
+    dockbar.ensureInitialized();
+
     // 启用/禁用
     if (properties.dockbar_enabled !== undefined) {
         dockbar.setEnabled(properties.dockbar_enabled.value);

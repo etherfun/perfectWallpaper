@@ -16,6 +16,9 @@ import { transitionBackground } from '../transition';
 const runtimeStore = useRuntimeStore();
 
 export function onImageLoad(url: string): void {
+    // 同步当前图片到 store（兜底，与 transition.ts 冗余但安全）
+    runtimeStore.photo.currentImg = url;
+
     transitionBackground(url);
     const store = useConfigStore();
     if (store.rgb_show) {

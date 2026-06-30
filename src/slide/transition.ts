@@ -5,6 +5,7 @@
 import { useRuntimeStore } from '@/stores/runtime';
 import { applyBackgroundStyle } from './styles';
 import { backgroundLayers } from './types';
+import { setStableUrl } from './imageApi';
 
 const runtimeStore = useRuntimeStore();
 
@@ -76,9 +77,10 @@ export function transitionBackground(newImageUrl: string): void {
         backgroundLayers.currentActive = backgroundLayers.currentActive === 1 ? 2 : 1;
         backgroundLayers.blurCurrentActive = backgroundLayers.blurCurrentActive === 1 ? 2 : 1;
 
-        // Reset transition state
+        // Reset transition state and mark image as fully displayed
         setTimeout(function () {
             backgroundLayers.isTransitioning = false;
+            setStableUrl(newImageUrl);
         }, 1000);
     }, 50);
 }

@@ -9,6 +9,9 @@
  *     leaked across HMR / test runs).
  *   - Re-applies visibility listener only when `config.rgb_show` toggles
  *     from off → on (lifecycle ownership).
+ *   - Watches the four RGB sub-feature toggles (background_rgb, sakura_rgb,
+ *     particles_rgb, audiobar_rgb) to restart the RAF chain when any
+ *     changes while rgb_show is active.
  *
  * Drawing logic stays in src/RGB.ts (single source of truth). The composable
  * only bridges lifecycle hooks + visibility-change ownership.
@@ -61,6 +64,24 @@ export function useRgbEffect(): UseRgbEffectApi {
             }
         }
     );
+
+    // Watch the four RGB sub-feature toggles: restart RAF chain when any
+    // changes while rgb_show is active, so the new layer starts rendering
+    // immediately without waiting for the next full scene refresh.
+    const subToggleNames = [
+        () => config.background_rgb,
+        () => config.sakura_rgb,
+        () => config.particles_rgb,
+        () => config.audiobar_rgb,
+    ] as const;
+
+    for (const getter of subToggleNames) {
+        watch(getter, () => {
+            if (config.rgb_show) {
+                rgbBackground2canvas(null, undefined);
+            }
+        });
+    }
 
     return {
         render: (src?: string | null, videoORimages?: boolean) =>

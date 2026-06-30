@@ -75,6 +75,7 @@ export function shouldShow(): void {
                 }
 
                 transitionBackground(imageUrl);
+                runtimeStore.photo.currentImg = imageUrl;
 
                 clearpicturesinfo();
                 pictures.picture_info.style.display = 'none';
@@ -98,6 +99,7 @@ export function shouldShow(): void {
                 transitionBackground('file:///' + runtimeStore.photo.currentImg!);
             } else {
                 transitionBackground('imgs/1.jpg');
+                runtimeStore.photo.currentImg = 'imgs/1.jpg';
             }
             clearpicturesinfo();
             pictures.picture_info.style.display = 'none';

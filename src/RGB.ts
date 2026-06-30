@@ -7,24 +7,25 @@ import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
+import { backgroundLayers } from './slide/types';
 
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
 // RAF chain tracking to prevent memory leaks
 let currentRafId: number | null = null;
-// Track last src to detect if we need to restart RAF loop
-let lastRafSrc: string | null = null;
+// Track last video mode for visibility recovery
 let lastRafVideoMode: boolean | null = null;
+// 模块级缓存 — 跨多次 background2canvas 调用持久化，确保过渡锁生效
+let globalCachedSrc: string | null = null;
+let globalCachedImg: HTMLImageElement | null = null;
 
 // Visibility change handler to resume RAF when tab becomes visible
 function handleVisibilityChange(): void {
     if (document.visibilityState === 'visible') {
-        // Check if RGB is enabled and we had an active RAF before
-        if (config.rgb_show && lastRafSrc !== null) {
+        if (config.rgb_show) {
             debugLogger.log('RGB: visibility restored, resuming RAF');
-            // Re-trigger background2canvas to restart the RAF chain
-            background2canvas(lastRafSrc, lastRafVideoMode ?? undefined);
+            background2canvas(null, lastRafVideoMode ?? undefined);
         }
     }
 }
@@ -74,21 +75,14 @@ function startRGBInternal(canvas: HTMLCanvasElement): void {
  * @param videoORimages 是否为视频模式
  */
 export function background2canvas(src?: string | null, videoORimages?: boolean): void {
-    // Track last parameters for visibility recovery
-    lastRafSrc = src ?? null;
     lastRafVideoMode = videoORimages ?? null;
 
-    let Frist = true;
     const sakura = elements.sakura;
     const particles = document.getElementById('canvas-particles') as HTMLCanvasElement | null;
     const bg = elements.slide.RGBuse as HTMLCanvasElement;
     const rgbbgCtx = bg?.getContext('2d');
     if (!rgbbgCtx) return;
     const rgbbg = rgbbgCtx;
-
-    // Image cache to avoid creating new Image objects every frame
-    let cachedSrc: string | null = null;
-    let cachedImg: HTMLImageElement | null = null;
 
     let time = 0;
 
@@ -110,6 +104,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         const RGBShow = config.rgb_show;
         const nextphoto = config.nextphoto;
         const isPaused = config.paused;
+        const isVideoMode = config.wallpaper_mode === 3;
 
         rgbbg.save();
         rgbbg.globalAlpha = opacitySaRGB;
@@ -206,6 +201,15 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
             }
         }
 
+        // 兜底：RGB 已启用但画布仍为空白时，显示动态色块（确保 LED 设备有反馈）
+        const hasBgImage = config.background_rgb && (isVideoMode || (globalCachedSrc && globalCachedImg?.complete));
+        if (RGBShow && !hasBgImage && !sakurause && !particlesRGB && !audiobarRGB) {
+            const hue = (time * 5) % 360;
+            rgbbg.fillStyle = `hsl(${hue}, 80%, 40%)`;
+            rgbbg.fillRect(0, 0, 100, 20);
+            time += 0.5; // 兜底层也随时间变化
+        }
+
         rgbbg.restore();
         startRGBInternal(bg);
 
@@ -214,56 +218,54 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
             !nextphoto &&
             !isPaused &&
             RGBShow &&
-            (videoORimages || sakurause || particlesRGB || audiobarRGB)
+            (isVideoMode || config.background_rgb || sakurause || particlesRGB || audiobarRGB || true)
         ) {
-            if (RGBRefresh > 0) {
-                setTimeout(() => {
-                    requestAnimationFrame(drawbackground);
-                }, RGBRefresh as number);
-            } else {
+            // 默认 30fps 刷新率（33ms），防止无限制 60fps 导致高 CPU
+            const refreshMs = (RGBRefresh > 0) ? RGBRefresh : 33;
+            setTimeout(() => {
                 requestAnimationFrame(drawbackground);
-            }
+            }, refreshMs);
         }
     }
 
     function drawbackground(): void {
         const backgroundRGB = config.background_rgb;
+        const wallpaperMode = config.wallpaper_mode;
+        const isVideoMode = videoORimages === true || wallpaperMode === 3;
+
+        // 从 runtime 读取当前图片（所有源在切图时已显式写入 currentImg）
+        let resolvedSrc: string | null = null;
+        if (backgroundRGB && !isVideoMode) {
+            resolvedSrc = runtimeStore.photo.currentImg;
+            // 过渡期间锁定到旧缓存，避免闪烁
+            if (backgroundLayers.isTransitioning && globalCachedSrc && resolvedSrc !== globalCachedSrc) {
+                resolvedSrc = globalCachedSrc;
+            }
+        }
+
+        // 始终先清空画布，防止上一帧残留
+        rgbbg.clearRect(0, 0, 100, 20);
 
         if (backgroundRGB) {
-            if (videoORimages) {
+            if (isVideoMode) {
                 const video = elements.myvideo;
                 if (video && !video.paused && !video.ended) {
                     rgbbg.drawImage(video, 0, 0, 100, 20);
-                    drawLayers();
-                    Frist = false;
                 }
-            } else {
-                if (src) {
-                    // Use cached image to avoid creating new Image objects every frame
-                    if (cachedSrc !== src || !cachedImg) {
-                        cachedSrc = src;
-                        cachedImg = new Image();
-                        cachedImg.src = src;
-                    }
-                    if (cachedImg.complete && cachedImg.naturalWidth > 0) {
-                        if (Frist === true) {
-                            setTimeout(() => {
-                                rgbbg.drawImage(cachedImg!, 0, 0, 100, 20);
-                                drawLayers();
-                                Frist = false;
-                            }, 500);
-                        } else {
-                            rgbbg.drawImage(cachedImg!, 0, 0, 100, 20);
-                            drawLayers();
-                            Frist = false;
-                        }
-                    }
+            } else if (resolvedSrc) {
+                if (resolvedSrc !== globalCachedSrc) {
+                    globalCachedSrc = resolvedSrc;
+                    globalCachedImg = new Image();
+                    globalCachedImg.src = resolvedSrc;
+                }
+                if (globalCachedImg?.complete && globalCachedImg.naturalWidth > 0) {
+                    rgbbg.drawImage(globalCachedImg, 0, 0, 100, 20);
                 }
             }
-        } else {
-            rgbbg.clearRect(0, 0, 100, 20);
-            drawLayers();
+            // background_rgb 开启但无可用源时画布保持 clearRect 后的黑色
         }
+
+        drawLayers();
     }
 
     // Cancel any existing RAF chain before starting new one

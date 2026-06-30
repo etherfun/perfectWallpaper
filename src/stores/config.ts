@@ -4,13 +4,9 @@
  * 包覆原 `src/utils/config/index.ts` 的 `AppConfig` 单例，
  * 暴露 `config.xxx` 与 `config.runtime.xxx` 的字段。
  *
- * 三层回退（Phase 6 完整接入）：
- *   1. window.wallpaperPropertyListener.applyUserProperties  ← Wallpaper Engine
- *   2. localStorage.perfectwall_user_properties                ← 上次运行时持久化
- *   3. fetch('./project.json').general.properties[*].value    ← 项目内嵌默认值
- *   4. 本 store 初始 state                                       ← 兜底中的兜底
- *
- * Phase 1 仅启用第 4 层（内置 defaults），后续 Phase 接入其余层。
+ * 属性来源（WE only）：
+ *   1. Wallpaper Engine 通过 applyUserProperties 推送（最高优先级）
+ *   2. 本 store 初始 state（BUILTIN_DEFAULTS，兜底）
  */
 
 import { defineStore } from 'pinia';
@@ -399,7 +395,7 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     audio_ball_size: 50,
     audio_ball_rotation: 50,
 
-    // === Phase 8 补充字段（三层回退需要这些 key 在 $state 中）===
+    // === 补充字段 ===
     server_mode: false,
     sysmon_enabled: false,
     sysmon_server_port: 27420,
@@ -413,36 +409,10 @@ export const useConfigStore = defineStore('config', {
     }),
     actions: {
         /**
-         * 把 project.json 的 general.properties[*].value 合并进 state。
-         * Phase 6 由 useProjectJsonDefaults composable 调用。
-         */
-        applyProjectJsonDefaults(values: Record<string, { value: unknown }>): void {
-            let applied = 0;
-            for (const [k, v] of Object.entries(values)) {
-                if (k in this.$state && v && 'value' in v) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (this as any).$patch({ [k]: (v as { value: unknown }).value });
-                    applied += 1;
-                }
-            }
-            console.log(`[Config] project.json defaults merged: ${applied} keys`);
-        },
-        /**
-         * 把 WE 推送的 properties 合并进 state（高优先级）。
-         * Phase 6 由 useWallpaperProperties composable 调用。
+         * 把 WE 推送的 properties 合并进 state。
+         * 由 useWallpaperProperties composable 在 WE 推送时调用。
          */
         applyUserProperties(values: Record<string, { value: unknown }>): void {
-            for (const [k, v] of Object.entries(values)) {
-                if (k in this.$state && v && 'value' in v) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (this as any).$patch({ [k]: (v as { value: unknown }).value });
-                }
-            }
-        },
-        /**
-         * 把 localStorage 持久化的 properties 合并进 state（中优先级）。
-         */
-        applyStoredProperties(values: Record<string, { value: unknown }>): void {
             for (const [k, v] of Object.entries(values)) {
                 if (k in this.$state && v && 'value' in v) {
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any

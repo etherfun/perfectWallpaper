@@ -38,8 +38,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.dockbar_enabled !== undefined) {
         const v = properties.dockbar_enabled.value;
         dockbar.setEnabled(v);
-        // 写入 store 让后续 useStandaloneProperties 能读到正确值，
-        // 避免它因 store 中没有此 key 而注入相反的默认值。
+        // 同步到 store 保证 Vue 响应式
         useConfigStore().$patch({ dockbar_enabled: v });
     }
 

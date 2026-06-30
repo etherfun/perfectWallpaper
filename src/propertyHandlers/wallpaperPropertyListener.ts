@@ -93,10 +93,11 @@ export function createWallpaperPropertyListener(
     }
 
     // 版本更新检查
-    // 移除 FirstLoad 守卫：独立模式下 useStandaloneProperties 会注入此 key 触发弹窗。
-    // WE 模式下 project.json 默认值为 false(0)，只有在用户点击"检查更新"按钮时 WE
-    // 才会发 value=1，所以用 truthy 值做区分不会误触。
-    if (properties.wallpaper_updata && properties.wallpaper_updata.value) {
+    // wallpaper_updata 是"点击打开更新日志"按钮（type bool，默认 false）。
+    // 用户点击时 WE 推送 { wallpaper_updata: { value: true } }。
+    // 不检查 .value——只要该 key 出现在推送中即触发弹窗。
+    // 用 !FirstLoad 防止首次加载时三层回退推送的 { value: false } 误触。
+    if (properties.wallpaper_updata && !FirstLoad) {
         debugLogger.info('[版本窗口] 检测到版本更新请求');
         if (runtime.versionManager) {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any

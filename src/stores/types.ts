@@ -194,6 +194,8 @@ export interface ConfigStoreState {
     fullscreen_lyrics_hide_other?: boolean;
     /** 全屏歌词显示时钟 */
     fullscreen_lyrics_show_clock?: boolean;
+    /** 更新日志按钮 (点击打开) */
+    wallpaper_updata?: boolean;
     /** 更新日志自动打开 */
     wallpaper_updata_open_on_update?: boolean;
 

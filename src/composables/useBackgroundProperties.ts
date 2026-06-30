@@ -82,6 +82,8 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         );
         timerManager.remove('backgroundChange');
         patch.wallpaper_mode = properties.wallpapermode.value;
+        // 立即同步到 store，保证 changeBackground() 读到最新值
+        store.$patch({ wallpaper_mode: properties.wallpapermode.value });
         if (FirstLoad) {
             setTimeout(function () {
                 changeBackground();
@@ -182,14 +184,22 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (properties.imageswitchtimes) {
-        patch.speed = properties.imageswitchtimes.value;
+        // 保留原始类型：0.5–5 为 number，'custom' 为 string
+        const speedVal = properties.imageswitchtimes.value;
+        patch.speed = speedVal;
+        // 立即同步到 store，保证 changeBackground() / getSwitchInterval() 读到最新值
+        (store as any).$patch({ speed: speedVal });
         if (FirstLoad === false) {
+            // reseat 定时器（changeBackground 内部会用新频率重新 create timer）
             changeBackground();
         }
     }
 
     if (properties.imageswitchtimeinput) {
-        patch.switch_interval_input = properties.imageswitchtimeinput.value;
+        const intervalVal = Number(properties.imageswitchtimeinput.value);
+        patch.switch_interval_input = intervalVal;
+        (store as any).$patch({ switch_interval_input: intervalVal });
+        // store.speed 已在上一步立即同步，此处读到的是最新值
         if (FirstLoad === false && String(store.speed) === 'custom') {
             changeBackground();
         }
@@ -198,22 +208,28 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.bgy) {
         const y = properties.bgy.value;
         patch.bgy = (y - 50) * 2 + '%';
+        store.$patch({ bgy: (y - 50) * 2 + '%' });
         applyBackgroundStyle();
     }
 
     if (properties.bgx) {
         const x = properties.bgx.value;
         patch.bgx = (x - 50) * 2 + '%';
+        store.$patch({ bgx: (x - 50) * 2 + '%' });
         applyBackgroundStyle();
     }
 
     if (properties.bgs) {
-        patch.bgs = properties.bgs.value + '%';
+        const bgsVal = properties.bgs.value + '%';
+        patch.bgs = bgsVal;
+        store.$patch({ bgs: bgsVal });
         applyBackgroundStyle();
     }
 
     if (properties.imagedisplaystlye) {
         patch.bg_style = properties.imagedisplaystlye.value;
+        // 立即同步到 store，保证 applyBackgroundStyle() 读到最新值
+        store.$patch({ bg_style: properties.imagedisplaystlye.value });
         applyBackgroundStyle();
     }
 

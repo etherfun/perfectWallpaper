@@ -51,13 +51,17 @@
         opacity: 0;
         transition: opacity 1s ease-in-out;
 
+        // z-index 区分两个 blur layer：
+        // - blur-layer1 在下（z-index: -1）— 默认不可见
+        // - blur-layer2 更下（z-index: -2）— 留作交叉淡出备用
+        // 注意：不要在这里重复设置 opacity: 0，否则会形成更具体的选择器
+        // (#background-container .background-blur-layer#background-blur-layer2)，
+        // 导致 JS 设置的 style.opacity = '1' 被覆盖，背景模糊层永远不可见。
         &#background-blur-layer1 {
-            opacity: 0;
             z-index: -1;
         }
 
         &#background-blur-layer2 {
-            opacity: 0;
             z-index: -2;
         }
     }

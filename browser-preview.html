@@ -5,6 +5,10 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <link rel="stylesheet" type="text/css" href="./dist/default.css" />
     <title id="page-title">完美壁纸</title>
+    <style>
+        /* 首屏兜底背景 — 防止 Vue mount 前白色闪烁 */
+        body { background: #000; }
+    </style>
 </head>
 
 <body>
@@ -21,12 +25,9 @@
         window.__previewPiniaReady = true;
     </script>
 
-    <div id="background-container">
-        <div id="background-blur-layer1" class="background-blur-layer"></div>
-        <div id="background-blur-layer2" class="background-blur-layer"></div>
-        <div id="background-layer1" class="background-layer" style="background-image: url('./dist/source/imgs/1.jpg');"></div>
-        <div id="background-layer2" class="background-layer"></div>
-    </div>
+    <!-- 注意：不要在此处放置 #background-container！Vue 的 Background.vue 会渲染它。
+         如果在此处放置静态副本，document.querySelector 优先返回这个版本而非 Vue 渲染的版本，
+         导致 transitionBackground/applyBackgroundStyle 操作错误的 DOM 元素，模糊层失效。 -->
 
     <audio id="myAudio" autoplay loop style="display:none"></audio>
 

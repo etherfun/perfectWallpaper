@@ -398,6 +398,13 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     audio_ball_spacer: 50,
     audio_ball_size: 50,
     audio_ball_rotation: 50,
+
+    // === Phase 8 补充字段（三层回退需要这些 key 在 $state 中）===
+    server_mode: false,
+    sysmon_enabled: false,
+    sysmon_server_port: 27420,
+    wallpaper_updata: false,
+    wallpaper_updata_open_on_update: true,
 };
 
 export const useConfigStore = defineStore('config', {

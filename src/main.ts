@@ -96,6 +96,15 @@ async function bootstrap(): Promise<void> {
     refreshDomRefs();
     refreshPlayerControlRefs();
 
+    // 4.4.1 Vue mount 后重新触发背景相关初始化
+    //   slide/index.ts 在模块加载时调用了 applyBackgroundStyle() 和 TransitionSwith()，
+    //   但此时 Background.vue 还未 mount，#background-layer1/2 + #background-blur-layer1/2
+    //   DOM 节点不存在 → 内部 early return，导致过渡效果与背景模糊失效。
+    //   这里在 Vue mount 之后重新调用一次，确保这些样式正确应用到 Background.vue 渲染的节点。
+    const { applyBackgroundStyle, TransitionSwith } = await import('@/slide');
+    applyBackgroundStyle();
+    TransitionSwith();
+
     // 4.5 通知 deferredScheduler：Vue 已挂载完成
     //   - 此时 #clock / #oDate / #countdown 等元素已存在
     //   - 14 个 propertyHandler 在 WE 注入时通过 registerDeferred 注册的任务统一执行

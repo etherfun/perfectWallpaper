@@ -51,6 +51,11 @@ export function shouldShow(): void {
     const store = useConfigStore();
     document.body.style.backgroundImage = '';
 
+    if (!backgroundLayers.container || !backgroundLayers.layer1) {
+        setTimeout(() => shouldShow(), 1000);
+        return;
+    }
+
     switch (store.wallpaper_mode) {
         case 1: // Single wallpaper mode
             {

@@ -331,6 +331,7 @@ export interface WallpaperProperties {
     chiyuanapi?: { value: number };
     customdirectory?: { value: string };
     wallpapermode?: { value: number };
+    wallpaper_mode?: { value: number };
     TransitionMode?: { value: number };
     TransitionMode_choose_0?: { value: number };
     TransitionMode_choose_1?: { value: number };

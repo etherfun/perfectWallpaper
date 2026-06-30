@@ -68,34 +68,89 @@ export function useStandaloneProperties(): void {
     }
 
     // ===== 独立模式开启/默认值 =====
-    // 以下字段在 WE 模式下由 settings panel 推送，但在独立模式下从不存在于 store.$state
-    // 中（因为它们不在 BUILTIN_DEFAULTS 内）。不加默认值会导致对应 handler 永远
-    // 收不到这些属性，功能无法启用。此处统一注入独立模式的合理默认值。
+    // 以下字段在 WE 模式下由 settings panel 推送，BUILTIN_DEFAULTS 默认为 false。
+    // 独立模式默认覆盖为 true，让对应功能可用。
     //
-    // 注意：检查 `!properties.X` 还不够——store.$state 中如果已有该 key（例如 WE 已推送过
-    // 但值本身是 false），properties 会包含 `{value: false}`（truthy），`!` 检查能正确跳过。
-    // 真正需要注入的是那些连 key 都不在 store.$state 中的情况。
-    // 因此额外用 `!(key in store.$state)` 守卫，避免覆盖 WE 设置的值。
+    // 检查方式：仅当 key 不在 properties 中时注入；如果存在（说明 store 中已有值），
+    // 但值是 false（即 BUILTIN_DEFAULTS 默认值），则覆盖为 true。
+    // 这样既不覆盖 WE 推送的真实值，又确保独立模式下启用这些功能。
 
     // server_mode — 插件服务模式（系统监控/播放器控制等功能依赖）
-    if (!properties.server_mode && !('server_mode' in store.$state)) {
+    if (!properties.server_mode || properties.server_mode.value === false) {
         properties.server_mode = { value: true };
     }
     // dockbar_enabled — Dock 栏
-    if (!properties.dockbar_enabled && !('dockbar_enabled' in store.$state)) {
+    if (!properties.dockbar_enabled || properties.dockbar_enabled.value === false) {
         properties.dockbar_enabled = { value: true };
     }
     // sysmon_enabled — 系统监控
-    if (!properties.sysmon_enabled && !('sysmon_enabled' in store.$state)) {
+    if (!properties.sysmon_enabled || properties.sysmon_enabled.value === false) {
         properties.sysmon_enabled = { value: true };
     }
     // wallpaper_updata_open_on_update — 更新日志自动打开
-    if (!properties.wallpaper_updata_open_on_update && !('wallpaper_updata_open_on_update' in store.$state)) {
+    if (
+        !properties.wallpaper_updata_open_on_update ||
+        properties.wallpaper_updata_open_on_update.value === false
+    ) {
         properties.wallpaper_updata_open_on_update = { value: true };
     }
-    // wallpaper_updata — 触发一次更新日志打开（FirstLoad 不会触发，需要额外处理）
-    if (!properties.wallpaper_updata && !('wallpaper_updata' in store.$state)) {
-        properties.wallpaper_updata = { value: 1 };
+
+    // ===== 别名映射：WE 推送 key ≠ store 字段名 =====
+    // useBackgroundProperties 按 WE 原始 key 读取，但独立模式循环
+    // 输出 store 字段名。以下映射确保 handler 能命中。
+    //
+    // wallpapermode ↔ wallpaper_mode
+    if (state.wallpaper_mode !== undefined && !properties.wallpapermode) {
+        properties.wallpapermode = { value: state.wallpaper_mode };
+    }
+    // imagedisplaystlye ↔ bg_style
+    if (state.bg_style !== undefined && !properties.imagedisplaystlye) {
+        properties.imagedisplaystlye = { value: state.bg_style };
+    }
+    // imageswitchtimes ↔ speed
+    if (state.speed !== undefined && !properties.imageswitchtimes) {
+        properties.imageswitchtimes = { value: state.speed };
+    }
+    // imageswitchtimeinput ↔ switch_interval_input
+    if (state.switch_interval_input !== undefined && !properties.imageswitchtimeinput) {
+        properties.imageswitchtimeinput = { value: state.switch_interval_input };
+    }
+    // galaxyapi ↔ galaxy_api
+    if (state.galaxy_api !== undefined && !properties.galaxyapi) {
+        properties.galaxyapi = { value: state.galaxy_api };
+    }
+    // image ↔ custom
+    if (state.custom !== undefined && !properties.image) {
+        properties.image = { value: state.custom };
+    }
+    // TransitionMode ↔ transition_mode (及子选项)
+    if (state.transition_mode !== undefined && !properties.TransitionMode) {
+        properties.TransitionMode = { value: state.transition_mode };
+    }
+    if (state.transition_mode_choose_0 !== undefined && !properties.TransitionMode_choose_0) {
+        properties.TransitionMode_choose_0 = { value: state.transition_mode_choose_0 };
+    }
+    if (state.transition_mode_choose_1 !== undefined && !properties.TransitionMode_choose_1) {
+        properties.TransitionMode_choose_1 = { value: state.transition_mode_choose_1 };
+    }
+    if (state.transition_mode_choose_4 !== undefined && !properties.TransitionMode_choose_4) {
+        properties.TransitionMode_choose_4 = { value: state.transition_mode_choose_4 };
+    }
+    // selectvideo ↔ select_video
+    if (state.select_video !== undefined && !properties.selectvideo) {
+        properties.selectvideo = { value: state.select_video };
+    }
+    // musicPlaylistRandom ↔ music_playlist_random
+    if (state.music_playlist_random !== undefined && !properties.musicPlaylistRandom) {
+        properties.musicPlaylistRandom = { value: state.music_playlist_random };
+    }
+    // musicPlaylistRepeat ↔ music_playlist_repeat
+    if (state.music_playlist_repeat !== undefined && !properties.musicPlaylistRepeat) {
+        properties.musicPlaylistRepeat = { value: state.music_playlist_repeat };
+    }
+    // MuiscVolume ↔ music_volume
+    if (state.music_volume !== undefined && !properties.MuiscVolume) {
+        properties.MuiscVolume = { value: state.music_volume };
     }
 
     // 调用现有 listener（WE 模式也会走到这里 — 重叠调用安全）
@@ -120,6 +175,28 @@ export function useStandaloneProperties(): void {
     } else {
         console.warn('[StandaloneProperties] no wallpaperPropertyListener available');
     }
+
+    // 独立模式首次加载：延迟调用 changeBackground() 触发背景显示 + 计时器
+    // 不能在 property handler 中通过 FirstLoad=true + setTimeout 触发，
+    // 因为独立模式下属性推送走包装链，wallpapermode 别名字段在 handler 中可能
+    // 因 ESBuild 属性名重命名而无法被 if (properties.wallpapermode) 准确判断。
+    setTimeout(() => {
+        import('@/slide').then(mod => {
+            mod.changeBackground();
+        }).catch(() => {});
+    }, 5000);
+
+    // 独立模式延迟打开版本更新弹窗（property handler 中 !FirstLoad 守卫会跳过）
+    setTimeout(() => {
+        import('@/stores/runtime').then(({ useRuntimeStore }) => {
+            const rt = useRuntimeStore();
+            if (rt.versionManager) {
+                (rt.versionManager as any).showVersionInfo().catch((err: unknown) =>
+                    console.warn('[StandaloneProperties] version dialog failed', err)
+                );
+            }
+        });
+    }, 3000);
 }
 
 /**

@@ -7,6 +7,7 @@
     "build": "vue-tsc --noEmit && vite build && node scripts/post-build.js",
     "build:vite": "vite build",
     "build:scss": "sass --style=compressed --no-source-map src/scss/main.scss dist/default.css",
+    "build:dev": "node scripts/build-dev.mjs",
     "watch:bundle": "vite build --watch",
     "watch:scss": "sass --watch --style=expanded scss/main.scss dist/default.css",
     "typecheck": "vue-tsc --noEmit",

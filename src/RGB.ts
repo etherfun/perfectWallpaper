@@ -59,6 +59,8 @@ function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
  */
 function startRGBInternal(canvas: HTMLCanvasElement): void {
     if (!config.wallpaper_settings?.ledPlugin) return;
+    // 主开关关闭时不发送 LED 数据
+    if (!config.rgb_show) return;
     const encodedImageData = getEncodedCanvasImageData(canvas);
     if (window.wpPlugins?.led) {
         window.wpPlugins.led.setAllDevicesByImageData(
@@ -229,6 +231,9 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
     }
 
     function drawbackground(): void {
+        // 主开关关闭时不渲染任何内容
+        if (!config.rgb_show) return;
+
         const backgroundRGB = config.background_rgb;
         const wallpaperMode = config.wallpaper_mode;
         const isVideoMode = videoORimages === true || wallpaperMode === 3;

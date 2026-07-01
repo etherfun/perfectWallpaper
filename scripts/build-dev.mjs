@@ -42,19 +42,14 @@ try {
   process.exit(1);
 }
 
-// ---- 2. Build main project (if dist/ missing or outdated) ----
+// ---- 2. Build main project (dev mode: skip typecheck, enable sourcemap) ----
 console.log('\n[dev-build] Step 2: Building main project…');
-if (!fs.existsSync(DIST_DIR)) {
-  console.log('  dist/ not found, running yarn build…');
-  try {
-    execSync('yarn build', { cwd: ROOT, stdio: 'inherit' });
-    console.log('  ✓ main project built');
-  } catch (e) {
-    console.error('  ✗ main project build failed:', e.stderr?.toString() || e.message);
-    process.exit(1);
-  }
-} else {
-  console.log('  ✓ dist/ exists, skipping main build');
+try {
+  execSync('npx vite build --sourcemap && node scripts/post-build.js', { cwd: ROOT, stdio: 'inherit' });
+  console.log('  ✓ main project built (sourcemap enabled)');
+} catch (e) {
+  console.error('  ✗ main project build failed:', e.stderr?.toString() || e.message);
+  process.exit(1);
 }
 
 // ---- 3. Copy dist/ → dev/ recursively ----
@@ -115,20 +110,6 @@ const defaultsScript = (() => {
       if ('value' in d) {
         entries.push(`"${key}":${JSON.stringify({ value: d.value })}`);
       }
-    }
-    // 覆盖默认值：确保 dev 模式下关键功能默认启用
-    // rgb_show — 触发 RGB 数据流（RGB.ts -> setAllDevicesByImageData）
-    // server_mode — 启用插件服务（系统监控、播放器控制等）
-    // dockbar_enabled / sysmon_enabled — 启用 dock 栏和系统监控
-    const overrides = {
-      rgb_show: true,
-      rgb_bg: true,       // 背景 RGB — 触发 background2canvas 渲染
-      server_mode: true,
-      dockbar_enabled: true,
-      sysmon_enabled: true,
-    };
-    for (const [k, v] of Object.entries(overrides)) {
-      entries.push(`"${k}":${JSON.stringify({ value: v })}`);
     }
     return `window.__weDevKitDefaults={${entries.join(',')}};`;
   } catch {

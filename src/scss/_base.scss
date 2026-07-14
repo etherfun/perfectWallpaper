@@ -76,6 +76,57 @@ canvas {
     z-index: 1;
 }
 
+// ============================================
+// App Loading Animation
+// Shows inside #app-root before Vue mounts;
+// automatically removed when Vue replaces content.
+// ============================================
+// ============================================
+// App Loading Animation
+// Full-viewport overlay — removed when Vue mount + config load both complete.
+// ============================================
+.app-loading {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 100000;
+    pointer-events: none;
+    user-select: none;
+    background-color: $color-black;
+    transition: opacity 0.3s ease;
+
+    // Hidden state (fade out then remove)
+    &--hidden {
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    // Ring spinner
+    &__spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid rgba(255, 255, 255, 0.1);
+        border-top-color: rgba(255, 255, 255, 0.7);
+        border-radius: 50%;
+        animation:
+            loading-spin 0.9s linear infinite,
+            loading-glow 2s ease-in-out infinite;
+    }
+
+    // "完美壁纸" label
+    &__text {
+        font-family: '等线 Light', 'Microsoft YaHei Light', 'PingFang SC', sans-serif;
+        font-size: 14px;
+        letter-spacing: 6px;
+        color: rgba(255, 255, 255, 0.5);
+        animation: loading-blink 1.8s ease-in-out infinite;
+    }
+}
+
 // Global scrollbar hiding utility
 .hide-scrollbar {
     @include hide-scrollbar;

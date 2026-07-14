@@ -15,7 +15,7 @@
 // 这里复用同一个实例，避免双 pinia 导致 store 状态分裂。
 import { pinia } from './piniaInit';
 
-import { createApp } from 'vue';
+import { createApp, watch } from 'vue';
 
 import './audioVisualizer';
 import './fullscreenLyrics';
@@ -81,6 +81,39 @@ async function bootstrap(): Promise<void> {
 
     // 3.5 通知 deferredScheduler：Vue 已挂载完成
     markDeferredReady();
+
+    // 4. 等待 WE 首次配置推送完成，然后移除加载动画
+    //    configStore.first_load 初始为 true，在 createWallpaperPropertyListener
+    //    的 FirstLoad 块末尾被设为 false，表示所有配置项已应用。
+    //    加 2 秒最小展示时间，避免闪一下就消失。
+    const loadingEl = document.getElementById('app-loading');
+    if (loadingEl) {
+        const hideLoading = (): void => {
+            loadingEl.classList.add('app-loading--hidden');
+            loadingEl.addEventListener('transitionend', () => loadingEl.remove(), {
+                once: true,
+            });
+            // 回退：transition 未触发时也确保移除
+            setTimeout(() => loadingEl?.remove(), 350);
+        };
+
+        const minTimer = new Promise<void>(resolve => setTimeout(resolve, 2000));
+
+        const waitConfig = new Promise<void>(resolve => {
+            if (!configStore.first_load) {
+                resolve();
+            } else {
+                watch(
+                    () => configStore.first_load,
+                    (val) => {
+                        if (!val) resolve();
+                    }
+                );
+            }
+        });
+
+        void Promise.all([minTimer, waitConfig]).then(hideLoading);
+    }
 }
 
 bootstrap().catch(err => {

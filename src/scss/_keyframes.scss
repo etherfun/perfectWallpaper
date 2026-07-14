@@ -200,3 +200,37 @@
         opacity: 1;
     }
 }
+
+// Loading spinner rotation (reverse direction for variety)
+@keyframes loading-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+// Loading spinner pulse glow
+@keyframes loading-glow {
+    0%,
+    100% {
+        opacity: 0.4;
+        filter: blur(2px);
+    }
+    50% {
+        opacity: 0.8;
+        filter: blur(0px);
+    }
+}
+
+// Loading text fade blink
+@keyframes loading-blink {
+    0%,
+    100% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 0.8;
+    }
+}

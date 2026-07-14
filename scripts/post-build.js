@@ -98,7 +98,7 @@ async function copyDirectory(src, dest, force = false) {
  */
 function stripLegacyWidgets(html) {
     const ids = [
-        'clock', 'countdown', 'oDate', 'weather',
+        'clock', 'countdown', 'oDate',
         'hitokoto', 'picture_info',
     ];
     let out = html;

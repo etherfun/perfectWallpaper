@@ -122,6 +122,12 @@ const shim = `
     <script>${defaultsScript}</script>
     <script src="./we-dev-kit/index.global.js"></script>
     <script>
+        // 标记为开发环境（we-dev-kit 的 detectEnvironment 通过 ?dev-kit=true 识别）
+        if (!location.search.includes('dev-kit')) {
+            const params = new URLSearchParams(location.search);
+            params.set('dev-kit', 'true');
+            history.replaceState(null, '', location.pathname + '?' + params.toString() + location.hash);
+        }
         try {
             WeDevKit.createWeDevKit({
                 panel: true,

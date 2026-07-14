@@ -195,20 +195,27 @@ export function updatePrecipContainer(): void {
         );
         e.precipLabel.textContent = label;
 
-        // 更新7个时间格
+        // 确保时间格和数值格子元素存在
         for (let i = 0; i < 7; i++) {
-            const timeEl = document.getElementById(`weatherPrecipTime${i}`);
-            if (timeEl) {
-                timeEl.textContent = weather_data.sevenHourlyData.Times[i] || '--:--';
+            let timeEl = document.getElementById(`weatherPrecipTime${i}`);
+            if (!timeEl) {
+                timeEl = document.createElement('span');
+                timeEl.id = `weatherPrecipTime${i}`;
+                timeEl.className = 'precip-time-cell';
+                (e.precipTimes as HTMLElement).appendChild(timeEl);
             }
+            timeEl.textContent = weather_data.sevenHourlyData.Times[i] || '--:--';
         }
 
-        // 更新7个数值格
         for (let i = 0; i < 7; i++) {
-            const valueEl = document.getElementById(`weatherPrecipValue${i}`);
-            if (valueEl) {
-                valueEl.textContent = `${dataValues[i] || '--'}${unit}`;
+            let valueEl = document.getElementById(`weatherPrecipValue${i}`);
+            if (!valueEl) {
+                valueEl = document.createElement('span');
+                valueEl.id = `weatherPrecipValue${i}`;
+                valueEl.className = 'precip-prob-cell';
+                (e.precipValues as HTMLElement).appendChild(valueEl);
             }
+            valueEl.textContent = `${dataValues[i] || '--'}${unit}`;
         }
     } else {
         e.precipContainer.style.display = 'none';

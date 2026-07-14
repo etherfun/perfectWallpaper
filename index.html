@@ -304,6 +304,56 @@
     }
     </script>
 
+    <!-- #weather — 天气主容器（旧模块通过 elements.weather.weather 引用） -->
+    <div id="weather">
+        <div class="weather-container">
+            <div class="weather-left">
+                <div class="weather-icon" id="weatherIcon"></div>
+                <div class="weather-temp" id="weatherTemp"></div>
+                <div class="weather-text" id="weatherText"></div>
+                <div class="weather-feels" id="weatherFeels"></div>
+                <div class="weather-city" id="weatherCity"></div>
+            </div>
+            <div class="weather-right">
+                <div class="weather-right-content">
+                    <!-- 主信息行 -->
+                    <div class="weather-main-row">
+                        <div class="weather-info-item temp-range" id="weatherTempRange">-- ~ --℃</div>
+                        <div class="weather-info-item humidity" id="weatherHumidity" style="display:none;"></div>
+                        <div class="weather-info-item wind-direction" id="weatherWindDirection"></div>
+                        <div class="weather-info-item wind-level" id="weatherWindLevel" style="display:none;"></div>
+                        <div class="weather-info-item wind-speed" id="weatherWindSpeed" style="display:none;"></div>
+                        <div class="weather-info-item visibility" id="weatherVisibility" style="display:none;"></div>
+                    </div>
+                    <!-- 详情行 -->
+                    <div class="weather-detail-row" id="weatherDetailRow" style="display:none;">
+                        <div class="weather-detail-item uv-index" id="weatherUvIndex"></div>
+                        <div class="weather-info-item cloud" id="weatherCloud" style="display:none;"></div>
+                        <div class="weather-detail-item sunrise" id="weatherSunrise"></div>
+                        <div class="weather-detail-item sunset" id="weatherSunset"></div>
+                        <div class="weather-detail-item moonphase" id="weatherMoonphase" style="display:none;"></div>
+                    </div>
+                    <!-- 空气质量 / 预警行 -->
+                    <div class="weather-air-row" id="weatherAirRow" style="display:none;">
+                        <div class="weather-air-item air-quality" id="weatherAirQuality"></div>
+                        <div class="weather-air-item air-value" id="weatherAirValue"></div>
+                        <div class="weather-alert-container" id="weatherAlertContainer" style="display:none;"></div>
+                    </div>
+                    <!-- 降水/温度切换容器 -->
+                    <div class="weather-precip-container" id="weatherPrecipContainer">
+                        <div class="precip-label" id="weatherPrecipLabel"></div>
+                        <div class="precip-content">
+                            <div class="precip-times" id="weatherPrecipTimes"></div>
+                            <div class="precip-values" id="weatherPrecipValues"></div>
+                        </div>
+                    </div>
+                    <!-- 每日提示 -->
+                    <div class="weather-tip" id="weatherTip"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Vue 应用挂载点 — 所有 Vue 组件在此渲染 -->
     <div id="app-root"></div>
 

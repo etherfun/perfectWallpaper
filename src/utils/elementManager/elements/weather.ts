@@ -4,7 +4,7 @@
  * lazy getter：天气元素由 Weather.vue 和天气模块动态渲染，
  * 不在静态 index.html 中。
  */
-import { makeLazyMap, makeLazyIdMap } from '../lazyMap';
+import { makeLazyIdMap,makeLazyMap } from '../lazyMap';
 
 const weatherIdSelectors = makeLazyIdMap({
     weather: 'weather',

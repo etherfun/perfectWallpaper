@@ -9,6 +9,7 @@
 
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+
 import { background2canvas } from '../../RGB';
 import { debugLogger } from '../../utils/logger';
 import { transitionBackground } from '../transition';

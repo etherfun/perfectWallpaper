@@ -8,7 +8,7 @@
  * 引入隐式依赖，方便后续拆分时定位）。
  */
 
-import { debugLogger } from '../../utils/logger';
+import { debugLogger } from './logger';
 
 /**
  * 在 FirstLoad 时输出"参数初始化完成"日志

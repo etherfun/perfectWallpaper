@@ -8,8 +8,8 @@ import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 
 const config = useConfigStore();
-import { debugLogger } from '@/utils/logger';
 import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from '@/modules/core/video';
+import { debugLogger } from '@/utils/logger';
 
 import { SERVER_MODE_PROBE_DELAY_MS } from './constants';
 import { player_control } from './domRefs';

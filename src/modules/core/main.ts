@@ -13,22 +13,21 @@
 
 // pinia 已在 `./piniaInit` 中创建并 setActivePinia（bundle.ts 的第一个 import）。
 // 这里复用同一个实例，避免双 pinia 导致 store 状态分裂。
-import { pinia } from './piniaInit';
-
-import { createApp, watch } from 'vue';
-
 import './audioVisualizer';
 import '../fullscreenLyrics';
 
+import { createApp, watch } from 'vue';
+
 import App from '@/components/App.vue';
-import { useWallpaperProperties } from '@/modules/core/useWallpaperProperties';
 import { i18n, loadI18n } from '@/i18n';
+import { useWallpaperProperties } from '@/modules/core/useWallpaperProperties';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { resize as pwCircleResize } from '../audio-visualizer/PWCircle';
 import { PWLineInit } from '../audio-visualizer/PWLine';
+import { pinia } from './piniaInit';
+import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { markDeferredReady } from './utils/deferredScheduler';
 import { debugLogger } from './utils/logger';
 import { WallpaperEffectController } from './WallpaperEffectController';

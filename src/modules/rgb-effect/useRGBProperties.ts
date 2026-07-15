@@ -6,8 +6,8 @@
  */
 import { useConfigStore } from '@/stores/config';
 
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 const config = useConfigStore();
 

@@ -6,11 +6,11 @@ import {
     listFiles as listFilesApi,
     postMediaAction,
 } from '@/modules/systemMonitor';
+import { useConfigStore } from "@/stores/config";
+import { useRuntimeStore } from '@/stores/runtime';
 import { elements } from '@/utils/elementManager';
 
 import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
-import { useConfigStore } from "@/stores/config";
-import { useRuntimeStore } from '@/stores/runtime';
 import { debugLogger } from './utils/logger';
 import { debounce } from './utils/tool';
 

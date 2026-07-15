@@ -5,9 +5,10 @@
 
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+
+import { backgroundLayers } from './slide/types';
 import { elements } from './utils/elementManager';
 import { debugLogger } from './utils/logger';
-import { backgroundLayers } from './slide/types';
 
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();

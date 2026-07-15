@@ -11,10 +11,12 @@
  *   天气子模块的命令式 API
  * - `debounce / timerManager` — 通用工具
  */
-import { elements } from '@/utils/elementManager';
-import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
+import { registerDeferred } from '@/utils/deferredScheduler';
+import { elements } from '@/utils/elementManager';
 
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 import { timerManager } from '../utils/timer';
 import { debounce } from '../utils/tool';
 import {
@@ -24,8 +26,6 @@ import {
     weather_init,
 } from '../weather';
 import { setWeatherUnitByName } from '../weather/weatherState';
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
 
 const config = useConfigStore();
 

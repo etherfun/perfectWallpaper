@@ -12,12 +12,12 @@
  * - `elements.body.style.setProperty` 写 yakeli CSS 变量
  */
 import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/modules/systemMonitor';
-import { elements } from '@/utils/elementManager';
 import { useConfigStore } from '@/stores/config';
+import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 /**
  * Handle auto-start setting change.

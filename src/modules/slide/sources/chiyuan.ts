@@ -5,6 +5,7 @@
  */
 
 import { useConfigStore } from '@/stores/config';
+
 import { onImageError, onImageLoad } from './loader';
 
 export function loadChiyuan(): void {

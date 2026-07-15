@@ -415,7 +415,7 @@ export const useConfigStore = defineStore('config', {
         applyUserProperties(values: Record<string, { value: unknown }>): void {
             for (const [k, v] of Object.entries(values)) {
                 if (k in this.$state && v && 'value' in v) {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     
                     (this as any).$patch({ [k]: (v as { value: unknown }).value });
                 }
             }

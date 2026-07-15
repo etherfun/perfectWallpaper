@@ -4,8 +4,9 @@
  * 并在音频数据到达时触发 PWCircle 和 PWLine 的绘制
  */
 
-import { useRuntimeStore } from '@/stores/runtime';
 import { useConfigStore } from "@/stores/config";
+import { useRuntimeStore } from '@/stores/runtime';
+
 import { debugLogger } from './utils/logger';
 
 const runtimeStore = useRuntimeStore();

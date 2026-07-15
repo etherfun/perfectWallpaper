@@ -17,8 +17,6 @@
 
 import { onBeforeUnmount, onMounted } from 'vue';
 
-import { useConfigStore } from '@/stores/config';
-
 import {
     createPoint as pwCircleCreatePoint,
     getXY as pwCircleGetXY,
@@ -28,6 +26,7 @@ import {
     style2 as pwCircleStyle2,
     style3 as pwCircleStyle3,
 } from '@/modules/audio-visualizer/PWCircle';
+import { useConfigStore } from '@/stores/config';
 
 export interface UsePWCircleApi {
     /** Re-resolve the canvas context (call on mount and on resize). */

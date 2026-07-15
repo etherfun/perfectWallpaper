@@ -1,5 +1,4 @@
 import { globalT } from '@/i18n';
-
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

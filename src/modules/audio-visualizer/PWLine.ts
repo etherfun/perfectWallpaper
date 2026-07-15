@@ -1,8 +1,8 @@
 // PWLine.ts - Audio line visualizer module
 // This module provides line-based audio visualization effects
 
-import { useRuntimeStore } from '@/stores/runtime';
 import { useConfigStore } from "@/stores/config";
+import { useRuntimeStore } from '@/stores/runtime';
 
 const config = useConfigStore();
 

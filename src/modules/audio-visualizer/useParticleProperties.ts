@@ -13,12 +13,12 @@ import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 export function useParticleProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const wallpaper = runtimeStore.wallpaper as any;
     const patch: Record<string, unknown> = {};
     let cusmapRoute: string | null = null;

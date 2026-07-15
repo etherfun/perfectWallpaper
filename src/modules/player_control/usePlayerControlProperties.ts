@@ -12,11 +12,10 @@ import { useRuntimeStore } from '@/stores/runtime';
 import { registerDeferred } from '@/utils/deferredScheduler';
 
 const runtimeStore = useRuntimeStore();
-import { elements } from '@/utils/elementManager';
-
-import { logInitComplete } from '@/modules/core/propertyHandlers/_helpers';
-import { WallpaperProperties } from '@/modules/core/propertyHandlers/types';
+import { logInitComplete } from '@/utils/_helpers';
+import { WallpaperProperties } from '@/types/types';
 import { pc_aubar, playertitle, thumbnailsue } from '@/modules/player_control';
+import { elements } from '@/utils/elementManager';
 
 /**
  * 模块顶层 DOM 引用缓存。
@@ -97,7 +96,7 @@ function applyPendingPlayerStyles(): void {
  * 替代方案：mediaPropertiesListener 在 player_control 为 null 时把完整事件
  * 暂存到 pendingMediaEvent，本函数在 refresh 时直接重放。
  */
-import { pendingMediaEvent, clearPendingMediaEvent } from '@/modules/player_control/domRefs';
+import { clearPendingMediaEvent,pendingMediaEvent } from '@/modules/player_control/domRefs';
 
 const config = useConfigStore();
 

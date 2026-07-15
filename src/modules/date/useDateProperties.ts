@@ -8,12 +8,12 @@
  * 关键变更点（相对于原 handler）：
  * - date_format 子对象通过 Pinia $patch 整体更新（保持 handler 的 read-modify-write 模式）
  */
-import { elements } from '@/utils/elementManager';
-import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
+import { registerDeferred } from '@/utils/deferredScheduler';
+import { elements } from '@/utils/elementManager';
 
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 /**
  * 处理日期相关属性

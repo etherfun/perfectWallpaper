@@ -7,9 +7,9 @@ export { shouldShow } from './sources';
 export { applyBackgroundStyle, TransitionSwith } from './styles';
 export { updateFileList } from './transition';
 
-import { timerManager } from '@/utils/timer';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+import { timerManager } from '@/utils/timer';
 
 import { shouldShow } from './sources';
 import { applyBackgroundStyle, getSwitchInterval, TransitionSwith } from './styles';

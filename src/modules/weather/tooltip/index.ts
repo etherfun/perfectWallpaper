@@ -3,6 +3,7 @@
  */
 
 import { useConfigStore } from "@/stores/config";
+
 import { attachWeatherAlertTooltip } from './alert';
 import { attachSevenHourlyTooltip } from './sevenHourly';
 

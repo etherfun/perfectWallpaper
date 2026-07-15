@@ -1,35 +1,35 @@
 import '../../version';
 
-import { useConfigStore } from '@/stores/config';
 import { loadI18n } from '@/i18n';
+import { useConfigStore } from '@/stores/config';
 // config runtime/wallpaper_settings sub-objects live outside Pinia (Stage 3.5-B)
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
+import { useAudioVisualProperties } from '@/modules/audio-visualizer/useAudioVisualProperties';
+import { useParticleProperties } from '@/modules/audio-visualizer/useParticleProperties';
+import { useTimeProperties } from '@/modules/clock/useTimeProperties';
 import { useCountdownProperties } from '@/modules/countdown/useCountdownProperties';
 import { useDateProperties } from '@/modules/date/useDateProperties';
 import { useDockBarProperties } from '@/modules/dockbar/useDockBarProperties';
-import { useHitokotoProperties } from '@/modules/hitokoto/useHitokotoProperties';
+import { useFluidEffectProperties } from '@/modules/fluid/useFluidEffectProperties';
 import { useLyricsProperties } from '@/modules/fullscreenLyrics/useLyricsProperties';
+import { useHitokotoProperties } from '@/modules/hitokoto/useHitokotoProperties';
+import { usePlayerControlProperties } from '@/modules/player_control/usePlayerControlProperties';
+import { useRGBProperties } from '@/modules/rgb-effect/useRGBProperties';
+import { useSakuraProperties } from '@/modules/sakura/useSakuraProperties';
+import { useBackgroundProperties } from '@/modules/slide/useBackgroundProperties';
 import { useSystemMonitorProperties } from '@/modules/systemMonitor/useSystemMonitorProperties';
-import { useTimeProperties } from '@/modules/clock/useTimeProperties';
 import { useWeatherProperties } from '@/modules/weather/useWeatherProperties';
+import { elements } from '@/utils/elementManager';
 
 import { audioDataListener } from '../../audio-visualizer/audioVisualizer';
 import { showDebugLogModal } from '../../debug/debugModal';
 import { background2canvas } from '../../rgb-effect/RGB';
 import { removesakura } from '../../sakura';
 import { updateFileList } from '../../slide';
-import { elements } from '@/utils/elementManager';
+import { WallpaperProperties } from '../../../types/types';
 import { debugLogger } from '../../utils/logger';
-import { useAudioVisualProperties } from '@/modules/audio-visualizer/useAudioVisualProperties';
-import { useBackgroundProperties } from '@/modules/slide/useBackgroundProperties';
-import { useFluidEffectProperties } from '@/modules/fluid/useFluidEffectProperties';
-import { useParticleProperties } from '@/modules/audio-visualizer/useParticleProperties';
-import { usePlayerControlProperties } from '@/modules/player_control/usePlayerControlProperties';
-import { useRGBProperties } from '@/modules/rgb-effect/useRGBProperties';
-import { useSakuraProperties } from '@/modules/sakura/useSakuraProperties';
-import { WallpaperProperties } from './types';
 
 /**
  * 安全执行属性处理函数,捕获并记录错误
@@ -100,10 +100,10 @@ export function createWallpaperPropertyListener(
     if (properties.wallpaper_updata && !FirstLoad) {
         debugLogger.info('[版本窗口] 检测到版本更新请求');
         if (runtime.versionManager) {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             (runtime.versionManager as any).showVersionInfo();
         } else {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+             
             (runtime.debugLogger as any)?.warn('[版本窗口] versionManager 未初始化');
         }
     }

@@ -4,8 +4,8 @@
  */
 
 import { globalT } from '@/i18n';
-
 import { useConfigStore } from '@/stores/config';
+
 import { getWeatherUnit } from '../weatherState';
 import {
     clearPrecipTimer,

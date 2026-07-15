@@ -3,9 +3,10 @@
  * Handles two-layer background system with fade transitions
  */
 import { useRuntimeStore } from '@/stores/runtime';
+
+import { setStableUrl } from './imageApi';
 import { applyBackgroundStyle } from './styles';
 import { backgroundLayers } from './types';
-import { setStableUrl } from './imageApi';
 
 const runtimeStore = useRuntimeStore();
 

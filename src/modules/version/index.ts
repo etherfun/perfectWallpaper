@@ -897,7 +897,7 @@ waitAndExecute(
         setTimeout(async () => {
             if (runtimeStore.versionManager) {
                 try {
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                     
                     await (runtimeStore.versionManager as any).initUpdateModal();
                 } catch (error) {
                     console.error('初始化版本弹窗失败:', error);

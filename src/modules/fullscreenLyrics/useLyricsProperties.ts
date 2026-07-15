@@ -11,8 +11,8 @@
 import { useConfigStore } from '@/stores/config';
 
 import { fullscreenLyrics } from '../fullscreenLyrics';
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 /**
  * 处理全屏歌词相关属性

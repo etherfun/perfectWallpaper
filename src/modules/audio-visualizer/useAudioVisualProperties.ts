@@ -11,8 +11,8 @@ import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 const config = useConfigStore();
 
@@ -34,7 +34,7 @@ export function useAudioVisualProperties(
     const CTXLine = getLineCtx();
     const param = runtimeStore.param;
     const PWLineParam = runtimeStore.PWLineParam;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const w = runtimeStore.wallpaper as any;
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};

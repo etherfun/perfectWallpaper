@@ -12,8 +12,8 @@ import { useRuntimeStore } from '@/stores/runtime';
 
 const appConfig = useConfigStore();
 const runtimeStore = useRuntimeStore();
-import { debugLogger } from '@/utils/logger';
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/modules/core/video';
+import { debugLogger } from '@/utils/logger';
 
 import { player_control, player_control_thumbnail, player_control_thumbnailWrap } from './domRefs';
 import {

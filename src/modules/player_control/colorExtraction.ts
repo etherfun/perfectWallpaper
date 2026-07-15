@@ -108,7 +108,7 @@ function buildCustomColorGroup(
 }
 
 function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const fe = runtimeStore.FluidEffect as any;
     if (fe?.enabled) {
         const hasContent = hasPlaybackContent();

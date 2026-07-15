@@ -5,13 +5,13 @@
  * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
  * Pinia patch / timerManager），不引入行为变更。
  */
-import { elements } from '@/utils/elementManager';
-import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
+import { registerDeferred } from '@/utils/deferredScheduler';
+import { elements } from '@/utils/elementManager';
 
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 import { timerManager } from '../utils/timer';
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
 
 /**
  * 处理一言相关属性

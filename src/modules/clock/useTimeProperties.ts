@@ -9,12 +9,12 @@
  * 保持原 handler 的所有副作用（CSS 变量 / Pinia patch / ResizeObserver），
  * 不引入行为变更。elements.body 访问保留 — Stage 3.5-A 会统一迁移。
  */
-import { elements } from '@/utils/elementManager';
-import { registerDeferred } from '@/utils/deferredScheduler';
 import { useConfigStore } from '@/stores/config';
+import { registerDeferred } from '@/utils/deferredScheduler';
+import { elements } from '@/utils/elementManager';
 
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 /**
  * 处理时间/时钟相关属性

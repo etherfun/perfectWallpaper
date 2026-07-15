@@ -10,8 +10,8 @@ import { useRuntimeStore } from '@/stores/runtime';
 
 const appConfig = useConfigStore();
 const runtimeStore = useRuntimeStore();
-import { debugLogger } from '@/utils/logger';
 import { pauseBuiltInPlayer, setExternalMediaActive } from '@/modules/core/video';
+import { debugLogger } from '@/utils/logger';
 
 import { player_control, setPendingMediaEvent } from './domRefs';
 import { playertitle } from './titleDisplay';

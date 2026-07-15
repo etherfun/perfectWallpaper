@@ -16,8 +16,9 @@ const runtimeStore = useRuntimeStore();
 
 import { FluidEffect } from '@/modules/fluid';
 import { elements } from '@/utils/elementManager';
-import { logInitComplete } from '../propertyHandlers/_helpers';
-import { WallpaperProperties } from '../propertyHandlers/types';
+
+import { logInitComplete } from '../../utils/_helpers';
+import { WallpaperProperties } from '../../types/types';
 
 export function useFluidEffectProperties(
     properties: WallpaperProperties,
@@ -27,11 +28,11 @@ export function useFluidEffectProperties(
     const patch: Record<string, unknown> = {};
 
     if (FirstLoad) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         (runtimeStore.fluidEffect as any) = FluidEffect.create();
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     const cfg = runtimeStore.fluidEffect as any;
 
     // 全屏启用 - 优先处理

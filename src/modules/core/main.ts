@@ -29,8 +29,8 @@ import { debugLogger } from '../../utils/logger';
 import { resize as pwCircleResize } from '../audio-visualizer/PWCircle';
 import { PWLineInit } from '../audio-visualizer/PWLine';
 import { pinia } from './piniaInit';
-import { setupWallpaperPropertyListener } from './propertyHandlers/wallpaperPropertyListener';
 import { WallpaperEffectController } from './WallpaperEffectController';
+import { setupWallpaperPropertyListener } from './wallpaperPropertyListener';
 
 // ===== 顶层副作用（保持 Phase 1 的兼容层） =====
 

@@ -18,7 +18,7 @@ import { FluidEffect } from '@/modules/fluid';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { logInitComplete } from '../../utils/_helpers';
 
 export function useFluidEffectProperties(
     properties: WallpaperProperties,

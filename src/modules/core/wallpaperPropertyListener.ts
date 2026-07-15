@@ -1,8 +1,7 @@
-import '../../version';
+import '../version';
 
 import { loadI18n } from '@/i18n';
 import { useConfigStore } from '@/stores/config';
-// config runtime/wallpaper_settings sub-objects live outside Pinia (Stage 3.5-B)
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
@@ -23,13 +22,13 @@ import { useSystemMonitorProperties } from '@/modules/systemMonitor/useSystemMon
 import { useWeatherProperties } from '@/modules/weather/useWeatherProperties';
 import { elements } from '@/utils/elementManager';
 
-import { debugLogger } from '../../../utils/logger';
-import { audioDataListener } from '../../audio-visualizer/audioVisualizer';
-import { showDebugLogModal } from '../../debug/debugModal';
-import { background2canvas } from '../../rgb-effect/RGB';
-import { removesakura } from '../../sakura';
-import { updateFileList } from '../../slide';
-import { WallpaperProperties } from './types';
+import { debugLogger } from '../../utils/logger';
+import { audioDataListener } from '../audio-visualizer/audioVisualizer';
+import { showDebugLogModal } from '../debug/debugModal';
+import { background2canvas } from '../rgb-effect/RGB';
+import { removesakura } from '../sakura';
+import { updateFileList } from '../slide';
+import { WallpaperProperties } from '../../types/types';
 
 /**
  * 安全执行属性处理函数,捕获并记录错误

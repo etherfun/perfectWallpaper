@@ -11,7 +11,7 @@
 import { useConfigStore } from '@/stores/config';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { logInitComplete } from '../../utils/_helpers';
 import { fullscreenLyrics } from '../fullscreenLyrics';
 
 /**

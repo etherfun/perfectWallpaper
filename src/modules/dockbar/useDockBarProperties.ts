@@ -14,7 +14,7 @@ import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { logInitComplete } from '../../utils/_helpers';
 
 /**
  * 处理Dock栏属性

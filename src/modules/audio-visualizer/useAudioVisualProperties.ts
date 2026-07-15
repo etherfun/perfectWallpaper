@@ -12,7 +12,7 @@ import { useRuntimeStore } from '@/stores/runtime';
 const runtimeStore = useRuntimeStore();
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { logInitComplete } from '../../utils/_helpers';
 
 const config = useConfigStore();
 

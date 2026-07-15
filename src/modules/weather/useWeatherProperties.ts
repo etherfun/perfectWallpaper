@@ -16,9 +16,9 @@ import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
+import { logInitComplete } from '../../utils/_helpers';
 import { timerManager } from '../../utils/timer';
 import { debounce } from '../../utils/tool';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
 import {
     autoWeather,
     generateWeatherTable,

@@ -17,7 +17,7 @@ import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { logInitComplete } from '../../utils/_helpers';
 
 /**
  * Handle auto-start setting change.

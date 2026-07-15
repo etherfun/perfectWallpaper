@@ -14,7 +14,7 @@ import { useRuntimeStore } from '@/stores/runtime';
 const runtimeStore = useRuntimeStore();
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { logInitComplete } from '../../utils/_helpers';
 
 export function useParticleProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();

@@ -3,8 +3,8 @@
  * 类似 DevTools Console 的界面
  */
 
-import { debugLogger, type LogEntry } from './utils/logger';
-import { escapeHtml } from './utils/string';
+import { debugLogger, type LogEntry } from '../../utils/logger';
+import { escapeHtml } from '../../utils/string';
 
 /**
  * 复制文本到剪态板

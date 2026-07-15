@@ -13,8 +13,8 @@ import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
-import { logInitComplete } from '../../utils/_helpers';
 import { WallpaperProperties } from '../../types/types';
+import { logInitComplete } from '../core/propertyHandlers/_helpers';
 
 export function useParticleProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();

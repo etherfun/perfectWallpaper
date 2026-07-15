@@ -10,11 +10,11 @@
  * imperative and stay outside Pinia. Batched $patch mirrors every user-tweakable
  * setting.
  */
-import { logInitComplete } from '@/utils/_helpers';
-import { WallpaperProperties } from '@/types/types';
+import { logInitComplete } from '@/modules/core/propertyHandlers/_helpers';
 import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modules/core/video';
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
+import { WallpaperProperties } from '@/types/types';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';

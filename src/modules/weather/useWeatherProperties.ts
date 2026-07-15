@@ -15,10 +15,10 @@ import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
-import { logInitComplete } from '../../utils/_helpers';
 import { WallpaperProperties } from '../../types/types';
-import { timerManager } from '../utils/timer';
-import { debounce } from '../utils/tool';
+import { timerManager } from '../../utils/timer';
+import { debounce } from '../../utils/tool';
+import { logInitComplete } from '../core/propertyHandlers/_helpers';
 import {
     autoWeather,
     generateWeatherTable,

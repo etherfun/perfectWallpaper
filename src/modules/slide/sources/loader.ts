@@ -10,8 +10,8 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-import { background2canvas } from '../../RGB';
-import { debugLogger } from '../../utils/logger';
+import { debugLogger } from '../../../utils/logger';
+import { background2canvas } from '../../rgb-effect/RGB';
 import { transitionBackground } from '../transition';
 
 const runtimeStore = useRuntimeStore();

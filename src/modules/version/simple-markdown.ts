@@ -5,14 +5,14 @@
 
 import { globalT } from '@/i18n';
 
-import { debugLogger } from '../utils/logger';
+import { debugLogger } from '../../utils/logger';
 import {
     type ListItem,
     parseMarkdown,
     processInlineMarkdown,
     renderListHtml,
-} from '../utils/markdown';
-import { truncateUrl } from '../utils/string';
+} from '../../utils/markdown';
+import { truncateUrl } from '../../utils/string';
 
 /**
  * Enhanced Markdown parser (delegates to utility functions)

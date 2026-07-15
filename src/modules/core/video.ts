@@ -10,9 +10,9 @@ import { useConfigStore } from "@/stores/config";
 import { useRuntimeStore } from '@/stores/runtime';
 import { elements } from '@/utils/elementManager';
 
-import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from './player_control';
-import { debugLogger } from './utils/logger';
-import { debounce } from './utils/tool';
+import { debugLogger } from '../../utils/logger';
+import { debounce } from '../../utils/tool';
+import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from '../player_control';
 
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();

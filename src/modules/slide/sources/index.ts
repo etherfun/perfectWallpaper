@@ -16,7 +16,7 @@
  * 9 自定义URL
  *
  * Stage 3.5-A3 (Phase 7 批次 3-3 follow-up):
- *   之前 `import { config } from '../../utils/config'` 读 appConfig 单例，
+ *   之前 `import { config } from '../../../utils/config'` 读 appConfig 单例，
  *   与 slide/index.ts 的 Pinia 版本（`useConfigStore()`）不同步。
  *   当用户在 WE 中切换 wallpapermode，Pinia wallpaper_mode 已被更新，
  *   changeBackground 走新 case，但 shouldShow 仍按 appConfig.wallpaper_mode=1
@@ -30,10 +30,10 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-import { background2canvas } from '../../RGB';
+import { background2canvas } from '../../rgb-effect/RGB';
 
 const runtimeStore = useRuntimeStore();
-import { ChangeVideoModel } from '../../video';
+import { ChangeVideoModel } from '../../core/video';
 import { transitionBackground } from '../transition';
 import { backgroundLayers, pictures } from '../types';
 import { loadBing } from './bing';

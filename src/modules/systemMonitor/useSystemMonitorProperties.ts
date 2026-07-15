@@ -16,8 +16,8 @@ import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
-import { logInitComplete } from '../../utils/_helpers';
 import { WallpaperProperties } from '../../types/types';
+import { logInitComplete } from '../core/propertyHandlers/_helpers';
 
 /**
  * Handle auto-start setting change.

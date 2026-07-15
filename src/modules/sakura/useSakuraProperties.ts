@@ -11,8 +11,8 @@ import { gl } from '@/modules/sakura/state';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 
-import { logInitComplete } from '../../utils/_helpers';
 import { WallpaperProperties } from '../../types/types';
+import { logInitComplete } from '../core/propertyHandlers/_helpers';
 
 const config = useConfigStore();
 

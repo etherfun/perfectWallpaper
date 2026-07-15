@@ -12,9 +12,9 @@ import { useRuntimeStore } from '@/stores/runtime';
 import { registerDeferred } from '@/utils/deferredScheduler';
 
 const runtimeStore = useRuntimeStore();
-import { logInitComplete } from '@/utils/_helpers';
-import { WallpaperProperties } from '@/types/types';
+import { logInitComplete } from '@/modules/core/propertyHandlers/_helpers';
 import { pc_aubar, playertitle, thumbnailsue } from '@/modules/player_control';
+import { WallpaperProperties } from '@/types/types';
 import { elements } from '@/utils/elementManager';
 
 /**

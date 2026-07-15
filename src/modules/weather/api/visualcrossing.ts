@@ -1,7 +1,7 @@
 import { globalT } from '@/i18n';
 import { useConfigStore } from "@/stores/config";
 
-import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../utils/tool';
+import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../../utils/tool';
 import type { WeatherAddress, WeatherData } from '../types';
 
 const config = useConfigStore();

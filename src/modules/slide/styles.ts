@@ -4,7 +4,7 @@
 
 import { useConfigStore } from '@/stores/config';
 
-import { debugLogger } from '../utils/logger';
+import { debugLogger } from '../../utils/logger';
 import { backgroundLayers } from './types';
 
 const config = useConfigStore();

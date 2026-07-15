@@ -39,9 +39,9 @@ export {
 import { globalT } from '@/i18n';
 import { useConfigStore } from '@/stores/config';
 
-import { debugLogger } from '../utils/logger';
-import { timerManager } from '../utils/timer';
-import { fetch_with_retry } from '../utils/tool';
+import { debugLogger } from '../../utils/logger';
+import { timerManager } from '../../utils/timer';
+import { fetch_with_retry } from '../../utils/tool';
 import type { WeatherAPIHandler } from './api/base';
 import type { SevenHourlyData, WeatherAddress, WeatherData } from './types';
 import { generateWeatherTable } from './ui/generateWeatherTable';

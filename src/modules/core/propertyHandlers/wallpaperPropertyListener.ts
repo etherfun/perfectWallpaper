@@ -23,13 +23,13 @@ import { useSystemMonitorProperties } from '@/modules/systemMonitor/useSystemMon
 import { useWeatherProperties } from '@/modules/weather/useWeatherProperties';
 import { elements } from '@/utils/elementManager';
 
+import { debugLogger } from '../../../utils/logger';
 import { audioDataListener } from '../../audio-visualizer/audioVisualizer';
 import { showDebugLogModal } from '../../debug/debugModal';
 import { background2canvas } from '../../rgb-effect/RGB';
 import { removesakura } from '../../sakura';
 import { updateFileList } from '../../slide';
-import { WallpaperProperties } from '../../../types/types';
-import { debugLogger } from '../../utils/logger';
+import { WallpaperProperties } from './types';
 
 /**
  * 安全执行属性处理函数,捕获并记录错误

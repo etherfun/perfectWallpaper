@@ -7,7 +7,7 @@
 import { useConfigStore } from "@/stores/config";
 import { useRuntimeStore } from '@/stores/runtime';
 
-import { debugLogger } from './utils/logger';
+import { debugLogger } from '../../utils/logger';
 
 const runtimeStore = useRuntimeStore();
 

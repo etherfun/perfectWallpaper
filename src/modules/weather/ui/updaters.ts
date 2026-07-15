@@ -6,8 +6,8 @@
 import { globalT } from '@/i18n';
 import { useConfigStore } from "@/stores/config";
 
-import { elements } from '../../utils/elementManager';
-import { fetch_with_retry } from '../../utils/tool';
+import { elements } from '../../../utils/elementManager';
+import { fetch_with_retry } from '../../../utils/tool';
 import { generateAlertHTML, getAirQualityText } from '../formatters';
 import { getWeatherTips } from '../tips';
 import { formatTime } from '../utils';

@@ -10,9 +10,9 @@
  */
 import { useConfigStore } from '@/stores/config';
 
-import { fullscreenLyrics } from '../fullscreenLyrics';
-import { logInitComplete } from '../../utils/_helpers';
 import { WallpaperProperties } from '../../types/types';
+import { logInitComplete } from '../core/propertyHandlers/_helpers';
+import { fullscreenLyrics } from '../fullscreenLyrics';
 
 /**
  * 处理全屏歌词相关属性

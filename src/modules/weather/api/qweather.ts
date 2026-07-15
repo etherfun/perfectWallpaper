@@ -3,7 +3,7 @@ import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
 
-import { fetch_with_retry, weather_paymode } from '../../utils/tool';
+import { fetch_with_retry, weather_paymode } from '../../../utils/tool';
 import type { WeatherAddress, WeatherData } from '../types';
 import type {
     QWeather3dResponse,

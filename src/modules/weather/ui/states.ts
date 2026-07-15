@@ -5,7 +5,7 @@
 
 import { globalT } from '@/i18n';
 
-import { elements } from '../../utils/elementManager';
+import { elements } from '../../../utils/elementManager';
 
 const weatherChildrenStore = new WeakMap<HTMLElement, Element[]>();
 

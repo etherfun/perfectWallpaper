@@ -9,10 +9,10 @@ import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
-import { waitAndExecute } from '../utils/timer';
+import { waitAndExecute } from '../../utils/timer';
 
 const config = useConfigStore();
-import { fetch_with_retry } from '../utils/tool';
+import { fetch_with_retry } from '../../utils/tool';
 import { SimpleMarkdown } from './simple-markdown';
 
 // 版本历史数据Promise

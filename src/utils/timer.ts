@@ -140,7 +140,7 @@ export class MultiTimerManager {
         if (!timer) {
             return false;
         }
-        try { if (!(window as any).__tr) (window as any).__tr = 0; (window as any).__tr++; } catch(e){}
+        try { if (!(window as any).__tr) (window as any).__tr = 0; (window as any).__tr++; } catch { /* noop */ }
 
         // 清除原生定时器
         if (timer.timerId !== null) {

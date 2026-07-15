@@ -1,6 +1,6 @@
 import { globalT } from '@/i18n';
 
-import { fetch_with_retry } from '../../utils/tool';
+import { fetch_with_retry } from '../../../utils/tool';
 import type { SevenHourlyData, WeatherAddress, WeatherData } from '../types';
 import { OPEN_METEO_TO_QWEATHER } from '../types';
 import { getWeatherUnit } from '../weatherState';

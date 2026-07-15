@@ -10,9 +10,9 @@ import { useRuntimeStore } from '@/stores/runtime';
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
-import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from './constants';
-import { player_control_timeline } from './domRefs';
-import { PLAYER_STATE } from './types';
+import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from '../constants';
+import { player_control_timeline } from '../domRefs';
+import { PLAYER_STATE } from '../types';
 
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;
 let currentPosition = 0;

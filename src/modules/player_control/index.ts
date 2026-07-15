@@ -1,7 +1,7 @@
 import './bootstrap';
 
-export { pc_aubar } from './audioBar';
-export { extractColorsFromThumbnail } from './colorExtraction';
-export { applyPlayerStateUI } from './playbackState';
-export { thumbnailsue } from './thumbnailColor';
-export { playertitle, refreshPlayerDisplay, updatePlayerThumbnail } from './titleDisplay';
+export { extractColorsFromThumbnail } from './color/colorExtraction';
+export { thumbnailsue } from './color/thumbnailColor';
+export { applyPlayerStateUI } from './state/playbackState';
+export { pc_aubar } from './ui/audioBar';
+export { playertitle, refreshPlayerDisplay, updatePlayerThumbnail } from './ui/titleDisplay';

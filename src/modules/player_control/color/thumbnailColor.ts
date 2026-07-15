@@ -8,9 +8,9 @@ const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 
-import { TIMELINE_BG_ALPHA_OFFSET } from './constants';
-import { player_control_background, player_control_info, player_control_timeline } from './domRefs';
-import type { RgbTuple } from './types';
+import { TIMELINE_BG_ALPHA_OFFSET } from '../constants';
+import { player_control_background, player_control_info, player_control_timeline } from '../domRefs';
+import type { RgbTuple } from '../types';
 
 /**
  * 根据当前 colorGroup + 配置，刷新所有颜色与进度条样式。

@@ -15,14 +15,14 @@ const runtimeStore = useRuntimeStore();
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/modules/core/video';
 import { debugLogger } from '@/utils/logger';
 
-import { player_control, player_control_thumbnail, player_control_thumbnailWrap } from './domRefs';
+import { player_control, player_control_thumbnail, player_control_thumbnailWrap } from '../domRefs';
 import {
     applyPlayerStateUI,
     controlFluidEffectPlayback,
     getLastPlaybackState,
     setLastPlaybackState,
-} from './playbackState';
-import { PLAYER_STATE } from './types';
+} from '../state/playbackState';
+import { PLAYER_STATE } from '../types';
 
 export function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
     if (event) {

@@ -1,5 +1,5 @@
-import { getDefaultIcon, loadIcon } from './iconCache';
-import type { DockItem } from './types';
+import { getDefaultIcon, loadIcon } from '../iconCache';
+import type { DockItem } from '../types';
 
 export interface ManageListCallbacks {
     onChange: (newItems: DockItem[]) => void;

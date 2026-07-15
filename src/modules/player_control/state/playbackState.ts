@@ -10,8 +10,8 @@ import { useRuntimeStore } from '@/stores/runtime';
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
-import { player_control } from './domRefs';
-import { PLAYER_STATE } from './types';
+import { player_control } from '../domRefs';
+import { PLAYER_STATE } from '../types';
 
 /** 惰性获取 .play-pause 按钮引用（Vue mount + refreshDomRefs 后才有效） */
 function getPlayPauseBtn(): HTMLElement | null {

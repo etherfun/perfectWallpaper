@@ -1,7 +1,7 @@
+import { clearAllIconCache } from '../iconCache';
+import type { DockItem } from '../types';
 import { setupBrowseButton, setupCustomIconUpload } from './addMenuBrowse';
 import { refreshManageList } from './addMenuManageList';
-import { clearAllIconCache } from './iconCache';
-import type { DockItem } from './types';
 
 const URL_PRESETS = [
     { name: 'Google', url: 'https://www.google.com' },

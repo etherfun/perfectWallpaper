@@ -1,11 +1,11 @@
 import { openDockbarItem } from '@/modules/systemMonitor';
 import { debugLogger } from '@/utils/logger';
 
-import { showAddMenu } from './addMenu';
 import { applyConfig } from './configApply';
 import { DEFAULT_CONFIG, SERVER_URL } from './constants';
 import { showContextMenu } from './contextMenu';
 import { clearAllIconCache, loadIcon } from './iconCache';
+import { showAddMenu } from './menu/addMenu';
 import {
     animateEntrance,
     createItemElement,

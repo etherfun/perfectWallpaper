@@ -7,11 +7,11 @@
  *
  * 控制按钮的 DOM 操作通过 registerDeferred 延后到 Vue mount 之后执行。
  */
-import { initPlayerControls } from './controlsUI';
-import { wallpaperMediaPlaybackListener } from './mediaPlaybackListener';
-import { wallpaperMediaPropertiesListener } from './mediaPropertiesListener';
-import { wallpaperMediaThumbnailListener } from './mediaThumbnailListener';
-import { wallpaperMediaTimelineListener } from './timeline';
+import { wallpaperMediaPlaybackListener } from './media/mediaPlaybackListener';
+import { wallpaperMediaPropertiesListener } from './media/mediaPropertiesListener';
+import { wallpaperMediaThumbnailListener } from './media/mediaThumbnailListener';
+import { initPlayerControls } from './ui/controlsUI';
+import { wallpaperMediaTimelineListener } from './ui/timeline';
 
 window.wallpaperRegisterMediaThumbnailListener?.(wallpaperMediaThumbnailListener);
 window.wallpaperRegisterMediaTimelineListener?.(wallpaperMediaTimelineListener);

@@ -12,8 +12,8 @@ import { elements } from '@/utils/elementManager';
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
-import { AUDIO_BAR_COUNT } from './constants';
-import { PLAYER_STATE } from './types';
+import { AUDIO_BAR_COUNT } from '../constants';
+import { PLAYER_STATE } from '../types';
 
 /** 线性插值 */
 function lerp(start: number, end: number, amount: number): number {

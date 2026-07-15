@@ -1,7 +1,7 @@
 /**
  * 纯颜色工具函数
  */
-import type { PaletteColor, RgbTuple } from './types';
+import type { PaletteColor, RgbTuple } from '../types';
 
 /**
  * 把 #rrggbb / rrggbb 形式的十六进制颜色转为 [r, g, b] 元组。

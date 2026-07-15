@@ -8,17 +8,17 @@ const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 
-import { pc_aubar } from './audioBar';
-import { extractColorsFromThumbnail } from './colorExtraction';
-import { ITEM_ENTRANCE_DELAY_MS } from './constants';
+import { extractColorsFromThumbnail } from '../color/colorExtraction';
+import { thumbnailsue } from '../color/thumbnailColor';
+import { ITEM_ENTRANCE_DELAY_MS } from '../constants';
 import {
     player_control,
     player_control_albumTitle,
     player_control_artist,
     player_control_thumbnail,
     player_control_title,
-} from './domRefs';
-import { thumbnailsue } from './thumbnailColor';
+} from '../domRefs';
+import { pc_aubar } from './audioBar';
 
 /**
  * 把当前歌曲信息渲染到标题/艺术家/专辑 DOM 节点。

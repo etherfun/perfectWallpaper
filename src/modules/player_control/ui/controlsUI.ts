@@ -11,8 +11,8 @@ const config = useConfigStore();
 import { PlayNextTrack, PlayPrevTrack, TogglePlayPause } from '@/modules/core/video';
 import { debugLogger } from '@/utils/logger';
 
-import { SERVER_MODE_PROBE_DELAY_MS } from './constants';
-import { player_control } from './domRefs';
+import { SERVER_MODE_PROBE_DELAY_MS } from '../constants';
+import { player_control } from '../domRefs';
 
 /** 惰性获取 aubar-wrapper 引用（Vue mount 后 player_control 才非 null） */
 function getAubarWrapper(): HTMLElement | null {

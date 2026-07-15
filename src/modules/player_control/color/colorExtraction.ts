@@ -18,9 +18,9 @@ import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 import { hasPlaybackContent } from '@/utils/playback';
 
+import { player_control_thumbnail } from '../domRefs';
+import type { RgbTuple } from '../types';
 import { colorToRgb, hexToRgb } from './colorUtils';
-import { player_control_thumbnail } from './domRefs';
-import type { RgbTuple } from './types';
 
 /**
  * 从封面图片提取颜色（供外部调用）

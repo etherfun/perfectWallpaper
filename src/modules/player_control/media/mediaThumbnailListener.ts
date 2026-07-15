@@ -6,10 +6,10 @@ import { useConfigStore } from '@/stores/config';
 const appConfig = useConfigStore();
 import { elements } from '@/utils/elementManager';
 
-import { extractColorsFromThumbnail } from './colorExtraction';
-import { ITEM_ENTRANCE_DELAY_MS } from './constants';
-import { player_control_thumbnail } from './domRefs';
-import { thumbnailsue } from './thumbnailColor';
+import { extractColorsFromThumbnail } from '../color/colorExtraction';
+import { thumbnailsue } from '../color/thumbnailColor';
+import { ITEM_ENTRANCE_DELAY_MS } from '../constants';
+import { player_control_thumbnail } from '../domRefs';
 
 export async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {
     // 读 appConfig（旧 config 单例）而非 Pinia，确保与 usePlayerControlProperties

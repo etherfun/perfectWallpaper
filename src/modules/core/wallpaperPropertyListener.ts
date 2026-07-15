@@ -131,7 +131,7 @@ export function createWallpaperPropertyListener(
         const fontSetting = properties.fontSetting.value.trim();
         const fontGroup = fontSetting
             .split(';')
-            .map(font => {
+            .map((font: string) => {
                 const trimmedFont = font.trim();
                 if (
                     trimmedFont.includes(' ') &&

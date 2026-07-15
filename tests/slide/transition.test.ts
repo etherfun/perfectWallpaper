@@ -27,7 +27,7 @@ vi.mock('@/utils/config', () => {
     };
 });
 
-// slide/transition.ts transitive imports @/slide/styles which calls
+// slide/transition.ts transitive imports @/modules/slide/styles which calls
 // useConfigStore() at module top. Stub a fake store so the import chain succeeds.
 vi.mock('@/stores/config', () => ({
     useConfigStore: () => ({
@@ -37,7 +37,7 @@ vi.mock('@/stores/config', () => ({
 }));
 
 import { config } from '@/utils/config';
-import { updateFileList } from '@/slide/transition';
+import { updateFileList } from '@/modules/slide/transition';
 
 describe('updateFileList', () => {
     beforeEach(() => {

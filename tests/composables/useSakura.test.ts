@@ -27,7 +27,7 @@ const spies = vi.hoisted(() => ({
     sakuraResize: vi.fn(),
 }));
 
-vi.mock('@/sakura', () => ({
+vi.mock('@/modules/sakura', () => ({
     applySakuraTransparency: spies.applySakuraTransparency,
     removesakura: spies.removesakura,
     sakuraLoad: spies.sakuraLoad,
@@ -51,7 +51,7 @@ vi.mock('@/i18n', () => ({
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
 
-import { useSakura } from '@/composables/useSakura';
+import { useSakura } from '@/modules/sakura/useSakura';
 
 function makeHost() {
     let api: ReturnType<typeof useSakura> | null = null;

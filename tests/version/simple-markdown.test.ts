@@ -21,7 +21,7 @@ vi.mock('@/utils/i18n', () => ({
     i18n: (key: string) => key,
 }));
 
-import { SimpleMarkdown } from '@/version/simple-markdown';
+import { SimpleMarkdown } from '@/modules/version/simple-markdown';
 
 describe('SimpleMarkdown static delegation', () => {
     describe('parse', () => {

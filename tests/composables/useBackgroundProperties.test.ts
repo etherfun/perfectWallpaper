@@ -4,7 +4,7 @@
  *
  * Covers the most-touched branches: picture-info (Y/X/size/color/blur/yakeli),
  * background style (bgx/bgy/bgs), audio/video volume, transitionMode,
- * chiyuanapi url rotation. Side-effects in @/slide / @/video are stubbed.
+ * chiyuanapi url rotation. Side-effects in @/slide / @/modules/core/video are stubbed.
  */
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
@@ -40,15 +40,15 @@ vi.mock('@/utils/elementManager', () => ({
     },
 }));
 
-vi.mock('@/slide', () => mockSlide);
+vi.mock('@/modules/slide', () => mockSlide);
 
-vi.mock('@/video', () => mockVideo);
+vi.mock('@/modules/core/video', () => mockVideo);
 
 vi.mock('@/utils/timer', () => ({
     timerManager: mockTimerManager,
 }));
 
-import { useBackgroundProperties } from '@/composables/useBackgroundProperties';
+import { useBackgroundProperties } from '@/modules/slide/useBackgroundProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

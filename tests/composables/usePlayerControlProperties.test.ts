@@ -47,11 +47,11 @@ const { mockPlayerControl, mockElements } = vi.hoisted(() => {
     return { mockPlayerControl, mockElements };
 });
 
-vi.mock('@/player_control', () => mockPlayerControl);
+vi.mock('@/modules/player_control', () => mockPlayerControl);
 
 vi.mock('@/utils/elementManager', () => ({ elements: mockElements }));
 
-import { refreshPlayerControlRefs, usePlayerControlProperties } from '@/composables/usePlayerControlProperties';
+import { refreshPlayerControlRefs, usePlayerControlProperties } from '@/modules/player_control/usePlayerControlProperties';
 import { config } from '@/utils/config';
 
 beforeEach(() => {

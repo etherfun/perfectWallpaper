@@ -8,8 +8,8 @@
 
 import { describe, expect, test } from 'vitest';
 
-import { colorToRgb, hexToRgb } from '@/player_control/colorUtils';
-import type { ColorImpl, RgbTuple } from '@/player_control/types';
+import { colorToRgb, hexToRgb } from '@/modules/player_control/colorUtils';
+import type { ColorImpl, RgbTuple } from '@/modules/player_control/types';
 
 describe('hexToRgb', () => {
     test('parses #rrggbb with hash prefix', () => {

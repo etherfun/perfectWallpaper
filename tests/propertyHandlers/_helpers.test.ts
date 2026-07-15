@@ -9,7 +9,7 @@
 
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { logInitComplete } from '@/propertyHandlers/_helpers';
+import { logInitComplete } from '@/modules/core/propertyHandlers/_helpers';
 import { debugLogger } from '@/utils/logger';
 
 describe('logInitComplete', () => {

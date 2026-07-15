@@ -12,8 +12,8 @@
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { createItemElement, queryDomElements, render } from '@/dockbar/renderer';
-import type { DockItem } from '@/dockbar/types';
+import { createItemElement, queryDomElements, render } from '@/modules/dockbar/renderer';
+import type { DockItem } from '@/modules/dockbar/types';
 
 describe('dockbar/renderer', () => {
     describe('createItemElement', () => {

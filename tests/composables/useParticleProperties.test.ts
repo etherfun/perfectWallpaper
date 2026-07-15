@@ -21,7 +21,7 @@ vi.mock('@/utils/config', () => ({
     config: { runtime: { wallpaper: mockWallpaper } },
 }));
 
-import { useParticleProperties } from '@/composables/useParticleProperties';
+import { useParticleProperties } from '@/modules/audio-visualizer/useParticleProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

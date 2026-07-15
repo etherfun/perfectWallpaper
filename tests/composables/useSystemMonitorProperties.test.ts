@@ -23,7 +23,7 @@ const { mockMonitor, mockInit, mockUpdateConfig } = vi.hoisted(() => {
     return { mockMonitor, mockInit: vi.fn(), mockUpdateConfig };
 });
 
-vi.mock('@/systemMonitor', () => ({
+vi.mock('@/modules/systemMonitor', () => ({
     getSystemMonitor: () => mockMonitor,
     initSystemMonitor: () => mockInit(),
     updateConfig: vi.fn().mockResolvedValue(true),
@@ -35,7 +35,7 @@ vi.mock('@/utils/elementManager', () => ({
     },
 }));
 
-import { useSystemMonitorProperties } from '@/composables/useSystemMonitorProperties';
+import { useSystemMonitorProperties } from '@/modules/systemMonitor/useSystemMonitorProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

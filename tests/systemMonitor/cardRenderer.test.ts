@@ -12,8 +12,8 @@
 
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { buildCards, destroyCards, updateCards } from '@/systemMonitor/cardRenderer';
-import type { CardRenderData } from '@/systemMonitor/types';
+import { buildCards, destroyCards, updateCards } from '@/modules/systemMonitor/cardRenderer';
+import type { CardRenderData } from '@/modules/systemMonitor/types';
 
 vi.mock('@/i18n', () => ({
     globalT: vi.fn((key: string) => {

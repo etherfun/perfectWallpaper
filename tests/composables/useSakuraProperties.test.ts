@@ -27,13 +27,13 @@ const { mockSakuraModule, mockElements } = vi.hoisted(() => {
     return { mockSakuraModule, mockElements };
 });
 
-vi.mock('@/sakura', () => mockSakuraModule);
+vi.mock('@/modules/sakura', () => mockSakuraModule);
 
 vi.mock('@/utils/elementManager', () => ({
     elements: mockElements,
 }));
 
-import { useSakuraProperties } from '@/composables/useSakuraProperties';
+import { useSakuraProperties } from '@/modules/sakura/useSakuraProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

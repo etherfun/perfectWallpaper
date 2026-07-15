@@ -5,7 +5,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { useHitokotoProperties } from '@/composables/useHitokotoProperties';
+import { useHitokotoProperties } from '@/modules/hitokoto/useHitokotoProperties';
 import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '@/utils/logger';
 

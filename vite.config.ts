@@ -37,7 +37,7 @@ export default defineConfig({
         minify: 'esbuild',
         sourcemap: false,
         lib: {
-            entry: fileURLToPath(new URL('./src/bundle.ts', import.meta.url)),
+            entry: fileURLToPath(new URL('./src/modules/core/bundle.ts', import.meta.url)),
             name: 'PerfectWall',
             fileName: () => 'bundle.js',
             formats: ['iife'],

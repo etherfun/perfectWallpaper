@@ -8,7 +8,7 @@
 
 import { describe, expect, test } from 'vitest';
 
-import { formatBytes, formatTemperature, getColorForValue } from '@/systemMonitor/formatters';
+import { formatBytes, formatTemperature, getColorForValue } from '@/modules/systemMonitor/formatters';
 
 describe('formatBytes', () => {
     test('returns "0 B" for zero', () => {

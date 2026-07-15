@@ -17,8 +17,8 @@
 
 import { describe, expect, test } from 'vitest';
 
-import { isDiscreteGpu, isIntegratedGpu, pickPrimaryGpu } from '@/systemMonitor/gpuSelector';
-import type { GpuInfo } from '@/systemMonitor/types';
+import { isDiscreteGpu, isIntegratedGpu, pickPrimaryGpu } from '@/modules/systemMonitor/gpuSelector';
+import type { GpuInfo } from '@/modules/systemMonitor/types';
 
 function makeGpu(overrides: Partial<GpuInfo> & { model: string; vendor: string }): GpuInfo {
     return {

@@ -38,7 +38,7 @@ window.removeEventListener = ((type: string, ...rest: unknown[]) => {
     return (origRemove as (...a: unknown[]) => void)(type, ...rest);
 }) as typeof window.removeEventListener;
 
-vi.mock('@/PWParticles', () => ({
+vi.mock('@/modules/audio-visualizer/PWParticles', () => ({
     wResize: spies.wResize,
     startAuto: spies.startAuto,
     stopAuto: spies.stopAuto,
@@ -52,7 +52,7 @@ vi.mock('@/i18n', () => ({
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
 
-import { usePWParticles } from '@/composables/usePWParticles';
+import { usePWParticles } from '@/modules/audio-visualizer/usePWParticles';
 
 function makeHost() {
     let api: ReturnType<typeof usePWParticles> | null = null;

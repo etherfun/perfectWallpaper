@@ -23,7 +23,7 @@ const { mockFluidEffectInstance, mockFluid, mockConfig } = vi.hoisted(() => {
     return { mockFluidEffectInstance, mockFluid, mockConfig };
 });
 
-vi.mock('@/fluid', () => mockFluid);
+vi.mock('@/modules/fluid', () => mockFluid);
 
 vi.mock('@/utils/elementManager', () => ({
     elements: { body: document.body },
@@ -33,7 +33,7 @@ vi.mock('@/utils/config', () => ({
     config: mockConfig,
 }));
 
-import { useFluidEffectProperties } from '@/composables/useFluidEffectProperties';
+import { useFluidEffectProperties } from '@/modules/fluid/useFluidEffectProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

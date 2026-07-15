@@ -33,7 +33,7 @@ vi.mock('@/utils/config', () => ({
     config: { runtime: mockRuntime },
 }));
 
-import { useAudioVisualProperties } from '@/composables/useAudioVisualProperties';
+import { useAudioVisualProperties } from '@/modules/audio-visualizer/useAudioVisualProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

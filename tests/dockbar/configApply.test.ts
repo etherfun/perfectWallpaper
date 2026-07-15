@@ -11,9 +11,9 @@
 
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { applyConfig } from '@/dockbar/configApply';
-import { DEFAULT_CONFIG } from '@/dockbar/constants';
-import type { DockBarConfig } from '@/dockbar/types';
+import { applyConfig } from '@/modules/dockbar/configApply';
+import { DEFAULT_CONFIG } from '@/modules/dockbar/constants';
+import type { DockBarConfig } from '@/modules/dockbar/types';
 
 function makeContainer(): HTMLElement {
     return document.createElement('div');

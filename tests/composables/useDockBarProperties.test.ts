@@ -22,7 +22,7 @@ const { mockDockBar, mockInit } = vi.hoisted(() => {
     return { mockDockBar, mockInit: vi.fn() };
 });
 
-vi.mock('@/dockbar', () => ({
+vi.mock('@/modules/dockbar', () => ({
     getDockBar: () => mockDockBar,
     initDockBar: () => mockInit(),
 }));
@@ -31,7 +31,7 @@ vi.mock('@/utils/elementManager', () => ({
     elements: { body: document.body },
 }));
 
-import { useDockBarProperties } from '@/composables/useDockBarProperties';
+import { useDockBarProperties } from '@/modules/dockbar/useDockBarProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

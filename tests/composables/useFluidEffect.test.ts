@@ -64,7 +64,7 @@ const mockState = vi.hoisted(() => {
     return { instance, methods, createFn };
 });
 
-vi.mock('@/fluid', () => ({
+vi.mock('@/modules/fluid', () => ({
     FluidEffect: {
         create: mockState.createFn,
     },
@@ -75,7 +75,7 @@ vi.mock('@/i18n', () => ({
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
 
-import { useFluidEffect } from '@/composables/useFluidEffect';
+import { useFluidEffect } from '@/modules/fluid/useFluidEffect';
 
 const mockInstance = mockState.instance;
 const mockMethods = mockState.methods;

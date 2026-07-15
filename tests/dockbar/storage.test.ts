@@ -9,9 +9,9 @@
 
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
-import { STORAGE_KEY } from '@/dockbar/constants';
-import { loadItems, saveItems } from '@/dockbar/storage';
-import type { DockItem } from '@/dockbar/types';
+import { STORAGE_KEY } from '@/modules/dockbar/constants';
+import { loadItems, saveItems } from '@/modules/dockbar/storage';
+import type { DockItem } from '@/modules/dockbar/types';
 
 describe('dockbar/storage', () => {
     beforeEach(() => {

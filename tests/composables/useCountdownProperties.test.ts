@@ -5,7 +5,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { useCountdownProperties } from '@/composables/useCountdownProperties';
+import { useCountdownProperties } from '@/modules/countdown/useCountdownProperties';
 import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '@/utils/logger';
 

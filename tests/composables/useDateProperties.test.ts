@@ -5,7 +5,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { useDateProperties } from '@/composables/useDateProperties';
+import { useDateProperties } from '@/modules/date/useDateProperties';
 import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '@/utils/logger';
 

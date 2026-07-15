@@ -34,7 +34,7 @@ document.removeEventListener = ((type: string, ...rest: unknown[]) => {
     return (origRemove as (...a: unknown[]) => void)(type, ...rest);
 }) as typeof document.removeEventListener;
 
-vi.mock('@/RGB', () => ({
+vi.mock('@/modules/rgb-effect/RGB', () => ({
     background2canvas: spies.background2canvas,
 }));
 
@@ -43,7 +43,7 @@ vi.mock('@/i18n', () => ({
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
 
-import { useRgbEffect } from '@/composables/useRgbEffect';
+import { useRgbEffect } from '@/modules/rgb-effect/useRgbEffect';
 
 function makeHost() {
     let api: ReturnType<typeof useRgbEffect> | null = null;

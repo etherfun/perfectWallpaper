@@ -26,8 +26,8 @@
 
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { MAX_HISTORY_LENGTH } from '@/systemMonitor/constants';
-import { pushHistory, renderRow, type RowPayload } from '@/systemMonitor/renderer';
+import { MAX_HISTORY_LENGTH } from '@/modules/systemMonitor/constants';
+import { pushHistory, renderRow, type RowPayload } from '@/modules/systemMonitor/renderer';
 
 // jsdom ships without a `<canvas>` 2D backend, so calling
 // `canvas.getContext('2d')` writes a noisy "Not implemented" error to

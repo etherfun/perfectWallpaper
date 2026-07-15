@@ -12,8 +12,8 @@
 
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 
-import { DEFAULT_ICON } from '@/dockbar/constants';
-import { cleanupIconCache, getDefaultIcon } from '@/dockbar/iconCache';
+import { DEFAULT_ICON } from '@/modules/dockbar/constants';
+import { cleanupIconCache, getDefaultIcon } from '@/modules/dockbar/iconCache';
 
 describe('dockbar/iconCache', () => {
     describe('getDefaultIcon', () => {

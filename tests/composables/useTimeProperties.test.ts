@@ -15,7 +15,7 @@
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { useTimeProperties } from '@/composables/useTimeProperties';
+import { useTimeProperties } from '@/modules/clock/useTimeProperties';
 import { useConfigStore } from '@/stores/config';
 import { debugLogger } from '@/utils/logger';
 

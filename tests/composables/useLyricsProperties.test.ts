@@ -22,11 +22,11 @@ const { mockFullscreenLyrics } = vi.hoisted(() => ({
     },
 }));
 
-vi.mock('@/fullscreenLyrics', () => ({
+vi.mock('@/modules/fullscreenLyrics', () => ({
     fullscreenLyrics: mockFullscreenLyrics,
 }));
 
-import { useLyricsProperties } from '@/composables/useLyricsProperties';
+import { useLyricsProperties } from '@/modules/fullscreenLyrics/useLyricsProperties';
 
 const LYRICS_DEFAULTS: Record<string, unknown> = {
     fullscreen_lyrics_enabled: false,

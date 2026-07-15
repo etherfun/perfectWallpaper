@@ -10,7 +10,7 @@ import { debugLogger } from '@/utils/logger';
 
 vi.mock('@/utils/elementManager', () => ({ elements: { body: document.body } }));
 
-import { useRGBProperties } from '@/composables/useRGBProperties';
+import { useRGBProperties } from '@/modules/rgb-effect/useRGBProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());

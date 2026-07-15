@@ -41,7 +41,7 @@ window.removeEventListener = ((type: string, ...rest: unknown[]) => {
     return (origRemove as (...a: unknown[]) => void)(type, ...rest);
 }) as typeof window.removeEventListener;
 
-vi.mock('@/PWLine', () => ({
+vi.mock('@/modules/audio-visualizer/PWLine', () => ({
     PWLineInit: spies.PWLineInit,
     setCTXLine: spies.setCTXLine,
     PWLineCreatePoint: spies.PWLineCreatePoint,
@@ -56,7 +56,7 @@ vi.mock('@/i18n', () => ({
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
 
-import { usePWLine } from '@/composables/usePWLine';
+import { usePWLine } from '@/modules/audio-visualizer/usePWLine';
 
 function makeHost() {
     let api: ReturnType<typeof usePWLine> | null = null;

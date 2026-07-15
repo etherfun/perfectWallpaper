@@ -29,7 +29,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 // during `import { Sakura } from '@/components/Sakura.vue'` because the composable
 // transitive chain pulls them in. We mock every such legacy barrel to a no-op so
 // the SFC mount chain never reaches a top-level Pinia call.
-vi.mock('@/sakura', () => ({
+vi.mock('@/modules/sakura', () => ({
     default: {},
     makeCanvasFullScreen: () => {},
     makeCanvasHide: () => {},
@@ -46,38 +46,38 @@ vi.mock('@/sakura', () => ({
     copyToDisplay: () => {},
     applyTransparency: () => {},
 }));
-vi.mock('@/fluid', () => ({
+vi.mock('@/modules/fluid', () => ({
     FluidEffect: { create: () => ({ set: () => {}, enable: () => {}, disable: () => {} }) },
 }));
-vi.mock('@/player_control', () => ({
+vi.mock('@/modules/player_control', () => ({
     pc_aubar: () => {},
     playertitle: () => {},
     thumbnailsue: () => {},
 }));
-vi.mock('@/slide', () => ({
+vi.mock('@/modules/slide', () => ({
     applyBackgroundStyle: () => {},
     changeBackground: () => {},
     shouldShow: () => {},
     TransitionSwith: () => {},
     updateFileList: () => {},
 }));
-vi.mock('@/weather', () => ({
+vi.mock('@/modules/weather', () => ({
     fetchWeather: () => {},
     initWeather: () => {},
     renderWeather: () => {},
     showTooltip: () => {},
     hideTooltip: () => {},
 }));
-vi.mock('@/version', () => ({
+vi.mock('@/modules/version', () => ({
     versionManager: undefined,
     checkForUpdates: () => {},
     showVersionInfo: () => {},
 }));
-vi.mock('@/fullscreenLyrics', () => ({
+vi.mock('@/modules/fullscreenLyrics', () => ({
     initLyrics: () => {},
     renderLyrics: () => {},
 }));
-vi.mock('@/video', () => ({
+vi.mock('@/modules/core/video', () => ({
     ChangeAudioModel: () => {},
     ChangeVideoModel: () => {},
     updateMusicPlaylist: () => {},

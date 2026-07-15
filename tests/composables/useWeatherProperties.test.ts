@@ -20,13 +20,13 @@ const { mockAutoWeather, mockGenerateWeatherTable, mockSetWeatherUnitByName, moc
         mockTimerRemove: vi.fn(),
     }));
 
-vi.mock('@/weather', () => ({
+vi.mock('@/modules/weather', () => ({
     autoWeather: mockAutoWeather,
     generateWeatherTable: mockGenerateWeatherTable,
     weather_init: mockWeatherInit,
     weather_address: { latitude: '', longitude: '', cityname: '' },
 }));
-vi.mock('@/weather/weatherState', () => ({
+vi.mock('@/modules/weather/weatherState', () => ({
     setWeatherUnitByName: mockSetWeatherUnitByName,
 }));
 vi.mock('@/utils/timer', () => ({
@@ -46,7 +46,7 @@ vi.mock('@/utils/elementManager', () => ({
     },
 }));
 
-import { useWeatherProperties } from '@/composables/useWeatherProperties';
+import { useWeatherProperties } from '@/modules/weather/useWeatherProperties';
 
 beforeEach(() => {
     setActivePinia(createPinia());
@@ -129,7 +129,7 @@ describe('useWeatherProperties', () => {
     });
 
     test('weather_lat_latitude patches weather_address.latitude + store', async () => {
-        const { weather_address } = await import('@/weather');
+        const { weather_address } = await import('@/modules/weather');
         const store = useConfigStore();
         useWeatherProperties(
             { weather_lat_latitude: { value: 39.9 }, weather_lat_longitude: { value: 116.4 } } as never,

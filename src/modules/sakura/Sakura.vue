@@ -42,7 +42,7 @@
 import { onMounted } from 'vue';
 
 import { makeCanvasHide, sakuraLoad } from '@/modules/sakura';
-import { gl as sakuraGl } from '@/modules/sakura/state';
+import { gl as sakuraGl } from '@/modules/sakura/state/state';
 import { useSakura } from '@/modules/sakura/useSakura';
 import { useConfigStore } from '@/stores/config';
 

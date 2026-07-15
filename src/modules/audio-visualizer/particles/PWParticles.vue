@@ -25,7 +25,7 @@
  *   - audioVisualizer.ts still drives createPoint/drawPoint via the
  *     legacy PWParticles.ts module exports
  */
-import { usePWParticles } from '@/modules/audio-visualizer/usePWParticles';
+import { usePWParticles } from './usePWParticles';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

@@ -19,18 +19,18 @@ import { useRuntimeStore } from '@/stores/runtime';
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
-import { startClockUpdate } from './clock';
 import { DEFAULT_CONFIG } from './constants';
+import { animateToNewLine, startFloatingAnimation } from './render/lyricsRenderer';
+import { createWordHighlighter, updateWordHighlight } from './render/wordHighlight';
+import { connectLyricsSource, type LyricsSourceHandle } from './source/lyricsSource';
+import type { FullscreenLyricsConfig, LyricsData } from './types';
+import { startClockUpdate } from './ui/clock';
 import {
     createFullscreenLyricsDom,
     destroyFullscreenLyricsDom,
     type FullscreenLyricsDom,
-} from './dom';
-import { animateToNewLine, startFloatingAnimation } from './lyricsRenderer';
-import { connectLyricsSource, type LyricsSourceHandle } from './lyricsSource';
-import type { FullscreenLyricsConfig, LyricsData } from './types';
-import { hideOtherElements, restoreOtherElements } from './visibility';
-import { createWordHighlighter, updateWordHighlight } from './wordHighlight';
+} from './ui/dom';
+import { hideOtherElements, restoreOtherElements } from './ui/visibility';
 
 export class FullscreenLyrics {
     private dom: FullscreenLyricsDom | null = null;

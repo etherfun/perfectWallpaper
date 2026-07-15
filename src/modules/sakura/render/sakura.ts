@@ -15,11 +15,11 @@
 import { useConfigStore } from "@/stores/config";
 import { debugLogger } from '@/utils/logger';
 
-import { animate } from './animation';
+import { animate } from '../effect/animation';
+import { createEffectLib } from '../effect/effects';
+import { gl, setAnimating, setGl, timeInfo } from '../state/state';
 import { makeCanvasFullScreen, makeCanvasHide } from './canvas';
-import { createEffectLib } from './effects';
 import { createScene, initScene, onResize, setViewports } from './scene';
-import { gl, setAnimating, setGl, timeInfo } from './state';
 
 const config = useConfigStore();
 

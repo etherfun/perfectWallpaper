@@ -12,13 +12,13 @@ import { useConfigStore } from '@/stores/config';
 const config = useConfigStore();
 import { Matrix44 } from '@/utils/webgl-math';
 
+import { createEffectLib, renderBackground, renderPostProcess } from '../effect/effects';
+import { camera, gl, projection, renderSpec, sceneStandBy, setSceneStandBy } from '../state/state';
+import type { RenderTarget } from '../types';
 import { makeCanvasFullScreen } from './canvas';
-import { createEffectLib, renderBackground, renderPostProcess } from './effects';
 import { createRenderTarget, deleteRenderTarget } from './glUtils';
 import { createPointFlowers, initPointFlowers, pointFlower } from './particles';
 import { renderPointFlowers } from './pointFlowersRender';
-import { camera, gl, projection, renderSpec, sceneStandBy, setSceneStandBy } from './state';
-import type { RenderTarget } from './types';
 
 /** 创建效果库 + 粒子系统，标记 sceneStandBy = true */
 export function createScene(): void {

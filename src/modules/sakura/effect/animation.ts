@@ -13,8 +13,8 @@ import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
 
-import { renderScene } from './scene';
-import { getAnimating, getRafRunning, setAnimating, setRafRunning, timeInfo } from './state';
+import { renderScene } from '../render/scene';
+import { getAnimating, getRafRunning, setAnimating, setRafRunning, timeInfo } from '../state/state';
 
 /** 把 WebGL 画布当前内容绘制到 2D 显示画布 */
 function copyCanvasTo2D(): void {

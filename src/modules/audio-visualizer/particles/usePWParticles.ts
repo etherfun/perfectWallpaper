@@ -22,7 +22,7 @@ import {
     startAuto as pwParticlesStart,
     stopAuto as pwParticlesStop,
     wResize as pwParticlesResize,
-} from '@/modules/audio-visualizer/PWParticles';
+} from './PWParticles';
 
 export interface UsePWParticlesApi {
     /** Re-resolve #canvas-particles context + size (call on mount and resize). */

@@ -7,8 +7,8 @@
 
 import { debugLogger } from '@/utils/logger';
 
-import { gl } from './state';
-import type { RenderTarget, ShaderProgram } from './types';
+import { gl } from '../state/state';
+import type { RenderTarget, ShaderProgram } from '../types';
 
 /** 删除一个帧缓冲对象释放 GPU 资源 */
 export function deleteRenderTarget(rt: RenderTarget): void {

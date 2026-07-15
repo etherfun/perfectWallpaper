@@ -1,5 +1,5 @@
-import { MAX_HISTORY_LENGTH } from './constants';
-import { getColorForValue } from './formatters';
+import { getColorForValue } from '../api/formatters';
+import { MAX_HISTORY_LENGTH } from '../constants';
 
 /**
  * Pure functions that update the visual representation of monitor rows.

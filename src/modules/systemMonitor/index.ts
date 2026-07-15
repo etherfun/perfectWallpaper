@@ -17,8 +17,7 @@ export {
     selectFile,
     updateConfig,
     uploadCustomIcon,
-} from './api';
-export { buildCards, destroyCards, updateCards } from './cardRenderer';
+} from './api/api';
 export { getSystemMonitor, initSystemMonitor, SystemMonitor } from './SystemMonitor';
 export type {
     AggregateInfo,
@@ -67,3 +66,4 @@ export type {
     TimeInfo,
     UpdateConfigRequest,
 } from './types';
+export { buildCards, destroyCards, updateCards } from './ui/cardRenderer';

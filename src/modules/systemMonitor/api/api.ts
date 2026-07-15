@@ -21,7 +21,7 @@ import {
     type SetPortSuccess,
     type SetupActionRequest,
     type SetupState,
-} from './types';
+} from '../types';
 
 /**
  * Typed `fetch` wrapper for the .NET sidecar.

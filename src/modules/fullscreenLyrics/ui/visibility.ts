@@ -4,7 +4,7 @@
  * `visibility: hidden` so layout is preserved.
  */
 
-import { HIDDEN_SELECTORS } from './constants';
+import { HIDDEN_SELECTORS } from '../constants';
 
 /** Set `visibility: hidden` on every element matching HIDDEN_SELECTORS */
 export function hideOtherElements(): void {

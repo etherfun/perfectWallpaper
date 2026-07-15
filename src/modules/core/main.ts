@@ -26,8 +26,8 @@ import { useRuntimeStore } from '@/stores/runtime';
 
 import { markDeferredReady } from '../../utils/deferredScheduler';
 import { debugLogger } from '../../utils/logger';
-import { resize as pwCircleResize } from '../audio-visualizer/PWCircle';
-import { PWLineInit } from '../audio-visualizer/PWLine';
+import { resize as pwCircleResize } from '../audio-visualizer/circle/PWCircle';
+import { PWLineInit } from '../audio-visualizer/line/PWLine';
 import { pinia } from './piniaInit';
 import { WallpaperEffectController } from './WallpaperEffectController';
 import { setupWallpaperPropertyListener } from './wallpaperPropertyListener';

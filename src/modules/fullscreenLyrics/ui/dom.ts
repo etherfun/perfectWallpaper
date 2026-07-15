@@ -2,7 +2,7 @@
  * DOM construction for the fullscreen lyrics overlay
  */
 
-import { SCROLL_CONTAINER_HEIGHT } from './constants';
+import { SCROLL_CONTAINER_HEIGHT } from '../constants';
 
 /** All DOM handles the lyrics overlay owns */
 export interface FullscreenLyricsDom {

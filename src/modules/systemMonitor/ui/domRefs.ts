@@ -1,6 +1,6 @@
 import { debugLogger } from '@/utils/logger';
 
-import type { SystemMonitorDomRefs } from './types';
+import type { SystemMonitorDomRefs } from '../types';
 
 /**
  * Look up the pre-built DOM elements declared in index.html.

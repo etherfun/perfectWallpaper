@@ -25,7 +25,7 @@
  */
 import { onBeforeUnmount } from 'vue';
 
-import { usePWLine } from '@/modules/audio-visualizer/usePWLine';
+import { usePWLine } from './usePWLine';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

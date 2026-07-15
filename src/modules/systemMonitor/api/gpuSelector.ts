@@ -1,4 +1,4 @@
-import type { GpuInfo } from './types';
+import type { GpuInfo } from '../types';
 
 /**
  * Pick the GPU that the user actually cares about from

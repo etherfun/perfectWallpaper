@@ -25,7 +25,7 @@
  */
 import { onBeforeUnmount } from 'vue';
 
-import { usePWCircle } from '@/modules/audio-visualizer/usePWCircle';
+import { usePWCircle } from './usePWCircle';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

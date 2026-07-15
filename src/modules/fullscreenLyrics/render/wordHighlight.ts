@@ -3,8 +3,8 @@
  * time-range covers the current playback timestamp.
  */
 
-import { WORD_HIGHLIGHT_INTERVAL_MS } from './constants';
-import type { LyricLine } from './types';
+import { WORD_HIGHLIGHT_INTERVAL_MS } from '../constants';
+import type { LyricLine } from '../types';
 
 /**
  * Apply the .active class to every word inside `el` whose [time, time+duration]

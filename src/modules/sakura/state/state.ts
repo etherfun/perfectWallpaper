@@ -8,7 +8,7 @@
 
 import { Matrix44, Vector3 } from '@/utils/webgl-math';
 
-import type { RenderSpec, TimeInfo } from './types';
+import type { RenderSpec, TimeInfo } from '../types';
 
 /** WebGL 上下文（运行时由 sakuraLoad 初始化） */
 export let gl: WebGLRenderingContext | null = null;

@@ -5,7 +5,7 @@
 
 import { NativeAudioVisualizer } from '../../utils/NativeAudioVisualizer';
 import { NativeParticles } from '../../utils/NativeParticles';
-import { stopAuto as stopPWParticlesAuto } from '../audio-visualizer/PWParticles';
+import { stopAuto as stopPWParticlesAuto } from '../audio-visualizer/particles/PWParticles';
 
 export class WallpaperEffectController {
     private _particles: NativeParticles;

@@ -9,8 +9,8 @@
 
 import { escapeHtml } from '@/utils/string';
 
-import { LINE_HEIGHT, VISIBLE_RANGE } from './constants';
-import type { FullscreenLyricsConfig, LyricLine, LyricsData } from './types';
+import { LINE_HEIGHT, VISIBLE_RANGE } from '../constants';
+import type { FullscreenLyricsConfig, LyricLine, LyricsData } from '../types';
 
 /**
  * Build a single `.lyric-line` element for the given lyric. The original

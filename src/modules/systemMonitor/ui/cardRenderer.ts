@@ -20,15 +20,15 @@
 
 import { globalT } from '@/i18n';
 
-import { MAX_HISTORY_LENGTH } from './constants';
-import { formatBytes, getColorForValue } from './formatters';
+import { formatBytes, getColorForValue } from '../api/formatters';
+import { MAX_HISTORY_LENGTH } from '../constants';
 import type {
     CardPayload,
     CardRenderData,
     SparkChannel,
     SystemMonitorCardDomRefs,
     TempRange,
-} from './types';
+} from '../types';
 
 // ─── Color palette ────────────────────────────────────────────────
 const RX_RGB = '110,168,255';

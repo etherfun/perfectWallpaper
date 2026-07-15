@@ -5,8 +5,8 @@
 
 import { debugLogger } from '@/utils/logger';
 
-import { HTTP_POLL_INTERVAL_MS, LYRICS_API_URL, LYRICS_HTTP_URL } from './constants';
-import type { LyricsData } from './types';
+import { HTTP_POLL_INTERVAL_MS, LYRICS_API_URL, LYRICS_HTTP_URL } from '../constants';
+import type { LyricsData } from '../types';
 
 /** Disposable handle returned by connectLyricsSource */
 export interface LyricsSourceHandle {

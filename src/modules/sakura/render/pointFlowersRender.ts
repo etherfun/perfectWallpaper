@@ -16,10 +16,10 @@ import { useConfigStore } from '@/stores/config';
 const config = useConfigStore();
 import { Vector3 } from '@/utils/webgl-math';
 
+import { camera, gl, projection, renderSpec, timeInfo } from '../state/state';
+import type { BlossomParticle } from '../types';
 import { unuseShader, useShader } from './glUtils';
 import { pointFlower } from './particles';
-import { camera, gl, projection, renderSpec, timeInfo } from './state';
-import type { BlossomParticle } from './types';
 
 export function renderPointFlowers(): void {
     if (!gl || !pointFlower.program) return;

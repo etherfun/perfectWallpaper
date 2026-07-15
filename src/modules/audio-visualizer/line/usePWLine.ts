@@ -15,6 +15,8 @@
 
 import { onBeforeUnmount, onMounted } from 'vue';
 
+import { useConfigStore } from '@/stores/config';
+
 import {
     getLineXY as pwLineGetLineXY,
     PWLineCreatePoint as pwLineCreatePoint,
@@ -23,8 +25,7 @@ import {
     PWLineStyle2 as pwLineStyle2,
     PWLineStyle3 as pwLineStyle3,
     setCTXLine as pwLineSetCTX,
-} from '@/modules/audio-visualizer/PWLine';
-import { useConfigStore } from '@/stores/config';
+} from './PWLine';
 
 export interface UsePWLineApi {
     /** Initialize canvas context for the #CanLine element. */

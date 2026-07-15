@@ -1,13 +1,9 @@
 import { globalT } from '@/i18n';
 
-import { fetchAggregate } from './api';
-import { buildCards, destroyCards, updateCards } from './cardRenderer';
-import { applyConfig } from './configApply';
+import { fetchAggregate } from './api/api';
+import { formatBytes, formatTemperature } from './api/formatters';
+import { pickPrimaryGpu } from './api/gpuSelector';
 import { DEFAULT_CONFIG } from './constants';
-import { queryDomElements } from './domRefs';
-import { formatBytes, formatTemperature } from './formatters';
-import { pickPrimaryGpu } from './gpuSelector';
-import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './renderer';
 import type {
     AggregateInfo,
     CardPayload,
@@ -21,6 +17,10 @@ import type {
     SystemMonitorDomRefs,
     TempRange,
 } from './types';
+import { buildCards, destroyCards, updateCards } from './ui/cardRenderer';
+import { applyConfig } from './ui/configApply';
+import { queryDomElements } from './ui/domRefs';
+import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './ui/renderer';
 
 /**
  * System Monitor Module

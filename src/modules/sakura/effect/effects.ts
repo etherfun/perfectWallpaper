@@ -13,11 +13,11 @@ import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
 
-import { createShader, unuseShader, useShader } from './glUtils';
-import { effectLib } from './particles';
-import { ppFinalFsh } from './shaders';
-import { gl, renderSpec, timeInfo } from './state';
-import type { EffectProgram, RenderTarget, ShaderProgram } from './types';
+import { createShader, unuseShader, useShader } from '../render/glUtils';
+import { effectLib } from '../render/particles';
+import { ppFinalFsh } from '../render/shaders';
+import { gl, renderSpec, timeInfo } from '../state/state';
+import type { EffectProgram, RenderTarget, ShaderProgram } from '../types';
 
 /** 用 vsh + fsh + 通用 attribute buffer 创建一个效果程序 */
 export function createEffectProgram(

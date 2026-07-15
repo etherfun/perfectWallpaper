@@ -1,4 +1,4 @@
-import type { SystemMonitorConfig, SystemMonitorDomRefs } from './types';
+import type { SystemMonitorConfig, SystemMonitorDomRefs } from '../types';
 
 /**
  * Apply position, layout class, and font styles to the monitor container

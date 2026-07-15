@@ -11,9 +11,9 @@ import { useConfigStore } from '@/stores/config';
 const config = useConfigStore();
 import { Vector3 } from '@/utils/webgl-math';
 
+import { gl, renderSpec } from '../state/state';
+import { BlossomParticle, type EffectLib, type PointFlower } from '../types';
 import { createShader, unuseShader, useShader } from './glUtils';
-import { gl, renderSpec } from './state';
-import { BlossomParticle, type EffectLib, type PointFlower } from './types';
 
 // 重新导出 BlossomParticle 以便其他文件统一从 particles.ts 引用
 export { BlossomParticle };

@@ -8,7 +8,7 @@
  * @/sakura 自动解析到本 index.ts，外部零修改。
  */
 
-export { animate, getAnimating, setAnimating, stepAnimation, toggleAnimation } from './animation';
+export { animate, getAnimating, setAnimating, stepAnimation, toggleAnimation } from './effect/animation';
 export {
     applySakuraTransparency,
     initSakura,
@@ -18,5 +18,5 @@ export {
     sakuraLoad,
     sakuraReLoadEffect,
     sakuraResize,
-} from './sakura';
+} from './render/sakura';
 export { Matrix44, Vector3 } from '@/utils/webgl-math';

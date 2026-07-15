@@ -7,7 +7,7 @@
  * resize, reload-effect) — the imperative calls into src/sakura/* stay.
  */
 import * as sakuraModule from '@/modules/sakura';
-import { gl } from '@/modules/sakura/state';
+import { gl } from '@/modules/sakura/state/state';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 

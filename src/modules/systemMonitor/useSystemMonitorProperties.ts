@@ -1,16 +1,3 @@
-/**
- * useSystemMonitorProperties — Vue 3 composable 包装 sysmon 属性处理
- *
- * Stage 3-2 (Phase 7 批次 3-2): 把 src/propertyHandlers/systemMonitorPropertyHandler.ts
- * 的全部逻辑迁移到 composable。
- *
- * 关键依赖（保留）：
- * - `getSystemMonitor() / initSystemMonitor() / updateConfig()` —
- *   systemMonitor 实例的命令式 API
- * - `handleAutoStart()` 内部 async 调 .NET sidecar
- * - `useConfigStore()` 只读 `server_mode` 字段
- * - `elements.body.style.setProperty` 写 yakeli CSS 变量
- */
 import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/modules/systemMonitor';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';

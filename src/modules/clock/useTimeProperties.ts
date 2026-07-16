@@ -1,14 +1,3 @@
-/**
- * useTimeProperties — Vue 3 composable 包装 time/clock 属性处理
- *
- * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/timePropertyHandler.ts
- * 的全部逻辑迁移到 composable。Vue 组件用 watch 监听 config.xxx 变化时
- * 可以单独调用此 composable，WE listener 路径仍由 wallpaperPropertyListener
- * 统一调度。
- *
- * 保持原 handler 的所有副作用（CSS 变量 / Pinia patch / ResizeObserver），
- * 不引入行为变更。elements.body 访问保留 — Stage 3.5-A 会统一迁移。
- */
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';

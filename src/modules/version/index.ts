@@ -20,9 +20,6 @@ export const VERSION_HISTORY_PROMISE = fetch_with_retry('update/history.json').t
     res.json()
 );
 
-/**
- * Version history entry structure
- */
 export interface VersionHistoryEntry {
     version: string;
     date: string;

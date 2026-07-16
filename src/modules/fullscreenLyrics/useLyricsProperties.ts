@@ -1,13 +1,3 @@
-/**
- * useLyricsProperties — Vue 3 composable 包装全屏歌词属性处理
- *
- * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/lyricsPropertyHandler.ts
- * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（fullscreenLyrics 实例
- * 调用 + Pinia patch），不引入行为变更。
- *
- * 注意：lyrics handler 是唯一不依赖 elementManager 的 handler，
- * 直接 Pinia $patch + 调 fullscreenLyrics 实例方法。
- */
 import { useConfigStore } from '@/stores/config';
 
 import { WallpaperProperties } from '../../types/types';

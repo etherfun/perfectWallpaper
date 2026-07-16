@@ -1,11 +1,3 @@
-/**
- * useAudioVisualProperties — Vue 3 composable wrapper for audio visualizer
- * properties (PWCircle, PWLine, audio ring/ball/point, smoothing).
- *
- * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/audioVisualPropertyHandler.ts
- * as a composable. Pure Pinia-side batched patch + imperative calls into
- * runtime.param / runtime.PWLineParam / runtime.w.getAudioVisualizer().
- */
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 

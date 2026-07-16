@@ -1,13 +1,3 @@
-/**
- * useFluidEffectProperties — Vue 3 composable wrapper for fluid effect properties
- *
- * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/fluidEffectPropertyHandler.ts
- * as a composable.
- *
- * runtime.FluidEffect is a WebGL-bound imperative instance kept on the
- * legacy `config` singleton (Stage 3.5-B). All Pinia-bound config fields
- * are mirrored via useConfigStore().$patch.
- */
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 

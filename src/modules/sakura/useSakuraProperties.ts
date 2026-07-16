@@ -1,11 +1,3 @@
-/**
- * useSakuraProperties — Vue 3 composable wrapper for sakura properties
- *
- * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/sakuraPropertyHandler.ts
- * as a composable so Vue 组件 can subscribe to individual config changes.
- * Keeps the original side effects (sakura scene toggle, transparency,
- * resize, reload-effect) — the imperative calls into src/sakura/* stay.
- */
 import * as sakuraModule from '@/modules/sakura';
 import { gl } from '@/modules/sakura/state/state';
 import { useConfigStore } from '@/stores/config';

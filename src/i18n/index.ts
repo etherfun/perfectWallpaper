@@ -1,15 +1,4 @@
-/**
- * i18n 入口 — vue-i18n 配置
- *
- * 加载顺序：
- *   1. 内置 fallback 字典（Phase 1 用 — 等价于 source/i18n/zh-CN.json）
- *   2. 异步加载 source/i18n/{zh-CN|en-US}.json（独立运行模式下 fetch）
- *
- * 切换语言：`useI18n().locale.value = 'en-US'`
- *
- * 在 .vue 中：`const { t } = useI18n(); t('ui_setting_show')`
- * 在 .ts 中：`const { t } = useI18n(); t('ui_setting_show')`  ← 同样可用
- */
+/** i18n entry — vue-i18n configuration */
 
 import { createI18n, useI18n } from 'vue-i18n';
 

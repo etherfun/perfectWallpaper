@@ -1,14 +1,3 @@
-/**
- * useDockBarProperties — Vue 3 composable 包装 dockbar 属性处理
- *
- * Stage 3-2 (Phase 7 批次 3-2): 把 src/propertyHandlers/dockbarPropertyHandler.ts
- * 的全部逻辑迁移到 composable。
- *
- * 关键依赖（保留）：
- * - `getDockBar() / initDockBar()` — dockbar 实例的命令式 API
- * - `elements.body.style.setProperty` 写 yakeli CSS 变量
- * - 不依赖 Pinia store
- */
 import { getDockBar, initDockBar } from '@/modules/dockbar';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';

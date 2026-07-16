@@ -1,17 +1,4 @@
-/**
- * usePWParticles — Vue 3 composable wrapper for src/PWParticles.ts
- *
- * Stage 5-C1 (particle audio visualizer): wraps the imperative Canvas 2D
- * particle system into a reactive composable that:
- *   - Owns the resize listener — adds on mount, removes on unmount.
- *   - Exposes `resize / start / stop / createPoint / drawPoint / connect`
- *     passthroughs that internally delegate to legacy exports.
- *   - Auto-resizes on mount (replaces the top-level wResize() side effect
- *     in PWParticles.ts that ran during module load).
- *
- * Drawing logic stays in src/PWParticles.ts. The composable only bridges
- * lifecycle hooks.
- */
+
 
 import { onBeforeUnmount, onMounted } from 'vue';
 

@@ -1,20 +1,3 @@
-/**
- * usePWCircle — Vue 3 composable wrapper for src/PWCircle.ts
- *
- * Stage 5-A (deep-replace PWCircle): wraps the imperative Canvas 2D
- * circle visualizer into a reactive composable that:
- *   - Auto-binds window resize listener (instead of manual main.ts call)
- *   - Exposes setCan / createPoint / style1-3 / getXY methods that internally
- *     delegate to the legacy exports (single source of truth — we don't
- *     duplicate drawing logic, only the lifecycle).
- *   - Reads `config.PWCircle_show_bool` reactivity — when toggled off, the
- *     PWCircle.vue thin shell can decide whether to keep the canvas mounted.
- *
- * Future plan (stage 5-B+): copy drawing code directly into this file and
- * delete src/PWCircle.ts. For now we keep the .ts as fallback so
- * audioVisualizer.ts (which calls style1/2/3 in its RAF loop) still works.
- */
-
 import { onBeforeUnmount, onMounted } from 'vue';
 
 import { useConfigStore } from '@/stores/config';

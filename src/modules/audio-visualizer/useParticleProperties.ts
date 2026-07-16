@@ -1,13 +1,3 @@
-/**
- * useParticleProperties — Vue 3 composable wrapper for particle effect properties
- *
- * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/particlePropertyHandler.ts
- * as a composable.
- *
- * runtime.wallpaper is the WallpaperEffectController instance — a non-Pinia
- * imperative object that manages the canvas/RAF lifecycle. The Pinia store
- * mirrors every user-tweakable setting.
- */
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 

@@ -1,10 +1,3 @@
-/**
- * useHitokotoProperties — Vue 3 composable 包装 hitokoto 属性处理
- *
- * Stage 3-1 (Phase 7 批次 3-1): 把 src/propertyHandlers/hitokotoPropertyHandler.ts
- * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
- * Pinia patch / timerManager），不引入行为变更。
- */
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';

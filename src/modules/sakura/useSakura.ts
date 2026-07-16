@@ -1,21 +1,5 @@
-/**
- * useSakura — Vue 3 composable wrapper for src/sakura/*
- *
- * Stage 5-C2 (sakura WebGL effect): wraps the imperative WebGL sakura
- * renderer into a reactive composable that:
- *   - Exposes passthroughs for sakuraLoad / removesakura / sakuraResize /
- *     sakuraReLoadEffect / applySakuraTransparency.
- *   - Auto-applies transparency when `config.sakura_transparency` changes.
- *   - Tracks the showSakura toggle and exposes a `isActive` ref for
- *     parent components.
- *
- * Important: the legacy src/sakura/index.ts registers `initSakura()` at
- * module top-level (which adds a `window.load` listener). The composable
- * does NOT re-register that listener — that would cause double-init.
- * Drawing logic stays in src/sakura/* (single source of truth).
- */
 
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
+ import { onBeforeUnmount, onMounted, ref, watch } from 'vue';
 
 import {
     applySakuraTransparency,

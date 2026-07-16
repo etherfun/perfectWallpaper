@@ -1,15 +1,3 @@
-/**
- * useBackgroundProperties — Vue 3 composable wrapper for background/wallpaper
- * properties (image, video, music, transitions, picture-info, audio bar).
- *
- * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/backgroundPropertyHandler.ts
- * as a composable.
- *
- * Side effects live in @/slide and @/modules/core/video (changeBackground, TransitionSwith,
- * ChangeVideoModel, ChangeAudioModel, updateMusicPlaylist) — these are
- * imperative and stay outside Pinia. Batched $patch mirrors every user-tweakable
- * setting.
- */
 import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modules/core/video';
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';

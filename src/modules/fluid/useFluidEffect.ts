@@ -1,24 +1,5 @@
-/**
- * useFluidEffect — Vue 3 composable wrapper for src/fluid/*
- *
- * Stage 5-C2 (fluid WebGL effect): wraps the imperative FluidEffect state
- * machine into a reactive composable that:
- *   - Exposes passthroughs for the FluidEffect state machine (enable /
- *     disable / enableFullscreen / disableFullscreen / toggle).
- *   - Exposes getter accessors (state / enabled / fullscreenEnabled).
- *   - Watches `config.fluidEffectEnabled` and toggles the effect
- *     automatically.
- *   - Auto-cleans on unmount (calls disable()).
- *
- * The FluidEffect class is instantiated lazily — only when the composable
- * is mounted and config.fluidEffectEnabled is true. This avoids spinning
- * up WebGL contexts in standalone / SSR scenarios where the effect is
- * disabled.
- *
- * Drawing logic stays in src/fluid/effect/* (single source of truth).
- */
 
-import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
+ import { computed, onBeforeUnmount, onMounted, shallowRef, watch } from 'vue';
 
 import { FluidEffect } from '@/modules/fluid';
 import { useConfigStore } from '@/stores/config';

@@ -216,7 +216,14 @@ export function fetchIcon(
     exePath: string,
     bypassCache = false
 ): Promise<IconData | null> {
-    const t = bypassCache ? `?t=${Date.now()}` : '';
+    // The server-side bypass key is the literal string
+    // "bypass" (see IconEndpoints.cs GetIcon). The
+    // previous code used `?t=${Date.now()}` which
+    // (a) produced a double-? URL when path already
+    // had a query string, and (b) never matched the
+    // server's `== "bypass"` check — so bypassCache
+    // was silently dead. Fix: use `&t=bypass`.
+    const t = bypassCache ? '&t=bypass' : '';
     return apiFetch<IconData>(`/api/icon?path=${encodeURIComponent(exePath)}${t}`, {
         baseUrl,
     }).then(r => r?.data ?? null);

@@ -42,6 +42,7 @@ export function colorToRgb(color: PaletteColor): RgbTuple | null {
     if (Array.isArray(color)) {
         return color as RgbTuple;
     }
+    if (typeof (color as any)?.rgb !== 'function') return null;
     const rgb = color.rgb();
     return [rgb.r, rgb.g, rgb.b];
 }

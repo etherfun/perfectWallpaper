@@ -23,13 +23,14 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const DEV_DIR = resolve(ROOT, 'dev');
 const DIST_DIR = resolve(ROOT, 'dist');
-const DEVKIT_SRC = resolve('F:', 'dev', 'GitHub', 'we-dev-kit');
+const DEVKIT_SRC = process.env.WE_DEV_KIT_PATH || resolve(ROOT, 'node_modules', 'we-dev-kit');
 const DEVKIT_OUT = resolve(DEV_DIR, 'we-dev-kit');
 
 // ---- 1. Build dev-kit ----
 console.log('\n[dev-build] Step 1: Building @perfectwall/we-dev-kit…');
 if (!fs.existsSync(resolve(DEVKIT_SRC, 'node_modules', 'tsup'))) {
-  console.error('  ERROR: dev-kit dependencies not installed. Run: cd F:/dev/GitHub/we-dev-kit && npm install');
+  console.error(`  ERROR: We-Dev-Kit not found at: ${DEVKIT_SRC}`);
+  console.error('  Set the WE_DEV_KIT_PATH environment variable to point to your we-dev-kit directory.');
   process.exit(1);
 }
 

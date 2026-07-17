@@ -92,9 +92,11 @@ async function updatePlayerInfo(filePath: string): Promise<void> {
 
     const metadata = await fetchAudioMetadata(filePath);
     if (metadata) {
-        runtimeStore.playerInfo.singtitle = metadata.title;
-        runtimeStore.playerInfo.singartist = metadata.artist;
-        runtimeStore.playerInfo.singalbumTitle = metadata.album;
+        runtimeStore.updatePlayerInfo({
+            singtitle: metadata.title,
+            singartist: metadata.artist,
+            singalbumTitle: metadata.album,
+        });
 
         // 更新封面图片
         if (metadata.picture) {
@@ -107,9 +109,11 @@ async function updatePlayerInfo(filePath: string): Promise<void> {
         // Fallback: 从文件名提取信息
         const fileName = filePath.split(/[/\\]/).pop() || '';
         const title = fileName.replace(/\.[^.]+$/, '');
-        runtimeStore.playerInfo.singtitle = title;
-        runtimeStore.playerInfo.singartist = 'Unknown Artist';
-        runtimeStore.playerInfo.singalbumTitle = 'Unknown Album';
+        runtimeStore.updatePlayerInfo({
+            singtitle: title,
+            singartist: 'Unknown Artist',
+            singalbumTitle: 'Unknown Album',
+        });
         updatePlayerThumbnail(null);
     }
 
@@ -178,6 +182,8 @@ function playNextTrack(): void {
         }
     }
 
+    if (index < 0 || index >= playlist.length) return;
+
     config.music_playlist_index! = index;
     config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
@@ -215,6 +221,8 @@ function playPrevTrack(): void {
             }
         }
     }
+
+    if (index < 0 || index >= playlist.length) return;
 
     config.music_playlist_index! = index;
     config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
@@ -323,9 +331,9 @@ export async function updateMusicPlaylist(): Promise<void> {
 
             // 设置标志表示内置播放器正在初始化
             // 延迟清除，确保 PropertiesListener 有时间在初始化期间被调用
-            runtimeStore.playerInfo.builtInPlayerInitializing = true;
+            runtimeStore.updatePlayerInfo({ builtInPlayerInitializing: true });
             setTimeout(() => {
-                runtimeStore.playerInfo.builtInPlayerInitializing = false;
+                runtimeStore.updatePlayerInfo({ builtInPlayerInitializing: false });
             }, 500);
 
             // 如果外部媒体已激活，不启动内置播放器
@@ -362,10 +370,10 @@ export function PlayNextTrack(): void {
 export function TogglePlayPause(): void {
     if (myAudio.paused) {
         myAudio.play();
-        runtimeStore.playerInfo.playerState = 1;
+        runtimeStore.updatePlayerInfo({ playerState: 1 });
     } else {
         myAudio.pause();
-        runtimeStore.playerInfo.playerState = 2;
+        runtimeStore.updatePlayerInfo({ playerState: 2 });
     }
     controlExternalPlayer('play-pause');
     applyPlayerStateUI();
@@ -413,21 +421,8 @@ export function shouldBuiltInPlayerPlay(): boolean {
  */
 export function setExternalMediaActive(active: boolean): void {
     if (runtimeStore.playerInfo.externalMediaActive !== active) {
-        runtimeStore.playerInfo.externalMediaActive = active;
+        runtimeStore.updatePlayerInfo({ externalMediaActive: active });
         console.log(`[Video] externalMediaActive changed to: ${active}`);
     }
 }
 
-// // 监听音频播放状态变化，同步到 config
-// // 注意：当外部媒体激活时，不更新 playerState（由外部播放器状态决定）
-// myAudio.addEventListener('play', () => {
-//     if (!runtimeStore.playerInfo.externalMediaActive) {
-//         runtimeStore.playerInfo.playerState = 1;
-//     }
-// });
-
-// myAudio.addEventListener('pause', () => {
-//     if (!runtimeStore.playerInfo.externalMediaActive) {
-//         runtimeStore.playerInfo.playerState = 2;
-//     }
-// });

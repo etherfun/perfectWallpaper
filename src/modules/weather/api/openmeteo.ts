@@ -142,8 +142,7 @@ export async function openmeteo(
     weather_data.rangetemperature = `${res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.temperature_2m_max[0] ?? '0'}`;
     weather_data.uvindex = res.daily.uv_index_max?.[0] || globalT('weather_no_data');
     weather_data.rangefeelstemperature = `${res.daily.apparent_temperature_min?.[0] || res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.apparent_temperature_max?.[0] || res.daily.temperature_2m_max[0] || '0'}`;
-    // @ts-ignore - rain属性用于Open-Meteo特定数据
-    weather_data.rain = res.current.rain || '0';
+    weather_data.rain = (res.current as { rain?: string }).rain || '0';
     weather_data.icon = getOpenMeteoIcon(res.current.weather_code, res.current.time).toString();
 
     // 处理七小时预报数据

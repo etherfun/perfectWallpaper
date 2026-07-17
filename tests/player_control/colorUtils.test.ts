@@ -56,9 +56,6 @@ describe('colorToRgb', () => {
     });
 
     test('returns null for empty object (no rgb() method)', () => {
-        // Implementation: Array.isArray first, then tries .rgb()
-        // {} has no rgb() method, so calling it throws — TypeScript-wise this
-        // shouldn't happen, but the implementation doesn't guard.
-        expect(() => colorToRgb({} as ColorImpl)).toThrow();
+        expect(colorToRgb({} as ColorImpl)).toBeNull();
     });
 });

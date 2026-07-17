@@ -5,9 +5,10 @@
 
 /**
  * Parse a color string (space-separated values like "0.5 0.3 1.0") to RGB array
+ * Supports multiple consecutive spaces via /\s+/ splitting.
  */
 export function parseColorString(colorStr: string): number[] {
-    return colorStr.split(' ').map((c: string) => Math.ceil(parseFloat(c) * 255));
+    return colorStr.trim().split(/\s+/).map((c: string) => Math.ceil(parseFloat(c) * 255));
 }
 
 /**

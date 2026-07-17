@@ -1,5 +1,5 @@
 {
-    "weather_default_title": "Weather (long time no load please check API settings)",
+    "weather_default_title": "Weather",
     "weather_no_data": "No data",
     "weather_null": "",
     "weather_precip": "Precipitation",

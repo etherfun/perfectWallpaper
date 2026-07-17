@@ -155,12 +155,13 @@ beforeAll(() => {
     }
 });
 
-// Diagnostic: confirm stub is in place before any test runs.
-// (Removed — verified during stage 5-B development; the stub itself
-// stays in beforeAll above.)
+// Module-level Pinia instance — shared between setActivePinia and mountSfc
+// to ensure store state is synchronized (single Pinia instance).
+let testPinia: ReturnType<typeof createPinia>;
 
 beforeEach(() => {
-    setActivePinia(createPinia());
+    testPinia = createPinia();
+    setActivePinia(testPinia);
 });
 
 afterEach(() => {
@@ -176,7 +177,9 @@ function mountSfc(component: Parameters<typeof mount>[0]) {
             // as a plugin (not just setActivePinia), otherwise
             // `wrapper.vm.$.appContext.config.globalProperties.$pinia._s`
             // resolves to undefined inside use*PiniaStore composables.
-            plugins: [createPinia()],
+            // Uses the same testPinia instance from beforeEach to avoid
+            // Pinia dual-instance issues.
+            plugins: [testPinia],
             stubs: {
                 // no stubs — SFCs are all template-only or single-DOM-node
             },

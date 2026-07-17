@@ -4,7 +4,7 @@
 
 export { SimpleMarkdown } from './simple-markdown';
 
-import { globalT } from '@/i18n';
+import { globalT, i18n } from '@/i18n';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
@@ -14,6 +14,37 @@ import { waitAndExecute } from '../../utils/timer';
 const config = useConfigStore();
 import { fetch_with_retry } from '../../utils/tool';
 import { SimpleMarkdown } from './simple-markdown';
+
+/**
+ * 安全的 i18n 取值函数 — 直接读取原始消息字典，绕过 vue-i18n 消息编译器。
+ *
+ * 原因：vue-i18n 9 的 t() 在编译消息时会解析 linked message 语法（@:key），
+ * 而 changelog 内容中的 "BiliBili@小星想叭叭" 等文本会被误判为无效的 linked
+ * format 并抛出 SyntaxError 10 (INVALID_LINKED_FORMAT)。
+ *
+ * 本函数直接从 getLocaleMessage() 获取原始字符串，不经过编译器。
+ * 如果找不到对应 key，回退到 globalT() 处理缺失 key 的回退逻辑。
+ */
+function safeT(key: string): string {
+    try {
+        const composer = (i18n.global as any);
+        const locale: string = composer.locale.value;
+        // 优先查当前 locale 的原始消息
+        const localeMsg = composer.getLocaleMessage(locale)?.[key];
+        if (typeof localeMsg === 'string') return localeMsg;
+        // 查 fallback locale
+        const fallback = typeof composer.fallbackLocale?.value === 'string'
+            ? composer.fallbackLocale.value
+            : 'zh-CN';
+        if (fallback !== locale) {
+            const fbMsg = composer.getLocaleMessage(fallback)?.[key];
+            if (typeof fbMsg === 'string') return fbMsg;
+        }
+    } catch {
+        // 任何异常回退到 globalT（不会在此场景下发生，但安全兜底）
+    }
+    return globalT(key);
+}
 
 // 版本历史数据Promise
 export const VERSION_HISTORY_PROMISE = fetch_with_retry('update/history.json').then(res =>
@@ -49,7 +80,7 @@ export const versionConfig = {
         autoCloseDelay: 60000,
         animationDuration: 400,
         showOnFirstLoad: false,
-        showOnUpdate: Boolean(localStorage.getItem('perfectwall_version_show_update')),
+        showOnUpdate: localStorage.getItem('perfectwall_version_show_update') === 'true',
         enableHistoryNavigation: true,
         enableMarkdown: true,
         defaultView: 'current',
@@ -66,6 +97,10 @@ export const versionConfig = {
 class versionManager {
     private updateModal: HTMLElement | null = null;
     private isInitialized = false;
+    /** 防止异步初始化时的竞态条件 */
+    private initializing = false;
+    /** 保存最近一次 contentError，供后续展示降级内容 */
+    private contentError: string | null = null;
     private currentVersion: string;
     private isNewVersion = false;
     private selectedVersion: string | null = null;
@@ -101,20 +136,18 @@ class versionManager {
     }
 
     async initUpdateModal(): Promise<void> {
-        if (this.isInitialized) return;
+        if (this.isInitialized || this.initializing) return;
 
         // 如果不是新版本且没有手动触发，则不创建弹窗
         if (!this.isNewVersion) return;
 
+        this.initializing = true;
         try {
             // 加载版本历史
             versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
 
             // 创建弹窗HTML
             this.createModalHTML();
-
-            // 绑定事件
-            this.bindEvents();
 
             this.isInitialized = true;
 
@@ -124,6 +157,8 @@ class versionManager {
             }, 2000);
         } catch (error) {
             console.error('初始化版本弹窗失败:', error);
+        } finally {
+            this.initializing = false;
         }
     }
 
@@ -289,10 +324,13 @@ class versionManager {
     // 显示弹窗
     showModal(): void {
         if (!this.updateModal) return;
+        // 弹窗已打开时不再重复打开
+        if (this.updateModal.classList.contains('show')) return;
 
         // 显示弹窗
         setTimeout(() => {
-            this.updateModal!.classList.add('show');
+            if (!this.updateModal) return;
+            this.updateModal.classList.add('show');
 
             // 开始倒数计时
             if (versionConfig.SHOW_SETTINGS.autoCloseDelay > 0) {
@@ -314,15 +352,20 @@ class versionManager {
         // 移除用户交互检测
         this.removeUserInteractionDetection();
 
+        // 标记为未初始化，让下一次 showVersionInfo 能重建
+        this.isInitialized = false;
+
         // 隐藏弹窗
         this.updateModal.classList.remove('show');
 
         // 动画结束后移除元素
+        const modalRef = this.updateModal;
         setTimeout(() => {
-            if (this.updateModal && this.updateModal.parentNode) {
-                this.updateModal.parentNode.removeChild(this.updateModal);
+            if (modalRef && modalRef.parentNode) {
+                modalRef.parentNode.removeChild(modalRef);
+            }
+            if (this.updateModal === modalRef) {
                 this.updateModal = null;
-                this.isInitialized = false;
             }
         }, versionConfig.SHOW_SETTINGS.animationDuration);
     }
@@ -572,19 +615,88 @@ class versionManager {
 
     // 手动显示版本信息
     async showVersionInfo(): Promise<void> {
+        // 弹窗已打开时不再重复打开
+        if (this.updateModal?.classList.contains('show')) return;
+
+        // 防止异步初始化期间的竞态条件
+        if (this.initializing) {
+            // 已有初始化在进行中，等待完成后再展示
+            const waitForInit = (): Promise<void> => {
+                return new Promise(resolve => {
+                    const check = (): void => {
+                        if (this.isInitialized || !this.initializing) {
+                            resolve();
+                        } else {
+                            setTimeout(check, 50);
+                        }
+                    };
+                    check();
+                });
+            };
+            await waitForInit();
+            this.showModal();
+            return;
+        }
+
         // 如果从未初始化过，先加载版本历史
         if (!this.isInitialized) {
+            this.initializing = true;
             try {
                 versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
                 this.createModalHTML();
-                this.bindEvents();
+                // createModalHTML() 内部已调用 bindEvents，此处不再重复
                 this.isInitialized = true;
             } catch (error) {
                 console.error('初始化版本弹窗失败:', error);
-                return;
+                // 即使加载失败，也尝试显示降级弹窗
+                this.createFallbackModal();
+                this.isInitialized = true;
+            } finally {
+                this.initializing = false;
             }
         }
         this.showModal();
+    }
+
+    /** 创建降级弹窗（版本历史/更新内容加载失败时的备用显示） */
+    private createFallbackModal(): void {
+        const existingModal = document.getElementById('version-modal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+
+        document.body.insertAdjacentHTML('beforeend', `
+            <div id="version-modal" class="version-modal">
+                <div class="modal-overlay"></div>
+                <div class="modal-content" style="
+                    width: ${versionConfig.MODAL_SIZE.width};
+                    max-width: ${versionConfig.MODAL_SIZE.maxWidth};
+                    height: ${versionConfig.MODAL_SIZE.height};
+                    max-height: ${versionConfig.MODAL_SIZE.maxHeight};
+                ">
+                    <div class="modal-header">
+                        <div class="header-left">
+                            <h2 class="modal-title">
+                                <i class="version-icon">📱</i>
+                                ${globalT('version_info_title')}
+                            </h2>
+                        </div>
+                        <button class="modal-close" id="modal-close">&times;</button>
+                    </div>
+                    <div class="modal-body" style="display:flex;align-items:center;justify-content:center;padding:40px;">
+                        <div class="no-data">${globalT('version_no_data')}</div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="footer-right">
+                            <button class="action-btn" id="understand-btn">${globalT('version_i_understand')}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `);
+
+        this.updateModal = document.getElementById('version-modal');
+        this.bindEvents();
     }
 
     // 更新版本配置（外部调用）
@@ -763,25 +875,25 @@ class versionManager {
 
         // 处理标题
         if (rawInfo.titleKey) {
-            processedInfo.title = globalT(rawInfo.titleKey);
+            processedInfo.title = safeT(rawInfo.titleKey);
         } else if (rawInfo.title) {
             processedInfo.title = rawInfo.title;
         } else {
-            processedInfo.title = globalT('version_fallback_title') + rawInfo.version;
+            processedInfo.title = safeT('version_fallback_title') + rawInfo.version;
         }
 
         // 处理图片替代文本
         if (rawInfo.imageAltKey) {
-            processedInfo.imageAlt = globalT(rawInfo.imageAltKey);
+            processedInfo.imageAlt = safeT(rawInfo.imageAltKey);
         } else if (rawInfo.imageAlt) {
             processedInfo.imageAlt = rawInfo.imageAlt;
         } else {
-            processedInfo.imageAlt = globalT('version_image_default_alt');
+            processedInfo.imageAlt = safeT('version_image_default_alt');
         }
 
         // 处理更新内容
         if (rawInfo.changesKey) {
-            const changesText = globalT(rawInfo.changesKey);
+            const changesText = safeT(rawInfo.changesKey);
             processedInfo.changes = changesText
                 .split('\n')
                 .filter((line: string) => line.trim() !== '');

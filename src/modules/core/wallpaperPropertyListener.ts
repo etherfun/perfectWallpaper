@@ -94,16 +94,17 @@ export function createWallpaperPropertyListener(
     // 版本更新检查
     // wallpaper_updata 是"点击打开更新日志"按钮（type bool，默认 false）。
     // 用户点击时 WE 推送 { wallpaper_updata: { value: true } }。
-    // 不检查 .value——只要该 key 出现在推送中即触发弹窗。
-    // 用 !FirstLoad 防止首次加载时三层回退推送的 { value: false } 误触。
-    if (properties.wallpaper_updata && !FirstLoad) {
-        debugLogger.info('[版本窗口] 检测到版本更新请求');
-        if (runtime.versionManager) {
-             
-            (runtime.versionManager as any).showVersionInfo();
-        } else {
-             
-            (runtime.debugLogger as any)?.warn('[版本窗口] versionManager 未初始化');
+    // 用 !FirstLoad 防止首次加载时推送的 { value: false } 误触。
+    if (!FirstLoad) {
+        const prop = properties.wallpaper_updata;
+        const isClicked = prop != null && prop.value === true;
+        if (isClicked) {
+            debugLogger.info('[版本窗口] 检测到版本更新请求');
+            if (runtime.versionManager) {
+                void (runtime.versionManager as any).showVersionInfo();
+            } else {
+                (runtime.debugLogger as any)?.warn('[版本窗口] versionManager 未初始化');
+            }
         }
     }
 

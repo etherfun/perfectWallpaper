@@ -36,15 +36,10 @@ describe('parseColorString', () => {
         expect(parseColorString('1')).toEqual([255]);
     });
 
-    test('handles extra whitespace via split (no trimming) — produces NaN components', () => {
-        // Documents actual behavior: '1   0 0'.split(' ') = ['1', '', '', '0', '0']
-        // parseFloat('') = NaN, Math.ceil(NaN) = NaN — i.e. split-only parsing is naive
+    test('handles multiple consecutive spaces via /\\s+/ split', () => {
+        // '1   0 0'.split(/\\s+/) = ['1', '0', '0'] — no empty elements
         const result = parseColorString('1   0 0');
-        expect(result[0]).toBe(255);
-        expect(result[1]).toBeNaN();
-        expect(result[2]).toBeNaN();
-        expect(result[3]).toBe(0);
-        expect(result[4]).toBe(0);
+        expect(result).toEqual([255, 0, 0]);
     });
 
     test('coerces non-numeric to NaN → Math.ceil(NaN) = NaN', () => {

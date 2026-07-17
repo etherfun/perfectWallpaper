@@ -154,7 +154,7 @@ export interface WeatherConfig {
 export interface WallpaperProperties {
     // 全局设置
     global_settings_language?: { value: string };
-    wallpaper_updata?: { value: number };
+    wallpaper_updata?: { value: boolean };
     wallpaper_updata_open_on_update?: { value: boolean };
     debugger_copy?: { value: boolean };
     fontSetting?: { value: string };

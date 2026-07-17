@@ -3,7 +3,7 @@
  * 首次 build:dev 后运行，修改 src/ 即可自动刷新浏览器
  */
 
-import { spawn } from 'node:child_process';
+import { spawn, execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import fs from 'node:fs';
@@ -42,6 +42,28 @@ function copyDirSync(src, dest, filter) {
   }
 }
 
+function runPostBuildSteps() {
+  console.log('[watch:dev] Running post-build steps…');
+  try {
+    // 1. 编译 SCSS → dev/default.css
+    execSync('npx sass src/scss/main.scss:dev/default.css --style compressed --no-source-map', {
+      cwd: ROOT, stdio: 'inherit'
+    });
+    // 2. HTML 路径重写: 读取 dev/index.html，替换路径
+    let html = fs.readFileSync(resolve(DEV_DIR, 'index.html'), 'utf-8');
+    html = html
+      .replace(/\.\/dist\/style\//g, './')
+      .replace(/\.\/dist\//g, './')
+      .replace(/dist\/style\//g, '')
+      .replace(/dist\//g, '')
+      .replace(/src\/source\//g, 'source/');
+    fs.writeFileSync(resolve(DEV_DIR, 'index.html'), html, 'utf-8');
+    console.log('[watch:dev] Post-build steps completed');
+  } catch (err) {
+    console.error('[watch:dev] Post-build step failed:', err.message);
+  }
+}
+
 console.log('[watch:dev] Starting vite build --watch…');
 console.log('[watch:dev] Each rebuild will auto-sync to dev/\n');
 
@@ -62,6 +84,7 @@ vite.stdout.on('data', (chunk) => {
     buildCount++;
     try {
       copyDistToDev();
+      runPostBuildSteps();
       const time = new Date().toLocaleTimeString();
       console.log(`[watch:dev] ${time} — synced to dev/ (build #${buildCount})`);
     } catch (err) {

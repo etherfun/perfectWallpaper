@@ -30,8 +30,6 @@ export const usePlayerStore = defineStore('player', () => {
     const player_control_barline = ref(0);
     const color_pickup_method = ref(1);
     const player_control_hdong = ref(0.1);
-    const playery = ref(80);
-    const playerx = ref(50);
     const player_control_roundedcorners = ref(0);
     const player_control_autohide = ref(true);
     const player_x = ref(50);
@@ -48,7 +46,7 @@ export const usePlayerStore = defineStore('player', () => {
         player_control_showwidth, player_control_yakelibgusetb, player_control_fontusetb,
         player_control_thumbnailrorl, player_control_samealbum_title,
         player_control_visualaudiobar, player_control_barline, color_pickup_method,
-        player_control_hdong, playery, playerx, player_control_roundedcorners,
+        player_control_hdong, player_control_roundedcorners,
         player_control_autohide, player_x, player_y,
     };
 });

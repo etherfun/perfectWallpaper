@@ -73,17 +73,12 @@ describe('hexToRgb', () => {
         expect(() => hexToRgb('#FFF')).toThrow('Invalid hex color format');
     });
 
-    test('throws only on length mismatch, not on non-hex characters', () => {
-        // Note: function uses length check only — does NOT validate hex digits.
-        // 'ZZZZZZ' is 6 chars, so passes the length check; parseInt('ZZ', 16) = NaN.
-        // 'ZZ' is 2 chars, so throws on length mismatch.
+    test('throws on non-hex characters', () => {
+        // Now validates hex digit characters in addition to length.
+        // 'ZZZZZZ' is 6 chars but contains non-hex digits → throws.
         expect(() => hexToRgb('ZZ')).toThrow('Invalid hex color format');
-        expect(() => hexToRgb('ZZZZZZ')).not.toThrow();
-        // parseInt('ZZ', 16) = NaN (not 0) — preserves NaN per spec.
-        const result = hexToRgb('ZZZZZZ');
-        expect(result[0]).toBeNaN();
-        expect(result[1]).toBeNaN();
-        expect(result[2]).toBeNaN();
+        expect(() => hexToRgb('ZZZZZZ')).toThrow('Invalid hex color format');
+        expect(() => hexToRgb('#GGGGGG')).toThrow('Invalid hex color format');
     });
 });
 

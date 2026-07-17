@@ -37,7 +37,7 @@ export function add0(n: number, digits: number = 2): string {
 export function hexToRgb(hexColor: string): [number, number, number] {
     const colorCode = hexColor.replace('#', '');
 
-    if (colorCode.length !== 6) {
+    if (colorCode.length !== 6 || !/^[0-9a-fA-F]{6}$/.test(colorCode)) {
         throw new Error('Invalid hex color format');
     }
 

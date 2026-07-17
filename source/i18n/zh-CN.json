@@ -1,5 +1,5 @@
 {
-    "weather_default_title": "天气 (长时间未加载请检查API设置)",
+    "weather_default_title": "天气",
     "weather_no_data": "无数据",
     "weather_null": "",
     "weather_precip": "降水",

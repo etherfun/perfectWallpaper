@@ -1,16 +1,16 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 import { fullscreenLyrics } from '../fullscreenLyrics';
 
 /**
- * 处理全屏歌词相关属性
- * @param properties 属性对象
- * @param FirstLoad 是否首次加载
+ * 澶勭悊鍏ㄥ睆姝岃瘝鐩稿叧灞炴€?
+ * @param properties 灞炴€у璞?
+ * @param FirstLoad 鏄惁棣栨鍔犺浇
  *
- * Stage 7-B: 改写 config.xxx = ... 为 useConfigStore().$patch({...})，
- * 解除本 handler 对 src/utils/config 单例的依赖（Stage 3.5 准备）。
+ * Stage 7-B: 鏀瑰啓 config.xxx = ... 涓?useConfigStore().$patch({...})锛?
+ * 瑙ｉ櫎鏈?handler 瀵?src/utils/config 鍗曚緥鐨勪緷璧栵紙Stage 3.5 鍑嗗锛夈€?
  */
 export function useLyricsProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
@@ -72,6 +72,6 @@ export function useLyricsProperties(properties: WallpaperProperties, FirstLoad: 
 
     if (FirstLoad) {
         if (store.fullscreen_lyrics_enabled === true) fullscreenLyrics.show();
-        logInitComplete('[FullscreenLyrics]', '全屏歌词', FirstLoad);
+        logInitComplete('[FullscreenLyrics]', '鍏ㄥ睆姝岃瘝', FirstLoad);
     }
 }

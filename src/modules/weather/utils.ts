@@ -1,11 +1,11 @@
-import { globalT } from '@/i18n';
+﻿import { globalT } from '@/utils/i18n';
 
 import { OPEN_METEO_TO_QWEATHER } from './types';
 
 /**
- * 格式化时间函数（用于日出日落时间）
- * @param timeString - 时间字符串
- * @returns 格式化后的时间字符串
+ * 鏍煎紡鍖栨椂闂村嚱鏁帮紙鐢ㄤ簬鏃ュ嚭鏃ヨ惤鏃堕棿锛?
+ * @param timeString - 鏃堕棿瀛楃涓?
+ * @returns 鏍煎紡鍖栧悗鐨勬椂闂村瓧绗︿覆
  */
 export function formatTime(timeString: string | undefined): string {
     if (!timeString) return '--:--';
@@ -32,10 +32,10 @@ export function formatTime(timeString: string | undefined): string {
 }
 
 /**
- * 获取 Open-Meteo 天气代码对应的和风天气图标
- * @param weatherCode - Open-Meteo 天气代码
- * @param timeString - 时间字符串
- * @returns 和风天气图标编号
+ * 鑾峰彇 Open-Meteo 澶╂皵浠ｇ爜瀵瑰簲鐨勫拰椋庡ぉ姘斿浘鏍?
+ * @param weatherCode - Open-Meteo 澶╂皵浠ｇ爜
+ * @param timeString - 鏃堕棿瀛楃涓?
+ * @returns 鍜岄澶╂皵鍥炬爣缂栧彿
  */
 export function getOpenMeteoIcon(weatherCode: number, timeString?: string): number {
     const defaultIcon = { day: 100, night: 150 };
@@ -52,18 +52,18 @@ export function getOpenMeteoIcon(weatherCode: number, timeString?: string): numb
 }
 
 /**
- * 根据Open-Meteo天气代码推断降水类型
- * @param weatherCode - Open-Meteo 天气代码
- * @returns 降水类型文本
+ * 鏍规嵁Open-Meteo澶╂皵浠ｇ爜鎺ㄦ柇闄嶆按绫诲瀷
+ * @param weatherCode - Open-Meteo 澶╂皵浠ｇ爜
+ * @returns 闄嶆按绫诲瀷鏂囨湰
  */
 export function getPrecipTypeFromCode(weatherCode: number): string {
-    // 雨相关代码
+    // 闆ㄧ浉鍏充唬鐮?
     const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
-    // 雪相关代码
+    // 闆浉鍏充唬鐮?
     const snowCodes = [71, 73, 75, 77, 85, 86];
-    // 冻雨相关代码
+    // 鍐婚洦鐩稿叧浠ｇ爜
     const freezingRainCodes = [56, 57, 66, 67];
-    // 冰雹相关代码
+    // 鍐伴浌鐩稿叧浠ｇ爜
     const hailCodes = [77];
 
     if (rainCodes.includes(weatherCode)) {

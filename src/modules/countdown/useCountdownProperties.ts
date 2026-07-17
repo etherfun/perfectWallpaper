@@ -1,19 +1,19 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 import { timerManager } from '../../utils/timer';
 
 const bodyElement = elements.body;
 
 /**
- * 处理倒计时相关属性
+ * 澶勭悊鍊掕鏃剁浉鍏冲睘鎬?
  *
- * Stage 7-B (Phase 7 批次 2-B):
- *   - config.xxx = ... 改为 useConfigStore().$patch({...})，解除对 utils/config 单例的依赖。
- *   - src/countdown.ts 已删除；setcountdown_a 由 Countdown.vue useUpdateInterval 自动触发。
+ * Stage 7-B (Phase 7 鎵规 2-B):
+ *   - config.xxx = ... 鏀逛负 useConfigStore().$patch({...})锛岃В闄ゅ utils/config 鍗曚緥鐨勪緷璧栥€?
+ *   - src/countdown.ts 宸插垹闄わ紱setcountdown_a 鐢?Countdown.vue useUpdateInterval 鑷姩瑙﹀彂銆?
  */
 export function useCountdownProperties(
     properties: WallpaperProperties,
@@ -142,8 +142,8 @@ export function useCountdownProperties(
             String(properties.countdown_roundedcorners.value)
         );
 
-        // 监听倒计时容器尺寸变化，同步 --countdown-height CSS 变量。
-        // countdown 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        // 鐩戝惉鍊掕鏃跺鍣ㄥ昂瀵稿彉鍖栵紝鍚屾 --countdown-height CSS 鍙橀噺銆?
+        // countdown 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
         registerDeferred('countdown:height-observer', () => {
             const countdown = elements.countdown.container;
             if (!countdown) return;
@@ -175,6 +175,6 @@ export function useCountdownProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[Countdown]', '倒计时', FirstLoad);
+        logInitComplete('[Countdown]', '鍊掕鏃?, FirstLoad);
     }
 }

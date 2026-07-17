@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Vue SFC mount tests — Stage 4
+ * Vue SFC mount tests 鈥?Stage 4
  *
  * Verifies that every thin-shell SFC in src/components/ can be mounted and
  * unmounted without throwing. This catches:
@@ -101,16 +101,16 @@ import Version from '@/components/Version.vue';
 import Weather from '@/components/Weather.vue';
 
 // i18n.install is normally provided by `app.use(i18n)` in main.ts bootstrap.
-// For isolated component tests we use the real i18n instance — its Composer
+// For isolated component tests we use the real i18n instance 鈥?its Composer
 // has fallback 'zh-CN' so unknown keys return the key (acceptable for mount
 // smoke tests).
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
 
 beforeAll(() => {
-    // jsdom has no canvas 2D backend — stub getContext to a no-op mock object
+    // jsdom has no canvas 2D backend 鈥?stub getContext to a no-op mock object
     // via defineProperty (vi.spyOn doesn't work on jsdom's read-only proto).
     Object.defineProperty(HTMLCanvasElement.prototype, 'getContext', {
         value: () => ({
@@ -155,7 +155,7 @@ beforeAll(() => {
     }
 });
 
-// Module-level Pinia instance — shared between setActivePinia and mountSfc
+// Module-level Pinia instance 鈥?shared between setActivePinia and mountSfc
 // to ensure store state is synchronized (single Pinia instance).
 let testPinia: ReturnType<typeof createPinia>;
 
@@ -168,7 +168,7 @@ afterEach(() => {
     vi.restoreAllMocks();
 });
 
-/** Mount helper — applies default options every SFC needs. */
+/** Mount helper 鈥?applies default options every SFC needs. */
 function mountSfc(component: Parameters<typeof mount>[0]) {
     return mount(component, {
         attachTo: document.body,
@@ -181,7 +181,7 @@ function mountSfc(component: Parameters<typeof mount>[0]) {
             // Pinia dual-instance issues.
             plugins: [testPinia],
             stubs: {
-                // no stubs — SFCs are all template-only or single-DOM-node
+                // no stubs 鈥?SFCs are all template-only or single-DOM-node
             },
         },
     });
@@ -264,7 +264,7 @@ describe('thin-shell SFCs mount smoke', () => {
     });
 
     test('App (root) mounts all 19 child components without throwing', () => {
-        // App.vue has all 19 SFCs as direct children — mounting the root
+        // App.vue has all 19 SFCs as direct children 鈥?mounting the root
         // verifies that none of them break sibling composition.
         const wrapper = mountSfc(App);
         expect(wrapper.findAll('*').length).toBeGreaterThan(0);

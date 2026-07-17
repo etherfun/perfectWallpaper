@@ -1,4 +1,4 @@
-import { globalT } from '@/i18n';
+﻿import { globalT } from '@/utils/i18n';
 
 import { fetch_with_retry } from '../../../utils/tool';
 import type { SevenHourlyData, WeatherAddress, WeatherData } from '../types';
@@ -50,7 +50,7 @@ interface OpenMeteoResponse {
 }
 
 /**
- * 获取 Open-Meteo 天气代码对应的和风天气图标
+ * 鑾峰彇 Open-Meteo 澶╂皵浠ｇ爜瀵瑰簲鐨勫拰椋庡ぉ姘斿浘鏍?
  */
 function getOpenMeteoIcon(weatherCode: number, timeString: string): number {
     const defaultIcon = { day: 100, night: 150 };
@@ -67,7 +67,7 @@ function getOpenMeteoIcon(weatherCode: number, timeString: string): number {
 }
 
 /**
- * 根据Open-Meteo天气代码推断降水类型
+ * 鏍规嵁Open-Meteo澶╂皵浠ｇ爜鎺ㄦ柇闄嶆按绫诲瀷
  */
 function getPrecipTypeFromCode(weatherCode: number): string {
     const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
@@ -101,7 +101,7 @@ const DIRECTIONS = [
 ];
 
 /**
- * Open-Meteo API 实现
+ * Open-Meteo API 瀹炵幇
  * Case 5: Open-Meteo
  */
 export async function openmeteo(
@@ -125,11 +125,11 @@ export async function openmeteo(
     weather_data.humidity = res.current.relative_humidity_2m;
     weather_data.windSpeed = res.current.wind_speed_10m;
 
-    // 天气状况
+    // 澶╂皵鐘跺喌
     weather_data.weathernow =
         globalT(`weather_openmeteo_${res.current.weather_code}`) || globalT('weather_no_data');
 
-    // 风向
+    // 椋庡悜
     const windDirIndex = Math.floor((res.current.wind_direction_10m + 22.5) / 45) % 8;
     weather_data.wind = globalT(DIRECTIONS[windDirIndex] ?? 'weather_no_data');
 
@@ -145,7 +145,7 @@ export async function openmeteo(
     weather_data.rain = (res.current as { rain?: string }).rain || '0';
     weather_data.icon = getOpenMeteoIcon(res.current.weather_code, res.current.time).toString();
 
-    // 处理七小时预报数据
+    // 澶勭悊涓冨皬鏃堕鎶ユ暟鎹?
     if (res.hourly && res.hourly.time && res.hourly.time.length > 0) {
         const now = new Date();
         const currentTime =
@@ -186,7 +186,7 @@ export async function openmeteo(
             sevenHourlyData.Times.push(timeStr.split('T')[1]?.substring(0, 5) ?? '--:--');
 
             const pop = res.hourly.precipitation_probability?.[idx] ?? 0;
-            sevenHourlyData.Pops.push(pop !== null ? `${pop}%` : '——');
+            sevenHourlyData.Pops.push(pop !== null ? `${pop}%` : '鈥斺€?);
 
             sevenHourlyData.Temps.push(res.hourly.temperature_2m?.[idx] ?? '--');
 
@@ -218,10 +218,10 @@ export async function openmeteo(
             sevenHourlyData.preciptype.push(getPrecipTypeFromCode(weatherCode));
         }
 
-        // 不足7小时用空值填充
+        // 涓嶈冻7灏忔椂鐢ㄧ┖鍊煎～鍏?
         while (sevenHourlyData.Times.length < 7) {
             sevenHourlyData.Times.push('--:--');
-            sevenHourlyData.Pops.push('——');
+            sevenHourlyData.Pops.push('鈥斺€?);
             sevenHourlyData.Temps.push('--');
             sevenHourlyData.Icons.push('999');
             sevenHourlyData.Texts.push(globalT('weather_no_data'));

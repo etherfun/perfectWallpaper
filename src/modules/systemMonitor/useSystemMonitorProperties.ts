@@ -1,10 +1,10 @@
-import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/modules/systemMonitor';
+﻿import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/modules/systemMonitor';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 
 /**
  * Handle auto-start setting change.
@@ -32,9 +32,9 @@ async function handleAutoStart(enabled: boolean): Promise<void> {
 }
 
 /**
- * 处理系统监控属性
- * @param properties 属性对象
- * @param FirstLoad 是否首次加载
+ * 澶勭悊绯荤粺鐩戞帶灞炴€?
+ * @param properties 灞炴€у璞?
+ * @param FirstLoad 鏄惁棣栨鍔犺浇
  */
 export function useSystemMonitorProperties(
     properties: WallpaperProperties,
@@ -47,7 +47,7 @@ export function useSystemMonitorProperties(
     const monitor = getSystemMonitor();
     if (!monitor) return;
 
-    // 如果之前 initSystemMonitor() 时 DOM 尚未就绪，此时确保重新初始化
+    // 濡傛灉涔嬪墠 initSystemMonitor() 鏃?DOM 灏氭湭灏辩华锛屾鏃剁‘淇濋噸鏂板垵濮嬪寲
     monitor.ensureInitialized();
 
     if (properties.sysmon_server_port) {
@@ -212,6 +212,6 @@ export function useSystemMonitorProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[Sysmon]', '系统性能', FirstLoad);
+        logInitComplete('[Sysmon]', '绯荤粺鎬ц兘', FirstLoad);
     }
 }

@@ -1,10 +1,10 @@
-/**
+﻿/**
  * Version module - Version update manager and markdown utilities
  */
 
 export { SimpleMarkdown } from './simple-markdown';
 
-import { globalT, i18n } from '@/i18n';
+import { globalT, i18n } from '@/utils/i18n';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
@@ -16,23 +16,23 @@ import { fetch_with_retry } from '../../utils/tool';
 import { SimpleMarkdown } from './simple-markdown';
 
 /**
- * 安全的 i18n 取值函数 — 直接读取原始消息字典，绕过 vue-i18n 消息编译器。
+ * 瀹夊叏鐨?i18n 鍙栧€煎嚱鏁?鈥?鐩存帴璇诲彇鍘熷娑堟伅瀛楀吀锛岀粫杩?vue-i18n 娑堟伅缂栬瘧鍣ㄣ€?
  *
- * 原因：vue-i18n 9 的 t() 在编译消息时会解析 linked message 语法（@:key），
- * 而 changelog 内容中的 "BiliBili@小星想叭叭" 等文本会被误判为无效的 linked
- * format 并抛出 SyntaxError 10 (INVALID_LINKED_FORMAT)。
+ * 鍘熷洜锛歷ue-i18n 9 鐨?t() 鍦ㄧ紪璇戞秷鎭椂浼氳В鏋?linked message 璇硶锛園:key锛夛紝
+ * 鑰?changelog 鍐呭涓殑 "BiliBili@灏忔槦鎯冲彮鍙? 绛夋枃鏈細琚鍒や负鏃犳晥鐨?linked
+ * format 骞舵姏鍑?SyntaxError 10 (INVALID_LINKED_FORMAT)銆?
  *
- * 本函数直接从 getLocaleMessage() 获取原始字符串，不经过编译器。
- * 如果找不到对应 key，回退到 globalT() 处理缺失 key 的回退逻辑。
+ * 鏈嚱鏁扮洿鎺ヤ粠 getLocaleMessage() 鑾峰彇鍘熷瀛楃涓诧紝涓嶇粡杩囩紪璇戝櫒銆?
+ * 濡傛灉鎵句笉鍒板搴?key锛屽洖閫€鍒?globalT() 澶勭悊缂哄け key 鐨勫洖閫€閫昏緫銆?
  */
 function safeT(key: string): string {
     try {
         const composer = (i18n.global as any);
         const locale: string = composer.locale.value;
-        // 优先查当前 locale 的原始消息
+        // 浼樺厛鏌ュ綋鍓?locale 鐨勫師濮嬫秷鎭?
         const localeMsg = composer.getLocaleMessage(locale)?.[key];
         if (typeof localeMsg === 'string') return localeMsg;
-        // 查 fallback locale
+        // 鏌?fallback locale
         const fallback = typeof composer.fallbackLocale?.value === 'string'
             ? composer.fallbackLocale.value
             : 'zh-CN';
@@ -41,12 +41,12 @@ function safeT(key: string): string {
             if (typeof fbMsg === 'string') return fbMsg;
         }
     } catch {
-        // 任何异常回退到 globalT（不会在此场景下发生，但安全兜底）
+        // 浠讳綍寮傚父鍥為€€鍒?globalT锛堜笉浼氬湪姝ゅ満鏅笅鍙戠敓锛屼絾瀹夊叏鍏滃簳锛?
     }
     return globalT(key);
 }
 
-// 版本历史数据Promise
+// 鐗堟湰鍘嗗彶鏁版嵁Promise
 export const VERSION_HISTORY_PROMISE = fetch_with_retry('update/history.json').then(res =>
     res.json()
 );
@@ -97,9 +97,9 @@ export const versionConfig = {
 class versionManager {
     private updateModal: HTMLElement | null = null;
     private isInitialized = false;
-    /** 防止异步初始化时的竞态条件 */
+    /** 闃叉寮傛鍒濆鍖栨椂鐨勭珵鎬佹潯浠?*/
     private initializing = false;
-    /** 保存最近一次 contentError，供后续展示降级内容 */
+    /** 淇濆瓨鏈€杩戜竴娆?contentError锛屼緵鍚庣画灞曠ず闄嶇骇鍐呭 */
     private contentError: string | null = null;
     private currentVersion: string;
     private isNewVersion = false;
@@ -111,7 +111,7 @@ class versionManager {
     private lastMouseMoveTime = 0;
     private isMouseMoving = true;
     private mouseMoveTimer: ReturnType<typeof setTimeout> | null = null;
-    private mouseMoveTimeout = 3000; // 3秒无鼠标移动后开始计时
+    private mouseMoveTimeout = 3000; // 3绉掓棤榧犳爣绉诲姩鍚庡紑濮嬭鏃?
     private userInteractionHandler: (() => void) | null = null;
 
     constructor() {
@@ -138,55 +138,55 @@ class versionManager {
     async initUpdateModal(): Promise<void> {
         if (this.isInitialized || this.initializing) return;
 
-        // 如果不是新版本且没有手动触发，则不创建弹窗
+        // 濡傛灉涓嶆槸鏂扮増鏈笖娌℃湁鎵嬪姩瑙﹀彂锛屽垯涓嶅垱寤哄脊绐?
         if (!this.isNewVersion) return;
 
         this.initializing = true;
         try {
-            // 加载版本历史
+            // 鍔犺浇鐗堟湰鍘嗗彶
             versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
 
-            // 创建弹窗HTML
+            // 鍒涘缓寮圭獥HTML
             this.createModalHTML();
 
             this.isInitialized = true;
 
-            // 显示弹窗
+            // 鏄剧ず寮圭獥
             setTimeout(() => {
                 this.showModal();
             }, 2000);
         } catch (error) {
-            console.error('初始化版本弹窗失败:', error);
+            console.error('鍒濆鍖栫増鏈脊绐楀け璐?', error);
         } finally {
             this.initializing = false;
         }
     }
 
-    // 创建弹窗HTML
+    // 鍒涘缓寮圭獥HTML
     private createModalHTML(): void {
-        // 移除已有的弹窗
+        // 绉婚櫎宸叉湁鐨勫脊绐?
         const existingModal = document.getElementById('version-modal');
         if (existingModal) {
             existingModal.remove();
         }
 
-        // 直接插入HTML（与JS版本一致）
+        // 鐩存帴鎻掑叆HTML锛堜笌JS鐗堟湰涓€鑷达級
         document.body.insertAdjacentHTML('beforeend', this.getModalHTML());
 
-        // 获取弹窗元素
+        // 鑾峰彇寮圭獥鍏冪礌
         this.updateModal = document.getElementById('version-modal');
 
-        // 绑定事件
+        // 缁戝畾浜嬩欢
         this.bindEvents();
 
-        // 填充内容
+        // 濉厖鍐呭
         this.fillModalContent();
 
-        // 设置当前版本为选中版本
+        // 璁剧疆褰撳墠鐗堟湰涓洪€変腑鐗堟湰
         this.selectedVersion = this.currentVersion;
     }
 
-    // 获取弹窗HTML
+    // 鑾峰彇寮圭獥HTML
     private getModalHTML(): string {
         return `
             <div id="version-modal" class="version-modal">
@@ -200,7 +200,7 @@ class versionManager {
                     <div class="modal-header">
                         <div class="header-left">
                             <h2 class="modal-title">
-                                <i class="version-icon">📱</i>
+                                <i class="version-icon">馃摫</i>
                                 ${this.isNewVersion ? globalT('version_update_title') : globalT('version_info_title')}
                             </h2>
                             <div class="version-indicator">
@@ -212,7 +212,7 @@ class versionManager {
 
                     <div class="modal-body">
                         <div class="two-column-layout">
-                            <!-- 左侧版本列表 -->
+                            <!-- 宸︿晶鐗堟湰鍒楄〃 -->
                             <div class="version-list-column">
                                 <div class="version-list-header">
                                     <h3>${globalT('version_history_title')}</h3>
@@ -229,7 +229,7 @@ class versionManager {
                                 </div>
                             </div>
 
-                            <!-- 右侧版本详情 -->
+                            <!-- 鍙充晶鐗堟湰璇︽儏 -->
                             <div class="version-detail-column">
                                 <div class="version-detail-header">
                                     <h3 id="detail-version-title">${globalT('version_current_tab')}</h3>
@@ -246,10 +246,10 @@ class versionManager {
                                     </div>
                                 </div>
 
-                                <!-- 链接复制通知容器 -->
+                                <!-- 閾炬帴澶嶅埗閫氱煡瀹瑰櫒 -->
                                 <div class="link-notification-container" id="link-notification-container"></div>
 
-                                <!-- 滚动提示 -->
+                                <!-- 婊氬姩鎻愮ず -->
                                 <div class="scroll-hint" id="scroll-hint">
                                     ${globalT('version_scroll_hint')}
                                 </div>
@@ -275,11 +275,11 @@ class versionManager {
         `;
     }
 
-    // 绑定事件
+    // 缁戝畾浜嬩欢
     private bindEvents(): void {
         if (!this.updateModal) return;
 
-        // 关闭按钮
+        // 鍏抽棴鎸夐挳
         const closeBtn = document.getElementById('modal-close');
         if (closeBtn) {
             closeBtn.addEventListener('click', () => {
@@ -288,7 +288,7 @@ class versionManager {
             });
         }
 
-        // 我知道了按钮
+        // 鎴戠煡閬撲簡鎸夐挳
         const understandBtn = document.getElementById('understand-btn');
         if (understandBtn) {
             understandBtn.addEventListener('click', () => {
@@ -297,7 +297,7 @@ class versionManager {
             });
         }
 
-        // 不再显示按钮
+        // 涓嶅啀鏄剧ず鎸夐挳
         const dontShowBtn = document.getElementById('dont-show-btn');
         if (dontShowBtn) {
             dontShowBtn.addEventListener('click', () => {
@@ -307,13 +307,13 @@ class versionManager {
             });
         }
 
-        // 点击遮罩层关闭
+        // 鐐瑰嚮閬僵灞傚叧闂?
         const overlay = this.updateModal.querySelector('.modal-overlay');
         if (overlay) {
             overlay.addEventListener('click', () => this.hideModal());
         }
 
-        // ESC键关闭
+        // ESC閿叧闂?
         document.addEventListener('keydown', e => {
             if (e.key === 'Escape' && this.updateModal?.classList.contains('show')) {
                 this.hideModal();
@@ -321,44 +321,44 @@ class versionManager {
         });
     }
 
-    // 显示弹窗
+    // 鏄剧ず寮圭獥
     showModal(): void {
         if (!this.updateModal) return;
-        // 弹窗已打开时不再重复打开
+        // 寮圭獥宸叉墦寮€鏃朵笉鍐嶉噸澶嶆墦寮€
         if (this.updateModal.classList.contains('show')) return;
 
-        // 显示弹窗
+        // 鏄剧ず寮圭獥
         setTimeout(() => {
             if (!this.updateModal) return;
             this.updateModal.classList.add('show');
 
-            // 开始倒数计时
+            // 寮€濮嬪€掓暟璁℃椂
             if (versionConfig.SHOW_SETTINGS.autoCloseDelay > 0) {
                 this.startCountdown();
             }
         }, 100);
     }
 
-    // 隐藏弹窗
+    // 闅愯棌寮圭獥
     hideModal(): void {
         if (!this.updateModal) return;
 
-        // 停止倒数计时
+        // 鍋滄鍊掓暟璁℃椂
         this.stopCountdown();
 
-        // 清理所有链接复制通知
+        // 娓呯悊鎵€鏈夐摼鎺ュ鍒堕€氱煡
         this.cleanupLinkNotifications();
 
-        // 移除用户交互检测
+        // 绉婚櫎鐢ㄦ埛浜や簰妫€娴?
         this.removeUserInteractionDetection();
 
-        // 标记为未初始化，让下一次 showVersionInfo 能重建
+        // 鏍囪涓烘湭鍒濆鍖栵紝璁╀笅涓€娆?showVersionInfo 鑳介噸寤?
         this.isInitialized = false;
 
-        // 隐藏弹窗
+        // 闅愯棌寮圭獥
         this.updateModal.classList.remove('show');
 
-        // 动画结束后移除元素
+        // 鍔ㄧ敾缁撴潫鍚庣Щ闄ゅ厓绱?
         const modalRef = this.updateModal;
         setTimeout(() => {
             if (modalRef && modalRef.parentNode) {
@@ -370,67 +370,67 @@ class versionManager {
         }, versionConfig.SHOW_SETTINGS.animationDuration);
     }
 
-    // 开始倒数计时
+    // 寮€濮嬪€掓暟璁℃椂
     private startCountdown(): void {
-        // 重置倒数时间
+        // 閲嶇疆鍊掓暟鏃堕棿
         this.remainingSeconds = Math.floor(versionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
         this.countdownActive = true;
 
-        // 更新按钮显示
+        // 鏇存柊鎸夐挳鏄剧ず
         this.updateCountdownDisplay();
 
-        // 清除已有的计时器
+        // 娓呴櫎宸叉湁鐨勮鏃跺櫒
         if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
         }
 
-        // 设置鼠标移动检测
+        // 璁剧疆榧犳爣绉诲姩妫€娴?
         this.setupMouseMoveDetection();
 
-        // 开始检查鼠标状态
+        // 寮€濮嬫鏌ラ紶鏍囩姸鎬?
         this.checkMouseStateAndStartCountdown();
     }
 
-    // 停止倒数计时
+    // 鍋滄鍊掓暟璁℃椂
     private stopCountdown(): void {
         this.countdownActive = false;
 
-        // 清除倒数计时器
+        // 娓呴櫎鍊掓暟璁℃椂鍣?
         if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
             this.countdownInterval = null;
         }
 
-        // 清除鼠标移动检测定时器
+        // 娓呴櫎榧犳爣绉诲姩妫€娴嬪畾鏃跺櫒
         if (this.mouseMoveTimer) {
             clearTimeout(this.mouseMoveTimer);
             this.mouseMoveTimer = null;
         }
 
-        // 移除鼠标移动监听器
+        // 绉婚櫎榧犳爣绉诲姩鐩戝惉鍣?
         if (this.mouseMoveHandler) {
             document.removeEventListener('mousemove', this.mouseMoveHandler);
             this.mouseMoveHandler = null;
         }
 
-        // 移除用户交互检测
+        // 绉婚櫎鐢ㄦ埛浜や簰妫€娴?
         this.removeUserInteractionDetection();
 
-        // 恢复按钮原始文本
+        // 鎭㈠鎸夐挳鍘熷鏂囨湰
         const countdownText = document.getElementById('countdown-text');
         if (countdownText) {
             countdownText.textContent = '';
         }
     }
 
-    // 更新倒数显示
+    // 鏇存柊鍊掓暟鏄剧ず
     private updateCountdownDisplay(): void {
         const countdownText = document.getElementById('countdown-text');
         if (countdownText) {
             if (this.remainingSeconds > 0) {
                 countdownText.textContent = ` (${this.remainingSeconds}s)`;
 
-                // 使用CSS类控制样式
+                // 浣跨敤CSS绫绘帶鍒舵牱寮?
                 countdownText.className = 'countdown-text';
                 if (this.remainingSeconds <= 5) {
                     countdownText.classList.add('countdown-warning');
@@ -442,43 +442,43 @@ class versionManager {
         }
     }
 
-    // 设置鼠标移动检测
+    // 璁剧疆榧犳爣绉诲姩妫€娴?
     private setupMouseMoveDetection(): void {
-        // 移除旧的监听器（如果存在）
+        // 绉婚櫎鏃х殑鐩戝惉鍣紙濡傛灉瀛樺湪锛?
         if (this.mouseMoveHandler) {
             document.removeEventListener('mousemove', this.mouseMoveHandler);
         }
 
-        // 创建新的鼠标移动处理器
+        // 鍒涘缓鏂扮殑榧犳爣绉诲姩澶勭悊鍣?
         this.mouseMoveHandler = () => {
             this.handleMouseMove();
         };
 
-        // 添加鼠标移动监听器
+        // 娣诲姞榧犳爣绉诲姩鐩戝惉鍣?
         document.addEventListener('mousemove', this.mouseMoveHandler);
 
-        // 设置用户交互检测
+        // 璁剧疆鐢ㄦ埛浜や簰妫€娴?
         this.setupUserInteractionDetection();
 
-        // 重置鼠标移动时间
+        // 閲嶇疆榧犳爣绉诲姩鏃堕棿
         this.lastMouseMoveTime = Date.now();
         this.isMouseMoving = true;
     }
 
-    // 处理鼠标移动事件
+    // 澶勭悊榧犳爣绉诲姩浜嬩欢
     private handleMouseMove(): void {
         this.lastMouseMoveTime = Date.now();
         this.isMouseMoving = true;
 
-        // 如果计时器正在运行，重置它
+        // 濡傛灉璁℃椂鍣ㄦ鍦ㄨ繍琛岋紝閲嶇疆瀹?
         if (this.countdownActive && this.countdownInterval) {
             this.resetCountdown();
         }
     }
 
-    // 检查鼠标状态并开始倒数
+    // 妫€鏌ラ紶鏍囩姸鎬佸苟寮€濮嬪€掓暟
     private checkMouseStateAndStartCountdown(): void {
-        // 清除现有的鼠标状态检查定时器
+        // 娓呴櫎鐜版湁鐨勯紶鏍囩姸鎬佹鏌ュ畾鏃跺櫒
         if (this.mouseMoveTimer) {
             clearTimeout(this.mouseMoveTimer);
         }
@@ -487,10 +487,10 @@ class versionManager {
         const timeSinceLastMove = now - this.lastMouseMoveTime;
 
         if (timeSinceLastMove >= this.mouseMoveTimeout) {
-            // 已经超过3秒无鼠标移动，开始倒数计时
+            // 宸茬粡瓒呰繃3绉掓棤榧犳爣绉诲姩锛屽紑濮嬪€掓暟璁℃椂
             this.startCountdownTimer();
         } else {
-            // 等待到无鼠标移动状态
+            // 绛夊緟鍒版棤榧犳爣绉诲姩鐘舵€?
             const waitTime = this.mouseMoveTimeout - timeSinceLastMove;
 
             this.mouseMoveTimer = setTimeout(() => {
@@ -499,61 +499,61 @@ class versionManager {
         }
     }
 
-    // 开始倒数计时器
+    // 寮€濮嬪€掓暟璁℃椂鍣?
     private startCountdownTimer(): void {
-        // 清除已有的计时器
+        // 娓呴櫎宸叉湁鐨勮鏃跺櫒
         if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
         }
 
-        // 开始新的计时器
+        // 寮€濮嬫柊鐨勮鏃跺櫒
         this.countdownInterval = setInterval(() => {
             if (this.remainingSeconds > 0) {
                 this.remainingSeconds--;
                 this.updateCountdownDisplay();
             } else {
-                // 倒数结束，自动关闭弹窗
+                // 鍊掓暟缁撴潫锛岃嚜鍔ㄥ叧闂脊绐?
                 this.stopCountdown();
                 this.hideModal();
             }
         }, 1000);
     }
 
-    // 重置倒数计时
+    // 閲嶇疆鍊掓暟璁℃椂
     private resetCountdown(): void {
-        // 重置剩余时间
+        // 閲嶇疆鍓╀綑鏃堕棿
         this.remainingSeconds = Math.floor(versionConfig.SHOW_SETTINGS.autoCloseDelay / 1000);
 
-        // 更新显示
+        // 鏇存柊鏄剧ず
         this.updateCountdownDisplay();
 
-        // 重新检查鼠标状态
+        // 閲嶆柊妫€鏌ラ紶鏍囩姸鎬?
         this.checkMouseStateAndStartCountdown();
     }
 
-    // 设置用户交互检测
+    // 璁剧疆鐢ㄦ埛浜や簰妫€娴?
     private setupUserInteractionDetection(): void {
-        // 移除旧的监听器
+        // 绉婚櫎鏃х殑鐩戝惉鍣?
         this.removeUserInteractionDetection();
 
-        // 创建交互处理器
+        // 鍒涘缓浜や簰澶勭悊鍣?
         this.userInteractionHandler = () => {
             this.handleUserInteraction();
         };
 
-        // 添加各种交互事件监听
+        // 娣诲姞鍚勭浜や簰浜嬩欢鐩戝惉
         const modal = this.updateModal;
         if (modal) {
-            // 点击事件
+            // 鐐瑰嚮浜嬩欢
             modal.addEventListener('click', this.userInteractionHandler);
 
-            // 触摸事件（移动端）
+            // 瑙︽懜浜嬩欢锛堢Щ鍔ㄧ锛?
             modal.addEventListener('touchstart', this.userInteractionHandler);
             modal.addEventListener('touchmove', this.userInteractionHandler);
         }
     }
 
-    // 移除用户交互检测
+    // 绉婚櫎鐢ㄦ埛浜や簰妫€娴?
     private removeUserInteractionDetection(): void {
         if (this.userInteractionHandler && this.updateModal) {
             this.updateModal.removeEventListener('click', this.userInteractionHandler);
@@ -563,27 +563,27 @@ class versionManager {
         }
     }
 
-    // 处理用户交互
+    // 澶勭悊鐢ㄦ埛浜や簰
     private handleUserInteraction(): void {
-        // 重置鼠标移动时间，模拟鼠标移动
+        // 閲嶇疆榧犳爣绉诲姩鏃堕棿锛屾ā鎷熼紶鏍囩Щ鍔?
         this.lastMouseMoveTime = Date.now();
         this.isMouseMoving = true;
 
-        // 如果计时器正在运行，重置它
+        // 濡傛灉璁℃椂鍣ㄦ鍦ㄨ繍琛岋紝閲嶇疆瀹?
         if (this.countdownActive && this.countdownInterval) {
             this.resetCountdown();
         }
     }
 
-    // 清理所有链接复制通知
+    // 娓呯悊鎵€鏈夐摼鎺ュ鍒堕€氱煡
     private cleanupLinkNotifications(): void {
-        // 清理版本弹窗内的通知
+        // 娓呯悊鐗堟湰寮圭獥鍐呯殑閫氱煡
         const linkNotificationContainer = document.getElementById('link-notification-container');
         if (linkNotificationContainer) {
             linkNotificationContainer.innerHTML = '';
         }
 
-        // 清理页面上的通知（备用情况）
+        // 娓呯悊椤甸潰涓婄殑閫氱煡锛堝鐢ㄦ儏鍐碉級
         const pageNotifications = document.querySelectorAll('.link-copy-notification');
         pageNotifications.forEach(notification => {
             if (notification.parentNode) {
@@ -592,9 +592,9 @@ class versionManager {
         });
     }
 
-    // 绑定全局事件（在构造函数中调用）
+    // 缁戝畾鍏ㄥ眬浜嬩欢锛堝湪鏋勯€犲嚱鏁颁腑璋冪敤锛?
     private bindGlobalEvents(): void {
-        // 版本列表项点击事件
+        // 鐗堟湰鍒楄〃椤圭偣鍑讳簨浠?
         document.addEventListener('click', e => {
             const versionItem = (e.target as HTMLElement).closest('.version-list-item');
 
@@ -605,7 +605,7 @@ class versionManager {
         });
     }
 
-    // 禁用未来更新提示
+    // 绂佺敤鏈潵鏇存柊鎻愮ず
     private disableFutureUpdates(): void {
         versionConfig.SHOW_SETTINGS.showOnUpdate = false;
         versionConfig.SHOW_SETTINGS.showOnFirstLoad = false;
@@ -613,14 +613,14 @@ class versionManager {
         localStorage.setItem('perfectwall_disable_updates', 'true');
     }
 
-    // 手动显示版本信息
+    // 鎵嬪姩鏄剧ず鐗堟湰淇℃伅
     async showVersionInfo(): Promise<void> {
-        // 弹窗已打开时不再重复打开
+        // 寮圭獥宸叉墦寮€鏃朵笉鍐嶉噸澶嶆墦寮€
         if (this.updateModal?.classList.contains('show')) return;
 
-        // 防止异步初始化期间的竞态条件
+        // 闃叉寮傛鍒濆鍖栨湡闂寸殑绔炴€佹潯浠?
         if (this.initializing) {
-            // 已有初始化在进行中，等待完成后再展示
+            // 宸叉湁鍒濆鍖栧湪杩涜涓紝绛夊緟瀹屾垚鍚庡啀灞曠ず
             const waitForInit = (): Promise<void> => {
                 return new Promise(resolve => {
                     const check = (): void => {
@@ -638,17 +638,17 @@ class versionManager {
             return;
         }
 
-        // 如果从未初始化过，先加载版本历史
+        // 濡傛灉浠庢湭鍒濆鍖栬繃锛屽厛鍔犺浇鐗堟湰鍘嗗彶
         if (!this.isInitialized) {
             this.initializing = true;
             try {
                 versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
                 this.createModalHTML();
-                // createModalHTML() 内部已调用 bindEvents，此处不再重复
+                // createModalHTML() 鍐呴儴宸茶皟鐢?bindEvents锛屾澶勪笉鍐嶉噸澶?
                 this.isInitialized = true;
             } catch (error) {
-                console.error('初始化版本弹窗失败:', error);
-                // 即使加载失败，也尝试显示降级弹窗
+                console.error('鍒濆鍖栫増鏈脊绐楀け璐?', error);
+                // 鍗充娇鍔犺浇澶辫触锛屼篃灏濊瘯鏄剧ず闄嶇骇寮圭獥
                 this.createFallbackModal();
                 this.isInitialized = true;
             } finally {
@@ -658,7 +658,7 @@ class versionManager {
         this.showModal();
     }
 
-    /** 创建降级弹窗（版本历史/更新内容加载失败时的备用显示） */
+    /** 鍒涘缓闄嶇骇寮圭獥锛堢増鏈巻鍙?鏇存柊鍐呭鍔犺浇澶辫触鏃剁殑澶囩敤鏄剧ず锛?*/
     private createFallbackModal(): void {
         const existingModal = document.getElementById('version-modal');
         if (existingModal) {
@@ -677,7 +677,7 @@ class versionManager {
                     <div class="modal-header">
                         <div class="header-left">
                             <h2 class="modal-title">
-                                <i class="version-icon">📱</i>
+                                <i class="version-icon">馃摫</i>
                                 ${globalT('version_info_title')}
                             </h2>
                         </div>
@@ -699,27 +699,27 @@ class versionManager {
         this.bindEvents();
     }
 
-    // 更新版本配置（外部调用）
+    // 鏇存柊鐗堟湰閰嶇疆锛堝閮ㄨ皟鐢級
     updateConfig(newConfig: Partial<typeof versionConfig>): void {
         Object.assign(versionConfig, newConfig);
         this.currentVersion = versionConfig.CURRENT_VERSION;
         this.isNewVersion = this.checkVersionUpdate();
     }
 
-    // 检测用户交互（供外部调用）
+    // 妫€娴嬬敤鎴蜂氦浜掞紙渚涘閮ㄨ皟鐢級
     detectUserInteraction(): void {
         this.handleUserInteraction();
     }
 
-    // 选择版本（供外部调用）
+    // 閫夋嫨鐗堟湰锛堜緵澶栭儴璋冪敤锛?
     selectVersion(version: string): void {
         this.selectedVersion = version;
-        // 这里可以添加更新版本详情的逻辑
+        // 杩欓噷鍙互娣诲姞鏇存柊鐗堟湰璇︽儏鐨勯€昏緫
     }
 
-    // 填充弹窗内容
+    // 濉厖寮圭獥鍐呭
     private fillModalContent(): void {
-        // 填充版本列表
+        // 濉厖鐗堟湰鍒楄〃
         const listContainer = document.getElementById('version-list-container');
         const countElement = document.querySelector('.total-count');
 
@@ -729,17 +729,17 @@ class versionManager {
                 versionConfig.VERSION_HISTORY.length + ' ' + globalT('version_units');
         }
 
-        // 填充当前版本详情
+        // 濉厖褰撳墠鐗堟湰璇︽儏
         const versionInfo = this.getCurrentVersionInfo();
 
-        // 更新标题
+        // 鏇存柊鏍囬
         const titleElement = document.getElementById('detail-version-title');
         if (titleElement && versionInfo) {
             titleElement.textContent =
-                (versionInfo.title as string) || `版本 v${versionInfo.version}`;
+                (versionInfo.title as string) || `鐗堟湰 v${versionInfo.version}`;
         }
 
-        // 更新元信息
+        // 鏇存柊鍏冧俊鎭?
         const metaElement = document.getElementById('detail-version-meta');
         if (metaElement && versionInfo) {
             metaElement.innerHTML = `
@@ -748,17 +748,17 @@ class versionManager {
             `;
         }
 
-        // 更新内容
+        // 鏇存柊鍐呭
         const contentElement = document.getElementById('version-detail-content');
         if (contentElement && versionInfo) {
             contentElement.innerHTML = this.renderVersionDetailContent(versionInfo);
         }
 
-        // 绑定全局事件（版本列表点击等）
+        // 缁戝畾鍏ㄥ眬浜嬩欢锛堢増鏈垪琛ㄧ偣鍑荤瓑锛?
         this.bindGlobalEvents();
     }
 
-    // 渲染纯文本更新内容
+    // 娓叉煋绾枃鏈洿鏂板唴瀹?
     private renderPlainChanges(changes: unknown): string {
         if (!changes || !Array.isArray(changes)) return '';
 
@@ -767,7 +767,7 @@ class versionManager {
             .join('')}</ul>`;
     }
 
-    // 渲染版本详情内容
+    // 娓叉煋鐗堟湰璇︽儏鍐呭
     private renderVersionDetailContent(versionInfo: unknown): string {
         if (!versionInfo) return '<div class="no-data">' + globalT('version_no_data') + '</div>';
 
@@ -811,7 +811,7 @@ class versionManager {
         `;
     }
 
-    // 渲染版本列表（用于左侧栏）
+    // 娓叉煋鐗堟湰鍒楄〃锛堢敤浜庡乏渚ф爮锛?
     private renderVersionList(): string {
         const allHistory = this.getAllVersionHistory();
 
@@ -842,7 +842,7 @@ class versionManager {
             .join('');
     }
 
-    // 获取指定版本的更新信息（带i18n处理）
+    // 鑾峰彇鎸囧畾鐗堟湰鐨勬洿鏂颁俊鎭紙甯18n澶勭悊锛?
     private getVersionInfo(version?: string): Record<string, unknown> | null {
         const targetVersion = version !== undefined ? version : this.selectedVersion;
 
@@ -865,7 +865,7 @@ class versionManager {
         return this.processVersionInfoWithI18n(rawInfo);
     }
 
-    // 处理版本信息的i18n转换
+    // 澶勭悊鐗堟湰淇℃伅鐨刬18n杞崲
     private processVersionInfoWithI18n(
         rawInfo: VersionHistoryEntry
     ): Record<string, unknown> | null {
@@ -873,7 +873,7 @@ class versionManager {
 
         const processedInfo: Record<string, unknown> = { ...rawInfo };
 
-        // 处理标题
+        // 澶勭悊鏍囬
         if (rawInfo.titleKey) {
             processedInfo.title = safeT(rawInfo.titleKey);
         } else if (rawInfo.title) {
@@ -882,7 +882,7 @@ class versionManager {
             processedInfo.title = safeT('version_fallback_title') + rawInfo.version;
         }
 
-        // 处理图片替代文本
+        // 澶勭悊鍥剧墖鏇夸唬鏂囨湰
         if (rawInfo.imageAltKey) {
             processedInfo.imageAlt = safeT(rawInfo.imageAltKey);
         } else if (rawInfo.imageAlt) {
@@ -891,7 +891,7 @@ class versionManager {
             processedInfo.imageAlt = safeT('version_image_default_alt');
         }
 
-        // 处理更新内容
+        // 澶勭悊鏇存柊鍐呭
         if (rawInfo.changesKey) {
             const changesText = safeT(rawInfo.changesKey);
             processedInfo.changes = changesText
@@ -906,12 +906,12 @@ class versionManager {
         return processedInfo;
     }
 
-    // 获取当前版本的更新信息
+    // 鑾峰彇褰撳墠鐗堟湰鐨勬洿鏂颁俊鎭?
     private getCurrentVersionInfo(): Record<string, unknown> | null {
         return this.getVersionInfo(this.currentVersion);
     }
 
-    // 获取所有更新历史（按日期降序排列，最新的在前面）
+    // 鑾峰彇鎵€鏈夋洿鏂板巻鍙诧紙鎸夋棩鏈熼檷搴忔帓鍒楋紝鏈€鏂扮殑鍦ㄥ墠闈級
     private getAllVersionHistory(): VersionHistoryEntry[] {
         if (!versionConfig.VERSION_HISTORY || !Array.isArray(versionConfig.VERSION_HISTORY)) {
             return [];
@@ -926,21 +926,21 @@ class versionManager {
         );
     }
 
-    // 选择版本（更新右侧详情）
+    // 閫夋嫨鐗堟湰锛堟洿鏂板彸渚ц鎯咃級
     private selectVersionInternal(version: string): void {
         if (!version || this.selectedVersion === version) return;
 
-        // 更新选中的版本
+        // 鏇存柊閫変腑鐨勭増鏈?
         this.selectedVersion = version;
 
-        // 更新左侧列表选中状态
+        // 鏇存柊宸︿晶鍒楄〃閫変腑鐘舵€?
         this.updateVersionListSelection();
 
-        // 更新右侧详情内容
+        // 鏇存柊鍙充晶璇︽儏鍐呭
         this.updateVersionDetail();
     }
 
-    // 更新版本列表选中状态
+    // 鏇存柊鐗堟湰鍒楄〃閫変腑鐘舵€?
     private updateVersionListSelection(): void {
         const listItems = document.querySelectorAll('.version-list-item');
         listItems.forEach(item => {
@@ -949,18 +949,18 @@ class versionManager {
         });
     }
 
-    // 更新版本详情
+    // 鏇存柊鐗堟湰璇︽儏
     private updateVersionDetail(): void {
         const versionInfo = this.getVersionInfo(this.selectedVersion ?? undefined);
 
-        // 更新标题
+        // 鏇存柊鏍囬
         const titleElement = document.getElementById('detail-version-title');
         if (titleElement && versionInfo) {
             titleElement.textContent =
-                (versionInfo.title as string) || `版本 v${versionInfo.version}`;
+                (versionInfo.title as string) || `鐗堟湰 v${versionInfo.version}`;
         }
 
-        // 更新元信息
+        // 鏇存柊鍏冧俊鎭?
         const metaElement = document.getElementById('detail-version-meta');
         if (metaElement && versionInfo) {
             metaElement.innerHTML = `
@@ -976,7 +976,7 @@ class versionManager {
             `;
         }
 
-        // 更新内容
+        // 鏇存柊鍐呭
         const contentElement = document.getElementById('version-detail-content');
         if (contentElement) {
             contentElement.innerHTML = this.renderVersionDetailContent(versionInfo);
@@ -984,14 +984,14 @@ class versionManager {
     }
 }
 
-// 创建全局版本管理器实例并挂载到 runtime
+// 鍒涘缓鍏ㄥ眬鐗堟湰绠＄悊鍣ㄥ疄渚嬪苟鎸傝浇鍒?runtime
 const versionManagerInstance = new versionManager();
 runtimeStore.versionManager = versionManagerInstance;
 
-// 暴露 SimpleMarkdown 到全局作用域，使 onclick="SimpleMarkdown.copyLink(this)" 能正常工作
+// 鏆撮湶 SimpleMarkdown 鍒板叏灞€浣滅敤鍩燂紝浣?onclick="SimpleMarkdown.copyLink(this)" 鑳芥甯稿伐浣?
 window.SimpleMarkdown = SimpleMarkdown;
 
-// 等待初始化完成
+// 绛夊緟鍒濆鍖栧畬鎴?
 waitAndExecute(
     () => {
         const complete = config.update_init_complete === true;
@@ -1002,14 +1002,14 @@ waitAndExecute(
             runtimeStore.versionManager = new versionManager();
         }
 
-        // 延迟显示，确保其他内容已加载
+        // 寤惰繜鏄剧ず锛岀‘淇濆叾浠栧唴瀹瑰凡鍔犺浇
         setTimeout(async () => {
             if (runtimeStore.versionManager) {
                 try {
                      
                     await (runtimeStore.versionManager as any).initUpdateModal();
                 } catch (error) {
-                    console.error('初始化版本弹窗失败:', error);
+                    console.error('鍒濆鍖栫増鏈脊绐楀け璐?', error);
                 }
             }
         }, 2000);
@@ -1018,5 +1018,5 @@ waitAndExecute(
     15000
 );
 
-// 导出
+// 瀵煎嚭
 export { versionManager };

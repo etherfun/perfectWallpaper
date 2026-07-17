@@ -1,17 +1,17 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 
 /**
- * 处理日期相关属性
+ * 澶勭悊鏃ユ湡鐩稿叧灞炴€?
  *
- * Stage 7-B (Phase 7 批次 2-B):
- *   - config.xxx = ... 改为 useConfigStore().$patch({...})，解除对 utils/config 单例的依赖。
- *   - src/date.ts 已删除；startDateColorRhythmLoop/stopDateColorRhythmLoop 由
- *     Date.vue useColorRhythm 自动管理；date_format 变化由 Date.vue computed 自动响应。
+ * Stage 7-B (Phase 7 鎵规 2-B):
+ *   - config.xxx = ... 鏀逛负 useConfigStore().$patch({...})锛岃В闄ゅ utils/config 鍗曚緥鐨勪緷璧栥€?
+ *   - src/date.ts 宸插垹闄わ紱startDateColorRhythmLoop/stopDateColorRhythmLoop 鐢?
+ *     Date.vue useColorRhythm 鑷姩绠＄悊锛沝ate_format 鍙樺寲鐢?Date.vue computed 鑷姩鍝嶅簲銆?
  */
 export function useDateProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
@@ -36,8 +36,8 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
             String(properties.odate_roundedcorners.value)
         );
 
-        // 监听日期容器尺寸变化，同步 --date-height CSS 变量。
-        // oDate 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        // 鐩戝惉鏃ユ湡瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--date-height CSS 鍙橀噺銆?
+        // oDate 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
         registerDeferred('date:height-observer', () => {
             const oDate = elements.date.container;
             if (!oDate) return;
@@ -139,7 +139,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
         }
     }
 
-    // date_format.* fields — read current from store, mutate, write back
+    // date_format.* fields 鈥?read current from store, mutate, write back
     const date_format = { ...(store.date_format ?? {}) };
     let dateFormatChanged = false;
 
@@ -183,7 +183,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (FirstLoad) {
-        logInitComplete('[Date]', '日期', FirstLoad);
+        logInitComplete('[Date]', '鏃ユ湡', FirstLoad);
         store.$patch({ date_init_complete: true });
     }
 }

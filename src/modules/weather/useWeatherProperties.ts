@@ -1,22 +1,22 @@
-/**
- * useWeatherProperties — Vue 3 composable 包装 weather 属性处理
+﻿/**
+ * useWeatherProperties 鈥?Vue 3 composable 鍖呰 weather 灞炴€у鐞?
  *
- * Stage 3-2 (Phase 7 批次 3-2): 把 src/propertyHandlers/weatherPropertyHandler.ts
- * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
- * Pinia patch / weather 区域 display / autoWeather 触发），不引入行为变更。
+ * Stage 3-2 (Phase 7 鎵规 3-2): 鎶?src/propertyHandlers/weatherPropertyHandler.ts
+ * 鐨勫叏閮ㄩ€昏緫杩佺Щ鍒?composable銆備繚鎸佸師 handler 鐨勬墍鏈夊壇浣滅敤锛圕SS 鍙橀噺 /
+ * Pinia patch / weather 鍖哄煙 display / autoWeather 瑙﹀彂锛夛紝涓嶅紩鍏ヨ涓哄彉鏇淬€?
  *
- * 关键依赖（保留）：
- * - `weather_address` 模块顶层变量（不在 Pinia）— 用于 runtime 坐标
- * - `autoWeather / generateWeatherTable / weather_init / setWeatherUnitByName` —
- *   天气子模块的命令式 API
- * - `debounce / timerManager` — 通用工具
+ * 鍏抽敭渚濊禆锛堜繚鐣欙級锛?
+ * - `weather_address` 妯″潡椤跺眰鍙橀噺锛堜笉鍦?Pinia锛夆€?鐢ㄤ簬 runtime 鍧愭爣
+ * - `autoWeather / generateWeatherTable / weather_init / setWeatherUnitByName` 鈥?
+ *   澶╂皵瀛愭ā鍧楃殑鍛戒护寮?API
+ * - `debounce / timerManager` 鈥?閫氱敤宸ュ叿
  */
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 import { timerManager } from '../../utils/timer';
 import { debounce } from '../../utils/tool';
 import {
@@ -30,11 +30,11 @@ import { setWeatherUnitByName } from '../weather/weatherState';
 const config = useConfigStore();
 
 /**
- * 处理天气相关属性
+ * 澶勭悊澶╂皵鐩稿叧灞炴€?
  *
- * Stage 7-C (Phase 7 批次 2-C):
- *   - Pinia 字段改用 useConfigStore().$patch({...})。
- *   - weather_address.latitude 等运行时坐标仍用 module 顶层变量（不在 Pinia）。
+ * Stage 7-C (Phase 7 鎵规 2-C):
+ *   - Pinia 瀛楁鏀圭敤 useConfigStore().$patch({...})銆?
+ *   - weather_address.latitude 绛夎繍琛屾椂鍧愭爣浠嶇敤 module 椤跺眰鍙橀噺锛堜笉鍦?Pinia锛夈€?
  */
 export function useWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
@@ -173,7 +173,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         store.$patch(patch);
     }
 
-    // 是否天气
+    // 鏄惁澶╂皵
     if (properties.weather_show) {
         timerManager.remove('updataWeather');
 
@@ -190,7 +190,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         }
     }
 
-    // 天气颜色
+    // 澶╂皵棰滆壊
     if (properties.weather_Color) {
         const c = properties.weather_Color.value
             .split(' ')
@@ -247,7 +247,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         store.$patch({ weather_bluryakeli: properties.weather_bluryakeli.value });
     }
 
-    // 天气透明度
+    // 澶╂皵閫忔槑搴?
     if (properties.weather_timetransparency) {
         elements.body.style.setProperty(
             '--weather-opacity',
@@ -256,7 +256,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         store.$patch({ weather_timetransparency: properties.weather_timetransparency.value });
     }
 
-    // 天气圆角
+    // 澶╂皵鍦嗚
     if (properties.weather_roundedcorners) {
         elements.body.style.setProperty(
             '--weather-roundedcorners',
@@ -264,8 +264,8 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         );
         store.$patch({ weather_roundedcorners: properties.weather_roundedcorners.value });
 
-        // 监听天气容器尺寸变化，同步 --weather-height CSS 变量。
-        // weather 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        // 鐩戝惉澶╂皵瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--weather-height CSS 鍙橀噺銆?
+        // weather 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
         registerDeferred('weather:height-observer', () => {
             const weather = elements.weather.weather;
             if (!weather) return;
@@ -283,7 +283,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         });
     }
 
-    // 天气大小
+    // 澶╂皵澶у皬
     if (properties.weather_size) {
         const s = properties.weather_size.value;
         elements.body.style.setProperty(
@@ -303,7 +303,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         store.$patch({ weather_showwidth: properties.weather_showwidth.value });
     }
 
-    // 天气位置
+    // 澶╂皵浣嶇疆
     if (properties.weatherX) {
         elements.body.style.setProperty('--weather-left', `${properties.weatherX.value}%`);
         store.$patch({ weather_x: properties.weatherX.value });
@@ -315,7 +315,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (FirstLoad) {
-        logInitComplete('[Weather]', '天气', FirstLoad);
+        logInitComplete('[Weather]', '澶╂皵', FirstLoad);
         store.$patch({ weather_init_complete: true });
     }
 }

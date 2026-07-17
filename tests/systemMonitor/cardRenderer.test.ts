@@ -1,4 +1,4 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
  * Tests for src/systemMonitor/cardRenderer.ts
  *
@@ -15,7 +15,7 @@ import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vi
 import { buildCards, destroyCards, updateCards } from '@/modules/systemMonitor/cardRenderer';
 import type { CardRenderData } from '@/modules/systemMonitor/types';
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: vi.fn((key: string) => {
         const map: Record<string, string> = {
             sysmon_card_util: 'Util',
@@ -24,11 +24,11 @@ vi.mock('@/i18n', () => ({
             sysmon_card_vram: 'VRAM',
             sysmon_card_read: 'Read',
             sysmon_card_write: 'Write',
-            sysmon_card_rx: '↓RX',
-            sysmon_card_tx: '↑TX',
-            sysmon_card_axis_util: '0–100%',
-            sysmon_card_axis_power: '0–peak',
-            sysmon_card_axis_last_2_min: 'last 2 min · overlaid',
+            sysmon_card_rx: '鈫揜X',
+            sysmon_card_tx: '鈫慣X',
+            sysmon_card_axis_util: '0鈥?00%',
+            sysmon_card_axis_power: '0鈥損eak',
+            sysmon_card_axis_last_2_min: 'last 2 min 路 overlaid',
             sysmon_card_freq: 'Freq',
             sysmon_card_hot: 'Hot',
             sysmon_card_vcore: 'V',
@@ -72,35 +72,35 @@ function makeParent(): HTMLElement {
 function makeRenderData(): CardRenderData {
     return {
         cpu: {
-            label: 'CPU · AMD Ryzen 9 7845HX',
+            label: 'CPU 路 AMD Ryzen 9 7845HX',
             value: '13%',
-            extra: '(89°C)',
+            extra: '(89掳C)',
             meta: [
                 { label: 'Freq', value: '5065 MHz' },
                 { label: 'Power', value: '68.1 W' },
             ],
             sparks: [
                 { kind: 'util', history: [10, 20, 30, 13], displayValue: '13%' },
-                { kind: 'temp', history: [75, 80, 89, 89], displayValue: '89°C', range: { lo: 40, hi: 95, crit: 95 } },
+                { kind: 'temp', history: [75, 80, 89, 89], displayValue: '89掳C', range: { lo: 40, hi: 95, crit: 95 } },
             ],
             sparkLayout: 'double-full',
         },
         gpu: {
-            label: 'GPU · NVIDIA GeForce RTX 5060 Laptop',
+            label: 'GPU 路 NVIDIA GeForce RTX 5060 Laptop',
             value: '17%',
-            extra: '(56°C)',
+            extra: '(56掳C)',
             meta: [
                 { label: 'Power', value: '25.5 W' },
                 { label: 'VRAM', value: '2.7/8.0 GB' },
             ],
             sparks: [
                 { kind: 'util', history: [10, 15, 17], displayValue: '17%' },
-                { kind: 'temp', history: [50, 54, 56], displayValue: '56°C', range: { lo: 30, hi: 95, crit: 92 } },
+                { kind: 'temp', history: [50, 54, 56], displayValue: '56掳C', range: { lo: 30, hi: 95, crit: 92 } },
             ],
             sparkLayout: 'quad',
         },
         memory: {
-            label: 'MEM · 33.5 GB total',
+            label: 'MEM 路 33.5 GB total',
             value: '57%',
             extra: '(18.9/33.5 GB)',
             meta: [
@@ -127,13 +127,13 @@ function makeRenderData(): CardRenderData {
         },
         disks: [
             {
-                label: 'DISK #0 · YMTC PC411 · NVMe',
+                label: 'DISK #0 路 YMTC PC411 路 NVMe',
                 value: '42%',
                 extra: '(215 GB / 512 GB)',
                 meta: [
                     { label: 'Used', value: '215 GB' },
                     { label: 'Free', value: '297 GB' },
-                    { label: 'Temp', value: '45°C' },
+                    { label: 'Temp', value: '45掳C' },
                     { label: 'Life', value: '82%' },
                 ],
                 sparks: [
@@ -147,7 +147,7 @@ function makeRenderData(): CardRenderData {
     };
 }
 
-// ─── buildCards ───────────────────────────────────────────────────
+// 鈹€鈹€鈹€ buildCards 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 describe('buildCards', () => {
     let parent: HTMLElement;
@@ -186,7 +186,7 @@ describe('buildCards', () => {
         const first = buildCards(parent);
         const firstContainer = first.container;
 
-        // Build again — old container should be removed, new one created
+        // Build again 鈥?old container should be removed, new one created
         const second = buildCards(parent);
 
         expect(document.body.contains(firstContainer)).toBe(false);
@@ -207,7 +207,7 @@ describe('buildCards', () => {
     });
 });
 
-// ─── destroyCards ─────────────────────────────────────────────────
+// 鈹€鈹€鈹€ destroyCards 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 describe('destroyCards', () => {
     let parent: HTMLElement;
@@ -233,7 +233,7 @@ describe('destroyCards', () => {
     });
 });
 
-// ─── updateCards ──────────────────────────────────────────────────
+// 鈹€鈹€鈹€ updateCards 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 describe('updateCards', () => {
     let parent: HTMLElement;
@@ -253,10 +253,10 @@ describe('updateCards', () => {
         updateCards(refs, data);
 
         expect(refs.cards.cpu?.querySelector('.sysmon-card__label')?.textContent).toBe(
-            'CPU · AMD Ryzen 9 7845HX'
+            'CPU 路 AMD Ryzen 9 7845HX'
         );
         expect(refs.cards.cpu?.querySelector('.sysmon-card__value')?.textContent).toBe('13%');
-        expect(refs.cards.cpu?.querySelector('.sysmon-card__extra')?.textContent).toBe('(89°C)');
+        expect(refs.cards.cpu?.querySelector('.sysmon-card__extra')?.textContent).toBe('(89掳C)');
     });
 
     test('sets meta grid content', () => {
@@ -320,9 +320,9 @@ describe('updateCards', () => {
     });
 });
 
-// ─── Disk cards ───────────────────────────────────────────────────
+// 鈹€鈹€鈹€ Disk cards 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
-describe('updateCards — disks', () => {
+describe('updateCards 鈥?disks', () => {
     let parent: HTMLElement;
     let refs: ReturnType<typeof buildCards>;
 
@@ -342,7 +342,7 @@ describe('updateCards — disks', () => {
         expect(refs.cards.disks.length).toBe(1);
         expect(refs.cards.disks[0]?.dataset.metric).toBe('disk0');
         expect(refs.cards.disks[0]?.querySelector('.sysmon-card__label')?.textContent).toBe(
-            'DISK #0 · YMTC PC411 · NVMe'
+            'DISK #0 路 YMTC PC411 路 NVMe'
         );
     });
 
@@ -365,7 +365,7 @@ describe('updateCards — disks', () => {
         expect(refs.cards.disks.length).toBe(1);
 
         data.disks.push({
-            label: 'DISK #1 · BIWIN NV7400 · NVMe',
+            label: 'DISK #1 路 BIWIN NV7400 路 NVMe',
             value: '28%',
             extra: '(545 GB / 2 TB)',
             meta: [{ label: 'Used', value: '545 GB' }],
@@ -378,7 +378,7 @@ describe('updateCards — disks', () => {
     });
 });
 
-// ─── Spark head HTML ──────────────────────────────────────────────
+// 鈹€鈹€鈹€ Spark head HTML 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
 
 describe('spark head labels', () => {
     let parent: HTMLElement;

@@ -1,15 +1,15 @@
-/**
- * 天气数据格式化函数
- * 职责：将天气数据转换为显示用的格式化字符串
+﻿/**
+ * 澶╂皵鏁版嵁鏍煎紡鍖栧嚱鏁?
+ * 鑱岃矗锛氬皢澶╂皵鏁版嵁杞崲涓烘樉绀虹敤鐨勬牸寮忓寲瀛楃涓?
  */
 
-import { globalT } from '@/i18n';
+import { globalT } from '@/utils/i18n';
 
 import type { WeatherAlert } from './types';
 import { weather_data } from './weatherState';
 
 /**
- * 获取空气质量描述文本
+ * 鑾峰彇绌烘皵璐ㄩ噺鎻忚堪鏂囨湰
  */
 export function getAirQualityText(airValue: string | number): string {
     if (!airValue || airValue === '') return '';
@@ -28,7 +28,7 @@ export function getAirQualityText(airValue: string | number): string {
 }
 
 /**
- * 生成天气预警HTML
+ * 鐢熸垚澶╂皵棰勮HTML
  */
 export function generateAlertHTML(): string {
     if (

@@ -34,7 +34,7 @@ export default defineConfig({
                 'src/dockbar/renderer.ts',
                 'src/dockbar/iconCache.ts',
                 'src/slide/transition.ts',
-                'src/propertyHandlers/_helpers.ts',
+                'src/utils/helpers.ts',
                 'src/version/simple-markdown.ts',
             ],
             exclude: ['src/utils/config/**', 'src/utils/elementManager/**'],

@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Tests for src/composables/usePWLine.ts — Stage 5-B
+ * Tests for src/composables/usePWLine.ts 鈥?Stage 5-B
  *
  * Mirrors the usePWCircle test (Stage 5-A):
  *   - resize handler runs on mount (calls PWLineInit + setCTXLine)
@@ -51,7 +51,7 @@ vi.mock('@/modules/audio-visualizer/PWLine', () => ({
     getLineXY: spies.getLineXY,
 }));
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));

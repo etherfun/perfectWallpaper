@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Tests for src/composables/useSakura.ts — Stage 5-C2
+ * Tests for src/composables/useSakura.ts 鈥?Stage 5-C2
  *
  * Verifies the composable wraps src/sakura/*:
  *   - mount calls applySakuraTransparency once (initial sync)
@@ -33,7 +33,7 @@ vi.mock('@/modules/sakura', () => ({
     sakuraLoad: spies.sakuraLoad,
     sakuraReLoadEffect: spies.sakuraReLoadEffect,
     sakuraResize: spies.sakuraResize,
-    // Other barrel exports — keep them as no-ops so the module loads.
+    // Other barrel exports 鈥?keep them as no-ops so the module loads.
     animate: vi.fn(),
     getAnimating: vi.fn(() => false),
     setAnimating: vi.fn(),
@@ -46,7 +46,7 @@ vi.mock('@/modules/sakura', () => ({
     Vector3: class {},
 }));
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
@@ -90,7 +90,7 @@ describe('useSakura', () => {
     test('isActive ref reflects config.showSakura on mount', () => {
         const { Host, getApi } = makeHost();
         mount(Host, { attachTo: document.body, global: { plugins: [pinia] } });
-        // BUILTIN_DEFAULTS.showSakura = true → isActive initialized to true
+        // BUILTIN_DEFAULTS.showSakura = true 鈫?isActive initialized to true
         expect(getApi().isActive.value).toBe(true);
     });
 

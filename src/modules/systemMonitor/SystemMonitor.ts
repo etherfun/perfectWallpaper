@@ -1,4 +1,4 @@
-import { globalT } from '@/i18n';
+﻿import { globalT } from '@/utils/i18n';
 
 import { fetchAggregate } from './api/api';
 import { formatBytes, formatTemperature } from './api/formatters';
@@ -24,8 +24,8 @@ import { type DisplayMode, pushHistory, renderRow, type RowPayload } from './ui/
 
 /**
  * System Monitor Module
- * 系统监控模块 - 显示CPU、GPU、内存等信息
- * 布局使用预置HTML结构，JS只负责更新文本内容
+ * 绯荤粺鐩戞帶妯″潡 - 鏄剧ずCPU銆丟PU銆佸唴瀛樼瓑淇℃伅
+ * 甯冨眬浣跨敤棰勭疆HTML缁撴瀯锛孞S鍙礋璐ｆ洿鏂版枃鏈唴瀹?
  */
 export class SystemMonitor {
     // Pre-built DOM elements from index.html
@@ -97,9 +97,9 @@ export class SystemMonitor {
     }
 
     /**
-     * 延时初始化：如果构造函数执行时 DOM 尚不存在（Vue 尚未 mount），
-     * 则在 DOM 就绪后由 SystemMonitor.vue 的 onMounted 调用本方法。
-     * 幂等方法——已初始化则跳过。
+     * 寤舵椂鍒濆鍖栵細濡傛灉鏋勯€犲嚱鏁版墽琛屾椂 DOM 灏氫笉瀛樺湪锛圴ue 灏氭湭 mount锛夛紝
+     * 鍒欏湪 DOM 灏辩华鍚庣敱 SystemMonitor.vue 鐨?onMounted 璋冪敤鏈柟娉曘€?
+     * 骞傜瓑鏂规硶鈥斺€斿凡鍒濆鍖栧垯璺宠繃銆?
      */
     ensureInitialized(): void {
         if (this.refs) return;
@@ -129,7 +129,7 @@ export class SystemMonitor {
         // underlying error (HTTP / network /
         // server message). Only start the
         // disconnect timer if we've ever
-        // connected before — first-poll failure
+        // connected before 鈥?first-poll failure
         // during startup is expected (server
         // might still be initializing).
         if (this.hasEverConnected && !this.disconnectTimer) {
@@ -148,7 +148,7 @@ export class SystemMonitor {
             return;
         }
 
-        // ── Row-mode rendering (existing) ──
+        // 鈹€鈹€ Row-mode rendering (existing) 鈹€鈹€
 
         // CPU
         this.renderSimple(refs.cpuRow, this.config.showCpu, this.config.cpuMode, () => {
@@ -271,7 +271,7 @@ export class SystemMonitor {
                 kind: 'temp',
                 history: [...this.cpuTempHistory],
                 range: { lo: 40, hi: Math.max(cpuCrit + 5, 95), crit: cpuCrit },
-                displayValue: `${Math.round(temp)}°C`,
+                displayValue: `${Math.round(temp)}掳C`,
                 tag: `max ${Math.round(cpu.temperature_max ?? temp)}`,
             });
         }
@@ -302,9 +302,9 @@ export class SystemMonitor {
         if (voltage) meta.push({ label: globalT('sysmon_card_vcore'), value: voltage });
 
         return {
-            label: `${globalT('sysmon_card_label_cpu')} · ${cpu.brand}`,
+            label: `${globalT('sysmon_card_label_cpu')} 路 ${cpu.brand}`,
             value: `${usage}%`,
-            extra: hasTemp ? `(${Math.round(temp)}°C)` : null,
+            extra: hasTemp ? `(${Math.round(temp)}掳C)` : null,
             meta,
             sparks,
             sparkLayout,
@@ -333,7 +333,7 @@ export class SystemMonitor {
                 kind: 'temp',
                 history: [...this.gpuTempHistory],
                 range: { lo: 30, hi: Math.max(crit + 5, 95), crit },
-                displayValue: `${Math.round(temp)}°C`,
+                displayValue: `${Math.round(temp)}掳C`,
             });
             sparkCount++;
         }
@@ -376,7 +376,7 @@ export class SystemMonitor {
         const memJunc = gpu.temperature_memory_junction;
         const memJuncStr =
             memJunc != null && memJunc > 0 && Number.isFinite(memJunc)
-                ? `${Math.round(memJunc)}°C`
+                ? `${Math.round(memJunc)}掳C`
                 : null;
 
         const meta: Array<{ label: string; value: string }> = [];
@@ -387,9 +387,9 @@ export class SystemMonitor {
         if (memJuncStr) meta.push({ label: globalT('sysmon_card_mem_junc'), value: memJuncStr });
 
         return {
-            label: `${globalT('sysmon_card_label_gpu')} · ${gpu.model}`,
+            label: `${globalT('sysmon_card_label_gpu')} 路 ${gpu.model}`,
             value: `${usage}%`,
-            extra: hasTemp ? `(${Math.round(temp)}°C)` : null,
+            extra: hasTemp ? `(${Math.round(temp)}掳C)` : null,
             meta,
             sparks,
             sparkLayout: sparkLayout as CardPayload['sparkLayout'],
@@ -472,7 +472,7 @@ export class SystemMonitor {
     /**
      * Build disk card payloads from the drives array in the aggregate.
      * History maps are updated inline so sparklines stay in sync with
-     * the main 1-Hz poll — no separate disk polling needed.
+     * the main 1-Hz poll 鈥?no separate disk polling needed.
      */
     private buildDiskCards(drives: DiskDriveInfo[]): CardPayload[] {
         if (!drives || !this.config.showDisk) return [];
@@ -563,7 +563,7 @@ export class SystemMonitor {
                 { label: globalT('sysmon_card_free'), value: formatBytes(disk.total_free_bytes ?? 0) },
             ];
             if (hasTemp)
-                meta.push({ label: globalT('sysmon_card_temp'), value: `${Math.round(temp)}°C` });
+                meta.push({ label: globalT('sysmon_card_temp'), value: `${Math.round(temp)}掳C` });
             if (life != null)
                 meta.push({ label: globalT('sysmon_card_life'), value: `${Math.round(life)}%` });
             if (disk.host_reads_gb != null)
@@ -578,7 +578,7 @@ export class SystemMonitor {
                 });
 
             return {
-                label: `${globalT('sysmon_card_label_disk')} #${index} · ${disk.model} · ${busLabel}`,
+                label: `${globalT('sysmon_card_label_disk')} #${index} 路 ${disk.model} 路 ${busLabel}`,
                 value: primaryStr,
                 extra: null,
                 meta,
@@ -794,7 +794,7 @@ export class SystemMonitor {
  * the row has no data-metric attribute.
  */
 function historyForMetric(row: HTMLElement, owner: SystemMonitor): number[] {
-    // Access private fields through a typed alias — this is a deliberate,
+    // Access private fields through a typed alias 鈥?this is a deliberate,
     // tightly-scoped bridge that keeps the renderer free of metric branching.
     const self = owner as unknown as {
         cpuHistory: number[];
@@ -825,7 +825,7 @@ function clampPct(v: number): number {
     return v;
 }
 
-// 导出单例
+// 瀵煎嚭鍗曚緥
 let instance: SystemMonitor | null = null;
 
 export function initSystemMonitor(): SystemMonitor {

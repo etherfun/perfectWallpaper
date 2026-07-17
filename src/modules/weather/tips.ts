@@ -1,11 +1,11 @@
-import { globalT } from '@/i18n';
+﻿import { globalT } from '@/utils/i18n';
 
 import { WeatherData, WeatherTip } from './types';
 
 /**
- * 获取天气提示
- * @param weatherData - 天气数据
- * @returns 天气提示文本
+ * 鑾峰彇澶╂皵鎻愮ず
+ * @param weatherData - 澶╂皵鏁版嵁
+ * @returns 澶╂皵鎻愮ず鏂囨湰
  */
 export function getWeatherTips(weatherData: WeatherData): string {
     const tips: WeatherTip[] = [];
@@ -28,11 +28,11 @@ export function getWeatherTips(weatherData: WeatherData): string {
     //const pressure = parseInt(weatherData.pressure) || 0;
     const precipitation = parseFloat(weatherData.precip) || 0;
 
-    // 计算温度范围
+    // 璁＄畻娓╁害鑼冨洿
     let maxTemp = -100;
     let minTemp = 100;
 
-    // 使用24小时预报数据计算温度范围
+    // 浣跨敤24灏忔椂棰勬姤鏁版嵁璁＄畻娓╁害鑼冨洿
     if (weatherData.sevenHourlyData?.Temps) {
         weatherData.sevenHourlyData.Temps.forEach(tempStr => {
             const temp = parseInt(tempStr);
@@ -43,24 +43,24 @@ export function getWeatherTips(weatherData: WeatherData): string {
         });
     }
 
-    // 如果无法从24小时数据获取温度，使用当前温度作为默认值
+    // 濡傛灉鏃犳硶浠?4灏忔椂鏁版嵁鑾峰彇娓╁害锛屼娇鐢ㄥ綋鍓嶆俯搴︿綔涓洪粯璁ゅ€?
     if (maxTemp === -100 && !isNaN(currentTemp)) {
         maxTemp = currentTemp;
         minTemp = currentTemp;
     }
 
-    // 检查是否有天气预警
+    // 妫€鏌ユ槸鍚︽湁澶╂皵棰勮
     const hasWeatherAlert =
         weatherData.weatherAlert &&
         Array.isArray(weatherData.weatherAlert) &&
         weatherData.weatherAlert.length > 0;
 
-    // 优先级 0: 天气预警（最高优先级）
+    // 浼樺厛绾?0: 澶╂皵棰勮锛堟渶楂樹紭鍏堢骇锛?
     if (hasWeatherAlert) {
         tips.push({ priority: 0, text: globalT('weather_tip_alert') });
     }
 
-    // 优先级 1: 极端天气状况
+    // 浼樺厛绾?1: 鏋佺澶╂皵鐘跺喌
     const sunnyText = globalT('weather_condition_sunny');
     const cloudyText = globalT('weather_condition_cloudy');
     const rainText = globalT('weather_condition_rain');
@@ -80,7 +80,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 1, text: globalT('weather_tip_windy') });
     }
 
-    // 优先级 2: 健康相关建议
+    // 浼樺厛绾?2: 鍋ュ悍鐩稿叧寤鸿
     if (airQuality > 150) {
         tips.push({ priority: 2, text: globalT('weather_tip_air_quality_poor') });
     } else if (airQuality > 100) {
@@ -95,7 +95,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 2, text: globalT('weather_tip_uv_moderate') });
     }
 
-    // 优先级 3: 温度相关建议
+    // 浼樺厛绾?3: 娓╁害鐩稿叧寤鸿
     if (maxTemp >= 35) {
         tips.push({ priority: 3, text: globalT('weather_tip_hot_extreme') });
     } else if (maxTemp >= 30) {
@@ -106,7 +106,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 3, text: globalT('weather_tip_cold') });
     }
 
-    // 体感温度与实测温度差异
+    // 浣撴劅娓╁害涓庡疄娴嬫俯搴﹀樊寮?
     const tempDiff = Math.abs(feelsTemp - currentTemp);
     if (tempDiff >= 5 && !isNight) {
         if (feelsTemp > currentTemp) {
@@ -116,21 +116,21 @@ export function getWeatherTips(weatherData: WeatherData): string {
         }
     }
 
-    // 优先级 4: 湿度相关建议
+    // 浼樺厛绾?4: 婀垮害鐩稿叧寤鸿
     if (humidity >= 80) {
         tips.push({ priority: 4, text: globalT('weather_tip_humidity_high') });
     } else if (humidity <= 30) {
         tips.push({ priority: 4, text: globalT('weather_tip_humidity_low') });
     }
 
-    // 优先级 5: 能见度建议
+    // 浼樺厛绾?5: 鑳借搴﹀缓璁?
     if (visibility > 0 && visibility < 1) {
         tips.push({ priority: 5, text: globalT('weather_tip_visibility_poor') });
     } else if (visibility >= 1 && visibility < 5) {
         tips.push({ priority: 5, text: globalT('weather_tip_visibility_low') });
     }
 
-    // 优先级 6: 时间相关建议
+    // 浼樺厛绾?6: 鏃堕棿鐩稿叧寤鸿
     if ((weatherText.includes(sunnyText) || weatherText.includes(cloudyText)) && !isNight) {
         if (isMorning) {
             tips.push({ priority: 6, text: globalT('weather_tip_morning_sunny') });
@@ -145,7 +145,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 6, text: globalT('weather_tip_sunny_night') });
     }
 
-    // 优先级 7: 通用建议
+    // 浼樺厛绾?7: 閫氱敤寤鸿
     if (cloudCover >= 80) {
         tips.push({ priority: 7, text: globalT('weather_tip_cloudy_heavy') });
     } else if (cloudCover >= 50) {
@@ -158,13 +158,13 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 7, text: globalT('weather_tip_moderate_precip') });
     }
 
-    // 按优先级排序，取优先级最高的
+    // 鎸変紭鍏堢骇鎺掑簭锛屽彇浼樺厛绾ф渶楂樼殑
     if (tips.length > 0) {
         tips.sort((a, b) => a.priority - b.priority);
         return tips[0]?.text ?? '';
     }
 
-    // 默认建议
+    // 榛樿寤鸿
     if (isMorning) {
         return globalT('weather_tip_default_morning');
     } else if (isAfternoon) {

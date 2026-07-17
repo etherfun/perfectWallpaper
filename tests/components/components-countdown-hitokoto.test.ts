@@ -1,11 +1,11 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Content-bearing SFC mount tests — Stage 4 (Countdown / Hitokoto)
+ * Content-bearing SFC mount tests 鈥?Stage 4 (Countdown / Hitokoto)
  *
  * Countdown: pure computed off (config.countdown_year/month/day, now).
- * Hitokoto:   fetches v1.hitokoto.cn on mount (network) — we stub global
+ * Hitokoto:   fetches v1.hitokoto.cn on mount (network) 鈥?we stub global
  *             fetch with a small delay so we can also verify the default
- *             "未获取" render before the fetch resolves.
+ *             "鏈幏鍙? render before the fetch resolves.
  */
 
 import { mount, flushPromises } from '@vue/test-utils';
@@ -17,7 +17,7 @@ import Hitokoto from '@/components/Hitokoto.vue';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
@@ -45,7 +45,7 @@ describe('Countdown.vue', () => {
         const root = wrapper.find('#countdown');
         expect(root.exists()).toBe(true);
         const text = wrapper.find('.text').text();
-        // Format: <prefix>D:H:M:S<suffix> — colon-separated, day is positive int
+        // Format: <prefix>D:H:M:S<suffix> 鈥?colon-separated, day is positive int
         expect(text).toMatch(/^\d+:\d{2}:\d{2}:\d{2}$/);
         expect(() => wrapper.unmount()).not.toThrow();
     });
@@ -79,35 +79,35 @@ describe('Countdown.vue', () => {
 });
 
 describe('Hitokoto.vue', () => {
-    test('mounts with #hitokoto root and shows default 未获取 text initially', () => {
+    test('mounts with #hitokoto root and shows default 鏈幏鍙?text initially', () => {
         // Stub fetch so no network call happens
         vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('network blocked in test')));
 
         const wrapper = mount(Hitokoto, { attachTo: document.body });
         const root = wrapper.find('#hitokoto');
         expect(root.exists()).toBe(true);
-        // Default rendered: template 1 = "<div class='text1'>{一言}</div><div class='text2'>——{作者}{出处}</div>"
-        // 一言 default = '未获取' → text should contain 未获取
+        // Default rendered: template 1 = "<div class='text1'>{涓€瑷€}</div><div class='text2'>鈥斺€攞浣滆€厎{鍑哄}</div>"
+        // 涓€瑷€ default = '鏈幏鍙? 鈫?text should contain 鏈幏鍙?
         const text = wrapper.find('.text').text();
-        expect(text).toContain('未获取');
+        expect(text).toContain('鏈幏鍙?);
         expect(() => wrapper.unmount()).not.toThrow();
     });
 
     test('updates rendered text after setHitokoto() is called on runtime store', async () => {
         vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
             json: async () => ({
-                hitokoto: '愿你遍历山河，仍觉人间值得。',
-                from: '未知',
-                from_who: '佚名',
+                hitokoto: '鎰夸綘閬嶅巻灞辨渤锛屼粛瑙変汉闂村€煎緱銆?,
+                from: '鏈煡',
+                from_who: '浣氬悕',
             }),
         }));
 
         const wrapper = mount(Hitokoto, { attachTo: document.body });
         const runtime = useRuntimeStore();
-        runtime.setHitokoto('愿你遍历山河，仍觉人间值得。', '未知', '佚名');
+        runtime.setHitokoto('鎰夸綘閬嶅巻灞辨渤锛屼粛瑙変汉闂村€煎緱銆?, '鏈煡', '浣氬悕');
         await flushPromises();
         const text = wrapper.find('.text').text();
-        expect(text).toContain('愿你遍历山河');
+        expect(text).toContain('鎰夸綘閬嶅巻灞辨渤');
         expect(() => wrapper.unmount()).not.toThrow();
     });
 });

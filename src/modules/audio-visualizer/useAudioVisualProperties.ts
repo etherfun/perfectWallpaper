@@ -1,10 +1,10 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 
 const config = useConfigStore();
 
@@ -474,20 +474,20 @@ export function useAudioVisualProperties(
     if (properties.audioSmoothEnabled) {
         const v = properties.audioSmoothEnabled.value;
         patch.audio_smooth_enabled = v;
-        config.audio_smooth_enabled = v; // 同步到旧 config（audioVisualizer.ts 读取）
+        config.audio_smooth_enabled = v; // 鍚屾鍒版棫 config锛坅udioVisualizer.ts 璇诲彇锛?
     }
 
     if (properties.audioSmoothFactor) {
         const v = properties.audioSmoothFactor.value;
         patch.audio_smooth_factor = v;
-        config.audio_smooth_factor = v; // 同步到旧 config
+        config.audio_smooth_factor = v; // 鍚屾鍒版棫 config
     }
 
     if (properties.audioSpatialWindow) {
         let windowValue = properties.audioSpatialWindow.value;
         windowValue = windowValue % 2 === 0 ? windowValue + 1 : windowValue;
         patch.audio_spatial_window = windowValue;
-        config.audio_spatial_window = windowValue; // 同步到旧 config
+        config.audio_spatial_window = windowValue; // 鍚屾鍒版棫 config
     }
 
     if (Object.keys(patch).length > 0) {
@@ -495,6 +495,6 @@ export function useAudioVisualProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[audioVisualizer]', '可视化音频', FirstLoad);
+        logInitComplete('[audioVisualizer]', '鍙鍖栭煶棰?, FirstLoad);
     }
 }

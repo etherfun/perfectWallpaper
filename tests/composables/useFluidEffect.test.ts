@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Tests for src/composables/useFluidEffect.ts — Stage 5-C2
+ * Tests for src/composables/useFluidEffect.ts 鈥?Stage 5-C2
  *
  * Verifies the composable wraps FluidEffect state machine:
  *   - FluidEffect.create() is called lazily (only when first enabled)
@@ -31,7 +31,7 @@ const mockState = vi.hoisted(() => {
         // Each create() call returns the SAME shared mockInstance so all
         // spies (enable/disable/etc.) live on one object and can be
         // inspected from the test body.
-        // (No need for markRaw — useFluidEffect uses shallowRef which keeps
+        // (No need for markRaw 鈥?useFluidEffect uses shallowRef which keeps
         // the object non-reactive by default.)
         return Object.assign(mockState.instance, mockState.methods);
     });
@@ -70,7 +70,7 @@ vi.mock('@/modules/fluid', () => ({
     },
 }));
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
@@ -136,7 +136,7 @@ describe('useFluidEffect', () => {
         expect(mockMethods.enable).toHaveBeenCalled();
     });
 
-    test('watch on fluidEffectEnabled false → true calls enable, true → false calls disable', async () => {
+    test('watch on fluidEffectEnabled false 鈫?true calls enable, true 鈫?false calls disable', async () => {
         const { Host } = makeHost();
         const pinia = createPinia();
         const wrapper = mount(Host, {
@@ -210,7 +210,7 @@ describe('useFluidEffect', () => {
         // `isFullscreen` reads `instance.value?.enabled` which only re-runs
         // when `instance.value` is reassigned (shallowRef). Per-field
         // mutations through the WebGL/RAF bridge don't trigger the computed
-        // by themselves — that's intentional (avoid 60 Hz re-renders).
+        // by themselves 鈥?that's intentional (avoid 60 Hz re-renders).
         // The contract is: read FluidEffect state directly for fine-grained
         // checks, or triggerRef(instance.value) after external mutations.
         expect(mockInstance.enabled).toBe(true);

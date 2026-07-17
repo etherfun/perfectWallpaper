@@ -1,5 +1,5 @@
 /**
- * Tests for src/propertyHandlers/_helpers.ts
+ * Tests for src/utils/helpers.ts
  *
  * Covers logInitComplete:
  *   - emits info log when FirstLoad is true
@@ -9,7 +9,7 @@
 
 import { beforeEach, describe, expect, test } from 'vitest';
 
-import { logInitComplete } from '@/modules/core/propertyHandlers/_helpers';
+import { logInitComplete } from '@/utils/helpers';
 import { debugLogger } from '@/utils/logger';
 
 describe('logInitComplete', () => {

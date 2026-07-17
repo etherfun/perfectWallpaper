@@ -1,15 +1,15 @@
-/**
- * 七小时预报 Tooltip
- * 职责：绑定七小时预报悬停提示
+﻿/**
+ * 涓冨皬鏃堕鎶?Tooltip
+ * 鑱岃矗锛氱粦瀹氫竷灏忔椂棰勬姤鎮仠鎻愮ず
  */
 
-import { globalT } from '@/i18n';
+import { globalT } from '@/utils/i18n';
 
 import { getIconSvg } from '../index';
 import { weather_data } from '../weatherState';
 
 /**
- * 绑定七小时预报悬停提示
+ * 缁戝畾涓冨皬鏃堕鎶ユ偓鍋滄彁绀?
  */
 export function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number): void {
     const tooltip = document.querySelector('#weatherHourlyTooltip') as HTMLElement | null;

@@ -1,9 +1,9 @@
-/**
- * 天气 UI 状态函数
- * 职责：控制天气加载、错误等 UI 状态
+﻿/**
+ * 澶╂皵 UI 鐘舵€佸嚱鏁?
+ * 鑱岃矗锛氭帶鍒跺ぉ姘斿姞杞姐€侀敊璇瓑 UI 鐘舵€?
  */
 
-import { globalT } from '@/i18n';
+import { globalT } from '@/utils/i18n';
 
 import { elements } from '../../../utils/elementManager';
 
@@ -20,7 +20,7 @@ function getOriginalChildren(container: HTMLElement): Element[] | undefined {
 }
 
 /**
- * 显示天气加载状态
+ * 鏄剧ず澶╂皵鍔犺浇鐘舵€?
  */
 export function showWeatherLoading(): void {
     const leftContainer = elements.weather.leftContainer;
@@ -42,7 +42,7 @@ export function showWeatherLoading(): void {
 }
 
 /**
- * 隐藏天气加载状态，恢复原始子元素
+ * 闅愯棌澶╂皵鍔犺浇鐘舵€侊紝鎭㈠鍘熷瀛愬厓绱?
  */
 export function hideWeatherLoading(): void {
     const leftContainer = elements.weather.leftContainer;
@@ -66,7 +66,7 @@ export function hideWeatherLoading(): void {
 }
 
 /**
- * 显示天气错误信息
+ * 鏄剧ず澶╂皵閿欒淇℃伅
  */
 export function showWeatherError(message: string): void {
     const leftContainer = elements.weather.leftContainer;

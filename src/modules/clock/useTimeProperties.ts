@@ -1,17 +1,17 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 
 /**
- * 处理时间/时钟相关属性
+ * 澶勭悊鏃堕棿/鏃堕挓鐩稿叧灞炴€?
  *
- * Stage 7-B (Phase 7 批次 2-B):
- *   - config.xxx = ... 改为 useConfigStore().$patch({...})，解除对 utils/config 单例的依赖。
- *   - src/time.ts 已删除；startTimeColorRhythmLoop/stopTimeColorRhythmLoop 由
- *     Clock.vue useColorRhythm 自动管理。
+ * Stage 7-B (Phase 7 鎵规 2-B):
+ *   - config.xxx = ... 鏀逛负 useConfigStore().$patch({...})锛岃В闄ゅ utils/config 鍗曚緥鐨勪緷璧栥€?
+ *   - src/time.ts 宸插垹闄わ紱startTimeColorRhythmLoop/stopTimeColorRhythmLoop 鐢?
+ *     Clock.vue useColorRhythm 鑷姩绠＄悊銆?
  */
 export function useTimeProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
@@ -67,9 +67,9 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
             String(properties.oclock_roundedcorners.value)
         );
 
-        // 监听时钟容器尺寸变化，同步 --clock-height CSS 变量。
-        // oClock 在 Vue mount 之后才存在，通过 deferredScheduler 延后挂载 observer；
-        // 重复 push 同一 id 时 registerDeferred 会替换任务并自动 dispose 旧 observer。
+        // 鐩戝惉鏃堕挓瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--clock-height CSS 鍙橀噺銆?
+        // oClock 鍦?Vue mount 涔嬪悗鎵嶅瓨鍦紝閫氳繃 deferredScheduler 寤跺悗鎸傝浇 observer锛?
+        // 閲嶅 push 鍚屼竴 id 鏃?registerDeferred 浼氭浛鎹换鍔″苟鑷姩 dispose 鏃?observer銆?
         registerDeferred('time:clock-height-observer', () => {
             const oClock = elements.clock.container;
             if (!oClock) return;
@@ -170,6 +170,6 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (FirstLoad) {
-        logInitComplete('[Date]', '日期', FirstLoad);
+        logInitComplete('[Date]', '鏃ユ湡', FirstLoad);
     }
 }

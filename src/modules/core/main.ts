@@ -18,7 +18,7 @@ import '../fullscreenLyrics';
 
 import { createApp, watch } from 'vue';
 
-import { i18n, loadI18n } from '@/i18n';
+import { i18n, loadI18n } from '@/utils/i18n';
 import App from '@/modules/core/App.vue';
 import { useWallpaperProperties } from '@/modules/core/useWallpaperProperties';
 import { useConfigStore } from '@/stores/config';

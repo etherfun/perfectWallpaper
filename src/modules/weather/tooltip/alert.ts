@@ -1,16 +1,16 @@
-/**
- * 天气预警 Tooltip
- * 职责：绑定天气预警悬停提示
+﻿/**
+ * 澶╂皵棰勮 Tooltip
+ * 鑱岃矗锛氱粦瀹氬ぉ姘旈璀︽偓鍋滄彁绀?
  */
 
-import { globalT } from '@/i18n';
+import { globalT } from '@/utils/i18n';
 
 import { getIconSvg } from '../index';
 import { weather_data } from '../weatherState';
 import { getTime } from './time';
 
 /**
- * 绑定天气预警悬停提示
+ * 缁戝畾澶╂皵棰勮鎮仠鎻愮ず
  */
 export function attachWeatherAlertTooltip(element: HTMLElement): void {
     const tooltip = document.querySelector('#weatherAlertTooltip') as HTMLElement | null;

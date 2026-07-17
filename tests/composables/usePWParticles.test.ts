@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Tests for src/composables/usePWParticles.ts — Stage 5-C1
+ * Tests for src/composables/usePWParticles.ts 鈥?Stage 5-C1
  *
  * Verifies the composable wraps src/PWParticles.ts:
  *   - resize() runs once on mount (replaces top-level wResize side effect)
@@ -47,7 +47,7 @@ vi.mock('@/modules/audio-visualizer/PWParticles', () => ({
     connect: spies.connect,
 }));
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));

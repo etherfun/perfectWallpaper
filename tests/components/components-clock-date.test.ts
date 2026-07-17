@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Content-bearing SFC mount tests — Stage 4 (Clock / Date)
+ * Content-bearing SFC mount tests 鈥?Stage 4 (Clock / Date)
  *
  * These SFCs render real DOM based on Pinia config + a reactive `now`.
  * Verifies:
@@ -18,7 +18,7 @@ import Clock from '@/components/Clock.vue';
 import DateComp from '@/components/Date.vue';
 import { useConfigStore } from '@/stores/config';
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
@@ -38,14 +38,14 @@ describe('Clock.vue', () => {
         expect(root.exists()).toBe(true);
         expect(root.find('.clock-block').exists()).toBe(true);
 
-        // initial now → some HH : MM text in .min
+        // initial now 鈫?some HH : MM text in .min
         const minText = wrapper.find('.min').text();
         expect(minText).toMatch(/^\d{2} : \d{2}$/);
 
         // 24h mode (default) hides the AM/PM indicator
         const stEl = wrapper.find('.st');
         // CSS .st has display:flex/none; jsdom reports computed style as ''
-        // — just check it exists in template
+        // 鈥?just check it exists in template
         expect(stEl.exists()).toBe(true);
 
         expect(() => wrapper.unmount()).not.toThrow();
@@ -88,7 +88,7 @@ describe('Clock.vue', () => {
         expect(style).toContain('end');
         expect(style).toContain('auto');
 
-        // Switch to 12h mode — align-self should be removed
+        // Switch to 12h mode 鈥?align-self should be removed
         const config = useConfigStore();
         config.time_style = false;
         const wrapper2 = mount(Clock, { attachTo: document.body });
@@ -105,7 +105,7 @@ describe('Date.vue', () => {
         expect(root.exists()).toBe(true);
         expect(root.find('.text').exists()).toBe(true);
 
-        // default order=1 + separator=1+2 + all formats visible → text non-empty
+        // default order=1 + separator=1+2 + all formats visible 鈫?text non-empty
         const text = wrapper.find('.text').text();
         expect(text.length).toBeGreaterThan(0);
         expect(() => wrapper.unmount()).not.toThrow();
@@ -117,7 +117,7 @@ describe('Date.vue', () => {
         // Should contain at least one digit
         expect(text).toMatch(/\d/);
         // Should NOT contain Chinese month names from format 3
-        expect(text).not.toMatch(/(一月|二月|三月|四月|五月|六月|七月|八月|九月|十月|十一月|十二月)/);
+        expect(text).not.toMatch(/(涓€鏈坾浜屾湀|涓夋湀|鍥涙湀|浜旀湀|鍏湀|涓冩湀|鍏湀|涔濇湀|鍗佹湀|鍗佷竴鏈坾鍗佷簩鏈?/);
         expect(() => wrapper.unmount()).not.toThrow();
     });
 
@@ -127,7 +127,7 @@ describe('Date.vue', () => {
         const wrapper = mount(DateComp, { attachTo: document.body });
         const text = wrapper.find('.text').text();
         // Should contain at least one Chinese month name
-        expect(text).toMatch(/(一月|二月|三月|四月|五月|六月|七月|八月|九月|十月|十一月|十二月)/);
+        expect(text).toMatch(/(涓€鏈坾浜屾湀|涓夋湀|鍥涙湀|浜旀湀|鍏湀|涓冩湀|鍏湀|涔濇湀|鍗佹湀|鍗佷竴鏈坾鍗佷簩鏈?/);
         expect(() => wrapper.unmount()).not.toThrow();
     });
 });

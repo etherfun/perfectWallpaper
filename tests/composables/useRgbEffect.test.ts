@@ -1,11 +1,11 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Tests for src/composables/useRgbEffect.ts — Stage 5-C1
+ * Tests for src/composables/useRgbEffect.ts 鈥?Stage 5-C1
  *
  * Mirrors the usePWCircle / usePWLine tests:
  *   - render() delegates to RGB.ts background2canvas without throwing.
  *   - visibilitychange listener is added on mount, removed on unmount.
- *   - watch on config.rgb_show fires render when toggled from off → on.
+ *   - watch on config.rgb_show fires render when toggled from off 鈫?on.
  *
  * Mocks src/RGB.ts via vi.hoisted spies + listeners.
  */
@@ -38,7 +38,7 @@ vi.mock('@/modules/rgb-effect/RGB', () => ({
     background2canvas: spies.background2canvas,
 }));
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));
@@ -103,13 +103,13 @@ describe('useRgbEffect', () => {
         expect(spies.background2canvas).toHaveBeenCalledWith(undefined, undefined);
     });
 
-    test('watch on rgb_show triggers render when toggled off → on', async () => {
+    test('watch on rgb_show triggers render when toggled off 鈫?on', async () => {
         const { Host } = makeHost();
         const wrapper = mount(Host, {
             attachTo: document.body,
             global: { plugins: [pinia] },
         });
-        // BUILTIN_DEFAULTS.rgb_show is false initially → no kick yet
+        // BUILTIN_DEFAULTS.rgb_show is false initially 鈫?no kick yet
         const beforeToggle = spies.background2canvas.mock.calls.length;
 
         // Trigger reactive change via Pinia store
@@ -120,7 +120,7 @@ describe('useRgbEffect', () => {
         expect(spies.background2canvas.mock.calls.length).toBe(beforeToggle + 1);
     });
 
-    test('watch on rgb_show does NOT trigger render when toggled on → off', async () => {
+    test('watch on rgb_show does NOT trigger render when toggled on 鈫?off', async () => {
         const { Host } = makeHost();
         const wrapper = mount(Host, {
             attachTo: document.body,

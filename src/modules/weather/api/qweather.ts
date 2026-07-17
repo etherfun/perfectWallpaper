@@ -1,4 +1,4 @@
-import { globalT } from '@/i18n';
+﻿import { globalT } from '@/utils/i18n';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
@@ -14,10 +14,10 @@ import type {
     QWeatherNowResponse,
 } from './types';
 
-// 和风天气 API 实现
+// 鍜岄澶╂皵 API 瀹炵幇
 // Case 1: qweatherapi
 
-// 风向映射：API返回值 -> i18n key
+// 椋庡悜鏄犲皠锛欰PI杩斿洖鍊?-> i18n key
 const WIND_DIR_MAP: Record<string, string> = {
     N: 'weather_wind_north',
     NNE: 'weather_wind_north',
@@ -38,7 +38,7 @@ const WIND_DIR_MAP: Record<string, string> = {
 };
 
 /**
- * 获取城市编号
+ * 鑾峰彇鍩庡競缂栧彿
  */
 export async function qweatherLookupCity(weather_address: WeatherAddress): Promise<WeatherAddress> {
     const response = await fetch_with_retry(
@@ -66,7 +66,7 @@ export async function qweatherLookupCity(weather_address: WeatherAddress): Promi
 }
 
 /**
- * 获取实时天气
+ * 鑾峰彇瀹炴椂澶╂皵
  */
 async function fetchNowWeather(
     weather_address: WeatherAddress,
@@ -100,7 +100,7 @@ async function fetchNowWeather(
 }
 
 /**
- * 获取空气质量
+ * 鑾峰彇绌烘皵璐ㄩ噺
  */
 async function fetchAirQuality(
     weather_address: WeatherAddress,
@@ -125,7 +125,7 @@ async function fetchAirQuality(
                     index.name === 'AQI (CN)' ||
                     index.name === 'cn-mee' ||
                     index.name === 'QAQI' ||
-                    index.name === '空气质量指数' ||
+                    index.name === '绌烘皵璐ㄩ噺鎸囨暟' ||
                     index.code === 'aqi' ||
                     index.code === 'cn_mee'
             );
@@ -153,7 +153,7 @@ async function fetchAirQuality(
 }
 
 /**
- * 获取天气预警
+ * 鑾峰彇澶╂皵棰勮
  */
 async function fetchWeatherAlert(
     weather_address: WeatherAddress,
@@ -213,7 +213,7 @@ async function fetchWeatherAlert(
 }
 
 /**
- * 获取24小时预报
+ * 鑾峰彇24灏忔椂棰勬姤
  */
 async function fetch24hForecast(
     weather_address: WeatherAddress,
@@ -242,7 +242,7 @@ async function fetch24hForecast(
             return afterT?.split('+')[0]?.substring(0, 5) ?? '--:--';
         });
         weather_data.sevenHourlyData.Pops = sevenHourlyData.map(hour => {
-            return hour.pop !== undefined && hour.pop !== '' ? `${hour.pop}%` : '——';
+            return hour.pop !== undefined && hour.pop !== '' ? `${hour.pop}%` : '鈥斺€?;
         });
         weather_data.sevenHourlyData.Temps = sevenHourlyData.map(hour => hour.temp);
         weather_data.sevenHourlyData.Icons = sevenHourlyData.map(hour => hour.icon);
@@ -255,14 +255,14 @@ async function fetch24hForecast(
         weather_data.sevenHourlyData.Precips = sevenHourlyData.map(hour => hour.precip);
         weather_data.sevenHourlyData.Pressures = sevenHourlyData.map(hour => hour.pressure);
         weather_data.sevenHourlyData.Clouds = sevenHourlyData.map(hour =>
-            hour.cloud !== '' ? hour.cloud : '——'
+            hour.cloud !== '' ? hour.cloud : '鈥斺€?
         );
         weather_data.sevenHourlyData.Dews = sevenHourlyData.map(hour => hour.dew);
     }
 }
 
 /**
- * 获取3天预报
+ * 鑾峰彇3澶╅鎶?
  */
 async function fetch3dForecast(
     weather_address: WeatherAddress,
@@ -299,14 +299,14 @@ async function fetch3dForecast(
 }
 
 /**
- * 检查是否超出免费额度
+ * 妫€鏌ユ槸鍚﹁秴鍑哄厤璐归搴?
  */
 function checkQuota(): boolean {
     return !config.qweather_api_paymode && weather_paymode();
 }
 
 /**
- * 和风天气API主函数
+ * 鍜岄澶╂皵API涓诲嚱鏁?
  */
 export async function qweather(
     weather_address: WeatherAddress,
@@ -316,7 +316,7 @@ export async function qweather(
         throw new Error(globalT('error_get_weather_data_over_usage'));
     }
 
-    // 如果没有城市编号，先查询
+    // 濡傛灉娌℃湁鍩庡競缂栧彿锛屽厛鏌ヨ
     if (
         weather_address.citynumber === '' ||
         weather_address.cityname !== weather_address.checkcity
@@ -324,10 +324,10 @@ export async function qweather(
         await qweatherLookupCity(weather_address);
     }
 
-    // 首先获取必要的数据（nowWeather 是必需的，其他可以并行）
+    // 棣栧厛鑾峰彇蹇呰鐨勬暟鎹紙nowWeather 鏄繀闇€鐨勶紝鍏朵粬鍙互骞惰锛?
     await fetchNowWeather(weather_address, weather_data);
 
-    // 并行获取可选数据
+    // 骞惰鑾峰彇鍙€夋暟鎹?
     if (!checkQuota()) {
         await Promise.all([
             fetchAirQuality(weather_address, weather_data).catch(() => {

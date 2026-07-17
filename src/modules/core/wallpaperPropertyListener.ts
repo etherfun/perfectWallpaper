@@ -1,6 +1,6 @@
-import '../version';
+﻿import '../version';
 
-import { loadI18n } from '@/i18n';
+import { loadI18n } from '@/utils/i18n';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
@@ -31,7 +31,7 @@ import { removesakura } from '../sakura';
 import { updateFileList } from '../slide';
 
 /**
- * 安全执行属性处理函数,捕获并记录错误
+ * 瀹夊叏鎵ц灞炴€у鐞嗗嚱鏁?鎹曡幏骞惰褰曢敊璇?
  */
 function safeHandle(
     handler: (properties: WallpaperProperties, firstLoad: boolean) => void,
@@ -47,7 +47,7 @@ function safeHandle(
 }
 
 /**
- * 将属性对象的值提取并保存到 localStorage
+ * 灏嗗睘鎬у璞＄殑鍊兼彁鍙栧苟淇濆瓨鍒?localStorage
  */
 function savePropertiesToLocalStorage(properties: Record<string, any>): void {
     const existingConfigStr = localStorage.getItem('perfectwall_user_properties');
@@ -65,13 +65,13 @@ function savePropertiesToLocalStorage(properties: Record<string, any>): void {
 }
 
 /**
- * 创建壁纸属性监听器
- * 统一调用所有 property handlers 并整合结果
+ * 鍒涘缓澹佺焊灞炴€х洃鍚櫒
+ * 缁熶竴璋冪敤鎵€鏈?property handlers 骞舵暣鍚堢粨鏋?
  *
- * Stage 7-C (Phase 7 批次 2-C3):
- *   - Pinia 字段改用 useConfigStore() 读写。
- *   - runtime / wallpaper_settings 子对象保留 appConfig 单例访问（Stage 3.5-B 迁移）。
- *   - 旧 `config.xxx` 引用按 `config = store` 别名兼容（runtime 子属性走 appConfig）。
+ * Stage 7-C (Phase 7 鎵规 2-C3):
+ *   - Pinia 瀛楁鏀圭敤 useConfigStore() 璇诲啓銆?
+ *   - runtime / wallpaper_settings 瀛愬璞′繚鐣?appConfig 鍗曚緥璁块棶锛圫tage 3.5-B 杩佺Щ锛夈€?
+ *   - 鏃?`config.xxx` 寮曠敤鎸?`config = store` 鍒悕鍏煎锛坮untime 瀛愬睘鎬ц蛋 appConfig锛夈€?
  */
 export function createWallpaperPropertyListener(
     properties: WallpaperProperties,
@@ -81,7 +81,7 @@ export function createWallpaperPropertyListener(
     const config = store; // Pinia flat fields alias
     const runtime = runtimeStore; // runtime playerInfo / wallpaper / files etc.
 
-    // 全局语言设置
+    // 鍏ㄥ眬璇█璁剧疆
     if (properties.global_settings_language) {
         const lang = properties.global_settings_language.value;
         store.$patch({
@@ -91,24 +91,24 @@ export function createWallpaperPropertyListener(
         void loadI18n(lang);
     }
 
-    // 版本更新检查
-    // wallpaper_updata 是"点击打开更新日志"按钮（type bool，默认 false）。
-    // 用户点击时 WE 推送 { wallpaper_updata: { value: true } }。
-    // 用 !FirstLoad 防止首次加载时推送的 { value: false } 误触。
+    // 鐗堟湰鏇存柊妫€鏌?
+    // wallpaper_updata 鏄?鐐瑰嚮鎵撳紑鏇存柊鏃ュ織"鎸夐挳锛坱ype bool锛岄粯璁?false锛夈€?
+    // 鐢ㄦ埛鐐瑰嚮鏃?WE 鎺ㄩ€?{ wallpaper_updata: { value: true } }銆?
+    // 鐢?!FirstLoad 闃叉棣栨鍔犺浇鏃舵帹閫佺殑 { value: false } 璇Е銆?
     if (!FirstLoad) {
         const prop = properties.wallpaper_updata;
         const isClicked = prop != null && prop.value === true;
         if (isClicked) {
-            debugLogger.info('[版本窗口] 检测到版本更新请求');
+            debugLogger.info('[鐗堟湰绐楀彛] 妫€娴嬪埌鐗堟湰鏇存柊璇锋眰');
             if (runtime.versionManager) {
                 void (runtime.versionManager as any).showVersionInfo();
             } else {
-                (runtime.debugLogger as any)?.warn('[版本窗口] versionManager 未初始化');
+                (runtime.debugLogger as any)?.warn('[鐗堟湰绐楀彛] versionManager 鏈垵濮嬪寲');
             }
         }
     }
 
-    // 版本更新弹窗显示设置
+    // 鐗堟湰鏇存柊寮圭獥鏄剧ず璁剧疆
     if (properties.wallpaper_updata_open_on_update) {
         localStorage.setItem(
             'perfectwall_version_show_update',
@@ -116,17 +116,17 @@ export function createWallpaperPropertyListener(
         );
     }
 
-    // 调试日志复制
+    // 璋冭瘯鏃ュ織澶嶅埗
     if (properties.debugger_copy && FirstLoad !== true) {
         showDebugLogModal();
     }
 
-    // 启用插件
+    // 鍚敤鎻掍欢
     if (properties.server_mode) {
         store.$patch({ server_mode: properties.server_mode.value });
     }
 
-    // 自定义字体设置
+    // 鑷畾涔夊瓧浣撹缃?
     if (properties.fontSetting) {
         store.$patch({ font_setting: properties.fontSetting.value });
         const fontSetting = properties.fontSetting.value.trim();
@@ -154,7 +154,7 @@ export function createWallpaperPropertyListener(
         store.$patch({ update_init_complete: true });
     }
 
-    // 处理所有属性
+    // 澶勭悊鎵€鏈夊睘鎬?
     safeHandle(useDateProperties, properties, FirstLoad, 'useDateProperties');
     safeHandle(useTimeProperties, properties, FirstLoad, 'useTimeProperties');
     safeHandle(useBackgroundProperties, properties, FirstLoad, 'useBackgroundProperties');
@@ -187,8 +187,8 @@ export function createWallpaperPropertyListener(
 }
 
 /**
- * 设置壁纸引擎属性监听器
- * 将监听器绑定到 window.wallpaperPropertyListener
+ * 璁剧疆澹佺焊寮曟搸灞炴€х洃鍚櫒
+ * 灏嗙洃鍚櫒缁戝畾鍒?window.wallpaperPropertyListener
  */
 export function setupWallpaperPropertyListener(): void {
     if (typeof window !== 'undefined') {
@@ -197,7 +197,7 @@ export function setupWallpaperPropertyListener(): void {
 
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
-                // 跳过空推送
+                // 璺宠繃绌烘帹閫?
                 if (Object.keys(properties).length == 0) return;
 
                 const isFirstLoad = store.first_load;
@@ -274,19 +274,19 @@ export function setupWallpaperPropertyListener(): void {
             },
         };
 
-        // 注册 Wallpaper Engine 音频监听器
+        // 娉ㄥ唽 Wallpaper Engine 闊抽鐩戝惉鍣?
         window.wallpaperRegisterAudioListener?.(audioDataListener);
 
-        // 注册壁纸插件监听器
+        // 娉ㄥ唽澹佺焊鎻掍欢鐩戝惉鍣?
         window.wallpaperPluginListener = {
             onPluginLoaded: (name: string, _version: string) => {
                 if (name === 'led') {
                     store.wallpaper_settings!.ledPlugin = true;
-                    debugLogger.info('[RGB] LED 插件已加载');
+                    debugLogger.info('[RGB] LED 鎻掍欢宸插姞杞?);
                 }
                 if (name === 'cue') {
                     store.wallpaper_settings!.cuePlugin = true;
-                    debugLogger.info('[RGB] CUE 插件已加载');
+                    debugLogger.info('[RGB] CUE 鎻掍欢宸插姞杞?);
                 }
             },
         };

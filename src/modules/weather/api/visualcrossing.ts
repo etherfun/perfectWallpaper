@@ -1,4 +1,4 @@
-import { globalT } from '@/i18n';
+﻿import { globalT } from '@/utils/i18n';
 import { useConfigStore } from "@/stores/config";
 
 import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../../utils/tool';
@@ -88,7 +88,7 @@ const MOON_PHASE_KEYS = [
 ];
 
 /**
- * 获取接下来7小时的数据
+ * 鑾峰彇鎺ヤ笅鏉?灏忔椂鐨勬暟鎹?
  */
 function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
     const now = new Date();
@@ -113,7 +113,7 @@ function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
 }
 
 /**
- * Visual Crossing API 实现
+ * Visual Crossing API 瀹炵幇
  * Case 4: Visual Crossing
  */
 export async function visualcrossing(
@@ -174,19 +174,19 @@ export async function visualcrossing(
         isNightTime(new Date().toTimeString().split(' ')[0] ?? '', today.sunrise, today.sunset)
     ).toString();
 
-    // 风向
+    // 椋庡悜
     {
         const index = Math.floor((resNow.winddir + 22.5) / 45) % 8;
         weather_data.wind = globalT(DIRECTIONS[index] ?? 'weather_no_data');
     }
 
-    // 月相
+    // 鏈堢浉
     {
         const index = Math.floor((today.moonphase + 0.0625) * 8) % 8;
         weather_data.moonphase = globalT(MOON_PHASE_KEYS[index] ?? 'weather_no_data');
     }
 
-    // 七小时预报
+    // 涓冨皬鏃堕鎶?
     weather_data.sevenHourlyData.Times = resHourly.map(hour => hour.datetime.slice(0, 5));
     weather_data.sevenHourlyData.Clouds = resHourly.map(hour => hour.cloudcover);
     weather_data.sevenHourlyData.Dews = resHourly.map(hour => hour.dew);

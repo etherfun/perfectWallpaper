@@ -1,9 +1,9 @@
-/**
+﻿/**
  * Simple Markdown parser
  * Handles basic markdown formatting
  */
 
-import { globalT } from '@/i18n';
+import { globalT } from '@/utils/i18n';
 
 import { debugLogger } from '../../utils/logger';
 import {
@@ -85,7 +85,7 @@ export class SimpleMarkdown {
         notification.className = 'link-copy-notification';
         notification.innerHTML = `
             <div class="notification-content">
-                <div class="notification-icon">📋</div>
+                <div class="notification-icon">馃搵</div>
                 <div class="notification-text">
                     <div class="notification-title">${globalT('already_copy')}</div>
                     <div class="notification-url">${truncateUrl(url, 40)}</div>

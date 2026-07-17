@@ -1,8 +1,8 @@
-import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modules/core/video';
+﻿import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modules/core/video';
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '@/types/types';
-import { logInitComplete } from '@/utils/_helpers';
+import { logInitComplete } from '@/utils/helpers';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
@@ -69,7 +69,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         );
         timerManager.remove('backgroundChange');
         patch.wallpaper_mode = properties.wallpapermode.value;
-        // 立即同步到 store，保证 changeBackground() 读到最新值
+        // 绔嬪嵆鍚屾鍒?store锛屼繚璇?changeBackground() 璇诲埌鏈€鏂板€?
         store.$patch({ wallpaper_mode: properties.wallpapermode.value });
         if (FirstLoad) {
             setTimeout(function () {
@@ -171,13 +171,13 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (properties.imageswitchtimes) {
-        // 保留原始类型：0.5–5 为 number，'custom' 为 string
+        // 淇濈暀鍘熷绫诲瀷锛?.5鈥? 涓?number锛?custom' 涓?string
         const speedVal = properties.imageswitchtimes.value;
         patch.speed = speedVal;
-        // 立即同步到 store，保证 changeBackground() / getSwitchInterval() 读到最新值
+        // 绔嬪嵆鍚屾鍒?store锛屼繚璇?changeBackground() / getSwitchInterval() 璇诲埌鏈€鏂板€?
         (store as any).$patch({ speed: speedVal });
         if (FirstLoad === false) {
-            // reseat 定时器（changeBackground 内部会用新频率重新 create timer）
+            // reseat 瀹氭椂鍣紙changeBackground 鍐呴儴浼氱敤鏂伴鐜囬噸鏂?create timer锛?
             changeBackground();
         }
     }
@@ -186,7 +186,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         const intervalVal = Number(properties.imageswitchtimeinput.value);
         patch.switch_interval_input = intervalVal;
         (store as any).$patch({ switch_interval_input: intervalVal });
-        // store.speed 已在上一步立即同步，此处读到的是最新值
+        // store.speed 宸插湪涓婁竴姝ョ珛鍗冲悓姝ワ紝姝ゅ璇诲埌鐨勬槸鏈€鏂板€?
         if (FirstLoad === false && String(store.speed) === 'custom') {
             changeBackground();
         }
@@ -215,7 +215,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
 
     if (properties.imagedisplaystlye) {
         patch.bg_style = properties.imagedisplaystlye.value;
-        // 立即同步到 store，保证 applyBackgroundStyle() 读到最新值
+        // 绔嬪嵆鍚屾鍒?store锛屼繚璇?applyBackgroundStyle() 璇诲埌鏈€鏂板€?
         store.$patch({ bg_style: properties.imagedisplaystlye.value });
         applyBackgroundStyle();
     }
@@ -317,8 +317,8 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         patch.pictures_info_roundedcorners = roundedcorners;
         elements.body.style.setProperty('--picture-info-roundedcorners', String(roundedcorners));
 
-        // 监听 picture-info 容器尺寸变化，同步 --picture-info-height CSS 变量。
-        // picInfoEl 由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        // 鐩戝惉 picture-info 瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--picture-info-height CSS 鍙橀噺銆?
+        // picInfoEl 鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
         registerDeferred('pictureinfo:height-observer', () => {
             const picInfoEl = elements.slide?.picture_info;
             if (!picInfoEl) return;
@@ -379,7 +379,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (FirstLoad) {
-        logInitComplete('[Background]', '壁纸', FirstLoad);
+        logInitComplete('[Background]', '澹佺焊', FirstLoad);
         store.$patch({ bg_init_complete: true });
     }
 }

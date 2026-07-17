@@ -1,6 +1,6 @@
-// @vitest-environment jsdom
+﻿// @vitest-environment jsdom
 /**
- * Tests for src/composables/usePWCircle.ts — Stage 5-A
+ * Tests for src/composables/usePWCircle.ts 鈥?Stage 5-A
  *
  * Verifies that the composable wraps src/PWCircle.ts correctly:
  *   - resize() runs once on mount
@@ -8,7 +8,7 @@
  *   - all 6 method passthroughs (resize/setCan/createPoint/style1/2/3/getXY)
  *     reach the underlying PWCircle.ts without throwing
  *
- * The composable delegates to src/PWCircle.ts — we stub it to spy on calls
+ * The composable delegates to src/PWCircle.ts 鈥?we stub it to spy on calls
  * without exercising canvas drawing logic.
  */
 
@@ -18,7 +18,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { defineComponent, h } from 'vue';
 
-// Mock the legacy PWCircle module — vi.mock factories are hoisted, so
+// Mock the legacy PWCircle module 鈥?vi.mock factories are hoisted, so
 // any external state captured here is fragile. Use a fresh spies object
 // per test via vi.hoisted to share state safely.
 // Track addEventListener / removeEventListener to verify lifecycle.
@@ -57,7 +57,7 @@ vi.mock('@/modules/audio-visualizer/PWCircle', () => ({
     getXY: spies.getXY,
 }));
 
-vi.mock('@/i18n', () => ({
+vi.mock('@/utils/i18n', () => ({
     globalT: (key: string) => key,
     useI18n: () => ({ t: (key: string) => key, locale: { value: 'zh-CN' } }),
 }));

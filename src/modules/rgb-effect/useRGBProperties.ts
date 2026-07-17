@@ -1,13 +1,13 @@
-/**
- * useRGBProperties — Vue 3 composable wrapper for RGB lighting properties
+﻿/**
+ * useRGBProperties 鈥?Vue 3 composable wrapper for RGB lighting properties
  *
- * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/rgbPropertyHandler.ts
+ * Stage 3-3 (Phase 7 鎵规 3-3): wrap src/propertyHandlers/rgbPropertyHandler.ts
  * as a composable. Pure Pinia-side effects (no DOM, no runtime calls).
  */
 import { useConfigStore } from '@/stores/config';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 
 const config = useConfigStore();
 
@@ -15,7 +15,7 @@ export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boo
     const store = useConfigStore();
     const patch: Record<string, unknown> = {};
 
-    // RGB FPS刷新率
+    // RGB FPS鍒锋柊鐜?
     if (properties.rgb_fps) {
         const fpsMap: Record<number, number> = {
             24: 41,
@@ -30,56 +30,56 @@ export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boo
         }
     }
 
-    // 是否显示RGB效果
+    // 鏄惁鏄剧ずRGB鏁堟灉
     if (properties.rgb_show) {
         const v = properties.rgb_show.value;
         patch.rgb_show = v;
         config.rgb_show = v; // sync
     }
 
-    // 背景RGB开关
+    // 鑳屾櫙RGB寮€鍏?
     if (properties.rgb_bg) {
         const v = properties.rgb_bg.value;
         patch.background_rgb = v;
         config.background_rgb = v; // sync
     }
 
-    // 樱花RGB开关
+    // 妯辫姳RGB寮€鍏?
     if (properties.rgb_sa) {
         const v = properties.rgb_sa.value;
         patch.sakura_rgb = v;
         config.sakura_rgb = v; // sync
     }
 
-    // 粒子RGB开关
+    // 绮掑瓙RGB寮€鍏?
     if (properties.rgb_pa) {
         const v = properties.rgb_pa.value;
         patch.particles_rgb = v;
         config.particles_rgb = v; // sync
     }
 
-    // 音频条RGB开关
+    // 闊抽鏉GB寮€鍏?
     if (properties.rgb_au) {
         const v = properties.rgb_au.value;
         patch.audiobar_rgb = v;
         config.audiobar_rgb = v; // sync
     }
 
-    // 樱花不透明度
+    // 妯辫姳涓嶉€忔槑搴?
     if (properties.rgb_sa_op) {
         const v = properties.rgb_sa_op.value / 100;
         patch.opacity_sa_rgb = v;
         config.opacity_sa_rgb = v; // sync
     }
 
-    // 音频条高度
+    // 闊抽鏉￠珮搴?
     if (properties.rgb_au_high) {
         const v = properties.rgb_au_high.value / 2;
         patch.aurgbhigh = v;
         config.aurgbhigh = v; // sync
     }
 
-    // 音频条颜色
+    // 闊抽鏉￠鑹?
     if (properties.rgb_au_color) {
         const color = properties.rgb_au_color.value
             .split(' ')
@@ -89,21 +89,21 @@ export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boo
         config.aurgbcolor = v; // sync
     }
 
-    // 彩虹颜色模式
+    // 褰╄櫣棰滆壊妯″紡
     if (properties.rgb_color_rainbow) {
         const v = properties.rgb_color_rainbow.value;
         patch.audiobar_rainbow_color = v;
         config.audiobar_rainbow_color = v; // sync
     }
 
-    // 彩虹移动
+    // 褰╄櫣绉诲姩
     if (properties.rgb_color_rainbow_move) {
         const v = properties.rgb_color_rainbow_move.value;
         patch.rainbow_move = v;
         config.rainbow_move = v; // sync
     }
 
-    // 彩虹移动速度
+    // 褰╄櫣绉诲姩閫熷害
     if (properties.rgb_color_rainbow_movespeed) {
         const v = properties.rgb_color_rainbow_movespeed.value;
         patch.rainbow_move_speed = v;
@@ -116,6 +116,6 @@ export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boo
     }
 
     if (FirstLoad) {
-        logInitComplete('[RGB]', 'RGB灯光', FirstLoad);
+        logInitComplete('[RGB]', 'RGB鐏厜', FirstLoad);
     }
 }

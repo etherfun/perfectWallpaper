@@ -1,10 +1,10 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 
 export function useParticleProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
@@ -222,7 +222,7 @@ export function useParticleProperties(properties: WallpaperProperties, FirstLoad
     }
 
     if (FirstLoad) {
-        logInitComplete('[Particles]', '粒子效果', FirstLoad);
+        logInitComplete('[Particles]', '绮掑瓙鏁堟灉', FirstLoad);
         store.$patch({ particles_init_complete: true });
     }
 }

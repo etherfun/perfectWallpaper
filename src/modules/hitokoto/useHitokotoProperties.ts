@@ -1,18 +1,18 @@
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
-import { logInitComplete } from '../../utils/_helpers';
+import { logInitComplete } from '../../utils/helpers';
 import { timerManager } from '../../utils/timer';
 
 /**
- * 处理一言相关属性
+ * 澶勭悊涓€瑷€鐩稿叧灞炴€?
  *
- * Stage 7-B (Phase 7 批次 2-B):
- *   - config.xxx = ... 改为 useConfigStore().$patch({...})，解除对 utils/config 单例的依赖。
- *   - src/hitokoto.ts 已删除；autoHitokto 由 Hitokoto.vue watch(config.hitokoto_show)
- *     自动触发 fetchHitokoto + 启停 interval。
+ * Stage 7-B (Phase 7 鎵规 2-B):
+ *   - config.xxx = ... 鏀逛负 useConfigStore().$patch({...})锛岃В闄ゅ utils/config 鍗曚緥鐨勪緷璧栥€?
+ *   - src/hitokoto.ts 宸插垹闄わ紱autoHitokto 鐢?Hitokoto.vue watch(config.hitokoto_show)
+ *     鑷姩瑙﹀彂 fetchHitokoto + 鍚仠 interval銆?
  */
 export function useHitokotoProperties(
     properties: WallpaperProperties,
@@ -29,7 +29,7 @@ export function useHitokotoProperties(
         patch.hitokoto_format_test = properties.hitokoto_auth.value ? 1 : 2;
     }
 
-    // 一言自定义 (hit_a..hit_l → c=a& 等)
+    // 涓€瑷€鑷畾涔?(hit_a..hit_l 鈫?c=a& 绛?
     if (properties.hitokoto_a) {
         patch.hit_a = properties.hitokoto_a.value ? 'c=a&' : '';
     }
@@ -76,7 +76,7 @@ export function useHitokotoProperties(
             '--hitokoto-visibility',
             hitokoto_show ? 'visible' : 'hidden'
         );
-        // Hitokoto.vue watch(hitokoto_show) 自动 fetch + restart interval
+        // Hitokoto.vue watch(hitokoto_show) 鑷姩 fetch + restart interval
     }
 
     if (properties.hitokoto_color) {
@@ -140,8 +140,8 @@ export function useHitokotoProperties(
             String(properties.hitokoto_roundedcorners.value)
         );
 
-        // 监听一言容器尺寸变化，同步 --hitokoto-height CSS 变量。
-        // hitokoto 容器由 Vue mount 后才存在，通过 deferredScheduler 延后挂载 observer。
+        // 鐩戝惉涓€瑷€瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--hitokoto-height CSS 鍙橀噺銆?
+        // hitokoto 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
         registerDeferred('hitokoto:height-observer', () => {
             const hitokoto = elements.hitokoto.container;
             if (!hitokoto) return;
@@ -197,6 +197,6 @@ export function useHitokotoProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[Hitokoto]', '一言', FirstLoad);
+        logInitComplete('[Hitokoto]', '涓€瑷€', FirstLoad);
     }
 }

@@ -1026,10 +1026,9 @@ namespace PerfectWall.Server.Services
             lock (_cpuCacheLock)
             {
                 if (_cpuSamplerStarted) return;
-                _cpuSamplerStarted = true;
-                // Fire-and-forget: the sampler thread runs for
-                // the lifetime of the service and is killed by
-                // the process exit / Dispose path.
+                // _cpuSamplerStarted is set inside CpuSamplerLoop after
+                // Process.GetCurrentProcess() succeeds, so a thread-start
+                // failure won't permanently disable CPU sampling.
                 var t = new Thread(CpuSamplerLoop)
                 {
                     IsBackground = true,
@@ -1043,7 +1042,13 @@ namespace PerfectWall.Server.Services
         {
             Process p = null;
             try { p = Process.GetCurrentProcess(); }
-            catch { return; }
+            catch
+            {
+                lock (_cpuCacheLock) { _cpuSamplerStarted = false; }
+                return;
+            }
+
+            lock (_cpuCacheLock) { _cpuSamplerStarted = true; }
 
             try
             {

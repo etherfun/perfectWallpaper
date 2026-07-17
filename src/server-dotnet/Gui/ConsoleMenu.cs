@@ -51,7 +51,11 @@ namespace PerfectWall.Server.Gui
                 // is true and we'd deadlock. Bail.
                 if (Console.IsInputRedirected || Console.IsOutputRedirected) return;
             }
-            catch { return; }
+            catch (Exception ex)
+            {
+                try { Console.Error.WriteLine($"[ConsoleMenu] Error: {ex.Message}"); } catch { }
+                return;
+            }
 
             try
             {
@@ -67,8 +71,9 @@ namespace PerfectWall.Server.Gui
                     RunOnce(original);
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                try { Console.Error.WriteLine($"[ConsoleMenu] Console closed: {ex.Message}"); } catch { }
                 // Console closed (Ctrl+C, parent process died) — exit.
             }
         }

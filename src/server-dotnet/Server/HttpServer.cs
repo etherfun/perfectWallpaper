@@ -144,7 +144,7 @@ namespace PerfectWall.Server.Server
             };
 
         private readonly Router _router;
-        private readonly HttpListener _listener = new HttpListener();
+        private HttpListener _listener = new HttpListener();
         private readonly CancellationTokenSource _cts = new CancellationTokenSource();
         private readonly int _port;
 
@@ -177,13 +177,9 @@ namespace PerfectWall.Server.Server
                 try
                 {
                     local.Start();
-                    // Reflect the fallback into our private field
-                    // by capturing a reference. Simpler: rebuild
-                    // the listener by replacing via a small
-                    // ref-assignment trick.
-                    typeof(HttpServer).GetField("_listener",
-                        System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic)
-                        .SetValue(this, local);
+                    // Replace the listener directly now that
+                    // _listener is no longer readonly.
+                    _listener = local;
                     Console.WriteLine($"[HTTP] note: bound to localhost only. To expose on all interfaces run:");
                     Console.WriteLine($"[HTTP]       netsh http add urlacl url=http://+:{_port}/ user=Everyone");
                 }

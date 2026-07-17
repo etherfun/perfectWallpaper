@@ -70,7 +70,17 @@ namespace PerfectWall.Server.Models
                 }
             }
             var defaults = new ServerConfig();
-            try { defaults.Save(); } catch { /* best effort */ }
+            try
+            {
+                if (File.Exists(path))
+                {
+                    var bak = path + ".bak";
+                    if (File.Exists(bak)) File.Delete(bak);
+                    File.Move(path, bak);
+                }
+                defaults.Save();
+            }
+            catch { /* best effort */ }
             return defaults;
         }
 

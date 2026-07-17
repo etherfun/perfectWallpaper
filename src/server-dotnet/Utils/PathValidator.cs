@@ -10,8 +10,9 @@ namespace PerfectWall.Server.Utils
     /// </summary>
     public static class PathValidator
     {
-        public static string Validate(string path)
+        public static string Validate(string path, out string normalizedPath)
         {
+            normalizedPath = null;
             if (string.IsNullOrEmpty(path))
                 return "Path is required";
             // NUL terminates Win32 paths silently — a
@@ -26,13 +27,15 @@ namespace PerfectWall.Server.Utils
                 return "Invalid path characters";
             // Canonicalise: collapse `.\` / `..\`
             // separators, resolve `C:\foo\.\bar` →
-            // `C:\foo\bar`, etc. The result is only used
-            // to ensure the path can be resolved by the
-            // OS; a failure here is itself the error
-            // signal.
-            try { Path.GetFullPath(path); }
+            // `C:\foo\bar`, etc. The result is used as
+            // the caller's working path and also ensures
+            // the path can be resolved by the OS.
+            try
+            {
+                normalizedPath = Path.GetFullPath(path);
+                return null;
+            }
             catch { return "Invalid path"; }
-            return null;
         }
     }
 }

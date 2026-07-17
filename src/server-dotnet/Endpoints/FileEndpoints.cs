@@ -27,10 +27,10 @@ namespace PerfectWall.Server.Endpoints
         {
             var directory = ctx.QueryParam("directory");
             var filter = ctx.QueryParam("filter");
-            var err = PathValidator.Validate(directory);
+            var err = PathValidator.Validate(directory, out var normalizedPath);
             if (err != null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail(err), 400); return; }
 
-            if (!Directory.Exists(directory)) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Directory not found"), 404); return; }
+            if (!Directory.Exists(normalizedPath)) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("Directory not found"), 404); return; }
 
             try
             {
@@ -77,8 +77,9 @@ namespace PerfectWall.Server.Endpoints
         private static async Task StreamAudio(HttpContext ctx)
         {
             var path = ctx.QueryParam("path");
-            var err = PathValidator.Validate(path);
+            var err = PathValidator.Validate(path, out var normalizedPath);
             if (err != null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail(err), 400); return; }
+            path = normalizedPath;
             if (!System.IO.File.Exists(path)) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("File not found"), 404); return; }
 
             var ext = (Path.GetExtension(path) ?? "").TrimStart('.').ToLowerInvariant();
@@ -251,12 +252,12 @@ namespace PerfectWall.Server.Endpoints
         {
             switch (ext)
             {
-                case ".mp3": return "audio/mpeg";
-                case ".ogg": return "audio/ogg";
-                case ".wav": return "audio/wav";
-                case ".flac": return "audio/flac";
-                case ".m4a": return "audio/mp4";
-                case ".aac": return "audio/aac";
+                case "mp3": return "audio/mpeg";
+                case "ogg": return "audio/ogg";
+                case "wav": return "audio/wav";
+                case "flac": return "audio/flac";
+                case "m4a": return "audio/mp4";
+                case "aac": return "audio/aac";
                 default: return "application/octet-stream";
             }
         }
@@ -264,8 +265,9 @@ namespace PerfectWall.Server.Endpoints
         private static async Task GetMetadata(HttpContext ctx)
         {
             var path = ctx.QueryParam("path");
-            var err = PathValidator.Validate(path);
+            var err = PathValidator.Validate(path, out var normalizedPath);
             if (err != null) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail(err), 400); return; }
+            path = normalizedPath;
             if (!System.IO.File.Exists(path)) { await ctx.WriteJsonAsync(ApiResponse<object>.Fail("File not found"), 404); return; }
 
             var meta = new AudioMetadata

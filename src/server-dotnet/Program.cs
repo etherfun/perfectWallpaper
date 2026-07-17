@@ -273,7 +273,7 @@ namespace PerfectWall.Server
                 Console.Error.WriteLine(
                     "[LHM]   1. Smart App Control / Defender blocked the WinRing0 kernel driver");
                 Console.Error.WriteLine(
-                    "[LHM]   2. HVCI / Memory Integrity is on (Settings 鈫?Privacy & security 鈫?Windows Security 鈫?Device security)");
+                    "[LHM]   2. HVCI / Memory Integrity is on (Settings \u2192 Privacy & security \u2192 Windows Security \u2192 Device security)");
                 Console.Error.WriteLine(
                     "[LHM]   3. Install the PawnIO community driver (https://github.com/namazso/PawnIO.Setup/releases) and reboot");
                 Console.Error.WriteLine(
@@ -394,6 +394,8 @@ namespace PerfectWall.Server
         {
             using (var hw = new HardwareMonitorService(mode))
             {
+                var cpuData = hw.CollectCpu();
+                var cpu0 = cpuData[0];
                 var report = new
                 {
                     requested_mode = mode.ToString(),
@@ -405,10 +407,10 @@ namespace PerfectWall.Server
                     is_windows = IsWindowsPlatform(),
                     lhm_available = hw.IsLhmAvailable,
                     lhm_init_error = hw.InitError,
-                    cpus_found = hw.CollectCpu().Count,
-                    sample_cpu = hw.CollectCpu()[0].Manufacturer + " / " + hw.CollectCpu()[0].Brand,
-                    sample_cpu_temperature = hw.CollectCpu()[0].Temperature,
-                    temperature_available = hw.CollectCpu()[0].TemperatureAvailable,
+                    cpus_found = cpuData.Count,
+                    sample_cpu = cpu0.Manufacturer + " / " + cpu0.Brand,
+                    sample_cpu_temperature = cpu0.Temperature,
+                    temperature_available = cpu0.TemperatureAvailable,
                     gpus_found = hw.CollectGpu().Count,
                 };
                 Console.WriteLine("=== perfectwall-server probe ===");

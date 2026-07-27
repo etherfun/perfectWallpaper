@@ -195,8 +195,14 @@ export function setupWallpaperPropertyListener(): void {
 
         window.wallpaperPropertyListener = {
             applyUserProperties: (properties: Record<string, any>) => {
-                // 璺宠繃绌烘帹閫?
                 if (Object.keys(properties).length == 0) return;
+
+                // Pinia 批量同步 — 合并自 useWallpaperProperties.ts
+                try {
+                    store.applyUserProperties(properties);
+                } catch (err) {
+                    console.warn('[WE] Pinia sync failed', err);
+                }
 
                 const isFirstLoad = store.first_load;
                 savePropertiesToLocalStorage(properties);

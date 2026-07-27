@@ -19,7 +19,6 @@ import '../fullscreenLyrics';
 import { createApp, watch } from 'vue';
 
 import App from '@/modules/core/App.vue';
-import { useWallpaperProperties } from '@/modules/core/useWallpaperProperties';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 import { i18n, loadI18n } from '@/utils/i18n';
@@ -54,10 +53,7 @@ async function bootstrap(): Promise<void> {
     const configStore = useConfigStore();
     await loadI18n(configStore.language);
 
-    // 2. 注册 WE listener 包装（push 时自动 patch store）
-    useWallpaperProperties();
-
-    // 3. mount 到 <div id="app-root">
+    // 2. mount 到 <div id="app-root">
     const root = document.getElementById('app-root');
     if (!root) {
         console.error('[main.ts] #app-root not found in index.html');

@@ -1,23 +1,51 @@
 /**
  * propertyHandlers 共用工具
- *
- * 每个 handler 末尾的 `if (FirstLoad) debugLogger.info(...)` 模式重复 14+ 次。
- * logInitComplete 把这段样板代码集中。
- *
- * 不做"统一导入桶" — 每个 handler 仍然按需 import 自己用到的模块（避免
- * 引入隐式依赖，方便后续拆分时定位）。
  */
-
 import { debugLogger } from './logger';
 
-/**
- * 在 FirstLoad 时输出"参数初始化完成"日志
- * @param tag 模块标签，例如 '[Background]'、'[Hitokoto]'
- * @param displayName 参数显示名，例如 '背景'、'一言'
- * @param FirstLoad 是否首次加载
- */
+/** 在 FirstLoad 时输出 "参数初始化完成" 日志 */
 export function logInitComplete(tag: string, displayName: string, FirstLoad: boolean): void {
-    if (FirstLoad) {
-        debugLogger.info(`${tag} ${displayName}参数初始化完成`);
+    if (FirstLoad) { debugLogger.info(`${tag} ${displayName}参数初始化完成`); }
+}
+
+/** 把 WE 的归一化颜色字符串 "1 0.5 0.2" → RGB 元组 [255, 128, 51] */
+export function colorToRgb(normalized: string): [number, number, number] {
+    return normalized.split(' ').map(c => Math.ceil(parseFloat(c) * 255)) as [number, number, number];
+}
+
+/**
+ * 属性映射 helper — 处理最常见的模式：
+ *   if (properties.xxx) { patch.xxx = v; cssVars.forEach(([k, f]) => set(k, f(v))) }
+ */
+export function applyProp(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    properties: any,
+    key: string,
+    patch: Record<string, unknown>,
+    storeKey: string,
+    cssVars?: Array<[string, (v: any) => string]>,
+): void {
+    const prop = properties[key];
+    if (prop === undefined) return;
+    const v = prop.value;
+    patch[storeKey] = v;
+    if (cssVars) {
+        for (const [cssKey, fn] of cssVars) {
+            document.body.style.setProperty(cssKey, fn(v));
+        }
     }
+}
+
+/** 显示/隐藏 toggle: flex / none */
+export function applyVisibility(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    properties: any,
+    key: string,
+    patch: Record<string, unknown>,
+    storeKey: string,
+    cssVar: string,
+): void {
+    applyProp(properties, key, patch, storeKey, [
+        [cssVar, (v: boolean) => v ? 'flex' : 'none'],
+    ]);
 }

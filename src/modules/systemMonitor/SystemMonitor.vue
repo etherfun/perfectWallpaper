@@ -49,13 +49,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 2 SystemMonitor 薄壳：
- *   - 渲染容器 DOM，由命令式 SystemMonitor 类更新内容
- *   - onMounted 时延时初始化 SystemMonitor，确保 DOM 就绪后
- *     才调用 ensureInitialized()，解决 WE 提前推送属性时
- *     queryDomElements 返回 null 的问题。
- */
 import { onMounted } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { getSystemMonitor, initSystemMonitor } from '@/modules/systemMonitor';

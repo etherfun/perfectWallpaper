@@ -18,13 +18,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Stage 5-C1 PWParticles composable wrapper:
- *   - usePWParticles() handles wResize() on mount + window resize listener
- *   - stop() called on unmount kills the RAF loop cleanly
- *   - audioVisualizer.ts still drives createPoint/drawPoint via the
- *     legacy PWParticles.ts module exports
- */
 import { usePWParticles } from './usePWParticles';
 import { useConfigStore } from '@/stores/config';
 

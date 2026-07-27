@@ -29,16 +29,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Stage 5-C2 Sakura composable wrapper:
- *   - useSakura() handles transparency sync + showSakura toggle watching
- *   - exposes load/reloadEffect/resize/copyToDisplay for parent / debug
- *   - WebGL scene + RAF loop remains owned by src/sakura/* (single source)
- *
- * Phase 7 时序修复：canvas 元素从 index.html 迁移至本模板，不再随 DOM 就绪存在。
- * window.load 可能在 Vue mount 前触发，导致 sakuraLoad() 找不到 canvas 元素。
- * 在 onMounted 中检测 gl 状态并手动启动。
- */
 import { onMounted } from 'vue';
 
 import { makeCanvasHide, sakuraLoad } from '@/modules/sakura';

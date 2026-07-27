@@ -1,4 +1,4 @@
-﻿/**
+/**
  * usePlayerControlProperties 鈥?Vue 3 composable wrapper for player control
  * properties (show, color, position, size, thumbnail, animation).
  *

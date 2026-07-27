@@ -15,12 +15,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 4 Version 薄壳：
- *   - 不在 onMounted 自动打开
- *   - 由 propertyHandler 控制 versionManager.showVersionModal()
- *   - SimpleMarkdown 由旧 simple-markdown.ts 继续提供
- */
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

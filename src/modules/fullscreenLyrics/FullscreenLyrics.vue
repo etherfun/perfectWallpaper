@@ -16,11 +16,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 4 FullscreenLyrics 薄壳：
- *   - 不在 onMounted 自动启动
- *   - 由 propertyHandler 在 fullscreen_lyrics_enabled 变化时调用 start/stop
- */
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

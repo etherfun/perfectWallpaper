@@ -1,24 +1,15 @@
 /**
- * Pinia store: config
+ * Pinia store: config — 所有可配置属性的唯一入口。
  *
- * 包覆原 `src/utils/config/index.ts` 的 `AppConfig` 单例，
- * 暴露 `config.xxx` 与 `config.runtime.xxx` 的字段。
- *
- * 属性来源（WE only）：
- *   1. Wallpaper Engine 通过 applyUserProperties 推送（最高优先级）
- *   2. 本 store 初始 state（BUILTIN_DEFAULTS，兜底）
+ * 属性来源：
+ *   1. Wallpaper Engine 通过 applyUserProperties 推送（运行时）
+ *   2. 本 store 初始 state（BUILTIN_DEFAULTS）
  */
 
 import { defineStore } from 'pinia';
 
 import { type ConfigStoreState } from './types';
 
-/**
- * 内置默认值（兜底中的兜底）。
- * 当三层回退都拿不到值时（例如 project.json 加载失败且 WE 未注入），
- * 落到这些常量上。完整默认值清单见原 `src/utils/config/defaults/*.ts`，
- * 此处仅声明 Phase 1 涉及的字段。
- */
 const BUILTIN_DEFAULTS: ConfigStoreState = {
     language: 'zh-CN',
     language_code: 'zh',
@@ -127,7 +118,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     countdown_timetransparency: 80,
     countdown_roundedcorners: 0,
 
-    // Fullscreen lyrics (Stage 3-1) — defaults from utils/config/defaults/fullscreenLyrics.ts
     fullscreen_lyrics_enabled: false,
     fullscreen_lyrics_show_translation: true,
     fullscreen_lyrics_show_roman: false,
@@ -136,7 +126,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     fullscreen_lyrics_hide_other: true,
     fullscreen_lyrics_show_clock: false,
 
-    // Weather (Stage 3-2) — defaults from utils/config/defaults/weather.ts
     weather_api_choose: undefined as number | undefined,
     weather_updata: 3,
     weather_unit: 'metric',
@@ -165,7 +154,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     weather_x: 50,
     weather_y: 50,
 
-    // Background / wallpaper (Stage 3-3) — defaults from utils/config/defaults/background.ts
     custom: '',
     customdirectory: '',
     wallpaper_mode: 1,
@@ -178,9 +166,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     video_model_now: 1,
     cusvideo_route: '',
     cusaudio_route: '',
-    // background_route: single-image mode (case 1) 的本地文件路径
-    // 之前只在 appConfig 单例中定义；slide/sources/index.ts 迁移到 Pinia 后
-    // 需要这个字段在 store 中可读，否则会停在 undefined → 1.jpg 路径丢失。
     background_route: './source/imgs/1.jpg',
     video_volume: 0.5,
     selectmusic: '',
@@ -223,7 +208,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     pictures_info_showwidth: 0,
     pictures_info_description: false,
 
-    // Player control (Stage 3-3) — defaults from utils/config/defaults/player.ts
     player_control_show: false,
     player_control_scalefactor: 1,
     player_control_color: [255, 255, 255] as [number, number, number],
@@ -255,7 +239,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     player_y: 50,
     player_control_roundedcorners: 0,
 
-    // Sakura (Stage 3-3) — defaults from utils/config/defaults/sakura.ts
     showSakura: true,
     sakura_transparency: 0.15,
     sakura_background: true,
@@ -264,7 +247,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     sakura_point_number: 300,
     sakura_back_light: 0.01,
 
-    // RGB lighting (Stage 3-3) — defaults from utils/config/defaults/rgb.ts
     rgb_show: false,
     background_rgb: false,
     sakura_rgb: false,
@@ -279,8 +261,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     rainbow_move_speed: 1,
     nextphoto: false,
 
-    // Fluid effect (Stage 3-3) — defaults from utils/config/defaults/fluid.ts
-    // fluid_effect_init_complete is in the legacy init-complete block above
     fluidEffectEnabled: false,
     wallpaper_settings: {
         ledPlugin: false,
@@ -295,8 +275,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     fluid_effect_dark_overlay_strength: 50,
     fluid_effect_backdrop_filter_strength: 10,
 
-    // Particle effect (Stage 3-3) — defaults from utils/config/defaults/particle.ts
-    // particles_init_complete is set in useParticleProperties
     particles_is_particles: false,
     particles_number: 100,
     particles_opacity: 100,
@@ -322,7 +300,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     particles_is_bounce: false,
     particles_move_out_mode: 1,
 
-    // AudioVisual (Stage 3-3) — defaults from utils/config/defaults/audioVisual.ts
     visual_audio_model: 1,
     audio_smooth_enabled: true,
     audio_smooth_factor: 70,
@@ -394,8 +371,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     audio_ball_spacer: 50,
     audio_ball_size: 50,
     audio_ball_rotation: 50,
-
-    // === 补充字段 ===
     server_mode: false,
     sysmon_enabled: false,
     sysmon_server_port: 27420,

@@ -1,4 +1,4 @@
-﻿import { getDockBar, initDockBar } from '@/modules/dockbar';
+import { getDockBar, initDockBar } from '@/modules/dockbar';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
 

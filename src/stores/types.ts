@@ -118,8 +118,6 @@ export interface ConfigStoreState {
     countdown_show: boolean;
     countdown_timetransparency: number;
     countdown_roundedcorners: number;
-
-    // ===== Phase 2 字段 (Weather/SystemMonitor/DockBar/PlayerControl/PictureInfo) =====
     /** 启用天气 */
     weather_show?: boolean;
     /** 天气 API 选择 (1-5) */
@@ -162,8 +160,6 @@ export interface ConfigStoreState {
 
     /** 显示图片信息（slide 模式） */
     picturesinfo_show?: boolean;
-
-    // ===== Phase 3 字段 (Sakura/PWCircle/PWLine/PWParticles/RGB/FluidEffect) =====
     /** 启用樱花 */
     showSakura?: boolean;
     /** PWCircle 显示 */
@@ -176,8 +172,6 @@ export interface ConfigStoreState {
     rgb_show?: boolean;
     /** 流体效果启用 */
     fluidEffectEnabled?: boolean;
-
-    // ===== Phase 4 字段 (Version/DebugModal/FullscreenLyrics) =====
     /** 调试日志启用 */
     debugger_copy?: boolean;
     /** 全屏歌词启用 */
@@ -198,8 +192,6 @@ export interface ConfigStoreState {
     wallpaper_updata?: boolean;
     /** 更新日志自动打开 */
     wallpaper_updata_open_on_update?: boolean;
-
-    // ===== Phase 3 字段补强 (FluidEffect / RGB / Sakura / Weather / Player / Audio) =====
     /** RGB 刷新间隔 (ms) */
     rgb_refresh?: number;
     /** RGB 背景 */
@@ -250,8 +242,6 @@ export interface ConfigStoreState {
     fluid_effect_dark_overlay_strength?: number;
     /** 流体效果模糊背景 */
     fluid_effect_backdrop_filter_strength?: number;
-
-    // ===== Phase 5 字段 (Background/Slide/Video) =====
     /** 壁纸模式 (1-9) */
     wallpapermode?: number;
     /** 随机播放 */
@@ -266,8 +256,6 @@ export interface ConfigStoreState {
     customdirectory?: string;
     /** 背景图片显示风格 (1-6) */
     imagedisplaystlye?: number;
-
-    // ===== Phase 6 字段补强 — 仅添加原本缺失的字段 =====
     // 大部分已在前面 Phase 1-5 中定义；此处仅添加 weather/player/particle 的剩余字段。
 
     // Weather 补强
@@ -448,7 +436,6 @@ export interface ConfigStoreState {
     custom?: string;
     cusvideo_route?: string;
     galaxy_api?: number;
-    // Stage 3.5-A3: slide/sources/index.ts 迁移到 useConfigStore() 后需要
     // 在 store 中读到 single-image mode (case 1) 的本地图片路径。
     background_route?: string;
     music_playlist_random?: boolean;
@@ -466,8 +453,6 @@ export interface ConfigStoreState {
     transition_mode_choose_4?: boolean;
     video_volume?: number;
     wallpaper_mode?: number;
-
-    // ===== Phase 0 迁移 — 补齐 SYNC_DEFAULTS 缺失字段 =====
     /** 幻灯片启用状态 */
     slide_now?: boolean;
     /** Wallpaper Engine 插件状态 */

@@ -18,12 +18,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Stage 5-C2 FluidEffect composable wrapper:
- *   - useFluidEffect() lazy-instantiates FluidEffect.create() on first enable
- *   - watches config.fluidEffectEnabled → toggle the effect
- *   - onBeforeUnmount calls disable() to clean up WebGL resources
- */
 import { useFluidEffect } from '@/modules/fluid/useFluidEffect';
 import { useConfigStore } from '@/stores/config';
 

@@ -19,12 +19,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Stage 5-C1 RgbEffect composable wrapper:
- *   - useRgbEffect() mounts a visibilitychange listener and exposes render()
- *   - rgb_show toggle triggers an initial render
- *   - WallpaperEffectController still drives the actual LED refresh cycle
- */
 import { useRgbEffect } from '@/modules/rgb-effect/useRgbEffect';
 import { useConfigStore } from '@/stores/config';
 

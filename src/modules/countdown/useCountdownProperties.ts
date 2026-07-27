@@ -1,4 +1,4 @@
-﻿import { useConfigStore } from '@/stores/config';
+import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 

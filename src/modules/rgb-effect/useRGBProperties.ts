@@ -1,4 +1,4 @@
-﻿/**
+/**
  * useRGBProperties 鈥?Vue 3 composable wrapper for RGB lighting properties
  *
  * Stage 3-3 (Phase 7 鎵规 3-3): wrap src/propertyHandlers/rgbPropertyHandler.ts

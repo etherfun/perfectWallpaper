@@ -13,12 +13,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 4 DebugModal 薄壳：
- *   - 不在 onMounted 自动打开
- *   - debugModal.ts 顶层副作用（registerDebugLogger）继续工作
- *   - 由 propertyHandler 控制显示/隐藏
- */
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

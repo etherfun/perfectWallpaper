@@ -1,4 +1,4 @@
-﻿/**
+/**
  * useWeatherProperties 鈥?Vue 3 composable 鍖呰 weather 灞炴€у鐞?
  *
  * Stage 3-2 (Phase 7 鎵规 3-2): 鎶?src/propertyHandlers/weatherPropertyHandler.ts

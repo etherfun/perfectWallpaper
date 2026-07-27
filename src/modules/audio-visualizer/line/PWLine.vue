@@ -16,13 +16,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 5-B PWLine composable wrapper：
- *   - onMounted 时自动调用 usePWLine() 的 init()（替代 main.ts 的顶层副作用）
- *   - 暴露 lifecycle 控制给 Vue（enabled toggle 可停止 RAF）
- *   - drawing code 仍由 audioVisualizer.ts 通过 src/PWLine.ts 旧 API 调用
- *     （audioVisualizer 改造留到 stage 5-C）
- */
 import { onBeforeUnmount } from 'vue';
 
 import { usePWLine } from './usePWLine';

@@ -23,14 +23,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 2 DockBar 薄壳：
- *   - 渲染容器 DOM，由命令式 DockBar 类填充内容
- *   - onMounted 中延时初始化 DockBar——确保 Vue 模板 DOM 已就绪
- *     之后才调用 ensureInitialized()，解决 WE 提前推送属性时
- *     queryDomElements 返回 null 的问题。
- *   - 初始化后从 Pinia store 读取当前配置同步到 DockBar 实例。
- */
 import { onMounted } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { getDockBar, initDockBar } from '@/modules/dockbar';

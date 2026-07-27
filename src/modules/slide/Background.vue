@@ -25,11 +25,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 5 Background 薄壳：
- *   - 不在 onMounted 主动切换
- *   - 由 backgroundPropertyHandler 在 wallpapermode 变化时调用 slide.changeBackground()
- */
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

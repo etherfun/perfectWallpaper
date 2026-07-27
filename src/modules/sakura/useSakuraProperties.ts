@@ -1,4 +1,4 @@
-﻿import * as sakuraModule from '@/modules/sakura';
+import * as sakuraModule from '@/modules/sakura';
 import { gl } from '@/modules/sakura/state/state';
 import { useConfigStore } from '@/stores/config';
 import { elements } from '@/utils/elementManager';
@@ -71,7 +71,6 @@ export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: 
     if (properties.showSakura) {
         const showSakura = properties.showSakura.value;
         if (showSakura) {
-            // Phase 7 淇濇姢锛歝anvas 浠?index.html 杩佺Щ鍒?Vue 妯℃澘锛?
             // window.load 鏃?canvas 涓嶅瓨鍦ㄥ鑷?sakuraLoad() 璺宠繃銆?
             if (!gl) {
                 sakuraModule.sakuraLoad();

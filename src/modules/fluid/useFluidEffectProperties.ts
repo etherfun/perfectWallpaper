@@ -1,4 +1,4 @@
-﻿import { useConfigStore } from '@/stores/config';
+import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();

@@ -1,4 +1,4 @@
-﻿import { useConfigStore } from '@/stores/config';
+import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 import { loadI18n } from '@/utils/i18n';
 

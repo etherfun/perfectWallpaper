@@ -1,4 +1,4 @@
-﻿import { useConfigStore } from "@/stores/config";
+import { useConfigStore } from "@/stores/config";
 import { globalT } from '@/utils/i18n';
 
 import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../../utils/tool';

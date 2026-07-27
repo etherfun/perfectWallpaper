@@ -1,4 +1,4 @@
-﻿import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modules/core/video';
+import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modules/core/video';
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '@/types/types';

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Vue 应用入口 — WE only mode (2026-06-30)
  *
  * 移除了独立模式三层回退（useProjectJsonDefaults / useStoredProperties /
@@ -32,7 +32,7 @@ import { pinia } from './piniaInit';
 import { WallpaperEffectController } from './WallpaperEffectController';
 import { setupWallpaperPropertyListener } from './wallpaperPropertyListener';
 
-// ===== 顶层副作用（保持 Phase 1 的兼容层） =====
+
 
 const _runtimeStore = useRuntimeStore();
 _runtimeStore.wallpaper = new WallpaperEffectController(document.body);
@@ -41,7 +41,7 @@ setupWallpaperPropertyListener();
 pwCircleResize();
 PWLineInit();
 
-// ===== Vue 应用启动 =====
+
 
 async function bootstrap(): Promise<void> {
     // 1. 创建 app + 安装 pinia + 安装 vue-i18n

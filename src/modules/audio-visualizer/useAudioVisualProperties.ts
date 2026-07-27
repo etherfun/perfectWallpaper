@@ -1,4 +1,4 @@
-﻿import { useConfigStore } from '@/stores/config';
+import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
 import { WallpaperProperties } from '../../types/types';

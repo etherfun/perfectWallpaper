@@ -60,8 +60,6 @@ export function useSakura(): UseSakuraApi {
             }
         }
     );
-
-    // Phase 7 重放保护：useSakuraProperties 在 WE 初始推送时运行，
     // 写入旧 config 单例并 $patch -> Pinia，但元素的 DOM 侧效果
     // （透明度/resize/reload）因 canvas 尚未存在而丢失。
     // 当 $patch 更新 Pinia 后，以下 watcher 自动重放这些效果。

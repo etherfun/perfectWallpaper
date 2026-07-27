@@ -114,15 +114,6 @@
 </template>
 
 <script setup lang="ts">
-/**
- * Phase 2 Weather 薄壳：
- *   - 不在 onMounted 自动启动 weather_init（避免与 propertyHandler 重复触发）
- *   - 仅作为 propertyHandler 注入的接入点 — Phase 6 会改写 propertyHandler
- *     直接操作 useConfigStore / useRuntimeStore，不再 import 旧 weather 模块。
- *
- * 模板输出空挂载点；所有 DOM 由 index.html 预置的 #weather 提供，
- * 旧 src/weather/* 模块 + weatherPropertyHandler 继续负责实际渲染。
- */
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

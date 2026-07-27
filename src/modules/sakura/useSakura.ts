@@ -3,7 +3,6 @@
 
 import {
     applySakuraTransparency,
-    makeCanvasHide,
     removesakura,
     sakuraLoad,
     sakuraReLoadEffect,

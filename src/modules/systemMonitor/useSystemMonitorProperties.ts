@@ -212,6 +212,6 @@ export function useSystemMonitorProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[Sysmon]', '绯荤粺鎬ц兘', FirstLoad);
+        logInitComplete('[Sysmon]', '系统性能', FirstLoad);
     }
 }

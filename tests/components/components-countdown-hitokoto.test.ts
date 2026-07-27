@@ -12,8 +12,8 @@ import { mount, flushPromises } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import Countdown from '@/components/Countdown.vue';
-import Hitokoto from '@/components/Hitokoto.vue';
+import Countdown from '@/modules/countdown/Countdown.vue';
+import Hitokoto from '@/modules/hitokoto/Hitokoto.vue';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
@@ -86,28 +86,28 @@ describe('Hitokoto.vue', () => {
         const wrapper = mount(Hitokoto, { attachTo: document.body });
         const root = wrapper.find('#hitokoto');
         expect(root.exists()).toBe(true);
-        // Default rendered: template 1 = "<div class='text1'>{涓€瑷€}</div><div class='text2'>鈥斺€攞浣滆€厎{鍑哄}</div>"
-        // 涓€瑷€ default = '鏈幏鍙? 鈫?text should contain 鏈幏鍙?
+        // Default rendered: template 1 = "<div class='text1'>{一言}</div><div class='text2'>——{作者}{出处}</div>"
+        // 一言 default = '未获取' → text should contain 未获取
         const text = wrapper.find('.text').text();
-        expect(text).toContain('鏈幏鍙?);
+        expect(text).toContain('未获取');
         expect(() => wrapper.unmount()).not.toThrow();
     });
 
     test('updates rendered text after setHitokoto() is called on runtime store', async () => {
         vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
             json: async () => ({
-                hitokoto: '鎰夸綘閬嶅巻灞辨渤锛屼粛瑙変汉闂村€煎緱銆?,
-                from: '鏈煡',
-                from_who: '浣氬悕',
+                hitokoto: '愿你遍历山河，仍觉人间值得。',
+                from: '未知',
+                from_who: '佚名',
             }),
         }));
 
         const wrapper = mount(Hitokoto, { attachTo: document.body });
         const runtime = useRuntimeStore();
-        runtime.setHitokoto('鎰夸綘閬嶅巻灞辨渤锛屼粛瑙変汉闂村€煎緱銆?, '鏈煡', '浣氬悕');
+        runtime.setHitokoto('愿你遍历山河，仍觉人间值得。', '未知', '佚名');
         await flushPromises();
         const text = wrapper.find('.text').text();
-        expect(text).toContain('鎰夸綘閬嶅巻灞辨渤');
+        expect(text).toContain('愿你遍历山河');
         expect(() => wrapper.unmount()).not.toThrow();
     });
 });

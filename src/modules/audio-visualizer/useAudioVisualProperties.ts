@@ -1,12 +1,8 @@
 ﻿import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-const runtimeStore = useRuntimeStore();
-
 import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
-
-const config = useConfigStore();
 
 function getCircleCtx(): CanvasRenderingContext2D | null {
     const can = document.querySelector('#can') as HTMLCanvasElement | null;
@@ -22,6 +18,8 @@ export function useAudioVisualProperties(
     properties: WallpaperProperties,
     FirstLoad: boolean
 ): void {
+    const runtimeStore = useRuntimeStore();
+    const config = useConfigStore();
     const ctx = getCircleCtx();
     const CTXLine = getLineCtx();
     const param = runtimeStore.param;
@@ -495,6 +493,6 @@ export function useAudioVisualProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[audioVisualizer]', '鍙鍖栭煶棰?, FirstLoad);
+        logInitComplete('[audioVisualizer]', '音频可视化', FirstLoad);
     }
 }

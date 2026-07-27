@@ -12,7 +12,7 @@
 
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { buildCards, destroyCards, updateCards } from '@/modules/systemMonitor/cardRenderer';
+import { buildCards, destroyCards, updateCards } from '@/modules/systemMonitor/ui/cardRenderer';
 import type { CardRenderData } from '@/modules/systemMonitor/types';
 
 vi.mock('@/utils/i18n', () => ({

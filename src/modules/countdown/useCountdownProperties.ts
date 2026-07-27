@@ -175,6 +175,6 @@ export function useCountdownProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[Countdown]', '鍊掕鏃?, FirstLoad);
+        logInitComplete('[Countdown]', '倒计时', FirstLoad);
     }
 }

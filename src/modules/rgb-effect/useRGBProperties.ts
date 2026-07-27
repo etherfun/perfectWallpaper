@@ -9,10 +9,9 @@ import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
 
-const config = useConfigStore();
-
 export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
+    const config = store;
     const patch: Record<string, unknown> = {};
 
     // RGB FPS鍒锋柊鐜?
@@ -116,6 +115,6 @@ export function useRGBProperties(properties: WallpaperProperties, FirstLoad: boo
     }
 
     if (FirstLoad) {
-        logInitComplete('[RGB]', 'RGB鐏厜', FirstLoad);
+        logInitComplete('[RGB]', 'RGB灯光', FirstLoad);
     }
 }

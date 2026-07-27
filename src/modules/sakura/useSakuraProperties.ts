@@ -6,10 +6,9 @@ import { elements } from '@/utils/elementManager';
 import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
 
-const config = useConfigStore();
-
 export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
+    const config = store;
     const patch: Record<string, unknown> = {};
 
     // 妯辫姳鐗规晥
@@ -117,6 +116,6 @@ export function useSakuraProperties(properties: WallpaperProperties, FirstLoad: 
     }
 
     if (FirstLoad) {
-        logInitComplete('[Sakura]', '妯辫姳鏁堟灉', FirstLoad);
+        logInitComplete('[Sakura]', '樱花效果', FirstLoad);
     }
 }

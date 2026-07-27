@@ -4,9 +4,9 @@
 
 export { SimpleMarkdown } from './simple-markdown';
 
-import { globalT, i18n } from '@/utils/i18n';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+import { globalT, i18n } from '@/utils/i18n';
 
 const runtimeStore = useRuntimeStore();
 import { waitAndExecute } from '../../utils/timer';
@@ -16,14 +16,14 @@ import { fetch_with_retry } from '../../utils/tool';
 import { SimpleMarkdown } from './simple-markdown';
 
 /**
- * 瀹夊叏鐨?i18n 鍙栧€煎嚱鏁?鈥?鐩存帴璇诲彇鍘熷娑堟伅瀛楀吀锛岀粫杩?vue-i18n 娑堟伅缂栬瘧鍣ㄣ€?
+ * 安全的 i18n 取值函数 —— 直接读取原始消息字典，绕过 vue-i18n 消息编译器。
  *
- * 鍘熷洜锛歷ue-i18n 9 鐨?t() 鍦ㄧ紪璇戞秷鎭椂浼氳В鏋?linked message 璇硶锛園:key锛夛紝
- * 鑰?changelog 鍐呭涓殑 "BiliBili@灏忔槦鎯冲彮鍙? 绛夋枃鏈細琚鍒や负鏃犳晥鐨?linked
- * format 骞舵姏鍑?SyntaxError 10 (INVALID_LINKED_FORMAT)銆?
+ * 原因：vue-i18n 9 的 t() 在编译消息时会解析 linked message 语法（@:key），
+ * 而 changelog 内容中的 "BiliBili@小星星" 等文本会被误判为无效的 linked
+ * format 并抛出 SyntaxError 10 (INVALID_LINKED_FORMAT)。
  *
- * 鏈嚱鏁扮洿鎺ヤ粠 getLocaleMessage() 鑾峰彇鍘熷瀛楃涓诧紝涓嶇粡杩囩紪璇戝櫒銆?
- * 濡傛灉鎵句笉鍒板搴?key锛屽洖閫€鍒?globalT() 澶勭悊缂哄け key 鐨勫洖閫€閫昏緫銆?
+ * 本函数直接从 getLocaleMessage() 获取原始字符串，不经过编译器。
+ * 如果找不到对应 key，回退到 globalT() 处理缺失 key 的回退逻辑。
  */
 function safeT(key: string): string {
     try {

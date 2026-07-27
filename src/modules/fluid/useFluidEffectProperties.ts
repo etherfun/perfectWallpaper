@@ -1,7 +1,6 @@
 ﻿import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-const configStore = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
 import { FluidEffect } from '@/modules/fluid';
@@ -103,7 +102,7 @@ export function useFluidEffectProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[FluidEffect]', '娴佷綋', FirstLoad);
+        logInitComplete('[FluidEffect]', '流体', FirstLoad);
         store.$patch({ fluid_effect_init_complete: true });
     }
 }

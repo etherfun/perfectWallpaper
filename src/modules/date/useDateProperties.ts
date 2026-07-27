@@ -183,7 +183,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (FirstLoad) {
-        logInitComplete('[Date]', '鏃ユ湡', FirstLoad);
+        logInitComplete('[Date]', '日期', FirstLoad);
         store.$patch({ date_init_complete: true });
     }
 }

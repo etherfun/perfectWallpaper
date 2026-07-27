@@ -7,15 +7,13 @@
  * preserved as local closure variables since they reflect "current state of
  * the player control DOM" and are not surfaced to consumers.
  */
+import { pc_aubar, playertitle, thumbnailsue } from '@/modules/player_control';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
-import { registerDeferred } from '@/utils/deferredScheduler';
-
-const runtimeStore = useRuntimeStore();
-import { pc_aubar, playertitle, thumbnailsue } from '@/modules/player_control';
 import { WallpaperProperties } from '@/types/types';
-import { logInitComplete } from '@/utils/helpers';
+import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
+import { logInitComplete } from '@/utils/helpers';
 
 /**
  * 妯″潡椤跺眰 DOM 寮曠敤缂撳瓨銆?
@@ -98,20 +96,19 @@ function applyPendingPlayerStyles(): void {
  */
 import { clearPendingMediaEvent,pendingMediaEvent } from '@/modules/player_control/domRefs';
 
-const config = useConfigStore();
-
 function applyPendingMediaDisplay(): void {
     if (!player_control) return;
     const evt = pendingMediaEvent();
     if (!evt) return;
     clearPendingMediaEvent();
 
-    // 妫€鏌?player_control_show 鈥斺€?鐢ㄦ棫 config 鍗曚緥锛堝悓姝ュ啓鍏ョ珛鍗冲彲瑙侊級
+    const config = useConfigStore();
+    // 检查 player_control_show —— 用旧 config 单例（同步写入立即可见）
     if (config.player_control_show) {
         player_control.style.display = 'flex';
         playertitle(Boolean(config.player_control_visualaudiobar));
     }
-    // player_control_show 涓?false 鏃舵殏涓嶆樉绀猴紝绛夊悗缁睘鎬ф帹閫佹垨鐢ㄦ埛寮€鍚椂鍐嶅鐞?
+    // player_control_show 为 false 时暂不显示，等后续属性推送或用户开启时再处理
 }
 
 let player_control_show = false;
@@ -122,13 +119,15 @@ export function usePlayerControlProperties(
     FirstLoad: boolean
 ): void {
     const store = useConfigStore();
+    const runtimeStore = useRuntimeStore();
+    const config = store;
     const patch: Record<string, unknown> = {};
 
     /**
-     * 鑾峰彇鏈夋晥鐨?player_control_size_value锛?
-     * 浼樺厛鐢ㄦ湰娆?patch 涓殑锛堝悓涓€鎵?WE 灞炴€т腑鍙兘宸叉洿鏂?player_control_size锛夛紝
-     * 鍥炶惤鑷?store 褰撳墠鍊硷紙榛樿鎴栦笂娆¤繍琛屾椂淇濆瓨鐨勶級銆?
-     * 鍘熷 main 鍒嗘敮鐢?config 鍚屾璧嬪€煎彲绔嬪嵆璇诲埌锛?patch 鏄欢杩熸壒閲忕殑锛屽繀椤荤敤鏈嚱鏁般€?
+     * 获取有效的 player_control_size_value：
+     * 优先用本次 patch 中的（同一批 WE 属性中可能已更新 player_control_size），
+     * 回落到 store 当前值（默认或上次运行时保存的）。
+     * 原始 main 分支用 config 同步赋值可立即读到，patch 是延迟批量的，必须用本函数。
      */
     function getSizeValue(): number {
         return (patch.player_control_size_value as number | undefined) ?? store.player_control_size_value ?? 100;
@@ -139,9 +138,9 @@ export function usePlayerControlProperties(
         patch.player_control_show = v;
         config.player_control_show = v; // sync
         player_control_show = properties.player_control_show.value;
-        // visibility/display 鏄唴鑱旀牱寮忥紝蹇呴』鍦ㄥ厓绱犲瓨鍦ㄦ椂璁剧疆
-        // 淇锛氬綋寮€鍚?player_control_show 浣嗘病鏈夋瓕鏇蹭俊鎭椂锛屼笉璁剧疆 display: flex銆?
-        // 鍚庣画 mediaPropertiesListener 鏀跺埌姝屾洸鍚庝細瑙﹀彂鏄剧ず銆?
+        // visibility/display 是内联样式，必须在元素存在时设置
+        // 修复：当开启 player_control_show 但没有歌曲信息时，不设置 display: flex。
+        // 后续 mediaPropertiesListener 收到歌曲后会触发显示。
         const hasTitle = !!runtimeStore.playerInfo.singtitle;
         const wantShow = player_control_show && hasTitle;
         const setVis = (show: boolean, firstLoad: boolean): void => {
@@ -497,6 +496,6 @@ export function usePlayerControlProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[PlayerControl]', '鎾斁鍣?, FirstLoad);
+        logInitComplete('[PlayerControl]', '播放器', FirstLoad);
     }
 }

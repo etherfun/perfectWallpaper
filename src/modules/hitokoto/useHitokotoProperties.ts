@@ -197,6 +197,6 @@ export function useHitokotoProperties(
     }
 
     if (FirstLoad) {
-        logInitComplete('[Hitokoto]', '涓€瑷€', FirstLoad);
+        logInitComplete('[Hitokoto]', '一言', FirstLoad);
     }
 }

@@ -16,16 +16,13 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 // Mock the config module so we can isolate updateFileList from the live config.
-vi.mock('@/utils/config', () => {
-    const myList: string[] = [];
-    return {
-        config: {
-            runtime: {
-                myList,
-            },
-        },
-    };
-});
+const { mockMyList } = vi.hoisted(() => ({ mockMyList: [] as string[] }));
+
+vi.mock('@/stores/runtime', () => ({
+    useRuntimeStore: () => ({
+        myList: mockMyList,
+    }),
+}));
 
 // slide/transition.ts transitive imports @/modules/slide/styles which calls
 // useConfigStore() at module top. Stub a fake store so the import chain succeeds.
@@ -36,46 +33,45 @@ vi.mock('@/stores/config', () => ({
     }),
 }));
 
-import { config } from '@/utils/config';
 import { updateFileList } from '@/modules/slide/transition';
 
 describe('updateFileList', () => {
     beforeEach(() => {
         // Reset shared state between tests
-        config.runtime.myList.length = 0;
+        mockMyList.length = 0;
     });
 
     test('appends a single new file to an empty myList', () => {
         updateFileList(['photo1.jpg']);
-        expect(config.runtime.myList).toEqual(['photo1.jpg']);
+        expect(mockMyList).toEqual(['photo1.jpg']);
     });
 
     test('appends multiple new files preserving input order', () => {
         updateFileList(['a.jpg', 'b.jpg', 'c.jpg']);
-        expect(config.runtime.myList).toEqual(['a.jpg', 'b.jpg', 'c.jpg']);
+        expect(mockMyList).toEqual(['a.jpg', 'b.jpg', 'c.jpg']);
     });
 
     test('does not duplicate files that already exist in myList', () => {
-        config.runtime.myList.push('a.jpg', 'b.jpg');
+        mockMyList.push('a.jpg', 'b.jpg');
         updateFileList(['b.jpg', 'c.jpg', 'd.jpg']);
         // b.jpg must not appear twice; c.jpg and d.jpg are appended
-        expect(config.runtime.myList).toEqual(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']);
+        expect(mockMyList).toEqual(['a.jpg', 'b.jpg', 'c.jpg', 'd.jpg']);
     });
 
     test('skips empty string entries (falsy guard)', () => {
         updateFileList(['', 'a.jpg', '', 'b.jpg']);
-        expect(config.runtime.myList).toEqual(['a.jpg', 'b.jpg']);
+        expect(mockMyList).toEqual(['a.jpg', 'b.jpg']);
     });
 
     test('handles empty input array as a no-op', () => {
-        config.runtime.myList.push('existing.jpg');
+        mockMyList.push('existing.jpg');
         updateFileList([]);
-        expect(config.runtime.myList).toEqual(['existing.jpg']);
+        expect(mockMyList).toEqual(['existing.jpg']);
     });
 
     test('is a no-op when all input files are already in myList', () => {
-        config.runtime.myList.push('a.jpg', 'b.jpg');
+        mockMyList.push('a.jpg', 'b.jpg');
         updateFileList(['a.jpg', 'b.jpg']);
-        expect(config.runtime.myList).toEqual(['a.jpg', 'b.jpg']);
+        expect(mockMyList).toEqual(['a.jpg', 'b.jpg']);
     });
 });

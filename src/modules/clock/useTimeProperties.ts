@@ -170,6 +170,6 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (FirstLoad) {
-        logInitComplete('[Date]', '鏃ユ湡', FirstLoad);
+        logInitComplete('[Date]', '日期', FirstLoad);
     }
 }

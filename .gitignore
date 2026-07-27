@@ -4,6 +4,8 @@ dist/
 coverage/
 .vscode/
 .idea/
-.claude/
+.github/skills
+.github/agents
 test-results
 build
+.github/copilot-instructions.md

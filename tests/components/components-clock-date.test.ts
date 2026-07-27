@@ -14,8 +14,8 @@ import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import Clock from '@/components/Clock.vue';
-import DateComp from '@/components/Date.vue';
+import Clock from '@/modules/clock/Clock.vue';
+import DateComp from '@/modules/date/Date.vue';
 import { useConfigStore } from '@/stores/config';
 
 vi.mock('@/utils/i18n', () => ({
@@ -117,7 +117,7 @@ describe('Date.vue', () => {
         // Should contain at least one digit
         expect(text).toMatch(/\d/);
         // Should NOT contain Chinese month names from format 3
-        expect(text).not.toMatch(/(涓€鏈坾浜屾湀|涓夋湀|鍥涙湀|浜旀湀|鍏湀|涓冩湀|鍏湀|涔濇湀|鍗佹湀|鍗佷竴鏈坾鍗佷簩鏈?/);
+        expect(text).not.toMatch(/一月|二月|三月|四月|五月|六月|七月|八月|九月|十月|十一月|十二月/);
         expect(() => wrapper.unmount()).not.toThrow();
     });
 
@@ -127,7 +127,7 @@ describe('Date.vue', () => {
         const wrapper = mount(DateComp, { attachTo: document.body });
         const text = wrapper.find('.text').text();
         // Should contain at least one Chinese month name
-        expect(text).toMatch(/(涓€鏈坾浜屾湀|涓夋湀|鍥涙湀|浜旀湀|鍏湀|涓冩湀|鍏湀|涔濇湀|鍗佹湀|鍗佷竴鏈坾鍗佷簩鏈?/);
+        expect(text).toMatch(/一月|二月|三月|四月|五月|六月|七月|八月|九月|十月|十一月|十二月/);
         expect(() => wrapper.unmount()).not.toThrow();
     });
 });

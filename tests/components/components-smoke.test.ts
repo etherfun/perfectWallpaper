@@ -83,22 +83,22 @@ vi.mock('@/modules/core/video', () => ({
     updateMusicPlaylist: () => {},
 }));
 
-import App from '@/components/App.vue';
-import Background from '@/components/Background.vue';
-import DebugModal from '@/components/DebugModal.vue';
-import DockBar from '@/components/DockBar.vue';
-import FluidEffect from '@/components/FluidEffect.vue';
-import FullscreenLyrics from '@/components/FullscreenLyrics.vue';
-import PictureInfo from '@/components/PictureInfo.vue';
-import PlayerControl from '@/components/PlayerControl.vue';
-import PWCircle from '@/components/PWCircle.vue';
-import PWLine from '@/components/PWLine.vue';
-import PWParticles from '@/components/PWParticles.vue';
-import RgbEffect from '@/components/RgbEffect.vue';
-import Sakura from '@/components/Sakura.vue';
-import SystemMonitor from '@/components/SystemMonitor.vue';
-import Version from '@/components/Version.vue';
-import Weather from '@/components/Weather.vue';
+import App from '@/modules/core/App.vue';
+import Background from '@/modules/slide/Background.vue';
+import DebugModal from '@/modules/debug/DebugModal.vue';
+import DockBar from '@/modules/dockbar/DockBar.vue';
+import FluidEffect from '@/modules/fluid/FluidEffect.vue';
+import FullscreenLyrics from '@/modules/fullscreenLyrics/FullscreenLyrics.vue';
+import PictureInfo from '@/modules/slide/PictureInfo.vue';
+import PlayerControl from '@/modules/player_control/PlayerControl.vue';
+import PWCircle from '@/modules/audio-visualizer/circle/PWCircle.vue';
+import PWLine from '@/modules/audio-visualizer/line/PWLine.vue';
+import PWParticles from '@/modules/audio-visualizer/particles/PWParticles.vue';
+import RgbEffect from '@/modules/rgb-effect/RgbEffect.vue';
+import Sakura from '@/modules/sakura/Sakura.vue';
+import SystemMonitor from '@/modules/systemMonitor/SystemMonitor.vue';
+import Version from '@/modules/version/Version.vue';
+import Weather from '@/modules/weather/Weather.vue';
 
 // i18n.install is normally provided by `app.use(i18n)` in main.ts bootstrap.
 // For isolated component tests we use the real i18n instance 鈥?its Composer

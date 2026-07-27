@@ -2,9 +2,9 @@
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '@/types/types';
-import { logInitComplete } from '@/utils/helpers';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
+import { logInitComplete } from '@/utils/helpers';
 import { debugLogger } from '@/utils/logger';
 import { timerManager } from '@/utils/timer';
 
@@ -379,7 +379,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (FirstLoad) {
-        logInitComplete('[Background]', '澹佺焊', FirstLoad);
+        logInitComplete('[Background]', '壁纸', FirstLoad);
         store.$patch({ bg_init_complete: true });
     }
 }

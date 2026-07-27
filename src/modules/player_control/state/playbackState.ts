@@ -4,10 +4,8 @@
  *   - #player_control 容器的 `.paused` 类
  *   - <body> 上的 `.paused` 类（供 CSS / 流体效果联动）
  */
-import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
 import { player_control } from '../domRefs';

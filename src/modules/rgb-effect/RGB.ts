@@ -10,8 +10,9 @@ import { elements } from '../../utils/elementManager';
 import { debugLogger } from '../../utils/logger';
 import { backgroundLayers } from '../slide/types';
 
-const config = useConfigStore();
-const runtimeStore = useRuntimeStore();
+/** Lazy accessors — defer store resolution (avoids Pinia init order issues in tests). */
+function cfg() { return useConfigStore(); }
+function rt() { return useRuntimeStore(); }
 
 // RAF chain tracking to prevent memory leaks
 let currentRafId: number | null = null;
@@ -24,7 +25,7 @@ let globalCachedImg: HTMLImageElement | null = null;
 // Visibility change handler to resume RAF when tab becomes visible
 function handleVisibilityChange(): void {
     if (document.visibilityState === 'visible') {
-        if (config.rgb_show) {
+        if (cfg().rgb_show) {
             debugLogger.log('RGB: visibility restored, resuming RAF');
             background2canvas(null, lastRafVideoMode ?? undefined);
         }
@@ -59,9 +60,9 @@ function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
  * 发送RGB数据到LED设备
  */
 function startRGBInternal(canvas: HTMLCanvasElement): void {
-    if (!config.wallpaper_settings?.ledPlugin) return;
+    if (!cfg().wallpaper_settings?.ledPlugin) return;
     // 主开关关闭时不发送 LED 数据
-    if (!config.rgb_show) return;
+    if (!cfg().rgb_show) return;
     const encodedImageData = getEncodedCanvasImageData(canvas);
     if (window.wpPlugins?.led) {
         window.wpPlugins.led.setAllDevicesByImageData(
@@ -90,24 +91,24 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
     let time = 0;
 
     function drawLayers(): void {
-        const sakuraRGB = config.sakura_rgb;
+        const sakuraRGB = cfg().sakura_rgb;
         const sakurause =
             sakuraRGB &&
             sakura.width === window.screen.width &&
             sakura.height === window.screen.height;
-        const opacitySaRGB = config.opacity_sa_rgb ?? 1;
-        const particlesRGB = config.particles_rgb;
-        const audiobarRGB = config.audiobar_rgb;
-        const audiobarRainbowColor = config.audiobar_rainbow_color;
-        const rainbowMove = config.rainbow_move;
-        const rainbowMoveSpeed = config.rainbow_move_speed ?? 1;
-        const aurgbcolor = config.aurgbcolor;
-        const aurgbhigh = config.aurgbhigh ?? 1;
-        const RGBRefresh = config.rgb_refresh ?? 0;
-        const RGBShow = config.rgb_show;
-        const nextphoto = config.nextphoto;
-        const isPaused = config.paused;
-        const isVideoMode = config.wallpaper_mode === 3;
+        const opacitySaRGB = cfg().opacity_sa_rgb ?? 1;
+        const particlesRGB = cfg().particles_rgb;
+        const audiobarRGB = cfg().audiobar_rgb;
+        const audiobarRainbowColor = cfg().audiobar_rainbow_color;
+        const rainbowMove = cfg().rainbow_move;
+        const rainbowMoveSpeed = cfg().rainbow_move_speed ?? 1;
+        const aurgbcolor = cfg().aurgbcolor;
+        const aurgbhigh = cfg().aurgbhigh ?? 1;
+        const RGBRefresh = cfg().rgb_refresh ?? 0;
+        const RGBShow = cfg().rgb_show;
+        const nextphoto = cfg().nextphoto;
+        const isPaused = cfg().paused;
+        const isVideoMode = cfg().wallpaper_mode === 3;
 
         rgbbg.save();
         rgbbg.globalAlpha = opacitySaRGB;
@@ -120,7 +121,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
             rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20);
         }
 
-        const audioArray = runtimeStore.playerInfo.audioArray;
+        const audioArray = rt().playerInfo.audioArray;
         if (audiobarRainbowColor) {
             if (audiobarRGB && audioArray && audioArray.length > 0) {
                 const barWidth = bg.width / 128;
@@ -205,7 +206,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         }
 
         // 兜底：RGB 已启用但画布仍为空白时，显示动态色块（确保 LED 设备有反馈）
-        const hasBgImage = config.background_rgb && (isVideoMode || (globalCachedSrc && globalCachedImg?.complete));
+        const hasBgImage = cfg().background_rgb && (isVideoMode || (globalCachedSrc && globalCachedImg?.complete));
         if (RGBShow && !hasBgImage && !sakurause && !particlesRGB && !audiobarRGB) {
             const hue = (time * 5) % 360;
             rgbbg.fillStyle = `hsl(${hue}, 80%, 40%)`;
@@ -217,11 +218,11 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         startRGBInternal(bg);
 
         if (
-            config.wallpaper_settings?.ledPlugin &&
+            cfg().wallpaper_settings?.ledPlugin &&
             !nextphoto &&
             !isPaused &&
             RGBShow &&
-            (isVideoMode || config.background_rgb || sakurause || particlesRGB || audiobarRGB || true)
+            (isVideoMode || cfg().background_rgb || sakurause || particlesRGB || audiobarRGB || true)
         ) {
             // 默认 30fps 刷新率（33ms），防止无限制 60fps 导致高 CPU
             const refreshMs = (RGBRefresh > 0) ? RGBRefresh : 33;
@@ -233,16 +234,16 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
 
     function drawbackground(): void {
         // 主开关关闭时不渲染任何内容
-        if (!config.rgb_show) return;
+        if (!cfg().rgb_show) return;
 
-        const backgroundRGB = config.background_rgb;
-        const wallpaperMode = config.wallpaper_mode;
+        const backgroundRGB = cfg().background_rgb;
+        const wallpaperMode = cfg().wallpaper_mode;
         const isVideoMode = videoORimages === true || wallpaperMode === 3;
 
         // 从 runtime 读取当前图片（所有源在切图时已显式写入 currentImg）
         let resolvedSrc: string | null = null;
         if (backgroundRGB && !isVideoMode) {
-            resolvedSrc = runtimeStore.photo.currentImg;
+            resolvedSrc = rt().photo.currentImg;
             // 过渡期间锁定到旧缓存，避免闪烁
             if (backgroundLayers.isTransitioning && globalCachedSrc && resolvedSrc !== globalCachedSrc) {
                 resolvedSrc = globalCachedSrc;

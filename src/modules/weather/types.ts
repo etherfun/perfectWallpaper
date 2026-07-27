@@ -81,6 +81,7 @@ export interface WeatherData {
     obstime: string;
     windLv: string;
     air: string;
+    rain?: string;
     weatherAlert: WeatherAlert[];
     weatherAlertColor: string;
     sevenHourlyData: SevenHourlyData;

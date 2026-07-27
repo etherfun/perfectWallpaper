@@ -23,7 +23,6 @@ const BG_MAX_RETRIES = 10;
 /** Change background based on mode */
 export function changeBackground(): void {
     const mode = config.wallpaper_mode;
-    const speed = config.speed;
     const interval = getSwitchInterval();
 
     try { if (!(window as any).__bg) (window as any).__bg = 0; (window as any).__bg++; } catch { /* noop */ }

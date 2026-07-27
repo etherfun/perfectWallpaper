@@ -186,7 +186,7 @@ export async function openmeteo(
             sevenHourlyData.Times.push(timeStr.split('T')[1]?.substring(0, 5) ?? '--:--');
 
             const pop = res.hourly.precipitation_probability?.[idx] ?? 0;
-            sevenHourlyData.Pops.push(pop !== null ? `${pop}%` : '鈥斺€?);
+            sevenHourlyData.Pops.push(pop !== null ? `${pop}%` : '--');
 
             sevenHourlyData.Temps.push(res.hourly.temperature_2m?.[idx] ?? '--');
 
@@ -218,10 +218,10 @@ export async function openmeteo(
             sevenHourlyData.preciptype.push(getPrecipTypeFromCode(weatherCode));
         }
 
-        // 涓嶈冻7灏忔椂鐢ㄧ┖鍊煎～鍏?
+        // 不足7小时用空值填充
         while (sevenHourlyData.Times.length < 7) {
             sevenHourlyData.Times.push('--:--');
-            sevenHourlyData.Pops.push('鈥斺€?);
+            sevenHourlyData.Pops.push('--');
             sevenHourlyData.Temps.push('--');
             sevenHourlyData.Icons.push('999');
             sevenHourlyData.Texts.push(globalT('weather_no_data'));

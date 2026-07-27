@@ -4,10 +4,8 @@
  * WE 只会在歌曲时间发生变化时发一次 MediaTimelineEvent，
  * 期间需要本地用定时器每 100ms 推进 0.1 秒，营造平滑动画。
  */
-import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
 import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from '../constants';

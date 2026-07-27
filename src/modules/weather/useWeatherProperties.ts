@@ -27,8 +27,6 @@ import {
 } from '../weather';
 import { setWeatherUnitByName } from '../weather/weatherState';
 
-const config = useConfigStore();
-
 /**
  * 澶勭悊澶╂皵鐩稿叧灞炴€?
  *
@@ -38,6 +36,7 @@ const config = useConfigStore();
  */
 export function useWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
+    const config = store;
     const patch: Record<string, unknown> = {};
 
     if (properties.getcitykey_qweather) {
@@ -315,7 +314,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (FirstLoad) {
-        logInitComplete('[Weather]', '澶╂皵', FirstLoad);
+        logInitComplete('[Weather]', '天气', FirstLoad);
         store.$patch({ weather_init_complete: true });
     }
 }

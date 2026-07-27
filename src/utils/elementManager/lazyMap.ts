@@ -14,8 +14,6 @@
  *
  * 类型：返回 `Record<K, HTMLElement>`，调用点内部已有 null guard 兜底。
  */
-type SelectorRecord = Record<string, string>;
-
 export function makeLazyMap<TKeys extends string>(
     selectors: Record<TKeys, string>
 ): Record<TKeys, HTMLElement> {

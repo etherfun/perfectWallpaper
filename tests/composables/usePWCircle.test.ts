@@ -47,7 +47,7 @@ window.removeEventListener = ((type: string, ...rest: unknown[]) => {
     return (origRemove as (...a: unknown[]) => void)(type, ...rest);
 }) as typeof window.removeEventListener;
 
-vi.mock('@/modules/audio-visualizer/PWCircle', () => ({
+vi.mock('@/modules/audio-visualizer/circle/PWCircle', () => ({
     resize: spies.resize,
     setCan: spies.setCan,
     createPoint: spies.createPoint,
@@ -63,7 +63,7 @@ vi.mock('@/utils/i18n', () => ({
 }));
 
 // Import AFTER mocks so the module picks them up.
-import { usePWCircle } from '@/modules/audio-visualizer/usePWCircle';
+import { usePWCircle } from '@/modules/audio-visualizer/circle/usePWCircle';
 
 /** Tiny host component that calls the composable and exposes its API. */
 function makeHost() {

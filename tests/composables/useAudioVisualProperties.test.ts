@@ -29,8 +29,8 @@ const { mockRuntime, mockAudioVisualizer } = vi.hoisted(() => {
 
 vi.mock('@/utils/elementManager', () => ({ elements: { body: document.body } }));
 
-vi.mock('@/utils/config', () => ({
-    config: { runtime: mockRuntime },
+vi.mock('@/stores/runtime', () => ({
+    useRuntimeStore: () => mockRuntime,
 }));
 
 import { useAudioVisualProperties } from '@/modules/audio-visualizer/useAudioVisualProperties';
@@ -239,7 +239,7 @@ describe('useAudioVisualProperties', () => {
     test('logs init complete on FirstLoad', () => {
         useAudioVisualProperties({} as never, true);
         const matched = debugLogger.logs.find(
-            l => l.message === '[audioVisualizer] 可视化音频参数初始化完成'
+            l => l.message === '[audioVisualizer] 音频可视化参数初始化完成'
         );
         expect(matched).toBeDefined();
     });

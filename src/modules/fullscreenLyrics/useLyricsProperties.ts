@@ -72,6 +72,6 @@ export function useLyricsProperties(properties: WallpaperProperties, FirstLoad: 
 
     if (FirstLoad) {
         if (store.fullscreen_lyrics_enabled === true) fullscreenLyrics.show();
-        logInitComplete('[FullscreenLyrics]', '鍏ㄥ睆姝岃瘝', FirstLoad);
+        logInitComplete('[FullscreenLyrics]', '全屏歌词', FirstLoad);
     }
 }

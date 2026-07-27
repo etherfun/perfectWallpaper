@@ -17,8 +17,13 @@ const { mockWallpaper } = vi.hoisted(() => {
 
 vi.mock('@/utils/elementManager', () => ({ elements: { body: document.body } }));
 
-vi.mock('@/utils/config', () => ({
-    config: { runtime: { wallpaper: mockWallpaper } },
+vi.mock('@/stores/runtime', () => ({
+    useRuntimeStore: () => ({
+        wallpaper: mockWallpaper,
+        playerInfo: { singtitle: '', playerState: null },
+        param: {},
+        PWLineParam: {},
+    }),
 }));
 
 import { useParticleProperties } from '@/modules/audio-visualizer/useParticleProperties';

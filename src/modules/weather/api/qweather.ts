@@ -1,5 +1,5 @@
-﻿import { globalT } from '@/utils/i18n';
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
+import { globalT } from '@/utils/i18n';
 
 const config = useConfigStore();
 
@@ -242,7 +242,7 @@ async function fetch24hForecast(
             return afterT?.split('+')[0]?.substring(0, 5) ?? '--:--';
         });
         weather_data.sevenHourlyData.Pops = sevenHourlyData.map(hour => {
-            return hour.pop !== undefined && hour.pop !== '' ? `${hour.pop}%` : '鈥斺€?;
+            return hour.pop !== undefined && hour.pop !== '' ? `${hour.pop}%` : '--';
         });
         weather_data.sevenHourlyData.Temps = sevenHourlyData.map(hour => hour.temp);
         weather_data.sevenHourlyData.Icons = sevenHourlyData.map(hour => hour.icon);
@@ -255,7 +255,7 @@ async function fetch24hForecast(
         weather_data.sevenHourlyData.Precips = sevenHourlyData.map(hour => hour.precip);
         weather_data.sevenHourlyData.Pressures = sevenHourlyData.map(hour => hour.pressure);
         weather_data.sevenHourlyData.Clouds = sevenHourlyData.map(hour =>
-            hour.cloud !== '' ? hour.cloud : '鈥斺€?
+            hour.cloud !== '' ? hour.cloud : '--'
         );
         weather_data.sevenHourlyData.Dews = sevenHourlyData.map(hour => hour.dew);
     }

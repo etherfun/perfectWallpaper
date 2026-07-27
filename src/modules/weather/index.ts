@@ -36,8 +36,8 @@ export {
     weather_data,
 } from './weatherState';
 
-import { globalT } from '@/utils/i18n';
 import { useConfigStore } from '@/stores/config';
+import { globalT } from '@/utils/i18n';
 
 import { debugLogger } from '../../utils/logger';
 import { timerManager } from '../../utils/timer';

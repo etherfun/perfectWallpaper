@@ -1,8 +1,6 @@
-﻿import '../version';
-
-import { loadI18n } from '@/utils/i18n';
-import { useConfigStore } from '@/stores/config';
+﻿import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+import { loadI18n } from '@/utils/i18n';
 
 const runtimeStore = useRuntimeStore();
 import { useAudioVisualProperties } from '@/modules/audio-visualizer/useAudioVisualProperties';
@@ -277,16 +275,16 @@ export function setupWallpaperPropertyListener(): void {
         // 娉ㄥ唽 Wallpaper Engine 闊抽鐩戝惉鍣?
         window.wallpaperRegisterAudioListener?.(audioDataListener);
 
-        // 娉ㄥ唽澹佺焊鎻掍欢鐩戝惉鍣?
+        // 注册壁纸插件监听器
         window.wallpaperPluginListener = {
             onPluginLoaded: (name: string, _version: string) => {
                 if (name === 'led') {
                     store.wallpaper_settings!.ledPlugin = true;
-                    debugLogger.info('[RGB] LED 鎻掍欢宸插姞杞?);
+                    debugLogger.info('[RGB] LED 插件已加载');
                 }
                 if (name === 'cue') {
                     store.wallpaper_settings!.cuePlugin = true;
-                    debugLogger.info('[RGB] CUE 鎻掍欢宸插姞杞?);
+                    debugLogger.info('[RGB] CUE 插件已加载');
                 }
             },
         };

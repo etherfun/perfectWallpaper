@@ -5,12 +5,12 @@
  * with rich cards that show a large primary value, a meta info grid, and
  * multiple sparkline canvases.
  *
- * Architecture mirror: sysmon-card-preview.html (Style D 鈥?Stacked List)
+ * Architecture mirror: sysmon-card-preview.html (Style D – Stacked List)
  *
  * Each card is a `.sysmon-card` element with the structure:
  *   .sysmon-card
- *     .sysmon-card__label-row  鈫?metric label (e.g. "CPU 路 AMD Ryzen 9 7845HX")
- *     .sysmon-card__value-row  鈫?value + extra (e.g. "13%" "(89掳C)")
+ *     .sysmon-card__label-row  → metric label (e.g. "CPU · AMD Ryzen 9 7845HX")
+ *     .sysmon-card__value-row  → value + extra (e.g. "13%" "(89°C)")
  *     .sysmon-card__meta       鈫?info grid (e.g. "Freq 5065 MHz")
  *     .sysmon-card__sparks     鈫?sparkline area (spark-pair 脳 N)
  *       .spark-pair
@@ -46,14 +46,6 @@ function tempColor(celsius: number, range: TempRange): string {
 }
 
 /**
- * Convert a value to a threshold-based color using the same
- * green/yellow/red scale as getColorForValue.
- */
-function valueToColor(value: number, alpha = 1): string {
-    return getColorForValue(value, alpha);
-}
-
-/**
  * Compute per-segment colors from a history array.
  * Each segment runs from history[i] to history[i+1]; the color
  * is determined by the END value of the segment (history[i+1]).
@@ -79,7 +71,7 @@ function drawSmoothStroke(
     lineWidth = 1.5,
     baseWidth = 4
 ): void {
-    // Soft base 鈥?wide, low-opacity, screen blend for smooth transitions
+    // Soft base – wide, low-opacity, screen blend for smooth transitions
     ctx.save();
     ctx.globalCompositeOperation = 'screen';
     ctx.lineCap = 'round';
@@ -319,7 +311,7 @@ function drawNetDirectionSpark(
     ctx.lineWidth = 1.5;
     ctx.stroke();
 
-    // End dot 鈥?fixed color
+    // End dot – fixed color
     const lastBps = historyBps[historyBps.length - 1] ?? 0;
     ctx.beginPath();
     ctx.arc(lastX, toY(lastBps), 1.8, 0, Math.PI * 2);
@@ -327,7 +319,7 @@ function drawNetDirectionSpark(
     ctx.fill();
 }
 
-/** "No data" placeholder 鈥?diagonal hatch + N/A label. */
+/** "No data" placeholder – diagonal hatch + N/A label. */
 function drawEmptySpark(canvas: HTMLCanvasElement): void {
     const ctx = setupCanvas(canvas);
     if (!ctx) return;
@@ -391,7 +383,7 @@ function drawRxTxCombinedSpark(
         if (history.length < 2) return;
         const toY = (bps: number) => h - (bps / peak) * h;
 
-        // Area 鈥?use screen blend mode so overlapping rx+tx both show
+        // Area – use screen blend mode so overlapping rx+tx both show
         const grad = ctx!.createLinearGradient(0, 0, 0, h);
         grad.addColorStop(0, `rgba(${rgb},${alpha})`);
         grad.addColorStop(1, 'transparent');
@@ -418,7 +410,7 @@ function drawRxTxCombinedSpark(
         ctx!.lineWidth = lineWidth;
         ctx!.stroke();
 
-        // End dot 鈥?fixed color
+        // End dot – fixed color
         const lastV = history[history.length - 1] ?? 0;
         ctx!.beginPath();
         ctx!.arc(lastX, toY(lastV), 2, 0, Math.PI * 2);
@@ -451,7 +443,7 @@ function drawCurvePath(
     const lastX = startX + (history.length - 1) * step;
     const lastValue = history[history.length - 1] ?? 0;
 
-    // Area fill 鈥?gradient based on last value's color
+    // Area fill – gradient based on last value's color
     ctx.beginPath();
     ctx.moveTo(startX, h);
     history.forEach((value, i) => {
@@ -465,7 +457,7 @@ function drawCurvePath(
     ctx.fillStyle = grad;
     ctx.fill();
 
-    // Stroke 鈥?per-segment coloring when segmentColors is provided
+    // Stroke – per-segment coloring when segmentColors is provided
     if (segmentColors) {
         const pts: [number, number][] = history.map((v, i) => [
             startX + i * step,
@@ -487,7 +479,7 @@ function drawCurvePath(
         ctx.stroke();
     }
 
-    // End dot 鈥?color based on last value
+    // End dot – color based on last value
     const lastColor = segmentColors
         ? (segmentColors[segmentColors.length - 1] ?? fillColor)
         : fillColor;
@@ -714,13 +706,13 @@ function updateSingleCard(
 
 function buildSparkHead(ch: SparkChannel): string {
     const { kind, displayValue, tag, range } = ch;
-    const display = displayValue ?? '鈥?;
+    const display = displayValue ?? '--';
 
     switch (kind) {
         case 'util':
             return `<span>${globalT('sysmon_card_util')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_util')}</span>`;
         case 'temp': {
-            const rangeStr = range ? `${range.lo}鈥?{range.hi}掳C` : '';
+            const rangeStr = range ? `${range.lo}–${range.hi}°C` : '';
             return `<span>${globalT('sysmon_card_temp')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${rangeStr}</span>`;
         }
         case 'power':
@@ -728,11 +720,11 @@ function buildSparkHead(ch: SparkChannel): string {
         case 'vram':
             return `<span>${globalT('sysmon_card_vram')} <b>${display}</b></span><span class="axis">${globalT('sysmon_card_axis_util')}</span>`;
         case 'read': {
-            const rangeStr = range ? `0鈥?{formatBytes(range.hi)}/s` : '';
+            const rangeStr = range ? `0–${formatBytes(range.hi)}/s` : '';
             return `<span>${globalT('sysmon_card_read')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
         }
         case 'write': {
-            const rangeStr = range ? `0鈥?{formatBytes(range.hi)}/s` : '';
+            const rangeStr = range ? `0–${formatBytes(range.hi)}/s` : '';
             return `<span>${globalT('sysmon_card_write')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
         }
         case 'activity':

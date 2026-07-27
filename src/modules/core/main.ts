@@ -18,11 +18,11 @@ import '../fullscreenLyrics';
 
 import { createApp, watch } from 'vue';
 
-import { i18n, loadI18n } from '@/utils/i18n';
 import App from '@/modules/core/App.vue';
 import { useWallpaperProperties } from '@/modules/core/useWallpaperProperties';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+import { i18n, loadI18n } from '@/utils/i18n';
 
 import { markDeferredReady } from '../../utils/deferredScheduler';
 import { debugLogger } from '../../utils/logger';

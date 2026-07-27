@@ -3,8 +3,8 @@
  * 鑱岃矗锛氭洿鏂板ぉ姘旀樉绀虹殑鍚勪釜閮ㄥ垎
  */
 
-import { globalT } from '@/utils/i18n';
 import { useConfigStore } from "@/stores/config";
+import { globalT } from '@/utils/i18n';
 
 import { elements } from '../../../utils/elementManager';
 import { fetch_with_retry } from '../../../utils/tool';
@@ -38,19 +38,19 @@ export async function updateMainWeatherDisplay(): Promise<void> {
         }
     }
 
-    // 娓╁害鍜屽ぉ姘旀枃瀛?
-    e.temp.textContent = `${weather_data.temperature}${getWeatherUnit().temp || '鈩?}`;
+    // 温度和天气文字
+    e.temp.textContent = `${weather_data.temperature}${getWeatherUnit().temp || '℃'}`;
     e.text.textContent = weather_data.weathernow || '';
 
-    // 浣撴劅娓╁害锛堟潯浠舵樉绀猴級
+    // 体感温度（条件显示）
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.feels.style.display = '';
-        e.feels.textContent = `${globalT('weather_feels_label')} ${weather_data.feels}${getWeatherUnit().temp || '鈩?}`;
+        e.feels.textContent = `${globalT('weather_feels_label')} ${weather_data.feels}${getWeatherUnit().temp || '℃'}`;
     } else {
         e.feels.style.display = 'none';
     }
 
-    // 鍩庡競锛堟潯浠舵樉绀猴級
+    // 城市（条件显示）
     if ([1, 2, 3, 4].includes(config.weather_api_choose ?? 0)) {
         e.city.style.display = '';
         e.city.textContent = weather_address.cityname;
@@ -65,10 +65,10 @@ export async function updateMainWeatherDisplay(): Promise<void> {
 export function updateWeatherDetails(): void {
     const e = elements.weather;
 
-    // 娓╁害鑼冨洿
-    e.tempRange.textContent = `${weather_data.temperature_max} ~ ${weather_data.temperature_min}鈩僠;
+    // 温度范围
+    e.tempRange.textContent = `${weather_data.temperature_max} ~ ${weather_data.temperature_min}℃`;
 
-    // 婀垮害锛堟潯浠舵樉绀猴級
+    // 湿度（条件显示）
     if ([1, 3, 4, 5].includes(config.weather_api_choose ?? 0)) {
         e.humidity.style.display = '';
         e.humidity.textContent = `${globalT('weather_humidity_label')}${weather_data.humidity}%`;
@@ -76,10 +76,10 @@ export function updateWeatherDetails(): void {
         e.humidity.style.display = 'none';
     }
 
-    // 椋庡悜
+    // 风向
     e.windDirection.textContent = weather_data.wind;
 
-    // 椋庣骇锛堟潯浠舵樉绀猴級
+    // 风级（条件显示）
     if ([1, 2].includes(config.weather_api_choose ?? 0)) {
         e.windLevel.style.display = '';
         e.windLevel.textContent = `${weather_data.windLv}${globalT('weather_wind_level_label')}`;
@@ -186,7 +186,7 @@ export function updatePrecipContainer(): void {
         const dataValues = showTemp
             ? weather_data.sevenHourlyData.Temps
             : weather_data.sevenHourlyData.Pops;
-        const unit = showTemp ? getWeatherUnit().temp || '鈩? : '';
+        const unit = showTemp ? getWeatherUnit().temp || '℃' : '';
 
         e.precipLabel.setAttribute('data-display-type', showTemp ? 'temperature' : 'precipitation');
         e.precipLabel.setAttribute(

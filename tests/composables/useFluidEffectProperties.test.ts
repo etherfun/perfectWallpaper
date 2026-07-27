@@ -29,8 +29,10 @@ vi.mock('@/utils/elementManager', () => ({
     elements: { body: document.body },
 }));
 
-vi.mock('@/utils/config', () => ({
-    config: mockConfig,
+vi.mock('@/stores/runtime', () => ({
+    useRuntimeStore: () => ({
+        fluidEffect: mockFluidEffectInstance,
+    }),
 }));
 
 import { useFluidEffectProperties } from '@/modules/fluid/useFluidEffectProperties';

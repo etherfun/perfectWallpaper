@@ -11,18 +11,18 @@
 import { describe, expect, test, vi } from 'vitest';
 
 // Mock config so we can swap playerInfo per test.
-vi.mock('@/utils/config', () => ({
-    config: {
-        runtime: {
-            playerInfo: {
-                singtitle: '',
-                playerState: null as number | null,
-            },
-        },
+const { mockPlayerInfo } = vi.hoisted(() => ({
+    mockPlayerInfo: {
+        singtitle: '' as string,
+        playerState: null as number | null,
     },
 }));
 
-import { config } from '@/utils/config';
+vi.mock('@/stores/runtime', () => ({
+    useRuntimeStore: () => ({
+        playerInfo: mockPlayerInfo,
+    }),
+}));
 import { hasPlaybackContent } from '@/utils/playback';
 
 const PLAYING = 1;
@@ -31,44 +31,44 @@ const STOPPED = 0;
 
 describe('hasPlaybackContent', () => {
     test('returns false when singtitle is empty', () => {
-        config.runtime.playerInfo.singtitle = '';
-        config.runtime.playerInfo.playerState = PLAYING;
+        mockPlayerInfo.singtitle = '';
+        mockPlayerInfo.playerState = PLAYING;
         expect(hasPlaybackContent()).toBe(false);
     });
 
     test('returns false for placeholder title "loading..."', () => {
-        config.runtime.playerInfo.singtitle = 'loading...';
-        config.runtime.playerInfo.playerState = PLAYING;
+        mockPlayerInfo.singtitle = 'loading...';
+        mockPlayerInfo.playerState = PLAYING;
         expect(hasPlaybackContent()).toBe(false);
     });
 
     test('returns false for Japanese placeholder title', () => {
-        config.runtime.playerInfo.singtitle = '✧ପ(๑･ω･)੭';
-        config.runtime.playerInfo.playerState = PLAYING;
+        mockPlayerInfo.singtitle = '✧ପ(๑･ω･)੭';
+        mockPlayerInfo.playerState = PLAYING;
         expect(hasPlaybackContent()).toBe(false);
     });
 
     test('returns false when playerState is null even with a real title', () => {
-        config.runtime.playerInfo.singtitle = 'Real Song';
-        config.runtime.playerInfo.playerState = null;
+        mockPlayerInfo.singtitle = 'Real Song';
+        mockPlayerInfo.playerState = null;
         expect(hasPlaybackContent()).toBe(false);
     });
 
     test('returns false when playerState is STOPPED', () => {
-        config.runtime.playerInfo.singtitle = 'Real Song';
-        config.runtime.playerInfo.playerState = STOPPED;
+        mockPlayerInfo.singtitle = 'Real Song';
+        mockPlayerInfo.playerState = STOPPED;
         expect(hasPlaybackContent()).toBe(false);
     });
 
     test('returns true for real title + PLAYING state', () => {
-        config.runtime.playerInfo.singtitle = 'Bohemian Rhapsody';
-        config.runtime.playerInfo.playerState = PLAYING;
+        mockPlayerInfo.singtitle = 'Bohemian Rhapsody';
+        mockPlayerInfo.playerState = PLAYING;
         expect(hasPlaybackContent()).toBe(true);
     });
 
     test('returns true for real title + PAUSED state', () => {
-        config.runtime.playerInfo.singtitle = 'Bohemian Rhapsody';
-        config.runtime.playerInfo.playerState = PAUSED;
+        mockPlayerInfo.singtitle = 'Bohemian Rhapsody';
+        mockPlayerInfo.playerState = PAUSED;
         expect(hasPlaybackContent()).toBe(true);
     });
 });

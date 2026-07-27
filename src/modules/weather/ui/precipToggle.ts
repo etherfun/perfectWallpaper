@@ -3,8 +3,8 @@
  * 鑱岃矗锛氬鐞嗛檷姘存鐜囧拰娓╁害鏄剧ず鐨勫畾鏃跺垏鎹㈠強鍔ㄧ敾
  */
 
-import { globalT } from '@/utils/i18n';
 import { useConfigStore } from '@/stores/config';
+import { globalT } from '@/utils/i18n';
 
 import { getWeatherUnit } from '../weatherState';
 import {
@@ -62,9 +62,9 @@ export function togglePrecipTemperatureDisplay(): void {
         const dataValues = showTemperatureInsteadOfPrecip
             ? weather_data.sevenHourlyData.Temps
             : weather_data.sevenHourlyData.Pops;
-        const unit = showTemperatureInsteadOfPrecip ? getWeatherUnit().temp || '鈩? : '';
+        const unit = showTemperatureInsteadOfPrecip ? getWeatherUnit().temp || '℃' : '';
 
-        // 绗竴姝ワ細涓烘墍鏈夊崟鍏冩牸娣诲姞娣″嚭鍔ㄧ敾
+        // 第一步：为所有单元格添加淡出动画
         valueCells.forEach(cell => {
             cell.classList.add('fade-out');
         });

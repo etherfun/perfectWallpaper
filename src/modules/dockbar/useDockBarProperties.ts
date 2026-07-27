@@ -115,6 +115,6 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (FirstLoad) {
-        logInitComplete('[DockBar]', 'Dock鏍?, FirstLoad);
+        logInitComplete('[DockBar]', 'Dock栏', FirstLoad);
     }
 }

@@ -13,10 +13,8 @@
  *   - visibility.ts       → hide/restore overlapping page chrome
  */
 
-import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 
 import { DEFAULT_CONFIG } from './constants';

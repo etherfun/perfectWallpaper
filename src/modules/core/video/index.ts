@@ -1,151 +1,17 @@
 // 视频和音频控制模块
+//
+// 拆分说明：共享状态 → ./state，服务器交互 → ./server，
+// 播放列表逻辑与对外 API 保留在本文件。对外 API 与拆分前完全一致。
 
+import { applyPlayerStateUI } from '../../player_control';
 import {
-    fetchAudioMetadata as fetchAudioMetadataApi,
-    getAudioStreamUrl as getAudioStreamUrlApi,
-    listFiles as listFilesApi,
-    postMediaAction,
-} from '@/modules/systemMonitor';
-import { useConfigStore } from "@/stores/config";
-import { useRuntimeStore } from '@/stores/runtime';
-import { elements } from '@/utils/elementManager';
-
-import { debugLogger } from '../../utils/logger';
-import { debounce } from '../../utils/tool';
-import { applyPlayerStateUI, refreshPlayerDisplay, updatePlayerThumbnail } from '../player_control';
-
-const config = useConfigStore();
-const runtimeStore = useRuntimeStore();
-
-const myvideo = elements.myvideo;
-const myAudio = elements.myAudio;
-
-// 是否已绑定音频结束事件
-let audioEndedListenerBound = false;
-// 单曲循环时防止重入标志
-let isSingleTrackLoop = false;
-
-// 服务器端口 (fallback when no SystemMonitor instance has
-// published a serverUrl yet — e.g. cold start before the
-// user toggled the plugin on).
-const SERVER_PORT = 27420;
-const SERVER_BASE_URL = `http://localhost:${SERVER_PORT}`;
-
-/**
- * 控制外部播放器 (发送媒体按键)
- * 播放器无关，适用于任何支持系统媒体键的播放器
- */
-async function controlExternalPlayer(
-    action: 'play-pause' | 'next' | 'prev' | 'stop'
-): Promise<void> {
-    const ok = await postMediaAction(SERVER_BASE_URL, action);
-    if (!ok) {
-        // postMediaAction already logged the underlying
-        // network / envelope failure through debugLogger.
-        // Only the success/fail boolean comes back, so we
-        // surface a top-level warning here for symmetry
-        // with the pre-refactor behavior.
-        console.warn('[External Player] Control failed:', action);
-    }
-}
-
-// 音频元数据类型（与 systemMonitor/api.ts 中 AudioMetadata
-// 字段同义，保留本地别名以避免大规模重命名）。可空字段
-// 用 `T | null` 而非 `T?`，与 server `AudioMetadata` 的
-// 序列化形态保持一致。
-type AudioMetadata = {
-    title: string;
-    artist: string;
-    album: string;
-    year: number | null;
-    duration: number | null;
-    genre: string[] | null;
-    track: number | null;
-    picture: {
-        format: string;
-        data: string;
-    } | null;
-};
-
-/**
- * 获取音频文件的服务器流地址
- */
-function getAudioStreamUrl(filePath: string): string {
-    return getAudioStreamUrlApi(SERVER_BASE_URL, filePath);
-}
-
-/**
- * 从服务器获取音频文件元数据（走 typed 包装）。
- */
-async function fetchAudioMetadata(filePath: string): Promise<AudioMetadata | null> {
-    return fetchAudioMetadataApi(SERVER_BASE_URL, filePath);
-}
-
-/**
- * 更新播放器信息
- */
-async function updatePlayerInfo(filePath: string): Promise<void> {
-    // 如果外部媒体已激活，不更新播放器信息（由外部媒体数据决定）
-    if (runtimeStore.playerInfo.externalMediaActive) {
-        return;
-    }
-
-    const metadata = await fetchAudioMetadata(filePath);
-    if (metadata) {
-        runtimeStore.updatePlayerInfo({
-            singtitle: metadata.title,
-            singartist: metadata.artist,
-            singalbumTitle: metadata.album,
-        });
-
-        // 更新封面图片
-        if (metadata.picture) {
-            const dataUrl = `data:${metadata.picture.format};base64,${metadata.picture.data}`;
-            updatePlayerThumbnail(dataUrl);
-        } else {
-            updatePlayerThumbnail(null);
-        }
-    } else {
-        // Fallback: 从文件名提取信息
-        const fileName = filePath.split(/[/\\]/).pop() || '';
-        const title = fileName.replace(/\.[^.]+$/, '');
-        runtimeStore.updatePlayerInfo({
-            singtitle: title,
-            singartist: 'Unknown Artist',
-            singalbumTitle: 'Unknown Album',
-        });
-        updatePlayerThumbnail(null);
-    }
-
-    // 刷新播放器显示
-    refreshPlayerDisplay();
-}
-
-// 防抖版本的更新播放器信息
-const debouncedUpdatePlayerInfo = debounce(updatePlayerInfo, 500, true);
-
-/**
- * 从服务器获取目录中的音频文件列表
- */
-async function fetchAudioFilesFromServer(directory: string): Promise<string[]> {
-    try {
-        const filter = 'mp3,ogg,wav,flac,m4a,aac';
-        const result = await listFilesApi(SERVER_BASE_URL, directory, filter);
-        if (!result) {
-            return [];
-        }
-        return result.files.map(f => f.path);
-    } catch (error) {
-        debugLogger.log(`[Video] Failed to fetch audio files: ${error}`);
-        return [];
-    }
-}
-
-// 防抖版本的获取音频文件列表
-const debouncedFetchAudioFiles = debounce(fetchAudioFilesFromServer, 1000, true);
-
-// 防止并发请求的标志
-let isPlaylistUpdating = false;
+    controlExternalPlayer,
+    debouncedFetchAudioFiles,
+    debouncedUpdatePlayerInfo,
+    getAudioStreamUrl,
+    updatePlayerInfo,
+} from './server';
+import { config, flags, myAudio, myvideo, runtimeStore } from './state';
 
 /**
  * 获取当前音乐播放列表
@@ -244,16 +110,16 @@ function handleAudioEnded(): void {
 
     // 单曲循环
     if (repeat === 2) {
-        if (isSingleTrackLoop) return; // 防止重入
-        isSingleTrackLoop = true;
+        if (flags.isSingleTrackLoop) return; // 防止重入
+        flags.isSingleTrackLoop = true;
         myAudio.currentTime = 0;
         myAudio
             .play()
             .then(() => {
-                isSingleTrackLoop = false;
+                flags.isSingleTrackLoop = false;
             })
             .catch(() => {
-                isSingleTrackLoop = false;
+                flags.isSingleTrackLoop = false;
             });
         return;
     }
@@ -271,9 +137,9 @@ function handleAudioEnded(): void {
  * 绑定音频结束事件监听
  */
 function bindAudioEndedListener(): void {
-    if (audioEndedListenerBound) return;
+    if (flags.audioEndedListenerBound) return;
     myAudio.addEventListener('ended', handleAudioEnded);
-    audioEndedListenerBound = true;
+    flags.audioEndedListenerBound = true;
 }
 
 /**
@@ -308,11 +174,11 @@ export function ChangeAudioModel(): void {
 export async function updateMusicPlaylist(): Promise<void> {
     const directory = config.musicdirectory;
 
-    if (!directory || isPlaylistUpdating) {
+    if (!directory || flags.isPlaylistUpdating) {
         return;
     }
 
-    isPlaylistUpdating = true;
+    flags.isPlaylistUpdating = true;
 
     try {
         // 通过服务器获取目录中的音频文件（使用防抖版本）
@@ -346,7 +212,7 @@ export async function updateMusicPlaylist(): Promise<void> {
             updatePlayerInfo(files[initialIndex]!);
         }
     } finally {
-        isPlaylistUpdating = false;
+        flags.isPlaylistUpdating = false;
     }
 }
 
@@ -425,4 +291,3 @@ export function setExternalMediaActive(active: boolean): void {
         console.log(`[Video] externalMediaActive changed to: ${active}`);
     }
 }
-

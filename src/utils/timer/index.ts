@@ -1,36 +1,15 @@
 /**
  * 定时器模块
  * 包含多定时器管理器和相关工具函数
+ *
+ * 拆分说明：类型定义 → ./types，waitAndExecute → ./wait，
+ * 主类与实例保留在本文件。对外 API 与拆分前完全一致。
  */
 
-import { debugLogger } from './logger';
-
-// 定时器对象接口
-interface TimerObject {
-    id: string;
-    callback: () => void;
-    delay: number;
-    remaining: number;
-    startTime: number;
-    timerId: number | null;
-    isPaused: boolean;
-    isActive: boolean;
-    status: 'running' | 'paused' | 'finished' | 'error';
-    observer?: MutationObserver | null; // 用于动画暂停检测的observer
-    animationTimeout?: number | null; // 动画暂停检测超时
-}
-
-// 定时器状态接口
-interface TimerStatus {
-    id: string;
-    name: string;
-    status: string;
-    delay: number;
-    remaining: number;
-    progress: string;
-    isActive: boolean;
-    isPaused: boolean;
-}
+import { debugLogger } from '../logger';
+import type { TimerObject, TimerStatus } from './types';
+export type { TimerObject, TimerStatus } from './types';
+export { waitAndExecute } from './wait';
 
 /**
  * 多定时器管理器类（支持暂停）
@@ -343,47 +322,6 @@ export class MultiTimerManager {
         // 开始检查动画状态
         checkAnimationState();
     }
-}
-
-/**
- * 等待条件成立后执行函数
- * @param conditionFn - 条件检测函数，返回true时执行
- * @param actionFn - 条件成立后要执行的函数
- * @param interval - 检查间隔(毫秒)
- * @param timeout - 超时时间(毫秒)
- * @returns 返回Promise，在actionFn执行后resolve
- */
-export function waitAndExecute(
-    conditionFn: () => boolean,
-    actionFn: () => void,
-    interval: number = 100,
-    timeout: number = 20000
-): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const startTime = Date.now();
-
-        const check = () => {
-            try {
-                const conditionMet = conditionFn();
-
-                if (conditionMet === true) {
-                    const result = actionFn();
-                    resolve(result);
-                } else if (Date.now() - startTime > timeout) {
-                    debugLogger.error('等待条件超时');
-                    reject(new Error('等待条件超时'));
-                } else {
-                    setTimeout(check, interval);
-                }
-            } catch (error: unknown) {
-                const message = error instanceof Error ? error.message : String(error);
-                debugLogger.error(`条件检测失败: ${message}`);
-                reject(new Error(`条件检测失败: ${message}`));
-            }
-        };
-
-        check();
-    });
 }
 
 // 全局定时器管理器实例

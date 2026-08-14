@@ -3,8 +3,8 @@
  * Provides the same interface as: ($('body').particles({}).audiovisualizer({}))
  */
 
+import { NativeParticles } from '../../utils/native-particles';
 import { NativeAudioVisualizer } from '../../utils/NativeAudioVisualizer';
-import { NativeParticles } from '../../utils/NativeParticles';
 import { stopAuto as stopPWParticlesAuto } from '../audio-visualizer/particles/PWParticles';
 
 export class WallpaperEffectController {

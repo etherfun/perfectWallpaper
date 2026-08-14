@@ -1,36 +1,14 @@
-﻿/**
- * Card-mode renderer for the System Monitor.
+/**
+ * Sparkline canvas drawing primitives for the System Monitor card mode.
  *
- * When `displayStyle === 'cards'`, the existing compact rows are replaced
- * with rich cards that show a large primary value, a meta info grid, and
- * multiple sparkline canvases.
- *
- * Architecture mirror: sysmon-card-preview.html (Style D – Stacked List)
- *
- * Each card is a `.sysmon-card` element with the structure:
- *   .sysmon-card
- *     .sysmon-card__label-row  → metric label (e.g. "CPU · AMD Ryzen 9 7845HX")
- *     .sysmon-card__value-row  → value + extra (e.g. "13%" "(89°C)")
- *     .sysmon-card__meta       鈫?info grid (e.g. "Freq 5065 MHz")
- *     .sysmon-card__sparks     鈫?sparkline area (spark-pair 脳 N)
- *       .spark-pair
- *         .head                鈫?label + current value + axis
- *         canvas.spark         鈫?the sparkline canvas
+ * Extracted from cardRenderer.ts (Card-mode renderer).
  */
 
-import { globalT } from '@/utils/i18n';
+import { getColorForValue } from '../../api/formatters';
+import { MAX_HISTORY_LENGTH } from '../../constants';
+import type { SparkChannel, TempRange } from '../../types';
 
-import { formatBytes, getColorForValue } from '../api/formatters';
-import { MAX_HISTORY_LENGTH } from '../constants';
-import type {
-    CardPayload,
-    CardRenderData,
-    SparkChannel,
-    SystemMonitorCardDomRefs,
-    TempRange,
-} from '../types';
-
-// 鈹€鈹€鈹€ Color palette 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─── Color palette ──────────────────────────────────────────────────────────
 const RX_RGB = '110,168,255';
 const TX_RGB = '255,167,38';
 
@@ -104,7 +82,7 @@ function drawSmoothStroke(
     }
 }
 
-// 鈹€鈹€鈹€ Canvas helpers 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─── Canvas helpers ─────────────────────────────────────────────────────────
 
 function setupCanvas(canvas: HTMLCanvasElement): CanvasRenderingContext2D | null {
     const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
@@ -149,7 +127,7 @@ function drawBaseline(ctx: CanvasRenderingContext2D, w: number, h: number): void
     ctx.restore();
 }
 
-// 鈹€鈹€鈹€ Sparkline drawing functions 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─── Sparkline drawing functions ───────────────────────────────────────────
 
 /**
  * Standard 0-100% sparkline with area fill and end dot.
@@ -489,9 +467,10 @@ function drawCurvePath(
     ctx.fill();
 }
 
-// 鈹€鈹€鈹€ Sparkline routing 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
+// ─── Sparkline routing ─────────────────────────────────────────────────────
 
-function routeSparkCanvas(canvas: HTMLCanvasElement, channel: SparkChannel): void {
+/** Route a canvas to the correct sparkline renderer for its channel kind. */
+export function routeSparkCanvas(canvas: HTMLCanvasElement, channel: SparkChannel): void {
     const { kind, history, range } = channel;
     if (history.length === 0) {
         drawEmptySpark(canvas);
@@ -519,262 +498,5 @@ function routeSparkCanvas(canvas: HTMLCanvasElement, channel: SparkChannel): voi
         case 'rx-tx':
             drawRxTxCombinedSpark(canvas, history, channel.dirRx ?? []);
             break;
-    }
-}
-
-// 鈹€鈹€鈹€ Card DOM 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-
-const CARD_CLASS = 'sysmon-card';
-const CONTAINER_CLASS = 'sysmon-cards';
-
-/**
- * Build the card-mode DOM inside the system-monitor parent element.
- * Returns references to all card elements.
- */
-export function buildCards(parent: HTMLElement): SystemMonitorCardDomRefs {
-    const existing = parent.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`);
-    if (existing) existing.remove();
-
-    const container = document.createElement('div');
-    container.className = CONTAINER_CLASS;
-
-    const cards = {
-        cpu: createCard('cpu'),
-        gpu: createCard('gpu'),
-        memory: createCard('memory'),
-        network: createCard('network'),
-        disks: [] as HTMLElement[],
-    };
-
-    container.appendChild(cards.cpu);
-    container.appendChild(cards.gpu);
-    container.appendChild(cards.memory);
-    container.appendChild(cards.network);
-    parent.appendChild(container);
-
-    return { container, cards, canvases: new Map() };
-}
-
-/** Create an empty card element for a known metric. */
-function createCard(metric: string): HTMLElement {
-    const card = document.createElement('div');
-    card.className = `${CARD_CLASS} ${CARD_CLASS}--${metric}`;
-    card.dataset.metric = metric;
-    card.innerHTML = `
-        <div class="${CARD_CLASS}__label-row">
-            <span class="${CARD_CLASS}__label"></span>
-        </div>
-        <div class="${CARD_CLASS}__value-row">
-            <span class="${CARD_CLASS}__value"></span>
-            <span class="${CARD_CLASS}__extra"></span>
-            <div class="${CARD_CLASS}__meta"></div>
-        </div>
-        <div class="${CARD_CLASS}__sparks"></div>
-    `;
-    return card;
-}
-
-/** Create a disk card element. */
-function createDiskCard(index: number): HTMLElement {
-    const card = document.createElement('div');
-    card.className = `${CARD_CLASS} ${CARD_CLASS}--disk`;
-    card.dataset.metric = `disk${index}`;
-    card.dataset.diskIndex = String(index);
-    card.innerHTML = `
-        <div class="${CARD_CLASS}__label-row">
-            <span class="${CARD_CLASS}__label"></span>
-        </div>
-        <div class="${CARD_CLASS}__value-row">
-            <span class="${CARD_CLASS}__value"></span>
-            <span class="${CARD_CLASS}__extra"></span>
-            <div class="${CARD_CLASS}__meta"></div>
-        </div>
-        <div class="${CARD_CLASS}__sparks"></div>
-    `;
-    return card;
-}
-
-/**
- * Remove the card-mode DOM from the parent element.
- */
-export function destroyCards(parent: HTMLElement): void {
-    const container = parent.querySelector<HTMLElement>(`.${CONTAINER_CLASS}`);
-    if (container) container.remove();
-}
-
-// 鈹€鈹€鈹€ Card content update 鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€鈹€
-
-/**
- * Update all card DOM elements with the latest render data.
- * Draws sparklines via requestAnimationFrame.
- */
-export function updateCards(
-    refs: SystemMonitorCardDomRefs,
-    data: CardRenderData,
-    style?: { monitorColor?: string; monitorSize?: number }
-): void {
-    updateSingleCard(refs.cards.cpu, data.cpu, refs.canvases, style);
-    updateSingleCard(refs.cards.gpu, data.gpu, refs.canvases, style);
-    updateSingleCard(refs.cards.memory, data.memory, refs.canvases, style);
-    updateSingleCard(refs.cards.network, data.network, refs.canvases, style);
-    updateDiskCards(refs, data.disks, style);
-}
-
-function updateSingleCard(
-    cardEl: HTMLElement | null,
-    payload: CardPayload | null,
-    canvases: Map<string, HTMLCanvasElement>,
-    style?: { monitorColor?: string; monitorSize?: number }
-): void {
-    if (!cardEl) return;
-    if (!payload) {
-        cardEl.style.display = 'none';
-        return;
-    }
-    cardEl.style.display = '';
-
-    // Apply font color and size from config
-    if (style?.monitorColor) cardEl.style.color = style.monitorColor;
-    if (style?.monitorSize) cardEl.style.fontSize = `${style.monitorSize}px`;
-
-    // Label
-    const labelEl = cardEl.querySelector<HTMLElement>(`.${CARD_CLASS}__label`);
-    if (labelEl) labelEl.textContent = payload.label;
-
-    // Value + extra
-    const valueEl = cardEl.querySelector<HTMLElement>(`.${CARD_CLASS}__value`);
-    const extraEl = cardEl.querySelector<HTMLElement>(`.${CARD_CLASS}__extra`);
-    if (valueEl) valueEl.textContent = payload.value;
-    if (extraEl) extraEl.textContent = payload.extra ?? '';
-
-    // Meta grid
-    const metaEl = cardEl.querySelector<HTMLElement>(`.${CARD_CLASS}__meta`);
-    if (metaEl) {
-        metaEl.innerHTML = '';
-        for (const entry of payload.meta) {
-            const span = document.createElement('span');
-            span.innerHTML = `${entry.label} <b>${entry.value}</b>`;
-            metaEl.appendChild(span);
-        }
-    }
-
-    // Sparks
-    const sparksEl = cardEl.querySelector<HTMLElement>(`.${CARD_CLASS}__sparks`);
-    if (!sparksEl) return;
-
-    const metric = cardEl.dataset.metric ?? 'unknown';
-
-    // Keep sysmon-card__sparks for CSS grid display + spark-cell for layout variants
-    sparksEl.className = `sysmon-card__sparks spark-cell spark-cell--${payload.sparkLayout}`;
-    sparksEl.innerHTML = '';
-
-    for (let i = 0; i < payload.sparks.length; i++) {
-        const ch = payload.sparks[i];
-        if (!ch) continue;
-
-        const pair = document.createElement('div');
-        pair.className = 'spark-pair';
-
-        // Head with label + current value
-        const head = document.createElement('div');
-        head.className = 'head';
-        head.innerHTML = buildSparkHead(ch);
-        pair.appendChild(head);
-
-        // Canvas
-        const canvas = document.createElement('canvas');
-        canvas.className = 'spark';
-        canvas.dataset.spark = metric;
-        canvas.dataset.kind = ch.kind;
-        // Give the canvas an initial fixed size so getBoundingClientRect
-        // returns something meaningful even before the first layout pass.
-        canvas.width = 180;
-        canvas.height = 28;
-        canvas.style.width = '100%';
-        canvas.style.height = '28px';
-        pair.appendChild(canvas);
-
-        sparksEl.appendChild(pair);
-
-        const key = `${metric}.${ch.kind}`;
-        canvases.set(key, canvas);
-
-        // Defer sparkline drawing to next frame so the canvas is laid out
-        requestAnimationFrame(() => routeSparkCanvas(canvas, ch));
-    }
-}
-
-function buildSparkHead(ch: SparkChannel): string {
-    const { kind, displayValue, tag, range } = ch;
-    const display = displayValue ?? '--';
-
-    switch (kind) {
-        case 'util':
-            return `<span>${globalT('sysmon_card_util')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_util')}</span>`;
-        case 'temp': {
-            const rangeStr = range ? `${range.lo}–${range.hi}°C` : '';
-            return `<span>${globalT('sysmon_card_temp')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${rangeStr}</span>`;
-        }
-        case 'power':
-            return `<span>${globalT('sysmon_card_power')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_power')}</span>`;
-        case 'vram':
-            return `<span>${globalT('sysmon_card_vram')} <b>${display}</b></span><span class="axis">${globalT('sysmon_card_axis_util')}</span>`;
-        case 'read': {
-            const rangeStr = range ? `0–${formatBytes(range.hi)}/s` : '';
-            return `<span>${globalT('sysmon_card_read')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
-        }
-        case 'write': {
-            const rangeStr = range ? `0–${formatBytes(range.hi)}/s` : '';
-            return `<span>${globalT('sysmon_card_write')} <b>${display}</b></span><span class="axis">${rangeStr}</span>`;
-        }
-        case 'activity':
-            return `<span>${globalT('sysmon_card_activity')} <b>${display}</b>${tag ? tagHtml(tag) : ''}</span><span class="axis">${globalT('sysmon_card_axis_activity')}</span>`;
-        case 'rx':
-            return `<span class="dir-rx">${globalT('sysmon_card_rx')} <b>${display}</b></span>`;
-        case 'tx':
-            return `<span class="dir-tx">${globalT('sysmon_card_tx')} <b>${display}</b></span>`;
-        case 'rx-tx':
-            return `<span><span class="dir-rx">${globalT('sysmon_card_rx')} <b>${display}</b></span> &nbsp; <span class="dir-tx">${globalT('sysmon_card_tx')} <b>${ch.dirTxDisplay ?? display}</b></span></span><span class="axis">${globalT('sysmon_card_axis_last_2_min')}</span>`;
-        default:
-            return `<span>${kind} <b>${display}</b></span>`;
-    }
-}
-
-function tagHtml(text: string): string {
-    return ` <span class="tag">${escapeHtml(text)}</span>`;
-}
-
-function escapeHtml(s: string): string {
-    return s
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
-}
-
-function updateDiskCards(
-    refs: SystemMonitorCardDomRefs,
-    disks: CardPayload[],
-    style?: { monitorColor?: string; monitorSize?: number }
-): void {
-    // Remove old disk cards
-    for (const card of refs.cards.disks) {
-        card.remove();
-    }
-    refs.cards.disks = [];
-
-    // Create + update new disk cards (appended after network card)
-    const anchor = refs.cards.network;
-    for (let i = 0; i < disks.length; i++) {
-        const disk = disks[i];
-        if (!disk) continue;
-        const cardEl = createDiskCard(i);
-        if (anchor?.nextSibling) {
-            refs.container.insertBefore(cardEl, anchor.nextSibling);
-        } else {
-            refs.container.appendChild(cardEl);
-        }
-        refs.cards.disks.push(cardEl);
-        updateSingleCard(cardEl, disk, refs.canvases, style);
     }
 }

@@ -18,7 +18,7 @@ export function colorToRgb(normalized: string): [number, number, number] {
  *   if (properties.xxx) { patch.xxx = v; cssVars.forEach(([k, f]) => set(k, f(v))) }
  */
 export function applyProp(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     properties: any,
     key: string,
     patch: Record<string, unknown>,
@@ -38,7 +38,7 @@ export function applyProp(
 
 /** 显示/隐藏 toggle: flex / none */
 export function applyVisibility(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     properties: any,
     key: string,
     patch: Record<string, unknown>,

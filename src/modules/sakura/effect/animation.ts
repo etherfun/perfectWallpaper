@@ -16,11 +16,23 @@ const config = useConfigStore();
 import { renderScene } from '../render/scene';
 import { getAnimating, getRafRunning, setAnimating, setRafRunning, timeInfo } from '../state/state';
 
+// 缓存的画布引用与 2D context（canvas 常驻 DOM，v-show 控制显隐；避免每帧 getElementById）
+let _rawCanvas: HTMLCanvasElement | null = null;
+let _showCanvas: HTMLCanvasElement | null = null;
+let _showCtx: CanvasRenderingContext2D | null = null;
+
+function getShowCtx(): CanvasRenderingContext2D | null {
+    if (_showCtx) return _showCtx;
+    _rawCanvas ??= document.getElementById('sakura') as HTMLCanvasElement | null;
+    _showCanvas ??= document.getElementById('sakurashow') as HTMLCanvasElement | null;
+    _showCtx = _showCanvas?.getContext('2d') ?? null;
+    return _showCtx;
+}
+
 /** 把 WebGL 画布当前内容绘制到 2D 显示画布 */
 function copyCanvasTo2D(): void {
-    const raw = document.getElementById('sakura') as HTMLCanvasElement | null;
-    const showCanvas = document.getElementById('sakurashow') as HTMLCanvasElement | null;
-    const ctx = showCanvas?.getContext('2d') ?? null;
+    const raw = _rawCanvas;
+    const ctx = getShowCtx();
     if (ctx && raw && raw.width > 0 && config.showSakura) {
         ctx.drawImage(
             raw,
@@ -52,18 +64,18 @@ export function animate(): void {
     if (getRafRunning()) return;
     setRafRunning(true);
 
-    const curdate = new Date();
-    timeInfo.elapsed = (curdate.getTime() - timeInfo.start.getTime()) / 1000.0;
-    timeInfo.delta = (curdate.getTime() - timeInfo.prev.getTime()) / 1000.0;
-    timeInfo.prev = curdate;
+    const now = Date.now();
+    timeInfo.elapsed = (now - timeInfo.start) / 1000.0;
+    timeInfo.delta = (now - timeInfo.prev) / 1000.0;
+    timeInfo.prev = now;
 
     render();
 
     if (getAnimating()) {
         requestAnimationFrame(function tick() {
-            const now = new Date();
-            timeInfo.elapsed = (now.getTime() - timeInfo.start.getTime()) / 1000.0;
-            timeInfo.delta = (now.getTime() - timeInfo.prev.getTime()) / 1000.0;
+            const now = Date.now();
+            timeInfo.elapsed = (now - timeInfo.start) / 1000.0;
+            timeInfo.delta = (now - timeInfo.prev) / 1000.0;
             timeInfo.prev = now;
 
             render();

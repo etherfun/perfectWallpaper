@@ -5,8 +5,10 @@
 import type { Vec3 } from '@/utils/webgl-math';
 
 export interface TimeInfo {
-    start: Date;
-    prev: Date;
+    /** 起始时间戳（Date.now() 毫秒） */
+    start: number;
+    /** 上一帧时间戳（Date.now() 毫秒） */
+    prev: number;
     delta: number;
     elapsed: number;
 }

@@ -7,37 +7,72 @@
 import { rt, state } from './state';
 
 /**
+ * 预分配的点对象池：PWLineCreatePoint 每帧复用同一批对象，只更新 x/y 字段，
+ * 避免每帧为 2 个新数组 + 2×LineDensity 个 {x, y} 对象分配产生 GC 压力。
+ */
+const _pool1: { x: number; y: number }[] = [];
+const _pool2: { x: number; y: number }[] = [];
+
+/** 确保池容量不小于 size（只增不减；减少时由调用方截断 length） */
+function ensurePool(pool: { x: number; y: number }[], size: number): void {
+    while (pool.length < size) {
+        pool.push({ x: 0, y: 0 });
+    }
+}
+
+/**
  * Create line visualization points based on audio data
  */
 export function PWLineCreatePoint(arr: number[]): void {
-    rt().PWLineParam.arr1 = [];
-    rt().PWLineParam.arr2 = [];
-    const iv = (120 - rt().PWLineParam.LineDensity) / 2;
+    // 缓存 param 引用：避免循环内数百次 Pinia store 访问（rt() 每次都有
+    // useRuntimeStore 查找开销）。param 是普通对象，每帧引用稳定。
+    const param = rt().PWLineParam;
 
-    if (rt().PWLineParam.LinePosition === 1) {
+    // 首帧（或 param 被整体替换）时把 arr1/arr2 指向对象池；之后仅原地更新
+    if (param.arr1 !== _pool1) param.arr1 = _pool1;
+    if (param.arr2 !== _pool2) param.arr2 = _pool2;
+
+    const lineDensity = param.LineDensity;
+    const iv = (120 - lineDensity) / 2;
+
+    // 池容量对齐 LineDensity（LineDensity 可调，变化时扩展/截断）
+    ensurePool(_pool1, lineDensity);
+    ensurePool(_pool2, lineDensity);
+    _pool1.length = lineDensity;
+    _pool2.length = lineDensity;
+
+    const linePosition = param.LinePosition;
+    const lineWidth = state.CTXLine.lineWidth;
+    if (linePosition === 1) {
         state.sw =
-            ((state.maxW - rt().PWLineParam.LineDensity * state.CTXLine.lineWidth) /
-                (rt().PWLineParam.LineDensity - 1)) *
-            rt().PWLineParam.sw;
+            ((state.maxW - lineDensity * lineWidth) / (lineDensity - 1)) * param.sw;
     } else {
         state.sw =
-            ((state.minW - rt().PWLineParam.LineDensity * state.CTXLine.lineWidth) /
-                (rt().PWLineParam.LineDensity - 1)) *
-            rt().PWLineParam.sw;
+            ((state.minW - lineDensity * lineWidth) / (lineDensity - 1)) * param.sw;
     }
 
-    for (let i = iv, j = 0; i < rt().PWLineParam.LineDensity + iv; i++, j++) {
+    const range = param.range;
+    const direction = param.Direction;
+    const waveArr = param.waveArr;
+    const lineX = param.LineX;
+    const lineY = param.LineY;
+    const sw = state.sw;
+    const maxW = state.maxW;
+    const minW = state.minW;
+    const densityHalf = lineDensity / 2;
+
+    for (let i = iv, j = 0; i < lineDensity + iv; i++, j++) {
         const arrI = arr[i] ?? 0;
         let w1 = arrI ? arrI : 0;
-        const prevWave = rt().PWLineParam.waveArr[i];
+        const prevWave = waveArr[i];
         const w2: number = prevWave !== undefined && prevWave !== 0 ? prevWave - 0.1 : 0;
         w1 = Math.max(w1, w2);
-        rt().PWLineParam.waveArr[i] = w1 = Math.min(w1, 1.2);
-        const waveHeight = w1 * rt().PWLineParam.range * 100;
+        waveArr[i] = w1 = Math.min(w1, 1.2);
+        const waveHeight = w1 * range * 100;
 
         let Deviation1: number;
         let Deviation2: number;
-        switch (rt().PWLineParam.Direction) {
+        switch (direction) {
             case 1:
                 Deviation1 = -waveHeight - 1;
                 Deviation2 = 1;
@@ -55,23 +90,33 @@ export function PWLineCreatePoint(arr: number[]): void {
                 Deviation2 = waveHeight + 1;
         }
 
-        const p1 = getLineXY(Deviation1, j);
-        const p2 = getLineXY(Deviation2, j);
-
-        rt().PWLineParam.arr1.push({ x: p1.x, y: p1.y });
-        rt().PWLineParam.arr2.push({ x: p2.x, y: p2.y });
+        // 内联 getLineXY 计算并写入对象池（复用对象，避免每帧 2×LineDensity 次对象分配）
+        const spread = (j + 0.5 - densityHalf) * sw + (j + 0.5 - densityHalf) * lineWidth;
+        const p1 = _pool1[j]!;
+        const p2 = _pool2[j]!;
+        if (linePosition === 1) {
+            const x = maxW * lineX + spread;
+            const y = minW * lineY;
+            p1.x = x;
+            p1.y = y + Deviation1;
+            p2.x = x;
+            p2.y = y + Deviation2;
+        } else {
+            const x = minW * lineY + spread;
+            const y = maxW * lineX;
+            p1.x = y + Deviation1;
+            p1.y = x;
+            p2.x = y + Deviation2;
+            p2.y = x;
+        }
     }
 
-    if (rt().PWLineParam.LinePosition === 1) {
-        const mid = rt().PWLineParam.arr1[rt().PWLineParam.LineDensity / 2 - 1];
-        const first = rt().PWLineParam.arr1[0];
-        if (mid && first) {
+    const mid = _pool1[lineDensity / 2 - 1];
+    const first = _pool1[0];
+    if (mid && first) {
+        if (linePosition === 1) {
             state.lineR = mid.x - first.x;
-        }
-    } else {
-        const mid = rt().PWLineParam.arr1[rt().PWLineParam.LineDensity / 2 - 1];
-        const first = rt().PWLineParam.arr1[0];
-        if (mid && first) {
+        } else {
             state.lineR = mid.y - first.y;
         }
     }

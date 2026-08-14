@@ -21,45 +21,48 @@ import type { BlossomParticle } from '../types';
 import { unuseShader, useShader } from './glUtils';
 import { pointFlower } from './particles';
 
+const PI2 = Math.PI * 2.0;
+
+/** 越界回绕：单边界（正向模式） */
+function repeatPos(prt: BlossomParticle, cmp: number, limitVal: number): void {
+    const posCmp = prt.position[cmp] ?? 0;
+    if (Math.abs(posCmp) - prt.size * 0.5 > limitVal) {
+        if (posCmp > 0) {
+            prt.position[cmp] = posCmp - limitVal * 2.0;
+        } else {
+            prt.position[cmp] = posCmp + limitVal * 2.0;
+        }
+    }
+}
+
+/** 越界回绕：双边界（反向模式） */
+function repeatPoss(prt: BlossomParticle, cmp: number, limit1: number, limit2: number): void {
+    const posCmp = prt.position[cmp] ?? 0;
+    if (posCmp + prt.size * 0.5 < limit1 || posCmp - prt.size * 0.5 > limit2) {
+        if (posCmp - prt.size * 0.5 > limit1) {
+            prt.position[cmp] = posCmp - (limit2 - limit1);
+        } else {
+            prt.position[cmp] = posCmp + (limit2 - limit1);
+        }
+    }
+}
+
+/** 欧拉角取模到 [0, 2π) */
+function repeatEuler(prt: BlossomParticle, cmp: number): void {
+    const eulerCmp = prt.euler[cmp] ?? 0;
+    const wrapped = eulerCmp % PI2;
+    prt.euler[cmp] = wrapped < 0.0 ? wrapped + PI2 : wrapped;
+}
+
+/** 按 zkey 升序（每帧 sort 复用同一比较器，避免闭包分配） */
+function compareZkey(p0: BlossomParticle, p1: BlossomParticle): number {
+    return p0.zkey - p1.zkey;
+}
+
 export function renderPointFlowers(): void {
     if (!gl || !pointFlower.program) return;
 
-    const PI2 = Math.PI * 2.0;
     const sakuraReverse = config.sakura_reverse;
-
-    const repeatPos = function (prt: BlossomParticle, cmp: number, limitVal: number): void {
-        const posCmp = prt.position[cmp] ?? 0;
-        if (Math.abs(posCmp) - prt.size * 0.5 > limitVal) {
-            if (posCmp > 0) {
-                prt.position[cmp] = posCmp - limitVal * 2.0;
-            } else {
-                prt.position[cmp] = posCmp + limitVal * 2.0;
-            }
-        }
-    };
-
-    const repeatPoss = function (
-        prt: BlossomParticle,
-        cmp: number,
-        limit1: number,
-        limit2: number
-    ): void {
-        const posCmp = prt.position[cmp] ?? 0;
-        if (posCmp + prt.size * 0.5 < limit1 || posCmp - prt.size * 0.5 > limit2) {
-            if (posCmp - prt.size * 0.5 > limit1) {
-                prt.position[cmp] = posCmp - (limit2 - limit1);
-            } else {
-                prt.position[cmp] = posCmp + (limit2 - limit1);
-            }
-        }
-    };
-
-    const repeatEuler = function (prt: BlossomParticle, cmp: number): void {
-        const eulerCmp = prt.euler[cmp] ?? 0;
-        const wrapped = eulerCmp % PI2;
-        prt.euler[cmp] = wrapped < 0.0 ? wrapped + PI2 : wrapped;
-    };
-
     for (let i = 0; i < pointFlower.numFlowers; i++) {
         const prtcl = pointFlower.particles[i]!;
         if (sakuraReverse) {
@@ -90,9 +93,7 @@ export function renderPointFlowers(): void {
             camera.matrix[14]!;
     }
 
-    pointFlower.particles.sort(function (p0: BlossomParticle, p1: BlossomParticle): number {
-        return p0.zkey - p1.zkey;
-    });
+    pointFlower.particles.sort(compareZkey);
 
     let ipos = pointFlower.positionArrayOffset;
     let ieuler = pointFlower.eulerArrayOffset;

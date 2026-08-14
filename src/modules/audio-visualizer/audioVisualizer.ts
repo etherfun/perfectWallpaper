@@ -234,7 +234,7 @@ function renderLine(audioData: number[]): void {
  * 由 Wallpaper Engine 调用，约30fps
  */
 export function audioDataListener(audioData: number[]): void {
-    // 验证原始数据有效性
+    // 验证原始数据有效性（平滑输出由 [0,1] 输入经线性运算得到，数学上保证有效）
     if (!validateAudioData(audioData)) {
         debugLogger.warn('[AudioVisual] Invalid audio data, skipping');
         return;
@@ -242,12 +242,6 @@ export function audioDataListener(audioData: number[]): void {
 
     // 应用平滑处理，使波形更加连贯美观
     const smoothedData = smoothAudioData(audioData);
-
-    // 再次验证处理后的数据
-    if (!validateAudioData(smoothedData)) {
-        debugLogger.warn('[AudioVisual] Smoothed data invalid, skipping');
-        return;
-    }
 
     // 存储处理后的音频数据
     runtimeStore.playerInfo.audioArray = smoothedData;

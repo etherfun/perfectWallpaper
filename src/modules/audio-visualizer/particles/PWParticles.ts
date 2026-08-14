@@ -205,11 +205,12 @@ export function drawPoint(): void {
     if (isBlur) CXTPar.shadowColor = blurColor;
 
     if (isMoveFollow) {
-        const arr = audioArrayPar.slice(1, 6);
-        sum =
-            arr.reduce(function (a: number, b: number) {
-                return a + b;
-            }, 0) * 0.12;
+        // 直接对 audioArrayPar[1..5] 求和（避免每帧 slice 新数组 + reduce 闭包）
+        let followSum = 0;
+        for (let i = 1; i < 6; i++) {
+            followSum += audioArrayPar?.[i] ?? 0;
+        }
+        sum = followSum * 0.12;
         if (!sum || sum < 0.5) sum = 0.5;
         sum = Math.min(sum, 5);
     } else {
@@ -225,6 +226,9 @@ export function drawPoint(): void {
     }
 }
 
+// 鼠标半径内粒子缓冲（connect 每帧复用，避免数组分配）
+const _particlesInRadius: Point[] = [];
+
 /**
  * Connect particles with lines based on proximity
  * Optimized: pre-filter particles within mouse radius, avoid duplicate pair checks
@@ -234,14 +238,14 @@ export function connect(): void {
     CXTPar.lineWidth = 1;
 
     // Pre-filter particles within mouse radius (O(n) instead of checking in inner loop)
-    const particlesInRadius: Point[] = [];
+    _particlesInRadius.length = 0;
     for (let i = 0; i < num; i++) {
         const pointI = points.arr[i]!;
         if (
             Math.abs(pointI.x - mouse.x) <= points.mRadius &&
             Math.abs(pointI.y - mouse.y) <= points.mRadius
         ) {
-            particlesInRadius.push(pointI);
+            _particlesInRadius.push(pointI);
         }
     }
 
@@ -251,11 +255,11 @@ export function connect(): void {
 
     // Only process particles within mouse radius (k = particlesInRadius.length, typically k << n)
     // Use j = i + 1 to skip self-checks and duplicate pair checks (50% reduction)
-    const len = particlesInRadius.length;
+    const len = _particlesInRadius.length;
     for (let i = 0; i < len; i++) {
-        const pointI = particlesInRadius[i]!;
+        const pointI = _particlesInRadius[i]!;
         for (let j = i + 1; j < len; j++) {
-            const pointJ = particlesInRadius[j]!;
+            const pointJ = _particlesInRadius[j]!;
             const dx = pointI.x - pointJ.x;
             const dy = pointI.y - pointJ.y;
             // Use squared distance comparison (avoids sqrt)

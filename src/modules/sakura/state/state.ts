@@ -16,10 +16,10 @@ export function setGl(value: WebGLRenderingContext | null): void {
     gl = value;
 }
 
-/** 时间累计（由 animate() 每帧更新） */
+/** 时间累计（由 animate() 每帧更新；毫秒时间戳，避免每帧分配 Date 对象） */
 export const timeInfo: TimeInfo = {
-    start: new Date(),
-    prev: new Date(),
+    start: Date.now(),
+    prev: Date.now(),
     delta: 0,
     elapsed: 0,
 };

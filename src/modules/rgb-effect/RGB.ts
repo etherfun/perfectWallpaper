@@ -22,6 +22,11 @@ let lastRafVideoMode: boolean | null = null;
 let globalCachedSrc: string | null = null;
 let globalCachedImg: HTMLImageElement | null = null;
 
+// RGB 编码缓冲区 — 每帧复用，避免 getEncodedCanvasImageData 分配 6000 元素数组
+const ENCODED_CHANNEL_COUNT = 100 * 20 * 3;
+const _rgbColorArray: number[] = new Array(ENCODED_CHANNEL_COUNT);
+let _rgbCanvasCtx: CanvasRenderingContext2D | null | undefined;
+
 // Visibility change handler to resume RAF when tab becomes visible
 function handleVisibilityChange(): void {
     if (document.visibilityState === 'visible') {
@@ -39,21 +44,25 @@ if (typeof document !== 'undefined') {
 
 /**
  * 获取编码的Canvas图像数据
+ * 复用缓存的 context 与输出数组，避免每帧 getContext 查找与数组分配。
  */
 function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
-    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (_rgbCanvasCtx === undefined) {
+        _rgbCanvasCtx = canvas.getContext('2d', { willReadFrequently: true });
+    }
+    const context = _rgbCanvasCtx;
     if (!context) return '';
 
     const imageData = context.getImageData(0, 0, 100, 20);
-    const colorArray: number[] = [];
 
     for (let d = 0; d < imageData.data.length; d += 4) {
         const write = (d / 4) * 3;
-        colorArray[write] = imageData.data[d] ?? 0;
-        colorArray[write + 1] = imageData.data[d + 1] ?? 0;
-        colorArray[write + 2] = imageData.data[d + 2] ?? 0;
+        _rgbColorArray[write] = imageData.data[d] ?? 0;
+        _rgbColorArray[write + 1] = imageData.data[d + 1] ?? 0;
+        _rgbColorArray[write + 2] = imageData.data[d + 2] ?? 0;
     }
-    return String.fromCharCode(...colorArray);
+    // apply 传递固定长度参数列表（6000 个），避免 spread 迭代器分配
+    return String.fromCharCode.apply(null, _rgbColorArray);
 }
 
 /**
@@ -134,11 +143,11 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 ) {
                     window.smoothedAudioArray = new Array(audioArray.length).fill(0);
                 }
+                const smoothed = window.smoothedAudioArray;
 
                 for (let i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] =
-                        (window.smoothedAudioArray[i] ?? 0) +
-                        ((audioArray[i] ?? 0) - (window.smoothedAudioArray[i] ?? 0)) * 0.1;
+                    const cur = smoothed[i] ?? 0;
+                    smoothed[i] = cur + ((audioArray[i] ?? 0) - cur) * 0.1;
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
@@ -153,7 +162,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                     }
 
                     const height =
-                        bg.height * Math.min(window.smoothedAudioArray[i] ?? 0, 1) * scaleFactor;
+                        bg.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor;
                     const actualHeight = Math.min(height, bg.height);
 
                     rgbbg.fillStyle = rgbColor;
@@ -180,11 +189,11 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                 ) {
                     window.smoothedAudioArray = new Array(audioArray.length).fill(0);
                 }
+                const smoothed = window.smoothedAudioArray;
 
                 for (let i = 0; i < audioArray.length; ++i) {
-                    window.smoothedAudioArray[i] =
-                        (window.smoothedAudioArray[i] ?? 0) +
-                        ((audioArray[i] ?? 0) - (window.smoothedAudioArray[i] ?? 0)) * 0.1;
+                    const cur = smoothed[i] ?? 0;
+                    smoothed[i] = cur + ((audioArray[i] ?? 0) - cur) * 0.1;
                 }
 
                 for (let i = 0; i < audioArray.length; ++i) {
@@ -193,7 +202,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
                         channelIndex += 64;
                     }
                     const height =
-                        bg.height * Math.min(window.smoothedAudioArray[i] ?? 0, 1) * scaleFactor;
+                        bg.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor;
                     const actualHeight = Math.min(height, bg.height);
                     rgbbg.fillRect(
                         barWidth * channelIndex,
@@ -225,10 +234,11 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
             (isVideoMode || cfg().background_rgb || sakurause || particlesRGB || audiobarRGB || true)
         ) {
             // 默认 30fps 刷新率（33ms），防止无限制 60fps 导致高 CPU
+            // 用 setTimeout 直接驱动下一帧并记录调度 id：background2canvas 再次
+            // 进入时能取消旧链，避免多次调用产生多条并行渲染链（原实现里
+            // setTimeout+RAF 链的 RAF id 未被记录，旧链无法被取消）。
             const refreshMs = (RGBRefresh > 0) ? RGBRefresh : 33;
-            setTimeout(() => {
-                requestAnimationFrame(drawbackground);
-            }, refreshMs);
+            currentRafId = window.setTimeout(drawbackground, refreshMs);
         }
     }
 
@@ -275,9 +285,13 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         drawLayers();
     }
 
-    // Cancel any existing RAF chain before starting new one
+    // Cancel any existing scheduled frame before starting new chain.
+    // 链内调度统一使用 setTimeout id：clearTimeout 可取消挂起帧，多次调用
+    // background2canvas 只会保留一条渲染链，避免并行链导致每帧重复合成 +
+    // 重复向 LED 设备发送数据（原实现 RAF id 无法被取消，旧链会残留）。
     if (currentRafId !== null) {
-        cancelAnimationFrame(currentRafId);
+        clearTimeout(currentRafId);
+        currentRafId = null;
     }
-    currentRafId = requestAnimationFrame(drawbackground);
+    currentRafId = window.setTimeout(drawbackground, 0);
 }

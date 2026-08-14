@@ -11,8 +11,9 @@ import { rt, state } from './state';
  */
 export function style1(): void {
     if (!state.ctx) return;
-    const arr1 = rt().param.arr1;
-    const arr2 = rt().param.arr2;
+    const param = rt().param;
+    const arr1 = param.arr1;
+    const arr2 = param.arr2;
     state.ctx.beginPath();
     for (let i = 0; i < 128; i++) {
         const a1 = arr1[i];
@@ -30,8 +31,10 @@ export function style1(): void {
  */
 export function style2(): void {
     if (!state.ctx) return;
-    const arr1 = rt().param.arr1;
-    const arr2 = rt().param.arr2;
+    const param = rt().param;
+    const arr1 = param.arr1;
+    const arr2 = param.arr2;
+    const showSemiCircle = param.showSemiCircle;
 
     // Outer circle
     state.ctx.beginPath();
@@ -44,7 +47,7 @@ export function style2(): void {
             state.ctx.lineTo(p.x, p.y);
         }
     }
-    if (!rt().param.showSemiCircle) {
+    if (!showSemiCircle) {
         state.ctx.closePath();
     }
     state.ctx.stroke();
@@ -60,7 +63,7 @@ export function style2(): void {
             state.ctx.lineTo(p.x, p.y);
         }
     }
-    if (!rt().param.showSemiCircle) {
+    if (!showSemiCircle) {
         state.ctx.closePath();
     }
     state.ctx.stroke();
@@ -83,8 +86,10 @@ export function style2(): void {
  */
 export function style3(): void {
     if (!state.ctx) return;
-    const arr1 = rt().param.arr1;
-    const arr2 = rt().param.arr2;
+    const param = rt().param;
+    const arr1 = param.arr1;
+    const arr2 = param.arr2;
+    const showSemiCircle = param.showSemiCircle;
 
     // Outer circle
     state.ctx.beginPath();
@@ -97,7 +102,7 @@ export function style3(): void {
             state.ctx.lineTo(p.x, p.y);
         }
     }
-    if (!rt().param.showSemiCircle) {
+    if (!showSemiCircle) {
         state.ctx.closePath();
     }
     state.ctx.stroke();
@@ -113,7 +118,7 @@ export function style3(): void {
             state.ctx.lineTo(p.x, p.y);
         }
     }
-    if (!rt().param.showSemiCircle) {
+    if (!showSemiCircle) {
         state.ctx.closePath();
     }
     state.ctx.stroke();

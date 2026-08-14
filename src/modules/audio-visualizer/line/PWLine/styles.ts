@@ -10,13 +10,17 @@ import { rt, state } from './state';
  * Draw style 1 - Lines with optional middle line
  */
 export function PWLineStyle1(): void {
-    const arr1 = rt().PWLineParam.arr1;
-    const arr2 = rt().PWLineParam.arr2;
-    const last = rt().PWLineParam.LineDensity - 1;
+    const param = rt().PWLineParam;
+    const arr1 = param.arr1;
+    const arr2 = param.arr2;
+    const lineDensity = param.LineDensity;
+    const last = lineDensity - 1;
+    const direction = param.Direction;
+    const middleLine = param.MiddleLine;
 
     // Draw lines
     state.CTXLine.beginPath();
-    for (let i = 0; i < rt().PWLineParam.LineDensity; i++) {
+    for (let i = 0; i < lineDensity; i++) {
         const a1 = arr1[i];
         const a2 = arr2[i];
         if (!a1 || !a2) continue;
@@ -26,7 +30,7 @@ export function PWLineStyle1(): void {
     state.CTXLine.stroke();
 
     // Top middle line
-    if (rt().PWLineParam.Direction === 1 && rt().PWLineParam.MiddleLine) {
+    if (direction === 1 && middleLine) {
         const a0 = arr2[0];
         const aLast = arr2[last];
         if (a0 && aLast) {
@@ -38,7 +42,7 @@ export function PWLineStyle1(): void {
     }
 
     // Bottom middle line
-    if (rt().PWLineParam.Direction === 2 && rt().PWLineParam.MiddleLine) {
+    if (direction === 2 && middleLine) {
         const a0 = arr1[0];
         const aLast = arr1[last];
         if (a0 && aLast) {
@@ -50,7 +54,7 @@ export function PWLineStyle1(): void {
     }
 
     // Bidirectional middle line
-    if (rt().PWLineParam.Direction === 3 && rt().PWLineParam.MiddleLine) {
+    if (direction === 3 && middleLine) {
         const a1First = arr1[0];
         const a2First = arr2[0];
         const a1Last = arr1[last];
@@ -68,20 +72,21 @@ export function PWLineStyle1(): void {
  * Draw style 2 - Filled shapes with connecting lines
  */
 export function PWLineStyle2(): void {
-    const arr1 = rt().PWLineParam.arr1;
-    const arr2 = rt().PWLineParam.arr2;
-    const last = rt().PWLineParam.LineDensity - 1;
+    const param = rt().PWLineParam;
+    const arr1 = param.arr1;
+    const arr2 = param.arr2;
+    const lineDensity = param.LineDensity;
+    const last = lineDensity - 1;
+    const direction = param.Direction;
+    const middleLine = param.MiddleLine;
 
     // Top line
-    if (
-        rt().PWLineParam.Direction !== 2 ||
-        (rt().PWLineParam.Direction === 2 && rt().PWLineParam.MiddleLine)
-    ) {
+    if (direction !== 2 || (direction === 2 && middleLine)) {
         const first = arr1[0];
         if (first) {
             state.CTXLine.beginPath();
             state.CTXLine.moveTo(first.x, first.y);
-            for (let i = 0; i < rt().PWLineParam.LineDensity; i++) {
+            for (let i = 0; i < lineDensity; i++) {
                 const p = arr1[i];
                 if (!p) continue;
                 state.CTXLine.lineTo(p.x, p.y);
@@ -91,15 +96,12 @@ export function PWLineStyle2(): void {
     }
 
     // Bottom line
-    if (
-        rt().PWLineParam.Direction !== 1 ||
-        (rt().PWLineParam.Direction === 1 && rt().PWLineParam.MiddleLine)
-    ) {
+    if (direction !== 1 || (direction === 1 && middleLine)) {
         const first = arr2[0];
         if (first) {
             state.CTXLine.beginPath();
             state.CTXLine.moveTo(first.x, first.y);
-            for (let i = 0; i < rt().PWLineParam.LineDensity; i++) {
+            for (let i = 0; i < lineDensity; i++) {
                 const p = arr2[i];
                 if (!p) continue;
                 state.CTXLine.lineTo(p.x, p.y);
@@ -109,7 +111,7 @@ export function PWLineStyle2(): void {
     }
 
     // Bidirectional middle line
-    if (rt().PWLineParam.Direction === 3 && rt().PWLineParam.MiddleLine) {
+    if (direction === 3 && middleLine) {
         const a1First = arr1[0];
         const a2First = arr2[0];
         const a1Last = arr1[last];
@@ -124,7 +126,7 @@ export function PWLineStyle2(): void {
 
     // Connecting lines
     state.CTXLine.beginPath();
-    for (let i = 0; i < rt().PWLineParam.LineDensity; i++) {
+    for (let i = 0; i < lineDensity; i++) {
         const a1 = arr1[i];
         const a2 = arr2[i];
         if (!a1 || !a2) continue;
@@ -138,20 +140,21 @@ export function PWLineStyle2(): void {
  * Draw style 3 - Separate top and bottom lines
  */
 export function PWLineStyle3(): void {
-    const arr1 = rt().PWLineParam.arr1;
-    const arr2 = rt().PWLineParam.arr2;
-    const last = rt().PWLineParam.LineDensity - 1;
+    const param = rt().PWLineParam;
+    const arr1 = param.arr1;
+    const arr2 = param.arr2;
+    const lineDensity = param.LineDensity;
+    const last = lineDensity - 1;
+    const direction = param.Direction;
+    const middleLine = param.MiddleLine;
 
     // Top line
-    if (
-        rt().PWLineParam.Direction !== 2 ||
-        (rt().PWLineParam.Direction === 2 && rt().PWLineParam.MiddleLine)
-    ) {
+    if (direction !== 2 || (direction === 2 && middleLine)) {
         const first = arr1[0];
         if (first) {
             state.CTXLine.beginPath();
             state.CTXLine.moveTo(first.x, first.y);
-            for (let i = 0; i < rt().PWLineParam.LineDensity; i++) {
+            for (let i = 0; i < lineDensity; i++) {
                 const p = arr1[i];
                 if (!p) continue;
                 state.CTXLine.lineTo(p.x, p.y);
@@ -161,15 +164,12 @@ export function PWLineStyle3(): void {
     }
 
     // Bottom line
-    if (
-        rt().PWLineParam.Direction !== 1 ||
-        (rt().PWLineParam.Direction === 1 && rt().PWLineParam.MiddleLine)
-    ) {
+    if (direction !== 1 || (direction === 1 && middleLine)) {
         const first = arr2[0];
         if (first) {
             state.CTXLine.beginPath();
             state.CTXLine.moveTo(first.x, first.y);
-            for (let i = 0; i < rt().PWLineParam.LineDensity; i++) {
+            for (let i = 0; i < lineDensity; i++) {
                 const p = arr2[i];
                 if (!p) continue;
                 state.CTXLine.lineTo(p.x, p.y);
@@ -179,7 +179,7 @@ export function PWLineStyle3(): void {
     }
 
     // Bidirectional middle line
-    if (rt().PWLineParam.Direction === 3 && rt().PWLineParam.MiddleLine) {
+    if (direction === 3 && middleLine) {
         const a1First = arr1[0];
         const a2First = arr2[0];
         const a1Last = arr1[last];

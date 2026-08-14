@@ -73,7 +73,7 @@ export function sakuraLoad(): void {
     createScene();
     initScene();
 
-    timeInfo.start = new Date();
+    timeInfo.start = Date.now();
     timeInfo.prev = timeInfo.start;
 
     animate();

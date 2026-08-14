@@ -5,6 +5,9 @@
  *   - WE 停止时恢复内置播放器
  *   - 控制封面旋转动画
  *   - 通过 body class 联动流体效果暂停
+ *
+ * 真 Vue 化：容器可见性写入 playerUiState.visible；
+ * 封面旋转动画（img animation + .circular class）保留 DOM 操作。
  */
 import { fullscreenLyrics } from '@/modules/fullscreenLyrics';
 import { useConfigStore } from '@/stores/config';
@@ -15,13 +18,14 @@ const runtimeStore = useRuntimeStore();
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/modules/core/video';
 import { debugLogger } from '@/utils/logger';
 
-import { player_control, player_control_thumbnail, player_control_thumbnailWrap } from '../domRefs';
+import { player_control_thumbnail, player_control_thumbnailWrap } from '../domRefs';
 import {
     applyPlayerStateUI,
     controlFluidEffectPlayback,
     getLastPlaybackState,
     setLastPlaybackState,
 } from '../state/playbackState';
+import { playerUiState } from '../state/uiState';
 import { PLAYER_STATE } from '../types';
 
 export function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {
@@ -90,9 +94,9 @@ function applyVisibility(weState: number, autohide: boolean): void {
     const wmi = window.wallpaperMediaIntegration;
     if (!wmi) return;
     if (weState === wmi.PLAYBACK_PLAYING || weState === wmi.PLAYBACK_PAUSED) {
-        player_control.style.display = 'flex';
+        playerUiState.visible = true;
     } else if (weState === wmi.PLAYBACK_STOPPED) {
-        player_control.style.display = autohide ? 'none' : 'flex';
+        playerUiState.visible = autohide ? false : true;
     }
 }
 

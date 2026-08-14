@@ -67,7 +67,11 @@
     }
 }
 
-// Sakura effect elements
+// ============================================
+// Canvas / Shader Elements (independent roots, inside #app-root)
+// ============================================
+
+// Sakura particle canvas（Sakura.vue）
 #sakura,
 #sakurashow {
     position: absolute;
@@ -77,21 +81,14 @@
     opacity: 0.2;
 }
 
-// Button background
-div.btnbg {
-    position: fixed;
-    left: 0;
-    top: 0;
-}
-
-// RGB use element
+// RGB lighting effect canvas（RgbEffect.vue）
 #RGBuse {
     visibility: hidden;
     height: 20;
     width: 100;
 }
 
-// Canvas elements
+// Audio visualizer — circle mode（PWCircle.vue）
 #can {
     margin: 0;
     padding: 0;
@@ -101,6 +98,7 @@ div.btnbg {
     z-index: $z-can;
 }
 
+// Audio visualizer — line mode（PWLine.vue）
 #CanLine {
     margin: 0;
     padding: 0;

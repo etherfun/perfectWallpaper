@@ -3,6 +3,9 @@
 // ============================================
 @use 'config' as *;
 
+// ============================================
+// #weather — 天气主面板
+// ============================================
 #weather {
     visibility: hidden;
     @include component-position('weather');
@@ -23,6 +26,7 @@
         gap: 1em;
         padding: 0.5em;
 
+        // ---- 左侧：图标 + 温度 + 城市 ----
         .weather-left {
             text-align: center;
             display: flex;
@@ -65,6 +69,7 @@
             }
         }
 
+        // ---- 右侧：信息行 ----
         .weather-right {
             flex: 1;
             display: flex;
@@ -75,40 +80,68 @@
                 width: 100%;
                 font-size: 0.9em;
 
+                // 三行共享的基础样式
+                %weather-row-base {
+                    justify-content: space-evenly;
+                    display: flex;
+                    flex-wrap: nowrap;
+                    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+                    padding: 6px 0;
+                    align-items: center;
+                }
+
+                // 行内 cell 共享样式（用于 main / detail / air 三行）
+                .weather-info-item,
+                .weather-detail-item,
+                .weather-air-item {
+                    padding: 0px 0.3em;
+                    flex: 0 0 auto;
+                    text-align: center;
+                    white-space: nowrap;
+                    overflow: visible;
+                }
+
+                // -- 主信息行（温度范围、湿度、风向、风级、风速、能见度）--
                 .weather-main-row {
-                    justify-content: space-evenly;
-                    display: flex;
-                    flex-wrap: nowrap;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                    padding: 6px 0;
-                    align-items: center;
+                    @extend %weather-row-base;
                 }
 
+                // -- 详情行（UV、云量、日出日落、月相）--
                 .weather-detail-row {
-                    justify-content: space-evenly;
-                    display: flex;
-                    flex-wrap: nowrap;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                    padding: 6px 0;
-                    align-items: center;
+                    @extend %weather-row-base;
                 }
 
+                // -- 空气质量 / 预警行 --
                 .weather-air-row {
-                    justify-content: space-evenly;
-                    display: flex;
-                    flex-wrap: nowrap;
-                    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-                    padding: 6px 0;
-                    align-items: center;
+                    @extend %weather-row-base;
 
                     .weather-alert-container {
                         display: flex;
                         max-width: 60%;
                         white-space: nowrap;
                         text-align: right;
+
+                        // 预警滚动容器（由 updateAirQualityAndAlerts 动态注入）
+                        .weather-alert-items-warp {
+                            max-width: 82%;
+                            display: inline-block;
+                            vertical-align: top;
+                            overflow: hidden;
+                            white-space: nowrap;
+
+                            .weather-alert-items {
+                                animation: scroll 5s alternate infinite;
+                                float: left;
+
+                                &:hover {
+                                    animation-play-state: paused;
+                                }
+                            }
+                        }
                     }
                 }
 
+                // -- 降水概率 / 逐时温度切换容器 --
                 .weather-precip-container {
                     display: flex;
                     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
@@ -185,7 +218,8 @@
                     }
                 }
 
-                .weather-row.weather-tip {
+                // -- 每日提示行 --
+                .weather-tip {
                     justify-content: center;
                     display: flex;
                     padding: 6px 0;
@@ -196,99 +230,4 @@
     }
 }
 
-// Weather icon in hourly tooltip
-#weatherHourlyTooltip .big-icon #pIconImg {
-    width: 100%;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 
-    svg {
-        color: white;
-        width: 100%;
-        height: 100%;
-    }
-}
-
-#weather .weather-icon {
-    padding-top: 16px;
-    width: 100%;
-    height: 64px;
-    display: block;
-
-    svg {
-        color: white;
-        width: 100%;
-        height: 100%;
-    }
-}
-
-// Shared info item styles
-.weather-info-item,
-.weather-detail-item,
-.weather-air-item {
-    padding: 0px 0.3em;
-    flex: 0 0 auto;
-    text-align: center;
-    white-space: nowrap;
-    overflow: visible;
-}
-
-// Air quality cells - used in weather hourly tooltip
-.air-title-cell {
-    text-align: center;
-    font-weight: bold;
-}
-
-.air-value-cell {
-    font-weight: bold;
-}
-
-.warning-cell {
-    text-align: right;
-    padding-right: 8px;
-}
-
-// Weather alert scrolling items
-.weather-alert-items-warp {
-    max-width: 82%;
-    display: inline-block;
-    vertical-align: top;
-    overflow: hidden;
-    white-space: nowrap;
-
-    .weather-alert-items {
-        animation: scroll 5s alternate infinite;
-        float: left;
-
-        &:hover {
-            animation-play-state: paused;
-        }
-    }
-}
-
-// Precipitation probability row styles
-.precip-probs {
-    display: flex;
-    background: rgba(255, 0, 0, 0.1);
-    font-size: 0.85em;
-    text-align: center;
-    letter-spacing: 1px;
-}
-
-.precip-text,
-.dice-icon {
-    width: 35px;
-    text-align: center;
-    transition: all 0.3s ease;
-}
-
-// Greeting cell style
-.greeting-cell {
-    font-style: italic;
-    padding: 10px 8px;
-    text-align: center;
-    font-size: 0.95em;
-    border-top: 2px solid rgba(255, 255, 255, 0.3);
-}

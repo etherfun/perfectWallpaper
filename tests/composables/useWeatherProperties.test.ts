@@ -26,9 +26,15 @@ vi.mock('@/modules/weather', () => ({
     weather_init: mockWeatherInit,
     weather_address: { latitude: '', longitude: '', cityname: '' },
 }));
-vi.mock('@/modules/weather/weatherState', () => ({
-    setWeatherUnitByName: mockSetWeatherUnitByName,
-}));
+vi.mock('@/modules/weather/weatherState', async () => {
+    const actual = await vi.importActual<typeof import('@/modules/weather/weatherState')>(
+        '@/modules/weather/weatherState'
+    );
+    return {
+        ...actual,
+        setWeatherUnitByName: mockSetWeatherUnitByName,
+    };
+});
 vi.mock('@/utils/timer', () => ({
     timerManager: { remove: mockTimerRemove },
 }));
@@ -70,13 +76,13 @@ afterEach(() => {
 });
 
 describe('useWeatherProperties', () => {
-    test('weather_show true → display flex + autoWeather()', () => {
+    test('weather_show true → visible + autoWeather()', () => {
         useWeatherProperties({ weather_show: { value: true } } as never, false);
         expect(mockTimerRemove).toHaveBeenCalledWith('updataWeather');
         expect(mockAutoWeather).toHaveBeenCalledTimes(1);
     });
 
-    test('weather_show false → display none + no autoWeather', () => {
+    test('weather_show false → hidden + no autoWeather', () => {
         useWeatherProperties({ weather_show: { value: false } } as never, false);
         expect(mockAutoWeather).not.toHaveBeenCalled();
     });

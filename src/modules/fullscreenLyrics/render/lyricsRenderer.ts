@@ -1,62 +1,40 @@
 /**
- * Lyrics rendering: builds line elements, computes positions, runs the
+ * Lyrics rendering: builds line state, computes positions, runs the
  * floating fade-out animation when the active line moves on.
  *
- * These are pure functions over the rendered DOM tree. The caller owns
- * the `lineElements` Map (kept in sync with the live DOM) and the
- * `currentData` snapshot.
+ * 真 Vue 化：原实现创建 .lyric-line DOM 并直接写 style；现在改为写入
+ * `lyricsUiState`（lines / scrollTransform），FullscreenLyrics.vue 模板
+ * 用 v-for + :style 渲染，行为（可见行范围、位置、透明度、模糊、上浮动画）
+ * 与拆分前一致。
  */
 
-import { escapeHtml } from '@/utils/string';
-
-import { LINE_HEIGHT, VISIBLE_RANGE } from '../constants';
+import { LINE_HEIGHT, SCROLL_CONTAINER_HEIGHT, VISIBLE_RANGE } from '../constants';
+import type { LyricsUiState, RenderedLyricLine } from '../state';
 import type { FullscreenLyricsConfig, LyricLine, LyricsData } from '../types';
 
 /**
- * Build a single `.lyric-line` element for the given lyric. The original
- * text is split into per-word spans when dynamic lyrics are present so the
- * word highlight loop can mark the active word.
+ * Build the per-line state for the given lyric. The original text is split
+ * into per-word tokens when dynamic lyrics are present so the word
+ * highlight loop can mark the active word.
  */
-export function createLineElement(
+export function createRenderedLine(
     line: LyricLine,
     index: number,
     currentData: LyricsData,
     config: FullscreenLyricsConfig
-): HTMLElement {
-    const el = document.createElement('div');
-    el.className = 'lyric-line';
-    el.dataset.index = String(index);
-
-    if (line.originalLyric) {
-        const originalEl = document.createElement('div');
-        originalEl.className = 'original';
-
-        if (currentData.hasDynamic && line.dynamicLyric) {
-            // Split into words for dynamic highlight - escape HTML to prevent XSS
-            originalEl.innerHTML = splitLyricsToWords(line.originalLyric)
-                .map(word => `<span class="word">${escapeHtml(word)}</span>`)
-                .join('');
-        } else {
-            originalEl.textContent = line.originalLyric;
-        }
-        el.appendChild(originalEl);
-    }
-
-    if (config.showTranslation && line.translatedLyric) {
-        const transEl = document.createElement('div');
-        transEl.className = 'translation';
-        transEl.textContent = line.translatedLyric;
-        el.appendChild(transEl);
-    }
-
-    if (config.showRoman && line.romanLyric) {
-        const romanEl = document.createElement('div');
-        romanEl.className = 'roman';
-        romanEl.textContent = line.romanLyric;
-        el.appendChild(romanEl);
-    }
-
-    return el;
+): RenderedLyricLine {
+    const splitWords = Boolean(currentData.hasDynamic && line.dynamicLyric);
+    return {
+        index,
+        line,
+        words: splitWords ? splitLyricsToWords(line.originalLyric) : [line.originalLyric],
+        splitWords,
+        active: false,
+        opacity: 0.5,
+        transform: 'translateY(0px) scale(0.9)',
+        blur: config.enableBlur ? 'blur(10px)' : 'none',
+        floating: false,
+    };
 }
 
 /**
@@ -85,70 +63,64 @@ export function splitLyricsToWords(text: string): string[] {
 }
 
 /**
- * Slide the lyrics container so the active line sits at the center of the
- * scroll viewport, and re-style every visible line according to its
- * distance from the active index.
+ * 计算每行的位移/透明度/模糊样式并写入 state（原 updateLinePositions 的
+ * style 写入）。scrollContainer 高度固定为 SCROLL_CONTAINER_HEIGHT（原
+ * dom.ts 注入的固定高度，行为等价），当前行居中于可视区。
  */
 export function updateLinePositions(
-    lineElements: Map<number, HTMLElement>,
-    scrollContainer: HTMLElement | null,
-    lyricsContainer: HTMLElement,
+    state: LyricsUiState,
     currentIndex: number,
     lineHeight: number,
     enableBlur: boolean
 ): void {
-    const containerHeight = scrollContainer?.clientHeight ?? 0;
+    const containerHeight = SCROLL_CONTAINER_HEIGHT;
     const centerOffset = containerHeight / 2 - lineHeight / 2;
 
-    lineElements.forEach((el, index) => {
-        const relativeIndex = index - currentIndex;
+    state.lines.forEach(line => {
+        const relativeIndex = line.index - currentIndex;
         const basePosition = centerOffset - relativeIndex * lineHeight;
 
-        if (index === currentIndex) {
-            el.style.transform = `translateY(${basePosition}px) scale(1.2)`;
-            el.style.opacity = '1';
-            el.classList.add('active');
+        if (line.index === currentIndex) {
+            line.transform = `translateY(${basePosition}px) scale(1.2)`;
+            line.opacity = 1;
+            line.active = true;
         } else if (Math.abs(relativeIndex) === 1) {
-            el.style.transform = `translateY(${basePosition}px) scale(1.0)`;
-            el.style.opacity = '0.8';
-            el.classList.remove('active');
+            line.transform = `translateY(${basePosition}px) scale(1.0)`;
+            line.opacity = 0.8;
+            line.active = false;
         } else {
-            el.style.transform = `translateY(${basePosition}px) scale(0.9)`;
-            el.style.opacity = '0.5';
-            el.classList.remove('active');
+            line.transform = `translateY(${basePosition}px) scale(0.9)`;
+            line.opacity = 0.5;
+            line.active = false;
         }
 
-        applyLineStyle(el, relativeIndex, enableBlur);
+        applyLineStyle(line, relativeIndex, enableBlur);
     });
 
-    // Scroll to center
-    if (scrollContainer) {
-        const targetScroll = currentIndex * lineHeight - centerOffset;
-        lyricsContainer.style.transform = `translateY(${-targetScroll}px)`;
-    }
+    // Scroll to center（原 lyricsContainer transform 写入）
+    const targetScroll = currentIndex * lineHeight - centerOffset;
+    state.scrollTransform = `translateY(${-targetScroll}px)`;
 }
 
 /** Per-line blur style; only applied when enableBlur is true */
-function applyLineStyle(el: HTMLElement, relativeIndex: number, enableBlur: boolean): void {
+function applyLineStyle(line: RenderedLyricLine, relativeIndex: number, enableBlur: boolean): void {
     if (enableBlur) {
-        el.style.filter = `blur(${Math.abs(relativeIndex) * 2}px)`;
+        line.blur = `blur(${Math.abs(relativeIndex) * 2}px)`;
     } else {
-        el.style.filter = 'none';
+        line.blur = 'none';
     }
 }
 
 /**
  * Make sure all lines within VISIBLE_RANGE of the active line exist in
- * `lineElements` (creating them on demand) and drop anything that's now
- * too far away. Then update positions.
+ * `state.lines` (creating their state on demand) and drop anything that's
+ * now too far away. Then update positions.
  *
  * Returns the previous active index so the caller can kick off the
  * floating fade-out for the line we just left.
  */
 export function animateToNewLine(
-    lyricsContainer: HTMLElement,
-    scrollContainer: HTMLElement | null,
-    lineElements: Map<number, HTMLElement>,
+    state: LyricsUiState,
     currentData: LyricsData,
     toIndex: number,
     config: FullscreenLyricsConfig
@@ -156,77 +128,74 @@ export function animateToNewLine(
     const totalLines = currentData.lyricsArray.length;
     const visibleRange = VISIBLE_RANGE;
 
-    // Create line elements around the new active line
+    // Create line state around the new active line
     for (
         let i = Math.max(0, toIndex - visibleRange);
         i <= Math.min(totalLines - 1, toIndex + visibleRange);
         i++
     ) {
-        if (!lineElements.has(i)) {
+        if (!state.lines.some(line => line.index === i)) {
             const line = currentData.lyricsArray[i];
             if (!line) continue;
-            const el = createLineElement(line, i, currentData, config);
-            lineElements.set(i, el);
-            lyricsContainer.appendChild(el);
+            state.lines.push(createRenderedLine(line, i, currentData, config));
         }
     }
 
     // Garbage-collect lines that are now out of range
-    lineElements.forEach((el, index) => {
-        if (Math.abs(index - toIndex) > visibleRange * 2) {
-            el.remove();
-            lineElements.delete(index);
-        }
-    });
+    state.lines = state.lines.filter(line => Math.abs(line.index - toIndex) <= visibleRange * 2);
 
-    updateLinePositions(
-        lineElements,
-        scrollContainer,
-        lyricsContainer,
-        toIndex,
-        LINE_HEIGHT,
-        config.enableBlur
-    );
+    updateLinePositions(state, toIndex, LINE_HEIGHT, config.enableBlur);
 
     return toIndex;
 }
 
 /**
  * Start the floating fade-out animation for the line the user just left.
- * The element keeps its current transform/position and glides upward while
+ * The line keeps its current transform/position and glides upward while
  * fading; the optional `onComplete` is invoked once the line is fully gone.
  */
-export function startFloatingAnimation(el: HTMLElement, onComplete?: () => void): void {
-    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
-    el.style.opacity = '0';
-    el.style.transform += ' translateY(-20px)';
+export function startFloatingAnimation(
+    state: LyricsUiState,
+    fromIndex: number,
+    onComplete?: () => void
+): void {
+    const line = state.lines.find(item => item.index === fromIndex);
+    if (!line) return;
+    line.floating = true;
+    line.opacity = 0;
+    line.transform += ' translateY(-20px)';
 
     setTimeout(() => {
-        fadeOutAndFloatAway(el, onComplete);
+        fadeOutAndFloatAway(state, line, fromIndex, onComplete);
     }, 500);
 }
 
 /** Continuation of `startFloatingAnimation` after the initial 500ms transition */
-function fadeOutAndFloatAway(element: HTMLElement, onComplete?: () => void): void {
+function fadeOutAndFloatAway(
+    state: LyricsUiState,
+    line: RenderedLyricLine,
+    index: number,
+    onComplete?: () => void
+): void {
     const startTime = Date.now();
     const duration = 2000;
-    const startY = parseFloat(element.style.transform.replace(/[^-\d.]/g, '')) || 0;
-    const startOpacity = parseFloat(element.style.opacity) || 0;
+    const startY = parseFloat(line.transform.replace(/[^-\d.]/g, '')) || 0;
+    const startOpacity = line.opacity || 0;
 
     const animate = (): void => {
         const elapsed = Date.now() - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const easeProgress = 1 - Math.pow(1 - progress, 3);
 
-        element.style.opacity = String(startOpacity * (1 - easeProgress));
-        element.style.transform = `translateY(${startY - 30 * easeProgress}px) scale(${
+        line.opacity = startOpacity * (1 - easeProgress);
+        line.transform = `translateY(${startY - 30 * easeProgress}px) scale(${
             1 - 0.1 * easeProgress
         })`;
 
         if (progress < 1) {
             requestAnimationFrame(animate);
         } else {
-            element.remove();
+            state.lines = state.lines.filter(item => item.index !== index);
             onComplete?.();
         }
     };

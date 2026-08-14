@@ -254,6 +254,15 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
                 '--picture-info-visibility',
                 show ? 'visible' : 'hidden'
             );
+            // 清除 info.ts (picturesinfo_showrl / clearpicturesinfo) 设置的
+            // 内联 style.display / style.visibility，让 CSS 变量接管控制权。
+            // 内联样式优先级高于 var(--picture-info-display)，
+            // 会导致关闭 pictures_info_show 开关后图片信息仍然可见。
+            const picInfoEl = elements.slide?.picture_info;
+            if (picInfoEl) {
+                picInfoEl.style.display = '';
+                picInfoEl.style.visibility = '';
+            }
         }
     }
 

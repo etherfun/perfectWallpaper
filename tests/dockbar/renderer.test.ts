@@ -6,13 +6,14 @@
  *   - createItemElement: builds div.dock-item with img.dock-item-icon
  *   - createItemElement: data:/http: prefix → img.src set directly
  *   - createItemElement: other icon prefix → loadIcon callback invoked
- *   - render: clears itemsContainer innerHTML before re-rendering
+ *   - render: 真 Vue 化后写入响应式 dockbarState.items（DockBar.vue v-for 渲染）
  *   - queryDomElements: returns null when #dockbar is missing
  */
 
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { createItemElement, queryDomElements, render } from '@/modules/dockbar/renderer';
+import { dockbarState } from '@/modules/dockbar/state';
 import type { DockItem } from '@/modules/dockbar/types';
 
 describe('dockbar/renderer', () => {
@@ -81,26 +82,21 @@ describe('dockbar/renderer', () => {
     });
 
     describe('render', () => {
-        let itemsContainer: HTMLElement;
-
         beforeEach(() => {
-            itemsContainer = document.createElement('div');
+            dockbarState.items = [];
         });
 
-        test('clears existing innerHTML before rendering', () => {
-            itemsContainer.innerHTML = '<div class="dock-item">old</div>';
+        test('replaces existing items in the reactive state', () => {
+            dockbarState.items = [
+                { id: 'old', name: 'Old', icon: 'data:old', type: 'app' },
+            ];
             const items: DockItem[] = [
                 { id: '1', name: 'New', icon: 'data:foo', type: 'app' },
             ];
-            render(itemsContainer, items, vi.fn());
-            // The old element must be gone
-            expect(itemsContainer.querySelectorAll('.dock-item').length).toBe(1);
-            // The name is stored on the <img> alt/title attributes, not as text content.
-            // Verify the new item's data-id is present.
-            const rendered = itemsContainer.querySelector('.dock-item') as HTMLElement;
-            expect(rendered.dataset.id).toBe('1');
-            const img = rendered.querySelector('img');
-            expect(img?.alt).toBe('New');
+            render(items);
+            expect(dockbarState.items).toHaveLength(1);
+            expect(dockbarState.items[0]?.id).toBe('1');
+            expect(dockbarState.items[0]?.name).toBe('New');
         });
 
         test('renders all items in order', () => {
@@ -109,16 +105,26 @@ describe('dockbar/renderer', () => {
                 { id: '2', name: 'B', icon: 'data:b', type: 'app' },
                 { id: '3', name: 'C', icon: 'data:c', type: 'app' },
             ];
-            render(itemsContainer, items, vi.fn());
-            const rendered = Array.from(itemsContainer.querySelectorAll('.dock-item'));
-            expect(rendered).toHaveLength(3);
-            expect(rendered.map(el => (el as HTMLElement).dataset.id)).toEqual(['1', '2', '3']);
+            render(items);
+            expect(dockbarState.items).toHaveLength(3);
+            expect(dockbarState.items.map(i => i.id)).toEqual(['1', '2', '3']);
         });
 
         test('renders nothing for empty items array', () => {
-            itemsContainer.innerHTML = '<div class="dock-item">old</div>';
-            render(itemsContainer, [], vi.fn());
-            expect(itemsContainer.children.length).toBe(0);
+            dockbarState.items = [
+                { id: 'old', name: 'Old', icon: 'data:old', type: 'app' },
+            ];
+            render([]);
+            expect(dockbarState.items).toHaveLength(0);
+        });
+
+        test('copies the array (mutating later does not affect rendered state)', () => {
+            const items: DockItem[] = [
+                { id: '1', name: 'A', icon: 'data:a', type: 'app' },
+            ];
+            render(items);
+            items.push({ id: '2', name: 'B', icon: 'data:b', type: 'app' });
+            expect(dockbarState.items).toHaveLength(1);
         });
     });
 

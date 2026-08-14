@@ -104,17 +104,9 @@
     }
 }
 
-@keyframes dockbar-yakeli-pulse {
-    0%,
-    100% {
-        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-    }
-    50% {
-        box-shadow: 0 8px 48px rgba(var(--dockbar-yakeli-color, 255, 255, 255), 0.4);
-    }
-}
-
-// Context menu
+// ============================================
+// Context menu（由 contextMenu.ts 动态注入 body）
+// ============================================
 .dockbar-context-menu {
     position: fixed;
     z-index: 10000;
@@ -143,6 +135,7 @@
 }
 
 // Dialog (pseudo-modal, click-only)
+// 由 addMenu.ts 动态注入 body
 .dockbar-dialog {
     position: fixed;
     top: 0;
@@ -478,6 +471,16 @@
                 }
             }
         }
+    }
+}
+
+@keyframes dockbar-yakeli-pulse {
+    0%,
+    100% {
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+    50% {
+        box-shadow: 0 8px 48px rgba(var(--dockbar-yakeli-color, 255, 255, 255), 0.4);
     }
 }
 

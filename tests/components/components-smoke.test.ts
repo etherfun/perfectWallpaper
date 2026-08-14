@@ -53,6 +53,7 @@ vi.mock('@/modules/player_control', () => ({
     pc_aubar: () => {},
     playertitle: () => {},
     thumbnailsue: () => {},
+    extractColorsFromThumbnail: () => Promise.resolve(),
 }));
 vi.mock('@/modules/slide', () => ({
     applyBackgroundStyle: () => {},

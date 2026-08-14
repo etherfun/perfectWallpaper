@@ -198,47 +198,49 @@
         margin-top: 16px;
 
         .big-icon {
-            width: 9em;
-            border-radius: 12px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            padding-top: 10px;
-
-            img {
-                width: 64px;
-                height: 64px;
-            }
-
-            svg {
-                color: white;
-                width: 100%;
-                height: 100%;
-            }
-
-            #pIconImg svg {
-                color: white;
-                width: 100%;
-                height: 100%;
-            }
-
-            .big-temp {
-                font-size: 26px;
-                font-weight: 700;
-                margin-top: 20px;
+                width: 9em;
+                border-radius: 12px;
+                background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), transparent);
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-            }
+                justify-content: flex-start;
+                padding-top: 10px;
 
-            .popup-sub {
-                font-size: 14px;
-                margin-top: 6px;
-                text-align: center;
+                img {
+                    width: 64px;
+                    height: 64px;
+                }
+
+                #pIconImg {
+                    width: 100%;
+                    height: 80px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    svg {
+                        color: white;
+                        width: 100%;
+                        height: 100%;
+                    }
+                }
+
+                .big-temp {
+                    font-size: 26px;
+                    font-weight: 700;
+                    margin-top: 20px;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+
+                .popup-sub {
+                    font-size: 14px;
+                    margin-top: 6px;
+                    text-align: center;
+                }
             }
-        }
 
         .details-grid {
             display: grid;

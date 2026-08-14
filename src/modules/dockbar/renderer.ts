@@ -1,5 +1,6 @@
 import { debugLogger } from '@/utils/logger';
 
+import { setDockItems } from './state';
 import type { DockItem } from './types';
 
 export interface DockDomRefs {
@@ -58,16 +59,13 @@ export function createItemElement(
     return el;
 }
 
-export function render(
-    itemsContainer: HTMLElement,
-    items: DockItem[],
-    loadIcon: (item: DockItem, imgEl: HTMLImageElement) => void
-): void {
-    itemsContainer.innerHTML = '';
-    items.forEach(item => {
-        const itemEl = createItemElement(item, loadIcon);
-        itemsContainer.appendChild(itemEl);
-    });
+/**
+ * 渲染项目列表（真 Vue 化）。
+ * 不再命令式创建 .dock-item DOM，改为写入响应式状态，
+ * 由 DockBar.vue 模板 v-for 渲染。
+ */
+export function render(items: DockItem[]): void {
+    setDockItems(items);
 }
 
 export async function animateEntrance(

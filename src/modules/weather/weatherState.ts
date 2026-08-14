@@ -1,30 +1,39 @@
 /**
- * 天气模块全局状态
+ * 天气模块全局状态 — Vue 响应式版
  * 集中管理所有天气相关的可变状态
  */
+
+import { reactive } from 'vue';
 
 import type { WeatherAddress, WeatherData, WeatherUnit } from './types';
 import { DEFAULT_UNIT, UNIT_PRESETS } from './units';
 
-// 天气数据
-export let weather_data: WeatherData = createEmptyWeatherData();
+// 天气数据（响应式 — 模板直接绑定）
+export const weather_data: WeatherData = reactive<WeatherData>(createEmptyWeatherData());
 
-// 天气地址
-export let weather_address: WeatherAddress = {
+// 天气地址（响应式）
+export const weather_address: WeatherAddress = reactive<WeatherAddress>({
     checkcity: '',
     cityname: '',
     citynumber: '',
     latitude: '',
     longitude: '',
-};
+});
 
 // 每日提示
-export let weather_daliy_tip: string;
+export const weather_daliy_tip = reactive<{ value: string }>({ value: '' });
 
-// 降水/温度切换状态
-export let showTemperatureInsteadOfPrecip = false;
-export let precipTemperatureToggleTimer: number | null = null;
-export let isAnimatingPrecipToggle = false;
+// 降水/温度切换状态（响应式）
+export const showTemperatureInsteadOfPrecip = reactive<{ value: boolean }>({ value: false });
+export const precipTemperatureToggleTimer = reactive<{ value: number | null }>({ value: null });
+export const isAnimatingPrecipToggle = reactive<{ value: boolean }>({ value: false });
+
+// UI 状态（加载/错误/可见性）
+export const weatherUiState = reactive({
+    loading: false,
+    error: '',
+    visible: true,
+});
 
 // 单位配置状态
 let weatherUnit: WeatherUnit = { ...DEFAULT_UNIT };
@@ -104,26 +113,26 @@ function createEmptyWeatherData(): WeatherData {
     };
 }
 
-// 状态修改函数
+// 状态修改函数（兼容旧调用方）
 export function setShowTemperatureInsteadOfPrecip(value: boolean): void {
-    showTemperatureInsteadOfPrecip = value;
+    showTemperatureInsteadOfPrecip.value = value;
 }
 
 export function setPrecipTemperatureToggleTimer(value: number | null): void {
-    precipTemperatureToggleTimer = value;
+    precipTemperatureToggleTimer.value = value;
 }
 
 export function setIsAnimatingPrecipToggle(value: boolean): void {
-    isAnimatingPrecipToggle = value;
+    isAnimatingPrecipToggle.value = value;
 }
 
 export function toggleShowTemperatureInsteadOfPrecip(): void {
-    showTemperatureInsteadOfPrecip = !showTemperatureInsteadOfPrecip;
+    showTemperatureInsteadOfPrecip.value = !showTemperatureInsteadOfPrecip.value;
 }
 
 export function clearPrecipTimer(): void {
-    if (precipTemperatureToggleTimer) {
-        clearInterval(precipTemperatureToggleTimer);
-        precipTemperatureToggleTimer = null;
+    if (precipTemperatureToggleTimer.value) {
+        clearInterval(precipTemperatureToggleTimer.value);
+        precipTemperatureToggleTimer.value = null;
     }
 }

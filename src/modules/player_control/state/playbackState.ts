@@ -3,18 +3,16 @@
  *   - .play-pause 按钮的 `.playing` 类
  *   - #player_control 容器的 `.paused` 类
  *   - <body> 上的 `.paused` 类（供 CSS / 流体效果联动）
+ *
+ * 真 Vue 化：playing / paused 写入 playerUiState，
+ * 由 PlayerControl.vue 模板 :class 绑定；body class 联动保留。
  */
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
-import { player_control } from '../domRefs';
 import { PLAYER_STATE } from '../types';
-
-/** 惰性获取 .play-pause 按钮引用（Vue mount + refreshDomRefs 后才有效） */
-function getPlayPauseBtn(): HTMLElement | null {
-    return player_control?.querySelector('.play-pause') as HTMLElement | null;
-}
+import { playerUiState } from './uiState';
 
 /**
  * 同步上次记录到的播放状态（用于检测真正的状态变化）。
@@ -30,35 +28,13 @@ export function setLastPlaybackState(state: number): void {
     lastPlaybackState = state;
 }
 
-/** 同步 .play-pause 按钮 visual state */
-function updatePlayPauseButton(): void {
-    const btn = getPlayPauseBtn();
-    if (!btn) return;
-
-    const isPlaying = runtimeStore.playerInfo.playerState === PLAYER_STATE.PLAYING;
-    if (isPlaying) {
-        btn.classList.add('playing');
-    } else {
-        btn.classList.remove('playing');
-    }
-}
-
-/** 暂停时显示半透明遮罩 */
-function updatePauseOverlay(): void {
-    const isPaused = runtimeStore.playerInfo.playerState === PLAYER_STATE.PAUSED;
-    if (isPaused) {
-        player_control?.classList.add('paused');
-    } else {
-        player_control?.classList.remove('paused');
-    }
-}
-
 /**
  * 播放状态变化时同步更新 UI（外部调用入口）
  */
 export function applyPlayerStateUI(): void {
-    updatePlayPauseButton();
-    updatePauseOverlay();
+    const playerState = runtimeStore.playerInfo.playerState;
+    playerUiState.playing = playerState === PLAYER_STATE.PLAYING;
+    playerUiState.paused = playerState === PLAYER_STATE.PAUSED;
 }
 
 /**

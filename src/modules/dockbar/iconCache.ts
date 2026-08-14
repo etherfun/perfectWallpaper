@@ -25,6 +25,89 @@ export function loadIcon(
     }
 }
 
+/**
+ * 解析项目图标的最终 URL（真 Vue 化，供模板 :src 绑定）。
+ * 与 loadIcon 的行为一致：data:/http 前缀直接使用；
+ * url/path 类型走 localStorage 缓存 + fetch/Image 探测。
+ */
+export function resolveIconUrl(
+    item: DockItem,
+    serverUrl: string = SERVER_URL
+): Promise<string> {
+    if (item.type === 'url' && item.url) {
+        return resolveUrlIcon(item.url);
+    }
+
+    if (item.path) {
+        return resolvePathIcon(item.path, serverUrl);
+    }
+
+    return Promise.resolve(getDefaultIcon());
+}
+
+/** 解析 URL 类型图标（favicon.svg → favicon.ico → 默认图标） */
+function resolveUrlIcon(url: string): Promise<string> {
+    return new Promise(resolve => {
+        try {
+            const urlObj = new URL(url);
+            const domain = urlObj.hostname;
+            const cacheKey = `icon_${domain}`;
+
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                resolve(cached);
+                return;
+            }
+
+            const svgFaviconUrl = `${urlObj.origin}/favicon.svg`;
+            const svgImg = new Image();
+            svgImg.onload = () => {
+                localStorage.setItem(cacheKey, svgFaviconUrl);
+                resolve(svgFaviconUrl);
+            };
+            svgImg.onerror = () => {
+                const icoFaviconUrl = `${urlObj.origin}/favicon.ico`;
+                const icoImg = new Image();
+                icoImg.onload = () => {
+                    localStorage.setItem(cacheKey, icoFaviconUrl);
+                    resolve(icoFaviconUrl);
+                };
+                icoImg.onerror = () => {
+                    resolve(getDefaultIcon());
+                };
+                icoImg.src = icoFaviconUrl;
+            };
+            svgImg.src = svgFaviconUrl;
+        } catch (e) {
+            debugLogger.error('[DockBar] Icon load failed', { url, error: e });
+            resolve(getDefaultIcon());
+        }
+    });
+}
+
+/** 解析文件/应用类型图标（localStorage 缓存 → 服务端提取） */
+function resolvePathIcon(path: string, serverUrl: string): Promise<string> {
+    const cacheKey = `icon_${path}`;
+
+    const cached = localStorage.getItem(cacheKey);
+    if (cached) {
+        return Promise.resolve(cached);
+    }
+
+    return fetchIconApi(serverUrl, path, true /* bypassCache */)
+        .then(data => {
+            if (data && data.icon) {
+                cacheIcon(cacheKey, data.icon);
+                return data.icon;
+            }
+            return getDefaultIcon();
+        })
+        .catch(err => {
+            debugLogger.error('[DockBar] Failed to load icon', { path, error: err });
+            return getDefaultIcon();
+        });
+}
+
 function loadUrlIcon(url: string, imgEl: HTMLImageElement): void {
     try {
         const urlObj = new URL(url);

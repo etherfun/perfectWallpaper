@@ -3,6 +3,9 @@
  *   - 鼠标 hover 在 aubar 区域时显示
  *   - 仅 server_mode = true 时启用（否则永久隐藏）
  *   - 用事件委托派发到 video.ts 的 TogglePlayPause / PlayNextTrack / PlayPrevTrack
+ *
+ * 真 Vue 化：可见性写入 playerUiState（controlsVisible / controlsEnabled），
+ * 由 PlayerControl.vue 模板绑定；事件监听逻辑保留原样。
  */
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
@@ -13,6 +16,7 @@ import { debugLogger } from '@/utils/logger';
 
 import { SERVER_MODE_PROBE_DELAY_MS } from '../constants';
 import { player_control } from '../domRefs';
+import { playerUiState } from '../state/uiState';
 
 /** 惰性获取 aubar-wrapper 引用（Vue mount 后 player_control 才非 null） */
 function getAubarWrapper(): HTMLElement | null {
@@ -25,21 +29,21 @@ function getAubarControls(): HTMLElement | null {
 }
 
 function showControls(): void {
-    getAubarControls()?.classList.add('visible');
+    playerUiState.controlsVisible = true;
 }
 
 function hideControls(): void {
-    getAubarControls()?.classList.remove('visible');
+    playerUiState.controlsVisible = false;
 }
 
 /**
  * 初始化播放控制按钮的事件监听（鼠标进入显示 + 点击委托）。
  * 服务端模式未开启时，按钮永远隐藏。
  *
- * DOM 操作通过 registerDeferred 延后到 Vue mount + refreshDomRefs 之后执行。
+ * 事件绑定通过 registerDeferred 延后到 Vue mount + refreshDomRefs 之后执行。
  */
 export function initPlayerControls(): void {
-    // server_mode 探针：只需 aubar-controls 元素存在即可，无需完整 DOM
+    // server_mode 探针：写入响应式状态，模板用 --aubar-display 绑定
     setTimeout(() => {
         const controls = getAubarControls();
         if (!controls) return;
@@ -47,10 +51,7 @@ export function initPlayerControls(): void {
             serverMode: config.server_mode,
         });
         // 用 CSS 变量控制 display：避免 !important 锁死后无法被 .visible 覆盖
-        controls.style.setProperty(
-            '--aubar-display',
-            config.server_mode ? '' : 'none'
-        );
+        playerUiState.controlsEnabled = config.server_mode === true;
     }, SERVER_MODE_PROBE_DELAY_MS);
 
     // 事件绑定依赖 #player_control DOM 存在，延迟到 Vue mount 后执行

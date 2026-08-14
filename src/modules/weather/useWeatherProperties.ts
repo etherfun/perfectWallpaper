@@ -25,7 +25,7 @@ import {
     weather_address,
     weather_init,
 } from '../weather';
-import { setWeatherUnitByName } from '../weather/weatherState';
+import { setWeatherUnitByName, weatherUiState } from '../weather/weatherState';
 
 /**
  * 澶勭悊澶╂皵鐩稿叧灞炴€?
@@ -94,12 +94,6 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         config.weather_daily_tip = v; // sync
         if (!FirstLoad) {
             generateWeatherTable();
-        }
-        if (elements.weather.precipContainer) {
-            elements.weather.precipContainer.style.borderBottomWidth = properties.weather_daliy_tip
-                .value
-                ? '1px'
-                : '0';
         }
     }
 
@@ -176,16 +170,9 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.weather_show) {
         timerManager.remove('updataWeather');
 
-        const weather = elements.weather.weather;
-        if (weather) {
-            if (properties.weather_show.value) {
-                weather.style.display = 'flex';
-                weather.style.visibility = 'visible';
-                autoWeather();
-            } else {
-                weather.style.display = 'none';
-                weather.style.visibility = 'hidden';
-            }
+        weatherUiState.visible = properties.weather_show.value === true;
+        if (properties.weather_show.value) {
+            autoWeather();
         }
     }
 

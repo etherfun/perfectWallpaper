@@ -3,13 +3,16 @@
  *
  * WE 只会在歌曲时间发生变化时发一次 MediaTimelineEvent，
  * 期间需要本地用定时器每 100ms 推进 0.1 秒，营造平滑动画。
+ *
+ * 真 Vue 化：进度写入 playerUiState.progressPercent，
+ * 由 PlayerControl.vue 模板 :style 绑定到 .progress-bar。
  */
 import { useRuntimeStore } from '@/stores/runtime';
 
 const runtimeStore = useRuntimeStore();
 
 import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from '../constants';
-import { player_control_timeline } from '../domRefs';
+import { playerUiState } from '../state/uiState';
 import { PLAYER_STATE } from '../types';
 
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;
@@ -49,7 +52,7 @@ export function wallpaperMediaTimelineListener(event: MediaTimelineEvent): void 
         }
 
         const progressPercent = (currentPosition / dur) * 100;
-        player_control_timeline.style.width = progressPercent + '%';
+        playerUiState.progressPercent = progressPercent;
 
         if (!waitingForData) {
             timelineTimer = setTimeout(updateTimeline, TIMELINE_TICK_MS);

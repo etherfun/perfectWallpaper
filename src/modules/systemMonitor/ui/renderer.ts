@@ -104,49 +104,43 @@ function makeBar(fillPct: number, fillClass = 'sysmon-bar-fill'): HTMLElement {
 }
 
 /**
- * Draw a single-line curve into a fresh <canvas> child of `parent`.
- * Returns the canvas (or null if there's not enough history to plot a curve).
+ * Draw a curve onto an existing canvas (or create a new one via drawCurveInto).
  *
  * Layout: the curve spans the FULL width of the canvas, with the most
  * recent data point pinned to the right edge. We scale the x-step so that
- * `MAX_HISTORY_LENGTH` samples would fill the canvas — this keeps the
- * curve readable at any history length, not just at full buffer.
+ * `MAX_HISTORY_LENGTH` samples would fill the canvas.
  *
- * Visual aids for legibility:
- *   - a dashed baseline at the bottom (0%) so the user can read the
- *     0–100% scale at a glance
- *   - a subtle area fill below the curve, fading to transparent
- *   - round line caps and joins so the polyline looks smooth even when
- *     samples are sparse
- *   - DPR-aware pixel sizing so the curve stays crisp on HiDPI screens
+ * Canvas is resized only when the parent's layout dimensions change,
+ * avoiding unnecessary buffer reallocation on every poll cycle.
  */
-function drawCurveInto(parent: HTMLElement, history: number[]): HTMLCanvasElement | null {
-    if (history.length < 2) {
-        // Not enough data points to plot a meaningful curve yet — skip
-        // creating the canvas so the viz slot stays clean.
-        return null;
-    }
+function drawCurveOnCanvas(canvas: HTMLCanvasElement, history: number[]): void {
+    if (history.length < 2) return;
 
-    const canvas = document.createElement('canvas');
-    parent.appendChild(canvas);
+    const parent = canvas.parentElement;
+    if (!parent) return;
 
-    // Read the parent slot's actual layout size (the SCSS side gives
-    // `.sysmon-viz` a fixed width/height). We fall back to a sensible
-    // default if the element isn't laid out yet (e.g. test environments
-    // without a real viewport).
     const rect = parent.getBoundingClientRect();
     const cssWidth = Math.max(1, Math.round(rect.width) || 80);
     const cssHeight = Math.max(1, Math.round(rect.height) || 24);
 
     const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) || 1;
-    canvas.width = Math.round(cssWidth * dpr);
-    canvas.height = Math.round(cssHeight * dpr);
-    canvas.style.width = `${cssWidth}px`;
-    canvas.style.height = `${cssHeight}px`;
+    const neededW = Math.round(cssWidth * dpr);
+    const neededH = Math.round(cssHeight * dpr);
+
+    // Only resize the canvas buffer when dimensions actually change
+    if (canvas.width !== neededW || canvas.height !== neededH) {
+        canvas.width = neededW;
+        canvas.height = neededH;
+        canvas.style.width = `${cssWidth}px`;
+        canvas.style.height = `${cssHeight}px`;
+    }
 
     const ctx = canvas.getContext('2d');
-    if (!ctx) return canvas;
-    ctx.scale(dpr, dpr);
+    if (!ctx) return;
+
+    // Reset transform and clear before drawing
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, cssWidth, cssHeight);
 
     const w = cssWidth;
     const h = cssHeight;
@@ -166,11 +160,6 @@ function drawCurveInto(parent: HTMLElement, history: number[]): HTMLCanvasElemen
     ctx.restore();
 
     // ---- Curve geometry ------------------------------------------
-    // `step` is the per-sample x spacing assuming the buffer were full.
-    // `startX` pins the latest sample to the right edge and lets earlier
-    // samples extend leftward from there. This makes the curve visibly
-    // grow toward the left as more data comes in, while the right edge
-    // always tracks the live value.
     const step = w / (MAX_HISTORY_LENGTH - 1);
     const startX = w - (history.length - 1) * step;
 
@@ -210,7 +199,22 @@ function drawCurveInto(parent: HTMLElement, history: number[]): HTMLCanvasElemen
     ctx.arc(lastX, h - (lastValue / 100) * h, 1.8, 0, Math.PI * 2);
     ctx.fillStyle = stroke;
     ctx.fill();
+}
 
+/**
+ * Draw a single-line curve into a fresh <canvas> child of `parent`.
+ * Returns the canvas (or null if there's not enough history).
+ *
+ * Prefer `drawCurveOnCanvas` in hot paths to reuse an existing canvas;
+ * use this only when creating a canvas for the first time or after a
+ * mode switch from bar/text → curve.
+ */
+function drawCurveInto(parent: HTMLElement, history: number[]): HTMLCanvasElement | null {
+    if (history.length < 2) return null;
+
+    const canvas = document.createElement('canvas');
+    parent.appendChild(canvas);
+    drawCurveOnCanvas(canvas, history);
     return canvas;
 }
 
@@ -243,12 +247,11 @@ export function renderRow(
         writeSimpleText(row, payload.value ?? 0, payload.extra);
     }
 
-    clearViz(row);
-
     const viz = row.querySelector<HTMLElement>('.sysmon-viz');
     if (!viz) return;
 
     if (mode === 'text' || mode === 'none') {
+        clearViz(row);
         if (mode === 'none') {
             row.style.display = 'none';
         } else {
@@ -277,6 +280,7 @@ export function renderRow(
     viz.classList.toggle('sysmon-viz--curve', mode === 'curve');
 
     if (mode === 'bar') {
+        clearViz(row);
         if (isNetwork) {
             viz.appendChild(makeBar(payload.netRxPct ?? 0, 'sysmon-bar-fill sysmon-bar-fill--rx'));
             viz.appendChild(makeBar(payload.netTxPct ?? 0, 'sysmon-bar-fill sysmon-bar-fill--tx'));
@@ -288,22 +292,29 @@ export function renderRow(
 
     if (mode === 'curve') {
         if (isNetwork) {
-            // Two side-by-side lanes for network: rx on the left, tx on
-            // the right. Each lane is its own `.sysmon-viz--curve` so it
-            // gets the standard 24px height and canvas-fill treatment.
+            // Network: two side-by-side lanes — always rebuild (complex layout)
+            clearViz(row);
             const rxLane = document.createElement('div');
             rxLane.className = 'sysmon-viz sysmon-viz--curve';
             const txLane = document.createElement('div');
             txLane.className = 'sysmon-viz sysmon-viz--curve';
             viz.appendChild(rxLane);
             viz.appendChild(txLane);
-            // Use the rx history as the primary; the tx lane reuses the
-            // same buffer for visual symmetry (callers with a real tx
-            // history can extend RowPayload to carry it).
             drawCurveInto(rxLane, history);
             drawCurveInto(txLane, history);
+        } else if (history.length < 2) {
+            // Not enough data — clear and bail out
+            clearViz(row);
         } else {
-            drawCurveInto(viz, history);
+            // Simple curve: reuse existing <canvas> to avoid per-poll allocations
+            const existingCanvas = viz.querySelector<HTMLCanvasElement>('canvas');
+            if (existingCanvas) {
+                drawCurveOnCanvas(existingCanvas, history);
+            } else {
+                // First time or mode switch from bar/text → curve
+                clearViz(row);
+                drawCurveInto(viz, history);
+            }
         }
     }
 }

@@ -14,6 +14,7 @@ import { Vector3 } from '@/utils/webgl-math';
 import { gl, renderSpec } from '../state/state';
 import { BlossomParticle, type EffectLib, type PointFlower } from '../types';
 import { createShader, unuseShader, useShader } from './glUtils';
+import { sakuraPointFsh, sakuraPointVsh } from './shaders';
 
 // 重新导出 BlossomParticle 以便其他文件统一从 particles.ts 引用
 export { BlossomParticle };
@@ -30,9 +31,8 @@ export const effectLib: EffectLib = {
 };
 
 /**
- * 读取 <script id="sakura_point_vsh">/<script id="sakura_point_fsh">，
  * 编译粒子 shader、分配 GPU 缓冲、创建 BlossomParticle 实例。
- * 必须在 gl 初始化之后调用。
+ * 必须在 gl 初始化之后调用。shader 源码由 shaders.ts 常量提供。
  */
 export function createPointFlowers(): void {
     if (!gl) return;
@@ -40,10 +40,8 @@ export function createPointFlowers(): void {
     const prm = gl.getParameter(gl.ALIASED_POINT_SIZE_RANGE);
     renderSpec.pointSize = { min: prm[0], max: prm[1] };
 
-    const vtxsrcEl = document.getElementById('sakura_point_vsh') as HTMLScriptElement | null;
-    const frgsrcEl = document.getElementById('sakura_point_fsh') as HTMLScriptElement | null;
-    const vtxsrc = vtxsrcEl?.textContent || '';
-    const frgsrc = frgsrcEl?.textContent || '';
+    const vtxsrc = sakuraPointVsh;
+    const frgsrc = sakuraPointFsh;
 
     pointFlower.program = createShader(
         vtxsrc,

@@ -15,7 +15,7 @@ const config = useConfigStore();
 
 import { createShader, unuseShader, useShader } from '../render/glUtils';
 import { effectLib } from '../render/particles';
-import { ppFinalFsh } from '../render/shaders';
+import { bgFsh, fxBrightbufFsh, fxCommonVsh, fxDirblurFsh, ppFinalFsh, ppFinalVsh } from '../render/shaders';
 import { gl, renderSpec, timeInfo } from '../state/state';
 import type { EffectProgram, RenderTarget, ShaderProgram } from '../types';
 
@@ -82,23 +82,22 @@ export function unuseEffect(fxobj: EffectProgram): void {
 
 /** 编译并初始化 4 个效果程序；ppFinalFsh 在此处拼接 sakuraBackLight 透明度 */
 export function createEffectLib(): void {
-    const cmnvtxsrc =
-        (document.getElementById('fx_common_vsh') as HTMLScriptElement).textContent || '';
+    const cmnvtxsrc = fxCommonVsh;
 
     // background
-    let frgsrc = (document.getElementById('bg_fsh') as HTMLScriptElement).textContent || '';
+    let frgsrc = bgFsh;
     effectLib.sceneBg = createEffectProgram(cmnvtxsrc, frgsrc, ['uTimes'], undefined);
 
     // make brightpixels buffer
-    frgsrc = (document.getElementById('fx_brightbuf_fsh') as HTMLScriptElement).textContent || '';
+    frgsrc = fxBrightbufFsh;
     effectLib.mkBrightBuf = createEffectProgram(cmnvtxsrc, frgsrc, undefined, undefined);
 
     // direction blur
-    frgsrc = (document.getElementById('fx_dirblur_r4_fsh') as HTMLScriptElement).textContent || '';
+    frgsrc = fxDirblurFsh;
     effectLib.dirBlur = createEffectProgram(cmnvtxsrc, frgsrc, ['uBlurDir'], undefined);
 
     // final composite
-    const vtxsrc = (document.getElementById('pp_final_vsh') as HTMLScriptElement).textContent || '';
+    const vtxsrc = ppFinalVsh;
     const sakuraBackLight = config.sakura_back_light ?? 0;
     frgsrc =
         ppFinalFsh +

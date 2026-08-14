@@ -1,6 +1,6 @@
 ﻿/**
- * 澶╂皵鏁版嵁鏍煎紡鍖栧嚱鏁?
- * 鑱岃矗锛氬皢澶╂皵鏁版嵁杞崲涓烘樉绀虹敤鐨勬牸寮忓寲瀛楃涓?
+ * 天气数据格式化函数
+ * 职责：将天气数据转换为显示用的格式化字符串
  */
 
 import { globalT } from '@/utils/i18n';
@@ -9,7 +9,7 @@ import type { WeatherAlert } from './types';
 import { weather_data } from './weatherState';
 
 /**
- * 鑾峰彇绌烘皵璐ㄩ噺鎻忚堪鏂囨湰
+ * 获取空气质量描述文本
  */
 export function getAirQualityText(airValue: string | number): string {
     if (!airValue || airValue === '') return '';
@@ -28,7 +28,7 @@ export function getAirQualityText(airValue: string | number): string {
 }
 
 /**
- * 鐢熸垚澶╂皵棰勮HTML
+ * 生成天气预警HTML
  */
 export function generateAlertHTML(): string {
     if (

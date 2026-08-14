@@ -8,7 +8,7 @@ import { logInitComplete } from '../../utils/helpers';
 /**
  * 澶勭悊Dock鏍忓睘鎬?
  * @param properties 灞炴€у璞?
- * @param FirstLoad 鏄惁棣栨鍔犺浇
+ * @param FirstLoad 是否首次加载
  */
 export function useDockBarProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     if (FirstLoad) {
@@ -18,12 +18,12 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
     const dockbar = getDockBar();
     if (!dockbar) return;
 
-    // 濡傛灉涔嬪墠 initDockBar() 鏃?DOM 灏氭湭灏辩华锛坬ueryDomElements 杩斿洖 null锛夛紝
-    // 姝ゆ椂灏濊瘯閲嶆柊鍒濆鍖栥€侱ockBar.vue 鐨?onMounted 涔熶細璋冪敤 ensureInitialized锛?
-    // 杩欓噷浣滀负棰濆淇濋殰锛岀‘淇?WE 鎺ㄩ€佸睘鎬ф椂 dockbar 鍙敤銆?
+   // 如果之前 initDockBar() 时 DOM 尚未就绪（queryDomElements 返回 null），
+   // 此时尝试重新初始化。DockBar.vue 的 onMounted 也会调用 ensureInitialized，
+   // 这里作为额外保障，确保 WE 推送属性时 dockbar 可用。
     dockbar.ensureInitialized();
 
-    // 鍚敤/绂佺敤
+    // 启用/禁用
     if (properties.dockbar_enabled !== undefined) {
         const v = properties.dockbar_enabled.value;
         dockbar.setEnabled(v);
@@ -31,7 +31,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         useConfigStore().$patch({ dockbar_enabled: v });
     }
 
-    // 浣嶇疆
+    // 位置
     if (properties.dockbar_position) {
         const positions: Array<'bottom' | 'top' | 'left' | 'right'> = [
             'bottom',
@@ -43,17 +43,17 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         dockbar.updateConfig({ position });
     }
 
-    // 鍥炬爣澶у皬
+    // 图标大小
     if (properties.dockbar_icon_size) {
         dockbar.updateConfig({ iconSize: properties.dockbar_icon_size.value });
     }
 
-    // 闂磋窛
+    // 间距
     if (properties.dockbar_spacing) {
         dockbar.updateConfig({ spacing: properties.dockbar_spacing.value });
     }
 
-    // 浜氬厠鍔涙晥鏋滃惎鐢?
+   // 亚克力效果启用
     if (properties.dockbar_yakeli_show) {
         dockbar.updateConfig({ yakeliEnabled: properties.dockbar_yakeli_show.value });
         elements.body.style.setProperty(
@@ -69,7 +69,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         elements.body.style.setProperty('--dockbar-yakeli', String(intensity));
     }
 
-    // 妯＄硦寮哄害
+    // 模糊强度
     if (properties.dockbar_bluryakeli) {
         dockbar.updateConfig({ blurIntensity: properties.dockbar_bluryakeli.value });
         elements.body.style.setProperty(
@@ -90,7 +90,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         elements.body.style.setProperty('--dockbar-yakeli-color', c.join(', '));
     }
 
-    // 鍦嗚
+    // 圆角
     if (properties.dockbar_roundedcorners) {
         dockbar.updateConfig({ roundedCorners: properties.dockbar_roundedcorners.value });
         elements.body.style.setProperty(
@@ -99,17 +99,17 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         );
     }
 
-    // X杞翠綅缃?
+   // X轴位置
     if (properties.dockbar_x !== undefined) {
         dockbar.updateConfig({ positionX: properties.dockbar_x.value });
     }
 
-    // Y杞翠綅缃?
+   // Y轴位置
     if (properties.dockbar_y !== undefined) {
         dockbar.updateConfig({ positionY: properties.dockbar_y.value });
     }
 
-    // 鏄剧ず/闅愯棌娣诲姞鎸夐挳
+    // 显示/隐藏添加按钮
     if (properties.dockbar_show_add_btn !== undefined) {
         dockbar.updateConfig({ showAddButton: properties.dockbar_show_add_btn.value });
     }

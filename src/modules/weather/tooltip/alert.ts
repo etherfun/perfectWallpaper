@@ -1,16 +1,17 @@
 ﻿/**
- * 澶╂皵棰勮 Tooltip
- * 鑱岃矗锛氱粦瀹氬ぉ姘旈璀︽偓鍋滄彁绀?
+ * 天气预警 Tooltip
+ * 职责：绑定天气预警悬停提示
  */
 
 import { globalT } from '@/utils/i18n';
 
-import { getIconSvg } from '../index';
+import { getIconSvg, iconSvgPath } from '../index';
 import { weather_data } from '../weatherState';
+import { hideTooltipAfter, positionTooltip } from './position';
 import { getTime } from './time';
 
 /**
- * 缁戝畾澶╂皵棰勮鎮仠鎻愮ず
+ * 绑定天气预警悬停提示
  */
 export function attachWeatherAlertTooltip(element: HTMLElement): void {
     const tooltip = document.querySelector('#weatherAlertTooltip') as HTMLElement | null;
@@ -84,7 +85,7 @@ export function attachWeatherAlertTooltip(element: HTMLElement): void {
 
             if (tooltipSource) tooltipSource.textContent = alert.source;
 
-            getIconSvg(`src/source/QWeather-Icons/icons/${alert.icon}.svg`).then(svg => {
+            getIconSvg(iconSvgPath(alert.icon)).then(svg => {
                 if (tooltipIcon) tooltipIcon.innerHTML = svg;
             });
 
@@ -99,31 +100,15 @@ export function attachWeatherAlertTooltip(element: HTMLElement): void {
     });
 
     element.addEventListener('mousemove', e => {
-        const mouseEvent = e as MouseEvent;
         if (!tooltip) return;
-        const tipWidth = tooltip.offsetWidth;
-        const tipHeight = tooltip.offsetHeight;
-
-        let left = mouseEvent.clientX + 20;
-        let top = mouseEvent.clientY + 20;
-
-        if (left + tipWidth > window.innerWidth - 20) left = mouseEvent.clientX - tipWidth - 20;
-        if (top + tipHeight > window.innerHeight - 20) top = mouseEvent.clientY - tipHeight - 20;
-
-        if (left < 20) left = 20;
-        if (top < 20) top = 20;
-
-        tooltip.style.left = left + 'px';
-        tooltip.style.top = top + 'px';
+        positionTooltip(tooltip, e as MouseEvent);
     });
 
     element.addEventListener('mouseleave', () => {
-        tooltip?.classList.remove('show', 'glow');
-        setTimeout(() => {
-            if (!tooltip?.classList.contains('show')) {
-                if (tooltip) tooltip.style.display = 'none';
-                if (cardsContainer) cardsContainer.innerHTML = '';
-            }
-        }, 250);
+        if (!tooltip) return;
+        tooltip.classList.remove('show', 'glow');
+        hideTooltipAfter(tooltip, 250, () => {
+            if (cardsContainer) cardsContainer.innerHTML = '';
+        });
     });
 }

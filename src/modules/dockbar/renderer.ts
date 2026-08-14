@@ -1,7 +1,17 @@
 import { debugLogger } from '@/utils/logger';
 
+import { isDirectIconUrl } from './iconCache';
 import { setDockItems } from './state';
 import type { DockItem } from './types';
+
+/** 入场动画：每个项目依次进入的间隔（ms） */
+const ITEM_STAGGER_DELAY_MS = 100;
+/** 入场动画时长（ms） */
+const ENTRANCE_DURATION_MS = 400;
+/** 图标加载完成后的额外等待（ms） */
+const ICON_SETTLE_MS = 100;
+/** 动画结束后触发亚克力脉冲的额外延迟（ms） */
+const PULSE_EXTRA_DELAY_MS = 200;
 
 export interface DockDomRefs {
     container: HTMLElement;
@@ -49,7 +59,7 @@ export function createItemElement(
     iconEl.alt = item.name;
     iconEl.title = item.name;
 
-    if (item.icon.startsWith('data:') || item.icon.startsWith('http')) {
+    if (isDirectIconUrl(item.icon)) {
         iconEl.src = item.icon;
     } else {
         loadIcon(item, iconEl);
@@ -85,15 +95,14 @@ export async function animateEntrance(
     await waitForIcons(itemsContainer);
 
     const easing = 'cubic-bezier(0.34, 1.56, 0.64, 1)';
-    const baseDelay = 100;
 
     items.forEach((item, index) => {
         const el = item as HTMLElement;
         setTimeout(() => {
-            el.style.transition = `opacity 0.4s ${easing}, transform 0.4s ${easing}`;
+            el.style.transition = `opacity ${ENTRANCE_DURATION_MS}ms ${easing}, transform ${ENTRANCE_DURATION_MS}ms ${easing}`;
             el.style.opacity = '1';
             el.style.transform = 'scale(1) translateY(0)';
-        }, index * baseDelay);
+        }, index * ITEM_STAGGER_DELAY_MS);
     });
 
     if (yakeliEnabled) {
@@ -102,7 +111,7 @@ export async function animateEntrance(
                 const container = itemsContainer.closest('.dockbar-container');
                 container?.classList.add('yakeli-pulse');
             },
-            items.length * baseDelay + 200
+            items.length * ITEM_STAGGER_DELAY_MS + PULSE_EXTRA_DELAY_MS
         );
     }
 }
@@ -128,4 +137,4 @@ export async function waitForIcons(itemsContainer: HTMLElement): Promise<void> {
     }
 
     await new Promise(resolve => setTimeout(resolve, 100));
-}
+}ICON_SETTLE_MS

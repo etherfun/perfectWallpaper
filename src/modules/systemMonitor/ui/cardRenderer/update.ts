@@ -13,10 +13,8 @@ import type {
     SparkChannel,
     SystemMonitorCardDomRefs,
 } from '../../types';
-import { createDiskCard } from './create';
+import { CARD_CLASS,createDiskCard } from './create';
 import { routeSparkCanvas } from './sparks';
-
-const CARD_CLASS = 'sysmon-card';
 
 /**
  * Update all card DOM elements with the latest render data.

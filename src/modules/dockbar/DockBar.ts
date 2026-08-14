@@ -4,7 +4,7 @@ import { debugLogger } from '@/utils/logger';
 import { applyConfig } from './configApply';
 import { DEFAULT_CONFIG, SERVER_URL } from './constants';
 import { showContextMenu } from './contextMenu';
-import { clearAllIconCache, resolveIconUrl } from './iconCache';
+import { clearAllIconCache, isDirectIconUrl, resolveIconUrl } from './iconCache';
 import { showAddMenu } from './menu/addMenu';
 import {
     animateEntrance,
@@ -55,7 +55,7 @@ export class DockBar {
         render(this.config.items);
         // 异步解析非 data:/http 图标的最终 URL，写入 iconUrls 状态
         this.config.items.forEach(item => {
-            if (item.icon.startsWith('data:') || item.icon.startsWith('http')) {
+            if (isDirectIconUrl(item.icon)) {
                 setDockIcon(item.id, item.icon);
             } else {
                 void resolveIconUrl(item, SERVER_URL).then(url => setDockIcon(item.id, url));

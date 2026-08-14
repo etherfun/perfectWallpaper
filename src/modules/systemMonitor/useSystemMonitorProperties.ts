@@ -6,6 +6,13 @@ import { debugLogger } from '@/utils/logger';
 import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
 
+/** WE 下拉索引 → 显示模式 映射表（sysmon_*_mode 属性取值 0~3） */
+const DISPLAY_MODES: Array<'none' | 'text' | 'bar' | 'curve'> = ['none', 'text', 'bar', 'curve'];
+/** WE 下拉索引 → 布局 映射表（sysmon_bar_layout 取值 0~1） */
+const BAR_LAYOUTS: Array<'horizontal' | 'vertical'> = ['horizontal', 'vertical'];
+/** WE 下拉索引 → 位置 映射表（sysmon_position 取值 0~1） */
+const MONITOR_POSITIONS: Array<'left' | 'right'> = ['left', 'right'];
+
 /**
  * Handle auto-start setting change.
  *
@@ -21,7 +28,7 @@ async function handleAutoStart(enabled: boolean): Promise<void> {
     const monitor = getSystemMonitor();
     if (!monitor) return;
 
-    const baseUrl = monitor['config'].serverUrl;
+    const baseUrl = monitor.config.serverUrl;
     const updated = await updateConfig(baseUrl, { auto_start: enabled });
     if (!updated) {
         // updateConfig already logged the underlying
@@ -32,9 +39,9 @@ async function handleAutoStart(enabled: boolean): Promise<void> {
 }
 
 /**
- * 澶勭悊绯荤粺鐩戞帶灞炴€?
+ * 处理系统监控属性
  * @param properties 灞炴€у璞?
- * @param FirstLoad 鏄惁棣栨鍔犺浇
+ * @param FirstLoad 是否首次加载
  */
 export function useSystemMonitorProperties(
     properties: WallpaperProperties,
@@ -47,7 +54,7 @@ export function useSystemMonitorProperties(
     const monitor = getSystemMonitor();
     if (!monitor) return;
 
-    // 濡傛灉涔嬪墠 initSystemMonitor() 鏃?DOM 灏氭湭灏辩华锛屾鏃剁‘淇濋噸鏂板垵濮嬪寲
+   // 如果之前 initSystemMonitor() 时 DOM 尚未就绪，此刻确保重新初始化
     monitor.ensureInitialized();
 
     if (properties.sysmon_server_port) {
@@ -67,26 +74,22 @@ export function useSystemMonitorProperties(
     }
 
     if (properties.sysmon_cpu_mode) {
-        const modes: Array<'none' | 'text' | 'bar' | 'curve'> = ['none', 'text', 'bar', 'curve'];
-        const mode = modes[properties.sysmon_cpu_mode.value] || 'text';
+        const mode = DISPLAY_MODES[properties.sysmon_cpu_mode.value] || 'text';
         monitor.updateConfig({ cpuMode: mode });
     }
 
     if (properties.sysmon_gpu_mode) {
-        const modes: Array<'none' | 'text' | 'bar' | 'curve'> = ['none', 'text', 'bar', 'curve'];
-        const mode = modes[properties.sysmon_gpu_mode.value] || 'text';
+        const mode = DISPLAY_MODES[properties.sysmon_gpu_mode.value] || 'text';
         monitor.updateConfig({ gpuMode: mode });
     }
 
     if (properties.sysmon_memory_mode) {
-        const modes: Array<'none' | 'text' | 'bar' | 'curve'> = ['none', 'text', 'bar', 'curve'];
-        const mode = modes[properties.sysmon_memory_mode.value] || 'text';
+        const mode = DISPLAY_MODES[properties.sysmon_memory_mode.value] || 'text';
         monitor.updateConfig({ memoryMode: mode });
     }
 
     if (properties.sysmon_network_mode) {
-        const modes: Array<'none' | 'text' | 'bar' | 'curve'> = ['none', 'text', 'bar', 'curve'];
-        const mode = modes[properties.sysmon_network_mode.value] || 'text';
+        const mode = DISPLAY_MODES[properties.sysmon_network_mode.value] || 'text';
         monitor.updateConfig({ networkMode: mode });
     }
 
@@ -146,14 +149,12 @@ export function useSystemMonitorProperties(
     }
 
     if (properties.sysmon_bar_layout) {
-        const layouts: Array<'horizontal' | 'vertical'> = ['horizontal', 'vertical'];
-        const layout = layouts[properties.sysmon_bar_layout.value] || 'horizontal';
+        const layout = BAR_LAYOUTS[properties.sysmon_bar_layout.value] || 'horizontal';
         monitor.updateConfig({ barLayout: layout });
     }
 
     if (properties.sysmon_position) {
-        const positions: Array<'left' | 'right'> = ['left', 'right'];
-        const position = positions[properties.sysmon_position.value] || 'right';
+        const position = MONITOR_POSITIONS[properties.sysmon_position.value] || 'right';
         monitor.updateConfig({ monitorPosition: position });
     }
 

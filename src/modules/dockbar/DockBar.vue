@@ -55,8 +55,8 @@ import { nextTick, onMounted } from 'vue';
 import { useConfigStore } from '@/stores/config';
 import { initDockBar } from '@/modules/dockbar';
 
-import { DEFAULT_ICON, SERVER_URL } from './constants';
-import { resolveIconUrl } from './iconCache';
+import { DEFAULT_ICON, ICON_CACHE_PREFIX, SERVER_URL } from './constants';
+import { isDirectIconUrl, resolveIconUrl } from './iconCache';
 import { dockbarState, setDockIcon } from './state';
 import type { DockItem } from './types';
 
@@ -80,14 +80,14 @@ onMounted(async () => {
 function iconUrl(item: DockItem): string {
     const resolved = dockbarState.iconUrls[item.id];
     if (resolved !== undefined) return resolved;
-    if (item.icon.startsWith('data:') || item.icon.startsWith('http')) return item.icon;
+    if (isDirectIconUrl(item.icon)) return item.icon;
     return DEFAULT_ICON;
 }
 
 /** 图标加载失败：path 类型缓存失效时清缓存重取（对齐 loadPathIcon 逻辑） */
 function onIconError(item: DockItem): void {
     if (!item.path) return;
-    const cacheKey = `icon_${item.path}`;
+    const cacheKey = `${ICON_CACHE_PREFIX}${item.path}`;
     if (localStorage.getItem(cacheKey) === null) return;
     localStorage.removeItem(cacheKey);
     void resolveIconUrl(item, SERVER_URL).then(url => setDockIcon(item.id, url));

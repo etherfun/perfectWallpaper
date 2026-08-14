@@ -8,6 +8,8 @@
 
 import { useConfigStore } from '@/stores/config';
 
+import { supportsHourlyForecast } from '../api/base';
+import { PRECIP_TOGGLE_ANIM_MS, PRECIP_TOGGLE_INTERVAL_MS } from '../constants';
 import {
     clearPrecipTimer,
     isAnimatingPrecipToggle,
@@ -36,7 +38,7 @@ export function togglePrecipTemperatureDisplay(): void {
     // 动画结束后重置标志
     setTimeout(() => {
         setIsAnimatingPrecipToggle(false);
-    }, 350);
+    }, PRECIP_TOGGLE_ANIM_MS);
 }
 
 /**
@@ -47,9 +49,11 @@ export function startPrecipTemperatureToggleTimer(): void {
     clearPrecipTimer();
 
     // 仅当有降水行时启动定时器（weather_api_choose 为 1, 4, 5）
-    if ([1, 4, 5].includes(config.weather_api_choose ?? 0)) {
+    if (supportsHourlyForecast(config.weather_api_choose ?? 0)) {
         // 每 20 秒切换一次显示
-        setPrecipTemperatureToggleTimer(window.setInterval(togglePrecipTemperatureDisplay, 20000));
+        setPrecipTemperatureToggleTimer(
+            window.setInterval(togglePrecipTemperatureDisplay, PRECIP_TOGGLE_INTERVAL_MS)
+        );
     }
 }
 

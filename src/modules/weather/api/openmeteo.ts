@@ -1,8 +1,9 @@
 ﻿import { globalT } from '@/utils/i18n';
 
 import { fetch_with_retry } from '../../../utils/tool';
+import { EMPTY_ICON_CODE, EMPTY_TIME_TEXT } from '../constants';
 import type { SevenHourlyData, WeatherAddress, WeatherData } from '../types';
-import { OPEN_METEO_TO_QWEATHER } from '../types';
+import { getOpenMeteoIcon, getPrecipTypeFromCode } from '../utils';
 import { getWeatherUnit } from '../weatherState';
 
 interface OpenMeteoCurrent {
@@ -49,46 +50,7 @@ interface OpenMeteoResponse {
     hourly: OpenMeteoHourly;
 }
 
-/**
- * 鑾峰彇 Open-Meteo 澶╂皵浠ｇ爜瀵瑰簲鐨勫拰椋庡ぉ姘斿浘鏍?
- */
-function getOpenMeteoIcon(weatherCode: number, timeString: string): number {
-    const defaultIcon = { day: 100, night: 150 };
-    const iconMapping = OPEN_METEO_TO_QWEATHER[weatherCode] || defaultIcon;
-
-    let isNight = false;
-    if (timeString) {
-        const time = new Date(timeString);
-        const hour = time.getHours();
-        isNight = hour >= 18 || hour < 6;
-    }
-
-    return isNight ? iconMapping.night : iconMapping.day;
-}
-
-/**
- * 鏍规嵁Open-Meteo澶╂皵浠ｇ爜鎺ㄦ柇闄嶆按绫诲瀷
- */
-function getPrecipTypeFromCode(weatherCode: number): string {
-    const rainCodes = [51, 53, 55, 56, 57, 61, 63, 65, 66, 67, 80, 81, 82, 95, 96, 99];
-    const snowCodes = [71, 73, 75, 77, 85, 86];
-    const freezingRainCodes = [56, 57, 66, 67];
-    const hailCodes = [77];
-
-    if (rainCodes.includes(weatherCode)) {
-        if (freezingRainCodes.includes(weatherCode)) {
-            return globalT('weather_precip_type_freezing_rain');
-        } else if (hailCodes.includes(weatherCode)) {
-            return globalT('weather_precip_type_hail');
-        }
-        return globalT('weather_precip_type_rain');
-    } else if (snowCodes.includes(weatherCode)) {
-        return globalT('weather_precip_type_snow');
-    }
-
-    return globalT('weather_precip_type_none');
-}
-
+/** 风向角 → i18n key（每 45° 一档，共 8 个方向） */
 const DIRECTIONS = [
     'weather_wind_north',
     'weather_wind_northeast',
@@ -100,8 +62,17 @@ const DIRECTIONS = [
     'weather_wind_northwest',
 ];
 
+/** 将风向角度（0~360）转换为方向 i18n key */
+function windDirectionToText(windDirection: number): string {
+    const dirIndex = Math.floor((windDirection + 22.5) / 45) % 8;
+    return globalT(DIRECTIONS[dirIndex] ?? 'weather_no_data');
+}
+
+/** 七小时预报的固定条数 */
+const SEVEN_HOURLY_COUNT = 7;
+
 /**
- * Open-Meteo API 瀹炵幇
+ * Open-Meteo API 实现
  * Case 5: Open-Meteo
  */
 export async function openmeteo(
@@ -125,13 +96,12 @@ export async function openmeteo(
     weather_data.humidity = res.current.relative_humidity_2m;
     weather_data.windSpeed = res.current.wind_speed_10m;
 
-    // 澶╂皵鐘跺喌
+    // 天气状况
     weather_data.weathernow =
         globalT(`weather_openmeteo_${res.current.weather_code}`) || globalT('weather_no_data');
 
-    // 椋庡悜
-    const windDirIndex = Math.floor((res.current.wind_direction_10m + 22.5) / 45) % 8;
-    weather_data.wind = globalT(DIRECTIONS[windDirIndex] ?? 'weather_no_data');
+    // 风向
+    weather_data.wind = windDirectionToText(res.current.wind_direction_10m);
 
     weather_data.precip = res.current.precipitation;
     weather_data.sunrise = res.daily.sunrise[0] ?? '';
@@ -145,7 +115,7 @@ export async function openmeteo(
     weather_data.rain = (res.current as { rain?: string }).rain || '0';
     weather_data.icon = getOpenMeteoIcon(res.current.weather_code, res.current.time).toString();
 
-    // 澶勭悊涓冨皬鏃堕鎶ユ暟鎹?
+    // 处理七小时预报数据
     if (res.hourly && res.hourly.time && res.hourly.time.length > 0) {
         const now = new Date();
         const currentTime =
@@ -157,7 +127,7 @@ export async function openmeteo(
         let currentIndex = res.hourly.time.findIndex(time => time >= currentTime);
         if (currentIndex === -1) currentIndex = 0;
 
-        const next7Hours = Math.min(7, res.hourly.time.length - currentIndex);
+        const next7Hours = Math.min(SEVEN_HOURLY_COUNT, res.hourly.time.length - currentIndex);
 
         const sevenHourlyData: SevenHourlyData = {
             updateTime: res.current.time,
@@ -183,7 +153,7 @@ export async function openmeteo(
             const timeStr = res.hourly.time[idx];
             if (!timeStr) continue;
 
-            sevenHourlyData.Times.push(timeStr.split('T')[1]?.substring(0, 5) ?? '--:--');
+            sevenHourlyData.Times.push(timeStr.split('T')[1]?.substring(0, 5) ?? EMPTY_TIME_TEXT);
 
             const pop = res.hourly.precipitation_probability?.[idx] ?? 0;
             sevenHourlyData.Pops.push(pop !== null ? `${pop}%` : '--');
@@ -197,8 +167,7 @@ export async function openmeteo(
             );
 
             const windDir = res.hourly.wind_direction_10m?.[idx] ?? res.current.wind_direction_10m;
-            const dirIndex = Math.floor((windDir + 22.5) / 45) % 8;
-            sevenHourlyData.Winds.push(globalT(DIRECTIONS[dirIndex] ?? 'weather_no_data'));
+            sevenHourlyData.Winds.push(windDirectionToText(windDir));
             sevenHourlyData.Wind360s.push(windDir.toString());
 
             sevenHourlyData.WindSpeeds.push(
@@ -218,12 +187,12 @@ export async function openmeteo(
             sevenHourlyData.preciptype.push(getPrecipTypeFromCode(weatherCode));
         }
 
-        // 不足7小时用空值填充
-        while (sevenHourlyData.Times.length < 7) {
-            sevenHourlyData.Times.push('--:--');
+        // 不足 7 小时用空值填充
+        while (sevenHourlyData.Times.length < SEVEN_HOURLY_COUNT) {
+            sevenHourlyData.Times.push(EMPTY_TIME_TEXT);
             sevenHourlyData.Pops.push('--');
             sevenHourlyData.Temps.push('--');
-            sevenHourlyData.Icons.push('999');
+            sevenHourlyData.Icons.push(EMPTY_ICON_CODE);
             sevenHourlyData.Texts.push(globalT('weather_no_data'));
             sevenHourlyData.Winds.push('--');
             sevenHourlyData.Wind360s.push('--');

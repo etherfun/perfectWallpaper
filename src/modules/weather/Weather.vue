@@ -272,7 +272,15 @@ import { useConfigStore } from '@/stores/config';
 import { globalT } from '@/utils/i18n';
 
 import { getAirQualityText, generateAlertHTML } from './formatters';
-import { getIconSvg } from './index';
+import {
+    API_ICUFREE,
+    API_OPENMETEO,
+    API_QWEATHER,
+    API_VISUALCROSSING,
+    API_YIKETIANQI,
+    EMPTY_ICON_CODE,
+} from './constants';
+import { getIconSvg, iconSvgPath } from './index';
 import { getWeatherTips } from './tips';
 import { formatTime } from './utils';
 import {
@@ -287,18 +295,18 @@ const config = useConfigStore();
 const ui = weatherUiState;
 
 // 允许列表常量（与原 updaters.ts 保持一致）
-const API_WITH_FEELS = [1, 3, 4, 5];
-const API_WITH_CITY = [1, 2, 3, 4];
-const API_WITH_HUMIDITY = [1, 3, 4, 5];
-const API_WITH_WIND_LEVEL = [1, 2];
-const API_WITH_WIND_SPEED = [1, 3, 4, 5];
-const API_WITH_VISIBILITY = [1];
-const API_WITH_DETAIL = [1, 3, 4, 5];
-const API_WITH_CLOUD = [1, 4, 5];
-const API_WITH_MOON = [1, 4];
-const API_WITH_AIR = [1, 2, 3];
-const API_WITH_PRECIP = [1, 4, 5];
-const API_ICON_FETCH = [1, 4, 5];
+const API_WITH_FEELS = [API_QWEATHER, API_YIKETIANQI, API_VISUALCROSSING, API_OPENMETEO];
+const API_WITH_CITY = [API_QWEATHER, API_ICUFREE, API_YIKETIANQI, API_VISUALCROSSING];
+const API_WITH_HUMIDITY = [API_QWEATHER, API_YIKETIANQI, API_VISUALCROSSING, API_OPENMETEO];
+const API_WITH_WIND_LEVEL = [API_QWEATHER, API_ICUFREE];
+const API_WITH_WIND_SPEED = [API_QWEATHER, API_YIKETIANQI, API_VISUALCROSSING, API_OPENMETEO];
+const API_WITH_VISIBILITY = [API_QWEATHER];
+const API_WITH_DETAIL = [API_QWEATHER, API_YIKETIANQI, API_VISUALCROSSING, API_OPENMETEO];
+const API_WITH_CLOUD = [API_QWEATHER, API_VISUALCROSSING, API_OPENMETEO];
+const API_WITH_MOON = [API_QWEATHER, API_VISUALCROSSING];
+const API_WITH_AIR = [API_QWEATHER, API_ICUFREE, API_YIKETIANQI];
+const API_WITH_PRECIP = [API_QWEATHER, API_VISUALCROSSING, API_OPENMETEO];
+const API_ICON_FETCH = [API_QWEATHER, API_VISUALCROSSING, API_OPENMETEO];
 
 const api = computed(() => config.weather_api_choose ?? 0);
 
@@ -322,12 +330,11 @@ watch(
     async icon => {
         if (!icon) return;
         if (!API_ICON_FETCH.includes(api.value)) return;
-        const path = `src/source/QWeather-Icons/icons/${icon}-fill.svg`;
-        const svg = await getIconSvg(path);
+        const svg = await getIconSvg(iconSvgPath(icon, true));
         if (svg) {
             iconSvg.value = svg;
         } else {
-            iconSvg.value = await getIconSvg('src/source/QWeather-Icons/icons/999-fill.svg');
+            iconSvg.value = await getIconSvg(iconSvgPath(EMPTY_ICON_CODE, true));
         }
     },
     { immediate: true }

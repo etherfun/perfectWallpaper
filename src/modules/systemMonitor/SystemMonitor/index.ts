@@ -29,8 +29,8 @@ import { pollDataOnce, type PollOwner, startPollingLoop, stopPollingLoop } from 
 
 /**
  * System Monitor Module
- * 绯荤粺鐩戞帶妯″潡 - 鏄剧ずCPU銆丟PU銆佸唴瀛樼瓑淇℃伅
- * 甯冨眬浣跨敤棰勭疆HTML缁撴瀯锛孞S鍙礋璐ｆ洿鏂版枃鏈唴瀹?
+ * 系统监控模块 - 显示CPU、GPU、内存等信息
+ * 布局使用预置 HTML 结构，JS 只负责更新文本内容
  */
 export class SystemMonitor implements DisplayOwner, PollOwner, CpuCardHistories, GpuCardHistories, DiskCardHistories {
     // Pre-built DOM elements from index.html
@@ -335,7 +335,7 @@ function clampPct(v: number): number {
     return v;
 }
 
-// 瀵煎嚭鍗曚緥
+// 导出单例
 let instance: SystemMonitor | null = null;
 
 export function initSystemMonitor(): SystemMonitor {

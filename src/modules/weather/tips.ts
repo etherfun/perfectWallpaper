@@ -1,19 +1,53 @@
 ﻿import { globalT } from '@/utils/i18n';
 
-import { WeatherData, WeatherTip } from './types';
+import type { WeatherData, WeatherTip } from './types';
+
+/** 时间段边界（小时） */
+const NIGHT_START_HOUR = 22;
+const NIGHT_END_HOUR = 5;
+const MORNING_START_HOUR = 5;
+const MORNING_END_HOUR = 12;
+const AFTERNOON_END_HOUR = 18;
+const EVENING_END_HOUR = 22;
+
+/** 各类建议的触发阈值 */
+const WIND_STRONG_LEVEL = 6;
+const WIND_LEVEL = 4;
+const AIR_POOR = 150;
+const AIR_MODERATE = 100;
+const UV_EXTREME = 8;
+const UV_HIGH = 6;
+const UV_MODERATE = 3;
+const TEMP_HOT_EXTREME = 35;
+const TEMP_HOT = 30;
+const TEMP_COLD_EXTREME = -10;
+const TEMP_COLD = 0;
+const FEELS_DIFF = 5;
+const HUMIDITY_HIGH = 80;
+const HUMIDITY_LOW = 30;
+const VISIBILITY_POOR = 1;
+const VISIBILITY_LOW = 5;
+const CLOUD_HEAVY = 80;
+const CLOUD_MODERATE = 50;
+const PRECIP_HEAVY = 10;
+const PRECIP_MODERATE = 1;
+
+/** 温度范围初始哨兵值 */
+const TEMP_SENTINEL_MIN = -100;
+const TEMP_SENTINEL_MAX = 100;
 
 /**
- * 鑾峰彇澶╂皵鎻愮ず
- * @param weatherData - 澶╂皵鏁版嵁
- * @returns 澶╂皵鎻愮ず鏂囨湰
+ * 获取天气提示
+ * @param weatherData - 天气数据
+ * @returns 天气提示文本
  */
 export function getWeatherTips(weatherData: WeatherData): string {
     const tips: WeatherTip[] = [];
     const hour = new Date().getHours();
-    const isNight = hour >= 22 || hour < 5;
-    const isMorning = hour >= 5 && hour < 12;
-    const isAfternoon = hour >= 12 && hour < 18;
-    const isEvening = hour >= 18 && hour < 22;
+    const isNight = hour >= NIGHT_START_HOUR || hour < NIGHT_END_HOUR;
+    const isMorning = hour >= MORNING_START_HOUR && hour < MORNING_END_HOUR;
+    const isAfternoon = hour >= MORNING_END_HOUR && hour < AFTERNOON_END_HOUR;
+    const isEvening = hour >= AFTERNOON_END_HOUR && hour < EVENING_END_HOUR;
 
     const weatherText = weatherData.weathernow || '';
     const windScale = parseInt(weatherData.windLv) || 0;
@@ -22,17 +56,15 @@ export function getWeatherTips(weatherData: WeatherData): string {
     const uvIndex = parseInt(weatherData.uvindex) || 0;
     const currentTemp = parseInt(weatherData.temperature) || 0;
     const feelsTemp = parseInt(weatherData.feels) || 0;
-    //const windSpeed = parseFloat(weatherData.windSpeed) || 0;
     const visibility = parseFloat(weatherData.vis) || 0;
     const cloudCover = parseInt(weatherData.cloud) || 0;
-    //const pressure = parseInt(weatherData.pressure) || 0;
     const precipitation = parseFloat(weatherData.precip) || 0;
 
-    // 璁＄畻娓╁害鑼冨洿
-    let maxTemp = -100;
-    let minTemp = 100;
+    // 计算温度范围
+    let maxTemp = TEMP_SENTINEL_MIN;
+    let minTemp = TEMP_SENTINEL_MAX;
 
-    // 浣跨敤24灏忔椂棰勬姤鏁版嵁璁＄畻娓╁害鑼冨洿
+    // 使用 24 小时预报数据计算温度范围
     if (weatherData.sevenHourlyData?.Temps) {
         weatherData.sevenHourlyData.Temps.forEach(tempStr => {
             const temp = parseInt(tempStr);
@@ -43,24 +75,24 @@ export function getWeatherTips(weatherData: WeatherData): string {
         });
     }
 
-    // 濡傛灉鏃犳硶浠?4灏忔椂鏁版嵁鑾峰彇娓╁害锛屼娇鐢ㄥ綋鍓嶆俯搴︿綔涓洪粯璁ゅ€?
-    if (maxTemp === -100 && !isNaN(currentTemp)) {
+   // 如果无法从 24 小时数据获取温度，使用当前温度作为默认值
+    if (maxTemp === TEMP_SENTINEL_MIN && !isNaN(currentTemp)) {
         maxTemp = currentTemp;
         minTemp = currentTemp;
     }
 
-    // 妫€鏌ユ槸鍚︽湁澶╂皵棰勮
+    // 检查是否有天气预警
     const hasWeatherAlert =
         weatherData.weatherAlert &&
         Array.isArray(weatherData.weatherAlert) &&
         weatherData.weatherAlert.length > 0;
 
-    // 浼樺厛绾?0: 澶╂皵棰勮锛堟渶楂樹紭鍏堢骇锛?
+   // 优先级 0: 天气预警（最高优先级）
     if (hasWeatherAlert) {
         tips.push({ priority: 0, text: globalT('weather_tip_alert') });
     }
 
-    // 浼樺厛绾?1: 鏋佺澶╂皵鐘跺喌
+   // 优先级 1: 极端天气状况
     const sunnyText = globalT('weather_condition_sunny');
     const cloudyText = globalT('weather_condition_cloudy');
     const rainText = globalT('weather_condition_rain');
@@ -74,41 +106,41 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 1, text: globalT('weather_tip_snow') });
     }
 
-    if (windScale >= 6) {
+    if (windScale >= WIND_STRONG_LEVEL) {
         tips.push({ priority: 1, text: globalT('weather_tip_windy_strong') });
-    } else if (windScale >= 4) {
+    } else if (windScale >= WIND_LEVEL) {
         tips.push({ priority: 1, text: globalT('weather_tip_windy') });
     }
 
     // 浼樺厛绾?2: 鍋ュ悍鐩稿叧寤鸿
-    if (airQuality > 150) {
+    if (airQuality > AIR_POOR) {
         tips.push({ priority: 2, text: globalT('weather_tip_air_quality_poor') });
-    } else if (airQuality > 100) {
+    } else if (airQuality > AIR_MODERATE) {
         tips.push({ priority: 2, text: globalT('weather_tip_air_quality') });
     }
 
-    if (uvIndex >= 8) {
+    if (uvIndex >= UV_EXTREME) {
         tips.push({ priority: 2, text: globalT('weather_tip_uv_extreme') });
-    } else if (uvIndex >= 6) {
+    } else if (uvIndex >= UV_HIGH) {
         tips.push({ priority: 2, text: globalT('weather_tip_uv_high') });
-    } else if (uvIndex >= 3 && !isNight) {
+    } else if (uvIndex >= UV_MODERATE && !isNight) {
         tips.push({ priority: 2, text: globalT('weather_tip_uv_moderate') });
     }
 
     // 浼樺厛绾?3: 娓╁害鐩稿叧寤鸿
-    if (maxTemp >= 35) {
+    if (maxTemp >= TEMP_HOT_EXTREME) {
         tips.push({ priority: 3, text: globalT('weather_tip_hot_extreme') });
-    } else if (maxTemp >= 30) {
+    } else if (maxTemp >= TEMP_HOT) {
         tips.push({ priority: 3, text: globalT('weather_tip_hot') });
-    } else if (minTemp <= -10) {
+    } else if (minTemp <= TEMP_COLD_EXTREME) {
         tips.push({ priority: 3, text: globalT('weather_tip_cold_extreme') });
-    } else if (minTemp <= 0) {
+    } else if (minTemp <= TEMP_COLD) {
         tips.push({ priority: 3, text: globalT('weather_tip_cold') });
     }
 
     // 浣撴劅娓╁害涓庡疄娴嬫俯搴﹀樊寮?
     const tempDiff = Math.abs(feelsTemp - currentTemp);
-    if (tempDiff >= 5 && !isNight) {
+    if (tempDiff >= FEELS_DIFF && !isNight) {
         if (feelsTemp > currentTemp) {
             tips.push({ priority: 3, text: globalT('weather_tip_feels_hotter') });
         } else {
@@ -117,20 +149,20 @@ export function getWeatherTips(weatherData: WeatherData): string {
     }
 
     // 浼樺厛绾?4: 婀垮害鐩稿叧寤鸿
-    if (humidity >= 80) {
+    if (humidity >= HUMIDITY_HIGH) {
         tips.push({ priority: 4, text: globalT('weather_tip_humidity_high') });
-    } else if (humidity <= 30) {
+    } else if (humidity <= HUMIDITY_LOW) {
         tips.push({ priority: 4, text: globalT('weather_tip_humidity_low') });
     }
 
     // 浼樺厛绾?5: 鑳借搴﹀缓璁?
-    if (visibility > 0 && visibility < 1) {
+    if (visibility > 0 && visibility < VISIBILITY_POOR) {
         tips.push({ priority: 5, text: globalT('weather_tip_visibility_poor') });
-    } else if (visibility >= 1 && visibility < 5) {
+    } else if (visibility >= VISIBILITY_POOR && visibility < VISIBILITY_LOW) {
         tips.push({ priority: 5, text: globalT('weather_tip_visibility_low') });
     }
 
-    // 浼樺厛绾?6: 鏃堕棿鐩稿叧寤鸿
+   // 优先级 6: 时间相关建议
     if ((weatherText.includes(sunnyText) || weatherText.includes(cloudyText)) && !isNight) {
         if (isMorning) {
             tips.push({ priority: 6, text: globalT('weather_tip_morning_sunny') });
@@ -146,25 +178,25 @@ export function getWeatherTips(weatherData: WeatherData): string {
     }
 
     // 浼樺厛绾?7: 閫氱敤寤鸿
-    if (cloudCover >= 80) {
+    if (cloudCover >= CLOUD_HEAVY) {
         tips.push({ priority: 7, text: globalT('weather_tip_cloudy_heavy') });
-    } else if (cloudCover >= 50) {
+    } else if (cloudCover >= CLOUD_MODERATE) {
         tips.push({ priority: 7, text: globalT('weather_tip_cloudy') });
     }
 
-    if (precipitation > 10) {
+    if (precipitation > PRECIP_HEAVY) {
         tips.push({ priority: 7, text: globalT('weather_tip_heavy_precip') });
-    } else if (precipitation > 1) {
+    } else if (precipitation > PRECIP_MODERATE) {
         tips.push({ priority: 7, text: globalT('weather_tip_moderate_precip') });
     }
 
-    // 鎸変紭鍏堢骇鎺掑簭锛屽彇浼樺厛绾ф渶楂樼殑
+    // 按优先级排序，取优先级最高的
     if (tips.length > 0) {
         tips.sort((a, b) => a.priority - b.priority);
         return tips[0]?.text ?? '';
     }
 
-    // 榛樿寤鸿
+    // 默认建议
     if (isMorning) {
         return globalT('weather_tip_default_morning');
     } else if (isAfternoon) {

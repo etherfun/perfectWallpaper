@@ -1,15 +1,15 @@
 /**
- * useWeatherProperties 鈥?Vue 3 composable 鍖呰 weather 灞炴€у鐞?
+ * useWeatherProperties — Vue 3 composable 包装 weather 属性处理
  *
- * Stage 3-2 (Phase 7 鎵规 3-2): 鎶?src/propertyHandlers/weatherPropertyHandler.ts
- * 鐨勫叏閮ㄩ€昏緫杩佺Щ鍒?composable銆備繚鎸佸師 handler 鐨勬墍鏈夊壇浣滅敤锛圕SS 鍙橀噺 /
- * Pinia patch / weather 鍖哄煙 display / autoWeather 瑙﹀彂锛夛紝涓嶅紩鍏ヨ涓哄彉鏇淬€?
+ * Stage 3-2 (Phase 7 批次 3-2): 把 src/propertyHandlers/weatherPropertyHandler.ts
+ * 的全部逻辑迁移到 composable。保持原 handler 的所有副作用（CSS 变量 /
+ * Pinia patch / weather 区域 display / autoWeather 触发），不引入行为变更。
  *
- * 鍏抽敭渚濊禆锛堜繚鐣欙級锛?
- * - `weather_address` 妯″潡椤跺眰鍙橀噺锛堜笉鍦?Pinia锛夆€?鐢ㄤ簬 runtime 鍧愭爣
- * - `autoWeather / generateWeatherTable / weather_init / setWeatherUnitByName` 鈥?
- *   澶╂皵瀛愭ā鍧楃殑鍛戒护寮?API
- * - `debounce / timerManager` 鈥?閫氱敤宸ュ叿
+ * 关键依赖（保留）：
+ * - `weather_address` 模块顶层变量（不在 Pinia）…用于 runtime 坐标
+ * - `autoWeather / generateWeatherTable / weather_init / setWeatherUnitByName` —
+ *   天气子模块的命令式 API
+ * - `debounce / timerManager` — 通用工具
  */
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
@@ -27,146 +27,126 @@ import {
 } from '../weather';
 import { setWeatherUnitByName, weatherUiState } from '../weather/weatherState';
 
+/** WE 属性变化后触发天气刷新的防抖间隔（ms） */
+const REFRESH_DEBOUNCE_MS = 1500;
+
+/** 将 WE 浮点颜色（0~1 空格分隔）转换为 0~255 RGB 数组 */
+function parseWEColor(value: string): number[] {
+    return value.split(' ').map(c => Math.ceil(parseFloat(c) * 255));
+}
+
 /**
- * 澶勭悊澶╂皵鐩稿叧灞炴€?
+ * 同步单个 WE 属性到 Pinia patch 与 config 单例。
+ * patch 在函数末尾批量生效；config 同步赋值保证后续读取立即可见。
+ */
+function syncProperty<T extends object>(
+    prop: { value: unknown } | undefined,
+    key: string,
+    patch: Record<string, unknown>,
+    config: T
+): void {
+    if (!prop) return;
+    const v = prop.value;
+    patch[key] = v;
+    (config as Record<string, unknown>)[key] = v;
+}
+
+/** 选择天气 API（写入 weather_api_choose），非首次加载时防抖刷新数据 */
+function selectWeatherApi<T extends object>(
+    prop: { value: boolean } | undefined,
+    apiId: number,
+    patch: Record<string, unknown>,
+    config: T,
+    FirstLoad: boolean
+): void {
+    if (!prop?.value) return;
+    syncProperty({ value: apiId }, 'weather_api_choose', patch, config);
+    if (!FirstLoad) debounce(weather_init, REFRESH_DEBOUNCE_MS);
+}
+
+/** 更新天气坐标/城市文本到模块状态，非首次加载时防抖刷新数据 */
+function updateLocation(
+    key: 'latitude' | 'longitude' | 'cityname',
+    value: string,
+    patch: Record<string, unknown>,
+    FirstLoad: boolean
+): void {
+    weather_address[key] = value;
+    const patchKey =
+        key === 'latitude'
+            ? 'weather_latitude'
+            : key === 'longitude'
+              ? 'weather_longitude'
+              : 'weather_city_text';
+    patch[patchKey] = value;
+    if (!FirstLoad) debounce(weather_init, REFRESH_DEBOUNCE_MS);
+}
+
+/**
+ * 处理天气相关属性
  *
- * Stage 7-C (Phase 7 鎵规 2-C):
- *   - Pinia 瀛楁鏀圭敤 useConfigStore().$patch({...})銆?
- *   - weather_address.latitude 绛夎繍琛屾椂鍧愭爣浠嶇敤 module 椤跺眰鍙橀噺锛堜笉鍦?Pinia锛夈€?
+ * Stage 7-C (Phase 7 批次 2-C):
+ *   - Pinia 字段改用 useConfigStore().$patch({...})。
+ *   - weather_address.latitude 等运行时坐标仍用 module 顶层变量（不在 Pinia）。
  */
 export function useWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
     const config = store;
     const patch: Record<string, unknown> = {};
 
-    if (properties.getcitykey_qweather) {
-        const v = properties.getcitykey_qweather.value;
-        patch.city_key = v;
-        config.city_key = v; // sync
-    }
-
-    if (properties.getAPIHOST_qweather) {
-        const v = properties.getAPIHOST_qweather.value;
-        patch.api_host = v;
-        config.api_host = v; // sync
-    }
-
-    if (properties.getcityappid_tianqiapi) {
-        const v = properties.getcityappid_tianqiapi.value;
-        patch.weather_app_id = v;
-        config.weather_app_id = v; // sync
-    }
-
-    if (properties.getcityappsecret_tianqiapi) {
-        const v = properties.getcityappsecret_tianqiapi.value;
-        patch.weather_app_secret = v;
-        config.weather_app_secret = v; // sync
-    }
-
-    if (properties.getcitykey_visualcrossing) {
-        const v = properties.getcitykey_visualcrossing.value;
-        patch.visual_crossing_key = v;
-        config.visual_crossing_key = v; // sync
-    }
-
-    if (properties.weather_updata) {
-        const v = properties.weather_updata.value;
-        patch.weather_updata = v;
-        config.weather_updata = v; // sync
-    }
-
-    if (properties.weather_lang) {
-        const v = properties.weather_lang.value;
-        patch.weather_lang = v;
-        config.weather_lang = v; // sync
-    }
+    // 各 API 的密钥 / 主机配置
+    syncProperty(properties.getcitykey_qweather, 'city_key', patch, config);
+    syncProperty(properties.getAPIHOST_qweather, 'api_host', patch, config);
+    syncProperty(properties.getcityappid_tianqiapi, 'weather_app_id', patch, config);
+    syncProperty(properties.getcityappsecret_tianqiapi, 'weather_app_secret', patch, config);
+    syncProperty(properties.getcitykey_visualcrossing, 'visual_crossing_key', patch, config);
+    syncProperty(properties.weather_updata, 'weather_updata', patch, config);
+    syncProperty(properties.weather_lang, 'weather_lang', patch, config);
+    syncProperty(properties.qweatherapi_paymode, 'qweather_api_paymode', patch, config);
 
     if (properties.weather_unit) {
         const unit = properties.weather_unit.value;
-        patch.weather_unit = unit;
-        config.weather_unit = unit; // sync
+        syncProperty({ value: unit }, 'weather_unit', patch, config);
         setWeatherUnitByName(unit || 'metric');
     }
 
     if (properties.weather_daliy_tip) {
         const v = properties.weather_daliy_tip.value;
-        patch.weather_daily_tip = v;
-        config.weather_daily_tip = v; // sync
+        syncProperty({ value: v }, 'weather_daily_tip', patch, config);
         if (!FirstLoad) {
             generateWeatherTable();
         }
     }
 
+    // 坐标 / 城市文本
     if (properties.weather_lat_latitude) {
-        weather_address.latitude = String(properties.weather_lat_latitude.value);
-        patch.weather_latitude = String(properties.weather_lat_latitude.value);
-        if (!FirstLoad) debounce(weather_init, 1500);
+        updateLocation('latitude', String(properties.weather_lat_latitude.value), patch, FirstLoad);
     }
-
     if (properties.weather_lat_longitude) {
-        weather_address.longitude = String(properties.weather_lat_longitude.value);
-        patch.weather_longitude = String(properties.weather_lat_longitude.value);
-        if (!FirstLoad) debounce(weather_init, 1500);
+        updateLocation(
+            'longitude',
+            String(properties.weather_lat_longitude.value),
+            patch,
+            FirstLoad
+        );
     }
-
     if (properties.weather_CityText) {
-        weather_address.cityname = properties.weather_CityText.value;
-        patch.weather_city_text = properties.weather_CityText.value;
-        if (!FirstLoad) debounce(weather_init, 1500);
+        updateLocation('cityname', properties.weather_CityText.value, patch, FirstLoad);
     }
 
-    if (properties.freeapi) {
-        if (properties.freeapi.value) {
-            patch.weather_api_choose = 2;
-            config.weather_api_choose = 2; // sync
-            if (!FirstLoad) debounce(weather_init, 1500);
-        }
-    }
-
-    if (properties.qweatherapi) {
-        if (properties.qweatherapi.value) {
-            patch.weather_api_choose = 1;
-            config.weather_api_choose = 1; // sync
-            if (!FirstLoad) debounce(weather_init, 1500);
-        }
-    }
-
-    if (properties.qweatherapi_paymode) {
-        const v = properties.qweatherapi_paymode.value;
-        patch.qweather_api_paymode = v;
-        config.qweather_api_paymode = v; // sync
-    }
-
-    if (properties.tianqiapi) {
-        if (properties.tianqiapi.value) {
-            patch.weather_api_choose = 3;
-            config.weather_api_choose = 3; // sync
-            if (!FirstLoad) debounce(weather_init, 1500);
-        }
-    }
-
-    if (properties.visualcrossingapi) {
-        if (properties.visualcrossingapi.value) {
-            patch.weather_api_choose = 4;
-            config.weather_api_choose = 4; // sync
-            if (!FirstLoad) debounce(weather_init, 1500);
-        }
-    }
-
-    if (properties.open_meteoapi) {
-        if (properties.open_meteoapi.value) {
-            patch.weather_api_choose = 5;
-            config.weather_api_choose = 5; // sync
-            if (!FirstLoad) debounce(weather_init, 1500);
-        }
-    }
+    // API 选择
+    selectWeatherApi(properties.freeapi, 2, patch, config, FirstLoad);
+    selectWeatherApi(properties.qweatherapi, 1, patch, config, FirstLoad);
+    selectWeatherApi(properties.tianqiapi, 3, patch, config, FirstLoad);
+    selectWeatherApi(properties.visualcrossingapi, 4, patch, config, FirstLoad);
+    selectWeatherApi(properties.open_meteoapi, 5, patch, config, FirstLoad);
 
     // Apply batch first so weather_show dispatch reads fresh values if needed
     if (Object.keys(patch).length > 0) {
         store.$patch(patch);
     }
 
-    // 鏄惁澶╂皵
+    // 是否天气
     if (properties.weather_show) {
         timerManager.remove('updataWeather');
 
@@ -176,11 +156,9 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         }
     }
 
-    // 澶╂皵棰滆壊
+    // 天气颜色（原 handler 为立即单独 $patch，保持时序一致）
     if (properties.weather_Color) {
-        const c = properties.weather_Color.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseWEColor(properties.weather_Color.value);
         elements.body.style.setProperty('--weather-color', `rgb(${c})`);
         store.$patch({ weather_color: c as [number, number, number] });
     }
@@ -194,9 +172,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (properties.weather_blurcolor) {
-        const c = properties.weather_blurcolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseWEColor(properties.weather_blurcolor.value);
         elements.body.style.setProperty('--weather-blur-color', c.join(', '));
         store.$patch({ weather_blurcolor: c as [number, number, number] });
     }
@@ -210,9 +186,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (properties.weather_yakelicolor) {
-        const c = properties.weather_yakelicolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseWEColor(properties.weather_yakelicolor.value);
         elements.body.style.setProperty('--weather-yakeli-color', c.join(', '));
         store.$patch({ weather_yakelic_color: c as [number, number, number] });
     }
@@ -228,12 +202,12 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.weather_bluryakeli) {
         elements.body.style.setProperty(
             '--weather-blur-yakeli',
-            String(properties.weather_bluryakeli.value) + 'px'
+            `${properties.weather_bluryakeli.value}px`
         );
         store.$patch({ weather_bluryakeli: properties.weather_bluryakeli.value });
     }
 
-    // 澶╂皵閫忔槑搴?
+    // 天气透明度
     if (properties.weather_timetransparency) {
         elements.body.style.setProperty(
             '--weather-opacity',
@@ -242,7 +216,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         store.$patch({ weather_timetransparency: properties.weather_timetransparency.value });
     }
 
-    // 澶╂皵鍦嗚
+    // 天气圆角
     if (properties.weather_roundedcorners) {
         elements.body.style.setProperty(
             '--weather-roundedcorners',
@@ -250,8 +224,8 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         );
         store.$patch({ weather_roundedcorners: properties.weather_roundedcorners.value });
 
-        // 鐩戝惉澶╂皵瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--weather-height CSS 鍙橀噺銆?
-        // weather 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
+        // 监听天气容器尺寸变化，同步 --weather-height CSS 变量。
+        // weather 容器由 Vue mount 后才存在，通过 deferredScheduler 延迟挂载 observer。
         registerDeferred('weather:height-observer', () => {
             const weather = elements.weather.weather;
             if (!weather) return;
@@ -259,7 +233,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
             const updateHeight = (): void => {
                 const height = weather.getBoundingClientRect().height;
                 if (!height) return;
-                elements.body.style.setProperty('--weather-height', height + 'px');
+                elements.body.style.setProperty('--weather-height', `${height}px`);
             };
 
             updateHeight();
@@ -269,7 +243,7 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         });
     }
 
-    // 澶╂皵澶у皬
+    // 天气大小
     if (properties.weather_size) {
         const s = properties.weather_size.value;
         elements.body.style.setProperty(
@@ -280,16 +254,19 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (properties.weather_showwidth) {
-        if (properties.weather_showwidth.value === 0) {
+        const v = properties.weather_showwidth.value;
+        if (v === 0) {
             elements.body.style.setProperty('--weather-show-width', 'auto');
         } else {
-            const s = properties.weather_showwidth.value / 100;
-            elements.body.style.setProperty('--weather-show-width', window.innerWidth * s + 'px');
+            elements.body.style.setProperty(
+                '--weather-show-width',
+                `${window.innerWidth * (v / 100)}px`
+            );
         }
-        store.$patch({ weather_showwidth: properties.weather_showwidth.value });
+        store.$patch({ weather_showwidth: v });
     }
 
-    // 澶╂皵浣嶇疆
+    // 天气位置
     if (properties.weatherX) {
         elements.body.style.setProperty('--weather-left', `${properties.weatherX.value}%`);
         store.$patch({ weather_x: properties.weatherX.value });

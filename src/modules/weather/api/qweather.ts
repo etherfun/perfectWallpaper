@@ -14,10 +14,10 @@ import type {
     QWeatherNowResponse,
 } from './types';
 
-// 鍜岄澶╂皵 API 瀹炵幇
+// 和风天气 API 实现
 // Case 1: qweatherapi
 
-// 椋庡悜鏄犲皠锛欰PI杩斿洖鍊?-> i18n key
+// 风向映射：API 返回值 -> i18n key
 const WIND_DIR_MAP: Record<string, string> = {
     N: 'weather_wind_north',
     NNE: 'weather_wind_north',
@@ -38,7 +38,7 @@ const WIND_DIR_MAP: Record<string, string> = {
 };
 
 /**
- * 鑾峰彇鍩庡競缂栧彿
+ * 获取城市编号
  */
 export async function qweatherLookupCity(weather_address: WeatherAddress): Promise<WeatherAddress> {
     const response = await fetch_with_retry(
@@ -66,7 +66,7 @@ export async function qweatherLookupCity(weather_address: WeatherAddress): Promi
 }
 
 /**
- * 鑾峰彇瀹炴椂澶╂皵
+ * 获取实时天气
  */
 async function fetchNowWeather(
     weather_address: WeatherAddress,
@@ -100,7 +100,7 @@ async function fetchNowWeather(
 }
 
 /**
- * 鑾峰彇绌烘皵璐ㄩ噺
+ * 获取空气质量
  */
 async function fetchAirQuality(
     weather_address: WeatherAddress,
@@ -153,7 +153,7 @@ async function fetchAirQuality(
 }
 
 /**
- * 鑾峰彇澶╂皵棰勮
+ * 获取天气预警
  */
 async function fetchWeatherAlert(
     weather_address: WeatherAddress,
@@ -213,7 +213,7 @@ async function fetchWeatherAlert(
 }
 
 /**
- * 鑾峰彇24灏忔椂棰勬姤
+ * 获取24小时预报
  */
 async function fetch24hForecast(
     weather_address: WeatherAddress,
@@ -262,7 +262,7 @@ async function fetch24hForecast(
 }
 
 /**
- * 鑾峰彇3澶╅鎶?
+ * 获取 3 天预报
  */
 async function fetch3dForecast(
     weather_address: WeatherAddress,
@@ -306,7 +306,7 @@ function checkQuota(): boolean {
 }
 
 /**
- * 鍜岄澶╂皵API涓诲嚱鏁?
+ * 和风天气 API 主函数
  */
 export async function qweather(
     weather_address: WeatherAddress,
@@ -316,7 +316,7 @@ export async function qweather(
         throw new Error(globalT('error_get_weather_data_over_usage'));
     }
 
-    // 濡傛灉娌℃湁鍩庡競缂栧彿锛屽厛鏌ヨ
+    // 如果没有城市编号，先查询
     if (
         weather_address.citynumber === '' ||
         weather_address.cityname !== weather_address.checkcity
@@ -324,10 +324,10 @@ export async function qweather(
         await qweatherLookupCity(weather_address);
     }
 
-    // 棣栧厛鑾峰彇蹇呰鐨勬暟鎹紙nowWeather 鏄繀闇€鐨勶紝鍏朵粬鍙互骞惰锛?
+   // 首先获取必要的数据（nowWeather 是必需的，其他可以并行）
     await fetchNowWeather(weather_address, weather_data);
 
-    // 骞惰鑾峰彇鍙€夋暟鎹?
+   // 并行获取可选数据
     if (!checkQuota()) {
         await Promise.all([
             fetchAirQuality(weather_address, weather_data).catch(() => {

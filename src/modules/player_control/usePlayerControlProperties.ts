@@ -2,7 +2,7 @@
  * usePlayerControlProperties 鈥?Vue 3 composable wrapper for player control
  * properties (show, color, position, size, thumbnail, animation).
  *
- * Stage 3-3 (Phase 7 鎵规 3-3): wrap src/propertyHandlers/playerControlPropertyHandler.ts
+ * Stage 3-3 (Phase 7 批次 3-3): wrap src/propertyHandlers/playerControlPropertyHandler.ts
  * as a composable. Module-level state (player_control_show / thumbnail_size_value)
  * preserved as local closure variables since they reflect "current state of
  * the player control DOM" and are not surfaced to consumers.
@@ -15,18 +15,23 @@ import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 import { logInitComplete } from '@/utils/helpers';
 
+import {
+    DEFAULT_THUMBNAIL_ROTATION_SEC,
+    THUMBNAIL_RTL_SWAP_DELAY_MS,
+} from './constants';
+
 /**
- * 妯″潡椤跺眰 DOM 寮曠敤缂撳瓨銆?
+ * 模块顶层 DOM 引用缓存。
  *
- * Phase 8+ 鎶?widget 娓叉煋浜ょ粰 Vue锛屽洜姝?#player_control 鍦?module-load
- * 鏃惰繕涓嶅瓨鍦紙querySelector 杩斿洖 null锛夈€備絾 usePlayerControlProperties 涓?
- * 鏈?30+ 澶?`player_control.style.xxx = ...` 杩欑鐩存帴灞炴€ц祴鍊煎啓娉曪紝
- * 鏃犳硶鍦ㄤ笉鐮村潖璋冪敤鐐圭殑鎯呭喌涓嬫妸 `const player_control` 鏀规垚鍑芥暟 getter銆?
+ * Phase 8+ 把 widget 渲染交给 Vue，因此 #player_control 在 module-load
+ * 时还不存在（querySelector 返回 null）。但 usePlayerControlProperties 中
+ * 有 30+ 处 `player_control.style.xxx = ...` 这种直接属性赋值写法，
+ * 无法在不破坏调用点的情况下把 `const player_control` 改成函数 getter。
  *
- * 瑙ｅ喅鏂规锛氭妸 const 鏀规垚 let锛?*鍒濆涓?null**锛屽苟鍦?main.ts 鐨?
- * `app.mount(root)` 涔嬪悗璋冪敤 `refreshPlayerControlRefs()` 閲嶆柊鏌ヨ DOM銆?
- * 璋冪敤鐐逛繚鎸佸師鏍凤紙`player_control.style.xxx`锛夛紝绫诲瀷鏂█涓洪潪 null 璁?
- * TypeScript 涓嶆姤閿欙紝杩愯鏃剁敱 `app.mount` 涔嬪悗鐨?refresh 淇濊瘉寮曠敤鏈夋晥銆?
+ * 解决方案：把 const 改成 let，**初始化为 null**，并在 main.ts 的
+ * `app.mount(root)` 之后调用 `refreshPlayerControlRefs()` 重新查询 DOM。
+ * 调用点保持原样（`player_control.style.xxx`），类型断言为非 null 记号
+ * TypeScript 不报错，运行时由 `app.mount` 之后的 refresh 保证引用有效。
  */
 export let player_control: HTMLElement = null as unknown as HTMLElement;
 export let player_control_thumbnail: HTMLImageElement =
@@ -39,8 +44,8 @@ export let player_control_artist: HTMLElement = null as unknown as HTMLElement;
 export let player_control_albumTitle: HTMLElement = null as unknown as HTMLElement;
 
 /**
- * 鍦?Vue mount 瀹屾垚鍚庯紙#player_control 瀹瑰櫒宸插瓨鍦級璋冪敤锛岄噸鏂版煡璇?
- * DOM 骞跺埛鏂版ā鍧楅《灞?let 寮曠敤锛岀劧鍚庨噸鏀炬墍鏈夊緟澶勭悊鐨勬牱寮忋€?
+ * 在 Vue mount 完成后（#player_control 容器已存在）调用，重新查询
+ * DOM 并刷新模块顶层 let 引用，然后重放所有待处理的样式。
  */
 export function refreshPlayerControlRefs(): void {
     player_control = elements.playerControl.container;
@@ -51,14 +56,14 @@ export function refreshPlayerControlRefs(): void {
     player_control_artist = elements.playerControl.artist;
     player_control_albumTitle = elements.playerControl.albumTitle;
 
-    // 閲嶆斁涔嬪墠鍥犲厓绱犱笉瀛樺湪鑰屾湭鐢熸晥鐨勬牱寮?
+   // 重放之前因元素不存在而未生效的样式
     applyPendingPlayerStyles();
 
     // 閲嶆斁鍏堜簬 Vue mount 鍒拌揪鐨勫獟浣撲簨浠?display:flex
     applyPendingMediaDisplay();
 }
 
-/** 寰呴噸鏀剧殑 player 鍐呰仈鏍峰紡鍊硷紙鍦ㄥ厓绱犱笉瀛樺湪鏃舵殏瀛橈級 */
+/** 待重放的 player 内联样式值（在元素不存在时暂存） */
 let pendingVisibility: string | null = null;
 let pendingDisplay: string | null = null;
 let pendingTop: string | null = null;
@@ -87,12 +92,12 @@ function applyPendingPlayerStyles(): void {
 /**
  * 閲嶆斁濯掍綋闆嗘垚鍙兘閿欒繃鐨?display:flex銆?
  *
- * 鏃跺簭闂锛歐E 娉ㄥ叆灞炴€?鈫?usePlayerControlProperties 璁?display:none锛團irstLoad锛?
+ * 时序问题：WE 注入属性 → usePlayerControlProperties 设 display:none，FirstLoad
  * 鈫?WE 鎺ㄩ€佸獟浣撲簨浠?鈫?wallpaperMediaPropertiesListener 鎯宠 display:flex
- * 浣?#player_control 杩樹笉瀛樺湪锛圴ue 鏈?mount锛夆啋 涓㈠け銆?
+ * 故 #player_control 还不存在（Vue 未 mount）→ 丢失。
  *
- * 鏇夸唬鏂规锛歮ediaPropertiesListener 鍦?player_control 涓?null 鏃舵妸瀹屾暣浜嬩欢
- * 鏆傚瓨鍒?pendingMediaEvent锛屾湰鍑芥暟鍦?refresh 鏃剁洿鎺ラ噸鏀俱€?
+ * 替代方案：mediaPropertiesListener 在 player_control 为 null 时把完整事件
+ * 暂存到 pendingMediaEvent，本函数在 refresh 时直接重放。
  */
 import { clearPendingMediaEvent,pendingMediaEvent } from '@/modules/player_control/domRefs';
 
@@ -305,10 +310,10 @@ export function usePlayerControlProperties(
         patch.player_control_roundedcorners = properties.player_control_roundedcorners.value;
         const rounded = properties.player_control_roundedcorners.value;
 
-        // 瀹瑰櫒鐢?PlayerControl.vue 鍦?Vue mount 涔嬪悗鍒涘缓锛宱bserver 蹇呴』寤跺悗鎸傝浇銆?
-        // closure 鍐呴€氳繃 refresh 鍚庣殑 let 寮曠敤鎷挎渶鏂拌妭鐐广€?
+       // 容器由 PlayerControl.vue 在 Vue mount 之后创建，observer 必须延迟挂载。
+       // closure 内通过 refresh 后的 let 引用拿最新节点。
         registerDeferred('playerControl:roundedcorners-observer', () => {
-            // 妯″潡椤跺眰 let 寮曠敤鍦?main.ts 鐨?app.mount 涔嬪悗鐢?
+           // 模块顶层 let 引用在 main.ts 的 app.mount 之后由
             // refreshPlayerControlRefs() 閲嶆柊鎸囧悜鐪熷疄鑺傜偣銆?
             const container = player_control;
             const thumbnail = player_control_thumbnail;
@@ -351,19 +356,19 @@ export function usePlayerControlProperties(
                 player_control_thumbnail.style.animation = '';
                 player_control_thumbnailWrap.classList.remove('circular');
             } else {
-                player_control_thumbnail.style.animation = `spin ${store.player_control_thumbnail_rotation_speed ?? 10}s linear infinite`;
+                player_control_thumbnail.style.animation = `spin ${store.player_control_thumbnail_rotation_speed ?? DEFAULT_THUMBNAIL_ROTATION_SEC}s linear infinite`;
                 player_control_thumbnailWrap.classList.add('circular');
             }
         }
     }
 
     if (properties.player_control_thumbnail_rotation_speed) {
-        const v = 10 - properties.player_control_thumbnail_rotation_speed.value;
+        const v = DEFAULT_THUMBNAIL_ROTATION_SEC - properties.player_control_thumbnail_rotation_speed.value;
         patch.player_control_thumbnail_rotation_speed = v;
         config.player_control_thumbnail_rotation_speed = v; // sync
         if (player_control_thumbnail?.style.animation) {
             player_control_thumbnail.style.animationDuration =
-                String(store.player_control_thumbnail_rotation_speed ?? 10) + 's';
+                String(store.player_control_thumbnail_rotation_speed ?? DEFAULT_THUMBNAIL_ROTATION_SEC) + 's';
         }
     }
 
@@ -413,18 +418,18 @@ export function usePlayerControlProperties(
         config.player_control_thumbnailrorl = v; // sync
         if (v === true) {
             setTimeout(function () {
-                // 鏄惧紡 class 鏍囪缂╃暐鍥惧湪鍙充晶锛岃 CSS 鏍规嵁 class 鍐冲畾锛?
-                //   1. flex-direction锛氱缉鐣ュ浘鍥哄畾鍦?DOM 椤哄簭鏈綅锛坮ow-reverse 浠呭垏鎹?paint 椤哄簭锛?
-                //   2. 鍥炬爣 margin 鏂瑰悜锛氭爣棰樻枃瀛楀湪 icon 宸︿晶 鈫?margin-left
-                //   3. info 鏂囧瓧瀵归綈锛歠lex-end 璁╂枃瀛楄创鍚戠缉鐣ュ浘渚?
-                // 涓嶅啀鐢ㄦā绯婄殑 .rtl 瑙﹀彂 row-reverse 鍚庤繕瑕侀厤鍚?inline className 浜掓崲銆?
+                // 显示 class 标记缩略图在右侧，让 CSS 根据 class 决定：
+                //   1. flex-direction：缩略图固定在 DOM 顺序末尾（row-reverse 仅切换 paint 顺序）
+                //   2. 图标 margin 方向：标题文字在 icon 左侧 → margin-left
+                //   3. info 文字对齐：flex-end 让文字贴向缩略图侧
+                // 不再用模糊的 .rtl 触发 row-reverse 后还要配合 inline className 互换。
                 player_control.classList.add('thumbnail-on-right');
                 player_control.classList.remove('thumbnail-on-left');
                 const rawpadding = window.getComputedStyle(player_control_background).paddingRight;
                 player_control_background.style.paddingRight = '';
                 player_control_background.style.paddingLeft = rawpadding;
                 player_control_info.style.alignItems = 'flex-end';
-            }, 2500);
+            }, THUMBNAIL_RTL_SWAP_DELAY_MS);
         } else {
             if (FirstLoad === false) {
                 player_control.classList.add('thumbnail-on-left');

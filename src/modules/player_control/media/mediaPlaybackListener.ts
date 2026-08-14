@@ -18,6 +18,7 @@ const runtimeStore = useRuntimeStore();
 import { resumeBuiltInPlayer, setExternalMediaActive } from '@/modules/core/video';
 import { debugLogger } from '@/utils/logger';
 
+import { DEFAULT_THUMBNAIL_ROTATION_SEC } from '../constants';
 import { player_control_thumbnail, player_control_thumbnailWrap } from '../domRefs';
 import {
     applyPlayerStateUI,
@@ -44,7 +45,7 @@ export function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void 
     const playerControlShow = appConfig.player_control_show;
     const playerControlAutohide = (appConfig as unknown as { player_control_autohide?: boolean }).player_control_autohide === true;
     const playerControlThumbnailRotation = appConfig.player_control_thumbnail_rotation;
-    const playerControlThumbnailRotationSpeed = appConfig.player_control_thumbnail_rotation_speed ?? 10;
+    const playerControlThumbnailRotationSpeed = appConfig.player_control_thumbnail_rotation_speed ?? DEFAULT_THUMBNAIL_ROTATION_SEC;
 
     if (playerControlShow) {
         applyVisibility(event.state, playerControlAutohide);

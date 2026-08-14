@@ -1,8 +1,18 @@
 import { clearIconCache as clearIconCacheApi, fetchIcon as fetchIconApi } from '@/modules/systemMonitor';
 import { debugLogger } from '@/utils/logger';
 
-import { DEFAULT_ICON, SERVER_URL } from './constants';
+import { DEFAULT_ICON, ICON_CACHE_PREFIX, SERVER_URL } from './constants';
 import type { DockItem } from './types';
+
+/** data:/http 前缀的图标可被 <img> 直接使用，无需解析 */
+export function isDirectIconUrl(icon: string): boolean {
+    return icon.startsWith('data:') || icon.startsWith('http');
+}
+
+/** 图标缓存键：域名或路径 */
+function iconCacheKey(key: string): string {
+    return `${ICON_CACHE_PREFIX}${key}`;
+}
 
 export function getDefaultIcon(): string {
     return DEFAULT_ICON;
@@ -50,8 +60,7 @@ function resolveUrlIcon(url: string): Promise<string> {
     return new Promise(resolve => {
         try {
             const urlObj = new URL(url);
-            const domain = urlObj.hostname;
-            const cacheKey = `icon_${domain}`;
+            const cacheKey = iconCacheKey(urlObj.hostname);
 
             const cached = localStorage.getItem(cacheKey);
             if (cached) {
@@ -87,7 +96,7 @@ function resolveUrlIcon(url: string): Promise<string> {
 
 /** 解析文件/应用类型图标（localStorage 缓存 → 服务端提取） */
 function resolvePathIcon(path: string, serverUrl: string): Promise<string> {
-    const cacheKey = `icon_${path}`;
+    const cacheKey = iconCacheKey(path);
 
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
@@ -111,8 +120,7 @@ function resolvePathIcon(path: string, serverUrl: string): Promise<string> {
 function loadUrlIcon(url: string, imgEl: HTMLImageElement): void {
     try {
         const urlObj = new URL(url);
-        const domain = urlObj.hostname;
-        const cacheKey = `icon_${domain}`;
+        const cacheKey = iconCacheKey(urlObj.hostname);
 
         const cached = localStorage.getItem(cacheKey);
         if (cached) {
@@ -146,7 +154,7 @@ function loadUrlIcon(url: string, imgEl: HTMLImageElement): void {
 }
 
 function loadPathIcon(path: string, imgEl: HTMLImageElement, serverUrl: string): void {
-    const cacheKey = `icon_${path}`;
+    const cacheKey = iconCacheKey(path);
 
     const cached = localStorage.getItem(cacheKey);
     if (cached) {
@@ -188,14 +196,18 @@ function cacheIcon(key: string, icon: string): void {
     }
 }
 
+function iconCacheKeys(): string[] {
+    return Object.keys(localStorage).filter(k => k.startsWith(ICON_CACHE_PREFIX));
+}
+
 export function cleanupIconCache(): void {
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('icon_'));
+    const keys = iconCacheKeys();
     const toRemove = keys.slice(0, Math.floor(keys.length / 2));
     toRemove.forEach(k => localStorage.removeItem(k));
 }
 
 export async function clearAllIconCache(serverUrl: string = SERVER_URL): Promise<void> {
-    const keys = Object.keys(localStorage).filter(k => k.startsWith('icon_'));
+    const keys = iconCacheKeys();
     keys.forEach(k => localStorage.removeItem(k));
 
     const result = await clearIconCacheApi(serverUrl);

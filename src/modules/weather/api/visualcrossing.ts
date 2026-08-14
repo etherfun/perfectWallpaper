@@ -88,7 +88,7 @@ const MOON_PHASE_KEYS = [
 ];
 
 /**
- * 鑾峰彇鎺ヤ笅鏉?灏忔椂鐨勬暟鎹?
+ * 获取接下来 7 小时的数据
  */
 function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
     const now = new Date();
@@ -113,7 +113,7 @@ function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
 }
 
 /**
- * Visual Crossing API 瀹炵幇
+ * Visual Crossing API 实现
  * Case 4: Visual Crossing
  */
 export async function visualcrossing(
@@ -174,19 +174,19 @@ export async function visualcrossing(
         isNightTime(new Date().toTimeString().split(' ')[0] ?? '', today.sunrise, today.sunset)
     ).toString();
 
-    // 椋庡悜
+    // 风向
     {
         const index = Math.floor((resNow.winddir + 22.5) / 45) % 8;
         weather_data.wind = globalT(DIRECTIONS[index] ?? 'weather_no_data');
     }
 
-    // 鏈堢浉
+    // 月相
     {
         const index = Math.floor((today.moonphase + 0.0625) * 8) % 8;
         weather_data.moonphase = globalT(MOON_PHASE_KEYS[index] ?? 'weather_no_data');
     }
 
-    // 涓冨皬鏃堕鎶?
+   // 七小时预报
     weather_data.sevenHourlyData.Times = resHourly.map(hour => hour.datetime.slice(0, 5));
     weather_data.sevenHourlyData.Clouds = resHourly.map(hour => hour.cloudcover);
     weather_data.sevenHourlyData.Dews = resHourly.map(hour => hour.dew);

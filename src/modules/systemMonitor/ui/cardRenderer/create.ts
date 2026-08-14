@@ -6,8 +6,25 @@
 
 import type { SystemMonitorCardDomRefs } from '../../types';
 
-const CARD_CLASS = 'sysmon-card';
-const CONTAINER_CLASS = 'sysmon-cards';
+/** 卡片元素类名前缀（update.ts 也复用） */
+export const CARD_CLASS = 'sysmon-card';
+/** 卡片容器类名 */
+export const CONTAINER_CLASS = 'sysmon-cards';
+
+/** 卡片内部结构模板（label / value / extra / meta / sparks） */
+function cardInnerHTML(): string {
+    return `
+        <div class="${CARD_CLASS}__label-row">
+            <span class="${CARD_CLASS}__label"></span>
+        </div>
+        <div class="${CARD_CLASS}__value-row">
+            <span class="${CARD_CLASS}__value"></span>
+            <span class="${CARD_CLASS}__extra"></span>
+            <div class="${CARD_CLASS}__meta"></div>
+        </div>
+        <div class="${CARD_CLASS}__sparks"></div>
+    `;
+}
 
 /**
  * Build the card-mode DOM inside the system-monitor parent element.
@@ -42,17 +59,7 @@ function createCard(metric: string): HTMLElement {
     const card = document.createElement('div');
     card.className = `${CARD_CLASS} ${CARD_CLASS}--${metric}`;
     card.dataset.metric = metric;
-    card.innerHTML = `
-        <div class="${CARD_CLASS}__label-row">
-            <span class="${CARD_CLASS}__label"></span>
-        </div>
-        <div class="${CARD_CLASS}__value-row">
-            <span class="${CARD_CLASS}__value"></span>
-            <span class="${CARD_CLASS}__extra"></span>
-            <div class="${CARD_CLASS}__meta"></div>
-        </div>
-        <div class="${CARD_CLASS}__sparks"></div>
-    `;
+    card.innerHTML = cardInnerHTML();
     return card;
 }
 
@@ -62,17 +69,7 @@ export function createDiskCard(index: number): HTMLElement {
     card.className = `${CARD_CLASS} ${CARD_CLASS}--disk`;
     card.dataset.metric = `disk${index}`;
     card.dataset.diskIndex = String(index);
-    card.innerHTML = `
-        <div class="${CARD_CLASS}__label-row">
-            <span class="${CARD_CLASS}__label"></span>
-        </div>
-        <div class="${CARD_CLASS}__value-row">
-            <span class="${CARD_CLASS}__value"></span>
-            <span class="${CARD_CLASS}__extra"></span>
-            <div class="${CARD_CLASS}__meta"></div>
-        </div>
-        <div class="${CARD_CLASS}__sparks"></div>
-    `;
+    card.innerHTML = cardInnerHTML();
     return card;
 }
 

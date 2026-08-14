@@ -3,6 +3,7 @@
  * Common interface for all weather API implementations
  */
 
+import { AIR_QUALITY_APIS, HOURLY_FORECAST_APIS } from '../constants';
 import type { WeatherAddress, WeatherData } from '../types';
 
 /**
@@ -22,12 +23,12 @@ export interface WeatherAPIHandler {
  * Check if an API supports hourly forecast data
  */
 export function supportsHourlyForecast(apiNumber: number): boolean {
-    return [1, 4, 5].includes(apiNumber);
+    return HOURLY_FORECAST_APIS.includes(apiNumber);
 }
 
 /**
  * Check if an API supports air quality data
  */
 export function supportsAirQuality(apiNumber: number): boolean {
-    return [1, 3].includes(apiNumber);
+    return AIR_QUALITY_APIS.includes(apiNumber);
 }

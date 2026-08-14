@@ -1,15 +1,17 @@
 ﻿/**
- * 涓冨皬鏃堕鎶?Tooltip
- * 鑱岃矗锛氱粦瀹氫竷灏忔椂棰勬姤鎮仠鎻愮ず
+ * 七小时预报 Tooltip
+ * 职责：绑定七小时预报悬停提示
  */
 
 import { globalT } from '@/utils/i18n';
 
-import { getIconSvg } from '../index';
+import { EMPTY_ICON_CODE, TOOLTIP_HIDE_DELAY_MS } from '../constants';
+import { getIconSvg, iconSvgPath } from '../index';
 import { weather_data } from '../weatherState';
+import { hideTooltipAfter, positionTooltip } from './position';
 
 /**
- * 缁戝畾涓冨皬鏃堕鎶ユ偓鍋滄彁绀?
+ * 绑定七小时预报悬停提示
  */
 export function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number): void {
     const tooltip = document.querySelector('#weatherHourlyTooltip') as HTMLElement | null;
@@ -20,7 +22,7 @@ export function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number
         const i = hourIndex;
         const pop = weather_data.sevenHourlyData.Pops[i] ?? '--';
         const temp = weather_data.sevenHourlyData.Temps[i] ?? '--';
-        const icon = weather_data.sevenHourlyData.Icons[i] ?? '999';
+        const icon = weather_data.sevenHourlyData.Icons[i] ?? EMPTY_ICON_CODE;
         const text = weather_data.sevenHourlyData.Texts[i] ?? '--';
         const wind = weather_data.sevenHourlyData.Winds[i] ?? '--';
         const wind360 = weather_data.sevenHourlyData.Wind360s[i] ?? '--';
@@ -56,7 +58,7 @@ export function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number
         if (pWindLv) pWindLv.textContent = windLv;
         if (pWindSpeed) pWindSpeed.textContent = `${windSp} ${globalT('weather_tooltip_unit_ms')}`;
 
-        getIconSvg(`src/source/QWeather-Icons/icons/${icon}-fill.svg`).then(svg => {
+        getIconSvg(iconSvgPath(icon, true)).then(svg => {
             if (pIconImg) pIconImg.innerHTML = svg;
         });
 
@@ -65,29 +67,11 @@ export function attachSevenHourlyTooltip(element: HTMLElement, hourIndex: number
     });
 
     element.addEventListener('mousemove', e => {
-        const mouseEvent = e as MouseEvent;
-        const tipWidth = tooltip.offsetWidth;
-        const tipHeight = tooltip.offsetHeight;
-
-        let left = mouseEvent.clientX + 20;
-        let top = mouseEvent.clientY + 20;
-
-        if (left + tipWidth > window.innerWidth - 20) left = mouseEvent.clientX - tipWidth - 20;
-        if (top + tipHeight > window.innerHeight - 20) top = mouseEvent.clientY - tipHeight - 20;
-
-        if (left < 20) left = 20;
-        if (top < 20) top = 20;
-
-        tooltip.style.left = left + 'px';
-        tooltip.style.top = top + 'px';
+        positionTooltip(tooltip, e as MouseEvent);
     });
 
     element.addEventListener('mouseleave', () => {
         tooltip.classList.remove('show');
-        setTimeout(() => {
-            if (!tooltip.classList.contains('show')) {
-                tooltip.style.display = 'none';
-            }
-        }, 200);
+        hideTooltipAfter(tooltip, TOOLTIP_HIDE_DELAY_MS);
     });
 }

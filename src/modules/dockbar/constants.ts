@@ -21,6 +21,9 @@ export const DEFAULT_CONFIG: DockBarConfig = {
 export const STORAGE_KEY = 'perfectwall_dockbar_items';
 export const SERVER_URL = 'http://localhost:27420';
 
+/** localStorage 图标缓存键前缀（key = 前缀 + 域名/路径） */
+export const ICON_CACHE_PREFIX = 'icon_';
+
 const PLACEHOLDER_PNG =
     'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
 export const DEFAULT_ICON = `data:image/png;base64,${PLACEHOLDER_PNG}`;

@@ -22,3 +22,9 @@ export const SERVER_MODE_PROBE_DELAY_MS = 3000;
 
 /** 入场/淡出动画延时（ms） */
 export const ITEM_ENTRANCE_DELAY_MS = 50;
+
+/** 缩略图左右侧切换生效的延迟（ms，等布局稳定） */
+export const THUMBNAIL_RTL_SWAP_DELAY_MS = 2500;
+
+/** 封面旋转速度的默认值（秒/圈，属性未设置时使用） */
+export const DEFAULT_THUMBNAIL_ROTATION_SEC = 10;

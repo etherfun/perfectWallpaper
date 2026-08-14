@@ -115,11 +115,9 @@ export class MultiTimerManager {
      */
     remove(timerId: string): boolean {
         const timer = this.timers.get(timerId);
-        console.log('[TM] remove ' + timerId + ' found=' + !!timer);
         if (!timer) {
             return false;
         }
-        try { if (!(window as any).__tr) (window as any).__tr = 0; (window as any).__tr++; } catch { /* noop */ }
 
         // 清除原生定时器
         if (timer.timerId !== null) {

@@ -1,8 +1,10 @@
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
+import { applyShowHide, setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
+import { parseColorString } from '../../utils/color';
 import { logInitComplete } from '../../utils/helpers';
 import { timerManager } from '../../utils/timer';
 
@@ -71,34 +73,24 @@ export function useHitokotoProperties(
         const hitokoto_show = properties.hitokoto_show.value;
         patch.hitokoto_show = hitokoto_show;
         timerManager.remove('updataHitokto');
-        elements.body.style.setProperty('--hitokoto-display', hitokoto_show ? 'flex' : 'none');
-        elements.body.style.setProperty(
-            '--hitokoto-visibility',
-            hitokoto_show ? 'visible' : 'hidden'
-        );
+        applyShowHide('hitokoto', hitokoto_show);
         // Hitokoto.vue watch(hitokoto_show) 鑷姩 fetch + restart interval
     }
 
     if (properties.hitokoto_color) {
-        const color = properties.hitokoto_color.value
-            .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.hitokoto_color.value) as [number, number, number];
         patch.hitokoto_color = color;
         elements.body.style.setProperty('--hitokoto-color', color.join(', '));
     }
 
     if (properties.hitokoto_blurcolor) {
-        const blurcolor = properties.hitokoto_blurcolor.value
-            .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const blurcolor = parseColorString(properties.hitokoto_blurcolor.value) as [number, number, number];
         patch.hitokoto_blurcolor = blurcolor;
         elements.body.style.setProperty('--hitokoto-blur-color', blurcolor.join(', '));
     }
 
     if (properties.hitokoto_yakelicolor) {
-        const yakeliccolor = properties.hitokoto_yakelicolor.value
-            .split(' ')
-            .map((c: string) => Math.ceil(parseFloat(c) * 255));
+        const yakeliccolor = parseColorString(properties.hitokoto_yakelicolor.value) as [number, number, number];
         patch.hitokoto_yakelic_color = yakeliccolor;
         elements.body.style.setProperty('--hitokoto-yakeli-color', yakeliccolor.join(', '));
     }
@@ -142,21 +134,9 @@ export function useHitokotoProperties(
 
         // 鐩戝惉涓€瑷€瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--hitokoto-height CSS 鍙橀噺銆?
         // hitokoto 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
-        registerDeferred('hitokoto:height-observer', () => {
-            const hitokoto = elements.hitokoto.container;
-            if (!hitokoto) return;
-
-            const updateHeight = (): void => {
-                const height = hitokoto.getBoundingClientRect().height;
-                if (!height) return;
-                elements.body.style.setProperty('--hitokoto-height', height + 'px');
-            };
-
-            updateHeight();
-            const observer = new ResizeObserver(updateHeight);
-            observer.observe(hitokoto);
-            return () => observer.disconnect();
-        });
+        registerDeferred('hitokoto:height-observer', () =>
+            syncElementHeightToCssVar('--hitokoto-height', () => elements.hitokoto.container)
+        );
     }
 
     if (properties.hitokoto_size) {
@@ -174,12 +154,7 @@ export function useHitokotoProperties(
 
     if (properties.hitokoto_showwidth) {
         patch.hitokoto_showwidth = properties.hitokoto_showwidth.value;
-        if (properties.hitokoto_showwidth.value === 0) {
-            elements.body.style.setProperty('--hitokoto-show-width', 'auto');
-        } else {
-            const s = properties.hitokoto_showwidth.value / 100;
-            elements.body.style.setProperty('--hitokoto-show-width', window.innerWidth * s + 'px');
-        }
+        setShowWidth('--hitokoto-show-width', properties.hitokoto_showwidth.value);
     }
 
     if (properties.hitokotoX) {

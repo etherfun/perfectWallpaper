@@ -1,8 +1,10 @@
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
+import { applyShowHide, setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
+import { parseColorString } from '../../utils/color';
 import { logInitComplete } from '../../utils/helpers';
 import { timerManager } from '../../utils/timer';
 
@@ -52,14 +54,7 @@ export function useCountdownProperties(
     if (properties.countdown_show) {
         patch.countdown_show = properties.countdown_show.value;
         timerManager.remove('updataCountdown');
-        bodyElement.style.setProperty(
-            '--countdown-display',
-            properties.countdown_show.value ? 'flex' : 'none'
-        );
-        bodyElement.style.setProperty(
-            '--countdown-visibility',
-            properties.countdown_show.value ? 'visible' : 'hidden'
-        );
+        applyShowHide('countdown', properties.countdown_show.value);
     }
 
     if (properties.countdown_year) {
@@ -75,9 +70,7 @@ export function useCountdownProperties(
     }
 
     if (properties.countdown_color) {
-        const color = properties.countdown_color.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.countdown_color.value) as [number, number, number];
         patch.countdown_color = color;
         bodyElement.style.setProperty('--countdown-color', color.join(', '));
     }
@@ -91,9 +84,7 @@ export function useCountdownProperties(
     }
 
     if (properties.countdown_blurcolor) {
-        const color = properties.countdown_blurcolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.countdown_blurcolor.value) as [number, number, number];
         patch.countdown_blurcolor = color;
         bodyElement.style.setProperty('--countdown-blur-color', color.join(', '));
     }
@@ -107,9 +98,7 @@ export function useCountdownProperties(
     }
 
     if (properties.countdown_yakelicolor) {
-        const color = properties.countdown_yakelicolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.countdown_yakelicolor.value) as [number, number, number];
         patch.countdown_yakelic_color = color;
         bodyElement.style.setProperty('--countdown-yakeli-color', color.join(', '));
     }
@@ -144,30 +133,13 @@ export function useCountdownProperties(
 
         // 鐩戝惉鍊掕鏃跺鍣ㄥ昂瀵稿彉鍖栵紝鍚屾 --countdown-height CSS 鍙橀噺銆?
         // countdown 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
-        registerDeferred('countdown:height-observer', () => {
-            const countdown = elements.countdown.container;
-            if (!countdown) return;
-
-            const updateHeight = (): void => {
-                const height = countdown.getBoundingClientRect().height;
-                if (!height) return;
-                bodyElement.style.setProperty('--countdown-height', height + 'px');
-            };
-
-            updateHeight();
-            const observer = new ResizeObserver(updateHeight);
-            observer.observe(countdown);
-            return () => observer.disconnect();
-        });
+        registerDeferred('countdown:height-observer', () =>
+            syncElementHeightToCssVar('--countdown-height', () => elements.countdown.container)
+        );
     }
 
     if (properties.countdown_showwidth) {
-        if (properties.countdown_showwidth.value === 0) {
-            bodyElement.style.setProperty('--countdown-show-width', 'auto');
-        } else {
-            const s = properties.countdown_showwidth.value / 100;
-            bodyElement.style.setProperty('--countdown-show-width', window.innerWidth * s + 'px');
-        }
+        setShowWidth('--countdown-show-width', properties.countdown_showwidth.value);
     }
 
     if (Object.keys(patch).length > 0) {

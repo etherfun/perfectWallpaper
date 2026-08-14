@@ -2,7 +2,9 @@ import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modul
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '@/types/types';
+import { parseColorString } from '@/utils/color';
 import { registerDeferred } from '@/utils/deferredScheduler';
+import { setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
 import { logInitComplete } from '@/utils/helpers';
 import { debugLogger } from '@/utils/logger';
@@ -175,7 +177,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         const speedVal = properties.imageswitchtimes.value;
         patch.speed = speedVal;
         // 绔嬪嵆鍚屾鍒?store锛屼繚璇?changeBackground() / getSwitchInterval() 璇诲埌鏈€鏂板€?
-        (store as any).$patch({ speed: speedVal });
+        store.$patch({ speed: speedVal });
         if (FirstLoad === false) {
             // reseat 瀹氭椂鍣紙changeBackground 鍐呴儴浼氱敤鏂伴鐜囬噸鏂?create timer锛?
             changeBackground();
@@ -185,7 +187,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.imageswitchtimeinput) {
         const intervalVal = Number(properties.imageswitchtimeinput.value);
         patch.switch_interval_input = intervalVal;
-        (store as any).$patch({ switch_interval_input: intervalVal });
+        store.$patch({ switch_interval_input: intervalVal });
         // store.speed 宸插湪涓婁竴姝ョ珛鍗冲悓姝ワ紝姝ゅ璇诲埌鐨勬槸鏈€鏂板€?
         if (FirstLoad === false && String(store.speed) === 'custom') {
             changeBackground();
@@ -267,9 +269,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (properties.picturesinfo_color) {
-        const color = properties.picturesinfo_color.value
-            .split(' ')
-            .map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
+        const color = parseColorString(properties.picturesinfo_color.value) as [number, number, number];
         patch.pictures_info_color = color;
         elements.body.style.setProperty('--picture-info-color', color.join(', '));
     }
@@ -281,9 +281,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (properties.picturesinfo_blurcolor) {
-        const color = properties.picturesinfo_blurcolor.value
-            .split(' ')
-            .map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
+        const color = parseColorString(properties.picturesinfo_blurcolor.value) as [number, number, number];
         patch.pictures_info_blurcolor = color;
         elements.body.style.setProperty('--picture-info-blur-color', color.join(', '));
     }
@@ -295,9 +293,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     }
 
     if (properties.picturesinfo_yakelicolor) {
-        const color = properties.picturesinfo_yakelicolor.value
-            .split(' ')
-            .map((c: string) => Math.ceil(Number(c) * 255)) as [number, number, number];
+        const color = parseColorString(properties.picturesinfo_yakelicolor.value) as [number, number, number];
         patch.pictures_info_yakelic_color = color;
         elements.body.style.setProperty('--picture-info-yakeli-color', color.join(', '));
     }
@@ -328,21 +324,9 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
 
         // 鐩戝惉 picture-info 瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--picture-info-height CSS 鍙橀噺銆?
         // picInfoEl 鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
-        registerDeferred('pictureinfo:height-observer', () => {
-            const picInfoEl = elements.slide?.picture_info;
-            if (!picInfoEl) return;
-
-            const updateHeight = () => {
-                const height = picInfoEl.getBoundingClientRect().height;
-                if (!height) return;
-                elements.body.style.setProperty('--picture-info-height', height + 'px');
-            };
-
-            updateHeight();
-            const observer = new ResizeObserver(updateHeight);
-            observer.observe(picInfoEl);
-            return () => observer.disconnect();
-        });
+        registerDeferred('pictureinfo:height-observer', () =>
+            syncElementHeightToCssVar('--picture-info-height', () => elements.slide?.picture_info)
+        );
     }
 
     if (properties.picturesinfo_showaway) {
@@ -363,15 +347,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.picturesinfo_showwidth) {
         const width = properties.picturesinfo_showwidth.value;
         patch.pictures_info_showwidth = width;
-        if (width === 0) {
-            elements.body.style.setProperty('--picture-info-show-width', 'auto');
-        } else {
-            const s = width / 100;
-            elements.body.style.setProperty(
-                '--picture-info-show-width',
-                window.innerWidth * s + 'px'
-            );
-        }
+        setShowWidth('--picture-info-show-width', width);
     }
 
     if (properties.picturesinfo_description) {

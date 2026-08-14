@@ -9,6 +9,7 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
+import { debugLogger } from '../../../utils/logger';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { NasaApodResponse } from './types';
@@ -49,6 +50,9 @@ function loadNasaApod(): void {
             img.onerror = function () {
                 onImageError('NASA APOD', url);
             };
+        })
+        .catch((error: unknown) => {
+            debugLogger.error('NASA APOD获取失败:', error);
         });
 }
 
@@ -81,6 +85,9 @@ function loadNasaApodHtml(): void {
             img.onerror = function () {
                 onImageError('NASA APOD HTML', url);
             };
+        })
+        .catch((error: unknown) => {
+            debugLogger.error('NASA APOD HTML获取失败:', error);
         });
 }
 

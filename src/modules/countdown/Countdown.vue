@@ -17,13 +17,10 @@ import { computed, ref } from 'vue';
 
 import { useUpdateInterval } from '@/modules/core/useUpdateInterval';
 import { useConfigStore } from '@/stores/config';
+import { add0 } from '@/utils/tool';
 
 const config = useConfigStore();
 const now = ref(new Date());
-
-function add0(n: number): string {
-    return n < 10 ? `0${n}` : String(n);
-}
 
 const countdownText = computed(() => {
     const examDate = new Date(config.countdown_year, config.countdown_month - 1, config.countdown_day);

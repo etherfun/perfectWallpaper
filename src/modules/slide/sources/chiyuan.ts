@@ -6,6 +6,7 @@
 
 import { useConfigStore } from '@/stores/config';
 
+import { debugLogger } from '../../../utils/logger';
 import { onImageError, onImageLoad } from './loader';
 
 export function loadChiyuan(): void {
@@ -21,5 +22,8 @@ export function loadChiyuan(): void {
             img.onerror = function () {
                 onImageError('次元api', img.src);
             };
+        })
+        .catch((error: unknown) => {
+            debugLogger.error('次元壁纸获取失败:', error);
         });
 }

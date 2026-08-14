@@ -163,7 +163,6 @@
  * versionManager 仍负责：fetch history.json、SimpleMarkdown 解析、i18n、
  * 倒计时/鼠标检测/交互检测逻辑。
  */
-import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 import { globalT } from '@/utils/i18n';
 
@@ -171,8 +170,6 @@ import type { versionManager } from './manager';
 import { versionUiState } from './state';
 
 const runtimeStore = useRuntimeStore();
-const config = useConfigStore();
-const _ = (): boolean => Boolean(config.wallpaper_updata_open_on_update);
 
 /** 懒读取版本管理器实例（测试环境下可能未初始化 → 按钮 no-op） */
 function manager(): versionManager | undefined {

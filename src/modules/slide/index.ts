@@ -25,8 +25,6 @@ export function changeBackground(): void {
     const mode = config.wallpaper_mode;
     const interval = getSwitchInterval();
 
-    try { if (!(window as any).__bg) (window as any).__bg = 0; (window as any).__bg++; } catch { /* noop */ }
-    
     // 验证 DOM 是否就绪
     const cl = document.querySelector('#background-container');
     const ll = document.querySelector('#background-layer1');

@@ -1,8 +1,10 @@
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
+import { applyShowHide, setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
+import { parseColorString } from '../../utils/color';
 import { logInitComplete } from '../../utils/helpers';
 
 /**
@@ -24,8 +26,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
     if (properties.showDate) {
         patch.show_date = properties.showDate.value;
         const oDate_show = properties.showDate.value;
-        elements.body.style.setProperty('--date-display', oDate_show ? 'flex' : 'none');
-        elements.body.style.setProperty('--date-visibility', oDate_show ? 'visible' : 'hidden');
+        applyShowHide('date', oDate_show);
         if (!oDate_show) patch.date_color_rhythm = false;
     }
 
@@ -38,27 +39,13 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
 
         // 鐩戝惉鏃ユ湡瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--date-height CSS 鍙橀噺銆?
         // oDate 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
-        registerDeferred('date:height-observer', () => {
-            const oDate = elements.date.container;
-            if (!oDate) return;
-
-            const updateHeight = (): void => {
-                const height = oDate.getBoundingClientRect().height;
-                if (!height) return;
-                elements.body.style.setProperty('--date-height', height + 'px');
-            };
-
-            updateHeight();
-            const observer = new ResizeObserver(updateHeight);
-            observer.observe(oDate);
-            return () => observer.disconnect();
-        });
+        registerDeferred('date:height-observer', () =>
+            syncElementHeightToCssVar('--date-height', () => elements.date.container)
+        );
     }
 
     if (properties.odate_color) {
-        const color = properties.odate_color.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.odate_color.value) as [number, number, number];
         patch.odate_color = color;
         elements.body.style.setProperty('--date-color', color.join(', '));
     }
@@ -72,9 +59,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (properties.odate_blurcolor) {
-        const color = properties.odate_blurcolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.odate_blurcolor.value) as [number, number, number];
         patch.odate_blurcolor = color;
         elements.body.style.setProperty('--date-blur-color', color.join(', '));
     }
@@ -88,9 +73,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (properties.odate_yakelicolor) {
-        const color = properties.odate_yakelicolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const color = parseColorString(properties.odate_yakelicolor.value) as [number, number, number];
         patch.odate_yakelic_color = color;
         elements.body.style.setProperty('--date-yakeli-color', color.join(', '));
     }
@@ -131,12 +114,7 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
 
     if (properties.date_showwidth) {
         patch.date_showwidth = properties.date_showwidth.value;
-        if (properties.date_showwidth.value === 0) {
-            elements.body.style.setProperty('--date-show-width', 'auto');
-        } else {
-            const s = properties.date_showwidth.value / 100;
-            elements.body.style.setProperty('--date-show-width', window.innerWidth * s + 'px');
-        }
+        setShowWidth('--date-show-width', properties.date_showwidth.value);
     }
 
     // date_format.* fields 鈥?read current from store, mutate, write back

@@ -7,6 +7,7 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
+import { debugLogger } from '../../../utils/logger';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { WindowsSpotlightItem, WindowsSpotlightResponse } from './types';
@@ -48,5 +49,8 @@ export function loadWindowsSpotlight(): void {
             img.onerror = function () {
                 onImageError('Windows聚焦', img.src);
             };
+        })
+        .catch((error: unknown) => {
+            debugLogger.error('Windows聚焦壁纸获取失败:', error);
         });
 }

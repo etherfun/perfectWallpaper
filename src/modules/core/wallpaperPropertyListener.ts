@@ -1,6 +1,8 @@
+import type { versionManager } from '@/modules/version/manager';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 import { loadI18n } from '@/utils/i18n';
+import { DebugLogger } from '@/utils/logger';
 
 const runtimeStore = useRuntimeStore();
 import { useAudioVisualProperties } from '@/modules/audio-visualizer/useAudioVisualProperties';
@@ -98,10 +100,13 @@ export function createWallpaperPropertyListener(
         const isClicked = prop != null && prop.value === true;
         if (isClicked) {
             debugLogger.info('[鐗堟湰绐楀彛] 妫€娴嬪埌鐗堟湰鏇存柊璇锋眰');
-            if (runtime.versionManager) {
-                void (runtime.versionManager as any).showVersionInfo();
+            const vm = runtime.versionManager as versionManager | undefined;
+            if (vm) {
+                void vm.showVersionInfo();
             } else {
-                (runtime.debugLogger as any)?.warn('[鐗堟湰绐楀彛] versionManager 鏈垵濮嬪寲');
+                (runtime.debugLogger as DebugLogger | undefined)?.warn(
+                    '[鐗堟湰绐楀彛] versionManager 鏈垵濮嬪寲'
+                );
             }
         }
     }

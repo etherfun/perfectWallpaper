@@ -444,7 +444,8 @@ export interface ConfigStoreState {
     pictures_url?: string;
     select_video?: string;
     selectmusic?: string;
-    speed?: number;
+    /** 切图速度档位：数字档（0.5–5）或 'custom'（自定义秒数） */
+    speed?: number | string;
     switch_interval_input?: number;
     transition_mode?: number;
     transition_mode_choose_0?: boolean;

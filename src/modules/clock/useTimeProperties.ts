@@ -1,8 +1,10 @@
 import { useConfigStore } from '@/stores/config';
 import { registerDeferred } from '@/utils/deferredScheduler';
+import { applyShowHide, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
+import { parseColorString } from '../../utils/color';
 import { logInitComplete } from '../../utils/helpers';
 
 /**
@@ -24,8 +26,7 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     if (properties.showTime) {
         const oClock_show = properties.showTime.value;
         patch.show_time = oClock_show;
-        elements.body.style.setProperty('--clock-display', oClock_show ? 'flex' : 'none');
-        elements.body.style.setProperty('--clock-visibility', oClock_show ? 'visible' : 'hidden');
+        applyShowHide('clock', oClock_show);
         if (!oClock_show) patch.time_color_rhythm = false;
     }
 
@@ -70,21 +71,9 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
         // 鐩戝惉鏃堕挓瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--clock-height CSS 鍙橀噺銆?
         // oClock 鍦?Vue mount 涔嬪悗鎵嶅瓨鍦紝閫氳繃 deferredScheduler 寤跺悗鎸傝浇 observer锛?
         // 閲嶅 push 鍚屼竴 id 鏃?registerDeferred 浼氭浛鎹换鍔″苟鑷姩 dispose 鏃?observer銆?
-        registerDeferred('time:clock-height-observer', () => {
-            const oClock = elements.clock.container;
-            if (!oClock) return;
-
-            const updateHeight = (): void => {
-                const height = oClock.getBoundingClientRect().height;
-                if (!height) return;
-                elements.body.style.setProperty('--clock-height', height + 'px');
-            };
-
-            updateHeight();
-            const observer = new ResizeObserver(updateHeight);
-            observer.observe(oClock);
-            return () => observer.disconnect();
-        });
+        registerDeferred('time:clock-height-observer', () =>
+            syncElementHeightToCssVar('--clock-height', () => elements.clock.container)
+        );
     }
 
     if (properties.odate_roundedcorners) {
@@ -92,15 +81,13 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (properties.TimeColor) {
-        const c = properties.TimeColor.value.split(' ').map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseColorString(properties.TimeColor.value);
         patch.time_color = 'rgb(' + c + ')';
         elements.body.style.setProperty('--clock-color', c.join(', '));
     }
 
     if (properties.TimeBlurColor) {
-        const c = properties.TimeBlurColor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseColorString(properties.TimeBlurColor.value);
         patch.time_blur_color = '0 0 20px rgb(' + c + ')';
         elements.body.style.setProperty('--clock-blur-color', c.join(', '));
         elements.body.style.setProperty('--clock-blur-enabled', '1');
@@ -125,9 +112,7 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (properties.oclock_blurcolor) {
-        const c = properties.oclock_blurcolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseColorString(properties.oclock_blurcolor.value) as [number, number, number];
         patch.oclock_blurcolor = c;
         elements.body.style.setProperty('--clock-blur-color', c.join(', '));
     }
@@ -141,9 +126,7 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     }
 
     if (properties.oclock_yakelicolor) {
-        const c = properties.oclock_yakelicolor.value
-            .split(' ')
-            .map(c => Math.ceil(parseFloat(c) * 255));
+        const c = parseColorString(properties.oclock_yakelicolor.value) as [number, number, number];
         patch.oclock_yakelic_color = c;
         elements.body.style.setProperty('--clock-yakeli-color', c.join(', '));
     }

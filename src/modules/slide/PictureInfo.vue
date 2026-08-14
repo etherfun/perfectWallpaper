@@ -47,8 +47,4 @@
  *   - propertyHandler 控制 pictures_info_show 等 CSS 变量，
  *     控制显示/隐藏、位置、颜色、模糊等视觉效果。
  */
-import { useConfigStore } from '@/stores/config';
-
-const config = useConfigStore();
-void config;
 </script>

@@ -7,6 +7,7 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
+import { debugLogger } from '../../../utils/logger';
 import { picturesinfo_showrl } from './info';
 import { onImageError, onImageLoad } from './loader';
 import type { BingResponse } from './types';
@@ -49,5 +50,8 @@ export function loadBing(): void {
             img.onerror = function () {
                 onImageError('Bing', bingurl + '_UHD.jpg');
             };
+        })
+        .catch((error: unknown) => {
+            debugLogger.error('Bing壁纸获取失败:', error);
         });
 }

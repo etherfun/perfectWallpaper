@@ -25,8 +25,4 @@
 </template>
 
 <script setup lang="ts">
-import { useConfigStore } from '@/stores/config';
-
-const config = useConfigStore();
-const _ = (): number => Number(config.wallpapermode ?? 1);
 </script>

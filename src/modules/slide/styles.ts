@@ -11,7 +11,7 @@ const config = useConfigStore();
 
 /** Get switch interval based on speed setting or custom input */
 export function getSwitchInterval(): number {
-    const speed = config.speed as string | number;
+    const speed = config.speed;
     if (String(speed) === 'custom') {
         const customInterval = Number(config.switch_interval_input);
         // 验证输入值：如果是 NaN 或小于等于0，使用默认值 60秒

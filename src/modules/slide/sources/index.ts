@@ -94,24 +94,25 @@ export function shouldShow(): void {
             {
                 const v = getMyVideo();
                 if (v) v.src = '';
+                backgroundLayers.container.style.display = 'block';
+                const currentImg = runtimeStore.photo.currentImg;
+                if (runtimeStore.myList.length && currentImg) {
+                    transitionBackground('file:///' + currentImg);
+                } else {
+                    transitionBackground('imgs/1.jpg');
+                    runtimeStore.photo.currentImg = 'imgs/1.jpg';
+                }
+                clearpicturesinfo();
+                pictures.picture_info.style.display = 'none';
+                if (store.rgb_show) {
+                    runtimeStore.photo.nextphoto = true;
+                    setTimeout(function () {
+                        background2canvas(runtimeStore.photo.currentImg, false);
+                        runtimeStore.photo.nextphoto = false;
+                    }, 100);
+                }
+                break;
             }
-            backgroundLayers.container.style.display = 'block';
-            if (runtimeStore.myList.length) {
-                transitionBackground('file:///' + runtimeStore.photo.currentImg!);
-            } else {
-                transitionBackground('imgs/1.jpg');
-                runtimeStore.photo.currentImg = 'imgs/1.jpg';
-            }
-            clearpicturesinfo();
-            pictures.picture_info.style.display = 'none';
-            if (store.rgb_show) {
-                runtimeStore.photo.nextphoto = true;
-                setTimeout(function () {
-                    background2canvas(runtimeStore.photo.currentImg!, false);
-                    runtimeStore.photo.nextphoto = false;
-                }, 100);
-            }
-            break;
 
         case 3: // Video mode
             ChangeVideoModel();

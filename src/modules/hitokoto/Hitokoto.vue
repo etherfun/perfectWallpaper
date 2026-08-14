@@ -41,12 +41,16 @@ async function fetchHitokoto(): Promise<void> {
     const params = (
         ['hit_a', 'hit_b', 'hit_c', 'hit_d', 'hit_e', 'hit_f', 'hit_g', 'hit_h', 'hit_i', 'hit_j', 'hit_k', 'hit_l'] as const
     )
-        .map(k => config[k] as string)
+        .map(k => config[k])
         .filter(Boolean)
         .join('');
     try {
-        const res = (await fetch(`https://v1.hitokoto.cn/?${params}`).then(r => r.json())) as HitokotoResponse;
-        runtime.setHitokoto(res.hitokoto, res.from, res.from_who ?? '');
+        const res = await fetch(`https://v1.hitokoto.cn/?${params}`);
+        if (!res.ok) {
+            throw new Error(`hitokoto HTTP ${res.status}`);
+        }
+        const data = (await res.json()) as HitokotoResponse;
+        runtime.setHitokoto(data.hitokoto, data.from, data.from_who ?? '');
     } catch (err) {
         console.error('Failed to fetch hitokoto:', err);
     }
@@ -66,9 +70,11 @@ const rendered = computed(() => {
         .replace('{出处}', escapeHtml(source));
 });
 
-// hitokoto_update 单位为分钟，原模块使用 setInterval(updateTime, hitokoto_update * 60 * 1000)。
+// hitokoto_update 单位为分钟（默认 6），由 WE 属性 hitokoto_updata 更新。
+// 原模块使用 setInterval(updateTime, hitokoto_update * 60 * 1000)。
+const intervalMs = computed(() => Math.max(1, config.hitokoto_update || 6) * 60 * 1000);
 
-const { stop, restart } = useUpdateInterval(6 * 60 * 1000, fetchHitokoto, {
+const { stop, restart } = useUpdateInterval(intervalMs, fetchHitokoto, {
     immediate: false,
 });
 
@@ -83,5 +89,15 @@ watch(
         }
     },
     { immediate: true }
+);
+
+// 刷新间隔变化时重启定时器（restart 读取最新 intervalMs）
+watch(
+    () => config.hitokoto_update,
+    () => {
+        if (config.hitokoto_show) {
+            restart();
+        }
+    }
 );
 </script>

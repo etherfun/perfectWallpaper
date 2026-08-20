@@ -85,7 +85,7 @@ export class SimpleMarkdown {
         notification.className = 'link-copy-notification';
         notification.innerHTML = `
             <div class="notification-content">
-                <div class="notification-icon">馃搵</div>
+                <div class="notification-icon">📋</div>
                 <div class="notification-text">
                     <div class="notification-title">${globalT('already_copy')}</div>
                     <div class="notification-url">${truncateUrl(url, 40)}</div>

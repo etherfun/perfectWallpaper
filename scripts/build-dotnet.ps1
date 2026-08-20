@@ -6,7 +6,7 @@
 #   <repo>/dist/    final shippable payload (this script overwrites)
 #
 # The csproj writes to <repo>/build/ via <OutputPath>. This
-# script then mirrors build/ → dist/ alongside launch-*.cmd
+# script then mirrors build/ -> dist/ alongside launch-*.cmd
 # and the build manifest.
 
 $ErrorActionPreference = "Stop"
@@ -51,7 +51,7 @@ if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 # sass) puts index.html, bundle.js, default.css, etc. into
 # it, and this script adds the .NET sidecar under
 # dist/perfectwall-server/. We must NOT wipe dist/ on every
-# server rebuild — that would delete the TS bundle.
+# server rebuild -- that would delete the TS bundle.
 # Instead, sweep only the files this script
 # itself owns (under $SERVER_DIST), with a strict allowlist
 # of file names, and never touch any other artefact.
@@ -159,7 +159,7 @@ if (Test-Path $SERVER_DIST) {
         $p = Join-Path $SERVER_DIST $name
         if (Test-Path $p) {
             try { Remove-Item $p -Force -ErrorAction Stop }
-            catch { Write-Warning "Could not remove $p — file likely in use. Skipping." }
+            catch { Write-Warning "Could not remove $p -- file likely in use. Skipping." }
         }
     }
 }
@@ -169,7 +169,7 @@ else {
 # One-time migration: if the OLD flat layout is still on
 # disk (server files sitting at dist/ root), sweep them
 # now that the new dist/perfectwall-server/ tree exists.
-# This runs unconditionally on every build — it is a
+# This runs unconditionally on every build -- it is a
 # no-op once the migration is done (the files no longer
 # exist at the old location) and is gated on
 # Test-Path $SERVER_DIST above so a user who has, say,
@@ -182,17 +182,17 @@ foreach ($name in $OLD_FLAT_FILES) {
     $p = Join-Path $OLD_FLAT $name
     if (Test-Path $p) {
         try { Remove-Item $p -Force -ErrorAction Stop }
-        catch { Write-Warning "Could not remove legacy flat $p — file likely in use. Skipping." }
+        catch { Write-Warning "Could not remove legacy flat $p -- file likely in use. Skipping." }
     }
 }
 foreach ($dir in $OLD_FLAT_DIRS) {
     $p = Join-Path $OLD_FLAT $dir
     if (Test-Path $p) {
         try { Remove-Item $p -Recurse -Force -ErrorAction Stop }
-        catch { Write-Warning "Could not remove legacy flat $p — folder likely in use. Skipping." }
+        catch { Write-Warning "Could not remove legacy flat $p -- folder likely in use. Skipping." }
     }
 }
-# Mirror only the allowlisted files from build/ → dist/
+# Mirror only the allowlisted files from build/ -> dist/
 # perfectwall-server/. We deliberately do NOT use
 # `Copy-Item *` because build/ also contains debug
 # artefacts (perfectwall-server.pdb) and any future
@@ -208,7 +208,7 @@ foreach ($name in $OWN_FILES + $OWN_DLLS + $TRANSITIVE_DLLS) {
         # The new build will take effect on the next
         # wallpaper restart.
         try { Copy-Item -Path $src -Destination $dst -Force -ErrorAction Stop }
-        catch { Write-Warning "Could not refresh $dst — file likely in use. Continuing; the change will apply on next restart." }
+        catch { Write-Warning "Could not refresh $dst -- file likely in use. Continuing; the change will apply on next restart." }
     }
 }
 # Mirror directory bundles. These are read at runtime
@@ -222,17 +222,17 @@ foreach ($dir in $OWN_DIRS) {
     $dst = Join-Path $SERVER_DIST $dir
     if (Test-Path $dst) {
         try { Remove-Item $dst -Recurse -Force -ErrorAction Stop }
-        catch { Write-Warning "Could not clear $dst — folder likely in use. Continuing; the change will apply on next restart." }
+        catch { Write-Warning "Could not clear $dst -- folder likely in use. Continuing; the change will apply on next restart." }
     }
     if (Test-Path $src) {
         try { Copy-Item -Path $src -Destination $dst -Recurse -Force -ErrorAction Stop }
-        catch { Write-Warning "Could not refresh $dst — folder likely in use. Continuing; the change will apply on next restart." }
+        catch { Write-Warning "Could not refresh $dst -- folder likely in use. Continuing; the change will apply on next restart." }
     }
 }
 # Note: there is no launch-*.cmd in dist/ anymore. The user
 # launches perfectwall-server.exe directly from Explorer:
-#   * double-click  → user mode
-#   * right-click + Run as administrator → admin mode
+#   * double-click  -> user mode
+#   * right-click + Run as administrator -> admin mode
 # The EXE itself auto-detects which mode to use.
 
 Write-Host ""

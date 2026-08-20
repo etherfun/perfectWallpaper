@@ -83,12 +83,5 @@ jobs:
           draft: false
           files: |
             perfectwallpaper-*.zip
-            # Post-2026-06 layout: server lives in its own
-            # subfolder so dist/ root stays clean for the
-            # TypeScript bundle. Uploading the EXE
-            # individually (in addition to the zip) makes
-            # it easy to grab a single artefact from the
-            # release page without unzipping.
-            dist/perfectwall-server/perfectwall-server.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

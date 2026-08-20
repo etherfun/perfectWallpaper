@@ -123,6 +123,12 @@ export class versionManager {
             localStorage.setItem(versionConfig.STORAGE_KEY, this.currentVersion);
         }
 
+        // 用户点过"不再显示"（dontShowAgain 写入 perfectwall_disable_updates）
+        // 则永久不自动弹——该 key 此前只写不读，导致"不再显示"实际未生效。
+        if (localStorage.getItem('perfectwall_disable_updates') === 'true') {
+            return false;
+        }
+
         return isNewVersion && versionConfig.SHOW_SETTINGS.showOnUpdate;
     }
 

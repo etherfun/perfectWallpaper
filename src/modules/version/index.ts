@@ -25,18 +25,15 @@ window.SimpleMarkdown = SimpleMarkdown;
 
 // 新版本自动弹的唯一入口：等 WE 首帧属性推送完成（update_init_complete）
 // 再判断 isNewVersion 并弹。超时也兜底预载历史，保证手动点击有内容。
+// 模块加载时已创建单例并挂载到 runtimeStore.versionManager，此处直接复用，
+// 不再 new 第二个实例（与模块级单例保持一致）；initUpdateModal 内部已含
+// 新版本自动弹的 2000ms 延迟，故此处不再额外包裹 setTimeout，避免合计 4s 才弹出。
 function triggerInitModal(): void {
-    if (!runtimeStore.versionManager) {
-        runtimeStore.versionManager = new versionManager();
-    }
-    // 额外延迟确保 Vue 挂载与样式就绪
-    setTimeout(async () => {
-        try {
-            await (runtimeStore.versionManager as unknown as { initUpdateModal: () => Promise<void> }).initUpdateModal();
-        } catch (error) {
-            console.error('初始化版本弹窗失败:', error);
-        }
-    }, 2000);
+    const vm = runtimeStore.versionManager as versionManager | undefined;
+    if (!vm) return;
+    vm.initUpdateModal().catch(error => {
+        console.error('初始化版本弹窗失败:', error);
+    });
 }
 
 waitAndExecute(

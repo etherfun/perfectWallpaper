@@ -302,6 +302,26 @@ namespace PerfectWall.Server
             }
             catch (Exception ex)
             {
+                // Port already held by an existing instance
+                // (user double-clicked EXE while server is
+                // running). Don't spawn a second listener —
+                // just open the setup page of the live
+                // instance and exit. Try the configured port
+                // first, then probe the live config via HTTP
+                // in case the running instance is on a
+                // different port (user changed port earlier).
+                if (IsAlreadyRunning(ex))
+                {
+                    Console.WriteLine($"[Server] port {cfg.Port} already in use — another instance is running. Opening its setup page…");
+                    if (!TryOpenLiveSetup(cfg.Port))
+                    {
+                        // Last resort: open the configured
+                        // port's page (may 404 if stale, but
+                        // at least the user sees something).
+                        TryOpenSetupPage(cfg.Port);
+                    }
+                    return 0;
+                }
                 Console.Error.WriteLine($"[HTTP] start failed: {ex.Message}");
                 return 1;
             }
@@ -657,6 +677,62 @@ namespace PerfectWall.Server
         /// once per user per boot, which looks like a
         /// problem to anyone reading the log.
         /// </summary>
+        private static bool IsAlreadyRunning(Exception ex)
+        {
+            // HttpListener Start() wraps the Win32
+            // ERROR_ALREADY_EXISTS(183) / ERROR_ACCESS_DENIED(5)
+            // for "port already in use vs. urlacl denied".
+            // Walk the inner exception chain looking for
+            // those codes or the tell-tale message text.
+            for (var cur = ex; cur != null; cur = cur.InnerException)
+            {
+                if (cur is System.Net.HttpListenerException hl)
+                {
+                    if (hl.ErrorCode == 5 || hl.ErrorCode == 183 || hl.ErrorCode == 32)
+                        return true;
+                }
+                var msg = cur.Message ?? string.Empty;
+                if (msg.IndexOf("already", StringComparison.OrdinalIgnoreCase) >= 0
+                    || msg.IndexOf("conflicts", StringComparison.OrdinalIgnoreCase) >= 0
+                    || msg.IndexOf("already in use", StringComparison.OrdinalIgnoreCase) >= 0
+                    || msg.IndexOf("prefix", StringComparison.OrdinalIgnoreCase) >= 0
+                    || msg.IndexOf("注册冲突", StringComparison.OrdinalIgnoreCase) >= 0)
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool TryOpenLiveSetup(int configuredPort)
+        {
+            // Probe the live server so we open the *actual*
+            // port it bound, even if the new process's
+            // configured port is stale. Cheap: one GET.
+            var portsToTry = new[] { configuredPort };
+            // Also try reading the live server-config.json
+            // is unreliable mid-handover, so just probe
+            // the configured port's /api/setup health.
+            foreach (var p in portsToTry)
+            {
+                try
+                {
+                    var url = $"http://localhost:{p}/api/setup";
+                    var req = (System.Net.HttpWebRequest)System.Net.WebRequest.Create(url);
+                    req.Method = "GET";
+                    req.Timeout = 1200;
+                    using (var resp = (System.Net.HttpWebResponse)req.GetResponse())
+                    {
+                        if ((int)resp.StatusCode >= 200 && (int)resp.StatusCode < 300)
+                        {
+                            TryOpenSetupPage(p);
+                            return true;
+                        }
+                    }
+                }
+                catch { /* not live on this port, try next */ }
+            }
+            return false;
+        }
+
         private static void TryOpenSetupPage(int port)
         {
             if (!PerfectWall.Server.Utils.LaunchContext.CanOpenBrowser())

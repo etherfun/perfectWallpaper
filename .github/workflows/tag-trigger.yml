@@ -35,7 +35,7 @@ jobs:
         # scripts/build-dotnet.ps1 for the .NET pipeline.
         # Note: this step now expects the .NET 8 SDK on
         # the runner (windows-latest has it preinstalled).
-        run: yarn build:server:dotnet
+        run: yarn build:server
 
       - name: Create zip archive
         run: |

@@ -13,14 +13,28 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: '24'
           cache: 'yarn'
           cache-dependency-path: yarn.lock
+
+      # nuget.config pins globalPackagesFolder to the
+      # repo-relative src/server-dotnet/packages/, so
+      # caching that directory makes `dotnet restore`
+      # (inside build:server) skip re-downloading
+      # LibreHardwareMonitorLib / Newtonsoft.Json /
+      # TagLibSharp / Costura.Fody on every tag build.
+      - name: Cache NuGet packages
+        uses: actions/cache@v6
+        with:
+          path: src/server-dotnet/packages
+          key: nuget-${{ runner.os }}-${{ hashFiles('src/server-dotnet/perfectwall-server.csproj', 'src/server-dotnet/nuget.config') }}
+          restore-keys: |
+            nuget-${{ runner.os }}-
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -61,7 +75,7 @@ jobs:
           echo "name=$title" | Out-File -FilePath $env:GITHUB_OUTPUT -Encoding utf8
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ steps.set-title.outputs.name }}

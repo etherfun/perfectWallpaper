@@ -42,8 +42,14 @@ Write-Host "Using dotnet: $dotnet"
 
 # Restore + Release build for net48. Build artefacts go to
 # <repo>/build/ (configured in perfectwall-server.csproj).
+# NOTE: `dotnet restore` takes NO -c/--configuration switch
+# (restore is configuration-agnostic). Older SDKs silently
+# ignored it, but .NET 10 SDK (10.0.3xx, preinstalled on
+# windows-latest) fails with MSB1001 "Unknown switch", so
+# keep the restore invocation bare. The Release config is
+# applied by the build step below.
 Set-Location $DOTNET_DIR
-& $dotnet restore -c Release | Out-Host
+& $dotnet restore | Out-Host
 & $dotnet build -c Release --no-restore /verbosity:minimal | Out-Host
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 

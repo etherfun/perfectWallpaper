@@ -23,7 +23,7 @@ runtimeStore.versionManager = versionManagerInstance;
 // 暴露 SimpleMarkdown 到全局作用域
 window.SimpleMarkdown = SimpleMarkdown;
 
-// 等待初始化完成
+// 等待初始化完成；超时或未等到标记也强制预载，避免首帧内容空白
 waitAndExecute(
     () => {
         const complete = config.update_init_complete === true;
@@ -47,4 +47,12 @@ waitAndExecute(
     },
     500,
     15000
-);
+).catch(() => {
+    // 超时兜底：即使 update_init_complete 未置位，也预加载历史，避免首次加载点开是空
+    if (!runtimeStore.versionManager) {
+        runtimeStore.versionManager = new versionManager();
+    }
+    void (runtimeStore.versionManager as unknown as { initUpdateModal: () => Promise<void> })
+        .initUpdateModal()
+        .catch(e => console.error('初始化版本弹窗失败(超时兜底):', e));
+});

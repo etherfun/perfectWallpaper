@@ -27,6 +27,9 @@ vi.mock('@/utils/timer', () => ({
 }));
 vi.mock('@/utils/tool', () => ({
     debounce: vi.fn(),
+    fetch_with_retry: vi.fn(() => Promise.resolve({ text: () => Promise.resolve('') } as unknown as Response)),
+    migrateUsageDataOnce: vi.fn(),
+    weather_paymode: vi.fn(() => false),
 }));
 
 vi.mock('@/utils/elementManager', () => ({

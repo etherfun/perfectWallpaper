@@ -509,7 +509,12 @@
 				"ui_weather_weatherapitiptext": "<small><br/>★ If you don't have an APIkey, you can apply for one by searching for xxxAPIkey in search engines.<br/><br/>This wallpaper uses APIs that are free to apply for use!<br/><small/>",
 				"ui_test_author": "Author Information",
 				"ui_test_mod_author": "Modifier Information",
-				"ui_updata_log": "Update Log"
+				"ui_updata_log": "Update Log",
+				"ui_global_yakeli_enabled": "Global Acrylic Override",
+				"ui_global_yakeli_color": "Global Acrylic Color",
+				"ui_global_yakeli": "Global Acrylic Opacity",
+				"ui_global_bluryakeli": "Global Acrylic Blur",
+				"ui_global_yakeli_roundedcorners": "Global Acrylic Rounded Corners"
 			},
 			"zh-chs": {
 				"ui_audio_alice_circle": "爱丽丝圆环",
@@ -1024,7 +1029,12 @@
 				"ui_weather_weatherapitiptext": "<small><br/>★如果你未拥有APIkey 可以在搜索引擎搜索xxxAPIkey申请<br/><br/>本壁纸使用的API均可免费申请使用<br/><small/>",
 				"ui_test_author": "原作者信息",
 				"ui_test_mod_author": "修改者",
-				"ui_updata_log": "<h4>●  更新日志</h4> V2.2.0(33) 2026/7/16"
+				"ui_updata_log": "<h4>●  更新日志</h4> V2.2.0(33) 2026/7/16",
+				"ui_global_yakeli_enabled": "全局亚克力覆盖",
+				"ui_global_yakeli_color": "全局亚克力颜色",
+				"ui_global_yakeli": "全局亚克力不透明度",
+				"ui_global_bluryakeli": "全局亚克力模糊",
+				"ui_global_yakeli_roundedcorners": "全局亚克力圆角"
 			}
 		},
 		"properties": {
@@ -5628,6 +5638,54 @@
 				"order": 478,
 				"text": "ui_friendlink_weathercategory_4",
 				"type": "text"
+			},
+			"global_yakeli_enabled": {
+				"index": 428,
+				"order": 528,
+				"text": "ui_global_yakeli_enabled",
+				"type": "bool",
+				"value": false
+			},
+			"global_yakelicolor": {
+				"condition": "global_yakeli_enabled.value == true",
+				"index": 429,
+				"order": 529,
+				"text": "ui_global_yakeli_color",
+				"type": "color",
+				"value": "0 0 0"
+			},
+			"global_yakeli": {
+				"condition": "global_yakeli_enabled.value == true",
+				"fraction": false,
+				"index": 430,
+				"max": 100,
+				"min": 0,
+				"order": 530,
+				"text": "ui_global_yakeli",
+				"type": "slider",
+				"value": 30
+			},
+			"global_bluryakeli": {
+				"condition": "global_yakeli_enabled.value == true",
+				"fraction": false,
+				"index": 431,
+				"max": 50,
+				"min": 0,
+				"order": 531,
+				"text": "ui_global_bluryakeli",
+				"type": "slider",
+				"value": 10
+			},
+			"global_yakeli_roundedcorners": {
+				"condition": "global_yakeli_enabled.value == true",
+				"fraction": false,
+				"index": 432,
+				"max": 100,
+				"min": 0,
+				"order": 532,
+				"text": "ui_global_yakeli_roundedcorners",
+				"type": "slider",
+				"value": 12
 			}
 		},
 		"supportsaudioprocessing": true

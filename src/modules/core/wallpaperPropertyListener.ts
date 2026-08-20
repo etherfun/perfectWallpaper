@@ -20,6 +20,7 @@ import { useSakuraProperties } from '@/modules/sakura/useSakuraProperties';
 import { useBackgroundProperties } from '@/modules/slide/useBackgroundProperties';
 import { useSystemMonitorProperties } from '@/modules/systemMonitor/useSystemMonitorProperties';
 import { useWeatherProperties } from '@/modules/weather/useWeatherProperties';
+import { useGlobalYakeliProperties } from '@/modules/core/useGlobalYakeliProperties';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
@@ -92,22 +93,19 @@ export function createWallpaperPropertyListener(
     }
 
     // 版本更新检查
-    // wallpaper_updata 是点击打开更新日志"按钮（type bool，默认 false）。
-    // 用户点击时，WE 推送 { wallpaper_updata: { value: true } }。
-    // 用 !FirstLoad 防止首次加载时推送的 { value: false } 误触。
-    if (!FirstLoad) {
-        const prop = properties.wallpaper_updata;
-        const isClicked = prop != null && prop.value === true;
-        if (isClicked) {
-            debugLogger.info('[版本窗口] 检测到版本更新请求');
-            const vm = runtime.versionManager as versionManager | undefined;
-            if (vm) {
-                void vm.showVersionInfo();
-            } else {
-                (runtime.debugLogger as DebugLogger | undefined)?.warn(
-                    '[版本窗口] versionManager 未初始化'
-                );
-            }
+    // wallpaper_updata 是点击打开更新日志"按钮（type bool，仅作状态翻转触发）。
+    // WE 按钮型 bool 会在每次点击时翻转 T/F，因此不管推送 true 还是 false
+    // 只要该 key 出现在本次推送里且非首帧，就视为一次点击。
+    // 用 !FirstLoad 防止首帧推送的初始值误触。
+    if (!FirstLoad && properties.wallpaper_updata != null) {
+        debugLogger.info('[版本窗口] 检测到版本更新请求');
+        const vm = runtime.versionManager as versionManager | undefined;
+        if (vm) {
+            void vm.showVersionInfo();
+        } else {
+            (runtime.debugLogger as DebugLogger | undefined)?.warn(
+                '[版本窗口] versionManager 未初始化'
+            );
         }
     }
 
@@ -119,8 +117,8 @@ export function createWallpaperPropertyListener(
         );
     }
 
-    // 调试日志复制
-    if (properties.debugger_copy && FirstLoad !== true) {
+    // 调试日志复制（按钮型 bool：每次点击都会翻转 T/F，故不管值只看 key 是否出现在推送中）
+    if (!FirstLoad && properties.debugger_copy != null) {
         showDebugLogModal();
     }
 
@@ -183,6 +181,8 @@ export function createWallpaperPropertyListener(
         'useSystemMonitorProperties'
     );
     safeHandle(useDockBarProperties, properties, FirstLoad, 'useDockBarProperties');
+    // 全局亚克力覆盖需在各组件 yakeli 写入后生效，确保覆盖
+    safeHandle(useGlobalYakeliProperties, properties, FirstLoad, 'useGlobalYakeliProperties');
 
     if (FirstLoad) {
         store.$patch({ first_load: false });

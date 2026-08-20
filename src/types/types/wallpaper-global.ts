@@ -15,6 +15,11 @@ export interface WallpaperPropertiesGlobal {
     wallpaper_updata_open_on_update?: { value: boolean };
     debugger_copy?: { value: boolean };
     fontSetting?: { value: string };
+    global_yakeli_enabled?: { value: boolean };
+    global_yakelicolor?: { value: string };
+    global_yakeli?: { value: number };
+    global_bluryakeli?: { value: number };
+    global_yakeli_roundedcorners?: { value: number };
 
     // 日期相关
     showDate?: { value: boolean };

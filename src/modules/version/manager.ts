@@ -129,12 +129,12 @@ export class versionManager {
     async initUpdateModal(): Promise<void> {
         if (this.isInitialized || this.initializing) return;
 
-        // 如果不是新版本且没有手动触发，则不创建弹窗
-        if (!this.isNewVersion) return;
-
+        // 首次加载不应因 !isNewVersion 直接 return，否则历史数据永远不会
+        // 填充，首帧若恰好满足 show 条件就会展示空白内容。
+        // 先把内容准备好，是否自动弹出由外层调用方决定。
         this.initializing = true;
         try {
-            // 加载版本历史
+            // 加载版本历史（幂等：VERSION_HISTORY_PROMISE 单例）
             versionConfig.VERSION_HISTORY = await VERSION_HISTORY_PROMISE;
 
             // 填充响应式状态（原 createModalHTML + fillModalContent）
@@ -142,12 +142,20 @@ export class versionManager {
 
             this.isInitialized = true;
 
+            // 仅在新版本时自动弹
+            if (!this.isNewVersion) return;
+
             // 显示弹窗
             setTimeout(() => {
                 this.showModal();
             }, 2000);
         } catch (error) {
             console.error('初始化版本弹窗失败:', error);
+            // 兜底：至少给出空壳，避免 detailContentHtml 永远空白
+            try {
+                this.createFallbackModal();
+                this.isInitialized = true;
+            } catch {}
         } finally {
             this.initializing = false;
         }

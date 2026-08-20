@@ -422,6 +422,13 @@ export interface ConfigStoreState {
     audio_ball_size?: number;
     audio_ball_rotation?: number;
 
+    // Global glass/acrylic override (overrides all yakeli tokens when enabled)
+    global_yakeli_enabled?: boolean;
+    global_yakelicolor?: [number, number, number];
+    global_yakeli?: number;
+    global_bluryakeli?: number;
+    global_yakeli_roundedcorners?: number;
+
     // Shared flags (used by wallpaperPropertyListener + background + systemMonitor)
     server_mode?: boolean;
 

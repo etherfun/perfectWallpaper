@@ -6,8 +6,8 @@ import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
 
 /**
- * 澶勭悊Dock鏍忓睘鎬?
- * @param properties 灞炴€у璞?
+ * 处理 Dock 栏属性
+ * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
 export function useDockBarProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
@@ -27,7 +27,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
     if (properties.dockbar_enabled !== undefined) {
         const v = properties.dockbar_enabled.value;
         dockbar.setEnabled(v);
-        // 鍚屾鍒?store 淇濊瘉 Vue 鍝嶅簲寮?
+        // 同步到 store 淇濊瘉 Vue 鍝嶅簲寮?
         useConfigStore().$patch({ dockbar_enabled: v });
     }
 
@@ -62,7 +62,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         );
     }
 
-    // 浜氬厠鍔涘己搴?
+    // 亚克力强度
     if (properties.dockbar_yakeli) {
         const intensity = properties.dockbar_yakeli.value / 100;
         dockbar.updateConfig({ yakeliIntensity: intensity });
@@ -78,7 +78,7 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
         );
     }
 
-    // 浜氬厠鍔涢鑹?
+    // 亚克力颜色
     if (properties.dockbar_yakelicolor) {
         const colorProp = properties.dockbar_yakelicolor;
         const c = colorProp.value.split(' ').map((v: string) => Math.ceil(parseFloat(v) * 255));

@@ -40,7 +40,7 @@ async function handleAutoStart(enabled: boolean): Promise<void> {
 
 /**
  * 处理系统监控属性
- * @param properties 灞炴€у璞?
+ * @param properties 属性对象
  * @param FirstLoad 是否首次加载
  */
 export function useSystemMonitorProperties(

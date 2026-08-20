@@ -42,7 +42,7 @@ const WIND_DIR_MAP: Record<string, string> = {
  */
 export async function qweatherLookupCity(address: WeatherAddress): Promise<void> {
     const response = await fetch_with_retry(
-        `https://${config.api_host}/geo//v2/city/lookup?location=${address.cityname}`,
+        `https://${config.api_host}/geo/v2/city/lookup?location=${address.cityname}`,
         {
             method: 'GET',
             headers: {

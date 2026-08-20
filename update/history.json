@@ -1,5 +1,13 @@
 [
     {
+        "version": "2.2.0",
+        "date": "2026-8-20",
+        "titleKey": "version_2_2_0_title",
+        "image": "update/a9f699378ae3c8eee918895e1a32f661384667818.jpg",
+        "imageAltKey": "version_2_2_0_image_alt",
+        "changesKey": "version_2_2_0_changes"
+    },
+    {
         "version": "2.1.0",
         "date": "2026-5-6",
         "titleKey": "version_2_1_0_title",

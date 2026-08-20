@@ -163,31 +163,77 @@ namespace PerfectWall.Server.Server
 
         public void Start()
         {
-            try
+            // Retry loop for the elevate handover: the old
+            // user-mode parent still holds the port for
+            // SelfRestartDelayMs after the elevate response
+            // is flushed. Retrying avoids the
+            // "prefix … conflicts with existing registration"
+            // failure the user just hit (error 183 = already
+            // exists differs from error 5 = access denied).
+            const int MaxAttempts = 12;
+            const int RetryMs = 500;
+            Exception lastEx = null;
+            for (int attempt = 0; attempt < MaxAttempts; attempt++)
             {
-                _listener.Prefixes.Add($"http://+:{_port}/");
-                _listener.Start();
-            }
-            catch (HttpListenerException ex) when (ex.ErrorCode == 5)
-            {
-                // Wildcard bind refused: fall back to localhost.
-                _listener.Close();
-                var local = new HttpListener();
-                local.Prefixes.Add($"http://localhost:{_port}/");
+                // First attempt tries wildcard, fallback to
+                // localhost on access-denied (error 5).
+                // Subsequent attempts (port still held) wait
+                // then retry wildcard again.
                 try
                 {
-                    local.Start();
-                    // Replace the listener directly now that
-                    // _listener is no longer readonly.
-                    _listener = local;
-                    Console.WriteLine($"[HTTP] note: bound to localhost only. To expose on all interfaces run:");
-                    Console.WriteLine($"[HTTP]       netsh http add urlacl url=http://+:{_port}/ user=Everyone");
+                    _listener.Prefixes.Clear();
+                    _listener.Prefixes.Add($"http://+:{_port}/");
+                    _listener.Start();
+                    lastEx = null;
+                    break;
                 }
-                catch (Exception ex2)
+                catch (HttpListenerException ex) when (ex.ErrorCode == 5)
                 {
-                    throw new InvalidOperationException(
-                        $"Failed to bind to port {_port}: {ex2.Message}", ex2);
+                    // Wildcard bind refused (no urlacl).
+                    // Fall back to localhost once; if that
+                    // also fails, retry loop will handle it.
+                    lastEx = ex;
+                    try { _listener.Close(); } catch { }
+                    var local = new HttpListener();
+                    local.Prefixes.Add($"http://localhost:{_port}/");
+                    try
+                    {
+                        local.Start();
+                        _listener = local;
+                        Console.WriteLine($"[HTTP] note: bound to localhost only. To expose on all interfaces run:");
+                        Console.WriteLine($"[HTTP]       netsh http add urlacl url=http://+:{_port}/ user=Everyone");
+                        lastEx = null;
+                        break;
+                    }
+                    catch (Exception ex2)
+                    {
+                        lastEx = ex2;
+                        _listener = local;
+                        // fall through to retry sleep
+                    }
                 }
+                catch (HttpListenerException ex)
+                {
+                    lastEx = ex;
+                    try { _listener.Close(); } catch { }
+                    _listener = new HttpListener();
+                }
+                catch (Exception ex)
+                {
+                    lastEx = ex;
+                    try { _listener.Close(); } catch { }
+                    _listener = new HttpListener();
+                }
+
+                if (attempt + 1 < MaxAttempts)
+                {
+                    Console.WriteLine($"[HTTP] bind failed (attempt {attempt + 1}/{MaxAttempts}): {lastEx?.Message} — retrying in {RetryMs}ms…");
+                    System.Threading.Thread.Sleep(RetryMs);
+                }
+            }
+            if (lastEx != null)
+            {
+                throw new InvalidOperationException($"Failed to bind to port {_port}: {lastEx.Message} (after {MaxAttempts} retries)", lastEx);
             }
             _ = Task.Run(() => LoopAsync(_cts.Token));
         }

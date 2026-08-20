@@ -4,9 +4,9 @@
  */
 
 import { globalT } from '@/utils/i18n';
+import { escapeHtml } from '@/utils/string';
 
 import type { WeatherAlert } from './types';
-import { weather_data } from './weatherState';
 
 /**
  * 获取空气质量描述文本
@@ -29,13 +29,10 @@ export function getAirQualityText(airValue: string | number): string {
 
 /**
  * 生成天气预警HTML
+ * @param alerts - 预警数组（由调用方传入，不再依赖全局单例）
  */
-export function generateAlertHTML(): string {
-    if (
-        !weather_data.weatherAlert ||
-        !Array.isArray(weather_data.weatherAlert) ||
-        weather_data.weatherAlert.length === 0
-    ) {
+export function generateAlertHTML(alerts: WeatherAlert[]): string {
+    if (!alerts || !Array.isArray(alerts) || alerts.length === 0) {
         return '';
     }
 
@@ -49,7 +46,7 @@ export function generateAlertHTML(): string {
 
     type AlertWithIds = WeatherAlert & { ids: string[] };
 
-    const sorted = [...weather_data.weatherAlert].sort(
+    const sorted = [...alerts].sort(
         (a, b) => (severityLevel[b.level] ?? 0) - (severityLevel[a.level] ?? 0)
     );
 
@@ -69,9 +66,12 @@ export function generateAlertHTML(): string {
 
     const parts: string[] = [];
     Object.values(alertMap).forEach(a => {
-        const idsString = a.ids.join(',');
+        // a.alert / a.color 来自天气 API，需转义后写入 HTML，避免 v-html 注入
+        const safeAlert = escapeHtml(a.alert);
+        const safeColor = escapeHtml(a.color);
+        const safeIds = escapeHtml(a.ids.join(','));
         parts.push(
-            `<span class="weather-alert-item" style="color: rgb(${a.color}); font-weight: bold; margin-right: 10px;" data-id="${idsString}">${a.alert}</span>`
+            `<span class="weather-alert-item" style="color: rgb(${safeColor}); font-weight: bold; margin-right: 10px;" data-id="${safeIds}">${safeAlert}</span>`
         );
     });
 

@@ -1,7 +1,7 @@
 import { debugLogger } from '@/utils/logger';
 
 import { isDirectIconUrl } from './iconCache';
-import { setDockItems } from './state';
+import { setDockItems } from './store';
 import type { DockItem } from './types';
 
 /** 入场动画：每个项目依次进入的间隔（ms） */

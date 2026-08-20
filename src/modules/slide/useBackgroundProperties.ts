@@ -2,6 +2,7 @@ import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modul
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '@/types/types';
+import { applyPictureInfoTokens } from '@/tokens/pictureInfo.tokens';
 import { parseColorString } from '@/utils/color';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
@@ -250,16 +251,9 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.picturesinfo_show) {
         const show = properties.picturesinfo_show.value;
         patch.pictures_info_show = show;
+        // 令牌化：显隐由 pictureInfo tokens 统一控制（自动处理首帧显隐，不再受 FirstLoad 闸门影响）
+        applyPictureInfoTokens({ visible: show });
         if (!FirstLoad) {
-            elements.body.style.setProperty('--picture-info-display', show ? 'flex' : 'none');
-            elements.body.style.setProperty(
-                '--picture-info-visibility',
-                show ? 'visible' : 'hidden'
-            );
-            // 清除 info.ts (picturesinfo_showrl / clearpicturesinfo) 设置的
-            // 内联 style.display / style.visibility，让 CSS 变量接管控制权。
-            // 内联样式优先级高于 var(--picture-info-display)，
-            // 会导致关闭 pictures_info_show 开关后图片信息仍然可见。
             const picInfoEl = elements.slide?.picture_info;
             if (picInfoEl) {
                 picInfoEl.style.display = '';
@@ -286,28 +280,29 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         elements.body.style.setProperty('--picture-info-blur-color', color.join(', '));
     }
 
+    // 令牌化：亚克力相关统一走 tokens（便于后续多组件复用与灰度）
     if (properties.picturesinfo_yakeli_show) {
         const show = properties.picturesinfo_yakeli_show.value;
         patch.pictures_info_yakeli_show = show;
-        elements.body.style.setProperty('--picture-info-yakeli-enabled', show ? '1' : '0');
+        applyPictureInfoTokens({ yakeliEnabled: show });
     }
 
     if (properties.picturesinfo_yakelicolor) {
         const color = parseColorString(properties.picturesinfo_yakelicolor.value) as [number, number, number];
         patch.pictures_info_yakelic_color = color;
-        elements.body.style.setProperty('--picture-info-yakeli-color', color.join(', '));
+        applyPictureInfoTokens({ yakeliColor: color });
     }
 
     if (properties.picturesinfo_yakeli) {
         const yakeli = properties.picturesinfo_yakeli.value / 100;
         patch.pictures_info_yakeli = yakeli;
-        elements.body.style.setProperty('--picture-info-yakeli', String(yakeli));
+        applyPictureInfoTokens({ yakeli });
     }
 
     if (properties.picturesinfo_bluryakeli) {
         const blur = properties.picturesinfo_bluryakeli.value;
         patch.pictures_info_bluryakeli = blur;
-        elements.body.style.setProperty('--picture-info-blur-yakeli', `${blur}px`);
+        applyPictureInfoTokens({ blurYakeli: `${blur}px` });
         patch.frist_picturesinfo = false;
     }
 

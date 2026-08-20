@@ -40,25 +40,30 @@ export class FluidEffect2Renderer {
     private _currentImageUrl: string = '';
     private _lastDisplaySize = 0;
     private _lastDpr = 1;
+    private _cachedBlur: number = -1;
+    private _cachedFreq: number = -1;
+    private _cachedOctaves: number = -1;
+    private _cachedScale: number = -1;
     private resizeHandler: (() => void) | null = null;
 
     constructor(container: HTMLElement, options: FluidEffectOptions = {}) {
         this.container = container;
+        const d = DEFAULT_FLUID_EFFECT_OPTIONS;
         this.options = {
-            resolution: options.resolution ?? DEFAULT_FLUID_EFFECT_OPTIONS.resolution,
-            blurAmount: options.blurAmount ?? DEFAULT_FLUID_EFFECT_OPTIONS.blurAmount,
-            displacementScale:
-                options.displacementScale ?? DEFAULT_FLUID_EFFECT_OPTIONS.displacementScale,
-            turbulenceSeed: options.turbulenceSeed ?? Math.floor(Math.random() * 1000),
-            turbulenceFrequency:
-                options.turbulenceFrequency ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceFrequency,
-            turbulenceOctaves:
-                options.turbulenceOctaves ?? DEFAULT_FLUID_EFFECT_OPTIONS.turbulenceOctaves,
+            resolution: options.resolution ?? d.resolution,
+            blurAmount: options.blurAmount ?? d.blurAmount,
+            displacementScale: options.displacementScale ?? d.displacementScale,
+            turbulenceSeed: options.turbulenceSeed ?? (Math.random() * 1000 | 0),
+            turbulenceFrequency: options.turbulenceFrequency ?? d.turbulenceFrequency,
+            turbulenceOctaves: options.turbulenceOctaves ?? d.turbulenceOctaves,
             canvasDisplacementAmplitude:
-                options.canvasDisplacementAmplitude ??
-                DEFAULT_FLUID_EFFECT_OPTIONS.canvasDisplacementAmplitude,
-            fullscreen: options.fullscreen ?? DEFAULT_FLUID_EFFECT_OPTIONS.fullscreen,
+                options.canvasDisplacementAmplitude ?? d.canvasDisplacementAmplitude,
+            fullscreen: options.fullscreen ?? d.fullscreen,
         };
+        this._cachedBlur = this.options.blurAmount;
+        this._cachedFreq = this.options.turbulenceFrequency;
+        this._cachedOctaves = this.options.turbulenceOctaves;
+        this._cachedScale = this.options.displacementScale;
         this.init();
     }
 
@@ -94,10 +99,13 @@ export class FluidEffect2Renderer {
             this.container,
             this.options.blurAmount
         );
+        // 尺寸未变化则跳过重绘，避免多余的 drawImage 切片与 blur 滤镜写入
+        if (displaySize === this._lastDisplaySize && dpr === this._lastDpr) return;
         this._lastDisplaySize = displaySize;
         this._lastDpr = dpr;
 
-        if (this.currentImage) {
+        // 仅在已有图像时触发切片重绘，避免首次 layout 的空图像 draw
+        if (this.currentImage?.complete) {
             this.setSourceFromImage(this.currentImage);
         }
     }
@@ -114,16 +122,9 @@ export class FluidEffect2Renderer {
         }
 
         const imageUrl = image.src || image.currentSrc || '';
-
-        // Skip redraw if image URL hasn't changed and displaySize is the same
-        if (imageUrl === this._currentImageUrl && this._lastDisplaySize > 0) {
-            const firstCanvas = this.grid.canvases[0];
-            const currentDisplaySize = firstCanvas
-                ? Math.round(firstCanvas.width / (window.devicePixelRatio || 1))
-                : 0;
-            if (currentDisplaySize === this._lastDisplaySize) {
-                return;
-            }
+        // 同 URL 且已有缓存尺寸则直接跳过 — onResize 已保证 displaySize 一致，无需再读 canvas.width
+        if (imageUrl === this._currentImageUrl && this._currentImageUrl !== '') {
+            return;
         }
 
         this.currentImage = image;
@@ -132,7 +133,7 @@ export class FluidEffect2Renderer {
         drawImageToCanvasGrid(this.grid.contexts, this.grid.canvases, image, this._lastDisplaySize);
 
         if (this.feTurbulence) {
-            this.feTurbulence.setAttribute('seed', String(Math.floor(Math.random() * 1000)));
+            this.feTurbulence.setAttribute('seed', String((Math.random() * 1000) | 0));
         }
     }
 
@@ -142,11 +143,11 @@ export class FluidEffect2Renderer {
 
     setDisplacementScale(scale: number): void {
         if (!this.feDisplacementMap) return;
-        const currentScale = parseFloat(
-            this.feDisplacementMap.getAttribute('scale') || String(this.options.displacementScale)
-        );
-        const newScale = currentScale + (scale - currentScale) * 0.1;
-        this.feDisplacementMap.setAttribute('scale', String(newScale));
+        if (scale === this._cachedScale) return;
+        // 缓存 + 直接写入，避免 parseFloat + 插值带来的额外样式抖动
+        this._cachedScale = scale;
+        this.options.displacementScale = scale;
+        this.feDisplacementMap.setAttribute('scale', String(scale));
     }
 
     start(): void {
@@ -168,6 +169,7 @@ export class FluidEffect2Renderer {
     }
 
     setPlayState(playing: boolean): void {
+        if (this.playState === playing) return;
         this.playState = playing;
         if (this.grid) {
             setAnimationPlayState(this.grid.rect, this.grid.canvases, playing);
@@ -176,51 +178,77 @@ export class FluidEffect2Renderer {
 
     updateOptions(newOptions: Partial<FluidEffectOptions>): void {
         if (!this.grid) return;
-        this.options = { ...this.options, ...newOptions };
 
-        if (newOptions.blurAmount !== undefined) {
-            this.grid.contexts.forEach(ctx => {
-                ctx.filter = `blur(${newOptions.blurAmount}px)`;
-            });
-            // Also update canvas style filter if blurAmount is 0 (remove CSS filter)
-            this.grid.canvases.forEach(canvas => {
-                if (newOptions.blurAmount === 0) {
-                    canvas.style.filter = '';
-                }
-            });
+        // 逐项对比写入，避免 {...spread} 分配与无变化时的多余 DOM 操作
+        if (newOptions.blurAmount !== undefined && newOptions.blurAmount !== this._cachedBlur) {
+            const v = newOptions.blurAmount;
+            this._cachedBlur = v;
+            this.options.blurAmount = v;
+            const filter = `blur(${v}px)`;
+            const ctxs = this.grid.contexts;
+            for (let i = 0; i < ctxs.length; i++) ctxs[i]!.filter = filter;
+            if (v === 0) {
+                const canvases = this.grid.canvases;
+                for (let i = 0; i < canvases.length; i++) canvases[i]!.style.filter = '';
+            }
         }
 
-        if (newOptions.turbulenceFrequency !== undefined) {
-            this.feTurbulence?.setAttribute(
-                'baseFrequency',
-                String(newOptions.turbulenceFrequency)
-            );
+        if (
+            newOptions.turbulenceFrequency !== undefined &&
+            newOptions.turbulenceFrequency !== this._cachedFreq
+        ) {
+            const v = newOptions.turbulenceFrequency;
+            this._cachedFreq = v;
+            this.options.turbulenceFrequency = v;
+            this.feTurbulence?.setAttribute('baseFrequency', String(v));
         }
 
-        if (newOptions.turbulenceOctaves !== undefined) {
-            this.feTurbulence?.setAttribute('numOctaves', String(newOptions.turbulenceOctaves));
+        if (
+            newOptions.turbulenceOctaves !== undefined &&
+            newOptions.turbulenceOctaves !== this._cachedOctaves
+        ) {
+            const v = newOptions.turbulenceOctaves;
+            this._cachedOctaves = v;
+            this.options.turbulenceOctaves = v;
+            this.feTurbulence?.setAttribute('numOctaves', String(v));
         }
 
-        if (newOptions.displacementScale !== undefined) {
-            this.feDisplacementMap?.setAttribute('scale', String(newOptions.displacementScale));
+        if (
+            newOptions.displacementScale !== undefined &&
+            newOptions.displacementScale !== this._cachedScale
+        ) {
+            const v = newOptions.displacementScale;
+            this._cachedScale = v;
+            this.options.displacementScale = v;
+            this.feDisplacementMap?.setAttribute('scale', String(v));
         }
 
         if (newOptions.canvasDisplacementAmplitude !== undefined) {
-            const amp = parseFloat(String(newOptions.canvasDisplacementAmplitude)) || 0;
-            this.options.canvasDisplacementAmplitude = amp;
-            this.grid.offsets = randomizeCanvasOffsets(this.grid, amp);
-            this.onResize();
+            const amp = newOptions.canvasDisplacementAmplitude as number;
+            // parseFloat 仅在可能为字符串时需要，此处已为 number，直接比较
+            if (amp !== this.options.canvasDisplacementAmplitude) {
+                this.options.canvasDisplacementAmplitude = amp;
+                this.grid.offsets = randomizeCanvasOffsets(this.grid, amp);
+                this.onResize();
+            }
         }
 
-        if (newOptions.resolution !== undefined) {
-            this.grid.canvases.forEach(canvas => {
-                canvas.width = newOptions.resolution!;
-                canvas.height = newOptions.resolution!;
-            });
+        if (newOptions.resolution !== undefined && newOptions.resolution !== this.options.resolution) {
+            const res = newOptions.resolution;
+            this.options.resolution = res;
+            const canvases = this.grid.canvases;
+            for (let i = 0; i < canvases.length; i++) {
+                canvases[i]!.width = res;
+                canvases[i]!.height = res;
+            }
             if (this.currentImage) {
                 this.setSourceFromImage(this.currentImage);
             }
         }
+
+        // 合并剩余未显式处理的字段（turbulenceSeed/fullscreen 等低频项）
+        if (newOptions.turbulenceSeed !== undefined) this.options.turbulenceSeed = newOptions.turbulenceSeed;
+        if (newOptions.fullscreen !== undefined) this.options.fullscreen = newOptions.fullscreen;
     }
 
     destroy(): void {

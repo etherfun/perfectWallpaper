@@ -15,13 +15,18 @@
 import { debugLogger, type LogEntry } from '../../../utils/logger';
 import { closeDebugLogModal, handleConsoleKeydown } from './events';
 import { renderLogs, toggleLogDetails } from './render';
-import { debugModalState } from './state';
+import { useDebugStore } from './store';
+
+// Pinia 惰性访问：避免模块加载期无 Pinia 调用（Top-level useDebugStore() 在测试环境会报错）
+function getState() {
+    return useDebugStore();
+}
 
 /**
  * 显示调试日志控制台模态框（原创建 DOM；现写 visible 并渲染日志）
  */
 export function showDebugLogModal(): void {
-    debugModalState.visible = true;
+    getState().visible = true;
 
     const logs: LogEntry[] = debugLogger?.logs || [];
 

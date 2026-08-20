@@ -41,6 +41,7 @@ export interface WeatherAlert {
     instruction: string;
     criteria: string;
     source: string;
+    code: string;
     icon: string;
     status: string;
 }
@@ -85,8 +86,6 @@ export interface WeatherData {
     weatherAlert: WeatherAlert[];
     weatherAlertColor: string;
     sevenHourlyData: SevenHourlyData;
-    hourlyData?: unknown;
-    dailyData?: unknown;
 }
 
 export interface WeatherUnit {

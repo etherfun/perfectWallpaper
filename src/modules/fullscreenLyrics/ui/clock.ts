@@ -5,7 +5,7 @@
  * `lyricsUiState.clockText`，FullscreenLyrics.vue 模板绑定显示。
  */
 
-import { setLyricsClockText } from '../state';
+import { setLyricsClockText } from '../store';
 
 const CLOCK_INTERVAL_MS = 1000;
 

@@ -18,7 +18,7 @@
 </template>
 
 <script setup lang="ts">
-import { useFluidEffect } from '@/modules/fluid/useFluidEffect';
+import { useFluidEffect } from '@/modules/fluid';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();

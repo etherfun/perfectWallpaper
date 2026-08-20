@@ -69,3 +69,10 @@ export const UNIT_PRESETS: Record<string, WeatherUnit> = {
 export function getDefaultUnit(): WeatherUnit {
     return { ...DEFAULT_UNIT };
 }
+
+/**
+ * 根据单位名称解析单位配置（未知名称回退默认 metric）
+ */
+export function resolveUnit(name: string | undefined): WeatherUnit {
+    return { ...(UNIT_PRESETS[name ?? 'metric'] ?? DEFAULT_UNIT) };
+}

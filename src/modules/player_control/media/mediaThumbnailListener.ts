@@ -5,7 +5,9 @@
 import { useConfigStore } from '@/stores/config';
 const appConfig = useConfigStore();
 
-import { playerUiState, setPendingThumbnailEvent } from '../state/uiState';
+import { setPendingThumbnailEvent, usePlayerStore } from '../state/store';
+
+const playerUiState = usePlayerStore();
 
 export async function wallpaperMediaThumbnailListener(event: MediaThumbnailEvent): Promise<void> {
     // 读 appConfig（旧 config 单例）而非 Pinia，确保与 usePlayerControlProperties

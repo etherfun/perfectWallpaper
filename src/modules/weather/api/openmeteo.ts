@@ -2,9 +2,8 @@
 
 import { fetch_with_retry } from '../../../utils/tool';
 import { EMPTY_ICON_CODE, EMPTY_TIME_TEXT } from '../constants';
-import type { SevenHourlyData, WeatherAddress, WeatherData } from '../types';
-import { getOpenMeteoIcon, getPrecipTypeFromCode } from '../utils';
-import { getWeatherUnit } from '../weatherState';
+import type { SevenHourlyData, WeatherAddress, WeatherData, WeatherUnit } from '../types';
+import { getOpenMeteoIcon, getPrecipTypeFromCode, windDirectionToText } from '../utils';
 
 interface OpenMeteoCurrent {
     time: string;
@@ -50,79 +49,54 @@ interface OpenMeteoResponse {
     hourly: OpenMeteoHourly;
 }
 
-/** 风向角 → i18n key（每 45° 一档，共 8 个方向） */
-const DIRECTIONS = [
-    'weather_wind_north',
-    'weather_wind_northeast',
-    'weather_wind_east',
-    'weather_wind_southeast',
-    'weather_wind_south',
-    'weather_wind_southwest',
-    'weather_wind_west',
-    'weather_wind_northwest',
-];
-
-/** 将风向角度（0~360）转换为方向 i18n key */
-function windDirectionToText(windDirection: number): string {
-    const dirIndex = Math.floor((windDirection + 22.5) / 45) % 8;
-    return globalT(DIRECTIONS[dirIndex] ?? 'weather_no_data');
-}
-
 /** 七小时预报的固定条数 */
 const SEVEN_HOURLY_COUNT = 7;
 
 /**
  * Open-Meteo API 实现
  * Case 5: Open-Meteo
+ *
+ * 拉取数据后返回归一化片段，由 weather_init 统一写入响应式 weather_data。
  */
 export async function openmeteo(
-    weather_address: WeatherAddress,
-    weather_data: WeatherData
-): Promise<void> {
-    const unit = getWeatherUnit();
+    address: WeatherAddress,
+    unit: WeatherUnit
+): Promise<Partial<WeatherData>> {
     const response = await fetch_with_retry(
-        `https://api.open-meteo.com/v1/forecast?latitude=${weather_address.latitude}&longitude=${weather_address.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_min,sunrise,sunset,uv_index_max,temperature_2m_max&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto&forecast_days=1&forecast_hours=12&temperature_unit=${unit.temperature_code}&wind_speed_unit=${unit.wind_speed_code}&precipitation_unit=${unit.precipitation_code}`,
+        `https://api.open-meteo.com/v1/forecast?latitude=${address.latitude}&longitude=${address.longitude}&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,rain,weather_code,cloud_cover,surface_pressure,wind_speed_10m,wind_direction_10m&daily=apparent_temperature_max,apparent_temperature_min,temperature_2m_min,sunrise,sunset,uv_index_max,temperature_2m_max&hourly=temperature_2m,relative_humidity_2m,dew_point_2m,precipitation_probability,precipitation,weather_code,surface_pressure,wind_speed_10m,wind_direction_10m,cloud_cover&timezone=auto&forecast_days=1&forecast_hours=12&temperature_unit=${unit.temperature_code}&wind_speed_unit=${unit.wind_speed_code}&precipitation_unit=${unit.precipitation_code}`,
         {},
         3
     );
     const res: OpenMeteoResponse = await response.json();
 
-    weather_data.updateTime = res.current.time;
-    weather_data.temperature = res.current.temperature_2m;
-    weather_data.temperature_max = res.daily.temperature_2m_max[0] ?? '0';
-    weather_data.temperature_min =
-        res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0';
-    weather_data.feels = res.current.apparent_temperature;
-    weather_data.humidity = res.current.relative_humidity_2m;
-    weather_data.windSpeed = res.current.wind_speed_10m;
-
-    // 天气状况
-    weather_data.weathernow =
-        globalT(`weather_openmeteo_${res.current.weather_code}`) || globalT('weather_no_data');
-
-    // 风向
-    weather_data.wind = windDirectionToText(res.current.wind_direction_10m);
-
-    weather_data.precip = res.current.precipitation;
-    weather_data.sunrise = res.daily.sunrise[0] ?? '';
-    weather_data.sunset = res.daily.sunset[0] ?? '';
-    weather_data.cloud = res.current.cloud_cover;
-    weather_data.pressure = res.current.pressure_msl;
-    weather_data.obstime = res.current.time.replace('T', ' ');
-    weather_data.rangetemperature = `${res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.temperature_2m_max[0] ?? '0'}`;
-    weather_data.uvindex = res.daily.uv_index_max?.[0] || globalT('weather_no_data');
-    weather_data.rangefeelstemperature = `${res.daily.apparent_temperature_min?.[0] || res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.apparent_temperature_max?.[0] || res.daily.temperature_2m_max[0] || '0'}`;
-    weather_data.rain = (res.current as { rain?: string }).rain || '0';
-    weather_data.icon = getOpenMeteoIcon(res.current.weather_code, res.current.time).toString();
+    const result: Partial<WeatherData> = {
+        updateTime: res.current.time,
+        temperature: res.current.temperature_2m,
+        temperature_max: res.daily.temperature_2m_max[0] ?? '0',
+        temperature_min: res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0',
+        feels: res.current.apparent_temperature,
+        humidity: res.current.relative_humidity_2m,
+        windSpeed: res.current.wind_speed_10m,
+        weathernow: globalT(`weather_openmeteo_${res.current.weather_code}`) || globalT('weather_no_data'),
+        wind: windDirectionToText(res.current.wind_direction_10m),
+        precip: res.current.precipitation,
+        sunrise: res.daily.sunrise[0] ?? '',
+        sunset: res.daily.sunset[0] ?? '',
+        cloud: res.current.cloud_cover,
+        pressure: res.current.pressure_msl,
+        obstime: res.current.time.replace('T', ' '),
+        rangetemperature: `${res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.temperature_2m_max[0] ?? '0'}`,
+        uvindex: res.daily.uv_index_max?.[0] || globalT('weather_no_data'),
+        rangefeelstemperature: `${res.daily.apparent_temperature_min?.[0] || res.daily.temperature_2m_min?.[0] || res.daily.temperature_2m_max[0] || '0'}~${res.daily.apparent_temperature_max?.[0] || res.daily.temperature_2m_max[0] || '0'}`,
+        rain: (res.current as { rain?: string }).rain || '0',
+        icon: getOpenMeteoIcon(res.current.weather_code, res.current.time).toString(),
+    };
 
     // 处理七小时预报数据
     if (res.hourly && res.hourly.time && res.hourly.time.length > 0) {
         const now = new Date();
         const currentTime =
-            now.toISOString().split('T')[0] +
-            'T' +
-            now.getHours().toString().padStart(2, '0') +
-            ':00';
+            now.toISOString().split('T')[0] + 'T' + now.getHours().toString().padStart(2, '0') + ':00';
 
         let currentIndex = res.hourly.time.findIndex(time => time >= currentTime);
         if (currentIndex === -1) currentIndex = 0;
@@ -176,9 +150,7 @@ export async function openmeteo(
             sevenHourlyData.Humidities.push(
                 res.hourly.relative_humidity_2m?.[idx] ?? res.current.relative_humidity_2m
             );
-            sevenHourlyData.Precips.push(
-                res.hourly.precipitation?.[idx] ?? res.current.precipitation
-            );
+            sevenHourlyData.Precips.push(res.hourly.precipitation?.[idx] ?? res.current.precipitation);
             sevenHourlyData.Pressures.push(
                 res.hourly.surface_pressure?.[idx] ?? res.current.pressure_msl
             );
@@ -205,6 +177,8 @@ export async function openmeteo(
             sevenHourlyData.preciptype.push('--');
         }
 
-        weather_data.sevenHourlyData = sevenHourlyData;
+        result.sevenHourlyData = sevenHourlyData;
     }
+
+    return result;
 }

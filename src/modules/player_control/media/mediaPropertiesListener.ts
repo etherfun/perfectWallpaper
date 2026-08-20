@@ -13,7 +13,9 @@ const runtimeStore = useRuntimeStore();
 import { pauseBuiltInPlayer, setExternalMediaActive } from '@/modules/core/video';
 import { debugLogger } from '@/utils/logger';
 
-import { playerUiState } from '../state/uiState';
+import { usePlayerStore } from '../state/store';
+
+const playerUiState = usePlayerStore();
 import { playertitle } from '../ui/titleDisplay';
 
 export function wallpaperMediaPropertiesListener(event: MediaPropertiesEvent): void {

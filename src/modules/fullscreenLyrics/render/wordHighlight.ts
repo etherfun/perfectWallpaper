@@ -8,7 +8,7 @@
  */
 
 import { WORD_HIGHLIGHT_INTERVAL_MS } from '../constants';
-import type { LyricsUiState } from '../state';
+import type { LyricsUiState } from '../store';
 import type { LyricLine } from '../types';
 
 /**

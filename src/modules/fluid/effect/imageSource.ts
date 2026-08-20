@@ -36,21 +36,26 @@ export function drawImageToCanvasGrid(
 ): void {
     const width = image.naturalWidth || image.width || image.clientWidth || 0;
     const height = image.naturalHeight || image.height || image.clientHeight || 0;
-    const sWidth = Math.floor(width / 2);
-    const sHeight = Math.floor(height / 2);
+    if (!width || !height) return;
+    const sWidth = width >> 1;
+    const sHeight = height >> 1;
 
+    // 优先用 lastDisplaySize，避免每帧 devicePixelRatio 除法与 width 读取分支
+    const fallback = lastDisplaySize;
+    const hasFallback = fallback > 0;
     for (let i = 0; i < 4; i++) {
         const ctx = contexts[i];
         const canvas = canvases[i];
         if (!ctx || !canvas) continue;
 
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        const displaySize = hasFallback ? fallback : Math.round(canvas.width / (window.devicePixelRatio || 1));
+        // 以 backing 尺寸清理，避免 displaySize/dpr 换算错位导致的边缘残影
+        const backing = hasFallback ? displaySize * (canvas.width / displaySize) : canvas.width;
+        ctx.clearRect(0, 0, backing, backing);
 
-        const sx = i % 2 === 0 ? 0 : sWidth;
-        const sy = i < 2 ? 0 : sHeight;
+        const sx = i & 1 ? sWidth : 0;
+        const sy = i >= 2 ? sHeight : 0;
 
-        const displaySize =
-            lastDisplaySize || Math.round(canvas.width / (window.devicePixelRatio || 1));
         ctx.drawImage(image, sx, sy, sWidth, sHeight, 0, 0, displaySize, displaySize);
     }
 }

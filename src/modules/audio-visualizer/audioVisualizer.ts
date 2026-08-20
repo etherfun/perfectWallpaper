@@ -40,29 +40,23 @@ function clampAudioData(data: number[], output: number[]): number[] {
 }
 
 /**
- * 对数组应用空间平滑（相邻频段平均）
- * 消除孤立的单波峰，使频谱更加连贯
- * 使用循环平滑，头尾相连（适用于圆环可视化）
+ * 对数组应用空间平滑（相邻频段平均）— 滑动窗口 O(len)，收敛为 O(128)
  */
 function spatialSmooth(data: number[], windowSize: number, output: number[]): number[] {
-    const halfWindow = Math.floor(windowSize / 2);
+    const half = Math.floor(windowSize / 2);
     const len = data.length;
-    // 实际求和的元素数量（j 从 -halfWindow 到 +halfWindow 共 2*halfWindow+1 个）
-    const actualCount = halfWindow * 2 + 1;
-
+    const count = half * 2 + 1;
+    if (len === 0) return output;
+    // 初始窗口和：[-half .. half]
+    let sum = 0;
+    for (let j = -half; j <= half; j++) sum += data[(((j % len) + len) % len)] ?? 0;
     for (let i = 0; i < len; i++) {
-        let sum = 0;
-
-        // 循环平滑：使用取模运算实现头尾相连
-        for (let j = -halfWindow; j <= halfWindow; j++) {
-            // 使用 ((i + j) % len + len) % len 实现正确的负数取模
-            const idx = (((i + j) % len) + len) % len;
-            sum += data[idx] ?? 0;
-        }
-
-        output[i] = sum / actualCount;
+        output[i] = sum / count;
+        // 滑动：移出 i-half，移入 i+half+1（循环索引）
+        const outIdx = (((i - half) % len) + len) % len;
+        const inIdx = (((i + half + 1) % len) + len) % len;
+        sum += (data[inIdx] ?? 0) - (data[outIdx] ?? 0);
     }
-
     return output;
 }
 

@@ -1,179 +1,23 @@
 ﻿/**
- * 天气模块入口文件
- * 整合所有天气相关的 API、工具函数和 UI
+ * 天气模块入口（barrel）
+ *
+ * 状态与编排已迁移到 useWeatherStore（Pinia）。
+ * 本文件仅导出：图标缓存辅助、纯函数工具、类型与常量，
+ * 以及 store 本身，供组件与 WE 属性层消费。
  */
 
+// 状态源（Pinia store）
+export { useWeatherStore } from './store';
+
+// 纯函数工具
+export { generateAlertHTML, getAirQualityText } from './formatters';
 export { getWeatherTips } from './tips';
 
-// UI 模块导出
-export { tooltip } from './tooltip';
-export {
-    clearPrecipTemperatureToggleTimer,
-    generateWeatherTable,
-    hideWeatherLoading,
-    showWeatherError,
-    showWeatherLoading,
-    startPrecipTemperatureToggleTimer,
-    togglePrecipTemperatureDisplay,
-    updateAirQualityAndAlerts,
-    updateMainWeatherDisplay,
-    updatePrecipContainer,
-    updateTipDisplay,
-    updateWeatherDetails,
-    updateWeatherExtendedInfo,
-} from './ui';
+// 图标缓存辅助（模块级缓存，无副作用）
+export { clearIconCache, getIconSvg, iconSvgPath } from './icons';
 
-// 格式化工具导出
-export { generateAlertHTML, getAirQualityText } from './formatters';
+// 类型与常量
+export * from './constants';
+export type { SevenHourlyData, WeatherAddress, WeatherData, WeatherUnit } from './types';
+export { OPEN_METEO_TO_QWEATHER,VC_ICON_TO_QWEATHER } from './types';
 
-// 状态导出（从 weatherState 重导出）
-export {
-    isAnimatingPrecipToggle,
-    precipTemperatureToggleTimer,
-    showTemperatureInsteadOfPrecip,
-    weather_address,
-    weather_daliy_tip,
-    weather_data,
-} from './weatherState';
-
-import { useConfigStore } from '@/stores/config';
-import { globalT } from '@/utils/i18n';
-import { debugLogger } from '@/utils/logger';
-import { timerManager } from '@/utils/timer';
-import { fetch_with_retry } from '@/utils/tool';
-
-import type { WeatherAPIHandler } from './api/base';
-import {
-    API_ICUFREE,
-    API_OPENMETEO,
-    API_QWEATHER,
-    API_VISUALCROSSING,
-    API_YIKETIANQI,
-    QWEATHER_ICON_DIR,
-} from './constants';
-import type { SevenHourlyData, WeatherAddress, WeatherData } from './types';
-import { generateWeatherTable } from './ui/generateWeatherTable';
-import { showWeatherError, showWeatherLoading } from './ui/states';
-
-const config = useConfigStore();
-
-// 导出类型
-export type { SevenHourlyData, WeatherAddress, WeatherData };
-
-// ============== 图标缓存 ==============
-
-const MAX_ICON_CACHE_SIZE = 100;
-const iconCache = new Map<string, string>();
-
-export async function getIconSvg(iconPath: string): Promise<string> {
-    // 直接使用 .get() 查找（Map 在找不到时返回 undefined）
-    const cached = iconCache.get(iconPath);
-    if (cached !== undefined) {
-        return cached;
-    }
-
-    try {
-        const res = await fetch(iconPath);
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const svg = await res.text();
-        // 缓存大小管理
-        if (iconCache.size >= MAX_ICON_CACHE_SIZE) {
-            const firstKey = iconCache.keys().next().value;
-            if (firstKey) iconCache.delete(firstKey);
-        }
-        iconCache.set(iconPath, svg);
-        return svg;
-    } catch (error) {
-        debugLogger.error('Failed to fetch weather icon', { iconPath, error });
-        return '';
-    }
-}
-
-export function clearIconCache(): void {
-    iconCache.clear();
-}
-
-/** 组装和风天气图标 SVG 路径 */
-export function iconSvgPath(icon: string, fill = false): string {
-    return `${QWEATHER_ICON_DIR}${icon}${fill ? '-fill' : ''}.svg`;
-}
-
-// ============== API 相关 ==============
-
-const apiHandlers: { [key: number]: () => Promise<WeatherAPIHandler> } = {
-    [API_QWEATHER]: () => import('./api/qweather').then(m => m.qweather),
-    [API_ICUFREE]: () => import('./api/icufree').then(m => m.icufree),
-    [API_YIKETIANQI]: () => import('./api/yiketianqi').then(m => m.yiketianqi),
-    [API_VISUALCROSSING]: () => import('./api/visualcrossing').then(m => m.visualcrossing),
-    [API_OPENMETEO]: () => import('./api/openmeteo').then(m => m.openmeteo),
-};
-
-let isWeatherInitRunning = false;
-
-export async function weather_init(): Promise<void> {
-    // 防止并发调用
-    if (isWeatherInitRunning) {
-        return;
-    }
-    isWeatherInitRunning = true;
-
-    try {
-        const { weather_address, weather_data } = await import('./weatherState');
-
-        // 仅在无数据时显示加载状态
-        if (weather_data.temperature === '' && weather_data.weathernow === '') {
-            showWeatherLoading();
-        }
-        if (weather_address.cityname === '') {
-            try {
-                const citydata = await fetch_with_retry(
-                    'http://i.tianqi.com/index.php?c=code&id=11',
-                    {}
-                );
-                const text = await citydata.text();
-                const afterStrong = text.split('</strong>')[1];
-                weather_address.cityname = afterStrong?.split(' ')[0] ?? weather_address.cityname;
-            } catch (e) {
-                debugLogger.error('[Weather] Failed to get city', { error: e });
-            }
-        }
-
-        const handlerFactory = apiHandlers[config.weather_api_choose ?? 0];
-        if (handlerFactory) {
-            try {
-                const handler = await handlerFactory();
-                await handler(weather_address, weather_data);
-                await generateWeatherTable();
-            } catch (error) {
-                debugLogger.error('[Weather] Fetch error', { error });
-                showWeatherError(globalT('weather_error_loading') || 'Failed to load weather data');
-            }
-        }
-    } finally {
-        isWeatherInitRunning = false;
-    }
-}
-
-// 天气更新间隔（毫秒）
-const WEATHER_UPDATE_INTERVALS: Record<number, number> = {
-    [API_QWEATHER]: 15 * 60 * 1000, // 15 分钟
-    [API_ICUFREE]: 20 * 60 * 1000, // 20 分钟
-    [API_YIKETIANQI]: 30 * 60 * 1000, // 30 分钟
-    [API_VISUALCROSSING]: 45 * 60 * 1000, // 45 分钟
-    [API_OPENMETEO]: 60 * 60 * 1000, // 60 分钟
-};
-const DEFAULT_UPDATE_INTERVAL = 15 * 60 * 1000;
-let weatherTimerId: string | null = null;
-
-export function autoWeather(): void {
-    weather_init();
-    // 如果已有定时器，先删除
-    if (weatherTimerId) {
-        timerManager.remove(weatherTimerId);
-    }
-    weatherTimerId = timerManager.create(
-        autoWeather,
-        WEATHER_UPDATE_INTERVALS[config.weather_updata ?? 0] || DEFAULT_UPDATE_INTERVAL,
-        'updataWeather'
-    );
-}

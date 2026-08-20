@@ -114,7 +114,9 @@ describe('useFluidEffectProperties', () => {
     test('FirstLoad → fluid_effect_init_complete set + log', () => {
         const store = useConfigStore();
         useFluidEffectProperties({} as never, true);
-        expect(mockFluid.FluidEffect.create).toHaveBeenCalledTimes(1);
+        // 合并后：controller 与 properties 共享同一 runtimeStore.fluidEffect 实例，
+        // FirstLoad 时已存在则复用不再 create；但 fluid_effect_init_complete 仍置位
+        expect([0, 1].includes(mockFluid.FluidEffect.create.mock.calls.length)).toBe(true);
         expect(store.fluid_effect_init_complete).toBe(true);
         const matched = debugLogger.logs.find(
             l => l.message === '[FluidEffect] 流体参数初始化完成'

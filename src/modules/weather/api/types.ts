@@ -96,7 +96,10 @@ export interface QWeatherAirResponse {
 export interface QWeatherAlertResponse {
     alerts?: Array<{
         id: string;
-        eventType?: { name?: string };
+        eventType?: { name?: string; code?: string };
+        // 旧版预警 API（/v7/warning/now）扁平结构兼容
+        type?: string;
+        typeName?: string;
         headline?: string;
         onsetTime?: string;
         expireTime?: string;

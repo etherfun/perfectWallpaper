@@ -128,8 +128,10 @@ import { ITEM_ENTRANCE_DELAY_MS } from './constants';
 import {
     clearPendingThumbnailEvent,
     pendingThumbnailEvent,
-    playerUiState,
-} from './state/uiState';
+    usePlayerStore,
+} from './state/store';
+
+const playerUiState = usePlayerStore();
 
 const ui = playerUiState;
 

@@ -10,6 +10,7 @@
  */
 
 import { globalT, i18n } from '@/utils/i18n';
+import { escapeHtml } from '@/utils/string';
 
 import {
     VERSION_HISTORY_PROMISE,
@@ -17,7 +18,28 @@ import {
     type VersionHistoryEntry,
 } from './config';
 import { SimpleMarkdown } from './simple-markdown';
-import { type VersionListItem, versionUiState } from './state';
+import { useVersionStore, type VersionListItem } from './store';
+
+// 惰性访问：避免模块顶层无 Pinia 调用（测试/非 App 场景会报错）
+function getVersionState() {
+    return useVersionStore();
+}
+const _versionStateProxy = new Proxy(
+    {},
+    {
+        get(_target, prop: string | symbol) {
+            return (getVersionState() as unknown as Record<string | symbol, unknown>)[prop];
+        },
+        set(_target, prop: string | symbol, value: unknown) {
+            (getVersionState() as unknown as Record<string | symbol, unknown>)[prop] = value;
+            return true;
+        },
+        has(_target, prop: string | symbol) {
+            return prop in getVersionState();
+        },
+    }
+) as unknown as ReturnType<typeof useVersionStore>;
+const versionUiState = _versionStateProxy;
 
 /**
  * 安全的 i18n 取值函数 —— 直接读取原始消息字典，绕过 vue-i18n 消息编译器。
@@ -487,12 +509,11 @@ export class versionManager {
         this.updateVersionDetail();
     }
 
-    // 渲染纯文本更新内容
+    // 渲染纯文本更新内容（变更文本需转义，避免 v-html 注入）
     private renderPlainChanges(changes: unknown): string {
         if (!changes || !Array.isArray(changes)) return '';
-
         return `<ul class="plain-changes-list">${(changes as unknown[])
-            .map((change: unknown) => `<li>${change}</li>`)
+            .map((change: unknown) => `<li>${escapeHtml(String(change))}</li>`)
             .join('')}</ul>`;
     }
 
@@ -510,13 +531,13 @@ export class versionManager {
                     (info.image as string).trim() !== ''
                         ? `
                     <div class="version-image-container">
-                        <img src="${info.image}"
+                        <img src="${escapeHtml(info.image as string)}"
                              class="version-image"
-                             style="max-height: ${versionConfig.IMAGE_SETTINGS.maxHeight}; width: auto; max-width: 100%;
-                             ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}">
+                             style="max-height: ${escapeHtml(versionConfig.IMAGE_SETTINGS.maxHeight)}; width: auto; max-width: 100%;"
+                             ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}>
                         <div class="image-info">
                             <div class="image-description">
-                                ${SimpleMarkdown.parse(info.imageAlt as string) || globalT('version_image_default_alt')}
+                                ${SimpleMarkdown.parse(info.imageAlt as string) || escapeHtml(globalT('version_image_default_alt'))}
                             </div>
                         </div>
                     </div>

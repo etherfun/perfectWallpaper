@@ -167,7 +167,9 @@ import { useRuntimeStore } from '@/stores/runtime';
 import { globalT } from '@/utils/i18n';
 
 import type { versionManager } from './manager';
-import { versionUiState } from './state';
+import { useVersionStore } from './store';
+
+const versionUiState = useVersionStore();
 
 const runtimeStore = useRuntimeStore();
 

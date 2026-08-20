@@ -1,13 +1,19 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
-
-const runtimeStore = useRuntimeStore();
-
-import { FluidEffect } from '@/modules/fluid';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
+import { FluidEffect } from './effect/FluidEffect';
+
+function getFluidEffect(): FluidEffect | null {
+    const runtimeStore = useRuntimeStore() as unknown as { fluidEffect?: FluidEffect | null };
+    if (runtimeStore.fluidEffect) return runtimeStore.fluidEffect;
+    // 兜底：controller 未 mount 前属性先到，延迟创建但不再双写 shalowRef
+    const inst = FluidEffect.create();
+    (runtimeStore as unknown as { fluidEffect: FluidEffect }).fluidEffect = inst;
+    return inst;
+}
 
 export function useFluidEffectProperties(
     properties: WallpaperProperties,
@@ -17,60 +23,59 @@ export function useFluidEffectProperties(
     const patch: Record<string, unknown> = {};
 
     if (FirstLoad) {
-         
-        (runtimeStore.fluidEffect as any) = FluidEffect.create();
+        // 首次加载 — 已有实例则复用（controller 可能已创建），无则创建
+        getFluidEffect();
     }
 
-     
-    const cfg = runtimeStore.fluidEffect as any;
+    const cfg = getFluidEffect();
 
-    // 鍏ㄥ睆鍚敤 - 浼樺厛澶勭悊
+    // 全屏启用 - 优先处理
     if (properties.fluidEffectEnabledFullscreen) {
         cfg?.set('fullscreenEnabled', properties.fluidEffectEnabledFullscreen.value);
         patch.fluid_effect_enabled_fullscreen = properties.fluidEffectEnabledFullscreen.value;
     }
 
-    // 鍚敤
+    // 启用
     if (properties.fluidEffectEnabled) {
         cfg?.set('enabled', properties.fluidEffectEnabled.value);
-        // 濡傛灉鍚敤浜嗗叏灞忛厤缃紝纭繚鍦?FULLSCREEN 妯″紡
+        // 如果启用了全屏配置，确保在 FULLSCREEN 模式
         if (properties.fluidEffectEnabled.value && store.fluid_effect_enabled_fullscreen === true) {
             cfg?.set('fullscreenEnabled', true);
         }
         patch.fluidEffectEnabled = properties.fluidEffectEnabled.value;
     }
 
-    // 鍒嗚鲸鐜?
+    // 分辨率
     if (properties.fluidEffectResolution) {
         patch.fluid_effect_resolution = properties.fluidEffectResolution.value;
         cfg?.set('resolution', properties.fluidEffectResolution.value);
     }
 
-    // 妯＄硦绋嬪害
+    // 模糊程度
     if (properties.fluidEffectBlurAmount) {
         patch.fluid_effect_blur_amount = properties.fluidEffectBlurAmount.value;
         cfg?.set('blurAmount', properties.fluidEffectBlurAmount.value);
     }
 
-    // 缃崲鍥剧缉鏀?
+    // 置换图缩放
     if (properties.fluidEffectDisplacementScale) {
         patch.fluid_effect_displacement_scale = properties.fluidEffectDisplacementScale.value;
         cfg?.set('displacementScale', properties.fluidEffectDisplacementScale.value);
     }
 
-    // 婀嶆祦鍏害
+    // 湍流八度
     if (properties.fluidEffectTurbulenceOctaves) {
         patch.fluid_effect_turbulence_octaves = properties.fluidEffectTurbulenceOctaves.value;
         cfg?.set('turbulenceOctaves', properties.fluidEffectTurbulenceOctaves.value);
     }
 
-    // 鐢诲竷浣嶇Щ骞呭害
+    // 画布位移幅度
     if (properties.fluidEffectCanvasDisplacement) {
         patch.fluid_effect_canvas_displacement = properties.fluidEffectCanvasDisplacement.value;
         cfg?.set('canvasDisplacementAmplitude', properties.fluidEffectCanvasDisplacement.value);
     }
 
-    // 鏆楀寲
+    // 暗化
     if (properties.fluidEffect_DarkOverlayStrength) {
         patch.fluid_effect_dark_overlay_strength =
             properties.fluidEffect_DarkOverlayStrength.value;
@@ -83,7 +88,7 @@ export function useFluidEffectProperties(
         }
     }
 
-    // 妯＄硦
+    // 模糊
     if (properties.fluidEffect_backdropFilterStrength) {
         patch.fluid_effect_backdrop_filter_strength =
             properties.fluidEffect_backdropFilterStrength.value;

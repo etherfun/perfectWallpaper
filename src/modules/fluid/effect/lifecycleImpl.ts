@@ -121,7 +121,7 @@ export function performInitFullscreenEffect(ctx: LifecycleContext): void {
     runtimeStore.fullscreenFluidEnabled = true;
     addPictureInfoHideStyle();
 
-    const container = document.body;
+    const container = document.getElementById('app-root') ?? document.body;
 
     try {
         const effect = new FluidEffect2Renderer(container, {

@@ -48,6 +48,15 @@ vi.mock('@/modules/sakura', () => ({
 }));
 vi.mock('@/modules/fluid', () => ({
     FluidEffect: { create: () => ({ set: () => {}, enable: () => {}, disable: () => {} }) },
+    useFluidEffect: () => ({
+        isEnabled: { value: false } as unknown as { value: boolean },
+        isFullscreen: { value: false } as unknown as { value: boolean },
+        enable: () => {},
+        disable: () => {},
+        enableFullscreen: () => {},
+        disableFullscreen: () => {},
+        toggle: () => false,
+    }),
 }));
 vi.mock('@/modules/player_control', () => ({
     pc_aubar: () => {},

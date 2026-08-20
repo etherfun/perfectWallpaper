@@ -2,7 +2,8 @@ import { useConfigStore } from "@/stores/config";
 import { globalT } from '@/utils/i18n';
 
 import { fetch_with_retry, getQWeatherIcon, isNightTime } from '../../../utils/tool';
-import type { WeatherAddress, WeatherData } from '../types';
+import type { WeatherAddress, WeatherData, WeatherUnit } from '../types';
+import { windDirectionToText } from '../utils';
 
 const config = useConfigStore();
 
@@ -65,17 +66,6 @@ interface VisualCrossingResponse {
     days: VisualCrossingDay[];
 }
 
-const DIRECTIONS = [
-    'weather_wind_north',
-    'weather_wind_northeast',
-    'weather_wind_east',
-    'weather_wind_southeast',
-    'weather_wind_south',
-    'weather_wind_southwest',
-    'weather_wind_west',
-    'weather_wind_northwest',
-];
-
 const MOON_PHASE_KEYS = [
     'weather_moonphase_new_moon',
     'weather_moonphase_waxing_crescent',
@@ -115,16 +105,18 @@ function getNext7Hours(res: VisualCrossingResponse): VisualCrossingHour[] {
 /**
  * Visual Crossing API 实现
  * Case 4: Visual Crossing
+ *
+ * 拉取数据后返回归一化片段，由 weather_init 统一写入响应式 weather_data。
  */
 export async function visualcrossing(
-    weather_address: WeatherAddress,
-    weather_data: WeatherData
-): Promise<void> {
+    address: WeatherAddress,
+    _unit: WeatherUnit
+): Promise<Partial<WeatherData>> {
     const nowDate = Math.floor(Date.now() / 1000);
     const sevenDate = nowDate + 7 * 24 * 60 * 60;
 
     const response = await fetch_with_retry(
-        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(weather_address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${config.weather_unit}&key=${config.visual_crossing_key}&contentType=json&lang=id`,
+        `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${encodeURIComponent(address.cityname)}/${nowDate}/${sevenDate}?unitGroup=${config.weather_unit}&key=${config.visual_crossing_key}&contentType=json&lang=id`,
         {},
         3
     );
@@ -134,86 +126,81 @@ export async function visualcrossing(
     const resHourly = getNext7Hours(res);
     const resDaily = res.days;
     const today = resDaily[0];
-    if (!today) return;
+    if (!today) return {};
 
-    weather_address.cityname = res.resolvedAddress.split(',')[0] ?? '';
+    address.cityname = res.resolvedAddress.split(',')[0] ?? '';
 
-    weather_data.updateTime = resNow.datetime;
-    weather_data.windSpeed = resNow.windspeed;
-    weather_data.humidity = resNow.humidity;
-    weather_data.temperature = resNow.temp;
-    weather_data.temperature_max = today.tempmax;
-    weather_data.temperature_min = today.tempmin;
-    weather_data.feels = resNow.feelslike;
-    weather_data.feels_max = today.feelslikemax;
-    weather_data.feels_min = today.feelslikemin;
-    weather_data.weathernow = resNow.conditions
-        .split(',')
-        .map(c => c.trim())
-        .map(c => globalT(`weather_visualcrossing_${c}`))
-        .join(' <br/> ');
-    weather_data.preciptype = Array.isArray(resNow.preciptype)
-        ? resNow.preciptype.join(',')
-        : resNow.preciptype || '';
-    weather_data.precipcover = resNow.precipcover;
-    weather_data.precipprob = resNow.precipprob;
-    weather_data.precip = resNow.precip;
-    weather_data.snow = resNow.snow || '';
-    weather_data.snowdepth = resNow.snowdepth || '';
-    weather_data.windgust = resNow.windgust;
-    weather_data.visibility = resNow.visibility;
-    weather_data.solarradiation = resNow.solarradiation;
-    weather_data.uvindex = resNow.uvindex;
-    weather_data.sunrise = today.sunrise;
-    weather_data.sunset = today.sunset;
-    weather_data.cloud = today.cloudcover.toString();
-    weather_data.dew = resNow.dew;
-    weather_data.pressure = resNow.pressure;
-    weather_data.icon = getQWeatherIcon(
-        resNow.icon,
-        isNightTime(new Date().toTimeString().split(' ')[0] ?? '', today.sunrise, today.sunset)
-    ).toString();
-
-    // 风向
-    {
-        const index = Math.floor((resNow.winddir + 22.5) / 45) % 8;
-        weather_data.wind = globalT(DIRECTIONS[index] ?? 'weather_no_data');
-    }
-
-    // 月相
-    {
-        const index = Math.floor((today.moonphase + 0.0625) * 8) % 8;
-        weather_data.moonphase = globalT(MOON_PHASE_KEYS[index] ?? 'weather_no_data');
-    }
-
-   // 七小时预报
-    weather_data.sevenHourlyData.Times = resHourly.map(hour => hour.datetime.slice(0, 5));
-    weather_data.sevenHourlyData.Clouds = resHourly.map(hour => hour.cloudcover);
-    weather_data.sevenHourlyData.Dews = resHourly.map(hour => hour.dew);
-    weather_data.sevenHourlyData.Humidities = resHourly.map(hour => hour.humidity);
-    weather_data.sevenHourlyData.Icons = resHourly.map(hour => {
-        const isNight = isNightTime(hour.datetime, today.sunrise, today.sunset);
-        return getQWeatherIcon(hour.icon, isNight).toString();
-    });
-    weather_data.sevenHourlyData.Pops = resHourly.map(hour => `${hour.precipprob}%`);
-    weather_data.sevenHourlyData.Precips = resHourly.map(hour => hour.precip);
-    weather_data.sevenHourlyData.Pressures = resHourly.map(hour => hour.pressure);
-    weather_data.sevenHourlyData.Temps = resHourly.map(hour => hour.temp);
-    weather_data.sevenHourlyData.Texts = resHourly.map(hour => {
-        if (!hour.conditions) return '';
-        return hour.conditions
+    const result: Partial<WeatherData> = {
+        updateTime: resNow.datetime,
+        windSpeed: resNow.windspeed,
+        humidity: resNow.humidity,
+        temperature: resNow.temp,
+        temperature_max: today.tempmax,
+        temperature_min: today.tempmin,
+        feels: resNow.feelslike,
+        feels_max: today.feelslikemax,
+        feels_min: today.feelslikemin,
+        weathernow: resNow.conditions
             .split(',')
             .map(c => c.trim())
             .map(c => globalT(`weather_visualcrossing_${c}`))
-            .join(' <br/> ');
-    });
-    weather_data.sevenHourlyData.Wind360s = resHourly.map(hour => hour.winddir.toString());
-    weather_data.sevenHourlyData.WindSpeeds = resHourly.map(hour => hour.windspeed);
-    weather_data.sevenHourlyData.Winds = resHourly.map(hour => {
-        const index = Math.floor((hour.winddir + 22.5) / 45) % 8;
-        return globalT(DIRECTIONS[index] ?? 'weather_no_data');
-    });
-    weather_data.sevenHourlyData.preciptype = resHourly.map(hour =>
-        Array.isArray(hour.preciptype) ? hour.preciptype.join(',') : hour.preciptype || ''
-    );
+            .join(' <br/> '),
+        preciptype: Array.isArray(resNow.preciptype)
+            ? resNow.preciptype.join(',')
+            : resNow.preciptype || '',
+        precipcover: resNow.precipcover,
+        precipprob: resNow.precipprob,
+        precip: resNow.precip,
+        snow: resNow.snow || '',
+        snowdepth: resNow.snowdepth || '',
+        windgust: resNow.windgust,
+        visibility: resNow.visibility,
+        solarradiation: resNow.solarradiation,
+        uvindex: resNow.uvindex,
+        sunrise: today.sunrise,
+        sunset: today.sunset,
+        cloud: today.cloudcover.toString(),
+        dew: resNow.dew,
+        pressure: resNow.pressure,
+        icon: getQWeatherIcon(
+            resNow.icon,
+            isNightTime(new Date().toTimeString().split(' ')[0] ?? '', today.sunrise, today.sunset)
+        ).toString(),
+        wind: windDirectionToText(resNow.winddir),
+        moonphase: globalT(MOON_PHASE_KEYS[Math.floor((today.moonphase + 0.0625) * 8) % 8] ?? 'weather_no_data'),
+    };
+
+    // 七小时预报
+    result.sevenHourlyData = {
+        updateTime: '',
+        Times: resHourly.map(hour => hour.datetime.slice(0, 5)),
+        Pops: resHourly.map(hour => `${hour.precipprob}%`),
+        Temps: resHourly.map(hour => hour.temp),
+        Icons: resHourly.map(hour => {
+            const isNight = isNightTime(hour.datetime, today.sunrise, today.sunset);
+            return getQWeatherIcon(hour.icon, isNight).toString();
+        }),
+        Texts: resHourly.map(hour => {
+            if (!hour.conditions) return '';
+            return hour.conditions
+                .split(',')
+                .map(c => c.trim())
+                .map(c => globalT(`weather_visualcrossing_${c}`))
+                .join(' <br/> ');
+        }),
+        Wind360s: resHourly.map(hour => hour.winddir.toString()),
+        Winds: resHourly.map(hour => windDirectionToText(hour.winddir)),
+        WindLvs: [],
+        WindSpeeds: resHourly.map(hour => hour.windspeed),
+        Humidities: resHourly.map(hour => hour.humidity),
+        Precips: resHourly.map(hour => hour.precip),
+        Pressures: resHourly.map(hour => hour.pressure),
+        Clouds: resHourly.map(hour => hour.cloudcover),
+        Dews: resHourly.map(hour => hour.dew),
+        preciptype: resHourly.map(hour =>
+            Array.isArray(hour.preciptype) ? hour.preciptype.join(',') : hour.preciptype || ''
+        ),
+    };
+
+    return result;
 }

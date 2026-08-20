@@ -82,13 +82,23 @@ export const Matrix44 = {
         m[15] = 0.0;
     },
 
+    // 模块级复用向量，避免每帧 loadLookAt 创建 3 个 Vec3 对象（60Hz 热点）
+    _frontv: { x: 0, y: 0, z: 0 } as Vec3,
+    _sidev: { x: 0, y: 0, z: 0 } as Vec3,
+    _topv: { x: 0, y: 0, z: 0 } as Vec3,
+
     loadLookAt: function (m: Float32Array, vpos: Vec3, vlook: Vec3, vup: Vec3): void {
-        const frontv = Vector3.create(vpos.x - vlook.x, vpos.y - vlook.y, vpos.z - vlook.z);
+        const frontv = this._frontv as Vec3;
+        frontv.x = vpos.x - vlook.x;
+        frontv.y = vpos.y - vlook.y;
+        frontv.z = vpos.z - vlook.z;
         Vector3.normalize(frontv);
-        const sidev = Vector3.create(1.0, 0.0, 0.0);
+        const sidev = this._sidev as Vec3;
+        sidev.x = 1; sidev.y = 0; sidev.z = 0;
         Vector3.cross(sidev, vup, frontv);
         Vector3.normalize(sidev);
-        const topv = Vector3.create(1.0, 0.0, 0.0);
+        const topv = this._topv as Vec3;
+        topv.x = 1; topv.y = 0; topv.z = 0;
         Vector3.cross(topv, frontv, sidev);
         Vector3.normalize(topv);
 

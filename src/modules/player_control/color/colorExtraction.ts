@@ -108,17 +108,22 @@ function buildCustomColorGroup(
 }
 
 function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
-     
-    const fe = runtimeStore.FluidEffect as any;
+    const fe = runtimeStore.fluidEffect as unknown as {
+        enabled?: boolean;
+        fullscreenEnabled?: boolean;
+        initNormalEffect?: () => void;
+        updateFullscreenSource?: () => void;
+        normalEffect?: { setSourceFromImage?: (img: HTMLImageElement) => void } | null;
+    } | null;
     if (fe?.enabled) {
         const hasContent = hasPlaybackContent();
         if (hasContent) {
-            fe?.initNormalEffect();
+            fe?.initNormalEffect?.();
             const existingEffect = fe?.normalEffect;
             if (existingEffect && event?.thumbnail) {
                 const img = elements.playerControl.thumbnail;
                 if (img?.complete && img?.naturalWidth) {
-                    existingEffect.setSourceFromImage(img);
+                    existingEffect?.setSourceFromImage?.(img);
                     const wrapper = document.querySelector(
                         '.fluid-effect-wrapper'
                     ) as HTMLElement | null;
@@ -131,6 +136,6 @@ function updateFluidEffectSource(event: MediaThumbnailEvent | null): void {
     }
 
     if (fe?.fullscreenEnabled && hasPlaybackContent()) {
-        fe?.updateFullscreenSource();
+        fe?.updateFullscreenSource?.();
     }
 }

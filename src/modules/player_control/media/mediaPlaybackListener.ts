@@ -26,7 +26,9 @@ import {
     getLastPlaybackState,
     setLastPlaybackState,
 } from '../state/playbackState';
-import { playerUiState } from '../state/uiState';
+import { usePlayerStore } from '../state/store';
+
+const playerUiState = usePlayerStore();
 import { PLAYER_STATE } from '../types';
 
 export function wallpaperMediaPlaybackListener(event: MediaPlaybackEvent): void {

@@ -4,6 +4,8 @@ import tsParser from '@typescript-eslint/parser';
 import tsPlugin from '@typescript-eslint/eslint-plugin';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import importPlugin from 'eslint-plugin-import';
+import vuePlugin from 'eslint-plugin-vue';
+import vueParser from 'vue-eslint-parser';
 
 export default [
   {
@@ -452,6 +454,82 @@ export default [
         vitest: 'readonly'
       }
     }
+  },
+
+  // Vue SFC：启用 vue 规则集 + TS 解析 + 浏览器全局
+  {
+    files: ['**/*.vue'],
+    languageOptions: {
+      parser: vueParser,
+      parserOptions: {
+        parser: tsParser,
+        ecmaVersion: 'latest',
+        sourceType: 'module',
+        extraFileExtensions: ['.vue'],
+      },
+      globals: {
+        // 复用文件顶部已枚举的浏览器全局（避免 vue 块内大量 no-undef）
+        // 这里用展开：eslint flatConfig 合并时 vue 块会继承上层 globals，
+        // 但 vue-eslint-parser 默认不注入，需要显式声明
+        HTMLElement: 'readonly',
+        HTMLCanvasElement: 'readonly',
+        HTMLImageElement: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLDivElement: 'readonly',
+        HTMLSpanElement: 'readonly',
+        HTMLButtonElement: 'readonly',
+        HTMLUListElement: 'readonly',
+        HTMLLIElement: 'readonly',
+        HTMLAudioElement: 'readonly',
+        HTMLVideoElement: 'readonly',
+        Image: 'readonly',
+        MouseEvent: 'readonly',
+        KeyboardEvent: 'readonly',
+        TouchEvent: 'readonly',
+        PointerEvent: 'readonly',
+        Event: 'readonly',
+        CustomEvent: 'readonly',
+        InputEvent: 'readonly',
+        FocusEvent: 'readonly',
+        WheelEvent: 'readonly',
+        DragEvent: 'readonly',
+        MessageEvent: 'readonly',
+        document: 'readonly',
+        window: 'readonly',
+        localStorage: 'readonly',
+        sessionStorage: 'readonly',
+        navigator: 'readonly',
+        console: 'readonly',
+        fetch: 'readonly',
+        setTimeout: 'readonly',
+        clearTimeout: 'readonly',
+        setInterval: 'readonly',
+        clearInterval: 'readonly',
+        requestAnimationFrame: 'readonly',
+        cancelAnimationFrame: 'readonly',
+        getComputedStyle: 'readonly',
+        URL: 'readonly',
+        Blob: 'readonly',
+        File: 'readonly',
+        FormData: 'readonly',
+        Headers: 'readonly',
+        Request: 'readonly',
+        Response: 'readonly',
+      },
+    },
+    plugins: {
+      vue: vuePlugin,
+    },
+    rules: {
+      // 基础推荐（template 段）
+      ...vuePlugin.configs['flat/recommended'].rules,
+      // 本项目定制：v-html 必须显式消毒，已在 Weather/Version 中处理
+      'vue/no-v-html': 'warn',
+      // 组件名单词数：项目历史命名为单字（Clock/Weather 等），先 warn 收敛
+      'vue/multi-word-component-names': 'warn',
+      // Vue SFC 内未使用变量走 vue 侧规则，与 TS 侧去重
+      'no-unused-vars': 'off',
+    },
   },
 
   prettier

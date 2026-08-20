@@ -1,6 +1,20 @@
 import { clearIconCache as clearIconCacheApi, fetchIcon as fetchIconApi } from '@/modules/systemMonitor';
 import { debugLogger } from '@/utils/logger';
 
+/** 容错 localStorage 封装：隐私模式 / 配额满时不抛，统一走 debugLogger */
+function safeGet(key: string): string | null {
+    try { return localStorage.getItem(key); } catch (e) { debugLogger.warn('[DockBar] localStorage.getItem failed', { key, error: e }); return null; }
+}
+function safeSet(key: string, value: string): void {
+    try { localStorage.setItem(key, value); } catch (e) { debugLogger.warn('[DockBar] localStorage.setItem failed', { key, error: e }); }
+}
+function safeRemove(key: string): void {
+    try { localStorage.removeItem(key); } catch (e) { debugLogger.warn('[DockBar] localStorage.removeItem failed', { key, error: e }); }
+}
+function safeKeys(): string[] {
+    try { return Object.keys(localStorage).filter(k => k.startsWith(ICON_CACHE_PREFIX)); } catch { return []; }
+}
+
 import { DEFAULT_ICON, ICON_CACHE_PREFIX, SERVER_URL } from './constants';
 import type { DockItem } from './types';
 
@@ -62,7 +76,7 @@ function resolveUrlIcon(url: string): Promise<string> {
             const urlObj = new URL(url);
             const cacheKey = iconCacheKey(urlObj.hostname);
 
-            const cached = localStorage.getItem(cacheKey);
+            const cached = safeGet(cacheKey);
             if (cached) {
                 resolve(cached);
                 return;
@@ -71,14 +85,14 @@ function resolveUrlIcon(url: string): Promise<string> {
             const svgFaviconUrl = `${urlObj.origin}/favicon.svg`;
             const svgImg = new Image();
             svgImg.onload = () => {
-                localStorage.setItem(cacheKey, svgFaviconUrl);
+                safeSet(cacheKey, svgFaviconUrl);
                 resolve(svgFaviconUrl);
             };
             svgImg.onerror = () => {
                 const icoFaviconUrl = `${urlObj.origin}/favicon.ico`;
                 const icoImg = new Image();
                 icoImg.onload = () => {
-                    localStorage.setItem(cacheKey, icoFaviconUrl);
+                    safeSet(cacheKey, icoFaviconUrl);
                     resolve(icoFaviconUrl);
                 };
                 icoImg.onerror = () => {
@@ -98,7 +112,7 @@ function resolveUrlIcon(url: string): Promise<string> {
 function resolvePathIcon(path: string, serverUrl: string): Promise<string> {
     const cacheKey = iconCacheKey(path);
 
-    const cached = localStorage.getItem(cacheKey);
+    const cached = safeGet(cacheKey);
     if (cached) {
         return Promise.resolve(cached);
     }
@@ -122,7 +136,7 @@ function loadUrlIcon(url: string, imgEl: HTMLImageElement): void {
         const urlObj = new URL(url);
         const cacheKey = iconCacheKey(urlObj.hostname);
 
-        const cached = localStorage.getItem(cacheKey);
+        const cached = safeGet(cacheKey);
         if (cached) {
             imgEl.onload = () => {};
             imgEl.onerror = () => {
@@ -134,12 +148,12 @@ function loadUrlIcon(url: string, imgEl: HTMLImageElement): void {
 
         const svgFaviconUrl = `${urlObj.origin}/favicon.svg`;
         imgEl.onload = () => {
-            localStorage.setItem(cacheKey, svgFaviconUrl);
+            safeSet(cacheKey, svgFaviconUrl);
         };
         imgEl.onerror = () => {
             const icoFaviconUrl = `${urlObj.origin}/favicon.ico`;
             imgEl.onload = () => {
-                localStorage.setItem(cacheKey, icoFaviconUrl);
+                safeSet(cacheKey, icoFaviconUrl);
             };
             imgEl.onerror = () => {
                 imgEl.src = getDefaultIcon();
@@ -156,10 +170,10 @@ function loadUrlIcon(url: string, imgEl: HTMLImageElement): void {
 function loadPathIcon(path: string, imgEl: HTMLImageElement, serverUrl: string): void {
     const cacheKey = iconCacheKey(path);
 
-    const cached = localStorage.getItem(cacheKey);
+    const cached = safeGet(cacheKey);
     if (cached) {
         imgEl.onerror = () => {
-            localStorage.removeItem(cacheKey);
+            safeRemove(cacheKey);
             loadPathIcon(path, imgEl, serverUrl);
         };
         imgEl.src = cached;
@@ -184,12 +198,12 @@ function loadPathIcon(path: string, imgEl: HTMLImageElement, serverUrl: string):
 
 function cacheIcon(key: string, icon: string): void {
     try {
-        localStorage.setItem(key, icon);
+        safeSet(key, icon);
     } catch (e) {
         debugLogger.warn('[DockBar] LocalStorage cache failed, cleaning up', { error: e });
         cleanupIconCache();
         try {
-            localStorage.setItem(key, icon);
+            safeSet(key, icon);
         } catch (e2) {
             debugLogger.error('[DockBar] Failed to cache icon after cleanup', { error: e2 });
         }
@@ -197,18 +211,18 @@ function cacheIcon(key: string, icon: string): void {
 }
 
 function iconCacheKeys(): string[] {
-    return Object.keys(localStorage).filter(k => k.startsWith(ICON_CACHE_PREFIX));
+    return safeKeys();
 }
 
 export function cleanupIconCache(): void {
     const keys = iconCacheKeys();
     const toRemove = keys.slice(0, Math.floor(keys.length / 2));
-    toRemove.forEach(k => localStorage.removeItem(k));
+    toRemove.forEach(k => safeRemove(k));
 }
 
 export async function clearAllIconCache(serverUrl: string = SERVER_URL): Promise<void> {
     const keys = iconCacheKeys();
-    keys.forEach(k => localStorage.removeItem(k));
+    keys.forEach(k => safeRemove(k));
 
     const result = await clearIconCacheApi(serverUrl);
     debugLogger.info('[DockBar] Cleared icon cache', {

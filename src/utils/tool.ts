@@ -52,12 +52,44 @@ export function hexToRgb(hexColor: string): [number, number, number] {
  * 天气请求数量检查
  * @returns 是否需要付费
  */
+/**
+ * 一次性清理：修复存量用户跨月未清空的旧计数（仅执行一次）。
+ * 触发条件：UsageData 存在但缺少 year（旧格式仅有 month），且其 month 与当前不一致。
+ * 执行后写入标记 UsageDataMigrated=1，避免重复执行。
+ */
+export function migrateUsageDataOnce(): void {
+    try {
+        if (localStorage.getItem('UsageDataMigrated') === '1') return;
+        const raw = localStorage.getItem('UsageData');
+        if (!raw) {
+            localStorage.setItem('UsageDataMigrated', '1');
+            return;
+        }
+        const data = JSON.parse(raw) as { count?: number; year?: number; month?: number };
+        // 旧格式：有 month 无 year，且 month 不等于当前月 → 说明跨月残留
+        if (data.year === undefined && typeof data.month === 'number') {
+            const curMonth = new Date().getMonth();
+            if (data.month !== curMonth) {
+                localStorage.removeItem('UsageData');
+                debugLogger.warn('UsageData migrated: cleared stale monthly count');
+            }
+        }
+        localStorage.setItem('UsageDataMigrated', '1');
+    } catch {
+        // 解析失败则直接清掉并标记已迁移，避免反复触发
+        try {
+            localStorage.removeItem('UsageData');
+            localStorage.setItem('UsageDataMigrated', '1');
+        } catch { /* ignore */ }
+    }
+}
+
 export function weather_paymode(): boolean {
     const today = new Date();
+    const currentYear = today.getFullYear();
     const currentMonth = today.getMonth();
-    const currentDate = today.getDate();
 
-    let usageData: { count?: number; month?: number } = {};
+    let usageData: { count?: number; year?: number; month?: number } = {};
     try {
         const usageDataStr = localStorage.getItem('UsageData') || '{}';
         usageData = JSON.parse(usageDataStr);
@@ -66,9 +98,13 @@ export function weather_paymode(): boolean {
     }
     localStorage.removeItem('UseNumber');
 
-    if (currentDate === 1 || usageData.month !== currentMonth) {
+    // 仅当 year+month 与当前不一致时清空（修复原先仅比 month 导致跨年同月误判，且 1号重复重置的不可靠性）
+    if (usageData.year !== currentYear || usageData.month !== currentMonth) {
         usageData.count = 0;
+        usageData.year = currentYear;
         usageData.month = currentMonth;
+        // 跨月重置后立即持久化，避免同月首次付费判定前未落盘导致下次仍读旧值
+        localStorage.setItem('UsageData', JSON.stringify(usageData));
     }
 
     if ((usageData.count ?? 0) >= 50000) {

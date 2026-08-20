@@ -10,10 +10,19 @@
  *   - queryDomElements: returns null when #dockbar is missing
  */
 
-import { beforeEach, describe, expect, test, vi } from 'vitest';
+import { beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+
+import { createPinia, setActivePinia } from 'pinia';
 
 import { createItemElement, queryDomElements, render } from '@/modules/dockbar/renderer';
-import { dockbarState } from '@/modules/dockbar/state';
+import { useDockbarStore } from '@/modules/dockbar/store';
+
+let dockbarState: ReturnType<typeof useDockbarStore>;
+
+beforeAll(() => {
+    setActivePinia(createPinia());
+    dockbarState = useDockbarStore();
+});
 import type { DockItem } from '@/modules/dockbar/types';
 
 describe('dockbar/renderer', () => {

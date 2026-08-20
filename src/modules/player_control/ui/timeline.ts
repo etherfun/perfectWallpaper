@@ -12,7 +12,9 @@ import { useRuntimeStore } from '@/stores/runtime';
 const runtimeStore = useRuntimeStore();
 
 import { TIMELINE_STEP_SEC, TIMELINE_TICK_MS, TIMELINE_WAIT_MS } from '../constants';
-import { playerUiState } from '../state/uiState';
+import { usePlayerStore } from '../state/store';
+
+const playerUiState = usePlayerStore();
 import { PLAYER_STATE } from '../types';
 
 let timelineTimer: ReturnType<typeof setTimeout> | null = null;

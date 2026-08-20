@@ -25,7 +25,9 @@ import { DEFAULT_CONFIG } from './constants';
 import { animateToNewLine, startFloatingAnimation } from './render/lyricsRenderer';
 import { createWordHighlighter, updateWordHighlight } from './render/wordHighlight';
 import { connectLyricsSource, type LyricsSourceHandle } from './source/lyricsSource';
-import { lyricsUiState, setLyricsClockVisible, setLyricsCloseVisible, setLyricsVisible } from './state';
+import { setLyricsClockVisible, setLyricsCloseVisible, setLyricsVisible, useLyricsStore } from './store';
+
+const lyricsUiState = useLyricsStore();
 import type { FullscreenLyricsConfig, LyricsData } from './types';
 import { startClockUpdate } from './ui/clock';
 import { hideOtherElements, restoreOtherElements } from './ui/visibility';

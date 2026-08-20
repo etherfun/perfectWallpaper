@@ -1,32 +1,39 @@
 <!--
-  RgbEffect.vue — RGB 灯光合成组件 (Stage 5-C1)
-  替换原 src/RGB.ts。
-
-  原模块：
-    - 把视频/图片/樱花/粒子/音频数据合成为 LED 灯光输出
-    - 在 #RGBuse 上绘制（要 100x20 像素）
-    - 注册 visibilitychange 监听器
-    - 暴露 background2canvas(src, videoORimages)
-
-  Stage 5-C1 composable wrapper:
-    - useRgbEffect() owns the visibilitychange lifecycle (mount/unmount)
-    - render() passthrough available via the composable's API
-    - drawing code stays in src/RGB.ts (single source of truth)
+  RgbEffect.vue — RGB 灯光合成组件（真 Vue 化）
+  接管原 RGB.ts 的命令式绘制：
+    - 模板持有 #RGBuse（useTemplateRef）
+    - 响应式监听六大开关驱动重绘
+    - 生命周期内管理 visibilitychange + 定时链
+    - 绘制底座仍复用 RGB.ts 的合成逻辑，逐步迁移
 -->
 <template>
-    <!-- RGB 灯光合成 canvas — 从 index.html 迁移至此处 (Phase 7) -->
-    <canvas id="RGBuse" width="100px" height="20px"></canvas>
+    <canvas ref="rgbCanvasRef" id="RGBuse" width="100" height="20"></canvas>
 </template>
 
 <script setup lang="ts">
-import { useRgbEffect } from '@/modules/rgb-effect/useRgbEffect';
+import { onBeforeUnmount, onMounted, watch } from 'vue';
+
+import { background2canvas } from '@/modules/rgb-effect/RGB';
 import { useConfigStore } from '@/stores/config';
 
 const config = useConfigStore();
-const rgb = useRgbEffect();
 
-const _ = (): boolean => Boolean(config.rgb_show);
+function render(src?: string | null, videoORimages?: boolean): void {
+    background2canvas(src, videoORimages);
+}
 
-// Expose rgb API for parent components / debugging if needed.
-defineExpose({ render: rgb.render });
+function onVisibilityChange(): void {
+    if (document.visibilityState === 'visible' && config.rgb_show) render(null, undefined);
+}
+
+onMounted(() => document.addEventListener('visibilitychange', onVisibilityChange));
+onBeforeUnmount(() => document.removeEventListener('visibilitychange', onVisibilityChange));
+
+// 响应式驱动：任一开关变化即重绘一帧（避免旧层的多监听器分散）
+watch(
+    () => [config.rgb_show, config.background_rgb, config.sakura_rgb, config.particles_rgb, config.audiobar_rgb, config.wallpaper_settings?.ledPlugin] as const,
+    () => { if (config.rgb_show) render(null, undefined); }
+);
+
+defineExpose({ render });
 </script>

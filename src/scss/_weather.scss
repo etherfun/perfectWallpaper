@@ -7,7 +7,7 @@
 // #weather — 天气主面板
 // ============================================
 #weather {
-    visibility: hidden;
+    visibility: var(--weather-visibility, hidden);
     @include component-position('weather');
     font-size: var(--weather-font-size);
     line-height: var(--weather-font-size);

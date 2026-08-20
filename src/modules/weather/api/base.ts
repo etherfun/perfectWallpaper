@@ -3,21 +3,39 @@
  * Common interface for all weather API implementations
  */
 
-import { AIR_QUALITY_APIS, HOURLY_FORECAST_APIS } from '../constants';
-import type { WeatherAddress, WeatherData } from '../types';
+import {
+    AIR_QUALITY_APIS,
+    API_ICUFREE,
+    API_OPENMETEO,
+    API_QWEATHER,
+    API_VISUALCROSSING,
+    API_YIKETIANQI,
+    HOURLY_FORECAST_APIS,
+} from '../constants';
+import type { WeatherAddress, WeatherData, WeatherUnit } from '../types';
 
 /**
- * Weather API handler interface
- * All weather API implementations should conform to this interface
+ * 天气数据获取器
+ *
+ * 各 API 实现负责拉取数据并**返回归一化后的天气数据片段**
+ * （Partial<WeatherData>）。地址与单位由调用方显式传入，
+ * handler 不再依赖任何全局单例。
  */
-export interface WeatherAPIHandler {
-    /**
-     * Fetch weather data and populate the weather_data object
-     * @param weather_address - Object containing city/location information
-     * @param weather_data - Object to populate with weather information
-     */
-    (weather_address: WeatherAddress, weather_data: WeatherData): Promise<void>;
-}
+export type WeatherFetcher = (
+    address: WeatherAddress,
+    unit: WeatherUnit
+) => Promise<Partial<WeatherData>>;
+
+/**
+ * API 注册表：配置项 weather_api_choose 的取值 → 动态导入的 fetcher 工厂
+ */
+export const apiHandlers: Record<number, () => Promise<WeatherFetcher>> = {
+    [API_QWEATHER]: () => import('./qweather').then(m => m.qweather),
+    [API_ICUFREE]: () => import('./icufree').then(m => m.icufree),
+    [API_YIKETIANQI]: () => import('./yiketianqi').then(m => m.yiketianqi),
+    [API_VISUALCROSSING]: () => import('./visualcrossing').then(m => m.visualcrossing),
+    [API_OPENMETEO]: () => import('./openmeteo').then(m => m.openmeteo),
+};
 
 /**
  * Check if an API supports hourly forecast data

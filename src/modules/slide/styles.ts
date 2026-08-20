@@ -26,32 +26,18 @@ export function getSwitchInterval(): number {
     return calculate(Number(speed));
 }
 
+const SPEED_TO_SECONDS: Record<number, number> = {
+    0.5: 30,
+    1: 60,
+    2: 5 * 60,
+    3: 10 * 60,
+    4: 30 * 60,
+    5: 60 * 60,
+};
+
 /** Calculate switch interval from speed setting */
 export function calculate(t: number): number {
-    let res: number;
-    switch (t) {
-        case 0.5:
-            res = 30;
-            break;
-        case 1:
-            res = 60;
-            break;
-        case 2:
-            res = 5 * 60;
-            break;
-        case 3:
-            res = 10 * 60;
-            break;
-        case 4:
-            res = 30 * 60;
-            break;
-        case 5:
-            res = 60 * 60;
-            break;
-        default:
-            res = 60;
-    }
-    return res * 1000;
+    return (SPEED_TO_SECONDS[t] ?? 60) * 1000;
 }
 
 /** Switch transition effect */

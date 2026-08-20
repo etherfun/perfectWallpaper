@@ -8,7 +8,12 @@
 
 import { debugLogger, type LogEntry } from '../../../utils/logger';
 import { clearExpandedLogs, renderLogs } from './render';
-import { debugModalState } from './state';
+import { useDebugStore } from './store';
+
+// Pinia 惰性访问：避免模块加载期顶层 useDebugStore() 无 Pinia
+function getState() {
+    return useDebugStore();
+}
 
 /**
  * 复制文本到剪贴板
@@ -36,7 +41,7 @@ function clipboardCopy(text: string): void {
  * 关闭调试日志模态框（原移除 DOM；现写 visible + 解绑键盘监听）
  */
 export function closeDebugLogModal(): void {
-    debugModalState.visible = false;
+    getState().visible = false;
     document.removeEventListener('keydown', handleConsoleKeydown);
 }
 
@@ -52,9 +57,9 @@ export function copyDebugLogs(): void {
         .join('\n\n');
     clipboardCopy(text);
 
-    debugModalState.statusText = '已复制到剪贴板';
+    getState().statusText = '已复制到剪贴板';
     setTimeout(() => {
-        debugModalState.statusText = '就绪';
+        getState().statusText = '就绪';
     }, 2000);
 }
 
@@ -75,13 +80,13 @@ export function clearDebugLogs(): void {
 
 /** 设置过滤级别并刷新（原 .debug-filter-btn 处理） */
 export function setDebugFilter(level: number): void {
-    debugModalState.filterLevel = level;
+    getState().filterLevel = level;
     renderLogs(debugLogger?.logs || []);
 }
 
 /** 设置搜索文本并刷新（原 #debug-search-input input 处理） */
 export function setDebugSearch(text: string): void {
-    debugModalState.searchText = text;
+    getState().searchText = text;
     renderLogs(debugLogger?.logs || []);
 }
 
@@ -90,7 +95,7 @@ export function setDebugSearch(text: string): void {
  * 弹窗关闭（visible=false）时自动解绑，与原实现按 DOM 存在性解绑等价。
  */
 function handleConsoleKeydown(e: KeyboardEvent): void {
-    if (!debugModalState.visible) {
+    if (!getState().visible) {
         document.removeEventListener('keydown', handleConsoleKeydown);
         return;
     }

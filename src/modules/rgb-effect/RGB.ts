@@ -1,8 +1,7 @@
 /**
  * RGB 灯光效果模块
- * 将视频/图片/樱花/粒子/音频可视化效果合成为LED灯光数据
+ * 将视频/图片/樱花/粒子/音频可视化效果合成为 LED 灯光数据
  */
-
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
@@ -10,288 +9,167 @@ import { elements } from '../../utils/elementManager';
 import { debugLogger } from '../../utils/logger';
 import { backgroundLayers } from '../slide/types';
 
-/** Lazy accessors — defer store resolution (avoids Pinia init order issues in tests). */
 function cfg() { return useConfigStore(); }
 function rt() { return useRuntimeStore(); }
 
-// RAF chain tracking to prevent memory leaks
+// 单条定时链管理
 let currentRafId: number | null = null;
-// Track last video mode for visibility recovery
 let lastRafVideoMode: boolean | null = null;
-// 模块级缓存 — 跨多次 background2canvas 调用持久化，确保过渡锁生效
+
+// 背景图跨帧缓存
 let globalCachedSrc: string | null = null;
 let globalCachedImg: HTMLImageElement | null = null;
 
-// RGB 编码缓冲区 — 每帧复用，避免 getEncodedCanvasImageData 分配 6000 元素数组
+// 复用编码缓冲
 const ENCODED_CHANNEL_COUNT = 100 * 20 * 3;
 const _rgbColorArray: number[] = new Array(ENCODED_CHANNEL_COUNT);
 let _rgbCanvasCtx: CanvasRenderingContext2D | null | undefined;
 
-// Visibility change handler to resume RAF when tab becomes visible
 function handleVisibilityChange(): void {
-    if (document.visibilityState === 'visible') {
-        if (cfg().rgb_show) {
-            debugLogger.log('RGB: visibility restored, resuming RAF');
-            background2canvas(null, lastRafVideoMode ?? undefined);
-        }
+    if (document.visibilityState === 'visible' && cfg().rgb_show) {
+        debugLogger.log('RGB: visibility restored, resuming RAF');
+        background2canvas(null, lastRafVideoMode ?? undefined);
     }
 }
+if (typeof document !== 'undefined') document.addEventListener('visibilitychange', handleVisibilityChange);
 
-// Register visibility change listener once
-if (typeof document !== 'undefined') {
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-}
-
-/**
- * 获取编码的Canvas图像数据
- * 复用缓存的 context 与输出数组，避免每帧 getContext 查找与数组分配。
- */
 function getEncodedCanvasImageData(canvas: HTMLCanvasElement): string {
-    if (_rgbCanvasCtx === undefined) {
-        _rgbCanvasCtx = canvas.getContext('2d', { willReadFrequently: true });
+    if (_rgbCanvasCtx === undefined) _rgbCanvasCtx = canvas.getContext('2d', { willReadFrequently: true });
+    const ctx = _rgbCanvasCtx;
+    if (!ctx) return '';
+    const imageData = ctx.getImageData(0, 0, 100, 20);
+    const data = imageData.data;
+    for (let d = 0, w = 0; d < data.length; d += 4, w += 3) {
+        _rgbColorArray[w] = data[d] ?? 0;
+        _rgbColorArray[w + 1] = data[d + 1] ?? 0;
+        _rgbColorArray[w + 2] = data[d + 2] ?? 0;
     }
-    const context = _rgbCanvasCtx;
-    if (!context) return '';
-
-    const imageData = context.getImageData(0, 0, 100, 20);
-
-    for (let d = 0; d < imageData.data.length; d += 4) {
-        const write = (d / 4) * 3;
-        _rgbColorArray[write] = imageData.data[d] ?? 0;
-        _rgbColorArray[write + 1] = imageData.data[d + 1] ?? 0;
-        _rgbColorArray[write + 2] = imageData.data[d + 2] ?? 0;
-    }
-    // apply 传递固定长度参数列表（6000 个），避免 spread 迭代器分配
-    return String.fromCharCode.apply(null, _rgbColorArray);
+    return String.fromCharCode.apply(null, _rgbColorArray as unknown as number[]);
 }
 
-/**
- * 发送RGB数据到LED设备
- */
 function startRGBInternal(canvas: HTMLCanvasElement): void {
-    if (!cfg().wallpaper_settings?.ledPlugin) return;
-    // 主开关关闭时不发送 LED 数据
-    if (!cfg().rgb_show) return;
-    const encodedImageData = getEncodedCanvasImageData(canvas);
-    if (window.wpPlugins?.led) {
-        window.wpPlugins.led.setAllDevicesByImageData(
-            encodedImageData,
-            canvas.width,
-            canvas.height
-        );
-    }
+    if (!cfg().wallpaper_settings?.ledPlugin || !cfg().rgb_show) return;
+    const encoded = getEncodedCanvasImageData(canvas);
+    window.wpPlugins?.led?.setAllDevicesByImageData(encoded, canvas.width, canvas.height);
 }
 
-/**
- * 开始RGB背景渲染
- * @param src 背景图片路径
- * @param videoORimages 是否为视频模式
- */
 export function background2canvas(src?: string | null, videoORimages?: boolean): void {
     lastRafVideoMode = videoORimages ?? null;
 
     const sakura = elements.sakura;
     const particles = document.getElementById('canvas-particles') as HTMLCanvasElement | null;
-    const bg = elements.slide.RGBuse as HTMLCanvasElement;
-    const rgbbgCtx = bg?.getContext('2d');
-    if (!rgbbgCtx) return;
-    const rgbbg = rgbbgCtx;
+    const bg = elements.slide.RGBuse as HTMLCanvasElement | null;
+    if (!bg) return;
+    const rgbbg = bg.getContext('2d') as CanvasRenderingContext2D | null;
+    if (!rgbbg) return;
 
     let time = 0;
 
+    function drawAudioBars(ctx: CanvasRenderingContext2D): void {
+        const audioArray = rt().playerInfo.audioArray;
+        const audiobarRGB = cfg().audiobar_rgb;
+        if (!audiobarRGB || !audioArray?.length) return;
+
+        const barWidth = bg!.width / 128;
+        const scaleFactor = cfg().aurgbhigh ?? 1;
+        const rainbow = cfg().audiobar_rainbow_color;
+        const rainbowMove = cfg().rainbow_move;
+        const hueStep = 360 / 128;
+
+        if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
+            window.smoothedAudioArray = new Array(audioArray.length).fill(0);
+        }
+        const smoothed = window.smoothedAudioArray;
+        for (let i = 0; i < audioArray.length; i++) smoothed[i] = (smoothed[i] ?? 0) + ((audioArray[i] ?? 0) - (smoothed[i] ?? 0)) * 0.1;
+
+        for (let i = 0; i < audioArray.length; i++) {
+            const height = Math.min(bg!.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor, bg!.height);
+            const x = barWidth * (i % 64 + (i >= 64 ? 64 : 0));
+            if (rainbow) {
+                const hue = (i * hueStep + time) % 360;
+                ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
+            } else {
+                ctx.fillStyle = `rgb(${cfg().aurgbcolor})`;
+            }
+            ctx.fillRect(x, bg!.height - height, barWidth, height);
+        }
+        if (rainbow && rainbowMove) time += cfg().rainbow_move_speed ?? 1;
+    }
+
     function drawLayers(): void {
+        const ctx = rgbbg as CanvasRenderingContext2D;
         const sakuraRGB = cfg().sakura_rgb;
-        const sakurause =
-            sakuraRGB &&
-            sakura.width === window.screen.width &&
-            sakura.height === window.screen.height;
+        const sakurause = sakuraRGB && sakura.width === window.screen.width && sakura.height === window.screen.height;
         const opacitySaRGB = cfg().opacity_sa_rgb ?? 1;
         const particlesRGB = cfg().particles_rgb;
         const audiobarRGB = cfg().audiobar_rgb;
-        const audiobarRainbowColor = cfg().audiobar_rainbow_color;
-        const rainbowMove = cfg().rainbow_move;
-        const rainbowMoveSpeed = cfg().rainbow_move_speed ?? 1;
-        const aurgbcolor = cfg().aurgbcolor;
-        const aurgbhigh = cfg().aurgbhigh ?? 1;
-        const RGBRefresh = cfg().rgb_refresh ?? 0;
-        const RGBShow = cfg().rgb_show;
-        const nextphoto = cfg().nextphoto;
-        const isPaused = cfg().paused;
-        const isVideoMode = cfg().wallpaper_mode === 3;
+        const hasAudio = !!rt().playerInfo.audioArray?.length;
 
-        rgbbg.save();
-        rgbbg.globalAlpha = opacitySaRGB;
-        if (sakurause) {
-            rgbbg.drawImage(sakura, 0, 0, sakura.width, sakura.height, 0, 0, 100, 20);
+        ctx.save();
+        ctx.globalAlpha = opacitySaRGB;
+        if (sakurause) ctx.drawImage(sakura, 0, 0, sakura.width, sakura.height, 0, 0, 100, 20);
+        ctx.globalAlpha = 1;
+        if (particlesRGB && particles) ctx.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20);
+
+        // 统一音频柱绘制（消除两套几乎相同的分支）
+        if (audiobarRGB && hasAudio) drawAudioBars(ctx);
+
+        const hasBgImage = cfg().background_rgb && (cfg().wallpaper_mode === 3 || (globalCachedSrc && globalCachedImg?.complete));
+        if (cfg().rgb_show && !hasBgImage && !sakurause && !particlesRGB && !hasAudio) {
+            ctx.fillStyle = `hsl(${(time * 5) % 360}, 80%, 40%)`;
+            ctx.fillRect(0, 0, 100, 20);
+            time += 0.5;
         }
 
-        rgbbg.globalAlpha = 1;
-        if (particlesRGB && particles) {
-            rgbbg.drawImage(particles, 0, 0, particles.width, particles.height, 0, 0, 100, 20);
-        }
+        ctx.restore();
+        if (bg) startRGBInternal(bg);
 
-        const audioArray = rt().playerInfo.audioArray;
-        if (audiobarRainbowColor) {
-            if (audiobarRGB && audioArray && audioArray.length > 0) {
-                const barWidth = bg.width / 128;
-                const scaleFactor = aurgbhigh;
-                const hueStep = 360 / 128;
-
-                if (
-                    !window.smoothedAudioArray ||
-                    window.smoothedAudioArray.length !== audioArray.length
-                ) {
-                    window.smoothedAudioArray = new Array(audioArray.length).fill(0);
-                }
-                const smoothed = window.smoothedAudioArray;
-
-                for (let i = 0; i < audioArray.length; ++i) {
-                    const cur = smoothed[i] ?? 0;
-                    smoothed[i] = cur + ((audioArray[i] ?? 0) - cur) * 0.1;
-                }
-
-                for (let i = 0; i < audioArray.length; ++i) {
-                    const hue = (i * hueStep + time) % 360;
-                    const saturation = '100%';
-                    const lightness = '50%';
-                    const rgbColor = `hsl(${hue}, ${saturation}, ${lightness})`;
-
-                    let channelIndex = i % 64;
-                    if (i >= 64) {
-                        channelIndex += 64;
-                    }
-
-                    const height =
-                        bg.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor;
-                    const actualHeight = Math.min(height, bg.height);
-
-                    rgbbg.fillStyle = rgbColor;
-                    rgbbg.fillRect(
-                        barWidth * channelIndex,
-                        bg.height - actualHeight,
-                        barWidth,
-                        actualHeight
-                    );
-                }
-                if (rainbowMove) {
-                    time += rainbowMoveSpeed;
-                }
-            }
-        } else {
-            if (audiobarRGB && audioArray && audioArray.length > 0) {
-                const barWidth = bg.width / 128;
-                const scaleFactor = aurgbhigh;
-                rgbbg.fillStyle = `rgb(${aurgbcolor})`;
-
-                if (
-                    !window.smoothedAudioArray ||
-                    window.smoothedAudioArray.length !== audioArray.length
-                ) {
-                    window.smoothedAudioArray = new Array(audioArray.length).fill(0);
-                }
-                const smoothed = window.smoothedAudioArray;
-
-                for (let i = 0; i < audioArray.length; ++i) {
-                    const cur = smoothed[i] ?? 0;
-                    smoothed[i] = cur + ((audioArray[i] ?? 0) - cur) * 0.1;
-                }
-
-                for (let i = 0; i < audioArray.length; ++i) {
-                    let channelIndex = i % 64;
-                    if (i >= 64) {
-                        channelIndex += 64;
-                    }
-                    const height =
-                        bg.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor;
-                    const actualHeight = Math.min(height, bg.height);
-                    rgbbg.fillRect(
-                        barWidth * channelIndex,
-                        bg.height - actualHeight,
-                        barWidth,
-                        actualHeight
-                    );
-                }
-            }
-        }
-
-        // 兜底：RGB 已启用但画布仍为空白时，显示动态色块（确保 LED 设备有反馈）
-        const hasBgImage = cfg().background_rgb && (isVideoMode || (globalCachedSrc && globalCachedImg?.complete));
-        if (RGBShow && !hasBgImage && !sakurause && !particlesRGB && !audiobarRGB) {
-            const hue = (time * 5) % 360;
-            rgbbg.fillStyle = `hsl(${hue}, 80%, 40%)`;
-            rgbbg.fillRect(0, 0, 100, 20);
-            time += 0.5; // 兜底层也随时间变化
-        }
-
-        rgbbg.restore();
-        startRGBInternal(bg);
-
-        if (
-            cfg().wallpaper_settings?.ledPlugin &&
-            !nextphoto &&
-            !isPaused &&
-            RGBShow &&
-            (isVideoMode || cfg().background_rgb || sakurause || particlesRGB || audiobarRGB || true)
-        ) {
-            // 默认 30fps 刷新率（33ms），防止无限制 60fps 导致高 CPU
-            // 用 setTimeout 直接驱动下一帧并记录调度 id：background2canvas 再次
-            // 进入时能取消旧链，避免多次调用产生多条并行渲染链（原实现里
-            // setTimeout+RAF 链的 RAF id 未被记录，旧链无法被取消）。
-            const refreshMs = (RGBRefresh > 0) ? RGBRefresh : 33;
+        // 修复空转：任一有效源才继续调度，避免 `|| true` 导致无源空刷新
+        const shouldContinue = Boolean(
+            cfg().wallpaper_settings?.ledPlugin && !cfg().nextphoto && !cfg().paused && cfg().rgb_show &&
+            (cfg().wallpaper_mode === 3 || cfg().background_rgb || sakurause || particlesRGB || hasAudio)
+        );
+        if (shouldContinue) {
+            const r = cfg().rgb_refresh;
+            const refreshMs = r !== undefined && r > 0 ? r : 33;
             currentRafId = window.setTimeout(drawbackground, refreshMs);
         }
     }
 
     function drawbackground(): void {
-        // 主开关关闭时不渲染任何内容
         if (!cfg().rgb_show) return;
+        const ctx = rgbbg as CanvasRenderingContext2D;
 
         const backgroundRGB = cfg().background_rgb;
-        const wallpaperMode = cfg().wallpaper_mode;
-        const isVideoMode = videoORimages === true || wallpaperMode === 3;
+        const isVideoMode = videoORimages === true || cfg().wallpaper_mode === 3;
 
-        // 从 runtime 读取当前图片（所有源在切图时已显式写入 currentImg）
         let resolvedSrc: string | null = null;
         if (backgroundRGB && !isVideoMode) {
             resolvedSrc = rt().photo.currentImg;
-            // 过渡期间锁定到旧缓存，避免闪烁
             if (backgroundLayers.isTransitioning && globalCachedSrc && resolvedSrc !== globalCachedSrc) {
                 resolvedSrc = globalCachedSrc;
             }
         }
 
-        // 始终先清空画布，防止上一帧残留
-        rgbbg.clearRect(0, 0, 100, 20);
+        ctx.clearRect(0, 0, 100, 20);
 
         if (backgroundRGB) {
             if (isVideoMode) {
                 const video = elements.myvideo;
-                if (video && !video.paused && !video.ended) {
-                    rgbbg.drawImage(video, 0, 0, 100, 20);
-                }
+                if (video && !video.paused && !video.ended) ctx.drawImage(video, 0, 0, 100, 20);
             } else if (resolvedSrc) {
                 if (resolvedSrc !== globalCachedSrc) {
                     globalCachedSrc = resolvedSrc;
                     globalCachedImg = new Image();
                     globalCachedImg.src = resolvedSrc;
                 }
-                if (globalCachedImg?.complete && globalCachedImg.naturalWidth > 0) {
-                    rgbbg.drawImage(globalCachedImg, 0, 0, 100, 20);
-                }
+                if (globalCachedImg?.complete && globalCachedImg.naturalWidth > 0) ctx.drawImage(globalCachedImg, 0, 0, 100, 20);
             }
-            // background_rgb 开启但无可用源时画布保持 clearRect 后的黑色
         }
 
         drawLayers();
     }
 
-    // Cancel any existing scheduled frame before starting new chain.
-    // 链内调度统一使用 setTimeout id：clearTimeout 可取消挂起帧，多次调用
-    // background2canvas 只会保留一条渲染链，避免并行链导致每帧重复合成 +
-    // 重复向 LED 设备发送数据（原实现 RAF id 无法被取消，旧链会残留）。
-    if (currentRafId !== null) {
-        clearTimeout(currentRafId);
-        currentRafId = null;
-    }
+    if (currentRafId !== null) { clearTimeout(currentRafId); currentRafId = null; }
     currentRafId = window.setTimeout(drawbackground, 0);
 }

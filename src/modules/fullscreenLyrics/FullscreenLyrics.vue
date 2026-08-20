@@ -146,8 +146,10 @@
  */
 import { useConfigStore } from '@/stores/config';
 
-import type { RenderedLyricLine } from './state';
-import { lyricsUiState } from './state';
+import type { RenderedLyricLine } from './store';
+import { useLyricsStore } from './store';
+
+const lyricsUiState = useLyricsStore();
 
 const config = useConfigStore();
 const _ = (): boolean => Boolean(config.fullscreen_lyrics_enabled);

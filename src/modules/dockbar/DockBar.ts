@@ -12,8 +12,8 @@ import {
     queryDomElements,
     render,
 } from './renderer';
-import { setDockIcon, setDockItems, setDockVisible } from './state';
 import { loadItems, saveItems } from './storage';
+import { setDockIcon, setDockItems, setDockVisible } from './store';
 import type { DockBarConfig, DockItem } from './types';
 
 export class DockBar {

@@ -10,7 +10,12 @@
  */
 
 import type { LogEntry } from '../../../utils/logger';
-import { debugModalState } from './state';
+import { useDebugStore } from './store';
+
+// Pinia 惰性访问：模块加载期 Pinia 未激活，函数内获取避免顶层调用报错
+function getState() {
+    return useDebugStore();
+}
 
 /**
  * 格式化时间戳为时分秒
@@ -45,7 +50,7 @@ export function getLevelColor(level: number): { bg: string; text: string; label:
 
 /** 日志是否展开（原 expandedLogs.has） */
 export function isLogExpanded(id: number): boolean {
-    return debugModalState.expanded.has(id);
+    return getState().expanded.has(id);
 }
 
 /**
@@ -53,16 +58,17 @@ export function isLogExpanded(id: number): boolean {
  * 模板绑定 expanded，无需重渲染）
  */
 export function toggleLogDetails(id: number): void {
-    if (debugModalState.expanded.has(id)) {
-        debugModalState.expanded.delete(id);
+    const s = getState();
+    if (s.expanded.has(id)) {
+        s.expanded.delete(id);
     } else {
-        debugModalState.expanded.add(id);
+        s.expanded.add(id);
     }
 }
 
 /** 供折叠全部按钮使用的展开状态清理 */
 export function clearExpandedLogs(): void {
-    debugModalState.expanded.clear();
+    getState().expanded.clear();
 }
 
 /**
@@ -71,10 +77,11 @@ export function clearExpandedLogs(): void {
  * 现改为读取 debugModalState.filterLevel / searchText。
  */
 export function renderLogs(logs: LogEntry[]): void {
-    debugModalState.logs = [...logs];
+    const s = getState();
+    s.logs = [...logs];
 
-    const filterLevel = debugModalState.filterLevel;
-    const searchText = debugModalState.searchText.toLowerCase();
+    const filterLevel = s.filterLevel;
+    const searchText = s.searchText.toLowerCase();
 
     let filteredLogs = logs;
     if (filterLevel >= 0) {
@@ -89,12 +96,10 @@ export function renderLogs(logs: LogEntry[]): void {
         );
     }
 
-    debugModalState.filtered = filteredLogs;
-    debugModalState.logCountText = `${logs.length} 条日志`;
-    debugModalState.searchCountText = searchText ? `${filteredLogs.length}/${logs.length}` : '';
-    debugModalState.statusText = searchText
-        ? `找到 ${filteredLogs.length} 条匹配`
-        : `共 ${logs.length} 条`;
-    debugModalState.emptyText = searchText ? '无匹配结果' : '暂无日志';
-    debugModalState.hasLogs = filteredLogs.length > 0;
+    s.filtered = filteredLogs;
+    s.logCountText = `${logs.length} 条日志`;
+    s.searchCountText = searchText ? `${filteredLogs.length}/${logs.length}` : '';
+    s.statusText = searchText ? `找到 ${filteredLogs.length} 条匹配` : `共 ${logs.length} 条`;
+    s.emptyText = searchText ? '无匹配结果' : '暂无日志';
+    s.hasLogs = filteredLogs.length > 0;
 }

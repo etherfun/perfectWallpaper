@@ -12,7 +12,9 @@ import { useRuntimeStore } from '@/stores/runtime';
 const runtimeStore = useRuntimeStore();
 
 import { PLAYER_STATE } from '../types';
-import { playerUiState } from './uiState';
+import { usePlayerStore } from './store';
+
+const playerUiState = usePlayerStore();
 
 /**
  * 同步上次记录到的播放状态（用于检测真正的状态变化）。

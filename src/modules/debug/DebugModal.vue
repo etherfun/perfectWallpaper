@@ -190,8 +190,9 @@ import {
     setDebugSearch,
 } from './debugModal/events';
 import { formatTime, getLevelColor, toggleLogDetails } from './debugModal/render';
-import { debugModalState } from './debugModal/state';
+import { useDebugStore } from './debugModal/store';
 
+const debugModalState = useDebugStore();
 const config = useConfigStore();
 const _ = (): boolean => Boolean(config.debugger_copy);
 

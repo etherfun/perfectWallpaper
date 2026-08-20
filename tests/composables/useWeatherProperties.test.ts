@@ -1,42 +1,29 @@
 // @vitest-environment jsdom
 /**
- * Tests for src/composables/useWeatherProperties.ts — Stage 3-2
+ * Tests for src/modules/weather/useWeatherProperties.ts
  *
  * Verifies the weather property handler covers all dispatch paths and
- * propagates to Pinia + body CSS vars + weather sub-module side effects.
+ * propagates to Pinia (config store + weather store) + body CSS vars.
+ *
+ * 注意：useWeatherProperties 现在通过 useWeatherStore 的 action 驱动天气子模块
+ * （setVisible / setApiChoice / setLocationField / setDailyTip / setUnitName），
+ * 这些 action 在 non-firstLoad 时会触发 init()（含网络请求）。测试中对 store.init
+ * 打桩以避免真实网络调用，仅验证分发是否正确。
  */
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import { useConfigStore } from '@/stores/config';
+import { useWeatherStore } from '@/modules/weather';
 import { debugLogger } from '@/utils/logger';
 
-const { mockAutoWeather, mockGenerateWeatherTable, mockSetWeatherUnitByName, mockWeatherInit, mockTimerRemove } =
-    vi.hoisted(() => ({
-        mockAutoWeather: vi.fn(),
-        mockGenerateWeatherTable: vi.fn(),
-        mockSetWeatherUnitByName: vi.fn(),
-        mockWeatherInit: vi.fn(),
-        mockTimerRemove: vi.fn(),
-    }));
-
-vi.mock('@/modules/weather', () => ({
-    autoWeather: mockAutoWeather,
-    generateWeatherTable: mockGenerateWeatherTable,
-    weather_init: mockWeatherInit,
-    weather_address: { latitude: '', longitude: '', cityname: '' },
+const { mockTimerCreate, mockTimerRemove } = vi.hoisted(() => ({
+    mockTimerCreate: vi.fn(),
+    mockTimerRemove: vi.fn(),
 }));
-vi.mock('@/modules/weather/weatherState', async () => {
-    const actual = await vi.importActual<typeof import('@/modules/weather/weatherState')>(
-        '@/modules/weather/weatherState'
-    );
-    return {
-        ...actual,
-        setWeatherUnitByName: mockSetWeatherUnitByName,
-    };
-});
+
 vi.mock('@/utils/timer', () => ({
-    timerManager: { remove: mockTimerRemove },
+    timerManager: { create: mockTimerCreate, remove: mockTimerRemove },
 }));
 vi.mock('@/utils/tool', () => ({
     debounce: vi.fn(),
@@ -54,6 +41,8 @@ vi.mock('@/utils/elementManager', () => ({
 
 import { useWeatherProperties } from '@/modules/weather/useWeatherProperties';
 
+let weather: ReturnType<typeof useWeatherStore>;
+
 beforeEach(() => {
     setActivePinia(createPinia());
     debugLogger.clearLogs();
@@ -65,10 +54,13 @@ beforeEach(() => {
             disconnect() {}
         } as unknown as typeof ResizeObserver;
     }
-    mockAutoWeather.mockClear();
-    mockGenerateWeatherTable.mockClear();
-    mockSetWeatherUnitByName.mockClear();
+    mockTimerCreate.mockClear();
     mockTimerRemove.mockClear();
+
+    // 获取天气 store 实例并对 init 打桩，避免真实网络请求
+    weather = useWeatherStore();
+    vi.spyOn(weather, 'init').mockResolvedValue();
+    vi.spyOn(weather, 'setUnitName');
 });
 
 afterEach(() => {
@@ -76,22 +68,27 @@ afterEach(() => {
 });
 
 describe('useWeatherProperties', () => {
-    test('weather_show true → visible + autoWeather()', () => {
+    test('weather_show true → visible + startAutoRefresh', () => {
         useWeatherProperties({ weather_show: { value: true } } as never, false);
-        expect(mockTimerRemove).toHaveBeenCalledWith('updataWeather');
-        expect(mockAutoWeather).toHaveBeenCalledTimes(1);
+        expect(weather.ui.visible).toBe(true);
+        expect(mockTimerCreate).toHaveBeenCalledWith(
+            expect.any(Function),
+            expect.any(Number),
+            'updataWeather'
+        );
     });
 
-    test('weather_show false → hidden + no autoWeather', () => {
+    test('weather_show false → hidden + no autoRefresh', () => {
         useWeatherProperties({ weather_show: { value: false } } as never, false);
-        expect(mockAutoWeather).not.toHaveBeenCalled();
+        expect(weather.ui.visible).toBe(false);
+        expect(mockTimerCreate).not.toHaveBeenCalled();
     });
 
-    test('weather_unit patches store + setWeatherUnitByName', () => {
+    test('weather_unit → config.weather_unit + setUnitName', () => {
         const store = useConfigStore();
         useWeatherProperties({ weather_unit: { value: 'metric' } } as never, false);
         expect(store.weather_unit).toBe('metric');
-        expect(mockSetWeatherUnitByName).toHaveBeenCalledWith('metric');
+        expect(weather.setUnitName).toHaveBeenCalledWith('metric');
     });
 
     test('weather_Color → rgb() string CSS + store color array', () => {
@@ -124,25 +121,21 @@ describe('useWeatherProperties', () => {
 
     test('position patches set CSS variables with %', () => {
         const store = useConfigStore();
-        useWeatherProperties(
-            { weatherX: { value: 25 }, weatherY: { value: 75 } } as never,
-            false
-        );
+        useWeatherProperties({ weatherX: { value: 25 }, weatherY: { value: 75 } } as never, false);
         expect(store.weather_x).toBe(25);
         expect(store.weather_y).toBe(75);
         expect(document.body.style.getPropertyValue('--weather-left')).toBe('25%');
         expect(document.body.style.getPropertyValue('--weather-top')).toBe('75%');
     });
 
-    test('weather_lat_latitude patches weather_address.latitude + store', async () => {
-        const { weather_address } = await import('@/modules/weather');
+    test('weather_lat_latitude patches weather store address + config', () => {
         const store = useConfigStore();
         useWeatherProperties(
             { weather_lat_latitude: { value: 39.9 }, weather_lat_longitude: { value: 116.4 } } as never,
             false
         );
-        expect(weather_address.latitude).toBe('39.9');
-        expect(weather_address.longitude).toBe('116.4');
+        expect(weather.address.latitude).toBe('39.9');
+        expect(weather.address.longitude).toBe('116.4');
         expect(store.weather_latitude).toBe('39.9');
         expect(store.weather_longitude).toBe('116.4');
     });

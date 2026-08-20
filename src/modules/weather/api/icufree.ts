@@ -1,5 +1,5 @@
 import { fetch_with_retry } from '../../../utils/tool';
-import type { WeatherAddress, WeatherData } from '../types';
+import type { WeatherAddress, WeatherData, WeatherUnit } from '../types';
 
 interface IcuFreeResponse {
     cityname: string;
@@ -14,13 +14,15 @@ interface IcuFreeResponse {
 /**
  * 免费天气API (icufree) 实现
  * Case 2: icufree
+ *
+ * 拉取数据后返回归一化片段，由调用方统一写入响应式状态。
  */
 export async function icufree(
-    weather_address: WeatherAddress,
-    weather_data: WeatherData
-): Promise<void> {
+    address: WeatherAddress,
+    _unit: WeatherUnit
+): Promise<Partial<WeatherData>> {
     const response = await fetch_with_retry(
-        `https://api.icufree.com/weather.php?cityname=${weather_address.cityname}`,
+        `https://api.icufree.com/weather.php?cityname=${address.cityname}`,
         {},
         3
     );
@@ -30,11 +32,13 @@ export async function icufree(
         throw new Error('Invalid ICUFree API response: missing required fields');
     }
 
-    weather_address.cityname = res.cityname;
-    weather_data.temperature = res.feels;
-    weather_data.weathernow = res.weathernow ?? '';
-    weather_data.wind = (res.wind ?? '').slice(0, -1);
-    weather_data.windLv = (res.windLv ?? '').slice(0, -1);
-    weather_data.temperature_max = res.high ?? '';
-    weather_data.temperature_min = res.low ?? '';
+    address.cityname = res.cityname;
+    return {
+        temperature: res.feels,
+        weathernow: res.weathernow ?? '',
+        wind: (res.wind ?? '').slice(0, -1),
+        windLv: (res.windLv ?? '').slice(0, -1),
+        temperature_max: res.high ?? '',
+        temperature_min: res.low ?? '',
+    };
 }

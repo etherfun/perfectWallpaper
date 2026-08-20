@@ -4,6 +4,26 @@ import { debugLogger } from '@/utils/logger';
 import { EMPTY_TIME_TEXT } from './constants';
 import { OPEN_METEO_TO_QWEATHER } from './types';
 
+/** 风向角 → i18n key（每 45° 一档，共 8 个方向） */
+const WIND_DIRECTIONS = [
+    'weather_wind_north',
+    'weather_wind_northeast',
+    'weather_wind_east',
+    'weather_wind_southeast',
+    'weather_wind_south',
+    'weather_wind_southwest',
+    'weather_wind_west',
+    'weather_wind_northwest',
+];
+
+/**
+ * 将风向角度（0~360）转换为方向 i18n key
+ */
+export function windDirectionToText(windDirection: number): string {
+    const dirIndex = Math.floor((windDirection + 22.5) / 45) % 8;
+    return globalT(WIND_DIRECTIONS[dirIndex] ?? 'weather_no_data');
+}
+
 /** 夜间时段边界（小时）：18 点后、6 点前视为夜间 */
 const NIGHT_START_HOUR = 18;
 const NIGHT_END_HOUR = 6;
@@ -13,27 +33,33 @@ const NIGHT_END_HOUR = 6;
  * @param timeString - 时间字符串
  * @returns 格式化后的时间字符串（HH:mm）
  */
-export function formatTime(timeString: string | undefined): string {
+export function formatTime(timeString: Date | string | undefined, showDate = false): string {
     if (!timeString) return EMPTY_TIME_TEXT;
 
     try {
-        const date = new Date(timeString);
+        const date = timeString instanceof Date ? timeString : new Date(timeString);
         if (isNaN(date.getTime())) {
-            const timeMatch = timeString.match(/(\d{1,2}):(\d{1,2})/);
-            if (timeMatch?.[1] && timeMatch[2]) {
+            const str = timeString instanceof Date ? '' : timeString;
+            const timeMatch = str.match(/(\d{1,2}):(\d{1,2})/);
+            if (timeMatch?.[1] && timeMatch?.[2]) {
                 const hours = timeMatch[1].padStart(2, '0');
                 const minutes = timeMatch[2].padStart(2, '0');
                 return `${hours}:${minutes}`;
             }
-            return timeString;
+            return str;
         }
 
         const hours = date.getHours().toString().padStart(2, '0');
         const minutes = date.getMinutes().toString().padStart(2, '0');
-        return `${hours}:${minutes}`;
+        const time = `${hours}:${minutes}`;
+        if (!showDate) return time;
+
+        const month = (date.getMonth() + 1).toString().padStart(2, '0');
+        const day = date.getDate().toString().padStart(2, '0');
+        return `${month}-${day} ${time}`;
     } catch (error) {
         debugLogger.error('[Weather] Failed to format time', { timeString, error });
-        return timeString;
+        return timeString instanceof Date ? timeString.toISOString() : (timeString ?? EMPTY_TIME_TEXT);
     }
 }
 

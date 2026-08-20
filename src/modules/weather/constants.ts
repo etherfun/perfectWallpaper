@@ -39,3 +39,13 @@ export const TOOLTIP_EDGE_OFFSET = 20;
 
 /** Tooltip 隐藏动画等待时长（ms） */
 export const TOOLTIP_HIDE_DELAY_MS = 200;
+
+/** 各 API 的自动刷新间隔（ms） */
+export const WEATHER_UPDATE_INTERVALS: Record<number, number> = {
+    [API_QWEATHER]: 15 * 60 * 1000,
+    [API_ICUFREE]: 20 * 60 * 1000,
+    [API_YIKETIANQI]: 30 * 60 * 1000,
+    [API_VISUALCROSSING]: 45 * 60 * 1000,
+    [API_OPENMETEO]: 60 * 60 * 1000,
+};
+export const DEFAULT_UPDATE_INTERVAL = 15 * 60 * 1000;

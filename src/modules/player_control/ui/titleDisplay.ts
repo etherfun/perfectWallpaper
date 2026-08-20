@@ -11,7 +11,9 @@ const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
 import { elements } from '@/utils/elementManager';
 
-import { playerUiState } from '../state/uiState';
+import { usePlayerStore } from '../state/store';
+
+const playerUiState = usePlayerStore();
 import { pc_aubar } from './audioBar';
 
 /**

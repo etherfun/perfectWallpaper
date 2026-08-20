@@ -9,7 +9,7 @@
  */
 
 import { LINE_HEIGHT, SCROLL_CONTAINER_HEIGHT, VISIBLE_RANGE } from '../constants';
-import type { LyricsUiState, RenderedLyricLine } from '../state';
+import type { LyricsUiState, RenderedLyricLine } from '../store';
 import type { FullscreenLyricsConfig, LyricLine, LyricsData } from '../types';
 
 /**

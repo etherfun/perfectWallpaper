@@ -17,69 +17,11 @@ import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
 import { logInitComplete } from '../../utils/helpers';
-import { timerManager } from '../../utils/timer';
-import { debounce } from '../../utils/tool';
-import {
-    autoWeather,
-    generateWeatherTable,
-    weather_address,
-    weather_init,
-} from '../weather';
-import { setWeatherUnitByName, weatherUiState } from '../weather/weatherState';
-
-/** WE 属性变化后触发天气刷新的防抖间隔（ms） */
-const REFRESH_DEBOUNCE_MS = 1500;
+import { useWeatherStore } from '../weather';
 
 /** 将 WE 浮点颜色（0~1 空格分隔）转换为 0~255 RGB 数组 */
 function parseWEColor(value: string): number[] {
     return value.split(' ').map(c => Math.ceil(parseFloat(c) * 255));
-}
-
-/**
- * 同步单个 WE 属性到 Pinia patch 与 config 单例。
- * patch 在函数末尾批量生效；config 同步赋值保证后续读取立即可见。
- */
-function syncProperty<T extends object>(
-    prop: { value: unknown } | undefined,
-    key: string,
-    patch: Record<string, unknown>,
-    config: T
-): void {
-    if (!prop) return;
-    const v = prop.value;
-    patch[key] = v;
-    (config as Record<string, unknown>)[key] = v;
-}
-
-/** 选择天气 API（写入 weather_api_choose），非首次加载时防抖刷新数据 */
-function selectWeatherApi<T extends object>(
-    prop: { value: boolean } | undefined,
-    apiId: number,
-    patch: Record<string, unknown>,
-    config: T,
-    FirstLoad: boolean
-): void {
-    if (!prop?.value) return;
-    syncProperty({ value: apiId }, 'weather_api_choose', patch, config);
-    if (!FirstLoad) debounce(weather_init, REFRESH_DEBOUNCE_MS);
-}
-
-/** 更新天气坐标/城市文本到模块状态，非首次加载时防抖刷新数据 */
-function updateLocation(
-    key: 'latitude' | 'longitude' | 'cityname',
-    value: string,
-    patch: Record<string, unknown>,
-    FirstLoad: boolean
-): void {
-    weather_address[key] = value;
-    const patchKey =
-        key === 'latitude'
-            ? 'weather_latitude'
-            : key === 'longitude'
-              ? 'weather_longitude'
-              : 'weather_city_text';
-    patch[patchKey] = value;
-    if (!FirstLoad) debounce(weather_init, REFRESH_DEBOUNCE_MS);
 }
 
 /**
@@ -91,69 +33,54 @@ function updateLocation(
  */
 export function useWeatherProperties(properties: WallpaperProperties, FirstLoad: boolean): void {
     const store = useConfigStore();
-    const config = store;
-    const patch: Record<string, unknown> = {};
+    const weather = useWeatherStore();
 
-    // 各 API 的密钥 / 主机配置
-    syncProperty(properties.getcitykey_qweather, 'city_key', patch, config);
-    syncProperty(properties.getAPIHOST_qweather, 'api_host', patch, config);
-    syncProperty(properties.getcityappid_tianqiapi, 'weather_app_id', patch, config);
-    syncProperty(properties.getcityappsecret_tianqiapi, 'weather_app_secret', patch, config);
-    syncProperty(properties.getcitykey_visualcrossing, 'visual_crossing_key', patch, config);
-    syncProperty(properties.weather_updata, 'weather_updata', patch, config);
-    syncProperty(properties.weather_lang, 'weather_lang', patch, config);
-    syncProperty(properties.qweatherapi_paymode, 'qweather_api_paymode', patch, config);
+    // 各 API 的密钥 / 主机配置（直接写入 config store，响应式等价原 batch patch）
+    if (properties.getcitykey_qweather) store.city_key = properties.getcitykey_qweather.value;
+    if (properties.getAPIHOST_qweather) store.api_host = properties.getAPIHOST_qweather.value;
+    if (properties.getcityappid_tianqiapi)
+        store.weather_app_id = properties.getcityappid_tianqiapi.value;
+    if (properties.getcityappsecret_tianqiapi)
+        store.weather_app_secret = properties.getcityappsecret_tianqiapi.value;
+    if (properties.getcitykey_visualcrossing)
+        store.visual_crossing_key = properties.getcitykey_visualcrossing.value;
+    if (properties.weather_updata) store.weather_updata = properties.weather_updata.value;
+    if (properties.weather_lang) store.weather_lang = properties.weather_lang.value;
+    if (properties.qweatherapi_paymode)
+        store.qweather_api_paymode = properties.qweatherapi_paymode.value;
 
     if (properties.weather_unit) {
-        const unit = properties.weather_unit.value;
-        syncProperty({ value: unit }, 'weather_unit', patch, config);
-        setWeatherUnitByName(unit || 'metric');
+        weather.setUnitName(properties.weather_unit.value || 'metric');
     }
 
     if (properties.weather_daliy_tip) {
-        const v = properties.weather_daliy_tip.value;
-        syncProperty({ value: v }, 'weather_daily_tip', patch, config);
-        if (!FirstLoad) {
-            generateWeatherTable();
-        }
+        weather.setDailyTip(!!properties.weather_daliy_tip.value, FirstLoad);
     }
 
     // 坐标 / 城市文本
-    if (properties.weather_lat_latitude) {
-        updateLocation('latitude', String(properties.weather_lat_latitude.value), patch, FirstLoad);
-    }
-    if (properties.weather_lat_longitude) {
-        updateLocation(
+    if (properties.weather_lat_latitude)
+        weather.setLocationField('latitude', String(properties.weather_lat_latitude.value), FirstLoad);
+    if (properties.weather_lat_longitude)
+        weather.setLocationField(
             'longitude',
             String(properties.weather_lat_longitude.value),
-            patch,
             FirstLoad
         );
-    }
-    if (properties.weather_CityText) {
-        updateLocation('cityname', properties.weather_CityText.value, patch, FirstLoad);
-    }
+    if (properties.weather_CityText)
+        weather.setLocationField('cityname', properties.weather_CityText.value, FirstLoad);
 
     // API 选择
-    selectWeatherApi(properties.freeapi, 2, patch, config, FirstLoad);
-    selectWeatherApi(properties.qweatherapi, 1, patch, config, FirstLoad);
-    selectWeatherApi(properties.tianqiapi, 3, patch, config, FirstLoad);
-    selectWeatherApi(properties.visualcrossingapi, 4, patch, config, FirstLoad);
-    selectWeatherApi(properties.open_meteoapi, 5, patch, config, FirstLoad);
-
-    // Apply batch first so weather_show dispatch reads fresh values if needed
-    if (Object.keys(patch).length > 0) {
-        store.$patch(patch);
-    }
+    if (properties.freeapi?.value) weather.setApiChoice(2, FirstLoad);
+    if (properties.qweatherapi?.value) weather.setApiChoice(1, FirstLoad);
+    if (properties.tianqiapi?.value) weather.setApiChoice(3, FirstLoad);
+    if (properties.visualcrossingapi?.value) weather.setApiChoice(4, FirstLoad);
+    if (properties.open_meteoapi?.value) weather.setApiChoice(5, FirstLoad);
 
     // 是否天气
     if (properties.weather_show) {
-        timerManager.remove('updataWeather');
-
-        weatherUiState.visible = properties.weather_show.value === true;
-        if (properties.weather_show.value) {
-            autoWeather();
-        }
+        const show = properties.weather_show.value === true;
+        weather.setVisible(show);
+        elements.body.style.setProperty('--weather-visibility', show ? 'visible' : 'hidden');
     }
 
     // 天气颜色（原 handler 为立即单独 $patch，保持时序一致）
@@ -223,25 +150,27 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
             String(properties.weather_roundedcorners.value)
         );
         store.$patch({ weather_roundedcorners: properties.weather_roundedcorners.value });
-
-        // 监听天气容器尺寸变化，同步 --weather-height CSS 变量。
-        // weather 容器由 Vue mount 后才存在，通过 deferredScheduler 延迟挂载 observer。
-        registerDeferred('weather:height-observer', () => {
-            const weather = elements.weather.weather;
-            if (!weather) return;
-
-            const updateHeight = (): void => {
-                const height = weather.getBoundingClientRect().height;
-                if (!height) return;
-                elements.body.style.setProperty('--weather-height', `${height}px`);
-            };
-
-            updateHeight();
-            const observer = new ResizeObserver(updateHeight);
-            observer.observe(weather);
-            return () => observer.disconnect();
-        });
     }
+
+    // 监听天气容器尺寸变化，同步 --weather-height CSS 变量。
+    // 圆角公式依赖 --weather-height；不能仅在 weather_roundedcorners 推送时才监听，
+    // 否则首屏或后续高度变化（数据加载、降水切换）不会更新，导致 border-radius 失效。
+    // weather 容器由 Vue mount 后才存在，通过 deferredScheduler 延迟挂载 observer。
+    registerDeferred('weather:height-observer', () => {
+        const weather = elements.weather.weather;
+        if (!weather) return;
+
+        const updateHeight = (): void => {
+            const height = weather.getBoundingClientRect().height;
+            if (!height) return;
+            elements.body.style.setProperty('--weather-height', `${height}px`);
+        };
+
+        updateHeight();
+        const observer = new ResizeObserver(updateHeight);
+        observer.observe(weather);
+        return () => observer.disconnect();
+    });
 
     // 天气大小
     if (properties.weather_size) {

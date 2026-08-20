@@ -57,7 +57,9 @@ import { initDockBar } from '@/modules/dockbar';
 
 import { DEFAULT_ICON, ICON_CACHE_PREFIX, SERVER_URL } from './constants';
 import { isDirectIconUrl, resolveIconUrl } from './iconCache';
-import { dockbarState, setDockIcon } from './state';
+import { useDockbarStore, setDockIcon } from './store';
+
+const dockbarState = useDockbarStore();
 import type { DockItem } from './types';
 
 const config = useConfigStore();
@@ -88,8 +90,10 @@ function iconUrl(item: DockItem): string {
 function onIconError(item: DockItem): void {
     if (!item.path) return;
     const cacheKey = `${ICON_CACHE_PREFIX}${item.path}`;
-    if (localStorage.getItem(cacheKey) === null) return;
-    localStorage.removeItem(cacheKey);
+    try {
+        if (localStorage.getItem(cacheKey) === null) return;
+        localStorage.removeItem(cacheKey);
+    } catch { return; }
     void resolveIconUrl(item, SERVER_URL).then(url => setDockIcon(item.id, url));
 }
 </script>

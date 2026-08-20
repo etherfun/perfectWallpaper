@@ -287,6 +287,23 @@ body {
     --dockbar-icon-size: 48px;
     --dockbar-spacing: 12px;
     --dockbar-roundedcorners: 50;
+
+    // Weather Component CSS Variables
+    --weather-visibility: hidden;
+    --weather-left: 50%;
+    --weather-top: 50%;
+    --weather-font-size: 14px;
+    --weather-opacity: 0.8;
+    --weather-color: 255, 255, 255;
+    --weather-blur-enabled: 0;
+    --weather-blur-color: 255, 255, 255;
+    --weather-yakeli-enabled: 0;
+    --weather-yakeli-color: 255, 255, 255;
+    --weather-yakeli: 0;
+    --weather-blur-yakeli: 10px;
+    --weather-roundedcorners: 10;
+    --weather-height: 120px;
+    --weather-show-width: auto;
 }
 
 // Utility class for loading text animation

@@ -23,13 +23,13 @@
 <template>
     <!-- 樱花 canvas — 从 index.html 迁移至此处 (Phase 7) -->
     <!-- v-show 由 Vue 响应式控制 display，比命令式 DOM 操作更可靠 -->
-    <canvas id="sakura" style="visibility: hidden;" v-show="config.showSakura"></canvas>
-    <canvas id="sakurashow" v-show="config.showSakura"></canvas>
+    <canvas ref="sakuraRef" id="sakura" style="visibility: hidden;" v-show="config.showSakura"></canvas>
+    <canvas ref="sakuraShowRef" id="sakurashow" v-show="config.showSakura"></canvas>
     <!-- GLSL shader scripts 保留在 index.html — Vue SFC 编译器无法处理 script 标签内的 GLSL 内容 -->
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, useTemplateRef } from 'vue';
 
 import { makeCanvasHide, sakuraLoad } from '@/modules/sakura';
 import { gl as sakuraGl } from '@/modules/sakura/state/state';
@@ -39,7 +39,8 @@ import { useConfigStore } from '@/stores/config';
 const config = useConfigStore();
 const sakura = useSakura();
 
-const _ = (): boolean => Boolean(config.showSakura);
+const sakuraRef = useTemplateRef<HTMLCanvasElement>('sakuraRef');
+const sakuraShowRef = useTemplateRef<HTMLCanvasElement>('sakuraShowRef');
 
 // 确保 WebGL 初始化：如果 window.load 已在 Vue mount 前触发，
 // initSakura() 注册的 load 监听器找不到 canvas 元素。这里补一次。
@@ -52,12 +53,10 @@ onMounted(() => {
         sakuraLoad();
     } else {
         // showSakura 关闭时确保 canvas 隐藏（useSakuraProperties 的 hide 逻辑
-        // 可能在 canvas 不存在时跳过）。
-        const canvas = document.getElementById('sakura') as HTMLCanvasElement | null;
-        const canvasshow = document.getElementById('sakurashow') as HTMLCanvasElement | null;
-        if (canvas && canvasshow) {
-            makeCanvasHide(canvas, canvasshow);
-        }
+        // 可能在 canvas 不存在时跳过）。优先用模板 ref，避免 document 查询
+        const a = sakuraRef.value;
+        const b = sakuraShowRef.value;
+        if (a && b) makeCanvasHide(a, b);
     }
 });
 

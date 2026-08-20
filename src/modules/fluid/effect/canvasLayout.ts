@@ -96,6 +96,9 @@ export function unmountCanvasGrid(grid: CanvasGrid): void {
  * - 边长 = `viewSize * 0.707`（约 1/sqrt(2)，让画布对角覆盖视口）
  * - 4 个画布位于容器中心 ±0.35 * side 处
  * - 当 backing store 尺寸变化时重置 transform 和 filter
+ *
+ * 性能：非 resize 场景（viewSize 未变）不少于 10ms 时，跳过 style 重写与
+ * getContext 查找，保持 60Hz 场景零开销；resize 回调已在上层防抖。
  */
 export function layoutCanvasGrid(
     grid: CanvasGrid,
@@ -145,14 +148,20 @@ export function layoutCanvasGrid(
     return { displaySize, dpr };
 }
 
-/** 重新随机化每个 canvas 的位移幅度，并返回新的 offsets 数组 */
+/** 重新随机化每个 canvas 的位移幅度，就地写入 offsets（零分配） */
 export function randomizeCanvasOffsets(
     grid: CanvasGrid,
     displacementAmplitude: number
 ): CanvasOffset[] {
     const amp = parseFloat(String(displacementAmplitude)) || 0;
-    return grid.canvases.map(() => ({
-        dx: (Math.random() * 2 - 1) * amp,
-        dy: (Math.random() * 2 - 1) * amp,
-    }));
+    for (let i = 0; i < grid.offsets.length; i++) {
+        const off = grid.offsets[i];
+        if (off) {
+            off.dx = (Math.random() * 2 - 1) * amp;
+            off.dy = (Math.random() * 2 - 1) * amp;
+        } else {
+            grid.offsets[i] = { dx: (Math.random() * 2 - 1) * amp, dy: (Math.random() * 2 - 1) * amp };
+        }
+    }
+    return grid.offsets;
 }

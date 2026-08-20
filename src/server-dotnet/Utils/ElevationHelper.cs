@@ -94,5 +94,47 @@ namespace PerfectWall.Server.Utils
                 return 0;
             }
         }
+
+        /// <summary>
+        /// Re-launch the current executable as admin on the
+        /// given port. Used by the <c>elevate</c> setup action
+        /// so a user-mode process can promote itself to admin
+        /// without manually right-clicking the EXE. The current
+        /// port is explicitly carried so the elevated child
+        /// binds the same port the browser is already pointed
+        /// at — the previous <see cref="RelaunchElevated"/>
+        /// stripped <c>--port</c> entirely, causing the child
+        /// to fall back to the default port and appear
+        /// unreachable.
+        /// </summary>
+        public static int RelaunchAsAdmin(int port)
+        {
+            if (Environment.OSVersion.Platform != PlatformID.Win32NT) return 0;
+            try
+            {
+                string exe = null;
+                try { exe = Process.GetCurrentProcess().MainModule?.FileName; } catch { }
+                if (string.IsNullOrEmpty(exe))
+                {
+                    var loc = System.Reflection.Assembly.GetExecutingAssembly().Location;
+                    var dir = System.IO.Path.GetDirectoryName(loc);
+                    exe = System.IO.Path.Combine(dir ?? string.Empty, "perfectwall-server.exe");
+                }
+                if (string.IsNullOrEmpty(exe) || !System.IO.File.Exists(exe)) return 0;
+                var psi = new ProcessStartInfo
+                {
+                    FileName = exe,
+                    UseShellExecute = true,
+                    Verb = "runas",
+                    Arguments = $"--admin --port {port}",
+                };
+                var p = Process.Start(psi);
+                return p?.Id ?? 0;
+            }
+            catch
+            {
+                return 0;
+            }
+        }
     }
 }

@@ -283,4 +283,19 @@
   <data name="Api_BtnNeedAdmin" xml:space="preserve">
     <value>需要管理员权限</value>
   </data>
+  <data name="Api_BtnElevate" xml:space="preserve">
+    <value>以管理员身份重启</value>
+  </data>
+  <data name="Api_ElevateHint" xml:space="preserve">
+    <value>以管理员身份重启以启用传感器</value>
+  </data>
+  <data name="Api_AlreadyElevated" xml:space="preserve">
+    <value>已在管理员模式下运行</value>
+  </data>
+  <data name="Api_ElevateFailed" xml:space="preserve">
+    <value>提权已取消或失败</value>
+  </data>
+  <data name="Api_Elevating" xml:space="preserve">
+    <value>正在请求管理员权限…请在 UAC 弹窗中确认</value>
+  </data>
 </root>

@@ -264,6 +264,7 @@ button.lang-active { background: #4caf50; cursor: default; }
     </table>
     <div class='row'>
       <button class='secondary' onclick='openConsole()'>{{Api_BtnOpenConsole}}</button>
+      <button id='btn-elevate' class='secondary' onclick='elevate()' style='display:none'>{{Api_BtnElevate}}</button>
     </div>
   </div>
 </div>
@@ -353,6 +354,21 @@ function openConsole() {
     document.getElementById('error').textContent = fmt('Api_ActionFailedFormat', 'Failed: {0}', err.message || err);
   });
 }
+function elevate() {
+  var btn = document.getElementById('btn-elevate');
+  if (btn) btn.disabled = true;
+  document.getElementById('error').textContent = t('Api_Elevating', 'Requesting admin… approve the UAC prompt');
+  http('POST', { action: 'elevate' }).then(function() {
+    document.getElementById('error').textContent = t('Api_Elevating', 'Requesting admin… approve the UAC prompt');
+    // Parent will exit after ~800ms; new elevated child
+    // binds the same port. Keep polling — refresh() will
+    // start returning the new Admin state once the child
+    // is up, otherwise the page stays on the old URL.
+  }, function(err) {
+    if (btn) btn.disabled = false;
+    document.getElementById('error').textContent = fmt('Api_ActionFailedFormat', 'Failed: {0}', (err && err.error) ? err.error : (err.message || err));
+  });
+}
 function setLang(code) {
   // Language changes only affect the HTML placeholders
   // (server-templated), so the JS-driven repaint alone
@@ -426,6 +442,8 @@ function apply(s) {
     ? buildPawnioSub(s, t)
     : t('Api_SubPawnioMissing', 'LibreHardwareMonitor needs PawnIO.sys to read sensors when HVCI is enabled.');
   document.getElementById('card-pawnio').className = 'card ' + (s.pawnio_installed ? 'ok' : 'warn');
+  var elevateBtn = document.getElementById('btn-elevate');
+  if (elevateBtn) elevateBtn.style.display = s.is_elevated ? 'none' : '';
   document.getElementById('elevated-note').textContent = s.is_elevated
     ? t('Api_ElevatedNote', 'Running as Administrator. All features available.')
     : t('Api_NotElevatedNote', 'Not running as Administrator. Right-click the EXE → Run as administrator for sensor readings and admin auto-start.');
@@ -619,6 +637,11 @@ setInterval(refresh, 2000);
                 ["Api_RunModeAdmin"] = Strings.Get("Api_RunModeAdmin", cultureName, "Admin (LHM enabled)"),
                 ["Api_AdminNeededHint"] = Strings.Get("Api_AdminNeededHint", cultureName, "Administrator required: right-click the EXE → Run as administrator, then retry"),
                 ["Api_BtnNeedAdmin"] = Strings.Get("Api_BtnNeedAdmin", cultureName, "Need admin"),
+                ["Api_BtnElevate"] = Strings.Get("Api_BtnElevate", cultureName, "Relaunch as admin"),
+                ["Api_ElevateHint"] = Strings.Get("Api_ElevateHint", cultureName, "Restart with admin to enable sensors"),
+                ["Api_AlreadyElevated"] = Strings.Get("Api_AlreadyElevated", cultureName, "Already running as admin"),
+                ["Api_ElevateFailed"] = Strings.Get("Api_ElevateFailed", cultureName, "Elevation was cancelled or failed"),
+                ["Api_Elevating"] = Strings.Get("Api_Elevating", cultureName, "Requesting admin… approve the UAC prompt"),
             };
             // Current port for the <input value="...">
             // pre-fill. InvariantCulture so the integer
@@ -946,6 +969,31 @@ setInterval(refresh, 2000);
                         await ctx.WriteJsonAsync(new { success = true, data = new { opened = true } });
                         return;
 
+                    case "elevate":
+                        // Promote the current user-mode process to
+                        // admin by spawning an elevated copy on the
+                        // same port (UAC prompt) and exiting this
+                        // one after the response is flushed. This is
+                        // the fix for "started without admin, later
+                        // choosing admin never takes effect" — the
+                        // process was previously stuck in User mode
+                        // for its lifetime.
+                        if (PerfectWall.Server.Utils.ElevationHelper.IsElevated())
+                        {
+                            await ctx.WriteJsonAsync(new { success = false, error = Strings.Get("Api_AlreadyElevated", Strings.CurrentCultureName()) }, 400);
+                            return;
+                        }
+                        var cfgElevate = configGetter();
+                        var newPid = PerfectWall.Server.Utils.ElevationHelper.RelaunchAsAdmin(cfgElevate.Port);
+                        if (newPid == 0)
+                        {
+                            await ctx.WriteJsonAsync(new { success = false, error = Strings.Get("Api_ElevateFailed", Strings.CurrentCultureName()) }, 500);
+                            return;
+                        }
+                        ScheduleElevatedExit();
+                        await ctx.WriteJsonAsync(new { success = true, data = new { elevated = true, pid = newPid, port = cfgElevate.Port } });
+                        return;
+
                     case "open_console":
                         // AllocConsole on demand. The
                         // button in the setup page is
@@ -1103,6 +1151,28 @@ setInterval(refresh, 2000);
                 t.Start();
             }
             catch { /* best effort */ }
+        }
+
+        /// <summary>
+        /// Schedule this (user-mode) process to exit shortly
+        /// after the current HTTP response is flushed. Used by
+        /// the <c>elevate</c> action: we have already spawned
+        /// an elevated child on the same port (UAC), so the
+        /// parent must vacate the port. Reuses the same
+        /// <see cref="_restartScheduled"/> gate and
+        /// <see cref="SelfRestartDelayMs"/> grace period as
+        /// <see cref="SelfRestart"/>.
+        /// </summary>
+        public static void ScheduleElevatedExit()
+        {
+            if (System.Threading.Interlocked.CompareExchange(ref _restartScheduled, 1, 0) != 0) return;
+            var t = new System.Threading.Thread(() =>
+            {
+                try { System.Threading.Thread.Sleep(SelfRestartDelayMs); } catch { }
+                try { Environment.Exit(0); } catch { }
+            })
+            { IsBackground = true, Name = "PerfectWall.ElevatedExit" };
+            t.Start();
         }
 
         /// <summary>

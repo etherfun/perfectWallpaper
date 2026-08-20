@@ -298,4 +298,19 @@
   <data name="Api_BtnNeedAdmin" xml:space="preserve">
     <value>Need admin</value>
   </data>
+  <data name="Api_BtnElevate" xml:space="preserve">
+    <value>Relaunch as admin</value>
+  </data>
+  <data name="Api_ElevateHint" xml:space="preserve">
+    <value>Restart with admin to enable sensors</value>
+  </data>
+  <data name="Api_AlreadyElevated" xml:space="preserve">
+    <value>Already running as admin</value>
+  </data>
+  <data name="Api_ElevateFailed" xml:space="preserve">
+    <value>Elevation was cancelled or failed</value>
+  </data>
+  <data name="Api_Elevating" xml:space="preserve">
+    <value>Requesting admin… approve the UAC prompt</value>
+  </data>
 </root>

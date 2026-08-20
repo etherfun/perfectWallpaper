@@ -29,7 +29,8 @@ const copyFiles = [
     { src: 'source/i18n/', dest: 'source/i18n/', force: true },
     { src: 'source/imgs/', dest: 'source/imgs/' },
     { src: 'source/map/', dest: 'source/map/' },
-    { src: 'update/', dest: 'update/', force: true },
+    // update/ 不复制：dist/update/ 手动维护发布用压缩版（<150KB JPG），
+    // 主目录 update/ 是交错化原图（推送到 GitHub 供更新日志加载）
     { src: 'preview.jpg', dest: 'preview.jpg' },
 ];
 

@@ -1078,6 +1078,36 @@
         margin: 0 auto;
     }
 
+    /* 双图层：本地压缩版撑起布局（底层），GitHub 原图绝对定位覆盖（顶层） */
+    .version-image-stack {
+        position: relative;
+        width: 100%;
+        max-width: 100%;
+
+        .version-image-local {
+            position: relative;
+            z-index: 1;
+        }
+
+        .version-image-github {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            border-radius: inherit;
+            border-top-left-radius: 16px;
+            border-top-right-radius: 16px;
+
+            &.loaded {
+                opacity: 1;
+            }
+        }
+    }
+
     .image-info {
         padding: 15px 20px;
         background: rgba(0, 0, 0, 0.6);
@@ -1671,6 +1701,15 @@
                 color: rgba(255, 255, 255, 0.7);
                 @include flex-center;
                 gap: 6px;
+            }
+
+            .current-badge {
+                background: linear-gradient(90deg, #4caf50, #8bc34a);
+                color: white;
+                padding: 4px 12px;
+                border-radius: 20px;
+                font-size: 12px;
+                font-weight: 600;
             }
         }
     }

@@ -551,11 +551,18 @@ export class versionManager {
                     (info.image as string).trim() !== ''
                         ? `
                     <div class="version-image-container">
-                        <img class="version-image"
-                             data-github="${escapeHtml(this.resolveGithubImageUrl(info))}"
-                             data-local="${escapeHtml(info.image as string)}"
-                             style="max-height: ${escapeHtml(versionConfig.IMAGE_SETTINGS.maxHeight)}; width: auto; max-width: 100%;"
-                             ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}>
+                        <div class="version-image-stack">
+                            <!-- 底层：本地压缩版，立即显示（撑起布局） -->
+                            <img class="version-image version-image-local"
+                                 src="${escapeHtml(info.image as string)}"
+                                 style="max-height: ${escapeHtml(versionConfig.IMAGE_SETTINGS.maxHeight)}; width: auto; max-width: 100%;"
+                                 ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}>
+                            <!-- 顶层：GitHub 原图（交错 PNG 渐进式加载），
+                                 加载完成后由 applyImageSourceFallback 加 .loaded 淡入覆盖 -->
+                            <img class="version-image version-image-github"
+                                 data-github="${escapeHtml(this.resolveGithubImageUrl(info))}"
+                                 alt="">
+                        </div>
                         <div class="image-info">
                             <div class="image-description">
                                 ${SimpleMarkdown.parse(info.imageAlt as string) || escapeHtml(globalT('version_image_default_alt'))}
@@ -759,8 +766,10 @@ export class versionManager {
     }
 
     /**
-     * 附图加载策略：优先 GitHub 原图，超过 timeoutMs 未加载成功或出错则回退本地。
-     * 通过 data-github / data-local 属性定位 <img>，避免重复查询 DOM。
+     * 附图双图层加载策略：
+     * - 底层 version-image-local：本地压缩版，模板 src 立即显示（用户无感知等待）
+     * - 顶层 version-image-github：GitHub 原图（交错 PNG 渐进式加载），
+     *   加载成功后加 .loaded 淡入覆盖；失败/超时则移除顶层图，保持本地版。
      */
     private applyImageSourceFallback(): void {
         const cfg = versionConfig.GITHUB_IMAGE;
@@ -768,30 +777,34 @@ export class versionManager {
 
         const container = document.getElementById('version-detail-content');
         if (!container) return;
-        const img = container.querySelector<HTMLImageElement>('img.version-image');
-        if (!img) return;
+        const localImg = container.querySelector<HTMLImageElement>('img.version-image-local');
+        const githubImg = container.querySelector<HTMLImageElement>('img.version-image-github');
+        if (!localImg || !githubImg) return;
 
-        const githubUrl = img.getAttribute('data-github');
-        const localUrl = img.getAttribute('data-local');
-        if (!githubUrl || !localUrl) return;
+        const githubUrl = githubImg.getAttribute('data-github');
+        if (!githubUrl) return;
 
         let settled = false;
-        const fallback = (): void => {
+        // 原图失败/超时：移除顶层图，保持本地压缩版显示
+        const fail = (): void => {
             if (settled) return;
             settled = true;
-            img.src = localUrl;
+            githubImg.remove();
         };
 
-        // 先尝试 GitHub 原图
-        img.src = githubUrl;
-        img.onerror = fallback;
+        // 本地压缩版已由模板 src 立即显示（底层）
+        // GitHub 原图异步加载（交错 PNG 边下载边渲染），成功后淡入覆盖
+        githubImg.src = githubUrl;
+        githubImg.onerror = fail;
 
-        // 超时未加载成功则回退本地
-        const timer = window.setTimeout(fallback, cfg.timeoutMs);
-        img.onload = () => {
+        // 超时未加载成功则放弃原图
+        const timer = window.setTimeout(fail, cfg.timeoutMs);
+        githubImg.onload = () => {
             if (settled) return;
             settled = true;
             window.clearTimeout(timer);
+            // 触发 CSS opacity 过渡，淡入覆盖本地版
+            githubImg.classList.add('loaded');
         };
     }
 }

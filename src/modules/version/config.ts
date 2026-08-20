@@ -9,6 +9,10 @@ export interface VersionHistoryEntry {
     date: string;
     titleKey?: string;
     title?: string;
+    /** 本地压缩版图片路径（如 update/xxx.jpg）；作为 GitHub 原图加载失败/超时时的回退 */
+    image?: string;
+    /** 可选：GitHub 原图直链覆盖；不填则按 image 路径从 GITHUB_IMAGE.baseUrl 推导 */
+    imageOriginal?: string;
     imageAltKey?: string;
     imageAlt?: string;
     changesKey?: string;
@@ -47,6 +51,17 @@ export const versionConfig = {
         borderRadius: '12px',
         showImage: true,
         lazyLoad: true,
+    },
+
+    /**
+     * 更新日志附图策略：优先从 GitHub 获取全分辨率原图，
+     * 本地压缩版（history.json 的 image 字段）作为回退；
+     * 原图超过 timeoutMs 未加载成功则回退到本地压缩版。
+     */
+    GITHUB_IMAGE: {
+        enabled: true,
+        baseUrl: 'https://raw.githubusercontent.com/etherfun/perfectWallpaper/main',
+        timeoutMs: 10000,
     },
 };
 

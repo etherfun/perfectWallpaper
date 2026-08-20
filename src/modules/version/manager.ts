@@ -18,6 +18,7 @@ import {
     type VersionHistoryEntry,
 } from './config';
 import { SimpleMarkdown } from './simple-markdown';
+import { buildGithubImageUrl } from './imageSource';
 import { useVersionStore, type VersionListItem } from './store';
 
 // 惰性访问：避免模块顶层无 Pinia 调用（测试/非 App 场景会报错）
@@ -550,8 +551,9 @@ export class versionManager {
                     (info.image as string).trim() !== ''
                         ? `
                     <div class="version-image-container">
-                        <img src="${escapeHtml(info.image as string)}"
-                             class="version-image"
+                        <img class="version-image"
+                             data-github="${escapeHtml(this.resolveGithubImageUrl(info))}"
+                             data-local="${escapeHtml(info.image as string)}"
                              style="max-height: ${escapeHtml(versionConfig.IMAGE_SETTINGS.maxHeight)}; width: auto; max-width: 100%;"
                              ${versionConfig.IMAGE_SETTINGS.lazyLoad ? 'loading="lazy"' : ''}>
                         <div class="image-info">
@@ -727,5 +729,69 @@ export class versionManager {
             versionUiState.detailDate = '';
             versionUiState.detailContentHtml = '';
         }
+
+        // 详情渲染后，附图优先加载 GitHub 原图，超时/失败回退本地压缩版。
+        // v-html 的 DOM 更新在 Vue 下一帧才生效，故延迟到 rAF 再定位 <img>。
+        if (typeof requestAnimationFrame === 'function') {
+            requestAnimationFrame(() => this.applyImageSourceFallback());
+        } else {
+            this.applyImageSourceFallback();
+        }
+    }
+
+    /**
+     * 由版本信息推导 GitHub 原图 URL：
+     * 优先用 imageOriginal 覆盖，否则按 image 路径从 GITHUB_IMAGE.baseUrl 推导。
+     */
+    private resolveGithubImageUrl(info: Record<string, unknown>): string {
+        const cfg = versionConfig.GITHUB_IMAGE;
+        if (cfg.enabled && info.imageOriginal && (info.imageOriginal as string).trim() !== '') {
+            return info.imageOriginal as string;
+        }
+        if (
+            cfg.enabled &&
+            info.image &&
+            (info.image as string).trim() !== ''
+        ) {
+            return buildGithubImageUrl(info.image as string, cfg.baseUrl);
+        }
+        return (info.image as string) || '';
+    }
+
+    /**
+     * 附图加载策略：优先 GitHub 原图，超过 timeoutMs 未加载成功或出错则回退本地。
+     * 通过 data-github / data-local 属性定位 <img>，避免重复查询 DOM。
+     */
+    private applyImageSourceFallback(): void {
+        const cfg = versionConfig.GITHUB_IMAGE;
+        if (!cfg.enabled) return;
+
+        const container = document.getElementById('version-detail-content');
+        if (!container) return;
+        const img = container.querySelector<HTMLImageElement>('img.version-image');
+        if (!img) return;
+
+        const githubUrl = img.getAttribute('data-github');
+        const localUrl = img.getAttribute('data-local');
+        if (!githubUrl || !localUrl) return;
+
+        let settled = false;
+        const fallback = (): void => {
+            if (settled) return;
+            settled = true;
+            img.src = localUrl;
+        };
+
+        // 先尝试 GitHub 原图
+        img.src = githubUrl;
+        img.onerror = fallback;
+
+        // 超时未加载成功则回退本地
+        const timer = window.setTimeout(fallback, cfg.timeoutMs);
+        img.onload = () => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+        };
     }
 }

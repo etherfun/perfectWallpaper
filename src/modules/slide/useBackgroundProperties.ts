@@ -2,7 +2,8 @@ import { ChangeAudioModel, ChangeVideoModel, updateMusicPlaylist } from '@/modul
 import { applyBackgroundStyle, changeBackground, shouldShow, TransitionSwith } from '@/modules/slide';
 import { useConfigStore } from '@/stores/config';
 import { WallpaperProperties } from '@/types/types';
-import { applyPictureInfoTokens } from '@/tokens/pictureInfo.tokens';
+import { applyGlass, applyPictureInfoTokens } from '@/tokens/glass.tokens';
+import { applyVisibility } from '@/tokens/visibility.tokens';
 import { parseColorString } from '@/utils/color';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
@@ -251,8 +252,7 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.picturesinfo_show) {
         const show = properties.picturesinfo_show.value;
         patch.pictures_info_show = show;
-        // 令牌化：显隐由 pictureInfo tokens 统一控制（自动处理首帧显隐，不再受 FirstLoad 闸门影响）
-        applyPictureInfoTokens({ visible: show });
+        applyVisibility('picture-info', show);
         if (!FirstLoad) {
             const picInfoEl = elements.slide?.picture_info;
             if (picInfoEl) {
@@ -280,29 +280,28 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
         elements.body.style.setProperty('--picture-info-blur-color', color.join(', '));
     }
 
-    // 令牌化：亚克力相关统一走 tokens（便于后续多组件复用与灰度）
     if (properties.picturesinfo_yakeli_show) {
         const show = properties.picturesinfo_yakeli_show.value;
         patch.pictures_info_yakeli_show = show;
-        applyPictureInfoTokens({ yakeliEnabled: show });
+        applyGlass('picture-info', { yakeliEnabled: show });
     }
 
     if (properties.picturesinfo_yakelicolor) {
         const color = parseColorString(properties.picturesinfo_yakelicolor.value) as [number, number, number];
         patch.pictures_info_yakelic_color = color;
-        applyPictureInfoTokens({ yakeliColor: color });
+        applyGlass('picture-info', { yakeliColor: color });
     }
 
     if (properties.picturesinfo_yakeli) {
         const yakeli = properties.picturesinfo_yakeli.value / 100;
         patch.pictures_info_yakeli = yakeli;
-        applyPictureInfoTokens({ yakeli });
+        applyGlass('picture-info', { yakeli });
     }
 
     if (properties.picturesinfo_bluryakeli) {
         const blur = properties.picturesinfo_bluryakeli.value;
         patch.pictures_info_bluryakeli = blur;
-        applyPictureInfoTokens({ blurYakeli: `${blur}px` });
+        applyGlass('picture-info', { blurYakeli: `${blur}px` });
         patch.frist_picturesinfo = false;
     }
 

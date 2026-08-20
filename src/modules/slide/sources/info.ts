@@ -7,7 +7,7 @@
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
 
-import { applyPictureInfoTokens } from '@/tokens/pictureInfo.tokens';
+import { applyPictureInfoTokens } from '@/tokens/glass.tokens';
 
 /** Clear picture info — 令牌化隐藏 */
 export function clearpicturesinfo(): void {

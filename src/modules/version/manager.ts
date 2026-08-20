@@ -505,7 +505,12 @@ export class versionManager {
             ? globalT('version_update_title')
             : globalT('version_info_title');
         versionUiState.currentVersion = this.currentVersion;
-        versionUiState.selectedVersion = this.selectedVersion ?? this.currentVersion;
+        // 首次初始化时 this.selectedVersion 仍为 null，直接渲染会因
+        // getVersionInfo(null) 返回空而导致右侧详情空白。默认选中当前版本。
+        if (this.selectedVersion == null) {
+            this.selectedVersion = this.currentVersion;
+        }
+        versionUiState.selectedVersion = this.selectedVersion;
         versionUiState.loading = false;
 
         // 填充版本列表（原 renderVersionList innerHTML 写入）

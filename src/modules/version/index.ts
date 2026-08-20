@@ -23,36 +23,28 @@ runtimeStore.versionManager = versionManagerInstance;
 // 暴露 SimpleMarkdown 到全局作用域
 window.SimpleMarkdown = SimpleMarkdown;
 
-// 等待初始化完成；超时或未等到标记也强制预载，避免首帧内容空白
-waitAndExecute(
-    () => {
-        const complete = config.update_init_complete === true;
-        return complete;
-    },
-    () => {
-        if (!runtimeStore.versionManager) {
-            runtimeStore.versionManager = new versionManager();
-        }
-
-        // 延迟显示，确保其他内容已加载
-        setTimeout(async () => {
-            if (runtimeStore.versionManager) {
-                try {
-                    await (runtimeStore.versionManager as any).initUpdateModal();
-                } catch (error) {
-                    console.error('初始化版本弹窗失败:', error);
-                }
-            }
-        }, 2000);
-    },
-    500,
-    15000
-).catch(() => {
-    // 超时兜底：即使 update_init_complete 未置位，也预加载历史，避免首次加载点开是空
+// 新版本自动弹的唯一入口：等 WE 首帧属性推送完成（update_init_complete）
+// 再判断 isNewVersion 并弹。超时也兜底预载历史，保证手动点击有内容。
+function triggerInitModal(): void {
     if (!runtimeStore.versionManager) {
         runtimeStore.versionManager = new versionManager();
     }
-    void (runtimeStore.versionManager as unknown as { initUpdateModal: () => Promise<void> })
-        .initUpdateModal()
-        .catch(e => console.error('初始化版本弹窗失败(超时兜底):', e));
+    // 额外延迟确保 Vue 挂载与样式就绪
+    setTimeout(async () => {
+        try {
+            await (runtimeStore.versionManager as unknown as { initUpdateModal: () => Promise<void> }).initUpdateModal();
+        } catch (error) {
+            console.error('初始化版本弹窗失败:', error);
+        }
+    }, 2000);
+}
+
+waitAndExecute(
+    () => config.update_init_complete === true,
+    () => triggerInitModal(),
+    500,
+    15000
+).catch(() => {
+    // 超时兜底：即使 WE 未推送首帧，也预加载历史，手动点开不空白
+    triggerInitModal();
 });

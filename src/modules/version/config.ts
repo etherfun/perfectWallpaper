@@ -16,7 +16,7 @@ export interface VersionHistoryEntry {
 }
 
 export const versionConfig = {
-    CURRENT_VERSION: '2.1.0',
+    CURRENT_VERSION: '2.2.0',
 
     MODAL_SIZE: {
         width: '65%',
@@ -33,7 +33,10 @@ export const versionConfig = {
         autoCloseDelay: 60000,
         animationDuration: 400,
         showOnFirstLoad: false,
-        showOnUpdate: localStorage.getItem('perfectwall_version_show_update') === 'true',
+        // 默认开启更新提示；用户可通过 project.json 的
+        // wallpaper_updata_open_on_update 关闭（未设置时不取 localStorage 的 false 兜底）。
+        // 若 localStorage 显式为 "false" 则关闭，否则开启。
+        showOnUpdate: localStorage.getItem('perfectwall_version_show_update') !== 'false',
         enableHistoryNavigation: true,
         enableMarkdown: true,
         defaultView: 'current',

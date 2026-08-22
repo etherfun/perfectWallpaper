@@ -104,7 +104,7 @@ describe('useWeatherProperties', () => {
     test('weather_blurcolor → CSS + store', () => {
         const store = useConfigStore();
         useWeatherProperties({ weather_blurcolor: { value: '0.5 0.5 0.5' } } as never, false);
-        expect(document.body.style.getPropertyValue('--weather-blur-color')).toBe('128, 128, 128');
+        expect(document.body.style.getPropertyValue('--weather-blur-color')).toBe('128,128,128');
         expect(store.weather_blurcolor).toEqual([128, 128, 128]);
     });
 
@@ -115,11 +115,13 @@ describe('useWeatherProperties', () => {
         expect(store.weather_yakeli_show).toBe(true);
     });
 
-    test('weather_yakeli /100 → CSS', () => {
+    test('weather_yakeli /100 → CSS + store（归一化 0..1）', () => {
         const store = useConfigStore();
         useWeatherProperties({ weather_yakeli: { value: 50 } } as never, false);
         expect(document.body.style.getPropertyValue('--weather-yakeli')).toBe('0.5');
-        expect(store.weather_yakeli).toBe(50);
+        // store 也存归一化值：全局覆盖关闭后 replay 回写 0.5 而非 raw 50
+        // （raw 值会使 rgba alpha ≥1 → 组件完全不透明，见 glass.tokens bug）
+        expect(store.weather_yakeli).toBe(0.5);
     });
 
     test('position patches set CSS variables with %', () => {

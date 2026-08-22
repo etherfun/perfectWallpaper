@@ -198,9 +198,21 @@ export class NativeAudioVisualizer {
         return AudioArray;
     }
 
+    /**
+     * 交替移除首尾后保留下来的窗口起始 bin 下标。
+     * shift 从头部移除、pop 从尾部移除，头部移除 ceil(max/2) 个，
+     * 据此把环形点位对齐到真实频谱区间（修复值与位置错位）。
+     */
+    private ringStartIndex(sampleLen: number, num: number): number {
+        const max = Math.max(0, sampleLen - num);
+        return Math.ceil(max / 2);
+    }
+
     private getBallArray(audioSamples: number[], num: number): number[] {
         const AudioArray: number[] = [];
-        for (let i = 0; i < 120; i += num) {
+        // 全数组采样：旧实现硬编码 i < 120，bin 120..127 永不使用
+        const len = audioSamples.length || 128;
+        for (let i = 0; i < len; i += num) {
             AudioArray.push(audioSamples[i] || 0);
         }
         return AudioArray;
@@ -245,11 +257,19 @@ export class NativeAudioVisualizer {
     ): { x: number; y: number }[] {
         const pointArray: { x: number; y: number }[] = [];
         const ringArray = this.getRingArray(audioSamples, this.pointNum);
+        // 值与位置对齐：第 i 个点位对应保留窗口内的 bin (startIdx + i)，
+        // 旧实现固定读 bins 0..119，与窗口错位且永不使用尾部样本
+        const startIdx = this.ringStartIndex(audioSamples.length, this.pointNum);
         this.rotationAngle1 = this.rotation(this.rotationAngle1, this.ringRotation);
 
         for (let i = 0; i < ringArray.length; i++) {
             const deg = this.getDeg(ringArray.length, i, this.rotationAngle1);
-            const audioValue = this.getAudioSamples(audioSamples, i, this.decline, isChange);
+            const audioValue = this.getAudioSamples(
+                audioSamples,
+                startIdx + i,
+                this.decline,
+                isChange
+            );
             const radius =
                 this.radius * (this.minLength / 2) +
                 direction * (this.distance + audioValue * (this.amplitude * 15));
@@ -277,9 +297,12 @@ export class NativeAudioVisualizer {
         const ballArray = this.getBallArray(audioSamples, this.ballSpacer);
         this.rotationAngle2 = this.rotation(this.rotationAngle2, this.ballRotation);
 
+        // 值与位置对齐：第 i 个球对应 bin (i * ballSpacer)，
+        // 旧实现固定读 audioSamples[i]，所有球只反映低频段
         for (let i = 0; i < ballArray.length; i++) {
             const deg = this.getDeg(ballArray.length, i, this.rotationAngle2);
-            const audioValue = Math.min(audioSamples[i] ?? 0, 1);
+            const bin = i * this.ballSpacer;
+            const audioValue = Math.min(audioSamples[bin] ?? 0, 1);
             const radius =
                 this.radius * (this.minLength / 2) + (this.distance + 50) + audioValue * 75;
             const point = this.getXY(radius, deg, this.originX, this.originY);

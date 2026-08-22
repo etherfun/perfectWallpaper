@@ -33,7 +33,13 @@ export function PWLineCreatePoint(arr: number[]): void {
     if (param.arr2 !== _pool2) param.arr2 = _pool2;
 
     const lineDensity = param.LineDensity;
-    const iv = (120 - lineDensity) / 2;
+    // 全数组采样：把 arr 的全部样本（WE 提供 128 个）映射到 lineDensity 根柱。
+    // 旧逻辑 iv=(120-lineDensity)/2 只取中间子集，密度 120 时也丢弃 120..127
+    // 共 8 个样本，密度更小时丢弃更多。
+    //   - 下采样（density < len）：每根柱取其覆盖 bin 区间的最大值，
+    //     保证每个 bin 恰好归属一根柱、峰值不丢失；
+    //   - 上采样（density >= len）：按柱中心线性插值，平滑还原。
+    const arrLen = arr.length > 0 ? arr.length : 1;
 
     // 池容量对齐 LineDensity（LineDensity 可调，变化时扩展/截断）
     ensurePool(_pool1, lineDensity);
@@ -61,13 +67,30 @@ export function PWLineCreatePoint(arr: number[]): void {
     const minW = state.minW;
     const densityHalf = lineDensity / 2;
 
-    for (let i = iv, j = 0; i < lineDensity + iv; i++, j++) {
-        const arrI = arr[i] ?? 0;
-        let w1 = arrI ? arrI : 0;
-        const prevWave = waveArr[i];
+    for (let j = 0; j < lineDensity; j++) {
+        let w1: number;
+        if (lineDensity >= arrLen) {
+            // 上采样：柱中心线性插值
+            const pos = (j * (arrLen - 1)) / Math.max(1, lineDensity - 1);
+            const i0 = Math.floor(pos);
+            const i1 = Math.min(arrLen - 1, i0 + 1);
+            const frac = pos - i0;
+            w1 = (arr[i0] ?? 0) * (1 - frac) + (arr[i1] ?? 0) * frac;
+        } else {
+            // 下采样：柱 j 覆盖 bin [start, end)，取最大值（保留峰值）
+            const start = Math.floor((j * arrLen) / lineDensity);
+            const end = Math.max(start + 1, Math.floor(((j + 1) * arrLen) / lineDensity));
+            let m = 0;
+            for (let k = start; k < end && k < arrLen; k++) {
+                const v = arr[k] ?? 0;
+                if (v > m) m = v;
+            }
+            w1 = m;
+        }
+        const prevWave = waveArr[j];
         const w2: number = prevWave !== undefined && prevWave !== 0 ? prevWave - 0.1 : 0;
         w1 = Math.max(w1, w2);
-        waveArr[i] = w1 = Math.min(w1, 1.2);
+        waveArr[j] = w1 = Math.min(w1, 1.2);
         const waveHeight = w1 * range * 100;
 
         let Deviation1: number;

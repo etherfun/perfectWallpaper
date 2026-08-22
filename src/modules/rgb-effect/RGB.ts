@@ -84,7 +84,8 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
 
         for (let i = 0; i < audioArray.length; i++) {
             const height = Math.min(bg!.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor, bg!.height);
-            const x = barWidth * (i % 64 + (i >= 64 ? 64 : 0));
+            // 128 根柱均匀铺满画布宽度（旧表达式 (i%64+(i>=64?64:0)) 恒等于 i，属冗余）
+            const x = barWidth * i;
             if (rainbow) {
                 const hue = (i * hueStep + time) % 360;
                 ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;

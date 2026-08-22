@@ -40,6 +40,41 @@ function clampAudioData(data: number[], output: number[]): number[] {
 }
 
 /**
+ * 首尾接缝融合（原地操作）
+ *
+ * 圆环可视化中 index 0（低频，幅度大）与 index len-1（高频，幅度小）
+ * 在闭合点相邻，直接相连会出现明显的高低差。本步骤把两端各 fade 个
+ * 频段向公共均值 seamAvg 线性渐变，端点精确等于 seamAvg，
+ * 保证闭合点两侧高度一致、无突跳。
+ *
+ * 无论平滑开关是否启用都执行（接缝问题是几何闭合固有的，与平滑无关）。
+ * 导出仅供单元测试使用。
+ */
+export function blendSeam(data: number[]): number[] {
+    const len = data.length;
+    if (len < 8) return data;
+    // 渐变区长度：约 1/16 频谱（128 → 8），限制在 [2, 16]
+    const fade = Math.max(2, Math.min(16, len >> 4));
+    let headSum = 0;
+    let tailSum = 0;
+    for (let i = 0; i < fade; i++) {
+        headSum += data[i] ?? 0;
+        tailSum += data[len - 1 - i] ?? 0;
+    }
+    // 公共基准：两端均值的平均，保证闭合点两侧高度一致
+    const seamAvg = (headSum + tailSum) / (fade * 2);
+    for (let i = 0; i < fade; i++) {
+        // t=0 在最端点（完全取 seamAvg），向内线性衰减回原值
+        const t = i / fade;
+        const inv = 1 - t;
+        data[i] = seamAvg * inv + (data[i] ?? 0) * t;
+        const j = len - 1 - i;
+        data[j] = seamAvg * inv + (data[j] ?? 0) * t;
+    }
+    return data;
+}
+
+/**
  * 对数组应用空间平滑（相邻频段平均）— 滑动窗口 O(len)，收敛为 O(128)
  */
 function spatialSmooth(data: number[], windowSize: number, output: number[]): number[] {
@@ -94,6 +129,9 @@ function smoothAudioData(rawData: number[]): number[] {
     // Step 1: 限制范围（原地操作）
     ensureBufferSize(_clampBuffer, len);
     clampAudioData(rawData, _clampBuffer);
+
+    // Step 1.5: 首尾接缝融合（始终执行，消除圆环闭合处的高低差）
+    blendSeam(_clampBuffer);
 
     // 检查是否启用平滑
     if (!config.audio_smooth_enabled) {

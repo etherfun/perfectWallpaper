@@ -131,6 +131,7 @@
                             <div
                                 class="precip-label"
                                 id="weatherPrecipLabel"
+                                :class="{ animate: isLabelAnimating }"
                                 :data-display-type="precipDisplayType"
                                 :data-i18n="precipLabelKey"
                             >
@@ -151,10 +152,16 @@
                                 </div>
                                 <div class="precip-values" id="weatherPrecipValues">
                                     <span
-                                        v-for="(v, i) in hourlyValues"
+                                        v-for="(v, i) in displayedValues"
                                         :key="'v' + i"
-                                        class="precip-prob-cell"
-                                        :class="precipCellClass"
+                                        :class="[
+                                            displayedCellClass,
+                                            valuesPhase === 'out'
+                                                ? 'fade-out'
+                                                : valuesPhase === 'in'
+                                                  ? 'fade-in'
+                                                  : '',
+                                        ]"
                                     >
                                         {{ v }}
                                     </span>
@@ -345,7 +352,7 @@ import { tooltipPosition } from './tooltipPosition';
 const config = useConfigStore();
 const store = useWeatherStore();
 // Pinia setup store 返回的 reactive/ref 需用 storeToRefs 保持响应式，直接解构会丢失响应
-const { data, address, ui, showTemperatureInsteadOfPrecip } = storeToRefs(store);
+const { data, address, ui, currentHourlyField } = storeToRefs(store);
 
 // 允许列表常量（与原 updaters.ts 保持一致）
 const API_WITH_FEELS = [API_QWEATHER, API_YIKETIANQI, API_VISUALCROSSING, API_OPENMETEO];
@@ -454,13 +461,56 @@ const hourlyIconSvg = computed(() => {
     return iconSvg.value;
 });
 
-// 降水/温度切换（直接复用 store 的派生）
+// 降水/温度切换（直接复用 store 的派生 + 本地动画状态）
+// 恢复旧版 precipToggle 的两段式动画：label 脉冲 + 数值 fade-out(150ms) → 换值 → fade-in(300ms)
+// store 侧仅做布尔翻转与 350ms 防抖，视图侧用本地 displayedValues / displayedCellClass 延迟换值以保留动画
 const precipLabel = computed(() => store.precipLabel);
 const precipLabelKey = computed(() => store.precipLabelKey);
 const precipDisplayType = computed(() => store.precipDisplayType);
 const precipCellClass = computed(() => store.precipCellClass);
 const hourlyTimes = computed(() => store.hourlyTimes);
 const hourlyValues = computed(() => store.hourlyValues);
+
+// 本地动画状态：label 脉冲 + 数值两段式
+const isLabelAnimating = ref(false);
+const valuesPhase = ref<'idle' | 'out' | 'in'>('idle');
+const displayedValues = ref<string[]>([...store.hourlyValues]);
+const displayedCellClass = ref<string>(store.precipCellClass);
+
+// 非切换引起的数据刷新（如首次加载）直接同步，不走动画
+watch(
+    () => store.hourlyValues,
+    newVals => {
+        if (valuesPhase.value === 'idle' && !isLabelAnimating.value) {
+            displayedValues.value = [...newVals];
+            displayedCellClass.value = store.precipCellClass;
+        }
+    },
+    { deep: true }
+);
+
+watch(currentHourlyField, () => {
+    if (!data.value.sevenHourlyData?.Times?.length) {
+        displayedValues.value = [...store.hourlyValues];
+        displayedCellClass.value = store.precipCellClass;
+        return;
+    }
+    isLabelAnimating.value = true;
+    valuesPhase.value = 'out';
+    const nextValues = [...store.hourlyValues];
+    const nextClass = store.precipCellClass;
+    window.setTimeout(() => {
+        displayedValues.value = nextValues;
+        displayedCellClass.value = nextClass;
+        valuesPhase.value = 'in';
+        window.setTimeout(() => {
+            valuesPhase.value = 'idle';
+        }, 300);
+    }, 150);
+    window.setTimeout(() => {
+        isLabelAnimating.value = false;
+    }, 300);
+});
 
 // ===== 模板驱动 tooltip 状态 =====
 const alertTip = ref<{ show: boolean; pos: { left: string; top: string }; alerts: typeof data.value.weatherAlert }>(

@@ -195,7 +195,8 @@
                             letter-spacing: 1px;
                             display: flex;
 
-                            .precip-prob-cell {
+                            .precip-prob-cell,
+                            .precip-temp-cell {
                                 padding-top: 0.5em;
                                 flex: 1;
                                 text-align: center;

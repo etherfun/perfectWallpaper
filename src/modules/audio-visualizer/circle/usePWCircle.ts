@@ -17,8 +17,8 @@ export interface UsePWCircleApi {
     resize: () => void;
     /** Apply color mode + line width + shadow blur to the current ctx. */
     setCan: () => void;
-    /** Write arr1/arr2 arrays from current audio data. */
-    createPoint: (arr: number[]) => void;
+    /** Write arr1/arr2 arrays from current audio data (left/right channels). */
+    createPoint: (left: number[], right: number[]) => void;
     style1: () => void;
     style2: () => void;
     style3: () => void;
@@ -54,7 +54,7 @@ export function usePWCircle(): UsePWCircleApi {
     return {
         resize: handleResize,
         setCan: () => pwCircleSetCan(),
-        createPoint: (arr: number[]) => pwCircleCreatePoint(arr),
+        createPoint: (left: number[], right: number[]) => pwCircleCreatePoint(left, right),
         style1: () => pwCircleStyle1(),
         style2: () => pwCircleStyle2(),
         style3: () => pwCircleStyle3(),

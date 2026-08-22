@@ -23,6 +23,11 @@ export function applyCircleProperties(
     if (properties.PolygonAngle && param) {
         const mode = properties.PolygonAngle.value;
         patch.polygon_angle = mode;
+        // 滑条语义：位置 12（默认）= 正常模式（水平线分隔左右声道）；
+        // 位置 1..11 = 多边形变换。注意 WE 启动时会推送保存值——若对
+        // 位置 12 也置 polygonActive，正常模式会被多边形公式覆盖，
+        // 导致上下不对称（回归 bug）。位置 8 → PA=12 是合法多边形档位。
+        runtimeStore.param.polygonActive = mode !== 12;
         switch (mode) {
             case 1:
                 runtimeStore.param.PolygonAngle = 1;

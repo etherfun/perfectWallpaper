@@ -15,7 +15,6 @@
 import { mount } from '@vue/test-utils';
 import { createPinia, setActivePinia } from 'pinia';
 import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
-
 import { defineComponent, h } from 'vue';
 
 // Mock the legacy PWCircle module 鈥?vi.mock factories are hoisted, so
@@ -132,8 +131,8 @@ describe('usePWCircle', () => {
         api.setCan();
         expect(spies.setCan).toHaveBeenCalledTimes(1);
 
-        api.createPoint([1, 2, 3]);
-        expect(spies.createPoint).toHaveBeenCalledWith([1, 2, 3]);
+        api.createPoint([1, 2], [3]);
+        expect(spies.createPoint).toHaveBeenCalledWith([1, 2], [3]);
 
         api.style1();
         api.style2();

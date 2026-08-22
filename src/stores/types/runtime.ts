@@ -23,7 +23,10 @@ export interface RuntimeStoreState {
     // ── PlayerRuntime ──
     /** 媒体元数据 + FFT 数据（60Hz 写入，shallowRef） */
     playerInfo: {
-        audioArray: number[];
+        /** 左声道频谱（64 bin，0=低频 → 63=高频） */
+        audioLeft: number[];
+        /** 右声道频谱（64 bin，0=低频 → 63=高频） */
+        audioRight: number[];
         playerState: number | null;
         singtitle: string;
         singartist: string;
@@ -45,6 +48,11 @@ export interface RuntimeStoreState {
         shadowBlur: number; lineWidth: number; showCircle: boolean;
         wavetransparency: number; showSemiCircle: boolean;
         SemiCircledirection: number; Polygon: number; PolygonAngle: number;
+        /** 本帧实际渲染的点数（多边形模式 120，其余 128），由 createPoint 每帧写入 */
+        activePoints: number;
+        /** 多边形布局开关：WE 推送 PolygonAngle 属性（任意档，含 PA=12）时置 true；
+         *  默认 false → 水平线分隔左右声道布局。不能用 PA 值当哨兵——会吞掉合法档位 */
+        polygonActive: boolean;
         direction: number; SolidColorGradient: boolean;
         BlurColorGradient: boolean; ColorRhythm: boolean;
         ColorMode: number; TagNow: number; GradientRate: number;

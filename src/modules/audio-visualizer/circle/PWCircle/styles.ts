@@ -14,8 +14,9 @@ export function style1(): void {
     const param = rt().param;
     const arr1 = param.arr1;
     const arr2 = param.arr2;
+    const n = param.activePoints;
     state.ctx.beginPath();
-    for (let i = 0; i < 128; i++) {
+    for (let i = 0; i < n; i++) {
         const a1 = arr1[i];
         const a2 = arr2[i];
         if (!a1 || !a2) continue;
@@ -35,13 +36,14 @@ export function style2(): void {
     const arr1 = param.arr1;
     const arr2 = param.arr2;
     const showSemiCircle = param.showSemiCircle;
+    const n = param.activePoints;
 
     // Outer circle
     state.ctx.beginPath();
     const outerFirst = arr1[0];
     if (outerFirst) {
         state.ctx.moveTo(outerFirst.x, outerFirst.y);
-        for (let i = 0; i < 128; i++) {
+        for (let i = 0; i < n; i++) {
             const p = arr1[i];
             if (!p) continue;
             state.ctx.lineTo(p.x, p.y);
@@ -57,7 +59,7 @@ export function style2(): void {
     const innerFirst = arr2[0];
     if (innerFirst) {
         state.ctx.moveTo(innerFirst.x, innerFirst.y);
-        for (let i = 0; i < 128; i++) {
+        for (let i = 0; i < n; i++) {
             const p = arr2[i];
             if (!p) continue;
             state.ctx.lineTo(p.x, p.y);
@@ -70,7 +72,7 @@ export function style2(): void {
 
     // Connecting lines
     state.ctx.beginPath();
-    for (let i = 0; i < 128; i++) {
+    for (let i = 0; i < n; i++) {
         const a1 = arr1[i];
         const a2 = arr2[i];
         if (!a1 || !a2) continue;
@@ -90,13 +92,14 @@ export function style3(): void {
     const arr1 = param.arr1;
     const arr2 = param.arr2;
     const showSemiCircle = param.showSemiCircle;
+    const n = param.activePoints;
 
     // Outer circle
     state.ctx.beginPath();
     const outerFirst = arr1[0];
     if (outerFirst) {
         state.ctx.moveTo(outerFirst.x, outerFirst.y);
-        for (let i = 0; i < 128; i++) {
+        for (let i = 0; i < n; i++) {
             const p = arr1[i];
             if (!p) continue;
             state.ctx.lineTo(p.x, p.y);
@@ -112,7 +115,7 @@ export function style3(): void {
     const innerFirst = arr2[0];
     if (innerFirst) {
         state.ctx.moveTo(innerFirst.x, innerFirst.y);
-        for (let i = 0; i < 128; i++) {
+        for (let i = 0; i < n; i++) {
             const p = arr2[i];
             if (!p) continue;
             state.ctx.lineTo(p.x, p.y);

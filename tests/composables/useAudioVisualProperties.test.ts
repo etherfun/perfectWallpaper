@@ -96,6 +96,31 @@ describe('useAudioVisualProperties', () => {
         expect(mockRuntime.param?.rotation).toBe(0);
     });
 
+    test('PolygonAngle 滑条位置 12（默认）→ polygonActive=false（正常模式）', () => {
+        mockRuntime.param = {
+            showCircle: false,
+            PolygonAngle: 0,
+            Polygon: 0,
+            rotationcopy: 0,
+            polygonActive: true, // 模拟之前选过位置 8
+        };
+        useAudioVisualProperties({ PolygonAngle: { value: 12 } } as never, false);
+        expect(mockRuntime.param?.polygonActive).toBe(false);
+        expect(mockRuntime.param?.PolygonAngle).toBe(180);
+    });
+
+    test('PolygonAngle 滑条位置 1..11 → polygonActive=true + PA 映射', () => {
+        // 位置 8 → PA=12：合法多边形档位，不得被哨兵吞掉
+        useAudioVisualProperties({ PolygonAngle: { value: 8 } } as never, false);
+        expect(mockRuntime.param?.polygonActive).toBe(true);
+        expect(mockRuntime.param?.PolygonAngle).toBe(12);
+
+        // 位置 5 → PA=7（非整除值，旧复制补丁在此产生错误连线）
+        useAudioVisualProperties({ PolygonAngle: { value: 5 } } as never, false);
+        expect(mockRuntime.param?.polygonActive).toBe(true);
+        expect(mockRuntime.param?.PolygonAngle).toBe(7);
+    });
+
     test('pw_line style/direction/spacing/density/range → PWLineParam + store', () => {
         const store = useConfigStore();
         useAudioVisualProperties(

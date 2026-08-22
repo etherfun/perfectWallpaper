@@ -24,7 +24,8 @@ import type { RuntimeStoreState } from './types';
 
 /** playerInfo 初始值 */
 const PLAYER_INFO_INIT: RuntimeStoreState['playerInfo'] = {
-    audioArray: [],
+    audioLeft: [],
+    audioRight: [],
     playerState: null,
     singtitle: '',
     singartist: '',
@@ -47,7 +48,8 @@ const PARAM_INIT: RuntimeStoreState['param'] = {
     rotation: 0,
     rotationcopy: 0,
     offsetAngle: 0,
-    waveArr: new Array(120),
+    // 圆环正常模式写 128 个点（多边形模式写前 120），初始尺寸对齐 128
+    waveArr: new Array(128),
     cX: 0.5,
     cY: 0.5,
     range: 9,
@@ -59,6 +61,8 @@ const PARAM_INIT: RuntimeStoreState['param'] = {
     SemiCircledirection: 1,
     Polygon: 12,
     PolygonAngle: 0,
+    activePoints: 128,
+    polygonActive: false,
     direction: 1,
     SolidColorGradient: true,
     BlurColorGradient: true,

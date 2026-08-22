@@ -220,7 +220,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     pictures_info_description: false,
 
     player_control_show: false,
-    player_control_scalefactor: 1,
     player_control_color: [255, 255, 255] as [number, number, number],
     player_control_blurcolor_show: false,
     player_control_blurcolor: [255, 255, 255] as [number, number, number],
@@ -242,7 +241,6 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     player_control_visualaudiobar: 0,
     player_control_barline: 0,
     color_pickup_method: 1,
-    player_control_hdong: 0.1,
     playery: 80,
     playerx: 50,
     player_control_autohide: true,
@@ -315,6 +313,10 @@ const BUILTIN_DEFAULTS: ConfigStoreState = {
     audio_smooth_enabled: true,
     audio_smooth_factor: 70,
     audio_spatial_window: 3,
+    /** 全局音频增益（原 audioBar 高度阈值，合并进 DSP 链） */
+    audio_gain: 1,
+    /** 全局帧间响应率（原 audioBar 变化幅度，/500 → 0.002..0.2） */
+    audio_response: 0.1,
     pw_circle_show_bool: true,
     pw_line_show_bool: true,
     polygon_angle: 1,

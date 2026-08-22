@@ -15,11 +15,6 @@ const runtimeStore = useRuntimeStore();
 import { AUDIO_BAR_COUNT } from '../constants';
 import { PLAYER_STATE } from '../types';
 
-/** 线性插值 */
-function lerp(start: number, end: number, amount: number): number {
-    return (1 - amount) * start + amount * end;
-}
-
 /**
  * 渲染循环是否应当继续。
  * （停止标志位、配置项、播放状态任意一个失效都退出。）
@@ -63,9 +58,6 @@ export function pc_aubar(): void {
 
     runtimeStore.updatePlayerInfo({ aubarstop: false });
 
-    const previousHeights = new Array(AUDIO_BAR_COUNT).fill(aubar.height);
-    const barHeights = new Array(AUDIO_BAR_COUNT).fill(0);
-
     function syncCanvasSize(): void {
         const newHeight = full.clientHeight - usage.clientHeight;
         const newWidth = usage.clientWidth;
@@ -86,23 +78,18 @@ export function pc_aubar(): void {
         const { audioLeft, audioRight } = runtimeStore.playerInfo;
 
         for (let i = 0; i < AUDIO_BAR_COUNT; ++i) {
-            // WE 音频布局：i 为左声道 bin，AUDIO_BAR_COUNT + i 为右声道对应 bin
+            // 变化幅度/增益已在全局 DSP 链（audioVisualizer）应用，直接画目标高度
             const bar = ((audioLeft[i] ?? 0) + (audioRight[i] ?? 0)) / 2;
-            const targetHeight =
-                aubar.height * Math.min(bar, 1) * (config.player_control_scalefactor ?? 1);
-            const actualHeight = Math.min(targetHeight, aubar.height);
-
-            barHeights[i] = lerp(
-                barHeights[i] ?? 0,
-                actualHeight,
-                config.player_control_hdong ?? 0.5
+            const actualHeight = Math.min(
+                aubar.height * Math.min(bar, 1),
+                aubar.height
             );
 
             rgbbg.fillRect(
                 barWidth * i,
-                aubar.height - (barHeights[i] ?? 0),
+                aubar.height - actualHeight,
                 barWidth,
-                barHeights[i] ?? 0
+                actualHeight
             );
         }
 
@@ -126,18 +113,11 @@ export function pc_aubar(): void {
 
         const heights: number[] = [];
         for (let i = 0; i < AUDIO_BAR_COUNT; ++i) {
-            // WE 音频布局：i 为左声道 bin，AUDIO_BAR_COUNT + i 为右声道对应 bin
+            // 变化幅度/增益已在全局 DSP 链应用，直接取目标高度
             const amplitude = ((audioLeft[i] ?? 0) + (audioRight[i] ?? 0)) / 2;
-            let targetHeight =
-                aubar.height -
-                aubar.height * Math.min(amplitude, 1) * (config.player_control_scalefactor ?? 1);
-            targetHeight = Math.max(0, Math.min(targetHeight, aubar.height));
-            previousHeights[i] = lerp(
-                previousHeights[i] ?? aubar.height,
-                targetHeight,
-                config.player_control_hdong ?? 0.5
-            );
-            heights[i] = previousHeights[i] ?? 0;
+            const targetHeight =
+                aubar.height - aubar.height * Math.min(amplitude, 1);
+            heights.push(Math.max(0, Math.min(targetHeight, aubar.height)));
         }
 
         if (heights.length < 2) {

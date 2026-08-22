@@ -20,6 +20,9 @@ let _rearrangedBuffer: number[] = [];
 /** 上一帧的音频数据（用于时序平滑，按声道独立） */
 let _prevLeft: number[] | null = null;
 let _prevRight: number[] | null = null;
+/** 上一帧的响应阶段输出（变化幅度 EMA 记忆，按声道独立，始终执行） */
+let _respLeft: number[] | null = null;
+let _respRight: number[] | null = null;
 
 /** WE 音频数组的单声道长度（128 = 64 左 + 64 右） */
 const CHANNEL_BINS = 64;
@@ -119,6 +122,33 @@ function temporalSmooth(
         output[i] = (data[i] ?? 0) * smoothFactor + prev * (1 - smoothFactor);
     }
     return output;
+}
+
+/**
+ * 帧间响应 + 增益（原地操作）
+ *
+ * 合并自 audioBar 的两个本地效果，现对所有可视化生效：
+ *   - 变化幅度（audio_response）：EMA 响应率，值越大跟随越紧；
+ *     无论平滑开关是否启用都执行（对应原 audioBar lerp 行为）
+ *   - 音频增益（audio_gain）：乘法增益后 clamp 到 [0,1]，
+ *     增益 >1 时波形更早饱和（对应原"高度阈值"语义）
+ */
+export function applyResponseGain(
+    data: number[],
+    prevResp: number[] | null,
+    setPrevResp: (d: number[]) => void,
+    responseRate: number,
+    gain: number
+): void {
+    const len = data.length;
+    const hasPrev = prevResp !== null && prevResp.length === len;
+    for (let i = 0; i < len; i++) {
+        const cur = data[i] ?? 0;
+        const prev = hasPrev ? (prevResp![i] ?? 0) : cur;
+        const v = (cur * responseRate + prev * (1 - responseRate)) * gain;
+        data[i] = v < 0 ? 0 : v > 1 ? 1 : v;
+    }
+    setPrevResp(data.slice());
 }
 
 /**
@@ -224,6 +254,16 @@ function smoothAudioData(
         smoothFactor,
         spatialWindow
     );
+
+    // Step 5/6：帧间响应 + 增益（合并自 audioBar，始终执行，按声道独立记忆）
+    const responseRate = config.audio_response ?? 0.1;
+    const gain = config.audio_gain ?? 1;
+    applyResponseGain(left, _respLeft, d => {
+        _respLeft = d;
+    }, responseRate, gain);
+    applyResponseGain(right, _respRight, d => {
+        _respRight = d;
+    }, responseRate, gain);
 
     return { left, right };
 }

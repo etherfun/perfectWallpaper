@@ -150,7 +150,19 @@ export function applyAudioProperties(
         patch.audio_smooth_enabled = v;
         config.audio_smooth_enabled = v; // 鍚屾鍒版棫 config锛坅udioVisualizer.ts 璇诲彇锛?
     }
+    // 全局音频增益（原 audioBar 高度阈值，合并进 DSP 链）
+    if (properties.audioGain) {
+        const v = properties.audioGain.value;
+        patch.audio_gain = v;
+        config.audio_gain = v;
+    }
 
+    // 全局帧间响应率（原 audioBar 变化幅度：滑条 1..100 → /500）
+    if (properties.audioResponse) {
+        const v = properties.audioResponse.value / 500;
+        patch.audio_response = v;
+        config.audio_response = v;
+    }
     if (properties.audioSmoothFactor) {
         const v = properties.audioSmoothFactor.value;
         patch.audio_smooth_factor = v;

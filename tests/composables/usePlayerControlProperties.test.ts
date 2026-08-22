@@ -15,7 +15,7 @@ import { debugLogger } from '@/utils/logger';
 const { mockPlayerControl, mockElements } = vi.hoisted(() => {
     const makeEl = (): HTMLElement =>
         Object.assign(document.createElement('div'), {
-            style: { cssText: '' } as CSSStyleDeclaration,
+            style: { cssText: '' },
         }) as HTMLElement;
     const container = makeEl();
     const thumbnail = makeEl();
@@ -90,15 +90,6 @@ describe('usePlayerControlProperties', () => {
         );
         expect(mockElements.playerControl.container.style.display).toBe('none');
         expect(mockElements.playerControl.container.style.visibility).toBe('visible');
-    });
-
-    test('player_control_scalefactor → store', () => {
-        const store = useConfigStore();
-        usePlayerControlProperties(
-            { player_control_scalefactor: { value: 120 } } as never,
-            false
-        );
-        expect(store.player_control_scalefactor).toBe(120);
     });
 
     test('playery + playerx → top/left %', () => {
@@ -251,15 +242,6 @@ describe('usePlayerControlProperties', () => {
         );
         expect(store.color_pickup_method).toBe(1);
         expect(mockPlayerControl.thumbnailsue).toHaveBeenCalledTimes(1);
-    });
-
-    test('player_control_hdong /500 → store', () => {
-        const store = useConfigStore();
-        usePlayerControlProperties(
-            { player_control_hdong: { value: 250 } } as never,
-            false
-        );
-        expect(store.player_control_hdong).toBeCloseTo(0.5);
     });
 
     test('player_control_samealbumtitle (non-FirstLoad) → playertitle', () => {

@@ -162,12 +162,6 @@ export function usePlayerControlProperties(
         setVis(player_control_show, FirstLoad);
     }
 
-    if (properties.player_control_scalefactor) {
-        const v = properties.player_control_scalefactor.value;
-        patch.player_control_scalefactor = v;
-        config.player_control_scalefactor = v; // sync
-    }
-
     if (properties.playery) {
         patch.playery = properties.playery.value;
         const topVal = properties.playery.value + '%';
@@ -480,12 +474,6 @@ export function usePlayerControlProperties(
         if (FirstLoad === false) {
             thumbnailsue();
         }
-    }
-
-    if (properties.player_control_hdong) {
-        const v = properties.player_control_hdong.value / 500;
-        patch.player_control_hdong = v;
-        config.player_control_hdong = v; // sync
     }
 
     if (Object.keys(patch).length > 0) {

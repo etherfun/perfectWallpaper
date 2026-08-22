@@ -83,7 +83,6 @@ export interface WallpaperPropertiesGlobal {
     // 播放器控制
     player_control_autohide?: { value: boolean };
     player_control_show?: { value: boolean };
-    player_control_scalefactor?: { value: number };
     player_control_color?: { value: string };
     player_control_blurcolor_show?: { value: boolean };
     player_control_blurcolor?: { value: string };
@@ -107,7 +106,6 @@ export interface WallpaperPropertiesGlobal {
     player_control_visualaudiobar?: { value: number };
     player_control_barline?: { value: number };
     player_control_getcolor?: { value: number };
-    player_control_hdong?: { value: number };
     playerx?: { value: number };
     playery?: { value: number };
 

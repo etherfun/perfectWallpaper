@@ -76,6 +76,8 @@ export interface WallpaperPropertiesAudioVisual {
     audio_ballRotation?: { value: number };
 
     // 音频平滑参数
+    audioGain?: { value: number };
+    audioResponse?: { value: number };
     audioSmoothEnabled?: { value: boolean };
     audioSmoothFactor?: { value: number };
     audioSpatialWindow?: { value: number };

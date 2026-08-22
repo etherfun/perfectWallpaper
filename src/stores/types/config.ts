@@ -321,10 +321,8 @@ export interface ConfigStoreState {
     player_control_bluryakeli?: number;
     player_control_color?: [number, number, number];
     player_control_fontusetb?: number;
-    player_control_hdong?: number;
     player_control_roundedcorners?: number;
     player_control_samealbum_title?: boolean; // preserved
-    player_control_scalefactor?: number;
     player_control_showwidth?: number;
     player_control_size_value?: number;
     player_control_thumbnail_rotation_speed?: number;
@@ -368,6 +366,10 @@ export interface ConfigStoreState {
     audio_smooth_enabled?: boolean;
     audio_smooth_factor?: number;
     audio_spatial_window?: number;
+    /** 全局音频增益（原 audioBar 高度阈值） */
+    audio_gain?: number;
+    /** 全局帧间响应率（原 audioBar 变化幅度，0.002..0.2） */
+    audio_response?: number;
     pw_circle_show_bool?: boolean;
     pw_line_show_bool?: boolean;
     polygon_angle?: number;

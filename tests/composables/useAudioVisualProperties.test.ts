@@ -121,6 +121,19 @@ describe('useAudioVisualProperties', () => {
         expect(mockRuntime.param?.PolygonAngle).toBe(7);
     });
 
+    test('audioGain / audioResponse → store（response /500）', () => {
+        const store = useConfigStore();
+        useAudioVisualProperties(
+            {
+                audioGain: { value: 2.5 },
+                audioResponse: { value: 50 },
+            } as never,
+            false
+        );
+        expect(store.audio_gain).toBe(2.5);
+        expect(store.audio_response).toBeCloseTo(0.1);
+    });
+
     test('pw_line style/direction/spacing/density/range → PWLineParam + store', () => {
         const store = useConfigStore();
         useAudioVisualProperties(

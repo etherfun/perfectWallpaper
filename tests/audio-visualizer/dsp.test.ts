@@ -22,14 +22,22 @@ vi.mock('@/utils/timer', () => ({
 import { useRuntimeStore } from '@/stores/runtime';
 
 let blendSeam: (data: number[]) => number[];
+let applyResponseGain: (
+    data: number[],
+    prevResp: number[] | null,
+    setPrevResp: (d: number[]) => void,
+    responseRate: number,
+    gain: number
+) => void;
 let PWLineCreatePoint: (arr: number[]) => void;
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let lineState: any;
 
 beforeEach(async () => {
     setActivePinia(createPinia());
     // 动态导入：确保模块级 store 调用发生在 Pinia 激活之后
-    ({ blendSeam } = await import('@/modules/audio-visualizer/audioVisualizer'));
+    ({ blendSeam, applyResponseGain } = await import(
+        '@/modules/audio-visualizer/audioVisualizer'
+    ));
     ({ PWLineCreatePoint } = await import('@/modules/audio-visualizer/line/PWLine/points'));
     lineState = await import('@/modules/audio-visualizer/line/PWLine/state').then(m => m.state);
 });
@@ -91,6 +99,41 @@ describe('blendSeam — 首尾接缝融合', () => {
         expect(data.slice(8, 120)).toEqual(snapshot.slice(8, 120));
         // 对称数据两端均值相同 → 端点仅向窗口均值小幅收敛（<0.05）
         expect(Math.abs(data[0]! - snapshot[0]!)).toBeLessThan(0.05);
+    });
+});
+
+describe('applyResponseGain — 帧间响应 + 增益（合并自 audioBar）', () => {
+    test('首帧（无记忆）：输出 = 当前值 × 增益，clamp 到 [0,1]', () => {
+        const data = [0.5, 2, -1];
+        let saved: number[] | null = null;
+        applyResponseGain(data, null, d => (saved = d), 0.1, 1);
+        // 无记忆时 prev=cur → EMA 退化为 cur；增益 1 → 原值；负值 clamp 0
+        expect(data[0]).toBeCloseTo(0.5);
+        expect(data[1]).toBe(1); // 2×1 clamp → 1
+        expect(data[2]).toBe(0); // 负值 clamp → 0
+        expect(saved).not.toBeNull();
+    });
+
+    test('有记忆：EMA 向当前值靠拢（rate 越大跟随越紧）', () => {
+        const prev = [0, 0];
+        const data = [1, 1];
+        let saved: number[] | null = null;
+        applyResponseGain(data, prev, d => (saved = d), 0.5, 1);
+        // 0.5×1 + 0.5×0 = 0.5
+        expect(data[0]).toBeCloseTo(0.5);
+        expect(saved![0]).toBeCloseTo(0.5);
+
+        // rate=1 → 完全跟随当前值（注意 applyResponseGain 原地写 data）
+        const data2 = [1, 1];
+        applyResponseGain(data2, saved, d => (saved = d), 1, 1);
+        expect(data2[0]).toBeCloseTo(1);
+    });
+
+    test('增益 >1：波形更早饱和（高度阈值语义）', () => {
+        const data = [0.3, 0.6];
+        applyResponseGain(data, null, () => {}, 0.1, 2);
+        expect(data[0]).toBeCloseTo(0.6); // 0.3×2 未饱和
+        expect(data[1]).toBe(1); // 0.6×2 → clamp 1
     });
 });
 

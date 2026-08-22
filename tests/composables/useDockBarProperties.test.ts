@@ -97,7 +97,7 @@ describe('useDockBarProperties', () => {
             yakeliColorG: 128,
             yakeliColorB: 51,
         });
-        expect(document.body.style.getPropertyValue('--dockbar-yakeli-color')).toBe('255, 128, 51');
+        expect(document.body.style.getPropertyValue('--dockbar-yakeli-color')).toBe('255,128,51');
     });
 
     test('positionX/positionY → updateConfig', () => {

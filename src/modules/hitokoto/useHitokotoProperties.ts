@@ -1,4 +1,5 @@
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { applyShowHide, setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
@@ -86,37 +87,37 @@ export function useHitokotoProperties(
     if (properties.hitokoto_blurcolor) {
         const blurcolor = parseColorString(properties.hitokoto_blurcolor.value) as [number, number, number];
         patch.hitokoto_blurcolor = blurcolor;
-        elements.body.style.setProperty('--hitokoto-blur-color', blurcolor.join(', '));
+        applyGlass('hitokoto', { blurColor: blurcolor });
     }
 
     if (properties.hitokoto_yakelicolor) {
         const yakeliccolor = parseColorString(properties.hitokoto_yakelicolor.value) as [number, number, number];
         patch.hitokoto_yakelic_color = yakeliccolor;
-        elements.body.style.setProperty('--hitokoto-yakeli-color', yakeliccolor.join(', '));
+        applyGlass('hitokoto', { yakeliColor: yakeliccolor });
     }
 
     if (properties.hitokoto_yakeli) {
         const yakeli = properties.hitokoto_yakeli.value / 100;
         patch.hitokoto_yakeli = yakeli;
-        elements.body.style.setProperty('--hitokoto-yakeli', String(yakeli));
+        applyGlass('hitokoto', { yakeli });
     }
 
     if (properties.hitokoto_bluryakeli) {
         const blur = properties.hitokoto_bluryakeli.value;
         patch.hitokoto_bluryakeli = blur;
-        elements.body.style.setProperty('--hitokoto-blur-yakeli', `${blur}px`);
+        applyGlass('hitokoto', { blurYakeli: `${blur}px` });
     }
 
     if (properties.hitokoto_blurcolor_show) {
         const show = properties.hitokoto_blurcolor_show.value;
         patch.hitokoto_blurcolor_show = show;
-        elements.body.style.setProperty('--hitokoto-blur-enabled', show ? '1' : '0');
+        applyGlass('hitokoto', { blurEnabled: show });
     }
 
     if (properties.hitokoto_yakeli_show) {
         const show = properties.hitokoto_yakeli_show.value;
         patch.hitokoto_yakeli_show = show;
-        elements.body.style.setProperty('--hitokoto-yakeli-enabled', show ? '1' : '0');
+        applyGlass('hitokoto', { yakeliEnabled: show });
     }
 
     if (properties.hitokoto_timetransparency) {
@@ -127,10 +128,8 @@ export function useHitokotoProperties(
 
     if (properties.hitokoto_roundedcorners) {
         patch.hitokoto_roundedcorners = properties.hitokoto_roundedcorners.value;
-        elements.body.style.setProperty(
-            '--hitokoto-roundedcorners',
-            String(properties.hitokoto_roundedcorners.value)
-        );
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局圆角接管
+        applyGlass('hitokoto', { roundedCorners: properties.hitokoto_roundedcorners.value });
 
         // 鐩戝惉涓€瑷€瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--hitokoto-height CSS 鍙橀噺銆?
         // hitokoto 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?

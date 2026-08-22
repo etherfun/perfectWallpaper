@@ -3,6 +3,7 @@
  */
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+import { applyGlass, isGlobalGlassOverridden } from '@/tokens/glass.tokens';
 
 const config = useConfigStore();
 const runtimeStore = useRuntimeStore();
@@ -41,10 +42,11 @@ export function thumbnailsue(): void {
 
     if (thumbnailcolor) {
         // 通过 body 级 CSS 变量更新背景色，SCSS 的 rgba(var(--player-yakeli-color), ...) 自动响应
-        // 设置到 body 以确保所有子元素都能继承，且不受 Vue mount 时序影响。
-        elements.body.style.setProperty('--player-yakeli-color', String(thumbnailcolor));
-    } else {
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局颜色接管
+        applyGlass('player', { yakeliColor: thumbnailcolor as [number, number, number] });
+    } else if (!isGlobalGlassOverridden()) {
         // 颜色未就绪时，移除 body 级的 CSS 变量，回退到用户配置值
+        // （全局覆盖启用时保留变量，避免清掉全局颜色）
         elements.body.style.removeProperty('--player-yakeli-color');
     }
     player_control_info.style.color = 'rgb(' + runtimeStore.playerInfo.fontcolor + ')';

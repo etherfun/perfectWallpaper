@@ -1,4 +1,5 @@
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { applyShowHide, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
@@ -63,10 +64,8 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
 
     if (properties.oclock_roundedcorners) {
         patch.oclock_roundedcorners = properties.oclock_roundedcorners.value;
-        elements.body.style.setProperty(
-            '--clock-roundedcorners',
-            String(properties.oclock_roundedcorners.value)
-        );
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局圆角接管
+        applyGlass('clock', { roundedCorners: properties.oclock_roundedcorners.value });
 
         // 鐩戝惉鏃堕挓瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--clock-height CSS 鍙橀噺銆?
         // oClock 鍦?Vue mount 涔嬪悗鎵嶅瓨鍦紝閫氳繃 deferredScheduler 寤跺悗鎸傝浇 observer锛?
@@ -89,8 +88,7 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
     if (properties.TimeBlurColor) {
         const c = parseColorString(properties.TimeBlurColor.value);
         patch.time_blur_color = '0 0 20px rgb(' + c + ')';
-        elements.body.style.setProperty('--clock-blur-color', c.join(', '));
-        elements.body.style.setProperty('--clock-blur-enabled', '1');
+        applyGlass('clock', { blurColor: c as [number, number, number], blurEnabled: true });
     }
 
     if (properties.tStyle) {
@@ -105,41 +103,35 @@ export function useTimeProperties(properties: WallpaperProperties, FirstLoad: bo
 
     if (properties.oclock_blurcolor_show) {
         patch.oclock_blurcolor_show = properties.oclock_blurcolor_show.value;
-        elements.body.style.setProperty(
-            '--clock-blur-enabled',
-            properties.oclock_blurcolor_show.value ? '1' : '0'
-        );
+        applyGlass('clock', { blurEnabled: properties.oclock_blurcolor_show.value });
     }
 
     if (properties.oclock_blurcolor) {
         const c = parseColorString(properties.oclock_blurcolor.value) as [number, number, number];
         patch.oclock_blurcolor = c;
-        elements.body.style.setProperty('--clock-blur-color', c.join(', '));
+        applyGlass('clock', { blurColor: c });
     }
 
     if (properties.oclock_yakeli_show) {
         patch.oclock_yakeli_show = properties.oclock_yakeli_show.value;
-        elements.body.style.setProperty(
-            '--clock-yakeli-enabled',
-            properties.oclock_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('clock', { yakeliEnabled: properties.oclock_yakeli_show.value });
     }
 
     if (properties.oclock_yakelicolor) {
         const c = parseColorString(properties.oclock_yakelicolor.value) as [number, number, number];
         patch.oclock_yakelic_color = c;
-        elements.body.style.setProperty('--clock-yakeli-color', c.join(', '));
+        applyGlass('clock', { yakeliColor: c });
     }
 
     if (properties.oclock_yakeli) {
         const yakeli = properties.oclock_yakeli.value / 100;
         patch.oclock_yakeli = yakeli;
-        elements.body.style.setProperty('--clock-yakeli', String(yakeli));
+        applyGlass('clock', { yakeli });
     }
 
     if (properties.oclock_bluryakeli) {
         patch.oclock_bluryakeli = properties.oclock_bluryakeli.value;
-        elements.body.style.setProperty('--clock-blur-yakeli', `${properties.oclock_bluryakeli.value}px`);
+        applyGlass('clock', { blurYakeli: `${properties.oclock_bluryakeli.value}px` });
     }
 
     if (properties.datetransparency) {

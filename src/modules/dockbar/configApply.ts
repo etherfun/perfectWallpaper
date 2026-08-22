@@ -1,3 +1,5 @@
+import { applyGlass } from '@/tokens/glass.tokens';
+
 import type { DockBarConfig } from './types';
 
 export function applyConfig(
@@ -42,16 +44,16 @@ function applyPosition(container: HTMLElement, config: DockBarConfig): void {
 }
 
 function applyCssVariables(config: DockBarConfig): void {
-    document.body.style.setProperty('--dockbar-yakeli-enabled', config.yakeliEnabled ? '1' : '0');
-    document.body.style.setProperty('--dockbar-yakeli', String(config.yakeliIntensity));
-    document.body.style.setProperty('--dockbar-blur-yakeli', `${config.blurIntensity}px`);
-    document.body.style.setProperty(
-        '--dockbar-yakeli-color',
-        `${config.yakeliColorR}, ${config.yakeliColorG}, ${config.yakeliColorB}`
-    );
+    // 亚克力相关变量经 applyGlass 写入：全局亚克力覆盖启用时由全局值接管
+    applyGlass('dockbar', {
+        yakeliEnabled: config.yakeliEnabled,
+        yakeli: config.yakeliIntensity,
+        blurYakeli: `${config.blurIntensity}px`,
+        yakeliColor: [config.yakeliColorR, config.yakeliColorG, config.yakeliColorB],
+        roundedCorners: config.roundedCorners,
+    });
     document.body.style.setProperty('--dockbar-icon-size', `${config.iconSize}px`);
     document.body.style.setProperty('--dockbar-spacing', `${config.spacing}px`);
-    document.body.style.setProperty('--dockbar-roundedcorners', String(config.roundedCorners));
 }
 
 function applyBackgroundStyle(background: HTMLElement, config: DockBarConfig): void {

@@ -1,5 +1,6 @@
 import { getDockBar, initDockBar } from '@/modules/dockbar';
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { elements } from '@/utils/elementManager';
 
 import { WallpaperProperties } from '../../types/types';
@@ -56,26 +57,20 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
    // 亚克力效果启用
     if (properties.dockbar_yakeli_show) {
         dockbar.updateConfig({ yakeliEnabled: properties.dockbar_yakeli_show.value });
-        elements.body.style.setProperty(
-            '--dockbar-yakeli-enabled',
-            properties.dockbar_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('dockbar', { yakeliEnabled: properties.dockbar_yakeli_show.value });
     }
 
     // 亚克力强度
     if (properties.dockbar_yakeli) {
         const intensity = properties.dockbar_yakeli.value / 100;
         dockbar.updateConfig({ yakeliIntensity: intensity });
-        elements.body.style.setProperty('--dockbar-yakeli', String(intensity));
+        applyGlass('dockbar', { yakeli: intensity });
     }
 
     // 模糊强度
     if (properties.dockbar_bluryakeli) {
         dockbar.updateConfig({ blurIntensity: properties.dockbar_bluryakeli.value });
-        elements.body.style.setProperty(
-            '--dockbar-blur-yakeli',
-            `${properties.dockbar_bluryakeli.value}px`
-        );
+        applyGlass('dockbar', { blurYakeli: `${properties.dockbar_bluryakeli.value}px` });
     }
 
     // 亚克力颜色
@@ -87,16 +82,13 @@ export function useDockBarProperties(properties: WallpaperProperties, FirstLoad:
             yakeliColorG: c[1] || 255,
             yakeliColorB: c[2] || 255,
         });
-        elements.body.style.setProperty('--dockbar-yakeli-color', c.join(', '));
+        applyGlass('dockbar', { yakeliColor: c as [number, number, number] });
     }
 
     // 圆角
     if (properties.dockbar_roundedcorners) {
         dockbar.updateConfig({ roundedCorners: properties.dockbar_roundedcorners.value });
-        elements.body.style.setProperty(
-            '--dockbar-roundedcorners',
-            String(properties.dockbar_roundedcorners.value)
-        );
+        applyGlass('dockbar', { roundedCorners: properties.dockbar_roundedcorners.value });
     }
 
    // X轴位置

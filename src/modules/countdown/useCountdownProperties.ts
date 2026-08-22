@@ -1,4 +1,5 @@
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { applyShowHide, setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
@@ -77,45 +78,36 @@ export function useCountdownProperties(
 
     if (properties.countdown_blurcolor_show) {
         patch.countdown_blurcolor_show = properties.countdown_blurcolor_show.value;
-        bodyElement.style.setProperty(
-            '--countdown-blur-enabled',
-            properties.countdown_blurcolor_show.value ? '1' : '0'
-        );
+        applyGlass('countdown', { blurEnabled: properties.countdown_blurcolor_show.value });
     }
 
     if (properties.countdown_blurcolor) {
         const color = parseColorString(properties.countdown_blurcolor.value) as [number, number, number];
         patch.countdown_blurcolor = color;
-        bodyElement.style.setProperty('--countdown-blur-color', color.join(', '));
+        applyGlass('countdown', { blurColor: color });
     }
 
     if (properties.countdown_yakeli_show) {
         patch.countdown_yakeli_show = properties.countdown_yakeli_show.value;
-        bodyElement.style.setProperty(
-            '--countdown-yakeli-enabled',
-            properties.countdown_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('countdown', { yakeliEnabled: properties.countdown_yakeli_show.value });
     }
 
     if (properties.countdown_yakelicolor) {
         const color = parseColorString(properties.countdown_yakelicolor.value) as [number, number, number];
         patch.countdown_yakelic_color = color;
-        bodyElement.style.setProperty('--countdown-yakeli-color', color.join(', '));
+        applyGlass('countdown', { yakeliColor: color });
     }
 
     if (properties.countdown_yakeli) {
         const value = properties.countdown_yakeli.value / 100;
         patch.countdown_yakeli = value;
-        bodyElement.style.setProperty('--countdown-yakeli', String(value));
+        applyGlass('countdown', { yakeli: value });
     }
 
     if (properties.countdown_bluryakeli) {
         patch.countdown_bluryakeli = properties.countdown_bluryakeli.value;
         patch.first_load_countdown = false;
-        bodyElement.style.setProperty(
-            '--countdown-blur-yakeli',
-            String(properties.countdown_bluryakeli.value) + 'px'
-        );
+        applyGlass('countdown', { blurYakeli: `${properties.countdown_bluryakeli.value}px` });
     }
 
     if (properties.countdown_timetransparency) {
@@ -126,10 +118,8 @@ export function useCountdownProperties(
 
     if (properties.countdown_roundedcorners) {
         patch.countdown_roundedcorners = properties.countdown_roundedcorners.value;
-        bodyElement.style.setProperty(
-            '--countdown-roundedcorners',
-            String(properties.countdown_roundedcorners.value)
-        );
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局圆角接管
+        applyGlass('countdown', { roundedCorners: properties.countdown_roundedcorners.value });
 
         // 鐩戝惉鍊掕鏃跺鍣ㄥ昂瀵稿彉鍖栵紝鍚屾 --countdown-height CSS 鍙橀噺銆?
         // countdown 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?

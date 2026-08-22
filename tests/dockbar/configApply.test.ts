@@ -106,7 +106,7 @@ describe('dockbar/configApply', () => {
             };
             applyConfig(container, background, addButton, cfg);
             expect(document.body.style.getPropertyValue('--dockbar-yakeli-color')).toBe(
-                '10, 20, 30'
+                '10,20,30'
             );
         });
 

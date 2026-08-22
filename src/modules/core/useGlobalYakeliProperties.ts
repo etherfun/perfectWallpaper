@@ -40,15 +40,18 @@ export function useGlobalYakeliProperties(properties: WallpaperProperties): void
     if (Object.keys(patch).length > 0) store.$patch(patch);
 
     const enabled = enabledVal ?? (store.global_yakeli_enabled ?? false);
-    // 注册重放函数：关闭覆盖时用 store 各组件原值立刻回写，避免闪白
+    // 注册重放函数：关闭覆盖时用 store 各组件原值立刻回写，避免闪白。
+    // 注意：sysmon/dockbar 的 yakeli 值不在 config store（在各自模块状态/缓存），
+    // 由 glass.tokens 的 componentTokenCache 恢复；此处仅回写有 store 键的组件。
     registerGlassReplay(() => {
         const body = document.body.style;
-        // sysmon / dockbar / player / picture-info 等：按 store 现有值回写
         const s = store as unknown as Record<string, unknown>;
         const write = (prefix: string, key: string, cssVar: string, fmt?: (v: unknown) => string) => {
             const v = s[key];
             if (v !== undefined && v !== null) body.setProperty(cssVar, fmt ? fmt(v) : String(v));
         };
+        // 各组件 handler 写 store 时已归一化 yakeli 到 0..1（value/100），
+        // 此处直接回写即可；切勿再除 100（会二次归一化 → 透明度趋近 0）
         // 仅回写各组件已有的 yakeli 相关键（避免误写非 yakeli 变量）
         // clock / date
         write('clock', 'oclock_yakeli_show', '--clock-yakeli-enabled', v => (v ? '1' : '0'));
@@ -74,19 +77,10 @@ export function useGlobalYakeliProperties(properties: WallpaperProperties): void
         write('countdown', 'countdown_roundedcorners', '--countdown-roundedcorners');
         write('weather', 'weather_yakeli_show', '--weather-yakeli-enabled', v => (v ? '1' : '0'));
         write('weather', 'weather_yakelic_color', '--weather-yakeli-color', v => (v as number[]).join(','));
+        // weather handler 已改为存归一化值（原 bug：存 raw 0..100 → 回写后 alpha≥1）
         write('weather', 'weather_yakeli', '--weather-yakeli');
         write('weather', 'weather_bluryakeli', '--weather-blur-yakeli', v => `${v}px`);
         write('weather', 'weather_roundedcorners', '--weather-roundedcorners');
-        write('sysmon', 'sysmon_yakeli_show', '--sysmon-yakeli-enabled', v => (v ? '1' : '0'));
-        write('sysmon', 'sysmon_yakelic_color', '--sysmon-yakeli-color', v => (v as number[]).join(','));
-        write('sysmon', 'sysmon_yakeli', '--sysmon-yakeli');
-        write('sysmon', 'sysmon_bluryakeli', '--sysmon-blur-yakeli', v => `${v}px`);
-        write('sysmon', 'sysmon_roundedcorners', '--sysmon-roundedcorners');
-        write('dockbar', 'dockbar_yakeli_show', '--dockbar-yakeli-enabled', v => (v ? '1' : '0'));
-        write('dockbar', 'dockbar_yakelic_color', '--dockbar-yakeli-color', v => (v as number[]).join(','));
-        write('dockbar', 'dockbar_yakeli', '--dockbar-yakeli');
-        write('dockbar', 'dockbar_bluryakeli', '--dockbar-blur-yakeli', v => `${v}px`);
-        write('dockbar', 'dockbar_roundedcorners', '--dockbar-roundedcorners');
         write('player', 'player_control_yakeli_show', '--player-yakeli-enabled', v => (v ? '1' : '0'));
         write('player', 'player_control_yakelic_color', '--player-yakeli-color', v => (v as number[]).join(','));
         write('player', 'player_control_yakeli', '--player-yakeli');

@@ -1,5 +1,6 @@
 ﻿import { getSystemMonitor, initSystemMonitor, updateConfig } from '@/modules/systemMonitor';
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { elements } from '@/utils/elementManager';
 import { debugLogger } from '@/utils/logger';
 
@@ -164,40 +165,28 @@ export function useSystemMonitorProperties(
         });
     }
 
-    // Yakeli (acrylic) effect settings
+    // Yakeli (acrylic) effect settings — 经 applyGlass 写入，全局覆盖启用时由全局值接管
     if (properties.sysmon_yakeli_show) {
-        elements.body.style.setProperty(
-            '--sysmon-yakeli-enabled',
-            properties.sysmon_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('sysmon', { yakeliEnabled: properties.sysmon_yakeli_show.value });
     }
 
     if (properties.sysmon_bluryakeli) {
-        elements.body.style.setProperty(
-            '--sysmon-blur-yakeli',
-            `${properties.sysmon_bluryakeli.value}px`
-        );
+        applyGlass('sysmon', { blurYakeli: `${properties.sysmon_bluryakeli.value}px` });
     }
 
     if (properties.sysmon_yakeli) {
-        elements.body.style.setProperty(
-            '--sysmon-yakeli',
-            String(properties.sysmon_yakeli.value / 100)
-        );
+        applyGlass('sysmon', { yakeli: properties.sysmon_yakeli.value / 100 });
     }
 
     if (properties.sysmon_yakelicolor) {
         const c = properties.sysmon_yakelicolor.value
             .split(' ')
             .map((v: string) => Math.ceil(parseFloat(v) * 255));
-        elements.body.style.setProperty('--sysmon-yakeli-color', c.join(', '));
+        applyGlass('sysmon', { yakeliColor: c as [number, number, number] });
     }
 
     if (properties.sysmon_roundedcorners) {
-        elements.body.style.setProperty(
-            '--sysmon-roundedcorners',
-            String(properties.sysmon_roundedcorners.value)
-        );
+        applyGlass('sysmon', { roundedCorners: properties.sysmon_roundedcorners.value });
     }
 
     if (properties.sysmon_display_style) {

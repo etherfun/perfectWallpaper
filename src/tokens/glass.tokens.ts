@@ -27,12 +27,33 @@ const GLASS_PREFIXES = [
 // 全局覆盖缓存：启用时同步写入所有组件 CSS 变量
 let globalOverride: GlassTokens | null = null;
 
+/**
+ * 各组件最近一次"非全局"写入的令牌快照（按前缀缓存）。
+ * 全局覆盖启用期间组件写入被拦截，但原始值仍记录在此；
+ * 关闭覆盖时用它恢复各组件原值（sysmon/dockbar 等无 store 键的组件
+ * 无法靠 replayFromStore 恢复，必须依赖此缓存）。
+ */
+const componentTokenCache = new Map<string, GlassTokens>();
+
 export function applyGlass(prefix: string, tokens: GlassTokens): void {
     const body = document.body.style;
     // 若全局覆盖生效，除 global 前缀外，所有组件写入被全局值拦截
-    const effective: GlassTokens =
-        globalOverride && prefix !== 'global' ? { ...tokens, ...globalOverride } : tokens;
-    const g = prefix === 'global' ? tokens : effective;
+    const overridden = globalOverride !== null && prefix !== 'global';
+    if (!overridden) {
+        // 非全局模式：合并到该前缀的快照并落盘 CSS 变量
+        const merged = { ...(componentTokenCache.get(prefix) ?? {}), ...tokens };
+        componentTokenCache.set(prefix, merged);
+        writeGlassVars(prefix, merged);
+        return;
+    }
+    // 全局覆盖生效：仅更新快照（供关闭时恢复），CSS 变量保持全局值不动
+    const merged = { ...(componentTokenCache.get(prefix) ?? {}), ...tokens };
+    componentTokenCache.set(prefix, merged);
+}
+
+/** 把令牌对象写为 body 上的 CSS 变量 */
+function writeGlassVars(prefix: string, g: GlassTokens): void {
+    const body = document.body.style;
     if (g.yakeliEnabled !== undefined) body.setProperty(`--${prefix}-yakeli-enabled`, g.yakeliEnabled ? '1' : '0');
     if (g.yakeliColor) body.setProperty(`--${prefix}-yakeli-color`, g.yakeliColor.join(','));
     if (g.yakeli !== undefined) body.setProperty(`--${prefix}-yakeli`, String(g.yakeli));
@@ -60,26 +81,33 @@ export function applyGlobalGlassOverride(
     const body = document.body.style;
     if (!enabled) {
         globalOverride = null;
-        // 关闭覆盖：清除全局变量并移除已覆盖的组件变量，等待下次各组件写入或重放
+        // 关闭覆盖：清除全局变量
         body.removeProperty('--global-yakeli-enabled');
         body.removeProperty('--global-yakeli-color');
         body.removeProperty('--global-yakeli');
         body.removeProperty('--global-blur-yakeli');
         body.removeProperty('--global-roundedcorners');
-        // 清除各组件被覆盖的变量，避免旧值残留
-        for (const prefix of GLASS_PREFIXES) {
-            body.removeProperty(`--${prefix}-yakeli-enabled`);
-            body.removeProperty(`--${prefix}-yakeli-color`);
-            body.removeProperty(`--${prefix}-yakeli`);
-            body.removeProperty(`--${prefix}-blur-yakeli`);
-            body.removeProperty(`--${prefix}-roundedcorners`);
-        }
-        // 立刻用 store 原值重放，避免关闭瞬间闪白（无依赖时则等待下次推送）
+        // 先用 store 原值重放（有 store 键的组件兜底），
+        // 再用组件令牌缓存覆盖 —— 缓存记录的是各组件最近一次真实写入，
+        // 必须后执行以胜过 store 默认值（否则未配置组件被写成 0）。
         if (replayFromStore) {
             try {
                 replayFromStore();
             } catch {
                 // 忽略重放异常
+            }
+        }
+        for (const prefix of GLASS_PREFIXES) {
+            const cached = componentTokenCache.get(prefix);
+            if (cached) {
+                writeGlassVars(prefix, cached);
+            } else {
+                // 无缓存（该组件从未写入过）：清除变量回退到 SCSS 默认值
+                body.removeProperty(`--${prefix}-yakeli-enabled`);
+                body.removeProperty(`--${prefix}-yakeli-color`);
+                body.removeProperty(`--${prefix}-yakeli`);
+                body.removeProperty(`--${prefix}-blur-yakeli`);
+                body.removeProperty(`--${prefix}-roundedcorners`);
             }
         }
         return;
@@ -90,14 +118,14 @@ export function applyGlobalGlassOverride(
         ...tokens,
     };
     // 同步写入全局 CSS 变量（供调试/回退）
-    applyGlass('global', { yakeliEnabled: true, ...tokens });
+    writeGlassVars('global', { yakeliEnabled: true, ...tokens });
     // 同步覆盖所有组件前缀（确保缺失 key 也显式写入，避免旧 blurColor 残留）
     for (const prefix of GLASS_PREFIXES) {
         // 若 tokens 缺少某字段，显式清除对应旧变量，避免上一轮组件自有值残留
         if (tokens.blurColor === undefined) body.removeProperty(`--${prefix}-blur-color`);
         if (tokens.blurEnabled === undefined) body.removeProperty(`--${prefix}-blur-enabled`);
         if (tokens.height === undefined) body.removeProperty(`--${prefix}-height`);
-        applyGlass(prefix, globalOverride);
+        writeGlassVars(prefix, globalOverride);
     }
 }
 

@@ -271,13 +271,13 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.picturesinfo_blurcolor_show) {
         const show = properties.picturesinfo_blurcolor_show.value;
         patch.pictures_info_blurcolor_show = show;
-        elements.body.style.setProperty('--picture-info-blur-enabled', show ? '1' : '0');
+        applyGlass('picture-info', { blurEnabled: show });
     }
 
     if (properties.picturesinfo_blurcolor) {
         const color = parseColorString(properties.picturesinfo_blurcolor.value) as [number, number, number];
         patch.pictures_info_blurcolor = color;
-        elements.body.style.setProperty('--picture-info-blur-color', color.join(', '));
+        applyGlass('picture-info', { blurColor: color });
     }
 
     if (properties.picturesinfo_yakeli_show) {
@@ -314,7 +314,8 @@ export function useBackgroundProperties(properties: WallpaperProperties, FirstLo
     if (properties.picturesinfo_roundedcorners) {
         const roundedcorners = properties.picturesinfo_roundedcorners.value;
         patch.pictures_info_roundedcorners = roundedcorners;
-        elements.body.style.setProperty('--picture-info-roundedcorners', String(roundedcorners));
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局圆角接管
+        applyGlass('picture-info', { roundedCorners: roundedcorners });
 
         // 鐩戝惉 picture-info 瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--picture-info-height CSS 鍙橀噺銆?
         // picInfoEl 鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?

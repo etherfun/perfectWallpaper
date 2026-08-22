@@ -93,7 +93,7 @@ describe('useTimeProperties', () => {
         const store = useConfigStore();
         useTimeProperties({ TimeBlurColor: { value: '0.5 0.5 0.5' } } as never, false);
         expect(store.time_blur_color).toBe('0 0 20px rgb(128,128,128)');
-        expect(document.body.style.getPropertyValue('--clock-blur-color')).toBe('128, 128, 128');
+        expect(document.body.style.getPropertyValue('--clock-blur-color')).toBe('128,128,128');
         expect(document.body.style.getPropertyValue('--clock-blur-enabled')).toBe('1');
     });
 

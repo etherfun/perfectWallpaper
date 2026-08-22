@@ -135,7 +135,7 @@ describe('usePlayerControlProperties', () => {
             false
         );
         expect(document.body.style.getPropertyValue('--player-blur-enabled')).toBe('1');
-        expect(document.body.style.getPropertyValue('--player-blur-color')).toBe('255, 0, 0');
+        expect(document.body.style.getPropertyValue('--player-blur-color')).toBe('255,0,0');
         expect(document.body.style.getPropertyValue('--player-yakeli-enabled')).toBe('1');
         expect(document.body.style.getPropertyValue('--player-yakeli')).toBe('0.5');
         expect(document.body.style.getPropertyValue('--player-blur-yakeli')).toBe('8px');

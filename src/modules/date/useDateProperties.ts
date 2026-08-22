@@ -1,4 +1,5 @@
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { applyShowHide, setShowWidth, syncElementHeightToCssVar } from '@/utils/dom';
 import { elements } from '@/utils/elementManager';
@@ -32,10 +33,8 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
 
     if (properties.odate_roundedcorners) {
         patch.odate_roundedcorners = properties.odate_roundedcorners.value;
-        elements.body.style.setProperty(
-            '--date-roundedcorners',
-            String(properties.odate_roundedcorners.value)
-        );
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局圆角接管
+        applyGlass('date', { roundedCorners: properties.odate_roundedcorners.value });
 
         // 鐩戝惉鏃ユ湡瀹瑰櫒灏哄鍙樺寲锛屽悓姝?--date-height CSS 鍙橀噺銆?
         // oDate 瀹瑰櫒鐢?Vue mount 鍚庢墠瀛樺湪锛岄€氳繃 deferredScheduler 寤跺悗鎸傝浇 observer銆?
@@ -52,41 +51,35 @@ export function useDateProperties(properties: WallpaperProperties, FirstLoad: bo
 
     if (properties.odate_blurcolor_show) {
         patch.odate_blurcolor_show = properties.odate_blurcolor_show.value;
-        elements.body.style.setProperty(
-            '--date-blur-enabled',
-            properties.odate_blurcolor_show.value ? '1' : '0'
-        );
+        applyGlass('date', { blurEnabled: properties.odate_blurcolor_show.value });
     }
 
     if (properties.odate_blurcolor) {
         const color = parseColorString(properties.odate_blurcolor.value) as [number, number, number];
         patch.odate_blurcolor = color;
-        elements.body.style.setProperty('--date-blur-color', color.join(', '));
+        applyGlass('date', { blurColor: color });
     }
 
     if (properties.odate_yakeli_show) {
         patch.odate_yakeli_show = properties.odate_yakeli_show.value;
-        elements.body.style.setProperty(
-            '--date-yakeli-enabled',
-            properties.odate_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('date', { yakeliEnabled: properties.odate_yakeli_show.value });
     }
 
     if (properties.odate_yakelicolor) {
         const color = parseColorString(properties.odate_yakelicolor.value) as [number, number, number];
         patch.odate_yakelic_color = color;
-        elements.body.style.setProperty('--date-yakeli-color', color.join(', '));
+        applyGlass('date', { yakeliColor: color });
     }
 
     if (properties.odate_yakeli) {
         const value = properties.odate_yakeli.value / 100;
         patch.odate_yakeli = value;
-        elements.body.style.setProperty('--date-yakeli', String(value));
+        applyGlass('date', { yakeli: value });
     }
 
     if (properties.odate_bluryakeli) {
         patch.odate_bluryakeli = properties.odate_bluryakeli.value;
-        elements.body.style.setProperty('--date-blur-yakeli', `${properties.odate_bluryakeli.value}px`);
+        applyGlass('date', { blurYakeli: `${properties.odate_bluryakeli.value}px` });
     }
 
     if (properties.DateX) {

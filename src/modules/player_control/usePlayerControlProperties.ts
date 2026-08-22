@@ -10,6 +10,7 @@
 import { pc_aubar, playertitle, thumbnailsue } from '@/modules/player_control';
 import { useConfigStore } from '@/stores/config';
 import { useRuntimeStore } from '@/stores/runtime';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { WallpaperProperties } from '@/types/types';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
@@ -201,10 +202,7 @@ export function usePlayerControlProperties(
         const v = properties.player_control_blurcolor_show.value;
         patch.player_control_blurcolor_show = v;
         config.player_control_blurcolor_show = v; // sync
-        elements.body.style.setProperty(
-            '--player-blur-enabled',
-            properties.player_control_blurcolor_show.value ? '1' : '0'
-        );
+        applyGlass('player', { blurEnabled: v });
     }
 
     if (properties.player_control_blurcolor) {
@@ -214,17 +212,14 @@ export function usePlayerControlProperties(
         const v = blurcolor as [number, number, number];
         patch.player_control_blurcolor = v;
         config.player_control_blurcolor = v; // sync
-        elements.body.style.setProperty('--player-blur-color', blurcolor.join(', '));
+        applyGlass('player', { blurColor: v });
     }
 
     if (properties.player_control_yakeli_show) {
         const v = properties.player_control_yakeli_show.value;
         patch.player_control_yakeli_show = v;
         config.player_control_yakeli_show = v; // sync
-        elements.body.style.setProperty(
-            '--player-yakeli-enabled',
-            properties.player_control_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('player', { yakeliEnabled: v });
     }
 
     if (properties.player_control_yakelicolor) {
@@ -234,24 +229,21 @@ export function usePlayerControlProperties(
         const v = yakeliccolor as [number, number, number];
         patch.player_control_yakelic_color = v;
         config.player_control_yakelic_color = v; // sync
-        elements.body.style.setProperty('--player-yakeli-color', yakeliccolor.join(', '));
+        applyGlass('player', { yakeliColor: v });
     }
 
     if (properties.player_control_yakeli) {
         const yakeli = properties.player_control_yakeli.value / 100;
         patch.player_control_yakeli = yakeli;
         config.player_control_yakeli = yakeli; // sync
-        elements.body.style.setProperty('--player-yakeli', String(yakeli));
+        applyGlass('player', { yakeli });
     }
 
     if (properties.player_control_bluryakeli) {
         const v = properties.player_control_bluryakeli.value;
         patch.player_control_bluryakeli = v;
         config.player_control_bluryakeli = v; // sync
-        elements.body.style.setProperty(
-            '--player-blur-yakeli',
-            `${properties.player_control_bluryakeli.value}px`
-        );
+        applyGlass('player', { blurYakeli: `${v}px` });
     }
 
     if (properties.player_control_size) {

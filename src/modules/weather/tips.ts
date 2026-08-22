@@ -1,4 +1,4 @@
-﻿import { globalT } from '@/utils/i18n';
+import { globalT } from '@/utils/i18n';
 
 import type { WeatherData, WeatherTip } from './types';
 
@@ -112,7 +112,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 1, text: globalT('weather_tip_windy') });
     }
 
-    // 浼樺厛绾?2: 鍋ュ悍鐩稿叧寤鸿
+    // 优先级 2: 健康相关建议
     if (airQuality > AIR_POOR) {
         tips.push({ priority: 2, text: globalT('weather_tip_air_quality_poor') });
     } else if (airQuality > AIR_MODERATE) {
@@ -127,7 +127,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 2, text: globalT('weather_tip_uv_moderate') });
     }
 
-    // 浼樺厛绾?3: 娓╁害鐩稿叧寤鸿
+    // 优先级 3: 温度相关建议
     if (maxTemp >= TEMP_HOT_EXTREME) {
         tips.push({ priority: 3, text: globalT('weather_tip_hot_extreme') });
     } else if (maxTemp >= TEMP_HOT) {
@@ -138,7 +138,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 3, text: globalT('weather_tip_cold') });
     }
 
-    // 浣撴劅娓╁害涓庡疄娴嬫俯搴﹀樊寮?
+    // 体感温度与实测温度差异
     const tempDiff = Math.abs(feelsTemp - currentTemp);
     if (tempDiff >= FEELS_DIFF && !isNight) {
         if (feelsTemp > currentTemp) {
@@ -148,14 +148,14 @@ export function getWeatherTips(weatherData: WeatherData): string {
         }
     }
 
-    // 浼樺厛绾?4: 婀垮害鐩稿叧寤鸿
+    // 优先级 4: 湿度相关建议
     if (humidity >= HUMIDITY_HIGH) {
         tips.push({ priority: 4, text: globalT('weather_tip_humidity_high') });
     } else if (humidity <= HUMIDITY_LOW) {
         tips.push({ priority: 4, text: globalT('weather_tip_humidity_low') });
     }
 
-    // 浼樺厛绾?5: 鑳借搴﹀缓璁?
+    // 优先级 5: 能见度建议
     if (visibility > 0 && visibility < VISIBILITY_POOR) {
         tips.push({ priority: 5, text: globalT('weather_tip_visibility_poor') });
     } else if (visibility >= VISIBILITY_POOR && visibility < VISIBILITY_LOW) {
@@ -177,7 +177,7 @@ export function getWeatherTips(weatherData: WeatherData): string {
         tips.push({ priority: 6, text: globalT('weather_tip_sunny_night') });
     }
 
-    // 浼樺厛绾?7: 閫氱敤寤鸿
+    // 优先级 7: 通用建议
     if (cloudCover >= CLOUD_HEAVY) {
         tips.push({ priority: 7, text: globalT('weather_tip_cloudy_heavy') });
     } else if (cloudCover >= CLOUD_MODERATE) {

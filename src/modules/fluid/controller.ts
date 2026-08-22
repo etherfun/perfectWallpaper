@@ -35,6 +35,7 @@ export type FluidControllerApi = {
 
 export function useFluidEffect(): FluidControllerApi {
     const config = useConfigStore();
+    const runtime = useRuntimeStore();
     const instance = shallowRef<FluidEffect | null>(null);
 
     function ensureInstance(): FluidEffect {
@@ -80,6 +81,19 @@ export function useFluidEffect(): FluidControllerApi {
         () => [config.fluidEffectEnabled, config.fluid_effect_enabled_fullscreen] as const,
         () => syncEnabledFullscreen(),
         { immediate: true }
+    );
+
+    // 播放内容就绪时重新同步（初始加载修复）：
+    // WE 首帧属性推送早于媒体事件，enable 时 hasPlaybackContent() 为 false，
+    // performInitNormalEffect/initFullscreenEffect 会静默跳过渲染器创建。
+    // 歌曲标题/播放状态从媒体事件到达后，这里触发 sync → enable() 自愈重试。
+    watch(
+        () => [runtime.playerInfo.singtitle, runtime.playerInfo.playerState] as const,
+        () => {
+            if (config.fluidEffectEnabled || config.fluid_effect_enabled_fullscreen) {
+                syncEnabledFullscreen();
+            }
+        }
     );
 
     return {

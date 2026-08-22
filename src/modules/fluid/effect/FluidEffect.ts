@@ -59,6 +59,12 @@ export class FluidEffect {
             return this;
         }
         if (this._state === FluidEffectStateEnum.NORMAL) {
+            // 自愈：初始加载时属性先于媒体内容到达，enable 可能因
+            // 播放内容/容器未就绪被 performInitNormalEffect 静默跳过。
+            // 渲染器缺失时重试初始化（内部有幂等守卫，不会重复创建）。
+            if (!this._normalEffect) {
+                this.initNormalEffect();
+            }
             return this;
         }
         this._state = FluidEffectStateEnum.NORMAL;
@@ -83,6 +89,10 @@ export class FluidEffect {
 
     enableFullscreen(): this {
         if (this._state === FluidEffectStateEnum.FULLSCREEN) {
+            // 自愈：同 enable()，内容就绪后回补全屏渲染器
+            if (!this._fullscreenEffect) {
+                this.initFullscreenEffect();
+            }
             return this;
         }
         // 清理普通效果，确保状态干净

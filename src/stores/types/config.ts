@@ -283,6 +283,17 @@ export interface ConfigStoreState {
     weather_yakeli?: number;
     weather_yakeli_show?: boolean;
     weather_yakelic_color?: [number, number, number];
+    weather_hourly_enabled?: boolean;
+    weather_hourly_interval?: number;
+    weather_hourly_pop?: boolean;
+    weather_hourly_temp?: boolean;
+    weather_hourly_humidity?: boolean;
+    weather_hourly_windspeed?: boolean;
+    weather_hourly_pressure?: boolean;
+    weather_hourly_cloud?: boolean;
+    weather_hourly_precip?: boolean;
+    weather_hourly_dew?: boolean;
+    weather_hourly_windlv?: boolean;
 
     // PlayerControl 补强
     color_pickup_method?: number;

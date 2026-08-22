@@ -8,7 +8,7 @@
  */
 
 import { defineStore } from 'pinia';
-import { computed, reactive, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
 import { useConfigStore } from '@/stores/config';
 import { globalT } from '@/utils/i18n';
@@ -19,10 +19,15 @@ import { fetch_with_retry,migrateUsageDataOnce } from '@/utils/tool';
 import { apiHandlers, supportsHourlyForecast } from './api/base';
 import { initSevenHourlyData } from './api/types';
 import {
+    DEFAULT_HOURLY_FIELDS,
     DEFAULT_UPDATE_INTERVAL,
+    HOURLY_FIELD_CELL_CLASSES,
+    HOURLY_FIELD_DISPLAY_TYPES,
+    HOURLY_FIELD_KEYS,
+    HOURLY_FIELD_LABEL_KEYS,
     PRECIP_TOGGLE_ANIM_MS,
-    PRECIP_TOGGLE_INTERVAL_MS,
     WEATHER_UPDATE_INTERVALS,
+    type HourlyFieldKey,
 } from './constants';
 import { generateAlertHTML,getAirQualityText } from './formatters';
 import { getWeatherTips } from './tips';
@@ -85,7 +90,14 @@ export const useWeatherStore = defineStore('weather', () => {
         longitude: '',
     });
     const ui = reactive({ loading: false, error: '', visible: false });
-    const showTemperatureInsteadOfPrecip = ref(false);
+    const currentHourlyField = ref<HourlyFieldKey>('pop');
+    // 兼容旧版布尔值：true=气温, false=降水概率
+    const showTemperatureInsteadOfPrecip = computed({
+        get: () => currentHourlyField.value === 'temp',
+        set: (v: boolean) => {
+            currentHourlyField.value = v ? 'temp' : 'pop';
+        },
+    });
     const isAnimatingPrecipToggle = ref(false);
     const precipTimerId = ref<number | null>(null);
     const isInitRunning = ref(false);
@@ -112,28 +124,103 @@ export const useWeatherStore = defineStore('weather', () => {
     });
     const tip = computed(() => (config.weather_daily_tip ? getWeatherTips(data) : ''));
 
-    const precipLabel = computed(() =>
-        showTemperatureInsteadOfPrecip.value
-            ? globalT('weather_show_temperature')
-            : globalT('weather_show_precipprob')
-    );
-    const precipLabelKey = computed(() =>
-        showTemperatureInsteadOfPrecip.value ? 'weather_show_temperature' : 'weather_show_precipprob'
-    );
-    const precipDisplayType = computed(() =>
-        showTemperatureInsteadOfPrecip.value ? 'temperature' : 'precipitation'
-    );
-    const precipCellClass = computed(() =>
-        showTemperatureInsteadOfPrecip.value ? 'precip-temp-cell' : 'precip-prob-cell'
-    );
+    const enabledHourlyFields = computed<HourlyFieldKey[]>(() => {
+        const enabled: HourlyFieldKey[] = [];
+        for (const key of HOURLY_FIELD_KEYS) {
+            const cfgKey = `weather_hourly_${key}` as keyof typeof config;
+            const val = (config as unknown as Record<string, unknown>)[cfgKey] as boolean | undefined;
+            const isEnabled = val !== undefined ? val : DEFAULT_HOURLY_FIELDS[key];
+            if (isEnabled) enabled.push(key);
+        }
+        if (enabled.length === 0) return ['pop'];
+        return enabled;
+    });
+
+    const precipLabel = computed(() => globalT(HOURLY_FIELD_LABEL_KEYS[currentHourlyField.value]));
+    const precipLabelKey = computed(() => HOURLY_FIELD_LABEL_KEYS[currentHourlyField.value]);
+    const precipDisplayType = computed(() => HOURLY_FIELD_DISPLAY_TYPES[currentHourlyField.value]);
+    const precipCellClass = computed(() => HOURLY_FIELD_CELL_CLASSES[currentHourlyField.value]);
     const hourlyTimes = computed(() => data.sevenHourlyData.Times);
     const hourlyValues = computed(() => {
-        const values = showTemperatureInsteadOfPrecip.value
-            ? data.sevenHourlyData.Temps
-            : data.sevenHourlyData.Pops;
-        const u = showTemperatureInsteadOfPrecip.value ? unitConfig.value.temp || '℃' : '';
-        return values.map(v => `${v || '--'}${u}`);
+        const field = currentHourlyField.value;
+        const d = data.sevenHourlyData;
+        let values: string[] = [];
+        let suffix = '';
+        switch (field) {
+            case 'pop':
+                values = d.Pops;
+                suffix = '';
+                break;
+            case 'temp':
+                values = d.Temps;
+                suffix = unitConfig.value.temp || '℃';
+                break;
+            case 'humidity':
+                values = d.Humidities;
+                suffix = '%';
+                break;
+            case 'windspeed':
+                values = d.WindSpeeds;
+                suffix = unitConfig.value.wind ? ` ${unitConfig.value.wind}` : '';
+                break;
+            case 'pressure':
+                values = d.Pressures;
+                suffix = unitConfig.value.pressure ? ` ${unitConfig.value.pressure}` : 'hPa';
+                break;
+            case 'cloud':
+                values = d.Clouds;
+                suffix = '%';
+                break;
+            case 'precip':
+                values = d.Precips;
+                suffix = unitConfig.value.precip ? ` ${unitConfig.value.precip}` : 'mm';
+                break;
+            case 'dew':
+                values = d.Dews;
+                suffix = unitConfig.value.temp || '℃';
+                break;
+            case 'windlv':
+                values = d.WindLvs;
+                suffix = globalT('weather_wind_level_label') ? ` ${globalT('weather_wind_level_label')}` : '';
+                break;
+            default:
+                values = d.Pops;
+                suffix = '';
+                break;
+        }
+        if (field === 'pop') {
+            return values.map(v => {
+                if (!v || v === '--') return '--';
+                return v.includes('%') ? v : `${v}%`;
+            });
+        }
+        return values.map(v => {
+            if (!v || v === '--' || v === '') return '--';
+            if (field === 'windlv') return `${v}${suffix}`;
+            return `${v}${suffix}`;
+        });
     });
+
+    // 当启用字段变化时，若当前字段不在启用列表则重置为首个
+    watch(enabledHourlyFields, enabled => {
+        if (!enabled.includes(currentHourlyField.value)) {
+            currentHourlyField.value = enabled[0] ?? 'pop';
+        }
+        if (config.weather_hourly_enabled !== false) startPrecipTimer();
+    });
+    watch(
+        () => config.weather_hourly_enabled,
+        enabled => {
+            if (enabled === false) stopPrecipTimer();
+            else startPrecipTimer();
+        }
+    );
+    watch(
+        () => config.weather_hourly_interval,
+        () => {
+            if (config.weather_hourly_enabled !== false) startPrecipTimer();
+        }
+    );
 
     // ===== 内部辅助 =====
     function applyResult(partial: Partial<WeatherData>): void {
@@ -208,12 +295,16 @@ export const useWeatherStore = defineStore('weather', () => {
         }
     }
 
-    // ===== 降水/温度切换 =====
+    // ===== 逐时轮播（多字段） =====
     function togglePrecip(): void {
         if (!data.sevenHourlyData?.Times?.length) return;
         if (isAnimatingPrecipToggle.value) return;
+        const enabled = enabledHourlyFields.value;
+        if (enabled.length <= 1) return;
         isAnimatingPrecipToggle.value = true;
-        showTemperatureInsteadOfPrecip.value = !showTemperatureInsteadOfPrecip.value;
+        const idx = enabled.indexOf(currentHourlyField.value);
+        const next = enabled[(idx + 1) % enabled.length] ?? enabled[0] ?? 'pop';
+        currentHourlyField.value = next;
         window.setTimeout(() => {
             isAnimatingPrecipToggle.value = false;
         }, PRECIP_TOGGLE_ANIM_MS);
@@ -221,9 +312,13 @@ export const useWeatherStore = defineStore('weather', () => {
 
     function startPrecipTimer(): void {
         stopPrecipTimer();
-        if (supportsHourlyForecast(config.weather_api_choose ?? 0)) {
-            precipTimerId.value = window.setInterval(togglePrecip, PRECIP_TOGGLE_INTERVAL_MS);
-        }
+        if (config.weather_hourly_enabled === false) return;
+        if (!supportsHourlyForecast(config.weather_api_choose ?? 0)) return;
+        const enabled = enabledHourlyFields.value;
+        if (enabled.length <= 1) return;
+        const intervalSec = config.weather_hourly_interval ?? 20;
+        const intervalMs = Math.max(5, Math.min(120, intervalSec)) * 1000;
+        precipTimerId.value = window.setInterval(togglePrecip, intervalMs);
     }
 
     function stopPrecipTimer(): void {
@@ -271,6 +366,7 @@ export const useWeatherStore = defineStore('weather', () => {
         data,
         address,
         ui,
+        currentHourlyField,
         showTemperatureInsteadOfPrecip,
         isAnimatingPrecipToggle,
         precipTimerId,
@@ -280,6 +376,7 @@ export const useWeatherStore = defineStore('weather', () => {
         alertHtml,
         alertItems,
         tip,
+        enabledHourlyFields,
         precipLabel,
         precipLabelKey,
         precipDisplayType,

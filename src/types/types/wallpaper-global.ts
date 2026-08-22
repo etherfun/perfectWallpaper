@@ -186,4 +186,15 @@ export interface WallpaperPropertiesGlobal {
     weather_showwidth?: { value: number };
     weatherX?: { value: number };
     weatherY?: { value: number };
+    weather_hourly_enabled?: { value: boolean };
+    weather_hourly_interval?: { value: number };
+    weather_hourly_pop?: { value: boolean };
+    weather_hourly_temp?: { value: boolean };
+    weather_hourly_humidity?: { value: boolean };
+    weather_hourly_windspeed?: { value: boolean };
+    weather_hourly_pressure?: { value: boolean };
+    weather_hourly_cloud?: { value: boolean };
+    weather_hourly_precip?: { value: boolean };
+    weather_hourly_dew?: { value: boolean };
+    weather_hourly_windlv?: { value: boolean };
 }

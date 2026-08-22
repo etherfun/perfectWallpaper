@@ -12,6 +12,7 @@
  * - `debounce / timerManager` — 通用工具
  */
 import { useConfigStore } from '@/stores/config';
+import { applyGlass } from '@/tokens/glass.tokens';
 import { registerDeferred } from '@/utils/deferredScheduler';
 import { elements } from '@/utils/elementManager';
 
@@ -57,6 +58,32 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
         weather.setDailyTip(!!properties.weather_daliy_tip.value, FirstLoad);
     }
 
+    // 逐时轮播配置（总开关 / 间隔 / 各字段开关）
+    const hourlyPatch: Record<string, unknown> = {};
+    if (properties.weather_hourly_enabled)
+        hourlyPatch.weather_hourly_enabled = properties.weather_hourly_enabled.value;
+    if (properties.weather_hourly_interval)
+        hourlyPatch.weather_hourly_interval = properties.weather_hourly_interval.value;
+    if (properties.weather_hourly_pop)
+        hourlyPatch.weather_hourly_pop = properties.weather_hourly_pop.value;
+    if (properties.weather_hourly_temp)
+        hourlyPatch.weather_hourly_temp = properties.weather_hourly_temp.value;
+    if (properties.weather_hourly_humidity)
+        hourlyPatch.weather_hourly_humidity = properties.weather_hourly_humidity.value;
+    if (properties.weather_hourly_windspeed)
+        hourlyPatch.weather_hourly_windspeed = properties.weather_hourly_windspeed.value;
+    if (properties.weather_hourly_pressure)
+        hourlyPatch.weather_hourly_pressure = properties.weather_hourly_pressure.value;
+    if (properties.weather_hourly_cloud)
+        hourlyPatch.weather_hourly_cloud = properties.weather_hourly_cloud.value;
+    if (properties.weather_hourly_precip)
+        hourlyPatch.weather_hourly_precip = properties.weather_hourly_precip.value;
+    if (properties.weather_hourly_dew)
+        hourlyPatch.weather_hourly_dew = properties.weather_hourly_dew.value;
+    if (properties.weather_hourly_windlv)
+        hourlyPatch.weather_hourly_windlv = properties.weather_hourly_windlv.value;
+    if (Object.keys(hourlyPatch).length > 0) store.$patch(hourlyPatch);
+
     // 坐标 / 城市文本
     if (properties.weather_lat_latitude)
         weather.setLocationField('latitude', String(properties.weather_lat_latitude.value), FirstLoad);
@@ -91,46 +118,36 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
     }
 
     if (properties.weather_blurcolor_show) {
-        elements.body.style.setProperty(
-            '--weather-blur-enabled',
-            properties.weather_blurcolor_show.value ? '1' : '0'
-        );
+        applyGlass('weather', { blurEnabled: properties.weather_blurcolor_show.value });
         store.$patch({ weather_blurcolor_show: properties.weather_blurcolor_show.value });
     }
 
     if (properties.weather_blurcolor) {
         const c = parseWEColor(properties.weather_blurcolor.value);
-        elements.body.style.setProperty('--weather-blur-color', c.join(', '));
+        applyGlass('weather', { blurColor: c as [number, number, number] });
         store.$patch({ weather_blurcolor: c as [number, number, number] });
     }
 
     if (properties.weather_yakeli_show) {
-        elements.body.style.setProperty(
-            '--weather-yakeli-enabled',
-            properties.weather_yakeli_show.value ? '1' : '0'
-        );
+        applyGlass('weather', { yakeliEnabled: properties.weather_yakeli_show.value });
         store.$patch({ weather_yakeli_show: properties.weather_yakeli_show.value });
     }
 
     if (properties.weather_yakelicolor) {
         const c = parseWEColor(properties.weather_yakelicolor.value);
-        elements.body.style.setProperty('--weather-yakeli-color', c.join(', '));
+        applyGlass('weather', { yakeliColor: c as [number, number, number] });
         store.$patch({ weather_yakelic_color: c as [number, number, number] });
     }
 
     if (properties.weather_yakeli) {
-        elements.body.style.setProperty(
-            '--weather-yakeli',
-            String(properties.weather_yakeli.value / 100)
-        );
-        store.$patch({ weather_yakeli: properties.weather_yakeli.value });
+        const yakeli = properties.weather_yakeli.value / 100;
+        applyGlass('weather', { yakeli });
+        // 与其他组件一致存 0..1（原为 raw 0..100，导致全局覆盖关闭后 replay 回写 raw 值 → 不透明度变 1）
+        store.$patch({ weather_yakeli: yakeli });
     }
 
     if (properties.weather_bluryakeli) {
-        elements.body.style.setProperty(
-            '--weather-blur-yakeli',
-            `${properties.weather_bluryakeli.value}px`
-        );
+        applyGlass('weather', { blurYakeli: `${properties.weather_bluryakeli.value}px` });
         store.$patch({ weather_bluryakeli: properties.weather_bluryakeli.value });
     }
 
@@ -145,10 +162,8 @@ export function useWeatherProperties(properties: WallpaperProperties, FirstLoad:
 
     // 天气圆角
     if (properties.weather_roundedcorners) {
-        elements.body.style.setProperty(
-            '--weather-roundedcorners',
-            String(properties.weather_roundedcorners.value)
-        );
+        // 经 applyGlass 写入：全局亚克力覆盖启用时由全局圆角接管
+        applyGlass('weather', { roundedCorners: properties.weather_roundedcorners.value });
         store.$patch({ weather_roundedcorners: properties.weather_roundedcorners.value });
     }
 

@@ -34,6 +34,69 @@ export const PRECIP_TOGGLE_INTERVAL_MS = 20000;
 /** 降水/温度切换动画时长（ms） */
 export const PRECIP_TOGGLE_ANIM_MS = 350;
 
+/** 逐时轮播字段 */
+export const HOURLY_FIELD_KEYS = [
+    'pop',
+    'temp',
+    'humidity',
+    'windspeed',
+    'pressure',
+    'cloud',
+    'precip',
+    'dew',
+    'windlv',
+] as const;
+export type HourlyFieldKey = (typeof HOURLY_FIELD_KEYS)[number];
+
+export const HOURLY_FIELD_LABEL_KEYS: Record<HourlyFieldKey, string> = {
+    pop: 'weather_show_precipprob',
+    temp: 'weather_show_temperature',
+    humidity: 'weather_show_humidity',
+    windspeed: 'weather_show_windspeed',
+    pressure: 'weather_show_pressure',
+    cloud: 'weather_show_cloud',
+    precip: 'weather_show_precip',
+    dew: 'weather_show_dew',
+    windlv: 'weather_show_windlv',
+};
+
+export const HOURLY_FIELD_DISPLAY_TYPES: Record<HourlyFieldKey, string> = {
+    pop: 'precipitation',
+    temp: 'temperature',
+    humidity: 'humidity',
+    windspeed: 'windspeed',
+    pressure: 'pressure',
+    cloud: 'cloud',
+    precip: 'precip',
+    dew: 'dew',
+    windlv: 'windlv',
+};
+
+export const HOURLY_FIELD_CELL_CLASSES: Record<HourlyFieldKey, string> = {
+    pop: 'precip-prob-cell',
+    temp: 'precip-temp-cell',
+    humidity: 'precip-humidity-cell',
+    windspeed: 'precip-windspeed-cell',
+    pressure: 'precip-pressure-cell',
+    cloud: 'precip-cloud-cell',
+    precip: 'precip-precip-cell',
+    dew: 'precip-dew-cell',
+    windlv: 'precip-windlv-cell',
+};
+
+/** 默认启用的逐时字段（保持旧版 pop+temp 行为） */
+export const DEFAULT_HOURLY_FIELDS: Record<HourlyFieldKey, boolean> = {
+    pop: true,
+    temp: true,
+    humidity: false,
+    windspeed: false,
+    pressure: false,
+    cloud: false,
+    precip: false,
+    dew: false,
+    windlv: false,
+};
+
 /** Tooltip 距鼠标/视口边缘的间距（px） */
 export const TOOLTIP_EDGE_OFFSET = 20;
 

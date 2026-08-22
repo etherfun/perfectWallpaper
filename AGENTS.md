@@ -9,7 +9,7 @@ Wallpaper Engine 动态壁纸项目（Vue 3 + Pinia + TypeScript + Canvas/WebGL�
 - `yarn typecheck` / `yarn lint` / `yarn format` — 分别对应 vue-tsc、eslint src、prettier --check src
 - `yarn test` / `yarn test:watch` / `yarn test:coverage` — Vitest，node 环境，仅收录 `tests/**/*.test.ts`；`tests/setup.ts` 注入最小 `window`/`localStorage` stub，需要 DOM 的测试用 `// @vitest-environment jsdom` 逐文件切换
 - `yarn build:server` — 构建 .NET Framework 4.8 服务器（`scripts/build-dotnet.ps1`），产物在 `dist/perfectwall-server/`
-- `yarn build:dev` / `yarn build:dev:watch` — 生成自包含的 `dev/` 预览目录。**必须**先设置环境变量 `WE_DEV_KIT_PATH` 指向外部 we-dev-kit 仓库（例如 `F:\dev\GitHub\we-dev-kit`），否则脚本直接报错退出
+- `yarn build:dev` / `yarn build:dev:watch` — 生成自包含的 `dev/` 预览目录。dev-kit 通过 npm 依赖 `wallpaper-engine-web-dev-kit` 引入（`prepareDevBuild` 从 `node_modules` 自动解析 dist），无需再设置 `WE_DEV_KIT_PATH`
 
 入口：`src/modules/core/bundle.ts` 顺序 import 所有模块；`setupWallpaperPropertyListener()` 注册 `window.wallpaperPropertyListener`。
 
@@ -49,6 +49,6 @@ WE 的配置项在 `project.json → general.properties` 声明，用户在设�
 
 - **CI 脚本名不匹配**：`.github/workflows/tag-trigger.yml` 调用 `yarn build:server:dotnet`，但 package.json 里只有 `build:server` → 该 tag 工作流会在服务器构建步骤失败。
 - **不要手改 `dist/`、`dev/`**：它们由构建脚本生成。`post-build.js` 会改写路径、剥离 `index.html` 里的 legacy 组件壳（`#clock`/`#countdown`/`#oDate`/`#hitokoto`，已由 Vue 在 `#app-root` 渲染）。
-- `build:dev` 依赖 `WE_DEV_KIT_PATH`，没有会直接退出。
+- `build:dev` 通过 npm 包 `wallpaper-engine-web-dev-kit` 注入 dev-kit，无需 `WE_DEV_KIT_PATH`。
 - 服务器相关功能（系统监控、DockBar）用 `server_mode` 属性门控，且需要用户手动启动 `dist/perfectwall-server/perfectwall-server.exe`（管理员模式才有温度/风扇数据，走 `--admin`/右键管理员运行，触发 WinRing0 的 Defender 警告是预期的）。
 - 新增 UI 文案（非设置面板）：`src/utils/i18n.ts` 的 `FALLBACK_MESSAGES` + `source/i18n/{zh-CN,en-US}.json` 都要加。

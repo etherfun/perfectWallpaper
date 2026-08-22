@@ -3677,6 +3677,11 @@ w3c-xmlserializer@^5.0.0:
   dependencies:
     xml-name-validator "^5.0.0"
 
+wallpaper-engine-web-dev-kit@^0.1.0:
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/wallpaper-engine-web-dev-kit/-/wallpaper-engine-web-dev-kit-0.1.0.tgz#10718064fc190755e0f3d269a5761794181dd4eb"
+  integrity sha512-y7e9I4jZw7BVY+uXRzG4WiivNnl2VkSldAaJI+menxktSwRkZi2Hnv0GPYCjyHZ8cMSC2WWMusBSh5PI+C3s8g==
+
 webidl-conversions@^7.0.0:
   version "7.0.0"
   resolved "https://registry.npmjs.org/webidl-conversions/-/webidl-conversions-7.0.0.tgz"

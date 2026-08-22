@@ -1,52 +1,30 @@
 /**
  * Build dev preview — produces a self-contained `dev/` directory.
  *
- * Uses `prepareDevBuild` from wallpaper-engine-web-dev-kit (local source)
+ * Uses `prepareDevBuild` from the `wallpaper-engine-web-dev-kit` npm package
  * for core injection, then adds project-specific customizations.
  *
  * Usage: `npm run build:dev`
  *
  * Flow:
- *   1. Build we-dev-kit (IIFE + inject module)
- *   2. Build main project via Vite (dev mode: sourcemap, skip typecheck)
- *   3. Run prepareDevBuild — copy dist → dev, inject dev-kit script into HTML
- *   4. Add project.json defaults + URL param + status overlay to index.html
- *   5. Copy supporting files (project.json, i18n, update/, preview.jpg)
+ *   1. Build main project via Vite (dev mode: sourcemap, skip typecheck)
+ *   2. Run prepareDevBuild — copy dist → dev, inject dev-kit script into HTML
+ *   3. Add project.json defaults + URL param + status overlay to index.html
+ *   4. Copy supporting files (project.json, i18n, update/, preview.jpg)
  */
 
-import { fileURLToPath, pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import fs from 'node:fs';
 import { execSync } from 'node:child_process';
+import { prepareDevBuild } from 'wallpaper-engine-web-dev-kit/inject';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const DEV_DIR = resolve(ROOT, 'dev');
-if (!process.env.WE_DEV_KIT_PATH) {
-  console.error('  ✗ WE_DEV_KIT_PATH environment variable is required.');
-  console.error('    Set it to the absolute path of your we-dev-kit folder, e.g.:');
-  console.error('    $env:WE_DEV_KIT_PATH = "F:\\dev\\GitHub\\we-dev-kit"');
-  process.exit(1);
-}
-const DEVKIT_SRC = resolve(process.env.WE_DEV_KIT_PATH);
-const DEVKIT_DIST = resolve(DEVKIT_SRC, 'dist');
 
-// ---- 1. Build dev-kit ----
-console.log('\n[dev-build] Step 1: Building we-dev-kit…');
-if (!fs.existsSync(resolve(DEVKIT_SRC, 'node_modules', 'tsup'))) {
-  console.error(`  ✗ we-dev-kit source not found at ${DEVKIT_SRC}`);
-  process.exit(1);
-}
-try {
-  execSync('npx --no-install tsup', { cwd: DEVKIT_SRC, stdio: 'pipe' });
-  console.log('  ✓ dev-kit built');
-} catch (e) {
-  console.error('  ✗ dev-kit build failed:', e.stderr?.toString() || e.message);
-  process.exit(1);
-}
-
-// ---- 2. Build main project ----
-console.log('\n[dev-build] Step 2: Building main project…');
+// ---- 1. Build main project ----
+console.log('\n[dev-build] Step 1: Building main project…');
 try {
   execSync('npx vite build --sourcemap && node scripts/post-build.js', {
     cwd: ROOT,
@@ -58,13 +36,11 @@ try {
   process.exit(1);
 }
 
-// ---- 3. Use prepareDevBuild from we-dev-kit ----
-console.log('\n[dev-build] Step 3: Injecting we-dev-kit into dev/…');
-const { prepareDevBuild } = await import(pathToFileURL(resolve(DEVKIT_DIST, 'inject.js')).href);
+// ---- 2. Use prepareDevBuild from we-dev-kit (npm) ----
+console.log('\n[dev-build] Step 2: Injecting we-dev-kit into dev/…');
 prepareDevBuild({
   inputDir: resolve(ROOT, 'dist'),
   outputDir: DEV_DIR,
-  kitDistPath: DEVKIT_DIST,
   config: {
     panel: true,
     audio: { amplitude: 0.6 },
@@ -74,8 +50,8 @@ prepareDevBuild({
   },
 });
 
-// ---- 4. Inject project.json defaults + URL param + status overlay ----
-console.log('\n[dev-build] Step 4: Finalizing dev/index.html…');
+// ---- 3. Inject project.json defaults + URL param + status overlay ----
+console.log('\n[dev-build] Step 3: Finalizing dev/index.html…');
 const htmlPath = resolve(DEV_DIR, 'index.html');
 if (!fs.existsSync(htmlPath)) {
   console.error('  ERROR: dev/index.html not found');
@@ -152,8 +128,8 @@ html = html.replace('</body>', statusOverlay + '\n</body>');
 fs.writeFileSync(htmlPath, html, 'utf8');
 console.log('  ✓ index.html finalized (defaults + URL param + status overlay)');
 
-// ---- 5. Copy supporting files ----
-console.log('\n[dev-build] Step 5: Copying supporting files…');
+// ---- 4. Copy supporting files ----
+console.log('\n[dev-build] Step 4: Copying supporting files…');
 const supportingFiles = [
   { src: 'project.json', dest: 'project.json' },
   { src: 'source/i18n/', dest: 'source/i18n/' },
@@ -176,7 +152,7 @@ for (const { src, dest } of supportingFiles) {
 }
 console.log('  ✓ supporting files copied');
 
-// ---- 6. Summary ----
+// ---- 5. Summary ----
 const size = dirSize(DEV_DIR);
 console.log(`\n[dev-build] ✓ Build complete: ${(size / 1024 / 1024).toFixed(1)} MB at dev/`);
 console.log('  Open dev/index.html in browser, or serve with:');

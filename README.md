@@ -140,7 +140,7 @@ yarn run build
 # 服务端：MSBuild 编译 .NET 服务器到 build/ 与 dist/perfectwall-server/
 yarn run build:server
 
-# 开发预览（需先设置 WE_DEV_KIT_PATH 环境变量）
+# 开发预览（dev-kit 通过 npm 依赖 wallpaper-engine-web-dev-kit 自动注入）
 yarn run build:dev
 
 # 类型检查 / 测试 / 格式化

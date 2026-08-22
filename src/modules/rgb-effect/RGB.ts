@@ -66,25 +66,31 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
     let time = 0;
 
     function drawAudioBars(ctx: CanvasRenderingContext2D): void {
-        const audioArray = rt().playerInfo.audioArray;
+        const { audioLeft, audioRight } = rt().playerInfo;
         const audiobarRGB = cfg().audiobar_rgb;
-        if (!audiobarRGB || !audioArray?.length) return;
+        if (!audiobarRGB || !(audioLeft.length || audioRight.length)) return;
 
-        const barWidth = bg!.width / 128;
+        // 128 根柱 = 左声道 64 + 右声道 64（与 WE 原始布局一致）
+        const barCount = audioLeft.length + audioRight.length;
+        if (!barCount) return;
+
+        const barWidth = bg!.width / barCount;
         const scaleFactor = cfg().aurgbhigh ?? 1;
         const rainbow = cfg().audiobar_rainbow_color;
         const rainbowMove = cfg().rainbow_move;
-        const hueStep = 360 / 128;
+        const hueStep = 360 / barCount;
 
-        if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== audioArray.length) {
-            window.smoothedAudioArray = new Array(audioArray.length).fill(0);
+        if (!window.smoothedAudioArray || window.smoothedAudioArray.length !== barCount) {
+            window.smoothedAudioArray = new Array(barCount).fill(0);
         }
         const smoothed = window.smoothedAudioArray;
-        for (let i = 0; i < audioArray.length; i++) smoothed[i] = (smoothed[i] ?? 0) + ((audioArray[i] ?? 0) - (smoothed[i] ?? 0)) * 0.1;
+        for (let i = 0; i < barCount; i++) {
+            const raw = i < audioLeft.length ? (audioLeft[i] ?? 0) : (audioRight[i - audioLeft.length] ?? 0);
+            smoothed[i] = (smoothed[i] ?? 0) + (raw - (smoothed[i] ?? 0)) * 0.1;
+        }
 
-        for (let i = 0; i < audioArray.length; i++) {
+        for (let i = 0; i < barCount; i++) {
             const height = Math.min(bg!.height * Math.min(smoothed[i] ?? 0, 1) * scaleFactor, bg!.height);
-            // 128 根柱均匀铺满画布宽度（旧表达式 (i%64+(i>=64?64:0)) 恒等于 i，属冗余）
             const x = barWidth * i;
             if (rainbow) {
                 const hue = (i * hueStep + time) % 360;
@@ -104,7 +110,7 @@ export function background2canvas(src?: string | null, videoORimages?: boolean):
         const opacitySaRGB = cfg().opacity_sa_rgb ?? 1;
         const particlesRGB = cfg().particles_rgb;
         const audiobarRGB = cfg().audiobar_rgb;
-        const hasAudio = !!rt().playerInfo.audioArray?.length;
+        const hasAudio = !!(rt().playerInfo.audioLeft.length || rt().playerInfo.audioRight.length);
 
         ctx.save();
         ctx.globalAlpha = opacitySaRGB;

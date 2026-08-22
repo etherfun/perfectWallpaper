@@ -83,12 +83,11 @@ export function pc_aubar(): void {
         const barWidth = aubar.width / AUDIO_BAR_COUNT;
         rgbbg.fillStyle = 'rgb(' + runtimeStore.playerInfo.fontcolor + ')';
 
-        const currentAudioArr = runtimeStore.playerInfo.audioArray;
+        const { audioLeft, audioRight } = runtimeStore.playerInfo;
 
-        for (let i = 0, l = AUDIO_BAR_COUNT; i < AUDIO_BAR_COUNT; ++i, ++l) {
-            const lo = currentAudioArr[i] ?? 0;
-            const hi = currentAudioArr[l] ?? 0;
-            const bar = (lo + hi) / 2;
+        for (let i = 0; i < AUDIO_BAR_COUNT; ++i) {
+            // WE 音频布局：i 为左声道 bin，AUDIO_BAR_COUNT + i 为右声道对应 bin
+            const bar = ((audioLeft[i] ?? 0) + (audioRight[i] ?? 0)) / 2;
             const targetHeight =
                 aubar.height * Math.min(bar, 1) * (config.player_control_scalefactor ?? 1);
             const actualHeight = Math.min(targetHeight, aubar.height);
@@ -121,15 +120,14 @@ export function pc_aubar(): void {
         rgbbg.strokeStyle = 'rgb(' + runtimeStore.playerInfo.fontcolor + ')';
         const spacing = aubar.width / AUDIO_BAR_COUNT;
 
-        const currentAudioArr = runtimeStore.playerInfo.audioArray;
+        const { audioLeft, audioRight } = runtimeStore.playerInfo;
 
         rgbbg.beginPath();
 
         const heights: number[] = [];
-        for (let i = 0, l = AUDIO_BAR_COUNT; i < AUDIO_BAR_COUNT; ++i, ++l) {
-            const lo = currentAudioArr[i] ?? 0;
-            const hi = currentAudioArr[l] ?? 0;
-            const amplitude = (lo + hi) / 2;
+        for (let i = 0; i < AUDIO_BAR_COUNT; ++i) {
+            // WE 音频布局：i 为左声道 bin，AUDIO_BAR_COUNT + i 为右声道对应 bin
+            const amplitude = ((audioLeft[i] ?? 0) + (audioRight[i] ?? 0)) / 2;
             let targetHeight =
                 aubar.height -
                 aubar.height * Math.min(amplitude, 1) * (config.player_control_scalefactor ?? 1);

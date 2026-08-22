@@ -3,13 +3,18 @@
 
 import { useRuntimeStore } from '@/stores/runtime';
 
+import { toMono } from '../mono';
+
 /**
- * 当前帧音频数据（WE 音频监听器输出，经 clamp + 接缝融合 + 平滑，长度 128）。
+ * 当前帧音频数据（左右声道拼接为 128 bin mono，与 WE 原始布局一致）。
+ * 粒子 index 循环 0..127，必须用完整 128 长度——若用逐 bin max 混合
+ * （仅 64 长），索引 64..127 的粒子将永远读到 0、不响应音频。
  * 旧实现声明了全局 `audioArrayPar` 但 src 中从未赋值，粒子实际收不到任何
  * 音频数据；这里改为从 runtime store 惰性读取，与 PWCircle/PWLine 同源。
  */
-function currentAudioArray(): number[] | undefined {
-    return useRuntimeStore().playerInfo.audioArray;
+function currentAudioArray(): number[] {
+    const { audioLeft, audioRight } = useRuntimeStore().playerInfo;
+    return toMono(audioLeft, audioRight);
 }
 
 // Canvas and context - initialized in wResize() which is called at module load
@@ -160,7 +165,7 @@ export function PWParcreatePoint(): void {
  * Draw a single particle
  */
 export function drawP(point: Point): void {
-    let l = (currentAudioArray()?.[point.index] ?? 0) / 20;
+    let l = (currentAudioArray()[point.index] ?? 0) / 20;
     if (!l || l < 1) l = 1;
     let radius = Math.min(point.radius * l, 4) * ratio;
     if (point.r && equalize !== 1) radius = radius * equalize + point.r * (1 - equalize);
@@ -219,7 +224,7 @@ export function drawPoint(): void {
         const audio = currentAudioArray();
         let followSum = 0;
         for (let i = 1; i < 6; i++) {
-            followSum += audio?.[i] ?? 0;
+            followSum += audio[i] ?? 0;
         }
         sum = followSum * 0.12;
         if (!sum || sum < 0.5) sum = 0.5;

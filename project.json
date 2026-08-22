@@ -1,7 +1,7 @@
 {
     "contentrating": "Everyone",
     "description": "有bug欢迎上报 尽可能会在一周内修复\r\n(如果可以请使用上方的 \" 讨论 \" 板块反馈问题或者提问 方便管理以及回复)\r\n这个壁纸也有可能会更新我自己的功能 \r\n也可以提出一些功能 有空就会加入进来\r\n\r\n如果原作者认为这个壁纸侵犯了你的权利 留言后会在一周内删除",
-    "file": "index.html",
+    "file": "./dist/index.html",
     "general": {
         "localization": {
             "en-us": {

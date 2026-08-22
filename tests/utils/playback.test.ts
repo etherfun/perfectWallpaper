@@ -6,15 +6,22 @@
  *     playerState is PLAYING or PAUSED
  *   - returns false for any placeholder title
  *   - returns false when playerState is null or STOPPED
+ *   - built-in player fallback: audio element actually playing counts
+ *     even when playerState was never written (auto-play paths)
  */
 
 import { describe, expect, test, vi } from 'vitest';
 
 // Mock config so we can swap playerInfo per test.
-const { mockPlayerInfo } = vi.hoisted(() => ({
+const { mockPlayerInfo, mockAudioElement } = vi.hoisted(() => ({
     mockPlayerInfo: {
         singtitle: '' as string,
         playerState: null as number | null,
+    },
+    // 模拟 <audio id="myAudio"> 的相关状态
+    mockAudioElement: {
+        src: '',
+        paused: true,
     },
 }));
 
@@ -22,6 +29,10 @@ vi.mock('@/stores/runtime', () => ({
     useRuntimeStore: () => ({
         playerInfo: mockPlayerInfo,
     }),
+}));
+
+vi.mock('@/utils/elementManager', () => ({
+    elements: { myAudio: mockAudioElement },
 }));
 import { hasPlaybackContent } from '@/utils/playback';
 
@@ -70,5 +81,39 @@ describe('hasPlaybackContent', () => {
         mockPlayerInfo.singtitle = 'Bohemian Rhapsody';
         mockPlayerInfo.playerState = PAUSED;
         expect(hasPlaybackContent()).toBe(true);
+    });
+
+    describe('built-in player fallback (playerState never written)', () => {
+        test('returns true when audio element is actually playing', () => {
+            mockPlayerInfo.singtitle = 'Local Song';
+            mockPlayerInfo.playerState = null; // 自动播放路径不写 playerState
+            mockAudioElement.src = 'http://localhost/stream.mp3';
+            mockAudioElement.paused = false;
+            expect(hasPlaybackContent()).toBe(true);
+        });
+
+        test('returns false when audio element exists but is paused (autoplay blocked)', () => {
+            mockPlayerInfo.singtitle = 'Local Song';
+            mockPlayerInfo.playerState = null;
+            mockAudioElement.src = 'http://localhost/stream.mp3';
+            mockAudioElement.paused = true;
+            expect(hasPlaybackContent()).toBe(false);
+        });
+
+        test('returns false when audio src is empty', () => {
+            mockPlayerInfo.singtitle = 'Local Song';
+            mockPlayerInfo.playerState = null;
+            mockAudioElement.src = '';
+            mockAudioElement.paused = false;
+            expect(hasPlaybackContent()).toBe(false);
+        });
+
+        test('placeholder title still wins over fallback', () => {
+            mockPlayerInfo.singtitle = 'loading...';
+            mockPlayerInfo.playerState = null;
+            mockAudioElement.src = 'http://localhost/stream.mp3';
+            mockAudioElement.paused = false;
+            expect(hasPlaybackContent()).toBe(false);
+        });
     });
 });

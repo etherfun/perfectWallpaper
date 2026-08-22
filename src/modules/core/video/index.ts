@@ -54,6 +54,9 @@ function playNextTrack(): void {
     config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
+    // 自动播放路径同步 playerState（此前只有手动 TogglePlayPause 才写入，
+    // 导致流体效果/歌词等依赖方误判为无播放内容）
+    runtimeStore.updatePlayerInfo({ playerState: 1 });
     debouncedUpdatePlayerInfo(playlist[index]!);
     controlExternalPlayer('next');
 }
@@ -94,6 +97,8 @@ function playPrevTrack(): void {
     config.cusaudio_route = getAudioStreamUrl(playlist[index]!);
     myAudio.src = config.cusaudio_route;
     myAudio.play();
+    // 同步 playerState（同 playNextTrack）
+    runtimeStore.updatePlayerInfo({ playerState: 1 });
     debouncedUpdatePlayerInfo(playlist[index]!);
     controlExternalPlayer('prev');
 }
@@ -121,12 +126,14 @@ function handleAudioEnded(): void {
             .catch(() => {
                 flags.isSingleTrackLoop = false;
             });
+        runtimeStore.updatePlayerInfo({ playerState: 1 });
         return;
     }
 
     // 非循环模式且是最后一首
     if (repeat === 0 && index >= playlist.length - 1) {
         myAudio.src = '';
+        runtimeStore.updatePlayerInfo({ playerState: 0 });
         return;
     }
 
@@ -163,6 +170,8 @@ export function ChangeAudioModel(): void {
     if (config.cusaudio_route) {
         myAudio.src = config.cusaudio_route;
         myAudio.play();
+        // 初始播放入口同样同步 playerState（自动播放不经过 TogglePlayPause）
+        runtimeStore.updatePlayerInfo({ playerState: 1 });
     } else {
         myAudio.src = '';
     }
@@ -263,6 +272,7 @@ export function resumeBuiltInPlayer(): void {
         myAudio.play().catch(() => {
             // Ignore autoplay errors
         });
+        runtimeStore.updatePlayerInfo({ playerState: 1 });
         console.log('[Built-in Player] Resumed after external media stopped');
     }
 }

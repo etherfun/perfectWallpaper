@@ -14,15 +14,17 @@ namespace PerfectWall.Server.Models
     {
         [JsonProperty("port")] public int Port { get; set; } = 27420;
         [JsonProperty("auto_start")] public bool AutoStart { get; set; } = false;
-        // When true, AutoStart is registered under HKLM
-        // (which requires the process to be elevated at the
-        // time of registration) so the OS launches the
-        // server with admin rights on login.  When false,
-        // AutoStart is registered under HKCU and the server
-        // runs unprivileged.  Both can be true simultaneously
-        // if the user wants a "regular" HKCU entry for normal
-        // use and a separate "admin" HKLM shortcut they trigger
-        // manually.
+        // User-mode auto-start: when enabled, the server is
+        // launched at this user's logon via an HKCU\…\Run
+        // entry and runs unprivileged (no temperature / fan
+        // data).  Admin-mode auto-start (see AutoStartAdmin)
+        // instead registers a Task Scheduler task that fires
+        // ONLOGON with highest privileges.  Both fire at the
+        // SAME user's logon, so they are mutually exclusive —
+        // enabling one removes the other (see SetupService) to
+        // avoid launching the server twice.  This field is a
+        // persisted preference only; the live state is read
+        // from the OS (HKCU entry / Task Scheduler task).
         [JsonProperty("auto_start_admin")] public bool AutoStartAdmin { get; set; } = false;
         [JsonProperty("log_level")] public string LogLevel { get; set; } = "info";
         // UI language override. Empty string means

@@ -235,6 +235,20 @@ namespace PerfectWall.Server.Services
                     // reach /setup by opening the URL
                     // manually if they want to.
                     key.SetValue(AppName, "\"" + GetExePath() + "\" --no-open", RegistryValueKind.String);
+                    // Mutual exclusion with the admin
+                    // (Task Scheduler) auto-start: both fire at
+                    // this user's logon, so leaving the admin
+                    // task enabled would launch the server a
+                    // second time. Drop it now. This only
+                    // succeeds when we are elevated (the admin
+                    // task can only be deleted by an elevated
+                    // process) — which is exactly the case
+                    // where the user is consciously switching
+                    // from admin to user mode. If we are not
+                    // elevated the call is a no-op (best
+                    // effort) and the user can clear the admin
+                    // entry from an elevated instance.
+                    TryRemoveAdminAutoStartTask();
                 }
                 else
                 {
@@ -344,6 +358,17 @@ namespace PerfectWall.Server.Services
             //    the whole point of the move: ONLOGON
             //    fires on every user logon, HIGHEST tells
             //    the Schedule service to launch the task
+            // Mutual exclusion with the user-mode (HKCU\Run)
+            // auto-start: both fire at this user's logon, so
+            // leaving the HKCU entry enabled would launch the
+            // server a second time. The admin task already
+            // covers this user's logon with highest
+            // privileges, so drop the redundant user-mode
+            // entry. (This is the path that fixes the
+            // "enable user first, then enable admin" double
+            // launch — the admin registration runs elevated
+            // and can always delete the HKCU value.)
+            TryRemoveUserAutoStartEntry();
             //    with the user's token already elevated,
             //    skipping the explorer.exe→UAC chain.
             //    /RU is the user; we use the current
@@ -400,6 +425,44 @@ namespace PerfectWall.Server.Services
                 }
             }
             catch { /* best effort — migration cleanup, not the primary path */ }
+        }
+
+        /// <summary>
+        /// Best-effort delete of the user-mode
+        /// (HKCU\…\Run) auto-start entry. Used to keep the
+        /// user and admin auto-start paths mutually exclusive
+        /// so the server never launches twice at logon.
+        /// </summary>
+        private static void TryRemoveUserAutoStartEntry()
+        {
+            try
+            {
+                using var key = Registry.CurrentUser.OpenSubKey(HkcuRunKey, writable: true);
+                if (key?.GetValue(AppName) != null)
+                {
+                    key.DeleteValue(AppName, throwOnMissingValue: false);
+                }
+            }
+            catch { /* best effort — the admin task is the source of truth now */ }
+        }
+
+        /// <summary>
+        /// Best-effort delete of the admin (Task Scheduler)
+        /// auto-start entry. Used to keep the user and admin
+        /// auto-start paths mutually exclusive. Deleting a
+        /// Task Scheduler task requires an elevated token, so
+        /// this is a genuine no-op (swallowed exception) when
+        /// called from a non-elevated process — which is fine,
+        /// because a non-elevated process could not have
+        /// created the admin task in the first place.
+        /// </summary>
+        private static void TryRemoveAdminAutoStartTask()
+        {
+            try
+            {
+                UnsetAutoStartAdminViaTaskScheduler();
+            }
+            catch { /* best effort — not elevated or task absent */ }
         }
 
         /// <summary>

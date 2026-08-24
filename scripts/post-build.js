@@ -2,11 +2,13 @@
  * Post-build script — runs after `vite build` to:
  *   1. Compile SCSS → dist/default.css
  *   2. Rewrite bundle.js paths (src/source/ → source/)
- *   3. Copy assets (index.html, project.json, source/, update/, preview.jpg)
+ *   3. Copy assets (index.html, source/, preview.jpg)
  *   4. Copy npm package assets (qweather-icons)
  *   5. Process index.html (path replacements)
- *   6. Process project.json (strip dist/ prefixes)
- *   7. Generate THIRD_PARTY_LICENSES/DEPENDENCIES.md
+ *   6. Generate THIRD_PARTY_LICENSES/DEPENDENCIES.md
+ *
+ * project.json 的复制与处理已剥离到 scripts/copy-project-json.mjs
+ * （package.json 的 build 链在 post-build 之后单独调用）。
  *
  * Designed to work on top of a Vite IIFE bundle output at dist/bundle.js.
  */
@@ -23,9 +25,9 @@ const srcDir = path.resolve(__dirname, '..');
 const distDir = path.resolve(srcDir, 'dist');
 
 // Files to copy to project root (for wallpaper engine)
+// 注：project.json 由 scripts/copy-project-json.mjs 单独复制+处理
 const copyFiles = [
     { src: 'index.html', dest: 'index.html', force: true },
-    { src: 'project.json', dest: 'project.json' },
     { src: 'source/i18n/', dest: 'source/i18n/', force: true },
     { src: 'source/imgs/', dest: 'source/imgs/' },
     { src: 'source/map/', dest: 'source/map/' },
@@ -187,20 +189,6 @@ async function processHtml() {
     console.log(`  Processed: index.html (legacy widgets stripped)`);
 }
 
-async function processProjectJson() {
-    const srcJson = path.join(srcDir, 'project.json');
-    const destJson = path.join(distDir, 'project.json');
-    if (!fs.existsSync(srcJson)) {
-        console.log(`  Warning: ${srcJson} does not exist, skipping project.json processing`);
-        return;
-    }
-    let content = fs.readFileSync(srcJson, 'utf8');
-    content = content.replaceAll('"dist/', '"');
-    content = content.replaceAll("'dist/", "'");
-    fs.writeFileSync(destJson, content);
-    console.log(`  Processed: project.json`);
-}
-
 async function copyAssets() {
     console.log('Copying assets...');
     for (const item of copyFiles) {
@@ -299,7 +287,6 @@ async function main() {
     await rewriteBundlePaths();
     await copyAssets();
     await processHtml();
-    await processProjectJson();
     await generateThirdPartyLicenses();
 
     const bundlePath = path.join(distDir, 'bundle.js');

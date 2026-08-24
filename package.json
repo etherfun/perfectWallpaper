@@ -4,7 +4,8 @@
   "description": "Perfect Wallpaper - A Wallpaper Engine project",
   "main": "index.html",
   "scripts": {
-    "build": "vue-tsc --noEmit && vite build && node scripts/post-build.js",
+    "build": "vue-tsc --noEmit && vite build && node scripts/post-build.js && node scripts/copy-project-json.mjs",
+    "build:json": "node scripts/copy-project-json.mjs",
     "build:watch": "vue-tsc --noEmit && vite build --watch && node scripts/post-build.js",
     "build:dev": "node scripts/build-dev.mjs",
     "build:dev:watch": "node scripts/watch-dev.mjs",
